@@ -2,6 +2,20 @@ import { graphql } from "gatsby"
 import React from "react"
 import Layout from "../components/layout"
 import Navigation from "../components/navigation"
+import styled from 'react-emotion'
+import {
+  MEDIA_QUERIES
+} from '@umich-lib-ui/styles'
+
+const StyledGrid = styled('div')({
+  [MEDIA_QUERIES.LARGESCREEN]: {
+    display: 'grid',
+    gridTemplateColumns: 'auto 14rem',
+    gridTemplateRows: 'max-content',
+    gridTemplateAreas: `"main side"`,
+    gridColumnGap: '2rem'
+  }
+})
 
 const PageTemplate = ({ data }) => {
   const {
@@ -14,15 +28,25 @@ const PageTemplate = ({ data }) => {
 
   return (
     <Layout>
-      <main>
-        <h1>{title}</h1>
-        {html ? (
-          <div dangerouslySetInnerHTML={{__html: html}} />
-        ) : (
-          <p>This page has no body content.</p>
-        )}
-        {relationships.pages && <Navigation data={relationships.pages} />}
-      </main>
+      <StyledGrid>
+        <main
+          style={{
+            gridArea: 'main'
+          }}
+        >
+          <h1>{title}</h1>
+          {html && (
+            <div dangerouslySetInnerHTML={{__html: html}} />
+          )}
+        </main>
+        <div style={{
+          gridArea: 'side'
+        }}>
+          {relationships.pages && (
+            <Navigation data={relationships.pages} />
+          )}
+        </div>
+      </StyledGrid>
     </Layout>
   )
 }
@@ -41,6 +65,22 @@ export const query = graphql`
           title
           path {
             alias
+          }
+          relationships {
+            pages {
+              title
+              path {
+                alias
+              }
+              relationships {
+                pages {
+                  title
+                  path {
+                    alias
+                  }
+                }
+              }
+            }
           }
         }
       }

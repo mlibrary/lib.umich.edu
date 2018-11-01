@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
 import { injectGlobal } from 'react-emotion'
-import Header from '@umich-lib-ui/header'
+import SiteHeader from './site-header'
 import Alert from '@umich-lib-ui/alert'
+import Breadcrumbs from './breadcrumbs'
 
 injectGlobal`
   body,
@@ -42,7 +43,7 @@ injectGlobal`
 const Layout = ({ children }) => (
   <StaticQuery
     query={graphql`
-      query {
+      {
         site {
           siteMetadata {
             title
@@ -69,9 +70,10 @@ const Layout = ({ children }) => (
           >
             <html lang="en" />
           </Helmet>
-          <Header />
-          <Alert intent="informational">This is a proof of concept Gatsby site to source data from Drupal.</Alert>
+          <SiteHeader />
+          <Alert intent="informational">This is a proof of concept Gatsby site sourcing data from Drupal.</Alert>
           <div data-inner-container>
+            <Breadcrumbs />
             {children}
           </div>
         </React.Fragment>
