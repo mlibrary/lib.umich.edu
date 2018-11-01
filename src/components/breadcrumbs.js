@@ -36,7 +36,7 @@ const Breadcrumbs = ({ data }) => {
           <StyledCrumbLink to="/">Home</StyledCrumbLink>
         </StyledCrumb>
         <StyledCrumb>
-          (Breacrumb not working yet)
+          / breacrumb not working yet
         </StyledCrumb>
         {data && (
           <React.Fragment>

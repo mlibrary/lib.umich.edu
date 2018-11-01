@@ -5,10 +5,6 @@ import TextInput from '@umich-lib-ui/text-input'
 import Button from '@umich-lib-ui/button'
 import Icon from '@umich-lib-ui/icon'
 import {
-  Link
-} from 'gatsby'
-import {
-  colors,
   MEDIA_QUERIES
 } from '@umich-lib-ui/styles'
 import Hero from '../components/hero'
@@ -20,22 +16,6 @@ const StyledSearchForm = styled('form')({
     width: '70%'
   },
   zIndex: '1'
-})
-
-const StyledGridContainer = styled('div')({
-  [MEDIA_QUERIES.LARGESCREEN]: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr',
-    gridColumnGap: '2rem'
-  },
-  margin: '1.5rem auto'
-})
-
-const StyledSection = styled('div')({
-  marginBottom: '2rem',
-  '*:first-child': {
-    marginTop: 0
-  }
 })
 
 const HomePage = () => {
