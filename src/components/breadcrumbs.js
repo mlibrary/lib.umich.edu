@@ -28,7 +28,6 @@ const StyledCrumbLink = styled(Link)({
 })
 
 const Breadcrumbs = ({ data }) => {
-  console.log('data', data)
   return (
     <nav aria-label="site breadcrumb">
       <StyledBread>
