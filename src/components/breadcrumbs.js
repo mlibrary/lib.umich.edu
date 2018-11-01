@@ -14,6 +14,7 @@ const StyledBread = styled('ol')({
 
 const StyledCrumb = styled('li')({
   display: 'inline-block',
+  fontSize: '0.875rem'
 })
 
 const StyledCrumbLink = styled(Link)({
@@ -24,7 +25,7 @@ const StyledCrumbLink = styled(Link)({
   marginRight: '0.25rem',
   ':hover': {
     textDecoration: 'underline'
-  },
+  }
 })
 
 const Breadcrumbs = ({ data }) => {
@@ -33,6 +34,9 @@ const Breadcrumbs = ({ data }) => {
       <StyledBread>
         <StyledCrumb>
           <StyledCrumbLink to="/">Home</StyledCrumbLink>
+        </StyledCrumb>
+        <StyledCrumb>
+          (Breacrumb not working yet)
         </StyledCrumb>
         {data && (
           <React.Fragment>
