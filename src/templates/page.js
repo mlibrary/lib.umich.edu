@@ -2,6 +2,7 @@ import { graphql } from "gatsby"
 import React from "react"
 import Layout from "../components/layout"
 import Navigation from "../components/navigation"
+import BreadCrumbs from "../components/breadcrumbs"
 import styled from 'react-emotion'
 import {
   MEDIA_QUERIES
@@ -28,25 +29,28 @@ const PageTemplate = ({ data }) => {
 
   return (
     <Layout>
-      <StyledGrid data-inner-container>
-        <main
-          style={{
-            gridArea: 'main'
-          }}
-        >
-          <h1>{title}</h1>
-          {html && (
-            <div dangerouslySetInnerHTML={{__html: html}} />
-          )}
-        </main>
-        <div style={{
-          gridArea: 'side'
-        }}>
-          {relationships.pages && (
-            <Navigation data={relationships.pages} />
-          )}
-        </div>
-      </StyledGrid>
+      <div data-inner-container>
+        <BreadCrumbs />
+        <StyledGrid>
+          <main
+            style={{
+              gridArea: 'main'
+            }}
+          >
+            <h1>{title}</h1>
+            {html && (
+              <div dangerouslySetInnerHTML={{__html: html}} />
+            )}
+          </main>
+          <div style={{
+            gridArea: 'side'
+          }}>
+            {relationships.pages && (
+              <Navigation data={relationships.pages} />
+            )}
+          </div>
+        </StyledGrid>
+      </div>
     </Layout>
   )
 }
