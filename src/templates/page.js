@@ -38,8 +38,10 @@ const PageTemplate = ({ data }) => {
             }}
           >
             <h1>{title}</h1>
-            {html && (
+            {html ? (
               <div dangerouslySetInnerHTML={{__html: html}} />
+            ) : (
+              <p>No content here yet.</p>
             )}
           </main>
           <div style={{

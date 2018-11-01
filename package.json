@@ -6,6 +6,7 @@
   "dependencies": {
     "@umich-lib-ui/alert": "0.1.0-alpha.16",
     "@umich-lib-ui/button": "0.1.0-alpha.16",
+    "@umich-lib-ui/chat": "0.1.0-alpha.16",
     "@umich-lib-ui/header": "0.1.0-alpha.15",
     "@umich-lib-ui/icon": "0.1.0-alpha.16",
     "@umich-lib-ui/text-input": "0.1.0-alpha.16",

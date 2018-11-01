@@ -5,6 +5,7 @@ import { StaticQuery, graphql } from 'gatsby'
 import { injectGlobal } from 'react-emotion'
 import SiteHeader from './site-header'
 import Alert from '@umich-lib-ui/alert'
+import Chat from '@umich-lib-ui/chat'
 
 injectGlobal`
   body,
@@ -72,6 +73,9 @@ const Layout = ({ children }) => (
           <Alert intent="informational">This is a proof of concept Gatsby site sourcing data from Drupal.</Alert>
           <SiteHeader />
           {children}
+          <footer data-inner-container>
+            <Chat fixed />
+          </footer>
         </React.Fragment>
       )
     }}
