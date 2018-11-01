@@ -3,6 +3,8 @@ module.exports = {
     title: 'University of Michigan Library'
   },
   plugins: [
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
     {
       resolve: `gatsby-source-drupal`,
       options: {
@@ -11,7 +13,6 @@ module.exports = {
     },
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-offline',
-    'gatsby-plugin-emotion',
-    'gatsby-plugin-umich-lib-drupal'
+    'gatsby-plugin-emotion'
   ],
 }

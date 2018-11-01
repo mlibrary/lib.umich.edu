@@ -28,7 +28,7 @@ const PageTemplate = ({ data }) => {
 
   return (
     <Layout>
-      <StyledGrid>
+      <StyledGrid data-inner-container>
         <main
           style={{
             gridArea: 'main'
