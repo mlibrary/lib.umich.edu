@@ -10,7 +10,7 @@ module.exports = {
     {
       resolve: `gatsby-source-drupal`,
       options: {
-        baseUrl: `http://ardbeg.umdl.umich.edu/web/`
+        baseUrl: `https://dev.lib.umich.edu/web/`
       },
     },
     'gatsby-plugin-react-helmet',
