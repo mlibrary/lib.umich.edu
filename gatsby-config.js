@@ -13,6 +13,7 @@ module.exports = {
         baseUrl: `https://dev.lib.umich.edu/web/`
       },
     },
+    `gatsby-site-map`,
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-offline',
     'gatsby-plugin-emotion'
