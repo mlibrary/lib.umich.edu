@@ -10,8 +10,6 @@ const dns = require('dns');
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
 
-  console.log('dns.getServers()', dns.getServers())
-
   // Check for Drupal node type.
   if (
     node.internal.type === `pages` ||

@@ -1,8 +1,6 @@
 {
-  "name": "gatsby-starter-default",
-  "description": "Gatsby default starter",
+  "name": "gatsby-drupal-site",
   "version": "1.0.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
     "@umich-lib-ui/alert": "0.1.0-alpha.16",
     "@umich-lib-ui/button": "0.1.0-alpha.16",
