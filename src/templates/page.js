@@ -28,6 +28,8 @@ const PageTemplate = ({ data }) => {
     markdownBody
   } = data.nodePage.fields
 
+  console.log('markdownBody', markdownBody)
+
   return (
     <Layout>
       <div data-inner-container>
@@ -40,7 +42,7 @@ const PageTemplate = ({ data }) => {
           >
             <h1>{title}</h1>
             {markdownBody ? (
-              <Markdown ast={markdownBody.childMarkdownRemark.htmlAst} />
+              <Markdown htmlAst={markdownBody.childMarkdownRemark.htmlAst} />
             ) : (
               <p>No content here yet. Try adding body content in the Drupal admin.</p>
             )}
@@ -66,6 +68,11 @@ export const query = graphql`
       title
       fields {
         html
+        markdownBody {
+          childMarkdownRemark {
+            htmlAst
+          }
+        } 
       }
       relationships {
         node__page {
