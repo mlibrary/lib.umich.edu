@@ -22,10 +22,10 @@ const PageTemplate = ({ data }) => {
   const {
     title,
     relationships
-  } = data.pages
+  } = data.nodePage
   const {
     html
-  } = data.pages.fields
+  } = data.nodePage.fields
 
   return (
     <Layout>
@@ -47,8 +47,8 @@ const PageTemplate = ({ data }) => {
           <div style={{
             gridArea: 'side'
           }}>
-            {relationships.pages && (
-              <Navigation data={relationships.pages} />
+            {relationships.node__page && (
+              <Navigation data={relationships.node__page} />
             )}
           </div>
         </StyledGrid>
@@ -61,25 +61,25 @@ export default PageTemplate
 
 export const query = graphql`
   query($slug: String!) {
-    pages(fields: { slug: { eq: $slug } }) {
+    nodePage(fields: { slug: { eq: $slug } }) {
       title
       fields {
         html
       }
       relationships {
-        pages {
+        node__page {
           title
           path {
             alias
           }
           relationships {
-            pages {
+            node__page {
               title
               path {
                 alias
               }
               relationships {
-                pages {
+                node__page {
                   title
                   path {
                     alias

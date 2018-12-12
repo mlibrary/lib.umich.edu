@@ -12,8 +12,8 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 
   // Check for Drupal node type.
   if (
-    node.internal.type === `pages` ||
-    node.internal.type === `landing_pages`
+    node.internal.type === `node__page` ||
+    node.internal.type === `node__landing_page`
   ) {
     createNodeField({
       node,
@@ -44,7 +44,7 @@ exports.createPages = ({ actions, graphql }) => {
       graphql(
         `
           {
-            allLandingPages {
+            allNodeLandingPage {
               edges {
                 node {
                   fields {
@@ -53,7 +53,7 @@ exports.createPages = ({ actions, graphql }) => {
                 }
               }
             }
-            allPages {
+            allNodePage {
               edges {
                 node {
                   fields {
@@ -70,7 +70,7 @@ exports.createPages = ({ actions, graphql }) => {
         }
 
         // Create pages.
-        result.data.allPages.edges.forEach(({ node }) => {
+        result.data.allNodePage.edges.forEach(({ node }) => {
           createPage({
             path: node.fields.slug,
             component: pageTemplate,
@@ -82,7 +82,7 @@ exports.createPages = ({ actions, graphql }) => {
 
         
         // Create landing pages.
-        result.data.allLandingPages.edges.forEach(({ node }) => {
+        result.data.allNodeLandingPage.edges.forEach(({ node }) => {
           createPage({
             path: node.fields.slug,
             component: landingPageTemplate,

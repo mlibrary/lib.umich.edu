@@ -21,12 +21,11 @@ const StyledSearchForm = styled('form')({
 
 const LandingPageTemplate = ({ data }) => {
   const {
-    title,
     relationships
-  } = data.landingPages
+  } = data.nodeLandingPage
   const {
     html
-  } = data.landingPages.fields
+  } = data.nodeLandingPage.fields
 
   return (
     <Layout>
@@ -67,13 +66,13 @@ export default LandingPageTemplate
 
 export const query = graphql`
   query($slug: String!) {
-    landingPages(fields: { slug: { eq: $slug } }) {
+    nodeLandingPage(fields: { slug: { eq: $slug } }) {
       title
       fields {
         html
       }
       relationships {
-        pages {
+        node__page {
           title
           path {
             alias

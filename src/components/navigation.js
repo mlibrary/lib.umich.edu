@@ -5,7 +5,7 @@ import { colors } from '@umich-lib-ui/styles'
 
 const getPages = (data) => {
   return data.map((page) => {
-    const pages = page.relationships && page.relationships.pages
+    const pages = page.relationships && page.relationships.node__page
 
     return {
       text: page.title,

@@ -11,9 +11,9 @@ const StyledLink = styled(Link)({
 })
 
 const getTopLevelNav = (data) => {
-  const topLevelNavData = data.allLandingPages.edges[0].node.relationships.pages
+  const topLevelNavData = data.allNodeLandingPage.edges[0].node.relationships.node__page
   const navData = topLevelNavData.reduce((acc, page) => {
-    if (page.relationships.pages) {
+    if (page.relationships.node__page) {
       return acc.concat({
         text: page.title,
         to: page.path.alias
@@ -29,14 +29,14 @@ const getTopLevelNav = (data) => {
 export default () => (
   <StaticQuery
     query={graphql`
-      fragment PageFields on pages {
+      fragment PageFields on node__page {
         title
         path {
           alias
         }
       }
       {
-        allLandingPages {
+        allNodeLandingPage {
           edges {
             node {
               title
@@ -44,16 +44,11 @@ export default () => (
                 alias
               }
               relationships {
-                pages {
+                node__page {
                   ...PageFields
                   relationships {
-                    pages {
+                    node__page {
                       ...PageFields
-                      relationships {
-                        pages {
-                          ...PageFields
-                        }
-                      }
                     }
                   }
                 }
