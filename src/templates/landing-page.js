@@ -2,12 +2,12 @@ import { graphql } from "gatsby"
 import React from "react"
 import Layout from "../components/layout"
 import styled from 'react-emotion'
-import TextInput from '@umich-lib-ui/text-input'
-import Button from '@umich-lib-ui/button'
-import Icon from '@umich-lib-ui/icon'
+import TextInput from '@umich-lib/text-input'
+import Button from '@umich-lib/button'
+import Icon from '@umich-lib/icon'
 import {
   MEDIA_QUERIES
-} from '@umich-lib-ui/styles'
+} from '@umich-lib/styles'
 import Hero from '../components/hero'
 
 const StyledSearchForm = styled('form')({

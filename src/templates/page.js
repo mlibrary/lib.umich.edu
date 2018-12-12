@@ -3,10 +3,11 @@ import React from "react"
 import Layout from "../components/layout"
 import Navigation from "../components/navigation"
 import BreadCrumbs from "../components/breadcrumbs"
+import Markdown from "../components/markdown"
 import styled from 'react-emotion'
 import {
   MEDIA_QUERIES
-} from '@umich-lib-ui/styles'
+} from '@umich-lib/styles'
 
 const StyledGrid = styled('div')({
   [MEDIA_QUERIES.LARGESCREEN]: {
@@ -24,7 +25,7 @@ const PageTemplate = ({ data }) => {
     relationships
   } = data.nodePage
   const {
-    html
+    markdownBody
   } = data.nodePage.fields
 
   return (
@@ -38,10 +39,10 @@ const PageTemplate = ({ data }) => {
             }}
           >
             <h1>{title}</h1>
-            {html ? (
-              <div dangerouslySetInnerHTML={{__html: html}} />
+            {markdownBody ? (
+              <Markdown ast={markdownBody.childMarkdownRemark.htmlAst} />
             ) : (
-              <p>No content here yet.</p>
+              <p>No content here yet. Try adding body content in the Drupal admin.</p>
             )}
           </main>
           <div style={{

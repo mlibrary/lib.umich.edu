@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from '@umich-lib-ui/header'
+import Header from '@umich-lib/header'
 import { StaticQuery, Link } from 'gatsby'
 import styled from 'react-emotion'
 

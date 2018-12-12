@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'gatsby'
 import styled from 'react-emotion'
-import { colors } from '@umich-lib-ui/styles'
+import { colors } from '@umich-lib/styles'
 
 const getPages = (data) => {
   return data.map((page) => {

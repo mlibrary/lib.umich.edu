@@ -4,8 +4,8 @@ import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
 import { injectGlobal } from 'react-emotion'
 import SiteHeader from './site-header'
-import Alert from '@umich-lib-ui/alert'
-import Chat from '@umich-lib-ui/chat'
+import Alert from '@umich-lib/alert'
+import Chat from '@umich-lib/chat'
 
 injectGlobal`
   body,

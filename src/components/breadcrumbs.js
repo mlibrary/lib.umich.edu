@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'gatsby'
 import {
   colors
-} from '@umich-lib-ui/styles'
+} from '@umich-lib/styles'
 import styled from 'react-emotion'
 
 const StyledBread = styled('ol')({

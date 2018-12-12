@@ -3,7 +3,7 @@ import styled from 'react-emotion'
 import {
   MEDIA_QUERIES,
   colors
-} from '@umich-lib-ui/styles'
+} from '@umich-lib/styles'
 import Image from 'gatsby-image'
 
 const StyledHeroContainer = styled('div')({
