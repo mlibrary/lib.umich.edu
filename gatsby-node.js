@@ -10,6 +10,13 @@ const dns = require('dns');
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
 
+  console.log('dns.getServers()', dns.getServers())
+  dns.lookup(
+    'dev.lib.umich.edu',
+    {all: true},
+    (err, address, family) => console.log('address: %j family: IPv%s', address, family)
+  );
+
   // Check for Drupal node type.
   if (
     node.internal.type === `node__page` ||
