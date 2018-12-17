@@ -28,13 +28,6 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       value: node.path.alias,
     })
   }
-  if (node.body && node.body.format === `basic_html`) {
-    createNodeField({
-      node,
-      name: `html`,
-      value: node.body.processed,
-    })
-  }
 }
 
 // Implement the Gatsby API “createPages”. This is called once the

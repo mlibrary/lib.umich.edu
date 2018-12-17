@@ -67,7 +67,6 @@ export const query = graphql`
     nodePage(fields: { slug: { eq: $slug } }) {
       title
       fields {
-        html
         markdownBody {
           childMarkdownRemark {
             htmlAst

@@ -23,9 +23,6 @@ const LandingPageTemplate = ({ data }) => {
   const {
     relationships
   } = data.nodeLandingPage
-  const {
-    html
-  } = data.nodeLandingPage.fields
 
   return (
     <Layout>
@@ -50,14 +47,6 @@ const LandingPageTemplate = ({ data }) => {
           </div>
         </StyledSearchForm>
       </Hero>
-
-      <div data-inner-container>
-        {html ? (
-          <div dangerouslySetInnerHTML={{__html: html}} />
-        ) : (
-          <p>No content here yet.</p>
-        )}
-      </div>
     </Layout>
   )
 }
@@ -68,9 +57,6 @@ export const query = graphql`
   query($slug: String!) {
     nodeLandingPage(fields: { slug: { eq: $slug } }) {
       title
-      fields {
-        html
-      }
       relationships {
         node__page {
           title
