@@ -17,10 +17,11 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     (err, address, family) => console.log('address: %j family: IPv%s', address, family)
   );
 
-  // Check for Drupal node type.
+  // Check for Drupal node type and assign alias as the slug.
   if (
     node.internal.type === `node__page` ||
-    node.internal.type === `node__landing_page`
+    node.internal.type === `node__landing_page` ||
+    node.internal.type === `node__room`
   ) {
     createNodeField({
       node,
@@ -38,6 +39,7 @@ exports.createPages = ({ actions, graphql }) => {
   return new Promise((resolve, reject) => {
     const landingPageTemplate = path.resolve(`src/templates/landing-page.js`);
     const pageTemplate = path.resolve(`src/templates/page.js`);
+    const roomPageTemplate = path.resolve(`src/templates/room.js`);
 
     // Query for page nodes to use in creating pages.
     resolve(
@@ -62,6 +64,16 @@ exports.createPages = ({ actions, graphql }) => {
                 }
               }
             }
+            allNodeRoom {
+              edges {
+                node {
+                  title
+                  fields {
+                    slug
+                  }
+                }
+              }
+            }
           }
         `
       ).then(result => {
@@ -79,13 +91,23 @@ exports.createPages = ({ actions, graphql }) => {
             }
           })
         })
-
         
         // Create landing pages.
         result.data.allNodeLandingPage.edges.forEach(({ node }) => {
           createPage({
             path: node.fields.slug,
             component: landingPageTemplate,
+            context: {
+              slug: node.fields.slug
+            }
+          })
+        })
+
+        // Create basic pages.
+        result.data.allNodeRoom.edges.forEach(({ node }) => {
+          createPage({
+            path: node.fields.slug,
+            component: roomPageTemplate,
             context: {
               slug: node.fields.slug
             }
