@@ -24,11 +24,6 @@ const PageTemplate = ({ data }) => {
     title,
     relationships
   } = data.nodePage
-  const {
-    markdownBody
-  } = data.nodePage.fields
-
-  console.log('markdownBody', markdownBody)
 
   return (
     <Layout>
@@ -41,11 +36,8 @@ const PageTemplate = ({ data }) => {
             }}
           >
             <h1>{title}</h1>
-            {markdownBody ? (
-              <Markdown htmlAst={markdownBody.childMarkdownRemark.htmlAst} />
-            ) : (
-              <p>No content here yet. Try adding body content in the Drupal admin.</p>
-            )}
+
+            <p>Not able to render body content yet.</p>
           </main>
           <div style={{
             gridArea: 'side'
@@ -66,13 +58,6 @@ export const query = graphql`
   query($slug: String!) {
     nodePage(fields: { slug: { eq: $slug } }) {
       title
-      fields {
-        markdownBody {
-          childMarkdownRemark {
-            htmlAst
-          }
-        } 
-      }
       relationships {
         node__page {
           title

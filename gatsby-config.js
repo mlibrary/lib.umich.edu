@@ -11,19 +11,6 @@ module.exports = {
         baseUrl: `https://dev.lib.umich.edu/web/`
       },
     },
-    {
-      resolve: `gatsby-transformer-remark`,
-      options: {
-        plugins: [
-          {
-            resolve: `@weknow/gatsby-remark-drupal`,
-            options: {
-              nodes: [`page`, `landing_page`, `article`]
-            }
-          }
-        ]
-      }
-    },
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-offline',
     'gatsby-plugin-emotion'
