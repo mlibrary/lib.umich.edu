@@ -28,7 +28,7 @@ exports.sourceNodes = ({
   }
 
   return (
-    fetch('https://dev.lib.umich.edu/web/api/sitemenu')
+    fetch('https://dev.lib.umich.edu/api/sitemenu')
       .then(response => response.json())
 
       // Take first item from navigation data.

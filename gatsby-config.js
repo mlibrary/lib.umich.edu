@@ -8,7 +8,7 @@ module.exports = {
     {
       resolve: `gatsby-source-drupal`,
       options: {
-        baseUrl: `https://dev.lib.umich.edu/web/`
+        baseUrl: `https://dev.lib.umich.edu/`
       },
     },
     'gatsby-source-umich-lib',
