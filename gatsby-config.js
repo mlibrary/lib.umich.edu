@@ -11,6 +11,7 @@ module.exports = {
         baseUrl: `https://dev.lib.umich.edu/web/`
       },
     },
+    'gatsby-source-umich-lib',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-offline',
     'gatsby-plugin-emotion'
