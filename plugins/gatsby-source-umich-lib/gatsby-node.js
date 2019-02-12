@@ -1,9 +1,40 @@
 const path = require(`path`)
+const fetch = require("node-fetch")
 /**
  * Implement Gatsby's Node APIs in this file.
  *
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
+
+exports.sourceNodes = ({
+  actions,
+  createContentDigest
+}) => {
+  const { createNode } = actions
+
+  function processSiteNavigation(data) {
+    const nodeMeta = {
+      id: 'navigation',
+      parent: null,
+      children: [],
+      internal: {
+        type: 'Navigation',
+        content: JSON.stringify(data),
+        contentDigest: createContentDigest(data)
+      }
+    }
+    const node = Object.assign(nodeMeta, { data })
+    createNode(node)
+  }
+
+  return (
+    fetch('https://dev.lib.umich.edu/web/api/sitemenu')
+      .then(response => response.json())
+
+      // Take first item from navigation data.
+      .then(data => processSiteNavigation(data[0]))
+  )
+}
 
 // Create a slug for each page and set it as a field on the node.
 exports.onCreateNode = ({ node, getNode, actions }) => {
