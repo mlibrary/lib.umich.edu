@@ -20,27 +20,30 @@ const StyledSearchForm = styled('form')({
 })
 
 const LandingPageTemplate = ({ data }) => {
+  const hero_image = data.nodeLandingPage.relationships.field_hero_image.localFile.childImageSharp.fluid
   return (
     <Layout>
-      <StyledSearchForm action="https://search.lib.umich.edu/everything" method="get">
-        <div style={{ display: 'flex' }}>
-          <TextInput
-            id="search-query"
-            labelText="Search terms"
-            type="search"
-            hideLabel
-            name="query"
-            placeholder="Search the catalog, articles, databases, & more"
-          />
-          <Button
-            type="submit"
-            style={{
-              whiteSpace: 'nowrap',
-              marginLeft: '0.5rem'
-            }
-          }><Icon icon="search" size={24} /> Search</Button>
-        </div>
-      </StyledSearchForm>
+      <Hero image={hero_image}>
+        <StyledSearchForm action="https://search.lib.umich.edu/everything" method="get">
+          <div style={{ display: 'flex' }}>
+            <TextInput
+              id="search-query"
+              labelText="Search terms"
+              type="search"
+              hideLabel
+              name="query"
+              placeholder="Search the catalog, articles, databases, & more"
+            />
+            <Button
+              type="submit"
+              style={{
+                whiteSpace: 'nowrap',
+                marginLeft: '0.5rem'
+              }
+            }><Icon icon="search" size={24} /> Search</Button>
+          </div>
+        </StyledSearchForm>
+      </Hero>
     </Layout>
   )
 }
@@ -56,6 +59,15 @@ export const query = graphql`
           title
           path {
             alias
+          }
+        }
+        field_hero_image {
+          localFile {
+            childImageSharp {
+              fluid(maxWidth: 1920) {
+                ...GatsbyImageSharpFluid
+              }
+            }
           }
         }
       }
