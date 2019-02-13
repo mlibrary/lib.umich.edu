@@ -48,7 +48,7 @@ const Navigation = ({ data }) => {
         style={{
           marginTop: 0
         }}
-      >Related content</Heading>
+      >In this section</Heading>
       <StyledNavList>
         {navData.map(item => (
           <li>
