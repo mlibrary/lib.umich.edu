@@ -82,8 +82,8 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 
     if (node.field_breadcrumb) {
       fetch(apiBase + node.field_breadcrumb, {
-        retries: 3,
-        retryDelay: 1000
+        retries: 5,
+        retryDelay: 2500
       })
         .catch(err => console.error(err))
         .then(response => response.json())
