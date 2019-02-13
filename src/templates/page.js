@@ -22,13 +22,14 @@ const StyledGrid = styled('div')({
 const PageTemplate = ({ data }) => {
   const {
     title,
-    relationships
+    relationships,
+    fields
   } = data.nodePage
 
   return (
     <Layout>
       <div data-inner-container>
-        <BreadCrumbs />
+        <BreadCrumbs data={fields.breadcrumb} />
         <StyledGrid>
           <main
             style={{
@@ -58,6 +59,12 @@ export const query = graphql`
   query($slug: String!) {
     nodePage(fields: { slug: { eq: $slug } }) {
       title
+      fields {
+        breadcrumb {
+          text
+          to
+        }
+      }
       relationships {
         node__page {
           title

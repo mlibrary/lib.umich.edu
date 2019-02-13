@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'gatsby'
 import styled from 'react-emotion'
 import { colors } from '@umich-lib/styles'
+import Heading from '@umich-lib/heading'
 
 const getPages = (data) => {
   return data.map((page) => {
@@ -16,8 +17,6 @@ const getPages = (data) => {
 }
 
 const StyledNav = styled('nav')({
-  background: colors.grey[200],
-  padding: '0.75rem 1rem',
   marginTop: '1rem'
 })
 
@@ -29,8 +28,7 @@ const StyledNavList = styled('nav')({
 
 const StyledLink = styled(Link)({
   display: 'block',
-  textDecoration: 'none',
-  padding: '0.25rem 0',
+  padding: '0.15rem 0',
   ':hover': {
     textDecoration: 'underline'
   }
@@ -44,6 +42,13 @@ const Navigation = ({ data }) => {
   
   return (
     <StyledNav>
+      <Heading
+        level={2}
+        size="medium"
+        style={{
+          marginTop: 0
+        }}
+      >Related content</Heading>
       <StyledNavList>
         {navData.map(item => (
           <li>

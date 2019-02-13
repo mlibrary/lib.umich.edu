@@ -1,5 +1,5 @@
 const path = require(`path`)
-const fetch = require("node-fetch")
+const fetch = require("fetch-retry")
 /**
  * Implement Gatsby's Node APIs in this file.
  *
@@ -60,35 +60,31 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     // Breadcumb
     // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
     function processBreadcrumbData(data) {
-      console.log('processBreadcrumbData', data)
-
-      // TODO
-      // - [ ] Turn nested Drupal data into list.
-      /*
-        [
-          {
-            text: 'Home',
-            to: '/'
-          },
-          {
-            text: 'About us',
-            to: '/about-us'
-          },
-          {
-            ...
-          }
-        ]
-      */
-
+      let result = []
+      function getParentItem(item) {
+        result = result.concat({
+          to: item.to,
+          text: item.text
+        })
+        if (item.parent) {
+          getParentItem(item.parent[0])
+        }
+      }
+      getParentItem(data[0])
+      result = result.reverse()
+  
       createNodeField({
         node,
         name: `breadcrumb`,
-        value: data,
+        value: result
       })
     }
 
     if (node.field_breadcrumb) {
-      fetch(apiBase + node.field_breadcrumb)
+      fetch(apiBase + node.field_breadcrumb, {
+        retries: 3,
+        retryDelay: 1000
+      })
         .catch(err => console.error(err))
         .then(response => response.json())
         .then(data => processBreadcrumbData(data))

@@ -5,24 +5,29 @@ import {
 } from '@umich-lib/styles'
 import styled from 'react-emotion'
 
-const StyledBread = styled('ol')({
+const Breadcrumb = styled('ol')({
   listStyle: 'none',
   padding: '0',
   marginTop: '0.5rem',
   borderBottom: `solid 3px ${colors.grey[300]}`
 })
 
-const StyledCrumb = styled('li')({
+const BreadCrumbItem = styled('li')({
   display: 'inline-block',
-  fontSize: '0.875rem'
+  fontSize: '0.875rem',
+  color: colors.grey[600],
+  paddingRight: '0.5rem',
+  "&:not(:first-child):before": {
+    content: '"/"',
+    marginRight: '0.5rem'
+  }
 })
 
-const StyledCrumbLink = styled(Link)({
+const BreadCrumbItemLink = styled(Link)({
   display: 'inline-block',
   textDecoration: 'none',
   fontSize: '0.875rem',
   padding: '0.25rem 0',
-  marginRight: '0.25rem',
   ':hover': {
     textDecoration: 'underline'
   }
@@ -31,23 +36,17 @@ const StyledCrumbLink = styled(Link)({
 const Breadcrumbs = ({ data }) => {
   return (
     <nav aria-label="site breadcrumb">
-      <StyledBread>
-        <StyledCrumb>
-          <StyledCrumbLink to="/">Home</StyledCrumbLink>
-        </StyledCrumb>
-        <StyledCrumb>
-          / breacrumb not working yet
-        </StyledCrumb>
+      <Breadcrumb>
         {data && (
           <React.Fragment>
             {data.map(item => (
-              <StyledCrumb>
-                <StyledCrumbLink to={item.to}>{item.text}</StyledCrumbLink>
-              </StyledCrumb>
+              <BreadCrumbItem>
+                <BreadCrumbItemLink to={item.to}>{item.text}</BreadCrumbItemLink>
+              </BreadCrumbItem>
             ))}
           </React.Fragment>
         )}
-      </StyledBread>
+      </Breadcrumb>
     </nav>
   )
 }
