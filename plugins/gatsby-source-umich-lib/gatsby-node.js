@@ -62,6 +62,24 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     function processBreadcrumbData(data) {
       console.log('processBreadcrumbData', data)
 
+      // TODO
+      // - [ ] Turn nested Drupal data into list.
+      /*
+        [
+          {
+            text: 'Home',
+            to: '/'
+          },
+          {
+            text: 'About us',
+            to: '/about-us'
+          },
+          {
+            ...
+          }
+        ]
+      */
+
       createNodeField({
         node,
         name: `breadcrumb`,
