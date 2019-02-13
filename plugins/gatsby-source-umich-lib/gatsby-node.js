@@ -6,6 +6,8 @@ const fetch = require("node-fetch")
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
+const apiBase = 'https://dev.lib.umich.edu'
+
 exports.sourceNodes = ({
   actions,
   createContentDigest
@@ -28,7 +30,7 @@ exports.sourceNodes = ({
   }
 
   return (
-    fetch('https://dev.lib.umich.edu/api/sitemenu')
+    fetch(apiBase + '/api/sitemenu')
       .then(response => response.json())
 
       // Take first item from navigation data.
@@ -40,17 +42,39 @@ exports.sourceNodes = ({
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
 
-  // Check for Drupal node type and assign alias as the slug.
+  // Check for Drupal node type.
   if (
     node.internal.type === `node__page` ||
     node.internal.type === `node__landing_page` ||
     node.internal.type === `node__room`
   ) {
+
+    // Slug
+    // Assign alias as the slug
     createNodeField({
       node,
       name: `slug`,
       value: node.path.alias,
     })
+
+    // Breadcumb
+    // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
+    function processBreadcrumbData(data) {
+      console.log('processBreadcrumbData', data)
+
+      createNodeField({
+        node,
+        name: `breadcrumb`,
+        value: data,
+      })
+    }
+
+    if (node.field_breadcrumb) {
+      fetch(apiBase + node.field_breadcrumb)
+        .catch(err => console.error(err))
+        .then(response => response.json())
+        .then(data => processBreadcrumbData(data))
+    }
   }
 }
 
