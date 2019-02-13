@@ -5,6 +5,7 @@ import styled from 'react-emotion'
 import TextInput from '@umich-lib/text-input'
 import Button from '@umich-lib/button'
 import Icon from '@umich-lib/icon'
+import Heading from '@umich-lib/heading'
 import {
   MEDIA_QUERIES
 } from '@umich-lib/styles'
@@ -21,6 +22,11 @@ const StyledSearchForm = styled('form')({
 
 const LandingPageTemplate = ({ data }) => {
   const hero_image = data.nodeLandingPage.relationships.field_hero_image.localFile.childImageSharp.fluid
+  const {
+    title,
+    field_cond_display_title
+  } = data.nodeLandingPage
+  
   return (
     <Layout>
       <Hero image={hero_image}>
@@ -44,6 +50,13 @@ const LandingPageTemplate = ({ data }) => {
           </div>
         </StyledSearchForm>
       </Hero>
+
+      <div data-inner-container>
+        {field_cond_display_title && (
+          <Heading level={1} size="xlarge">{title}</Heading>
+        )}
+      </div>
+      
     </Layout>
   )
 }
@@ -54,6 +67,7 @@ export const query = graphql`
   query($slug: String!) {
     nodeLandingPage(fields: { slug: { eq: $slug } }) {
       title
+      field_cond_display_title
       relationships {
         node__page {
           title
