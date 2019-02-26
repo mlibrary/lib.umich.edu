@@ -72,7 +72,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       }
       getParentItem(data[0])
       result = result.reverse()
-  
+
       createNodeField({
         node,
         name: `breadcrumb`,
@@ -81,6 +81,10 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     }
 
     if (node.field_breadcrumb) {
+      /*
+        TOOD:
+        - [ ] Write about why retry and delay.
+      */
       fetch(apiBase + node.field_breadcrumb, {
         retries: 5,
         retryDelay: 2500
