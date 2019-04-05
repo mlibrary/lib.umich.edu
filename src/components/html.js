@@ -4,6 +4,8 @@ import Heading from '@umich-lib/heading'
 import Text from '@umich-lib/text'
 import List from '@umich-lib/list'
 import { Link } from 'gatsby'
+import unified from "unified"
+import rehype from "rehype-parse"
 
 /**
   Headings
@@ -24,7 +26,7 @@ const Heading6 = ({ children, ...other }) => (
   <Heading level={6} size="xsmall" {...other}>{children}</Heading>
 )
 
-const renderAst = new rehypeReact({
+const renderHast = new rehypeReact({
   components: {
     h2: Heading2,
     h3: Heading3,
@@ -50,10 +52,14 @@ const renderAst = new rehypeReact({
   }
 }).Compiler
 
-export default ({ htmlAst }) => {
+export default ({ html }) => {
+  const tree = unified()
+    .use(rehype, { fragment: true })
+    .parse(html);
+
   return (
     <React.Fragment>
-      {renderAst(htmlAst)}
+      {renderHast(tree)}
     </React.Fragment>
   )
 }
