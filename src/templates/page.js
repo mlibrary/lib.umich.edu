@@ -1,8 +1,6 @@
 import { graphql } from "gatsby"
 import React from "react"
 import Layout from "../components/layout"
-import Navigation from "../components/navigation"
-import BreadCrumbs from "../components/breadcrumbs"
 import HTML from "../components/html"
 import styled from 'react-emotion'
 import {
@@ -10,7 +8,7 @@ import {
   Margins,
   Heading,
   SPACING,
-  Alert
+  Alert,
 } from '@umich-lib/core'
 
 const StyledGrid = styled('div')({
@@ -52,7 +50,11 @@ const PageTemplate = ({ data }) => {
               {body && body.format === 'basic_html' ? (
                 <HTML html={body.value} />
               ) : (
-                <Alert>This page does not have body content.</Alert>
+                <Alert intent="warning">
+                  <span style={{ fontSize: '1rem' }}>
+                    This page does not have body content.
+                  </span>
+                </Alert>
               )}
             </Prose>
           </main>
