@@ -3,7 +3,7 @@ import React from "react"
 import Layout from "../components/layout"
 import Navigation from "../components/navigation"
 import BreadCrumbs from "../components/breadcrumbs"
-import Markdown from "../components/markdown"
+import HTML from "../components/html"
 import styled from 'react-emotion'
 import {
   MEDIA_QUERIES,
@@ -26,7 +26,8 @@ const PageTemplate = ({ data }) => {
   const {
     title,
     relationships,
-    fields
+    fields,
+    body
   } = data.nodePage
 
   return (
@@ -41,7 +42,11 @@ const PageTemplate = ({ data }) => {
           >
             <Heading size={"3XL"}>{title}</Heading>
 
-            <p>Not able to render body content yet.</p>
+            {body && body.format === 'basic_html' ? (
+              <HTML html={body.value} />
+            ) : (
+              <p>This page does not have body content.</p>
+            )}
           </main>
           <div style={{
             gridArea: 'side'
@@ -62,6 +67,19 @@ export const query = graphql`
   query($slug: String!) {
     nodePage(fields: { slug: { eq: $slug } }) {
       title
+<<<<<<< HEAD
+=======
+      body {
+        value
+        format
+      }
+      fields {
+        breadcrumb {
+          text
+          to
+        }
+      }
+>>>>>>> 05d3c9683a30fadbf7d0c0ac57be74f1beb9f3bf
       relationships {
         node__page {
           title
