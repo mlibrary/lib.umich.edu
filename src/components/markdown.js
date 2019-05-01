@@ -1,8 +1,10 @@
 import React from "react"
 import rehypeReact from "rehype-react"
-import Heading from '@umich-lib/heading'
-import Text from '@umich-lib/text'
-import List from '@umich-lib/list'
+import {
+  Heading,
+  Text,
+  List
+} from '@umich-lib/core'
 import { Link } from 'gatsby'
 
 /**

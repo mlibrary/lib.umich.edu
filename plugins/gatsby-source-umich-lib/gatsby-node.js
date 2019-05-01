@@ -8,34 +8,80 @@ const fetch = require("fetch-retry")
 
 const apiBase = 'https://dev.lib.umich.edu'
 
-exports.sourceNodes = ({
+/*
+  sourceNodes is only called once per plugin by Gatsby.
+*/
+exports.sourceNodes = async ({
   actions,
   createContentDigest
 }) => {
   const { createNode } = actions
+  /*
+      Transform Drupal data and make a list of this shape:
+      {
+        text: 'Some page title',
+        description: 'a string that describes the item',
+        to: '/to-the/thing',
+        children: [... more of these objects],
+      }
+    */
+  function processDrupalNavData(data) {
+    return data.map(item => {
+      let navItem = {
+        text: item.text,
+        to: item.to
+      };
+  
+      if (item.description && item.description.length) {
+        navItem.description = item.description;
+      }
+  
+      if (item.children && item.children.length) {
+        navItem.children = processDrupalNavData(item.children);
+      }
+  
+      return navItem;
+    });
+  }
 
-  function processSiteNavigation(data) {
+  /*
+    Create navigation nodes.
+  */
+  function createNavNode(id, type, data) {
+    const processedData = processDrupalNavData(data)
+
     const nodeMeta = {
-      id: 'navigation',
+      id,
       parent: null,
       children: [],
       internal: {
-        type: 'Navigation',
+        type: type,
         content: JSON.stringify(data),
-        contentDigest: createContentDigest(data)
-      }
+        contentDigest: createContentDigest(processedData)
+      },
+      nav: processedData
     }
-    const node = Object.assign(nodeMeta, { data })
-    createNode(node)
+    createNode(nodeMeta)
   }
 
-  return (
-    fetch(apiBase + '/api/sitemenu')
-      .then(response => response.json())
+  /*
+    Fetch data from Drupal for primary and utlity,
+    process it, then create nodes for each.
+  */
+  const nav_primary_data =
+    await fetch(apiBase + '/api/nav/primary')
+    .then(response => response.json())
 
-      // Take first item from navigation data.
-      .then(data => processSiteNavigation(data[0]))
-  )
+  createNavNode('nav-primary', 'NavPrimary', nav_primary_data[0].children)
+
+  const nav_utility_data =
+    await fetch(apiBase + '/api/nav/utility')
+    .then(response => response.json())
+
+  createNavNode('nav-utlity', 'NavUtility', nav_utility_data[0].children)
+
+  // Tell Gatsby we're done.
+  return
 }
 
 // Create a slug for each page and set it as a field on the node.

@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'react-emotion'
 import {
   MEDIA_QUERIES,
-  colors
-} from '@umich-lib/styles'
+  COLORS
+} from '@umich-lib/core'
 import Image from 'gatsby-image'
 
 const StyledHeroContainer = styled('div')({
@@ -27,7 +27,7 @@ const StyledTint = styled('div')({
   right: '0',
   bottom: '0',
   left: '0',
-  background: colors.blue[500],
+  background: COLORS.blue[400],
   opacity: '0.1'
 })
 

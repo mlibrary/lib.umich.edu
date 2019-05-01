@@ -3,10 +3,10 @@ import React from "react"
 import Layout from "../components/layout"
 import BreadCrumbs from "../components/breadcrumbs"
 import styled from 'react-emotion'
-import Heading from '@umich-lib/heading'
 import {
-  MEDIA_QUERIES
-} from '@umich-lib/styles'
+  MEDIA_QUERIES,
+  Heading
+} from '@umich-lib/core'
 
 const StyledGrid = styled('div')({
   [MEDIA_QUERIES.LARGESCREEN]: {

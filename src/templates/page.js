@@ -6,8 +6,11 @@ import BreadCrumbs from "../components/breadcrumbs"
 import Markdown from "../components/markdown"
 import styled from 'react-emotion'
 import {
-  MEDIA_QUERIES
-} from '@umich-lib/styles'
+  MEDIA_QUERIES,
+  Margins,
+  Heading,
+  SPACING
+} from '@umich-lib/core'
 
 const StyledGrid = styled('div')({
   [MEDIA_QUERIES.LARGESCREEN]: {
@@ -28,15 +31,15 @@ const PageTemplate = ({ data }) => {
 
   return (
     <Layout>
-      <div data-inner-container>
-        <BreadCrumbs data={fields.breadcrumb} />
+      <Margins>
         <StyledGrid>
           <main
             style={{
-              gridArea: 'main'
+              gridArea: 'main',
+              marginTop: SPACING['XL']
             }}
           >
-            <h1>{title}</h1>
+            <Heading size={"3XL"}>{title}</Heading>
 
             <p>Not able to render body content yet.</p>
           </main>
@@ -48,7 +51,7 @@ const PageTemplate = ({ data }) => {
             )}
           </div>
         </StyledGrid>
-      </div>
+      </Margins>
     </Layout>
   )
 }
@@ -59,12 +62,6 @@ export const query = graphql`
   query($slug: String!) {
     nodePage(fields: { slug: { eq: $slug } }) {
       title
-      fields {
-        breadcrumb {
-          text
-          to
-        }
-      }
       relationships {
         node__page {
           title

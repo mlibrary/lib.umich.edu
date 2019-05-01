@@ -1,44 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
+import {
+  UniversalHeader,
+  GlobalStyleSheet,
+  Chat
+} from '@umich-lib/core'
 import { StaticQuery, graphql } from 'gatsby'
-import { injectGlobal } from 'react-emotion'
 import SiteHeader from './site-header'
-import Alert from '@umich-lib/alert'
-import Chat from '@umich-lib/chat'
-
-injectGlobal`
-  body,
-  html {
-    padding: 0;
-    margin: 0;
-    font-size: 16px;
-    font-family: 'Source Sans Pro', sans-serif;
-    line-height: 1.5;
-  }
-
-  @media screen and (min-width: 960px) {
-    body,
-    html {
-      font-size: 19px;
-    }
-  }
-
-  a {
-    color: #126DC1;
-  }
-
-  * {
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
-  }
-
-  [data-inner-container] {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-`
 
 const Layout = ({ children }) => (
   <StaticQuery
@@ -58,6 +27,7 @@ const Layout = ({ children }) => (
 
       return (
         <React.Fragment>
+          <GlobalStyleSheet />
           <Helmet
             title={title}
             link={[
@@ -70,7 +40,7 @@ const Layout = ({ children }) => (
           >
             <html lang="en" />
           </Helmet>
-          <Alert intent="informational">This is a proof of concept Gatsby site sourcing data from Drupal.</Alert>
+          <UniversalHeader />
           <SiteHeader />
           {children}
           <footer data-inner-container>

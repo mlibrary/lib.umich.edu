@@ -1,21 +1,21 @@
 import React from 'react'
 import { Link } from 'gatsby'
 import {
-  colors
-} from '@umich-lib/styles'
+  COLORS
+} from '@umich-lib/core'
 import styled from 'react-emotion'
 
 const Breadcrumb = styled('ol')({
   listStyle: 'none',
   padding: '0',
   marginTop: '0.5rem',
-  borderBottom: `solid 3px ${colors.grey[300]}`
+  borderBottom: `solid 3px ${COLORS.neutral[100]}`
 })
 
 const BreadCrumbItem = styled('li')({
   display: 'inline-block',
   fontSize: '0.875rem',
-  color: colors.grey[600],
+  color: COLORS.neutral[400],
   paddingRight: '0.5rem',
   "&:not(:first-child):before": {
     content: '"/"',
