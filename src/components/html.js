@@ -13,19 +13,19 @@ import rehype from "rehype-parse"
   Headings
 */
 const Heading2 = ({ children, ...other }) => (
-  <Heading level={2} size="large" {...other}>{children}</Heading>
+  <Heading level={2} size="XL" {...other}>{children}</Heading>
 )
 const Heading3 = ({ children, ...other }) => (
-  <Heading level={3} size="medium" {...other}>{children}</Heading>
+  <Heading level={3} size="M" {...other}>{children}</Heading>
 )
 const Heading4 = ({ children, ...other }) => (
-  <Heading level={4} size="small" {...other}>{children}</Heading>
+  <Heading level={4} size="S" {...other}>{children}</Heading>
 )
 const Heading5 = ({ children, ...other }) => (
-  <Heading level={5} size="xsmall" {...other}>{children}</Heading>
+  <Heading level={5} size="3XS" {...other}>{children}</Heading>
 )
 const Heading6 = ({ children, ...other }) => (
-  <Heading level={6} size="xsmall" {...other}>{children}</Heading>
+  <Heading level={6} size="3XS" {...other}>{children}</Heading>
 )
 
 const renderHast = new rehypeReact({

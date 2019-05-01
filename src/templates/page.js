@@ -9,7 +9,8 @@ import {
   MEDIA_QUERIES,
   Margins,
   Heading,
-  SPACING
+  SPACING,
+  Alert
 } from '@umich-lib/core'
 
 const StyledGrid = styled('div')({
@@ -19,6 +20,12 @@ const StyledGrid = styled('div')({
     gridTemplateRows: 'max-content',
     gridTemplateAreas: `"main side"`,
     gridColumnGap: '2rem'
+  }
+})
+
+const Prose = styled('div')({
+  '> *:not(:last-child)': {
+    marginBottom: SPACING['L']
   }
 })
 
@@ -40,21 +47,15 @@ const PageTemplate = ({ data }) => {
               marginTop: SPACING['XL']
             }}
           >
-            <Heading size={"3XL"}>{title}</Heading>
-
-            {body && body.format === 'basic_html' ? (
-              <HTML html={body.value} />
-            ) : (
-              <p>This page does not have body content.</p>
-            )}
+            <Prose>
+              <Heading size={"3XL"}>{title}</Heading>
+              {body && body.format === 'basic_html' ? (
+                <HTML html={body.value} />
+              ) : (
+                <Alert>This page does not have body content.</Alert>
+              )}
+            </Prose>
           </main>
-          <div style={{
-            gridArea: 'side'
-          }}>
-            {relationships.node__page && (
-              <Navigation data={relationships.node__page} />
-            )}
-          </div>
         </StyledGrid>
       </Margins>
     </Layout>
@@ -67,19 +68,10 @@ export const query = graphql`
   query($slug: String!) {
     nodePage(fields: { slug: { eq: $slug } }) {
       title
-<<<<<<< HEAD
-=======
       body {
         value
         format
       }
-      fields {
-        breadcrumb {
-          text
-          to
-        }
-      }
->>>>>>> 05d3c9683a30fadbf7d0c0ac57be74f1beb9f3bf
       relationships {
         node__page {
           title
