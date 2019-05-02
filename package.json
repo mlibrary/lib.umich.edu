@@ -2,7 +2,7 @@
   "name": "gatsby-drupal-site",
   "version": "1.0.0",
   "dependencies": {
-    "@umich-lib/core": "^1.0.0-alpha.4",
+    "@umich-lib/core": "^1.0.0-alpha.5",
     "emotion": "^9.2.12",
     "emotion-server": "^9.2.12",
     "fetch-retry": "^2.0.0",
