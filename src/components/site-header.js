@@ -3,7 +3,8 @@ import { StaticQuery, Link } from 'gatsby'
 import {
   Margins,
   COLORS,
-  SPACING
+  SPACING,
+  TYPOGRAPHY
 } from '@umich-lib/core'
 
 import Nav from './primary-nav'
@@ -90,7 +91,7 @@ export default () => (
     `}
     render={data => {
       const primary = data.allNavPrimary.edges[0].node.nav
-      //const secondary = data.allNavUtility.edges[0].node.nav
+      const secondary = data.allNavUtility.edges[0].node.nav
 
       return (
           <header css={{
@@ -98,16 +99,46 @@ export default () => (
           }}>
             <Margins>
               <div css={{
-                paddingTop: SPACING['M']
+                paddingTop: SPACING['M'],
+                position: 'relative',
               }}>
                 <a href="https://umich.edu/"><UMichBlockM /></a>
                 <Link
                   to="/"
                 ><UMichLibrary /></Link>
-              </div>
-              <Nav items={primary} />
+                <Nav
+                  items={primary}
+                />
 
-              </Margins>
+              {secondary && (
+                <ul css={{
+                  position: 'absolute',
+                  top: SPACING['M'],
+                  right: '0'
+                }}>
+                  {secondary.map(({ text, to }, i) => (
+                    <li css={{
+                      display: 'inline-block',
+                      ':not(:last-child)': {
+                        marginRight: SPACING['S']
+                      }
+                      }}
+                    >
+                      <Link
+                        to={to}
+                        css={{
+                          ...TYPOGRAPHY['3XS'],
+                          color: COLORS.neutral['300'],
+                          textDecoration: 'none',
+                          padding: SPACING['XS']
+                        }}
+                      >{text}</Link>
+                    </li>
+                  ))}
+                </ul>
+                )}
+              </div>
+            </Margins>
           </header>
       )
     }}
