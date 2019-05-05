@@ -47,7 +47,7 @@ function Nav({ items }) {
 
   return (
     <StateProvider
-      initialState={initialState}
+      initialState={{}}
       reducer={reducer}
     >
       <nav
