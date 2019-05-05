@@ -48,11 +48,7 @@ function Nav({ items }) {
       initialState={{}}
       reducer={reducer}
     >
-      <nav
-        css={{
-          position: 'relative'
-        }}
-      >
+      <nav aria-label="Main navigation">
         <ul>
           {items.map(({ text, to, children }, i) => (
             <NavPrimaryItem
