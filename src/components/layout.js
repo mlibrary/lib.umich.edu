@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import {
   UniversalHeader,
-  GlobalStyleSheet,
-  Chat
+  GlobalStyleSheet
 } from '@umich-lib/core'
 import { StaticQuery, graphql } from 'gatsby'
 import SiteHeader from './site-header'
@@ -43,9 +42,6 @@ const Layout = ({ children }) => (
           <UniversalHeader />
           <SiteHeader />
           {children}
-          <footer data-inner-container>
-            <Chat fixed />
-          </footer>
         </React.Fragment>
       )
     }}
