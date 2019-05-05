@@ -1,9 +1,7 @@
 /** @jsx jsx */
-import React from 'react'
 import { StaticQuery, Link } from 'gatsby'
 import { jsx } from '@emotion/core'
 import {
-  Header,
   Margins,
   COLORS,
   SPACING
@@ -93,7 +91,7 @@ export default () => (
     `}
     render={data => {
       const primary = data.allNavPrimary.edges[0].node.nav
-      const secondary = data.allNavUtility.edges[0].node.nav
+      //const secondary = data.allNavUtility.edges[0].node.nav
 
       return (
           <header css={{

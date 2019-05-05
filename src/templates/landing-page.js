@@ -1,5 +1,6 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/core'
 import { graphql } from "gatsby"
-import React from "react"
 import {
   Heading,
   Margins
@@ -16,7 +17,7 @@ const LandingPageTemplate = ({ data }) => {
   
   return (
     <Layout>
-      <Margins>
+      <Margins css={{ padding: '0 !important' }}>
         <Hero image={hero_image}>
         </Hero>
       </Margins>
