@@ -4,7 +4,10 @@ import {
   Margins,
   COLORS,
   SPACING,
-  TYPOGRAPHY
+  TYPOGRAPHY,
+  TextInput,
+  Button,
+  Icon
 } from '@umich-lib/core'
 
 import Nav from './primary-nav'
@@ -94,21 +97,27 @@ export default () => (
       const secondary = data.allNavUtility.edges[0].node.nav
 
       return (
-          <header css={{
-            borderBottom: `solid 1px ${COLORS.neutral[100]}`
-          }}>
-            <Margins>
+        <header css={{
+          borderBottom: `solid 1px ${COLORS.neutral[100]}`
+        }}>
+          <Margins>
+            <div css={{
+              paddingTop: SPACING['M'],
+              position: 'relative',
+            }}>
+              <a href="https://umich.edu/"><UMichBlockM /></a>
+              <Link
+                to="/"
+              ><UMichLibrary /></Link>
+
               <div css={{
-                paddingTop: SPACING['M'],
-                position: 'relative',
+                display: 'flex',
+                justifyContent: 'space-between'
               }}>
-                <a href="https://umich.edu/"><UMichBlockM /></a>
-                <Link
-                  to="/"
-                ><UMichLibrary /></Link>
-                <Nav
-                  items={primary}
-                />
+
+              <Nav
+                items={primary}
+              />
 
               {secondary && (
                 <ul css={{
@@ -136,10 +145,38 @@ export default () => (
                     </li>
                   ))}
                 </ul>
-                )}
+              )}
+
+              <form
+                action="https://search.lib.umich.edu/everything"
+                method="get"
+                css={{
+                  display: 'flex',
+                  height: '2.5rem',
+                  'input': {
+                    height: '100%'
+                  },
+                  width: '20rem'
+                }}
+              >
+                <TextInput
+                  id="search-query"
+                  labelText="Search"
+                  type="search"
+                  hideLabel
+                  name="query"
+                />
+                <Button
+                  type="submit"
+                  css={{
+                    marginLeft: SPACING['XS']
+                  }}
+                ><Icon title="Search" icon="search" size={20} /></Button>
+              </form>
               </div>
-            </Margins>
-          </header>
+            </div>
+          </Margins>
+        </header>
       )
     }}
   />
