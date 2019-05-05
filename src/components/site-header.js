@@ -129,7 +129,7 @@ export default () => (
                     <li css={{
                       display: 'inline-block',
                       ':not(:last-child)': {
-                        marginRight: SPACING['S']
+                        marginRight: SPACING['L']
                       }
                       }}
                     >
@@ -139,7 +139,7 @@ export default () => (
                           ...TYPOGRAPHY['3XS'],
                           color: COLORS.neutral['300'],
                           textDecoration: 'none',
-                          padding: SPACING['XS']
+                          padding: `${SPACING['XS']} 0`
                         }}
                       >{text}</Link>
                     </li>
