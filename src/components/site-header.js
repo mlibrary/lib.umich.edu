@@ -1,6 +1,5 @@
-/** @jsx jsx */
+import React from 'react'
 import { StaticQuery, Link } from 'gatsby'
-import { jsx } from '@emotion/core'
 import {
   Margins,
   COLORS,

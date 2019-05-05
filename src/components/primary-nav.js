@@ -1,6 +1,4 @@
-/** @jsx jsx */
 import React, {createContext, useContext, useReducer, useEffect, useRef} from 'react'
-import { jsx } from '@emotion/core'
 import { Link } from 'gatsby'
 import {
   COLORS,
@@ -277,8 +275,6 @@ function NavPanelItem({ text, to, description, children, i }) {
         })}
         aria-expanded={panelOpen === i}
       >{text} <span><Icon icon="navigate_next" /></span></button>
-
-      
         
       {isOpen && (
         <NavPanelItemLinks

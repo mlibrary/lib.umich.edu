@@ -1,0 +1,22 @@
+/*
+  Related
+  
+  - https://www.gatsbyjs.org/docs/babel/
+  - https://emotion.sh/docs/@emotion/babel-preset-css-prop
+*/
+
+{
+  "presets": [
+    [
+      "babel-preset-gatsby",
+      {
+        "targets": {
+          "browsers": [">0.25%", "not dead"]
+        },
+        "plugins": [
+          "@emotion/babel-preset-css-prop"
+        ]
+      }
+    ]
+  ]
+}

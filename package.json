@@ -2,6 +2,7 @@
   "name": "gatsby-drupal-site",
   "version": "1.0.0",
   "dependencies": {
+    "@emotion/babel-preset-css-prop": "^10.0.9",
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.10",
     "@umich-lib/core": "^1.0.0-alpha.6",
@@ -36,6 +37,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "babel-preset-gatsby": "^0.1.11",
     "gh-pages": "^2.0.1",
     "prettier": "^1.16.4"
   },
