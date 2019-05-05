@@ -206,7 +206,7 @@ function NavDropdown({ items, primaryNode }) {
 }
 
 function NavPanel({ items }) {
-  const [{ minHeight }, dispatch] = useStateValue();
+  const [{ openPanel, minHeight }, dispatch] = useStateValue();
 
   // Set panel open to null on "unmount" of the NavPanel.
   // This is useful so that when opening a different dropdown,
@@ -218,7 +218,7 @@ function NavPanel({ items }) {
         panelOpen: null
       })
     }
-  }, [])
+  }, [openPanel])
 
   return (
     <div css={{
