@@ -165,6 +165,7 @@ export default () => (
                   type="search"
                   hideLabel
                   name="query"
+                  placeholder="Search"
                 />
                 <Button
                   type="submit"
