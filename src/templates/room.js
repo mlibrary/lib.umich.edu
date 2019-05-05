@@ -2,7 +2,7 @@ import { graphql } from "gatsby"
 import React from "react"
 import Layout from "../components/layout"
 import BreadCrumbs from "../components/breadcrumbs"
-import styled from 'react-emotion'
+import styled from '@emotion/styled'
 import {
   MEDIA_QUERIES,
   Heading

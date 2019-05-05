@@ -3,7 +3,7 @@ import { Link } from 'gatsby'
 import {
   COLORS
 } from '@umich-lib/core'
-import styled from 'react-emotion'
+import styled from '@emotion/styled'
 
 const Breadcrumb = styled('ol')({
   listStyle: 'none',
