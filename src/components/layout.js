@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import {
-  UniversalHeader,
   GlobalStyleSheet
 } from '@umich-lib/core'
 import { StaticQuery, graphql } from 'gatsby'
@@ -39,7 +38,6 @@ const Layout = ({ children }) => (
           >
             <html lang="en" />
           </Helmet>
-          <UniversalHeader />
           <SiteHeader />
           {children}
         </React.Fragment>
