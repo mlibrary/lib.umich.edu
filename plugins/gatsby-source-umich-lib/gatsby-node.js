@@ -102,6 +102,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       name: `slug`,
       value: node.path.alias,
     })
+    /*
 
     // Breadcumb
     // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
@@ -127,10 +128,6 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     }
 
     if (node.field_breadcrumb) {
-      /*
-        TOOD:
-        - [ ] Write about why retry and delay.
-      */
       fetch(apiBase + node.field_breadcrumb, {
         retries: 5,
         retryDelay: 2500
@@ -139,6 +136,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
         .then(response => response.json())
         .then(data => processBreadcrumbData(data))
     }
+    */
   }
 }
 
