@@ -49,7 +49,10 @@ function Nav({ items }) {
       reducer={reducer}
     >
       <nav aria-label="Main navigation">
-        <ul>
+        <ul css={{
+          display: 'flex',
+          alignItems: 'center'
+        }}>
           {items.map(({ text, to, children }, i) => (
             <NavPrimaryItem
               key={i + text}
@@ -88,18 +91,16 @@ function NavPrimaryItem({
       key={i + text}
       css={{
         display: 'inline-block',
-        ':not(:last-child)': {
-          '> button': {
-            marginRight: SPACING['L']
-          }
+        '> button': {
+          marginRight: SPACING['L']
         }
       }}
     >
       <button
-        onClick={() => setTimeout(dispatch({
+        onClick={() => dispatch({
           type: 'setOpen',
           open: isOpen ? null : i
-        }), 100)}
+        })}
         aria-expanded={isOpen}
         css={{
           ...TYPOGRAPHY['XS'],
@@ -202,6 +203,8 @@ function NavDropdown({ items, primaryNode }) {
 function NavPanel({ items }) {
   const [{ openPanel, minHeight }, dispatch] = useStateValue();
 
+  const minHeightValue = minHeight > 340 ? minHeight : 340
+
   // Set panel open to null on "unmount" of the NavPanel.
   // This is useful so that when opening a different dropdown,
   // it wont use a previous panel index. It resets.
@@ -222,7 +225,7 @@ function NavPanel({ items }) {
         width: '24rem',
         borderRight: `solid 1px ${COLORS.neutral[100]}`,
         padding: `${SPACING['S']} 0`,
-        minHeight
+        minHeight: minHeightValue
       }}>
         {items.map((item, i) => (
           <NavPanelItem {...item} i={i} key={i + item.text} />
