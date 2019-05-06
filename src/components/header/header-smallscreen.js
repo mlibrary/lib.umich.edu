@@ -261,9 +261,7 @@ function NavPrimaryItem({ to, text, children, i }) {
       <button
         css={{
           ...nav_item_styles,
-          display: 'flex',
-          justifyContent: 'space-between',
-          paddingRight: SPACING['2XL'] // for the icon
+          justifyContent: 'space-between'
         }}
         onClick={() => dispatch({
           type: 'setOpen',
@@ -276,11 +274,19 @@ function NavPrimaryItem({ to, text, children, i }) {
   )
 }
 
+function BeforeIcon() {
+  return (
+    <span css={{
+      paddingRight: SPACING['S'],
+      lineHeight: '1'
+    }}><Icon icon="navigate_before" size={24}/></span>
+  )
+}
+
 function NextIcon() {
   return (
     <span css={{
-      position: 'absolute',
-      right: SPACING['M'],
+      paddingLeft: SPACING['S'],
       lineHeight: '1'
     }}><Icon icon="navigate_next" size={24}/></span>
   )
@@ -311,20 +317,14 @@ function NavPanelSecondary({ text, to, children }) {
     <div>
       <button
         css={{
-          ...nav_item_styles,
-          position: 'relative',
-          paddingLeft: SPACING['2XL'] // for the icon
+          ...nav_item_styles
         }}
         onClick={() => dispatch({
           type: 'setOpen',
           open: null
         })}
       >
-        <span css={{
-          position: 'absolute',
-          left: SPACING['M'],
-          lineHeight: '1'
-        }}><Icon icon="navigate_before" size={24} /></span>
+        <BeforeIcon />
         <span css={{ fontWeight: '800' }}>{text}</span>
       </button>
 
@@ -335,7 +335,7 @@ function NavPanelSecondary({ text, to, children }) {
               <button
                 css={{
                   ...nav_item_styles,
-                  paddingRight: SPACING['2XL'] // for the icon
+                  justifyContent: 'space-between',
                 }}
                 onClick={() => dispatch({
                   type: 'setPanelOpen',
@@ -365,20 +365,14 @@ function NavPanelTertiary({ text, to, children }) {
     <div>
       <button
         css={{
-          ...nav_item_styles,
-          position: 'relative',
-          paddingLeft: SPACING['2XL'] // for the icon
+          ...nav_item_styles
         }}
         onClick={() => dispatch({
           type: 'setPanelOpen',
           panelOpen: null
         })}
       >
-        <span css={{
-          position: 'absolute',
-          left: SPACING['M'],
-          lineHeight: '1'
-        }}><Icon icon="navigate_before" size={24} /></span>
+        <BeforeIcon />
         <span css={{ fontWeight: '800' }}>{text}</span>
       </button>
 
