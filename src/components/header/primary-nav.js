@@ -45,7 +45,7 @@ function Nav({ items }) {
 
   return (
     <StateProvider
-      initialState={{}}
+      initialState={{ panelOpen: 0 }}
       reducer={reducer}
     >
       <nav aria-label="Main navigation">
@@ -212,7 +212,7 @@ function NavPanel({ items }) {
     return () => {
       dispatch({
         type: 'setPanelOpen',
-        panelOpen: null
+        panelOpen: 0
       })
     }
   }, [openPanel])
@@ -270,7 +270,7 @@ function NavPanelItem({ text, to, description, children, i }) {
         }}
         onClick={() => dispatch({
           type: 'setPanelOpen',
-          panelOpen: panelOpen === i ? null : i
+          panelOpen: i
         })}
         aria-expanded={panelOpen === i}
       >{text} <span><Icon icon="navigate_next" /></span></button>
