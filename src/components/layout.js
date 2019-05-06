@@ -1,9 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
-import {
-  GlobalStyleSheet
-} from '@umich-lib/core'
 import { StaticQuery, graphql } from 'gatsby'
 import SiteHeader from './site-header'
 
@@ -25,7 +22,6 @@ const Layout = ({ children }) => (
 
       return (
         <React.Fragment>
-          <GlobalStyleSheet />
           <Helmet
             title={title}
             link={[
