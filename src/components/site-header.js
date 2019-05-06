@@ -112,7 +112,8 @@ export default () => (
 
               <div css={{
                 display: 'flex',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                alignItems: 'flex-end'
               }}>
 
               <Nav
@@ -156,7 +157,8 @@ export default () => (
                   'input': {
                     height: '100%'
                   },
-                  width: '20rem'
+                  width: '20rem',
+                  marginBottom: SPACING['M']
                 }}
               >
                 <TextInput
