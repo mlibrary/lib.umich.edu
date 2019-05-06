@@ -81,7 +81,7 @@ function SmallScreenHeader({
 function Nav({ primary, secondary }) {
   const [{ openNav, open }, dispatch] = useStateValue();
   const isOpen = openNav === true
-  const label = isOpen ? 'Close' : 'Open'
+  const label = isOpen ? 'Close navigation' : 'Open navigation'
   const toggleNavNode = useRef()
 
   return (
