@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { StaticQuery, graphql } from 'gatsby'
-import SiteHeader from './site-header'
+import Header from './header'
 
 const Layout = ({ children }) => (
   <StaticQuery
@@ -13,12 +13,45 @@ const Layout = ({ children }) => (
             title
           }
         }
+        allNavPrimary {
+          edges {
+            node {
+              nav {
+                to
+                text
+                description
+                children {
+                  text
+                  to
+                  description,
+                  children {
+                    text
+                    to
+                    description
+                  }
+                }
+              }
+            }
+          }
+        }
+        allNavUtility {
+          edges {
+            node {
+              nav {
+                to
+                text
+              }
+            }
+          }
+        }
       }
     `}
     render={data => {
       const {
         title
       } = data.site.siteMetadata
+      const primary = data.allNavPrimary.edges[0].node.nav
+      const secondary = data.allNavUtility.edges[0].node.nav
 
       return (
         <React.Fragment>
@@ -34,7 +67,10 @@ const Layout = ({ children }) => (
           >
             <html lang="en" />
           </Helmet>
-          <SiteHeader />
+          <Header
+            primary={primary}
+            secondary={secondary}
+          />
           {children}
         </React.Fragment>
       )

@@ -55,132 +55,86 @@ const UMichLibrary = () => (
   </svg>
 )
 
-export default () => (
-  <StaticQuery
-    query={graphql`
-      query {
-        allNavPrimary {
-          edges {
-            node {
-              nav {
-                to
-                text
-                description
-                children {
-                  text
-                  to
-                  description,
-                  children {
-                    text
-                    to
-                    description
-                  }
-                }
-              }
-            }
-          }
-        }
-        allNavUtility {
-          edges {
-            node {
-              nav {
-                to
-                text
-              }
-            }
-          }
-        }
-      }
-    `}
-    render={data => {
-      const primary = data.allNavPrimary.edges[0].node.nav
-      const secondary = data.allNavUtility.edges[0].node.nav
+export default ({ primary, secondary }) => (
+  <header css={{
+    borderBottom: `solid 1px ${COLORS.neutral[100]}`
+  }}>
+    <Margins>
+      <div css={{
+        paddingTop: SPACING['M'],
+        position: 'relative',
+      }}>
+        <a href="https://umich.edu/"><UMichBlockM /></a>
+        <Link
+          to="/"
+        ><UMichLibrary /></Link>
 
-      return (
-        <header css={{
-          borderBottom: `solid 1px ${COLORS.neutral[100]}`
+        <div css={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end'
         }}>
-          <Margins>
-            <div css={{
-              paddingTop: SPACING['M'],
-              position: 'relative',
+          <Nav
+            items={primary}
+          />
+          {secondary && (
+            <ul css={{
+              position: 'absolute',
+              top: SPACING['M'],
+              right: '0'
             }}>
-              <a href="https://umich.edu/"><UMichBlockM /></a>
-              <Link
-                to="/"
-              ><UMichLibrary /></Link>
-
-              <div css={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-end'
-              }}>
-
-              <Nav
-                items={primary}
-              />
-
-              {secondary && (
-                <ul css={{
-                  position: 'absolute',
-                  top: SPACING['M'],
-                  right: '0'
-                }}>
-                  {secondary.map(({ text, to }, i) => (
-                    <li css={{
-                      display: 'inline-block',
-                      ':not(:last-child)': {
-                        marginRight: SPACING['L']
-                      }
-                      }}
-                    >
-                      <Link
-                        to={to}
-                        css={{
-                          ...TYPOGRAPHY['3XS'],
-                          color: COLORS.neutral['300'],
-                          textDecoration: 'none',
-                          padding: `${SPACING['XS']} 0`
-                        }}
-                      >{text}</Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <form
-                action="https://search.lib.umich.edu/everything"
-                method="get"
-                css={{
-                  display: 'flex',
-                  height: '2.5rem',
-                  'input': {
-                    height: '100%'
-                  },
-                  width: '20rem',
-                  marginBottom: SPACING['M']
-                }}
-              >
-                <TextInput
-                  id="search-query"
-                  labelText="Search"
-                  type="search"
-                  hideLabel
-                  name="query"
-                  placeholder="Search"
-                />
-                <Button
-                  type="submit"
-                  css={{
-                    marginLeft: SPACING['XS']
+              {secondary.map(({ text, to }, i) => (
+                <li css={{
+                    display: 'inline-block',
+                    ':not(:last-child)': {
+                      marginRight: SPACING['L']
+                    }
                   }}
-                ><Icon title="Search" icon="search" size={20} /></Button>
-              </form>
-              </div>
-            </div>
-          </Margins>
-        </header>
-      )
-    }}
-  />
+                  key={i + text}
+                >
+                  <Link
+                    to={to}
+                    css={{
+                      ...TYPOGRAPHY['3XS'],
+                      color: COLORS.neutral['300'],
+                      textDecoration: 'none',
+                      padding: `${SPACING['XS']} 0`
+                    }}
+                  >{text}</Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          <form
+            action="https://search.lib.umich.edu/everything"
+            method="get"
+            css={{
+              display: 'flex',
+              height: '2.5rem',
+              'input': {
+                height: '100%'
+              },
+              width: '18rem',
+              marginBottom: SPACING['M']
+            }}
+          >
+            <TextInput
+              id="search-query"
+              labelText="Search"
+              type="search"
+              hideLabel
+              name="query"
+              placeholder="Search"
+            />
+            <Button
+              type="submit"
+              css={{
+                marginLeft: SPACING['XS']
+              }}
+            ><Icon title="Search" icon="search" size={20} /></Button>
+          </form>
+        </div>
+      </div>
+    </Margins>
+  </header>
 )
