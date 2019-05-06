@@ -288,7 +288,8 @@ function NextIcon() {
 
 const nav_item_styles = {
   padding: SPACING['M'],
-  display: 'block',
+  display: 'flex',
+  alignItems: 'center',
   width: '100%',
   textAlign: 'left',
   borderBottom: `solid 1px ${COLORS.neutral['100']}`,
@@ -385,14 +386,14 @@ function NavPanelTertiary({ text, to, children }) {
         {children.map((item, i) => (
           <li key={i + item.text}>
             <Link
-              to={to}
+              to={item.to}
               css={nav_item_styles}
             >{item.text}</Link>
           </li>
         ))}
         <li>
           <Link
-            to={item.to}
+            to={to}
             css={{
               ...nav_item_styles,
               color: COLORS.teal['400']
