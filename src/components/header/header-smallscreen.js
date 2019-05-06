@@ -96,26 +96,23 @@ function Nav({ primary, secondary }) {
           cursor: 'pointer'
         }}
         ref={toggleNavNode}
+        onClick={() => dispatch({
+          type: 'setOpenNav',
+          openNav: !isOpen
+        })}
       >
         {isOpen ? (
           <Icon
             icon="close"
             title={label}
             size={32}
-            onClick={() => dispatch({
-              type: 'setOpenNav',
-              openNav: !isOpen
-            })}
+            
           />
         ) : (
           <Icon
             d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"
             title={label}
             size={32}
-            onClick={() => dispatch({
-              type: 'setOpenNav',
-              openNav: !isOpen
-            })}
           />
         )}
       </button>
@@ -144,13 +141,6 @@ function Nav({ primary, secondary }) {
 function NavDropdown({ children, toggleNavNode }) {
   const [{}, dispatch] = useStateValue();
   const dropdownNode = useRef()
-
-  useEffect(() => {
-    return () => dispatch({
-      type: 'setOpenNav',
-      openNav: null
-    })
-  }, []);
 
   function closeDropdown() {
     dispatch({
