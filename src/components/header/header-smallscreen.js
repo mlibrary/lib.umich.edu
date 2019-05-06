@@ -358,7 +358,7 @@ function NavPanelSecondary({ text, to, children }) {
 }
 
 function NavPanelTertiary({ text, to, children }) {
-  const [{ panelOpen }, dispatch] = useStateValue();
+  const [{}, dispatch] = useStateValue();
 
   return (
     <div>
@@ -384,19 +384,10 @@ function NavPanelTertiary({ text, to, children }) {
       <ul>
         {children.map((item, i) => (
           <li key={i + item.text}>
-            {item.children ? (
-              <button
-                css={nav_item_styles}
-              >
-                {item.text}
-                <NextIcon />
-              </button>
-            ) : (
-              <Link
-                to={to}
-                css={nav_item_styles}
-              >{item.text}</Link>
-            )}
+            <Link
+              to={to}
+              css={nav_item_styles}
+            >{item.text}</Link>
           </li>
         ))}
         <li>
