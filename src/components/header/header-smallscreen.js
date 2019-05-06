@@ -346,7 +346,7 @@ function NavPanelSecondary({ text, to, children }) {
               </button>
             ) : (
               <Link
-                to={to}
+                to={item.to}
                 css={nav_item_styles}
               >{item.text}</Link>
             )}
@@ -392,7 +392,7 @@ function NavPanelTertiary({ text, to, children }) {
         ))}
         <li>
           <Link
-            to={to}
+            to={item.to}
             css={{
               ...nav_item_styles,
               color: COLORS.teal['400']
