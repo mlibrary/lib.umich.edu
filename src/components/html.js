@@ -37,7 +37,7 @@ const renderHast = new rehypeReact({
     h6: Heading6,
     a: ({children, ...other}) => ({ to, children }) => <Link to={to}>{children}</Link>,
     p: ({children}) => <Text>{children}</Text>,
-    strong: ({children}) => <strong style={{ fontWeight: '600' }}>{children}</strong>,
+    strong: ({children}) => <strong style={{ fontWeight: '800' }}>{children}</strong>,
     ul: ({ children }) => <List type="bulleted">{children}</List>,
     ol: ({ children }) => <List type="numbered">{children}</List>,
     'text': Text,
