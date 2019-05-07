@@ -45,6 +45,8 @@ function SmallScreenHeader({
           ...state,
           panelOpen: action.panelOpen
         };
+      case 'reset':
+        return {}
       default:
         return state;
     }
@@ -142,6 +144,17 @@ function NavDropdown({ children, toggleNavNode }) {
   const [{}, dispatch] = useStateValue();
   const dropdownNode = useRef()
 
+  /*
+    Reset Nav state on unmount / close.
+  */
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: 'reset'
+      })
+    };
+  }, []);
+
   function closeDropdown() {
     dispatch({
       type: 'setOpenNav',
@@ -217,7 +230,7 @@ function NavSecondary({ items }) {
   return (
     <ul>
       {items.map(({to, text}, i) => (
-        <li>
+        <li key={i + text}>
           <Link
             to={to}
             css={{
@@ -307,11 +320,13 @@ const nav_item_styles = {
 
 function NavPanelSecondary({ text, to, children }) {
   const [{ panelOpen }, dispatch] = useStateValue();
-  const beforeRef = useRef(null)
+  const beforeNode = useRef(null)
 
   useEffect(() => {
-    beforeRef.current.focus()
-  }, [])
+    if (beforeNode.current) {
+      beforeNode.current.focus()
+    }
+  }, [panelOpen])
 
   if (panelOpen) {
     return (
@@ -325,7 +340,7 @@ function NavPanelSecondary({ text, to, children }) {
         css={{
           ...nav_item_styles
         }}
-        ref={beforeRef}
+        ref={beforeNode}
         aria-expanded={true}
         onClick={() => dispatch({
           type: 'setOpen',
@@ -369,6 +384,11 @@ function NavPanelSecondary({ text, to, children }) {
 
 function NavPanelTertiary({ text, to, children }) {
   const [{}, dispatch] = useStateValue();
+  const beforeNode = useRef()
+
+  useEffect(() => {
+    beforeNode.current.focus()
+  }, [])
 
   return (
     <div>
@@ -380,6 +400,7 @@ function NavPanelTertiary({ text, to, children }) {
           type: 'setPanelOpen',
           panelOpen: null
         })}
+        ref={beforeNode}
         aria-expanded={true}
       >
         <BeforeIcon />
