@@ -5,6 +5,7 @@ import {
   TextInput,
   Button
 } from '@umich-lib/core'
+import VisuallyHidden from '@reach/visually-hidden'
 
 function Search() {
   return (
@@ -21,7 +22,7 @@ function Search() {
     >
       <TextInput
         id="search-query"
-        labelText="Search"
+        labelText="Search terms"
         type="search"
         hideLabel
         name="query"
@@ -32,7 +33,10 @@ function Search() {
         css={{
           marginLeft: SPACING['XS']
         }}
-      ><Icon title="Search" icon="search" size={20} /></Button>
+      >
+        <Icon icon="search" size={20} />
+        <VisuallyHidden>Submit</VisuallyHidden>
+      </Button>
     </form>
   )
 }

@@ -1,5 +1,6 @@
 import React, { useState, createContext, useContext, useReducer, useEffect, useRef } from 'react'
 import { Link } from 'gatsby'
+import VisuallyHidden from '@reach/visually-hidden'
 import {
   SPACING,
   TYPOGRAPHY,
@@ -11,6 +12,7 @@ import {
 
 import Search from './search'
 import Logo from './logo'
+import visuallyHidden from '@reach/visually-hidden';
 
 const StateContext = createContext();
 
@@ -81,7 +83,6 @@ function SmallScreenHeader({
 function Nav({ primary, secondary }) {
   const [{ openNav, open }, dispatch] = useStateValue();
   const isOpen = openNav === true
-  const label = isOpen ? 'Close navigation' : 'Open navigation'
   const toggleNavNode = useRef()
 
   return (
@@ -96,6 +97,7 @@ function Nav({ primary, secondary }) {
           cursor: 'pointer'
         }}
         ref={toggleNavNode}
+        aria-expanded={isOpen}
         onClick={() => dispatch({
           type: 'setOpenNav',
           openNav: !isOpen
@@ -104,17 +106,15 @@ function Nav({ primary, secondary }) {
         {isOpen ? (
           <Icon
             icon="close"
-            title={label}
             size={32}
-            
           />
         ) : (
           <Icon
             d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"
-            title={label}
             size={32}
           />
         )}
+        <VisuallyHidden>Navigation</VisuallyHidden>
       </button>
       {isOpen && (
         <NavDropdown toggleNavNode={toggleNavNode}>
@@ -263,6 +263,7 @@ function NavPrimaryItem({ to, text, children, i }) {
           ...nav_item_styles,
           justifyContent: 'space-between'
         }}
+        aria-expanded={isOpen}
         onClick={() => dispatch({
           type: 'setOpen',
           open: isOpen ? null : i
@@ -306,6 +307,11 @@ const nav_item_styles = {
 
 function NavPanelSecondary({ text, to, children }) {
   const [{ panelOpen }, dispatch] = useStateValue();
+  const beforeRef = useRef(null)
+
+  useEffect(() => {
+    beforeRef.current.focus()
+  }, [])
 
   if (panelOpen) {
     return (
@@ -319,6 +325,8 @@ function NavPanelSecondary({ text, to, children }) {
         css={{
           ...nav_item_styles
         }}
+        ref={beforeRef}
+        aria-expanded={true}
         onClick={() => dispatch({
           type: 'setOpen',
           open: null
@@ -337,6 +345,7 @@ function NavPanelSecondary({ text, to, children }) {
                   ...nav_item_styles,
                   justifyContent: 'space-between',
                 }}
+                aria-expanded={false}
                 onClick={() => dispatch({
                   type: 'setPanelOpen',
                   panelOpen: i
@@ -371,6 +380,7 @@ function NavPanelTertiary({ text, to, children }) {
           type: 'setPanelOpen',
           panelOpen: null
         })}
+        aria-expanded={true}
       >
         <BeforeIcon />
         <span css={{ fontWeight: '800' }}>{text}</span>
