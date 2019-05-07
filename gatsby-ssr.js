@@ -5,6 +5,7 @@
  */
 
 // You can delete this file if you're not using it
+import React from 'react'
 import { Chat, UniversalHeader, GlobalStyleSheet } from "@umich-lib/core"
 
 export const wrapPageElement = ({ element, props }) => {
