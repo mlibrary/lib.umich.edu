@@ -1,9 +1,9 @@
 ## 🚀 Quick start
 
-1.  **Clone `gatsby-drupal-site`.**
+1.  **Clone `lib.umich.edu`.**
 
     ```sh
-    git clone https://github.com/mlibrary/gatsby-drupal-site.git
+    git clone https://github.com/mlibrary/lib.umich.edu.git
     ```
 
 2.  **Install dependencies.**
@@ -11,7 +11,7 @@
     Navigate into your site’s directory and install dependencies with NPM.
 
     ```sh
-    cd gatsby-drupal-site/
+    cd lib.umich.edu/
     npm install
     ```
 
