@@ -1,12 +1,12 @@
 {
-  "name": "gatsby-drupal-site",
+  "name": "lib.umich.edu",
   "version": "1.0.0",
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^10.0.9",
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.10",
     "@reach/visually-hidden": "^0.1.4",
-    "@umich-lib/core": "^1.0.0-alpha.6",
+    "@umich-lib/core": "^1.0.0-alpha.7",
     "fetch-retry": "^2.0.0",
     "gatsby": "^2.3.25",
     "gatsby-image": "^2.0.39",
@@ -33,7 +33,7 @@
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",
-    "stage": "gatsby build && now public --name umich-lib-dev --public",
+    "stage": "gatsby build && now public --name lib-umich --public",
     "format": "prettier --write '**/*.js'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -44,6 +44,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+    "url": "https://github.com/mlibrary/lib.umich.edu"
   }
 }
