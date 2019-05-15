@@ -270,7 +270,7 @@ function NavPanelItem({ text, to, description, children, i }) {
         }}
         onClick={() => dispatch({
           type: 'setPanelOpen',
-          panelOpen: i
+          panelOpen: panelOpen === i ? null : i
         })}
         aria-expanded={panelOpen === i}
       >{text} <span><Icon icon="navigate_next" /></span></button>
