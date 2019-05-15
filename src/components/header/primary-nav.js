@@ -6,7 +6,8 @@ import {
   TYPOGRAPHY,
   Heading,
   Icon,
-  Alert
+  Alert,
+  LINK_STYLES
 } from '@umich-lib/core'
 
 const StateContext = createContext();
@@ -257,14 +258,17 @@ function NavPanelItem({ text, to, description, children, i }) {
         css={{
           display: 'flex',
           justifyContent: 'space-between',
+          alignItems: 'center',
           width: '100%',
-          textAlign: 'left',
           padding: `${SPACING['S']} ${SPACING['L']}`,
-          paddingLeft: `calc(${SPACING['L']} - 3px)`,
-          borderLeft: 'solid 3px transparent',
-          fontWeight: '600',
+          paddingLeft: `calc(${SPACING['L']} - 5px)`,
+          borderLeft: 'solid 5px transparent',
+          textAlign: 'left',
           ":hover": {
-            cursor: 'pointer'
+            cursor: 'pointer',
+            '.text': {
+              ...LINK_STYLES['list-strong'][':hover']
+            }
           },
           ...activeStyles()
         }}
@@ -273,7 +277,16 @@ function NavPanelItem({ text, to, description, children, i }) {
           panelOpen: panelOpen === i ? null : i
         })}
         aria-expanded={panelOpen === i}
-      >{text} <span><Icon icon="navigate_next" /></span></button>
+      >
+      <span
+        className="text"
+        css={{
+          ...LINK_STYLES['list-strong'],
+          fontSize: '1rem'
+        }}
+      >
+        {text}
+      </span><Icon icon="navigate_next" /></button>
         
       {isOpen && (
         <NavPanelItemLinks
@@ -299,6 +312,17 @@ function NavPanelItemLinks({
     })
   }, [])
 
+  function columnStyles() {
+    if (items.length > 4) {
+      return {
+        columns: items.length > 4 ? '2' : 'none',
+        columnGap: SPACING["L"],
+      }
+    }
+
+    return {}
+  }
+
   return (
     <div css={{
       position: 'absolute',
@@ -317,25 +341,21 @@ function NavPanelItemLinks({
       {items ? (
         <ul
           css={{
-            columns: '2',
-            columnGap: SPACING["L"],
-            paddingTop: SPACING['M'],
+            ...columnStyles(),
+            paddingTop: SPACING['L'],
             marginTop: SPACING['M'],
             borderTop: `solid 1px ${COLORS.neutral['100']}`
           }}
         >
           {items.map(({ text, to }, i) => (
-            <li key={i + text}>
+            <li key={i + text} css={{
+              marginBottom: SPACING['M']
+            }}>
               <Link
                 to={to}
                 css={{
-                  textDecoration: 'none',
-                  color: COLORS.neutral['400'],
-                  display: 'inline-block',
-                  padding: `${SPACING['XS']} 0`,
-                  ":hover": {
-                    textDecoration: 'underline'
-                  }
+                  ...LINK_STYLES['list'],
+                  fontSize: '1rem',
                 }}
               >{text}</Link>
             </li>
@@ -343,13 +363,15 @@ function NavPanelItemLinks({
           {parentItem.to && (
             <li>
               <Link to={parentItem.to} css={{
-                display: 'inline-block',
-                marginTop: SPACING['XS'],
+                ...LINK_STYLES['list-strong'],
+                fontSize: '1rem',
                 textDecoration: 'none',
-                ":hover": {
-                  textDecoration: 'underline'
+                ':hover': {
+                  '.text': {
+                    ...LINK_STYLES['list-strong'][':hover']
+                  }
                 }
-              }}>View all {parentItem.text}</Link>
+              }}><span className="text">View all {parentItem.text}</span> <Icon d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" /></Link>
             </li>
           )}
         </ul>
