@@ -6,7 +6,7 @@
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.10",
     "@reach/visually-hidden": "^0.1.4",
-    "@umich-lib/core": "1.x",
+    "@umich-lib/core": "latest",
     "fetch-retry": "^2.0.0",
     "gatsby": "^2.3.25",
     "gatsby-image": "^2.0.39",
