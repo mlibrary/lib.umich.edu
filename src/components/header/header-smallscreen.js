@@ -7,7 +7,8 @@ import {
   COLORS,
   Icon,
   Button,
-  Margins
+  Margins,
+  LINK_STYLES
 } from '@umich-lib/core'
 
 import Search from './search'
@@ -421,9 +422,19 @@ function NavPanelTertiary({ text, to, children }) {
             to={to}
             css={{
               ...nav_item_styles,
-              color: COLORS.teal['400']
+              fontSize: '1rem',
+              fontWeight: '800',
+              ':hover': {
+                '.text': LINK_STYLES['list-strong'][':hover']
+              }
             }}
-          >View all {text}</Link>
+          >
+            <span
+              className="text"
+              css={{ marginRight: '0.5rem' }}
+            >View all {text}</span>
+            <span><Icon d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" /></span>
+          </Link>
         </li>
       </ul>
     </div>
