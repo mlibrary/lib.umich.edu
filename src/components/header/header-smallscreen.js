@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, useReducer, useEffect, useRef } from 'react'
+import React, { createContext, useContext, useReducer, useEffect, useRef } from 'react'
 import { Link } from 'gatsby'
 import VisuallyHidden from '@reach/visually-hidden'
 import {
@@ -6,14 +6,12 @@ import {
   TYPOGRAPHY,
   COLORS,
   Icon,
-  Button,
   Margins,
   LINK_STYLES
 } from '@umich-lib/core'
 
 import Search from './search'
 import Logo from './logo'
-import visuallyHidden from '@reach/visually-hidden';
 
 const StateContext = createContext();
 
@@ -142,7 +140,7 @@ function Nav({ primary, secondary }) {
 }
 
 function NavDropdown({ children, toggleNavNode }) {
-  const [{}, dispatch] = useStateValue();
+  const [state, dispatch] = useStateValue();
   const dropdownNode = useRef()
 
   /*
@@ -384,7 +382,7 @@ function NavPanelSecondary({ text, to, children }) {
 }
 
 function NavPanelTertiary({ text, to, children }) {
-  const [{}, dispatch] = useStateValue();
+  const [state, dispatch] = useStateValue();
   const beforeNode = useRef()
 
   useEffect(() => {
