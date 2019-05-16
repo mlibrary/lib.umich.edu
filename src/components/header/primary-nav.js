@@ -348,28 +348,29 @@ function NavPanelItemLinks({
           }}
         >
           {items.map(({ text, to }, i) => (
-            <li key={i + text} css={{
-              marginBottom: SPACING['M']
-            }}>
+            <li key={i + text}>
               <Link
                 to={to}
                 css={{
-                  ...LINK_STYLES['list'],
+                  display: 'block',
                   fontSize: '1rem',
+                  padding: `${SPACING['XS']} 0`,
+                  ':hover': {
+                    '.text': LINK_STYLES['list'][':hover']
+                  }
                 }}
-              >{text}</Link>
+              ><span className="text">{text}</span></Link>
             </li>
           ))}
           {parentItem.to && (
             <li>
               <Link to={parentItem.to} css={{
-                ...LINK_STYLES['list-strong'],
+                display: 'block',
                 fontSize: '1rem',
-                textDecoration: 'none',
+                padding: `${SPACING['XS']} 0`,
+                fontWeight: '800',
                 ':hover': {
-                  '.text': {
-                    ...LINK_STYLES['list-strong'][':hover']
-                  }
+                  '.text': LINK_STYLES['list-strong'][':hover']
                 }
               }}><span className="text">View all {parentItem.text}</span> <Icon d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" /></Link>
             </li>
