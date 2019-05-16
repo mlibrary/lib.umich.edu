@@ -53,6 +53,7 @@ export default ({ primary, secondary }) => (
                     to={to}
                     css={{
                       ...LINK_STYLES['special-subtle'],
+                      padding: `${SPACING['S']} 0`,
                       ':hover': {
                         '.text': LINK_STYLES['special-subtle'][':hover']
                       }
