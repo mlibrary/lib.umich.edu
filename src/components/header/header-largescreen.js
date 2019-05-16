@@ -7,7 +7,8 @@ import {
   TYPOGRAPHY,
   TextInput,
   Button,
-  Icon
+  Icon,
+  LINK_STYLES
 } from '@umich-lib/core'
 
 import Nav from './primary-nav'
@@ -51,12 +52,12 @@ export default ({ primary, secondary }) => (
                   <Link
                     to={to}
                     css={{
-                      ...TYPOGRAPHY['3XS'],
-                      color: COLORS.neutral['300'],
-                      textDecoration: 'none',
-                      padding: `${SPACING['XS']} 0`
+                      ...LINK_STYLES['special-subtle'],
+                      ':hover': {
+                        '.text': LINK_STYLES['special-subtle'][':hover']
+                      }
                     }}
-                  >{text}</Link>
+                  ><span className="text">{text}</span></Link>
                 </li>
               ))}
             </ul>
