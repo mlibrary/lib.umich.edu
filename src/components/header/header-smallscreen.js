@@ -210,14 +210,14 @@ function NavDropdown({ children, toggleNavNode }) {
   return (
     <div
       css={{
-        border: `solid 1px ${COLORS.neutral[100]}`,
+        borderTop: `solid 1px ${COLORS.neutral[100]}`,
         position: 'absolute',
         width: '20rem',
-        maxWidth: '90vw',
+        maxWidth: '84vw',
         background: 'white',
-        right: '0',
+        right: 'calc(-1rem)', // Less the side site margin on small screens.
         boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
-        zIndex: '1'
+        zIndex: '101'
       }}
       ref={dropdownNode}
     >
