@@ -327,7 +327,7 @@ function NavPanelSecondary({ text, to, children }) {
     }
   }, [panelOpen])
 
-  if (panelOpen) {
+  if (Number.isInteger(panelOpen)) {
     return (
       <NavPanelTertiary {...children[panelOpen]}  />
     )
