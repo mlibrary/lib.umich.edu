@@ -49,7 +49,7 @@ function Nav({ items }) {
       initialState={{ panelOpen: 0 }}
       reducer={reducer}
     >
-      <nav aria-label="Main navigation">
+      <nav aria-label="Main">
         <ul css={{
           display: 'flex',
           alignItems: 'center'
