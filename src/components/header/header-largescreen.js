@@ -1,5 +1,5 @@
 import React from 'react'
-import { StaticQuery, Link } from 'gatsby'
+import { Link } from 'gatsby'
 import {
   Margins,
   COLORS,

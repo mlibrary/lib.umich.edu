@@ -127,7 +127,7 @@ function NavPrimaryItem({
 }
 
 function NavDropdown({ items, primaryNode }) {
-  const [{}, dispatch] = useStateValue();
+  const [, dispatch] = useStateValue();
   const dropdownNode = useRef()
 
   function closeDropdown() {
@@ -301,7 +301,7 @@ function NavPanelItemLinks({
   parentItem,
   items
 }) {
-  const [{}, dispatch] = useStateValue();
+  const [, dispatch] = useStateValue();
   const ref = useRef()
 
   useEffect(() => {

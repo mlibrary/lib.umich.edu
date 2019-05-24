@@ -140,7 +140,7 @@ function Nav({ primary, secondary }) {
 }
 
 function NavDropdown({ children, toggleNavNode }) {
-  const [state, dispatch] = useStateValue();
+  const [, dispatch] = useStateValue();
   const dropdownNode = useRef()
 
   /*
@@ -382,7 +382,7 @@ function NavPanelSecondary({ text, to, children }) {
 }
 
 function NavPanelTertiary({ text, to, children }) {
-  const [state, dispatch] = useStateValue();
+  const [, dispatch] = useStateValue();
   const beforeNode = useRef()
 
   useEffect(() => {
