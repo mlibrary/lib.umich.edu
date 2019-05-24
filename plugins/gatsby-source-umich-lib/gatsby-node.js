@@ -84,59 +84,24 @@ exports.sourceNodes = async ({
   return
 }
 
+const drupal_node_types_we_care_about = [
+  'page', 'landing_page', 'room', 'building'
+]
+
 // Create a slug for each page and set it as a field on the node.
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
 
   // Check for Drupal node type.
-  if (
-    node.internal.type === `node__page` ||
-    node.internal.type === `node__landing_page` ||
-    node.internal.type === `node__room`
-  ) {
+  // Substring off the "node__" part.
+  if (drupal_node_types_we_care_about.includes(node.internal.type.substring(6))) {
 
-    // Slug
-    // Assign alias as the slug
+    // Create slug field to be used in the URL
     createNodeField({
       node,
       name: `slug`,
       value: node.path.alias,
     })
-    /*
-
-    // Breadcumb
-    // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
-    function processBreadcrumbData(data) {
-      let result = []
-      function getParentItem(item) {
-        result = result.concat({
-          to: item.to,
-          text: item.text
-        })
-        if (item.parent) {
-          getParentItem(item.parent[0])
-        }
-      }
-      getParentItem(data[0])
-      result = result.reverse()
-
-      createNodeField({
-        node,
-        name: `breadcrumb`,
-        value: result
-      })
-    }
-
-    if (node.field_breadcrumb) {
-      fetch(apiBase + node.field_breadcrumb, {
-        retries: 5,
-        retryDelay: 2500
-      })
-        .catch(err => console.error(err))
-        .then(response => response.json())
-        .then(data => processBreadcrumbData(data))
-    }
-    */
   }
 }
 
