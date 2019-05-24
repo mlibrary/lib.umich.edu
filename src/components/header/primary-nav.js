@@ -71,7 +71,6 @@ function Nav({ items }) {
 
 function NavPrimaryItem({
   text,
-  to,
   items,
   i
 }) {
