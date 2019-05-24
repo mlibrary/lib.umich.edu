@@ -103,6 +103,51 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       value: node.path.alias,
     })
   }
+
+  // Breadcumb
+  // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
+  function processBreadcrumbData(data) {
+
+    // We want to make sure the data returned has some breadcrumb items.
+    // Sometimes Drupal will hand an empty array and that's
+    // not what we want to process.
+    if (data.length) {
+      let result = []
+      function getParentItem(item) {
+        result = result.concat({
+          to: item.to,
+          text: item.text
+        })
+        if (item.parent) {
+          getParentItem(item.parent[0])
+        }
+      }
+      getParentItem(data[0])
+
+      // Reverse order and add current page to the end.
+      result = result.reverse().concat({ text: node.title })
+      createNodeField({
+        node,
+        name: `breadcrumb`,
+        value: result
+      })
+    }
+  }
+
+  /*
+    If the node has a field_breadcrumb then that means
+    we should check if it has breadcrumb data for us to
+    process.
+  */
+  if (node.field_breadcrumb) {
+    fetch(apiBase + node.field_breadcrumb, {
+      retries: 5,
+      retryDelay: 2500
+    })
+      .catch(err => console.error(err))
+      .then(response => response.json())
+      .then(data => processBreadcrumbData(data))
+  }
 }
 
 // Implement the Gatsby API “createPages”. This is called once the

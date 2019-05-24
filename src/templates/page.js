@@ -8,7 +8,9 @@ import {
   Heading,
   SPACING,
   Alert,
+  Text
 } from '@umich-lib/core'
+import Breadcrumbs from '../components/breadcrumbs'
 
 const Prose = styled('div')({
   '> *:not(:last-child)': {
@@ -19,31 +21,40 @@ const Prose = styled('div')({
 const PageTemplate = ({ data }) => {
   const {
     title,
-    body
+    body,
+    fields
   } = data.nodePage
 
   return (
     <Layout>
       <Margins>
-        <main
-          style={{
-            maxWidth: '38rem',
-            marginTop: SPACING['XL']
-          }}
-        >
-          <Prose>
-            <Heading size={"3XL"}>{title}</Heading>
-            {body && body.format === 'basic_html' ? (
-              <HTML html={body.value} />
-            ) : (
-              <Alert intent="warning">
-                <span style={{ fontSize: '1rem' }}>
-                  This page does not have body content.
-                </span>
-              </Alert>
-            )}
-          </Prose>
-        </main>
+        <div css={{ marginTop: SPACING['2XL'] }}>
+          <Breadcrumbs data={fields.breadcrumb} />
+          <main
+            style={{
+              maxWidth: '38rem',
+              marginTop: SPACING['XL']
+            }}
+          >
+            <Prose>
+              <Heading size={"3XL"}>{title}</Heading>
+              {body && body.format === 'basic_html' ? (
+                <React.Fragment>
+                  {body.summary && (
+                    <Text lede>{body.summary}</Text>
+                  )}
+                  <HTML html={body.value} />
+                </React.Fragment>
+              ) : (
+                <Alert intent="warning">
+                  <span style={{ fontSize: '1rem' }}>
+                    This page does not have body content.
+                  </span>
+                </Alert>
+              )}
+            </Prose>
+          </main>
+        </div>
       </Margins>
     </Layout>
   )
@@ -58,6 +69,13 @@ export const query = graphql`
       body {
         value
         format
+        summary
+      }
+      fields {
+        breadcrumb {
+          to
+          text
+        }
       }
       relationships {
         node__page {

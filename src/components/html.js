@@ -3,30 +3,46 @@ import rehypeReact from "rehype-react"
 import {
   Heading,
   Text,
-  List
+  List,
+  COLORS
 } from '@umich-lib/core'
-import { Link } from 'gatsby'
 import unified from "unified"
 import rehype from "rehype-parse"
-
+import Prose from './prose'
+import Link from './link'
 /**
   Headings
 */
 const Heading2 = ({ children, ...other }) => (
-  <Heading level={2} size="XL" {...other}>{children}</Heading>
-)
+  <Heading level={2} size="M" {...other}>
+    {children}
+  </Heading>
+);
 const Heading3 = ({ children, ...other }) => (
-  <Heading level={3} size="M" {...other}>{children}</Heading>
-)
+  <Heading level={3} size="S" {...other}>
+    {children}
+  </Heading>
+);
 const Heading4 = ({ children, ...other }) => (
-  <Heading level={4} size="S" {...other}>{children}</Heading>
-)
+  <Heading
+    level={4}
+    size="3XS"
+    style={{ color: COLORS.neutral["300"] }}
+    {...other}
+  >
+    {children}
+  </Heading>
+);
 const Heading5 = ({ children, ...other }) => (
-  <Heading level={5} size="3XS" {...other}>{children}</Heading>
-)
+  <Heading level={5} size="3XS" {...other}>
+    {children}
+  </Heading>
+);
 const Heading6 = ({ children, ...other }) => (
-  <Heading level={6} size="3XS" {...other}>{children}</Heading>
-)
+  <Heading level={6} size="3XS" {...other}>
+    {children}
+  </Heading>
+);
 
 const renderHast = new rehypeReact({
   components: {
@@ -37,7 +53,7 @@ const renderHast = new rehypeReact({
     h6: Heading6,
     a: ({children, ...other}) => ({ to, children }) => <Link to={to}>{children}</Link>,
     p: ({children}) => <Text>{children}</Text>,
-    strong: ({children}) => <strong style={{ fontWeight: '800' }}>{children}</strong>,
+    strong: ({children}) => <strong css={{ fontWeight: '800' }}>{children}</strong>,
     ul: ({ children }) => <List type="bulleted">{children}</List>,
     ol: ({ children }) => <List type="numbered">{children}</List>,
     'text': Text,
@@ -60,8 +76,8 @@ export default ({ html }) => {
     .parse(html);
 
   return (
-    <React.Fragment>
+    <Prose>
       {renderHast(tree)}
-    </React.Fragment>
+    </Prose>
   )
 }

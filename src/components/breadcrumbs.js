@@ -1,52 +1,26 @@
 import React from 'react'
-import { Link } from 'gatsby'
 import {
-  COLORS
+  SPACING,
+  Icon
 } from '@umich-lib/core'
-import styled from '@emotion/styled'
-
-const Breadcrumb = styled('ol')({
-  listStyle: 'none',
-  padding: '0',
-  marginTop: '0.5rem',
-  borderBottom: `solid 3px ${COLORS.neutral[100]}`
-})
-
-const BreadCrumbItem = styled('li')({
-  display: 'inline-block',
-  fontSize: '0.875rem',
-  color: COLORS.neutral[400],
-  paddingRight: '0.5rem',
-  "&:not(:first-child):before": {
-    content: '"/"',
-    marginRight: '0.5rem'
-  }
-})
-
-const BreadCrumbItemLink = styled(Link)({
-  display: 'inline-block',
-  textDecoration: 'none',
-  fontSize: '0.875rem',
-  padding: '0.25rem 0',
-  ':hover': {
-    textDecoration: 'underline'
-  }
-})
+import Link from '../components/link'
 
 const Breadcrumbs = ({ data }) => {
   return (
-    <nav aria-label="site breadcrumb">
-      <Breadcrumb>
-        {data && (
-          <React.Fragment>
-            {data.map(item => (
-              <BreadCrumbItem>
-                <BreadCrumbItemLink to={item.to}>{item.text}</BreadCrumbItemLink>
-              </BreadCrumbItem>
-            ))}
-          </React.Fragment>
-        )}
-      </Breadcrumb>
+    <nav aria-label="breadcrumb">
+      <ul>
+        {data.map(({text, to}, i) => (
+          <li css={{
+            display: 'inline-block',
+            marginRight: SPACING['2XS']
+          }} key={text + i}>
+            {i > 0 && (<span css={{
+              marginRight: SPACING['2XS']
+            }}><Icon icon="navigate_next" size={16} /></span> )}
+            {to ? (<Link to={to}>{text}</Link>) : (<React.Fragment>{text}</React.Fragment>)}
+          </li>
+        ))}
+      </ul>
     </nav>
   )
 }
