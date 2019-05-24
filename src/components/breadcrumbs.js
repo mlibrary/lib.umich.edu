@@ -6,6 +6,10 @@ import {
 import Link from '../components/link'
 
 const Breadcrumbs = ({ data }) => {
+  if (!Array.isArray(data)) {
+    return null
+  }
+
   return (
     <nav aria-label="breadcrumb">
       <ul>
