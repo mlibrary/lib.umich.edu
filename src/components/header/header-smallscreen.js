@@ -87,7 +87,7 @@ function Nav({ primary, secondary }) {
   const toggleNavNode = useRef()
 
   return (
-    <nav aria-label="Main navigation">
+    <nav aria-label="Main and utility">
       <button
         css={{
           position: 'absolute',
@@ -227,7 +227,7 @@ function NavDropdown({ children, toggleNavNode }) {
 
 function NavSecondary({ items }) {
   return (
-    <ul>
+    <ul aria-label="Utility">
       {items.map(({to, text}, i) => (
         <li key={i + text}>
           <Link
@@ -256,7 +256,7 @@ function NavPrimary({ items }) {
   }
 
   return (
-    <ul>
+    <ul aria-label="Main">
       {items.map((item, i) =>
         <NavPrimaryItem {...item} i={i} key={i + item.text} />
       )}

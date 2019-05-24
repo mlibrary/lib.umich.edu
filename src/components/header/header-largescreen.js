@@ -4,10 +4,6 @@ import {
   Margins,
   COLORS,
   SPACING,
-  TYPOGRAPHY,
-  TextInput,
-  Button,
-  Icon,
   LINK_STYLES
 } from '@umich-lib/core'
 
@@ -35,33 +31,38 @@ export default ({ primary, secondary }) => (
             items={primary}
           />
           {secondary && (
-            <ul css={{
-              position: 'absolute',
-              top: SPACING['M'],
-              right: '0'
-            }}>
-              {secondary.map(({ text, to }, i) => (
-                <li css={{
-                    display: 'inline-block',
-                    ':not(:last-child)': {
-                      marginRight: SPACING['L']
-                    }
-                  }}
-                  key={i + text}
-                >
-                  <Link
-                    to={to}
-                    css={{
-                      ...LINK_STYLES['special-subtle'],
-                      padding: `${SPACING['S']} 0`,
-                      ':hover': {
-                        '.text': LINK_STYLES['special-subtle'][':hover']
+            <nav
+              css={{
+                position: 'absolute',
+                top: SPACING['M'],
+                right: '0'
+              }}
+              aria-label="Utility"
+            >
+              <ul>
+                {secondary.map(({ text, to }, i) => (
+                  <li css={{
+                      display: 'inline-block',
+                      ':not(:last-child)': {
+                        marginRight: SPACING['L']
                       }
                     }}
-                  ><span className="text">{text}</span></Link>
-                </li>
-              ))}
-            </ul>
+                    key={i + text}
+                  >
+                    <Link
+                      to={to}
+                      css={{
+                        ...LINK_STYLES['special-subtle'],
+                        padding: `${SPACING['S']} 0`,
+                        ':hover': {
+                          '.text': LINK_STYLES['special-subtle'][':hover']
+                        }
+                      }}
+                    ><span className="text">{text}</span></Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           )}
           <div css={{
             maxWidth: '18rem',

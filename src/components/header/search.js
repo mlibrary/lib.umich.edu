@@ -19,6 +19,8 @@ function Search() {
           height: '100%'
         }
       }}
+      role="search"
+      aria-label="Sitewide"
     >
       <TextInput
         id="search-query"
