@@ -8,7 +8,8 @@ import {
   Heading,
   SPACING,
   Alert,
-  Text
+  Text,
+  MEDIA_QUERIES
 } from '@umich-lib/core'
 import Breadcrumbs from '../components/breadcrumbs'
 
@@ -28,7 +29,12 @@ const PageTemplate = ({ data }) => {
   return (
     <Layout>
       <Margins>
-        <div css={{ marginTop: SPACING['2XL'] }}>
+        <div css={{
+          marginTop: SPACING['L'],
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            marginTop: SPACING['2XL']
+          }
+        }}>
           <Breadcrumbs data={fields.breadcrumb} />
           <main
             style={{

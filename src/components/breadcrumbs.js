@@ -1,7 +1,8 @@
 import React from 'react'
 import {
   SPACING,
-  Icon
+  Icon,
+  MEDIA_QUERIES
 } from '@umich-lib/core'
 import Link from '../components/link'
 
@@ -10,9 +11,17 @@ const Breadcrumbs = ({ data }) => {
     return null
   }
 
+  // Get the second to last item. It's the parent.
+  const parent = data.length >= 2 ? data[data.length - 2] : undefined
+
   return (
     <nav aria-label="breadcrumb">
-      <ul>
+      <ul css={{
+        display: 'none',
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          display: 'block'
+        }
+      }}>
         {data.map(({text, to}, i) => (
           <li css={{
             display: 'inline-block',
@@ -25,6 +34,20 @@ const Breadcrumbs = ({ data }) => {
           </li>
         ))}
       </ul>
+      {parent && (
+        <span css={{
+          display: 'inline',
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            display: 'none'
+          }
+        }}
+        >
+          <Icon icon="navigate_before" size={16} />
+          <Link to={parent.to}>
+            {parent.text}
+          </Link>
+        </span>
+      )}
     </nav>
   )
 }
