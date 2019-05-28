@@ -32,6 +32,7 @@
   "license": "MIT",
   "scripts": {
     "build": "gatsby build",
+    "serve": "gatsby serve",
     "develop": "gatsby develop",
     "start": "npm run develop",
     "stage": "gatsby build && now public --name lib-umich --public",

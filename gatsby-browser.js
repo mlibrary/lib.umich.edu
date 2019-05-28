@@ -6,16 +6,14 @@
 
 // You can delete this file if you're not using itimport React from "react"
 import React from 'react'
-import { Chat, UniversalHeader, GlobalStyleSheet } from "@umich-lib/core"
+import { Chat } from "@umich-lib/core"
 
 export const wrapPageElement = ({ element, props }) => {
   // props provide same data to Layout as Page element will get
   // including location, data, etc - you don't need to pass it
   return (
     <React.Fragment>
-      <GlobalStyleSheet />
-      <UniversalHeader />
-        {element}
+      {element}
       <Chat fixed />
     </React.Fragment>
   )
