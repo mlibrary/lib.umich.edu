@@ -182,7 +182,6 @@ exports.createPages = ({ actions, graphql }) => {
   return new Promise((resolve, reject) => {
     const landingPageTemplate = path.resolve(`src/templates/landing-page.js`);
     const pageTemplate = path.resolve(`src/templates/page.js`);
-    const roomPageTemplate = path.resolve(`src/templates/room.js`);
 
     // Query for page nodes to use in creating pages.
     resolve(
@@ -201,16 +200,6 @@ exports.createPages = ({ actions, graphql }) => {
             allNodePage {
               edges {
                 node {
-                  fields {
-                    slug
-                  }
-                }
-              }
-            }
-            allNodeRoom {
-              edges {
-                node {
-                  title
                   fields {
                     slug
                   }
@@ -240,17 +229,6 @@ exports.createPages = ({ actions, graphql }) => {
           createPage({
             path: node.fields.slug,
             component: landingPageTemplate,
-            context: {
-              slug: node.fields.slug
-            }
-          })
-        })
-
-        // Create basic pages.
-        result.data.allNodeRoom.edges.forEach(({ node }) => {
-          createPage({
-            path: node.fields.slug,
-            component: roomPageTemplate,
             context: {
               slug: node.fields.slug
             }
