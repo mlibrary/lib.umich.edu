@@ -8,7 +8,8 @@ import {
   Heading,
   SPACING,
   Alert,
-  Text
+  Text,
+  MEDIA_QUERIES
 } from '@umich-lib/core'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
@@ -31,13 +32,15 @@ const PageTemplate = ({ data }) => {
     <Layout>
       <Margins>
         <div css={{
-          display: "grid",
-          gridTemplateAreas: `
-            "breadcrumb breadcrumb"
-            "sidenav content"
-          `,
-          gridTemplateColumns: `calc(240px + ${SPACING['4XL']}) 1fr`,
-          gridTemplateRows: "auto 1fr",
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            display: "grid",
+            gridTemplateAreas: `
+              "breadcrumb breadcrumb"
+              "sidenav content"
+            `,
+            gridTemplateColumns: `calc(240px + ${SPACING['4XL']}) 1fr`,
+            gridTemplateRows: "auto 1fr",
+          }
         }}>
           <div css={{
             gridArea: 'breadcrumb'
