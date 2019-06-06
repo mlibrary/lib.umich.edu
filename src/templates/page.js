@@ -19,6 +19,8 @@ const Prose = styled('div')({
 })
 
 const PageTemplate = ({ data }) => {
+  console.log('data', data)
+
   const {
     title,
     body,
@@ -53,6 +55,15 @@ const PageTemplate = ({ data }) => {
               )}
             </Prose>
           </main>
+          <aside>
+            {fields.parents && (
+              <ul>
+                {fields.parents.map(parent =>
+                  <li>{data.title}</li>
+                )}
+              </ul>
+            )}
+          </aside>
         </div>
       </Margins>
     </Layout>
@@ -75,6 +86,7 @@ export const query = graphql`
           to
           text
         }
+        parents
       }
       relationships {
         node__page {
