@@ -12,6 +12,7 @@ import {
 } from '@umich-lib/core'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
+import SideNavigation from '../components/side-navigation'
 
 const Prose = styled('div')({
   '> *:not(:last-child)': {
@@ -26,16 +27,27 @@ const PageTemplate = ({ data }) => {
     fields
   } = data.page
 
-  console.log('data', data)
-
   return (
     <Layout>
       <Margins>
-        <div>
-          <Breadcrumb data={fields.breadcrumb} />
+        <div css={{
+          display: "grid",
+          gridTemplateAreas: `
+            "breadcrumb breadcrumb"
+            "sidenav content"
+          `,
+          gridTemplateColumns: `calc(240px + ${SPACING['4XL']}) 1fr`,
+          gridTemplateRows: "auto 1fr",
+        }}>
+          <div css={{
+            gridArea: 'breadcrumb'
+          }}>
+            <Breadcrumb data={fields.breadcrumb} />
+          </div>
           <main
             style={{
-              maxWidth: '38rem'
+              maxWidth: '38rem',
+              gridArea: 'content'
             }}
           >
             <Prose>
@@ -56,12 +68,11 @@ const PageTemplate = ({ data }) => {
               )}
             </Prose>
           </main>
-          <aside>
-            <ul>
-              {data.parents.edges.map(({ node }) =>
-                <li key={node.id}><Link to={node.fields.slug}>{node.title}</Link></li>
-              )}
-            </ul>
+          <aside css={{
+            gridArea: 'sidenav',
+            marginRight: SPACING['4XL']
+          }}>
+            <SideNavigation data={data.parents} />
           </aside>
         </div>
       </Margins>
