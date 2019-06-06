@@ -73,7 +73,7 @@ const PageTemplate = ({ data }) => {
           </main>
           <aside css={{
             gridArea: 'sidenav',
-            marginRight: SPACING['4XL']
+            marginRight: SPACING['3XL']
           }}>
             <SideNavigation data={data.parents} />
           </aside>
