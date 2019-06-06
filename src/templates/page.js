@@ -8,10 +8,9 @@ import {
   Heading,
   SPACING,
   Alert,
-  Text,
-  MEDIA_QUERIES
+  Text
 } from '@umich-lib/core'
-import Breadcrumbs from '../components/breadcrumbs'
+import Breadcrumb from '../components/breadcrumb'
 
 const Prose = styled('div')({
   '> *:not(:last-child)': {
@@ -29,17 +28,11 @@ const PageTemplate = ({ data }) => {
   return (
     <Layout>
       <Margins>
-        <div css={{
-          marginTop: SPACING['L'],
-          [MEDIA_QUERIES.LARGESCREEN]: {
-            marginTop: SPACING['2XL']
-          }
-        }}>
-          <Breadcrumbs data={fields.breadcrumb} />
+        <div>
+          <Breadcrumb data={fields.breadcrumb} />
           <main
             style={{
-              maxWidth: '38rem',
-              marginTop: SPACING['XL']
+              maxWidth: '38rem'
             }}
           >
             <Prose>

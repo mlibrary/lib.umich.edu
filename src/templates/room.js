@@ -1,7 +1,6 @@
 import { graphql } from "gatsby"
 import React from "react"
 import Layout from "../components/layout"
-import BreadCrumbs from "../components/breadcrumbs"
 import styled from '@emotion/styled'
 import {
   MEDIA_QUERIES,
@@ -28,7 +27,6 @@ const PageTemplate = ({ data }) => {
   return (
     <Layout>
       <div data-inner-container>
-        <BreadCrumbs />
         <StyledGrid>
           <main
             style={{
