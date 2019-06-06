@@ -11,6 +11,7 @@ import {
   Text
 } from '@umich-lib/core'
 import Breadcrumb from '../components/breadcrumb'
+import Link from '../components/link'
 
 const Prose = styled('div')({
   '> *:not(:last-child)': {
@@ -23,7 +24,9 @@ const PageTemplate = ({ data }) => {
     title,
     body,
     fields
-  } = data.nodePage
+  } = data.page
+
+  console.log('data', data)
 
   return (
     <Layout>
@@ -54,13 +57,11 @@ const PageTemplate = ({ data }) => {
             </Prose>
           </main>
           <aside>
-            {fields.parents && (
-              <ul>
-                {fields.parents.map(parent =>
-                  <li>{parent}</li>
-                )}
-              </ul>
-            )}
+            <ul>
+              {data.parents.edges.map(({ node }) =>
+                <li key={node.id}><Link to={node.fields.slug}>{node.title}</Link></li>
+              )}
+            </ul>
           </aside>
         </div>
       </Margins>
@@ -71,8 +72,8 @@ const PageTemplate = ({ data }) => {
 export default PageTemplate
 
 export const query = graphql`
-  query($slug: String!) {
-    nodePage(fields: { slug: { eq: $slug } }) {
+  query($slug: String!, $parents: [String] ) {
+    page: nodePage(fields: { slug: { eq: $slug } }) {
       title
       body {
         value
@@ -84,7 +85,21 @@ export const query = graphql`
           to
           text
         }
-        parents
+      }
+    }
+    parents: allNodePage(filter: {
+      drupal_id: {
+        in: $parents
+      }
+    }) {
+      edges {
+        node {
+          id
+          title
+          fields {
+            slug
+          }
+        }
       }
     }
   }
