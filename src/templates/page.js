@@ -12,7 +12,6 @@ import {
   MEDIA_QUERIES
 } from '@umich-lib/core'
 import Breadcrumb from '../components/breadcrumb'
-import Link from '../components/link'
 import SideNavigation from '../components/side-navigation'
 
 const Prose = styled('div')({
