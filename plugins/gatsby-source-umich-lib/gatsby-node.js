@@ -148,6 +148,30 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       .then(response => response.json())
       .then(data => processBreadcrumbData(data))
   }
+
+  /*
+    Check if the node has field_parent_menu. This will be
+    a list of Drupal entitity IDs to use for look up.
+
+    This is useful for side navigation.
+  */
+  if (node.field_parent_menu) {
+    fetch(apiBase + node.field_parent_menu, {
+      retries: 5,
+      retryDelay: 2500
+    })
+      .catch(err => console.error(err))
+      .then(response => response.json())
+      .then(data => {
+        createNodeField({
+          node,
+          name: "parents",
+    
+          // Take the uuid off each item and make an array of those.
+          value: data.map(({ uuid }) => uuid)
+        })
+      })
+  }
 }
 
 // Implement the Gatsby API “createPages”. This is called once the
@@ -158,7 +182,6 @@ exports.createPages = ({ actions, graphql }) => {
   return new Promise((resolve, reject) => {
     const landingPageTemplate = path.resolve(`src/templates/landing-page.js`);
     const pageTemplate = path.resolve(`src/templates/page.js`);
-    const roomPageTemplate = path.resolve(`src/templates/room.js`);
 
     // Query for page nodes to use in creating pages.
     resolve(
@@ -179,16 +202,7 @@ exports.createPages = ({ actions, graphql }) => {
                 node {
                   fields {
                     slug
-                  }
-                }
-              }
-            }
-            allNodeRoom {
-              edges {
-                node {
-                  title
-                  fields {
-                    slug
+                    parents
                   }
                 }
               }
@@ -206,7 +220,8 @@ exports.createPages = ({ actions, graphql }) => {
             path: node.fields.slug,
             component: pageTemplate,
             context: {
-              slug: node.fields.slug
+              slug: node.fields.slug,
+              parents: node.fields.parents
             }
           })
         })
@@ -216,17 +231,6 @@ exports.createPages = ({ actions, graphql }) => {
           createPage({
             path: node.fields.slug,
             component: landingPageTemplate,
-            context: {
-              slug: node.fields.slug
-            }
-          })
-        })
-
-        // Create basic pages.
-        result.data.allNodeRoom.edges.forEach(({ node }) => {
-          createPage({
-            path: node.fields.slug,
-            component: roomPageTemplate,
             context: {
               slug: node.fields.slug
             }

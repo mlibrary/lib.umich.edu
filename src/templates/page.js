@@ -8,9 +8,11 @@ import {
   Heading,
   SPACING,
   Alert,
-  Text
+  Text,
+  MEDIA_QUERIES
 } from '@umich-lib/core'
 import Breadcrumb from '../components/breadcrumb'
+import SideNavigation from '../components/side-navigation'
 
 const Prose = styled('div')({
   '> *:not(:last-child)': {
@@ -23,16 +25,31 @@ const PageTemplate = ({ data }) => {
     title,
     body,
     fields
-  } = data.nodePage
+  } = data.page
 
   return (
     <Layout>
       <Margins>
-        <div>
-          <Breadcrumb data={fields.breadcrumb} />
+        <div css={{
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            display: "grid",
+            gridTemplateAreas: `
+              "breadcrumb breadcrumb"
+              "sidenav content"
+            `,
+            gridTemplateColumns: `calc(240px + ${SPACING['4XL']}) 1fr`,
+            gridTemplateRows: "auto 1fr",
+          }
+        }}>
+          <div css={{
+            gridArea: 'breadcrumb'
+          }}>
+            <Breadcrumb data={fields.breadcrumb} />
+          </div>
           <main
             style={{
-              maxWidth: '38rem'
+              maxWidth: '38rem',
+              gridArea: 'content'
             }}
           >
             <Prose>
@@ -53,6 +70,12 @@ const PageTemplate = ({ data }) => {
               )}
             </Prose>
           </main>
+          <aside css={{
+            gridArea: 'sidenav',
+            marginRight: SPACING['3XL']
+          }}>
+            <SideNavigation data={data.parents} />
+          </aside>
         </div>
       </Margins>
     </Layout>
@@ -62,8 +85,8 @@ const PageTemplate = ({ data }) => {
 export default PageTemplate
 
 export const query = graphql`
-  query($slug: String!) {
-    nodePage(fields: { slug: { eq: $slug } }) {
+  query($slug: String!, $parents: [String] ) {
+    page: nodePage(fields: { slug: { eq: $slug } }) {
       title
       body {
         value
@@ -76,27 +99,18 @@ export const query = graphql`
           text
         }
       }
-      relationships {
-        node__page {
+    }
+    parents: allNodePage(filter: {
+      drupal_id: {
+        in: $parents
+      }
+    }) {
+      edges {
+        node {
+          id
           title
-          path {
-            alias
-          }
-          relationships {
-            node__page {
-              title
-              path {
-                alias
-              }
-              relationships {
-                node__page {
-                  title
-                  path {
-                    alias
-                  }
-                }
-              }
-            }
+          fields {
+            slug
           }
         }
       }
