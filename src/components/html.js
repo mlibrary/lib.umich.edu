@@ -1,4 +1,6 @@
 import React from "react"
+import { useStaticQuery, graphql } from 'gatsby'
+import Img from 'gatsby-image'
 import rehypeReact from "rehype-react"
 import {
   Heading,
@@ -57,7 +59,56 @@ const renderHast = new rehypeReact({
     ul: ({ children }) => <List type="bulleted">{children}</List>,
     ol: ({ children }) => <List type="numbered">{children}</List>,
     'text': Text,
-    'lede': ({ children, ...other }) => <Text lede {...other}>{children}</Text>
+    'lede': ({ children, ...other }) => <Text lede {...other}>{children}</Text>,
+    img: (props) => {
+      /*
+        Get all Drupal images so that we can later replace the generated
+        html img tag with the Gatsby Image component.
+      */
+      const drupalImageNodes = useStaticQuery(
+        graphql`
+          query {
+            allFileFile {
+              edges {
+                node {
+                  filename
+                  drupal_id
+                  localFile {
+                    childImageSharp {
+                      fluid(maxWidth: 500) {
+                        ...GatsbyImageSharpFluid
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `
+      )
+
+      /*
+        Can we find a matching image? The html img has a data
+        attribute of the Drupal entity uuid to match on.
+
+        We expect to find it. If it's in the HTML then it
+        must be an entity brought in by the source plugin.
+
+        If it's not found, then something is probably wrong.
+      */
+      const matchedImage = drupalImageNodes.allFileFile.edges.filter(
+        edge => edge.node.drupal_id === props['data-entity-uuid']
+      )
+
+      try {
+        return <Img fluid={matchedImage[0].node.localFile.childImageSharp.fluid} alt={props.alt} />
+      }
+      catch(error) {
+        console.warn(error, 'Unable to render image with Drupal entity uuid', props['data-entity-uuid'])
+      }
+
+      return null
+    }
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
