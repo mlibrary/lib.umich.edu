@@ -17,14 +17,12 @@
     "gatsby-plugin-sharp": "^2.0.35",
     "gatsby-source-drupal": "^3.1.0",
     "gatsby-transformer-sharp": "^2.1.18",
-    "lodash": "^4.17.11",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.0",
     "rehype-parse": "^6.0.0",
     "rehype-react": "^3.1.0",
-    "unified": "^7.1.0",
-    "update": "^0.7.4"
+    "unified": "^7.1.0"
   },
   "keywords": [
     "gatsby"
