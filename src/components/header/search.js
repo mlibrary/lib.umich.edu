@@ -24,7 +24,7 @@ function Search() {
     >
       <TextInput
         id="search-query"
-        labelText="Search terms"
+        labelText="Query"
         type="search"
         hideLabel
         name="query"
