@@ -19,6 +19,7 @@ export default function({ data }) {
         summary={body.summary}
         breadcrumb={fields.breadcrumb}
         imageData={relationships.field_image[0].localFile.childImageSharp.fluid}
+        ariaLabel="Location description"
       />
     </Layout>
   )

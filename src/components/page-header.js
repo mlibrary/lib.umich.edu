@@ -15,7 +15,8 @@ export default function PageHeader({
   breadcrumb,
   title,
   summary,
-  imageData
+  imageData,
+  ...rest
 }) {
   return (
     <Margins>
@@ -27,6 +28,7 @@ export default function PageHeader({
             minHeight: '450px'
           }
         }}
+        {...rest}
       >
         <div
           css={{
