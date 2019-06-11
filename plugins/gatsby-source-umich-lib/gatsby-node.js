@@ -6,19 +6,47 @@ const fetch = require("fetch-retry")
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
-const apiBase = process.env.DRUPAL_BASE_URL
+function removeTrailingSlash(s) {
+  return s.replace(/\/$/, "");
+}
 
-function removeTrailingSlash(string) {
-  return string.replace(/\/$/, "");
+/*
+  Custom Drupal APIs created with Drupal views
+  can make "empty" results of varying nested
+  levels of arrays.
+
+  This is to check if the returned data
+  has values or is empty with all the potential
+  nested empty arrays.
+
+  [ [ [] ] ]
+*/
+function sanitizeDrupalView(data) {
+  // Everything is wrapped in an array because Drupal views.
+  if (Array.isArray(data)) {
+
+    // We're looking for objects {}. If it's not an array
+    // Let's assume it's an object with values.
+    if (data[0] && !Array.isArray(data[0])) {
+      return data
+    }
+  }
+
+  return null
 }
 
 /*
   sourceNodes is only called once per plugin by Gatsby.
 */
-exports.sourceNodes = async ({
-  actions,
-  createContentDigest
-}) => {
+exports.sourceNodes = async (
+  {
+    actions,
+    createContentDigest
+  },
+  {
+    baseUrl
+  }
+) => {
   const { createNode } = actions
   /*
       Transform Drupal data and make a list of this shape:
@@ -68,20 +96,20 @@ exports.sourceNodes = async ({
     createNode(nodeMeta)
   }
   
-  const apiBaseWithoutTrailingSlash = removeTrailingSlash(apiBase)
+  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
 
   /*
     Fetch data from Drupal for primary and utlity,
     process it, then create nodes for each.
   */
   const nav_primary_data =
-    await fetch(apiBaseWithoutTrailingSlash + 'api/nav/primary')
+    await fetch(baseUrlWithoutTrailingSlash + '/api/nav/primary')
     .then(response => response.json())
 
   createNavNode('nav-primary', 'NavPrimary', nav_primary_data[0].children)
 
   const nav_utility_data =
-    await fetch(apiBaseWithoutTrailingSlash + 'api/nav/utility')
+    await fetch(baseUrlWithoutTrailingSlash + '/api/nav/utility')
     .then(response => response.json())
 
   createNavNode('nav-utlity', 'NavUtility', nav_utility_data[0].children)
@@ -95,7 +123,7 @@ const drupal_node_types_we_care_about = [
 ]
 
 // Create a slug for each page and set it as a field on the node.
-exports.onCreateNode = ({ node, getNode, actions }) => {
+exports.onCreateNode = ({ node, getNode, actions }, { baseUrl }) => {
   const { createNodeField } = actions
 
   // Check for Drupal node type.
@@ -146,7 +174,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     process.
   */
   if (node.field_breadcrumb) {
-    fetch(apiBase + node.field_breadcrumb, {
+    fetch(baseUrl + node.field_breadcrumb, {
       retries: 5,
       retryDelay: 2500
     })
@@ -162,19 +190,25 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
     This is useful for side navigation.
   */
   if (node.field_parent_menu) {
-    fetch(apiBase + node.field_parent_menu, {
+    fetch(baseUrl + node.field_parent_menu, {
       retries: 5,
       retryDelay: 2500
     })
       .catch(err => console.error(err))
       .then(response => response.json())
       .then(data => {
+        const sanitizedData = sanitizeDrupalView(data)
+
+        /*
+          Take the uuid off each item and make an array of those.
+          Or send an empty array.
+        */
+        const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : []
+
         createNodeField({
           node,
           name: "parents",
-    
-          // Take the uuid off each item and make an array of those.
-          value: data.map(({ uuid }) => uuid)
+          value
         })
       })
   }
@@ -182,7 +216,7 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 
 // Implement the Gatsby API “createPages”. This is called once the
 // data layer is bootstrapped to let plugins create pages from data.
-exports.createPages = ({ actions, graphql }) => {
+exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   const { createPage } = actions
   // Create landing pages
   return new Promise((resolve, reject) => {
