@@ -25,7 +25,7 @@ export default function PageHeader({
           [MEDIA_QUERIES.LARGESCREEN]: {
             display: "flex",
             alignItems: "stretch",
-            minHeight: '450px'
+            minHeight: '350px'
           }
         }}
         {...rest}
