@@ -58,7 +58,7 @@ const renderHast = new rehypeReact({
     strong: ({children}) => <strong css={{ fontWeight: '800' }}>{children}</strong>,
     ul: ({ children }) => <List type="bulleted">{children}</List>,
     ol: ({ children }) => <List type="numbered">{children}</List>,
-    br: () => <br />,
+    br: () => null,
     em: (props) => <em {...props} css={{ fontStyle: 'italic' }} />,
     'text': Text,
     'lede': ({ children, ...other }) => <Text lede {...other}>{children}</Text>,
