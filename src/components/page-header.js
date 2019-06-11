@@ -1,10 +1,12 @@
 import React from "react";
 import BackgroundImage from 'gatsby-background-image'
+import Img from "gatsby-image"
 import {
   Heading,
   SPACING,
   Text,
-  Margins
+  Margins,
+  MEDIA_QUERIES
 } from "@umich-lib/core";
 
 import Breadcrumb from './breadcrumb'
@@ -19,14 +21,18 @@ export default function PageHeader({
     <Margins>
       <header
         css={{
-          display: "flex",
-          alignItems: "stretch",
-          minHeight: '450px'
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            display: "flex",
+            alignItems: "stretch",
+            minHeight: '450px'
+          }
         }}
       >
         <div
           css={{
-            flex: "1 1 0",
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              flex: "1 1 0",
+            },
             paddingBottom: SPACING['L'],
             paddingTop: '0',
             paddingRight: SPACING['2XL'],
@@ -49,11 +55,22 @@ export default function PageHeader({
           tag="div"
           fluid={imageData}
           css={{
+            display: 'none',
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              display: 'block'
+            },
             flex: "1 1 0",
             backgroundSize: "cover",
-            backgroundPosition: "center"
+            backgroundPosition: "center",
+            flexBasis: '50%',
+            flexGrow: '0'
           }}
         />
+        <Img fluid={imageData} css={{
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            display: 'none'
+          }
+        }}/>
       </header>
     </Margins>
   );

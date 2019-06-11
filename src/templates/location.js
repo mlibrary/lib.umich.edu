@@ -12,8 +12,6 @@ export default function({ data }) {
     relationships
   } = data.page
 
-  console.log('relationships', relationships)
-
   return (
     <Layout>
       <PageHeader
