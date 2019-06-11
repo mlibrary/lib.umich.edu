@@ -43,7 +43,12 @@ export default function PageHeader({
           <Heading
             size="3XL"
             level={2}
-            css={{ marginTop: SPACING["M"], marginBottom: SPACING["M"] }}
+            css={{
+              [MEDIA_QUERIES.LARGESCREEN]: {
+                marginTop: SPACING["M"]
+              },
+              marginBottom: SPACING["M"]
+            }}
           >
             {title}
           </Heading>
