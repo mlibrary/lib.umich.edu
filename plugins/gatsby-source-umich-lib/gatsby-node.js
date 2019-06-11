@@ -6,7 +6,11 @@ const fetch = require("fetch-retry")
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
-const apiBase = 'https://dev.lib.umich.edu'
+const apiBase = process.env.DRUPAL_BASE_URL
+
+function removeTrailingSlash(string) {
+  return string.replace(/\/$/, "");
+}
 
 /*
   sourceNodes is only called once per plugin by Gatsby.
@@ -63,19 +67,21 @@ exports.sourceNodes = async ({
     }
     createNode(nodeMeta)
   }
+  
+  const apiBaseWithoutTrailingSlash = removeTrailingSlash(apiBase)
 
   /*
     Fetch data from Drupal for primary and utlity,
     process it, then create nodes for each.
   */
   const nav_primary_data =
-    await fetch(apiBase + '/api/nav/primary')
+    await fetch(apiBaseWithoutTrailingSlash + 'api/nav/primary')
     .then(response => response.json())
 
   createNavNode('nav-primary', 'NavPrimary', nav_primary_data[0].children)
 
   const nav_utility_data =
-    await fetch(apiBase + '/api/nav/utility')
+    await fetch(apiBaseWithoutTrailingSlash + 'api/nav/utility')
     .then(response => response.json())
 
   createNavNode('nav-utlity', 'NavUtility', nav_utility_data[0].children)
