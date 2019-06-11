@@ -9,6 +9,7 @@
     "@umich-lib/core": "latest",
     "fetch-retry": "^2.0.0",
     "gatsby": "^2.3.25",
+    "gatsby-background-image": "^0.7.0",
     "gatsby-image": "^2.0.39",
     "gatsby-plugin-emotion": "^4.0.6",
     "gatsby-plugin-manifest": "^2.1.1",

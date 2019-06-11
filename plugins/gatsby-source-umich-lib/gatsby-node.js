@@ -119,11 +119,11 @@ exports.sourceNodes = async (
 }
 
 const drupal_node_types_we_care_about = [
-  'page', 'landing_page', 'room', 'building'
+  'building'
 ]
 
 // Create a slug for each page and set it as a field on the node.
-exports.onCreateNode = ({ node, getNode, actions }, { baseUrl }) => {
+exports.onCreateNode = ({ node, actions }, { baseUrl }) => {
   const { createNodeField } = actions
 
   // Check for Drupal node type.
@@ -198,12 +198,11 @@ exports.onCreateNode = ({ node, getNode, actions }, { baseUrl }) => {
       .then(response => response.json())
       .then(data => {
         const sanitizedData = sanitizeDrupalView(data)
-
         /*
           Take the uuid off each item and make an array of those.
           Or send an empty array.
         */
-        const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : []
+        const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : ['no-parents']
 
         createNodeField({
           node,
@@ -218,31 +217,28 @@ exports.onCreateNode = ({ node, getNode, actions }, { baseUrl }) => {
 // data layer is bootstrapped to let plugins create pages from data.
 exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   const { createPage } = actions
-  // Create landing pages
-  return new Promise((resolve, reject) => {
-    const landingPageTemplate = path.resolve(`src/templates/landing-page.js`);
-    const pageTemplate = path.resolve(`src/templates/page.js`);
 
-    // Query for page nodes to use in creating pages.
+  return new Promise((resolve, reject) => {
+    const locationTemplate = path.resolve(`src/templates/location.js`);
+
+    // Query for nodes to use in creating pages.
     resolve(
       graphql(
         `
           {
-            allNodeLandingPage {
-              edges {
-                node {
-                  fields {
-                    slug
+            locationNodes: allNodeBuilding(
+              filter: {
+                relationships: {
+                  field_design_template: {
+                    field_machine_name: { eq: "location" }
                   }
                 }
               }
-            }
-            allNodePage {
+            ) {
               edges {
                 node {
                   fields {
                     slug
-                    parents
                   }
                 }
               }
@@ -254,23 +250,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           reject(result.errors)
         }
 
-        // Create pages.
-        result.data.allNodePage.edges.forEach(({ node }) => {
+        const {
+          locationNodes
+        } = result.data
+
+        locationNodes.edges.forEach(({ node }) => {
           createPage({
             path: node.fields.slug,
-            component: pageTemplate,
-            context: {
-              slug: node.fields.slug,
-              parents: node.fields.parents
-            }
-          })
-        })
-        
-        // Create landing pages.
-        result.data.allNodeLandingPage.edges.forEach(({ node }) => {
-          createPage({
-            path: node.fields.slug,
-            component: landingPageTemplate,
+            component: locationTemplate,
             context: {
               slug: node.fields.slug
             }
