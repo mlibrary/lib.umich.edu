@@ -46,8 +46,8 @@ export default function({ data }) {
     administrative_area
   } = field_building_address
 
-  const directions_base_url = "https://www.google.com/maps/dir/?api=1"
-  const directions_destination_query = encodeURIComponent(`${field_building_official_name} ${address_line1} ${locality}, ${administrative_area} ${postal_code}`)
+  //const directions_base_url = "https://www.google.com/maps/dir/?api=1"
+  //const directions_destination_query = encodeURIComponent(`${field_building_official_name} ${address_line1} ${locality}, ${administrative_area} ${postal_code}`)
 
   return (
     <Layout>
@@ -64,15 +64,7 @@ export default function({ data }) {
 
       <Margins>
         <article aria-label="Hours, parking, access, and amenities">
-          <Feature
-            id="address"
-            heading="Address"
-          >
-            <Text>{field_building_official_name}</Text>
-            <Text>{address_line1}</Text>
-            <Text>{locality}, {administrative_area} {postal_code}</Text>
-            <Link to={directions_base_url + "&destination=" + directions_destination_query} css={{ marginTop: SPACING['3XS'] }}>View directions</Link>
-          </Feature>
+          
         </article>
       </Margins>
     </Layout>
