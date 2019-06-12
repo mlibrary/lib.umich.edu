@@ -29,17 +29,6 @@ function Feature({
   )
 }
 
-/*
-<Feature
-id="todays-hours"
-heading="Today's hours"
->
-<Text><strong css={{ fontWeight: '800' }}>General</strong>: Open 24 hours</Text>
-<Text><strong css={{ fontWeight: '800' }}>Askwith Media Library</strong>: 8am - 12am</Text>
-<Link to="/" css={{ marginTop: SPACING['3XS'] }}>View all hours</Link>
-</Feature>
-*/
-
 export default function({ data }) {
   const {
     title,
