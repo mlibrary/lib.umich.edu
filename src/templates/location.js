@@ -12,23 +12,6 @@ import Layout from "../components/layout"
 import PageHeader from '../components/page-header'
 import Link from '../components/link'
 
-function Feature({
-  heading,
-  palette,
-  icon,
-  id,
-  children
-}) {
-  return (
-    <section aria-labelledby={id} css={{
-      marginBottom: SPACING['2XL']
-    }}>
-      <Heading id={id} size="M" level="2" css={{ marginBottom: SPACING['3XS'] }}>{heading}</Heading>
-      {children}
-    </section>
-  )
-}
-
 export default function({ data }) {
   const {
     title,
