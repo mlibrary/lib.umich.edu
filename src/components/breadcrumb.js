@@ -6,13 +6,19 @@ import {
 import Link from './link'
 
 export default ({ data }) => {
-  if (!Array.isArray(data)) {
+  /*
+    Breadcrumb data is provided as encoded JSON.
+    We need to decode it and check if it's valid.
+  */
+  const parsed_data = JSON.parse(data)
+  
+  if (!parsed_data) {
     return null
   }
 
   return (
     <Breadcrumb>
-      {data.map(({ text, to }, i) => (
+      {parsed_data.map(({ text, to }, i) => (
         <BreadcrumbItem>
           {to ? (
             <Link to={to}>{text}</Link>

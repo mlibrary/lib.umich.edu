@@ -8,26 +8,37 @@ import {
 } from '@umich-lib/core'
 
 import Layout from "../components/layout"
+import Breadcrumb from '../components/breadcrumb'
 import HTML from '../components/html'
+import {
+  Template,
+  Top,
+  Side,
+  Content
+} from '../components/page-layout'
 
 export default function({ data }) {
   const {
     title,
-    body
+    body,
+    fields
   } = data.page
 
   return (
     <Layout>
       <Margins>
-        <div css={{
-          maxWidth: '38rem'
-        }}>
-          <Heading size="3XL" level="1" css={{
-            marginTop: SPACING['2XL'],
-            marginBottom: SPACING['XL']
-          }}>{title}</Heading>
-          {body && <HTML html={body.value} />}
-        </div>
+        <Template>
+          <Top>
+            <Breadcrumb data={fields.breadcrumb} />
+          </Top>
+          <Content>
+            <Heading size="3XL" level="1" css={{
+              marginBottom: SPACING['XL']
+            }}>{title}</Heading>
+
+            {body && <HTML html={body.value} />}
+          </Content>
+        </Template>
       </Margins>
     </Layout>
   )
@@ -40,6 +51,9 @@ export const query = graphql`
       title
       body {
         value
+      }
+      fields {
+        breadcrumb
       }
     }
   }

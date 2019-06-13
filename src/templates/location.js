@@ -36,10 +36,7 @@ export const query = graphql`
         summary
       }
       fields {
-        breadcrumb {
-          to
-          text
-        }
+        breadcrumb
       }
       relationships {
         field_image {
