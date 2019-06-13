@@ -61,7 +61,6 @@ export default function({
       <address aria-label="Address and contact information">
         <LayoutWithIcon d={icon_paths['address']} palette="orange">
           <Heading level="2" size="L">{title}</Heading>
-          <Text>{title}</Text>
           <Text>{address_line1}</Text>
           <Text>{locality}, {administrative_area} {postal_code}</Text>
           <Link to={createGoogleMapsLink({
