@@ -1,7 +1,6 @@
 import React from 'react'
 
 import {
-  Margins,
   SPACING,
   MEDIA_QUERIES,
   COLORS

@@ -1,11 +1,7 @@
 
 import React from "react"
 import {
-  Margins,
-  Heading,
   SPACING,
-  Alert,
-  Text,
   MEDIA_QUERIES
 } from '@umich-lib/core'
 
