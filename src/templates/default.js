@@ -3,11 +3,11 @@ import { graphql } from "gatsby"
 
 import {
   Margins,
-  Heading
+  Heading,
+  SPACING
 } from '@umich-lib/core'
 
 import Layout from "../components/layout"
-import PageHeader from '../components/page-header'
 import HTML from '../components/html'
 
 export default function({ data }) {
@@ -19,16 +19,21 @@ export default function({ data }) {
   return (
     <Layout>
       <Margins>
-        <Heading size="3XL" level="1">{title}</Heading>
-
-        {body && <HTML html={body.value} />}
+        <div css={{
+          maxWidth: '38rem'
+        }}>
+          <Heading size="3XL" level="1" css={{
+            marginTop: SPACING['2XL'],
+            marginBottom: SPACING['XL']
+          }}>{title}</Heading>
+          {body && <HTML html={body.value} />}
+        </div>
       </Margins>
     </Layout>
   )
 
 }
 
-/*
 export const query = graphql`
   query($slug: String! ) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
@@ -39,4 +44,3 @@ export const query = graphql`
     }
   }
 `
-*/
