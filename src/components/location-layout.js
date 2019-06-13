@@ -40,7 +40,7 @@ export function Side({ children }) {
       css={{
         gridArea: 'side',
         [MEDIA_QUERIES.LARGESCREEN]: {
-          paddingLeft: SPACING['XL'],
+          paddingLeft: SPACING['2XL'],
           marginLeft: SPACING['2XL'],
           borderLeft: `solid 1px ${COLORS.neutral[100]}`
         }

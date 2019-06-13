@@ -60,13 +60,18 @@ export default function({
     <React.Fragment>
       <address aria-label="Address and contact information">
         <LayoutWithIcon d={icon_paths['address']} palette="orange">
-          <Heading level="2" size="L">{title}</Heading>
+          <Heading level="2" size="M" css={{
+            paddingTop: SPACING['2XS'],
+            paddingBottom: SPACING['2XS']
+          }}>{title}</Heading>
           <Text>{address_line1}</Text>
           <Text>{locality}, {administrative_area} {postal_code}</Text>
-          <Link to={createGoogleMapsLink({
-            query: `${title} ${address_line1} ${locality}`,
-            place_id: null
-          })}>View directions</Link>
+          <Link
+            to={createGoogleMapsLink({
+              query: `${title} ${address_line1} ${locality}`,
+              place_id: null
+            })}
+          >View directions</Link>
         </LayoutWithIcon>
       </address>
     </React.Fragment>

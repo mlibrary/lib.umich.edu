@@ -10,6 +10,10 @@ import {
   Side
 } from '../components/location-layout'
 
+import {
+  Margins
+} from '@umich-lib/core'
+
 export default function({ data }) {
   const {
     title,
@@ -28,14 +32,16 @@ export default function({ data }) {
         imageData={relationships.field_image[0].localFile.childImageSharp.fluid}
         ariaLabel="Location description"
       />
-      <Template>
-        <Content>
+      <Margins>
+        <Template>
+          <Content>
 
-        </Content>
-        <Side>
-          <LocationAside {...field_building_address} title={title} />
-        </Side>
-      </Template>
+          </Content>
+          <Side>
+            <LocationAside {...field_building_address} title={title} />
+          </Side>
+        </Template>
+      </Margins>
     </Layout>
   )
 
