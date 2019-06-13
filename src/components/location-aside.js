@@ -50,7 +50,7 @@ function LayoutWithIcon({ d, palette, children }) {
 }
 
 export default function LocationAside({
-  field_building_official_name,
+  title,
   address_line1,
   administrative_area,
   locality,
@@ -64,12 +64,12 @@ export default function LocationAside({
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
           }}>Address</Heading>
-          <Text>{field_building_official_name}</Text>
+          <Text>{title}</Text>
           <Text>{address_line1}</Text>
           <Text>{locality}, {administrative_area} {postal_code}</Text>
           <Link
             to={createGoogleMapsLink({
-              query: `${field_building_official_name} ${address_line1} ${locality}`,
+              query: `${title} ${address_line1} ${locality}`,
               place_id: null
             })}
           >View directions</Link>
