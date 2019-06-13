@@ -119,29 +119,25 @@ exports.sourceNodes = async (
 }
 
 const drupal_node_types_we_care_about = [
-  'building'
+  'building',
+  'page'
 ]
 
 // Create a slug for each page and set it as a field on the node.
 exports.onCreateNode = ({ node, actions }, { baseUrl }) => {
   const { createNodeField } = actions
 
-  // Check for Drupal node type.
-  // Substring off the "node__" part.
-  if (drupal_node_types_we_care_about.includes(node.internal.type.substring(6))) {
-
-    // Create slug field to be used in the URL
+  function createDefaultBreadcrumb() {
     createNodeField({
       node,
-      name: `slug`,
-      value: node.path.alias,
+      name: `breadcrumb`,
+      value: [{ text: 'Home', to: "/",  }, { text: node.title, to: null }]
     })
   }
 
   // Breadcumb
   // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
   function processBreadcrumbData(data) {
-
     // We want to make sure the data returned has some breadcrumb items.
     // Sometimes Drupal will hand an empty array and that's
     // not what we want to process.
@@ -159,28 +155,45 @@ exports.onCreateNode = ({ node, actions }, { baseUrl }) => {
       getParentItem(data[0])
 
       // Reverse order and add current page to the end.
-      result = result.reverse().concat({ text: node.title })
+      result = result.reverse().concat({ text: node.title, to: null })
       createNodeField({
         node,
         name: `breadcrumb`,
         value: result
       })
+    } else {
+      createDefaultBreadcrumb()
     }
   }
 
-  /*
-    If the node has a field_breadcrumb then that means
-    we should check if it has breadcrumb data for us to
-    process.
-  */
-  if (node.field_breadcrumb) {
-    fetch(baseUrl + node.field_breadcrumb, {
-      retries: 5,
-      retryDelay: 2500
+  // Check for Drupal node type.
+  // Substring off the "node__" part.
+  if (drupal_node_types_we_care_about.includes(node.internal.type.substring(6))) {
+
+    /*
+      If the node has a field_breadcrumb then that means
+      we should check if it has breadcrumb data for us to
+      process.
+    */
+    if (node.field_breadcrumb) {
+      
+      fetch(baseUrl + node.field_breadcrumb, {
+        retries: 5,
+        retryDelay: 2500
+      })
+        .catch(err => console.error(err))
+        .then(response => response.json())
+        .then(data => processBreadcrumbData(data))
+    } else {
+      createDefaultBreadcrumb()
+    }
+
+    // Create slug field to be used in the URL
+    createNodeField({
+      node,
+      name: `slug`,
+      value: node.path.alias,
     })
-      .catch(err => console.error(err))
-      .then(response => response.json())
-      .then(data => processBreadcrumbData(data))
   }
 
   /*
@@ -220,12 +233,22 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
 
   return new Promise((resolve, reject) => {
     const locationTemplate = path.resolve(`src/templates/location.js`);
+    const defaultTemplate = path.resolve(`src/templates/default.js`);
 
     // Query for nodes to use in creating pages.
     resolve(
       graphql(
         `
           {
+            defaultPageNodes: allNodePage {
+              edges {
+                node {
+                  fields {
+                    slug
+                  }
+                }
+              }
+            }
             locationNodes: allNodeBuilding(
               filter: {
                 relationships: {
@@ -251,18 +274,24 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         }
 
         const {
-          locationNodes
+          locationNodes,
+          defaultPageNodes
         } = result.data
 
-        locationNodes.edges.forEach(({ node }) => {
-          createPage({
-            path: node.fields.slug,
-            component: locationTemplate,
-            context: {
-              slug: node.fields.slug
-            }
+        function handleCreatePages(edges, template) {
+          edges.forEach(({ node }) => {
+            createPage({
+              path: node.fields.slug,
+              component: template,
+              context: {
+                slug: node.fields.slug
+              }
+            })
           })
-        })
+        }
+
+        handleCreatePages(defaultPageNodes.edges, defaultTemplate)
+        handleCreatePages(locationNodes.edges, locationTemplate)
       })
     )
   })
