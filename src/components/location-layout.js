@@ -16,7 +16,7 @@ export function Template({ children }) {
           gridTemplateAreas: `
             "content side"
           `,
-          gridTemplateColumns: `1fr calc(300px + ${SPACING['4XL']})`,
+          gridTemplateColumns: `1fr calc(23rem + ${SPACING['4XL']})`,
         }
       }}
     >{children}</div>
@@ -39,8 +39,8 @@ export function Side({ children }) {
       css={{
         gridArea: 'side',
         [MEDIA_QUERIES.LARGESCREEN]: {
-          paddingLeft: SPACING['2XL'],
-          marginLeft: SPACING['2XL'],
+          paddingLeft: SPACING['3XL'],
+          marginLeft: SPACING['3XL'],
           borderLeft: `solid 1px ${COLORS.neutral[100]}`
         }
       }}

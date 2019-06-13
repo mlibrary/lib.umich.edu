@@ -27,7 +27,7 @@ function LayoutWithIcon({ d, palette, children }) {
       display: 'flex'
     }}>
       <div css={{
-        marginRight: SPACING['M']
+        marginRight: SPACING['S']
       }}>
         <span css={{
           display: 'flex',
@@ -50,7 +50,7 @@ function LayoutWithIcon({ d, palette, children }) {
 }
 
 export default function LocationAside({
-  title,
+  field_building_official_name,
   address_line1,
   administrative_area,
   locality,
@@ -60,17 +60,16 @@ export default function LocationAside({
     <React.Fragment>
       <address aria-label="Address and contact information">
         <LayoutWithIcon d={icon_paths['address']} palette="orange">
-          <div css={{
+          <Heading level="2" size="M" css={{
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
-          }}>
-            <Heading level="2" size="M">{title}</Heading>
-          </div>
+          }}>Address</Heading>
+          <Text>{field_building_official_name}</Text>
           <Text>{address_line1}</Text>
           <Text>{locality}, {administrative_area} {postal_code}</Text>
           <Link
             to={createGoogleMapsLink({
-              query: `${title} ${address_line1} ${locality}`,
+              query: `${field_building_official_name} ${address_line1} ${locality}`,
               place_id: null
             })}
           >View directions</Link>

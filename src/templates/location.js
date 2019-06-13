@@ -18,6 +18,7 @@ export default function({ data }) {
   const {
     title,
     body,
+    field_building_official_name,
     field_building_address,
     fields,
     relationships
@@ -38,7 +39,11 @@ export default function({ data }) {
 
           </Content>
           <Side>
-            <LocationAside {...field_building_address} title={title} />
+            <LocationAside
+              {...field_building_address}
+              title={title}
+              field_building_official_name={field_building_official_name}
+            />
           </Side>
         </Template>
       </Margins>
@@ -59,6 +64,7 @@ export const query = graphql`
       fields {
         breadcrumb
       }
+      field_building_official_name
       field_building_address {
         address_line1
         administrative_area
