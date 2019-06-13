@@ -7,6 +7,7 @@ import {
   COLORS,
   SPACING
 } from '@umich-lib/core'
+import Link from './link'
 
 const icon_paths = {
   'address': 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'
@@ -62,10 +63,10 @@ export default function({
           <Heading level="2" size="L">{title}</Heading>
           <Text>{address_line1}</Text>
           <Text>{locality}, {administrative_area} {postal_code}</Text>
-          <a href={createGoogleMapsLink({
+          <Link to={createGoogleMapsLink({
             query: `${title} ${address_line1} ${locality}`,
             place_id: null
-          })}>View directions</a>
+          })}>View directions</Link>
         </LayoutWithIcon>
       </address>
     </React.Fragment>
