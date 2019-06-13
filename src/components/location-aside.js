@@ -49,7 +49,7 @@ function LayoutWithIcon({ d, palette, children }) {
   )
 }
 
-export default function({
+export default function LocationAside({
   title,
   address_line1,
   administrative_area,
@@ -60,10 +60,12 @@ export default function({
     <React.Fragment>
       <address aria-label="Address and contact information">
         <LayoutWithIcon d={icon_paths['address']} palette="orange">
-          <Heading level="2" size="M" css={{
+          <div css={{
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
-          }}>{title}</Heading>
+          }}>
+            <Heading level="2" size="M">{title}</Heading>
+          </div>
           <Text>{address_line1}</Text>
           <Text>{locality}, {administrative_area} {postal_code}</Text>
           <Link

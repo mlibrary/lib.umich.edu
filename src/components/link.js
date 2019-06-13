@@ -22,7 +22,7 @@ function Link({ to, kind = 'default', ...other }) {
 
   // A regular anchor link. Probably an external link.
   return (
-    <DSLink href={to} {...other} kind={kind} css={{ ...LINK_STYLES['kind'] }} />
+    <DSLink href={to} {...other} kind={kind} />
   )
 }
 
