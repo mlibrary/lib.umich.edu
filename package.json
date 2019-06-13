@@ -30,7 +30,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
+    "build": "DRUPAL_BASE_URL=https://cms.dev.lib.umich.edu/ gatsby build",
     "serve": "gatsby serve",
     "develop": "DRUPAL_BASE_URL=https://cms.dev.lib.umich.edu/ gatsby develop",
     "start": "npm run develop",

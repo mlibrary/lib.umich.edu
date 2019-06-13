@@ -32,9 +32,7 @@ export default function({ data }) {
             <Breadcrumb data={fields.breadcrumb} />
           </Top>
           <Content>
-            <Heading size="3XL" level="1" css={{
-              marginBottom: SPACING['XL']
-            }}>{title}</Heading>
+            <Heading size="3XL" level="1">{title}</Heading>
 
             {body && <HTML html={body.value} />}
           </Content>
