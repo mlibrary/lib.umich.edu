@@ -6,6 +6,10 @@ import {
 import Link from './link'
 
 export default ({ data }) => {
+  if (!data) {
+    return null
+  }
+
   /*
     Breadcrumb data is provided as encoded JSON.
     We need to decode it and check if it's valid.

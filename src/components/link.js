@@ -12,12 +12,10 @@ function Link({ to, kind = 'default', ...other }) {
   if (to.startsWith('/')) {
     return (
       <GatsbyLink
-        css={{
-          ...LINK_STYLES[kind]
-        }}
         to={to}
-        {...other}
-      />
+      ><span css={{
+        ...LINK_STYLES[kind]
+      }} {...other} /></GatsbyLink>
     )
   }
 

@@ -2,16 +2,15 @@
   "name": "lib.umich.edu",
   "version": "1.0.0",
   "dependencies": {
-    "@emotion/babel-preset-css-prop": "^10.0.9",
     "@emotion/core": "^10.0.10",
     "@emotion/styled": "^10.0.10",
     "@reach/visually-hidden": "^0.1.4",
     "@umich-lib/core": "latest",
     "fetch-retry": "^2.0.0",
-    "gatsby": "^2.3.25",
-    "gatsby-background-image": "^0.7.0",
-    "gatsby-image": "^2.0.39",
-    "gatsby-plugin-emotion": "^4.0.6",
+    "gatsby": "^2.9.2",
+    "gatsby-background-image": "^0.7.1",
+    "gatsby-image": "^2.1.4",
+    "gatsby-plugin-emotion": "^4.0.7",
     "gatsby-plugin-manifest": "^2.1.1",
     "gatsby-plugin-offline": "^2.0.25",
     "gatsby-plugin-react-helmet": "^3.0.12",
@@ -23,7 +22,8 @@
     "react-helmet": "^5.2.0",
     "rehype-parse": "^6.0.0",
     "rehype-react": "^3.1.0",
-    "unified": "^7.1.0"
+    "unified": "^7.1.0",
+    "prettier": "^1.16.4"
   },
   "keywords": [
     "gatsby"
@@ -31,17 +31,13 @@
   "license": "MIT",
   "scripts": {
     "build": "gatsby build",
+    "build:dev": "DRUPAL_BASE_URL=https://cms.dev.lib.umich.edu/ gatsby build",
     "serve": "gatsby serve",
     "develop": "DRUPAL_BASE_URL=https://cms.dev.lib.umich.edu/ gatsby develop",
     "start": "npm run develop",
     "stage": "gatsby build && now public --name lib-umich --public",
     "format": "prettier --write '**/*.js'",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "devDependencies": {
-    "babel-preset-gatsby": "^0.1.11",
-    "gh-pages": "^2.0.1",
-    "prettier": "^1.16.4"
   },
   "repository": {
     "type": "git",
