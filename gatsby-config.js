@@ -8,10 +8,15 @@ module.exports = {
     {
       resolve: `gatsby-source-drupal`,
       options: {
-        baseUrl: `https://dev.lib.umich.edu/`
+        baseUrl: process.env.DRUPAL_BASE_URL
       },
     },
-    'gatsby-source-umich-lib',
+    {
+      resolve: `gatsby-source-umich-lib`,
+      options: {
+        baseUrl: process.env.DRUPAL_BASE_URL
+      },
+    },
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-offline',
     'gatsby-plugin-emotion'

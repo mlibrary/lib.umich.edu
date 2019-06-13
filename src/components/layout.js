@@ -74,7 +74,9 @@ const Layout = ({ children }) => (
             primary={primary}
             secondary={secondary}
           />
-          {children}
+          <main>
+            {children}
+          </main>
         </React.Fragment>
       )
     }}

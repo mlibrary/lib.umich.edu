@@ -1,10 +1,25 @@
 import React from 'react'
 import Layout from '../components/layout'
 
+import {
+  Heading,
+  Text,
+  SPACING,
+  Margins,
+  COLORS
+} from '@umich-lib/core'
+
 const NotFoundPage = () => (
   <Layout>
-    <h1>NOT FOUND</h1>
-    <p>You just hit a route that doesn&#39;t exist... the sadness.</p>
+    <Margins>
+      <Heading size="3XL" level="1" css={{ marginTop: SPACING['3XL'], marginBottom: SPACING['L'] }}><span
+        css={{
+          fontSize: '66%',
+          display: 'block',
+          color: COLORS.orange['400']
+        }}>404</span>Page not found</Heading>
+      <Text lede>We are unable to find this page.</Text>
+    </Margins>
   </Layout>
 )
 
