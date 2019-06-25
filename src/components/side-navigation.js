@@ -3,8 +3,39 @@ import { Link } from 'gatsby'
 import {
   Heading,
   SPACING,
-  LINK_STYLES
+  LINK_STYLES,
+  COLORS
 } from '@umich-lib/core'
+
+const activeStyle = {
+  display: 'inline-block',
+  borderLeft: `solid 3px ${COLORS.teal[400]}`,
+  fontWeight: '800',
+  paddingLeft: SPACING['S'],
+  marginLeft: `calc(-${SPACING['S']} - 3px)`,
+}
+
+function SideNavLink({ to, ...rest }) {
+  return (
+    <Link
+      to={to}
+      {...rest}
+      activeClassName="active"
+      css={{
+        display: 'block',
+        cursor: 'pointer',
+        paddingTop: SPACING['XS'],
+        paddingBottom: SPACING['XS'],
+        '&.active > span': {
+          ...activeStyle
+        },
+        ':hover .text': {
+          ...LINK_STYLES['special-subtle'][':hover']
+        },
+      }}
+    />
+  )
+}
 
 export default function({ parent, data }) {
 
@@ -25,14 +56,11 @@ export default function({ parent, data }) {
   return (
     <nav>
       <Heading size="S" level={2}>{parent[0].title}</Heading>
-      <ol>
+      <ol css={{ marginTop: SPACING['M'] }}>
         {items.map(({ to, text }) =>
-          <li key={to + text}><Link to={to} css={{
-            display: 'block',
-            fontWeight: '600',
-            padding: `${SPACING['XS']} 0`,
-            ':hover > span': LINK_STYLES['list-strong'][':hover']
-          }}><span>{text}</span></Link></li>
+          <li key={to + text}>
+            <SideNavLink to={to}><span><span className="text">{text}</span></span></SideNavLink>
+          </li>
         )}
       </ol>
     </nav>
