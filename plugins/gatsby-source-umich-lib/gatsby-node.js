@@ -1,5 +1,5 @@
 const path = require(`path`)
-const fetch = require("fetch-retry")
+const fetch = require("node-fetch")
 const { createBreadcrumb } = require(`./create-breadcrumb`)
 
 /**
@@ -126,26 +126,24 @@ const drupal_node_types_we_care_about = [
 ]
 
 // Create a slug for each page and set it as a field on the node.
-exports.onCreateNode = ({ node, actions }, { baseUrl }) => {
+exports.onCreateNode = async(
+  { node, actions },
+  { baseUrl }
+) => {
   const { createNodeField } = actions
 
-  function createDefaultBreadcrumb() {
-    createNodeField({
-      node,
-      name: `breadcrumb`,
-      value: [{ text: 'Home', to: "/",  }, { text: node.title, to: null }]
-    })
-  }
+  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
 
   // Check for Drupal node type.
   // Substring off the "node__" part.
   if (drupal_node_types_we_care_about.includes(node.internal.type.substring(6))) {
 
+    
     // Handle creating breadcrumb for node.
     createBreadcrumb({
       node,
       createNodeField,
-      baseUrl
+      baseUrl: baseUrlWithoutTrailingSlash
     })
 
     // Create slug field to be used in the URL
@@ -163,26 +161,18 @@ exports.onCreateNode = ({ node, actions }, { baseUrl }) => {
     This is useful for side navigation.
   */
   if (node.field_parent_menu) {
-    fetch(baseUrl + node.field_parent_menu, {
-      retries: 10,
-      retryDelay: 12000
-    })
-      .catch(err => console.error(err))
-      .then(response => response.json())
-      .then(data => {
-        const sanitizedData = sanitizeDrupalView(data)
-        /*
-          Take the uuid off each item and make an array of those.
-          Or send an empty array.
-        */
-        const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : ['no-parents']
+    const url = baseUrlWithoutTrailingSlash + node.field_parent_menu
 
-        createNodeField({
-          node,
-          name: "parents",
-          value
-        })
-      })
+    const response = await fetch(url)
+    const data = await response.json()
+    const sanitizedData = sanitizeDrupalView(data)
+    const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : ['no-parents']
+    
+    createNodeField({
+      node,
+      name: "parents",
+      value
+    })
   }
 }
 

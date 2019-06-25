@@ -1,4 +1,4 @@
-const fetch = require("fetch-retry")
+const fetch = require("node-fetch")
 
 // Breadcumb
 // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
@@ -31,7 +31,7 @@ function processBreadcrumbData({
   return null
 }
 
-function createBreadcrumb({
+async function createBreadcrumb({
   node,
   createNodeField,
   baseUrl
@@ -54,21 +54,15 @@ function createBreadcrumb({
   }
 
   if (node.field_breadcrumb) {
-    fetch(baseUrl + node.field_breadcrumb, {
-      retries: 15,
-      retryDelay: 12000
-    })
-      .catch(err => console.log(err))
-      .then(response => response.json())
-      .then(data => {
-        const breadcrumb = processBreadcrumbData({ node, data })
+    const response = await fetch(baseUrl + node.field_breadcrumb)
+    const data = await response.json()
+    const breadcrumb = processBreadcrumbData({ node, data })
 
-        if (breadcrumb) {
-          createBreadcrumbNodeField(breadcrumb)
-        } else {
-          createDefaultBreadcrumb()
-        }
-      })
+    if (breadcrumb) {
+      createBreadcrumbNodeField(breadcrumb)
+    } else {
+      createDefaultBreadcrumb()
+    }
   } else {
     createDefaultBreadcrumb()
   }
