@@ -9,7 +9,7 @@ import {
 function Footer() {
   return (
     <footer css={{
-      marginTop: SPACING['3XL'],
+      marginTop: SPACING['4XL'],
       minHeight: '14rem',
       background: COLORS['teal']['400']
     }}>
