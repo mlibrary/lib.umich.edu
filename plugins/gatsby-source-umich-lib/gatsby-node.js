@@ -1,5 +1,7 @@
 const path = require(`path`)
 const fetch = require("fetch-retry")
+const { createBreadcrumb } = require(`./create-breadcrumb`)
+
 /**
  * Implement Gatsby's Node APIs in this file.
  *
@@ -135,58 +137,16 @@ exports.onCreateNode = ({ node, actions }, { baseUrl }) => {
     })
   }
 
-  // Breadcumb
-  // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
-  function processBreadcrumbData(data) {
-    // We want to make sure the data returned has some breadcrumb items.
-    // Sometimes Drupal will hand an empty array and that's
-    // not what we want to process.
-    if (data.length) {
-      let result = []
-      function getParentItem(item) {
-        result = result.concat({
-          to: item.to,
-          text: item.text
-        })
-        if (item.parent) {
-          getParentItem(item.parent[0])
-        }
-      }
-      getParentItem(data[0])
-
-      // Reverse order and add current page to the end.
-      result = result.reverse().concat({ text: node.title, to: null })
-      createNodeField({
-        node,
-        name: `breadcrumb`,
-        value: result
-      })
-    } else {
-      createDefaultBreadcrumb()
-    }
-  }
-
   // Check for Drupal node type.
   // Substring off the "node__" part.
   if (drupal_node_types_we_care_about.includes(node.internal.type.substring(6))) {
 
-    /*
-      If the node has a field_breadcrumb then that means
-      we should check if it has breadcrumb data for us to
-      process.
-    */
-    if (node.field_breadcrumb) {
-      
-      fetch(baseUrl + node.field_breadcrumb, {
-        retries: 5,
-        retryDelay: 2500
-      })
-        .catch(err => console.error(err))
-        .then(response => response.json())
-        .then(data => processBreadcrumbData(data))
-    } else {
-      createDefaultBreadcrumb()
-    }
+    // Handle creating breadcrumb for node.
+    createBreadcrumb({
+      node,
+      createNodeField,
+      baseUrl
+    })
 
     // Create slug field to be used in the URL
     createNodeField({

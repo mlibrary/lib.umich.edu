@@ -8,11 +8,17 @@ import {
 } from '@umich-lib/core'
 
 import Layout from "../components/layout"
+import {
+  Template,
+  Top,
+  Side,
+  Content
+} from '../components/page-layout'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import SideNavigation from '../components/side-navigation'
 
-function BasicTemplate({ data }) {
+function BasicTemplate({ data, ...rest }) {
   const {
     title,
     body,
@@ -20,27 +26,29 @@ function BasicTemplate({ data }) {
     relationships
   } = data.page
 
+  console.log('data', data)
+  console.log('rest', rest)
+
   return (
     <Layout>
       <Margins>
-        <Breadcrumb data={fields.breadcrumb} />
-          <div css={{
-            display: 'flex',
-            '> nav': {
-              flex: '0 0 18rem'
-            }
-          }}>
-          <SideNavigation parent={relationships.field_parent_page} data={data.parents} />
-          <div css={{
-            maxWidth: '38rem',
-            marginBottom: SPACING['3XL']
-          }}>
+        <Template>
+          <Top>
+            <Breadcrumb data={fields.breadcrumb} />
+          </Top>
+          <Side>
+            <SideNavigation
+              parent={relationships.field_parent_page}
+              data={data.parents}
+            />
+          </Side>
+          <Content>
             <Heading size="3XL" level="1" css={{
               marginBottom: SPACING['XL']
             }}>{title}</Heading>
             {body && <HTML html={body.value} />}
-          </div>
-        </div>
+          </Content>
+        </Template>
       </Margins>
     </Layout>
   )
@@ -53,10 +61,7 @@ export const query = graphql`
     page: nodePage(fields: { slug: { eq: $slug } }) {
       title
       fields {
-        breadcrumb {
-          text
-          to
-        }
+        breadcrumb
       }
       body {
         value
