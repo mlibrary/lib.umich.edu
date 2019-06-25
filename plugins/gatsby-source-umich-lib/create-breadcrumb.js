@@ -36,34 +36,38 @@ function createBreadcrumb({
   createNodeField,
   baseUrl
 }) {
+  function createBreadcrumbNodeField(value) {
+    createNodeField({
+      node,
+      name: `breadcrumb`,
+      value: JSON.stringify(value)
+    })
+  }
+
   function createDefaultBreadcrumb() {
     const defaultBreadcrumb = [
       { text: 'Home', to: "/",  },
       { text: node.title }
     ]
 
-    createNodeField({
-      node,
-      name: `breadcrumb`,
-      value: JSON.stringify(defaultBreadcrumb)
-    })
+    createBreadcrumbNodeField(defaultBreadcrumb)
   }
 
   if (node.field_breadcrumb) {
     fetch(baseUrl + node.field_breadcrumb, {
-      retries: 5,
-      retryDelay: 2500
+      retries: 15,
+      retryDelay: 12000
     })
-      .catch(err => console.error(err))
+      .catch(err => console.log(err))
       .then(response => response.json())
       .then(data => {
         const breadcrumb = processBreadcrumbData({ node, data })
 
-        createNodeField({
-          node,
-          name: `breadcrumb`,
-          value: breadcrumb ? JSON.stringify(breadcrumb) : null
-        })
+        if (breadcrumb) {
+          createBreadcrumbNodeField(breadcrumb)
+        } else {
+          createDefaultBreadcrumb()
+        }
       })
   } else {
     createDefaultBreadcrumb()

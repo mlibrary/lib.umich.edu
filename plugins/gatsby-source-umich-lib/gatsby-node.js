@@ -164,8 +164,8 @@ exports.onCreateNode = ({ node, actions }, { baseUrl }) => {
   */
   if (node.field_parent_menu) {
     fetch(baseUrl + node.field_parent_menu, {
-      retries: 5,
-      retryDelay: 2500
+      retries: 10,
+      retryDelay: 12000
     })
       .catch(err => console.error(err))
       .then(response => response.json())
