@@ -56,7 +56,7 @@ export default function({ parent, data }) {
   return (
     <nav>
       <Heading size="S" level={2}>{parent[0].title}</Heading>
-      <ol css={{ marginTop: SPACING['M'] }}>
+      <ol css={{ marginTop: SPACING['M'], marginBottom: SPACING['L'] }}>
         {items.map(({ to, text }) =>
           <li key={to + text}>
             <SideNavLink to={to}><span><span className="text">{text}</span></span></SideNavLink>
