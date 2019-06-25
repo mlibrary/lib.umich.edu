@@ -77,7 +77,7 @@ const renderHast = new rehypeReact({
                   drupal_id
                   localFile {
                     childImageSharp {
-                      fluid(maxWidth: 500) {
+                      fluid(maxWidth: 500, quality: 90) {
                         ...GatsbyImageSharpFluid
                       }
                     }

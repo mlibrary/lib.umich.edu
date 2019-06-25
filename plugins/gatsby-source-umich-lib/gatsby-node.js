@@ -232,32 +232,20 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   const { createPage } = actions
 
   return new Promise((resolve, reject) => {
-    const locationTemplate = path.resolve(`src/templates/location.js`);
-    const defaultTemplate = path.resolve(`src/templates/default.js`);
+    const basicTemplate = path.resolve(`src/templates/basic.js`);
 
     // Query for nodes to use in creating pages.
     resolve(
       graphql(
         `
           {
-            defaultPageNodes: allNodePage {
-              edges {
-                node {
-                  fields {
-                    slug
-                  }
+            basicAllNodePage: allNodePage(filter: {
+              relationships: {
+                field_design_template: {
+                  field_machine_name: { eq: "basic" }
                 }
               }
-            }
-            locationNodes: allNodeBuilding(
-              filter: {
-                relationships: {
-                  field_design_template: {
-                    field_machine_name: { eq: "location" }
-                  }
-                }
-              }
-            ) {
+            }) {
               edges {
                 node {
                   fields {
@@ -274,8 +262,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         }
 
         const {
-          locationNodes,
-          defaultPageNodes
+          basicAllNodePage
         } = result.data
 
         function handleCreatePages(edges, template) {
@@ -290,8 +277,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           })
         }
 
-        handleCreatePages(defaultPageNodes.edges, defaultTemplate)
-        handleCreatePages(locationNodes.edges, locationTemplate)
+        handleCreatePages(basicAllNodePage.edges, basicTemplate)
       })
     )
   })
