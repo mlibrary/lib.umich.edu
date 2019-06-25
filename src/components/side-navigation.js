@@ -37,7 +37,7 @@ function SideNavLink({ to, ...rest }) {
   )
 }
 
-export default function({ parent, data }) {
+export default function SideNavigation({ parent, data }) {
 
   if (!parent || !data) {
     return null
