@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
+import { Global } from '@emotion/core'
 import { StaticQuery, graphql } from 'gatsby'
 import Header from './header'
+import Footer from './footer'
 import { UniversalHeader, GlobalStyleSheet } from '@umich-lib/core'
 
 const Layout = ({ children }) => (
@@ -57,7 +59,12 @@ const Layout = ({ children }) => (
       return (
         <React.Fragment>
           <GlobalStyleSheet />
-          <UniversalHeader />
+          <Global styles={{
+            'html, body, #___gatsby, #___gatsby > div': {
+              height: '100%'
+            }
+          }}
+          />
           <Helmet
             title={title}
             link={[
@@ -70,13 +77,22 @@ const Layout = ({ children }) => (
           >
             <html lang="en" />
           </Helmet>
-          <Header
-            primary={primary}
-            secondary={secondary}
-          />
-          <main>
-            {children}
-          </main>
+          <div css={{
+            minHeight: '100%',
+            display: 'grid',
+            gridTemplateRows: 'auto auto 1fr auto',
+            gridTemplateColumns: '100%'
+          }}>
+            <UniversalHeader />
+            <Header
+              primary={primary}
+              secondary={secondary}
+            />
+            <main>
+              {children}
+            </main>
+            <Footer />
+          </div>
         </React.Fragment>
       )
     }}
