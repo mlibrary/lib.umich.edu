@@ -5,29 +5,23 @@ import {
 
 
 const Prose = styled("div")({
-  "> *:not(:last-child)": {
+  "> *": {
     marginBottom: SPACING["M"]
   },
   "> h2:not(:last-child)": {
     marginTop: SPACING["2XL"]
   },
   "> h3:not(:last-child)": {
-    marginTop: SPACING["2XL"]
+    marginTop: SPACING["XL"]
   },
   "> h4:not(:last-child)": {
-    marginTop: SPACING["XL"],
-    marginBottom: SPACING["XS"]
+    marginTop: SPACING["XL"]
   },
   "> h5:not(:last-child)": {
-    marginTop: SPACING["XL"],
-    marginBottom: SPACING["XS"]
+    marginTop: SPACING["XL"]
   },
   li: {
     marginBottom: SPACING["XS"]
-  },
-  'img': {
-    marginTop: SPACING["XL"],
-    marginBottom: SPACING["XL"]
   }
 });
 
