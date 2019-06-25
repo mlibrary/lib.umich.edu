@@ -27,7 +27,7 @@ export default function({ parent, data }) {
       <Heading size="S" level={2}>{parent[0].title}</Heading>
       <ol>
         {items.map(({ to, text }) =>
-          <li><Link to={to} css={{
+          <li key={to + text}><Link to={to} css={{
             display: 'block',
             fontWeight: '600',
             padding: `${SPACING['XS']} 0`,

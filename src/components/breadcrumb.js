@@ -19,7 +19,7 @@ export default ({ data }) => {
   return (
     <Breadcrumb>
       {parsed_data.map(({ text, to }, i) => (
-        <BreadcrumbItem>
+        <BreadcrumbItem key={to + i}>
           {to ? (
             <Link to={to}>{text}</Link>
           ) : (
