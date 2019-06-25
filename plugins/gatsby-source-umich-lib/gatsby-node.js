@@ -210,6 +210,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    parents
                   }
                 }
               }
@@ -231,7 +232,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               path: node.fields.slug,
               component: template,
               context: {
-                slug: node.fields.slug
+                slug: node.fields.slug,
+                parents: node.fields.parents
               }
             })
           })

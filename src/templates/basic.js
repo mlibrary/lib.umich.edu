@@ -80,7 +80,6 @@ export const query = graphql`
     parents: allNodePage(filter: { drupal_id: { in: $parents } }) {
       edges {
         node {
-          id
           title
           fields {
             slug
