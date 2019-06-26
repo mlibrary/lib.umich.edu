@@ -28,7 +28,7 @@ export default function Card({
         css={{
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: '12rem',
+          paddingTop: '55%',
           marginBottom: SPACING['S'],
           borderRadius: '2px'
         }}

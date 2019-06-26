@@ -28,8 +28,8 @@ function PanelList({ children }) {
     <ol css={{
       marginTop: SPACING['L'],
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-      gridGap: SPACING['2XL']
+      gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+      gridGap: SPACING['M']
     }}>
       {children}
     </ol>
@@ -50,7 +50,9 @@ function CardPanel({ data }) {
     <PanelTemplate title={title}>
       <PanelList>
         {cards.map(({ title, body, fields, relationships }) => (
-          <li>
+          <li css={{
+            marginBottom: SPACING['M']
+          }}>
             <Card
               image={getImage(relationships.field_image)}
               to={fields.slug}
