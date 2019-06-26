@@ -183,16 +183,33 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
 
   return new Promise((resolve, reject) => {
     const basicTemplate = path.resolve(`src/templates/basic.js`);
+    const landingTemplate = path.resolve(`src/templates/landing.js`);
+
+    function getTemplate(node) {
+      const {
+        field_machine_name
+      } = node.relationships.field_design_template
+
+      if (field_machine_name === 'basic') {
+        return basicTemplate
+      } else if (field_machine_name === 'landing_page') {
+        return landingTemplate
+      }
+
+      return null
+    }
 
     // Query for nodes to use in creating pages.
     resolve(
       graphql(
         `
           {
-            basicAllNodePage: allNodePage(filter: {
+            pages: allNodePage(filter: {
               relationships: {
                 field_design_template: {
-                  field_machine_name: { eq: "basic" }
+                  field_machine_name: {
+                    in: ["landing_page", "basic"]
+                  }
                 }
               }
             }) {
@@ -201,6 +218,11 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   fields {
                     slug
                     parents
+                  }
+                  relationships {
+                    field_design_template {
+                      field_machine_name
+                    }
                   }
                 }
               }
@@ -211,13 +233,11 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         if (result.errors) {
           reject(result.errors)
         }
+        
+        result.data.pages.edges.forEach(({ node }) => {
+          const template = getTemplate(node)
 
-        const {
-          basicAllNodePage
-        } = result.data
-
-        function handleCreatePages(edges, template) {
-          edges.forEach(({ node }) => {
+          if (template) {
             createPage({
               path: node.fields.slug,
               component: template,
@@ -226,10 +246,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 parents: node.fields.parents
               }
             })
-          })
-        }
-
-        handleCreatePages(basicAllNodePage.edges, basicTemplate)
+          }
+        })
       })
     )
   })

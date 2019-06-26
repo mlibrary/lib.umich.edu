@@ -16,8 +16,29 @@ export default function Card({
   to,
   description
 }) {
+  if (!image) {
+    return (
+      <React.Fragment>
+        <Link to={to} css={{
+          ...LINK_STYLES['list-strong']
+        }}>
+          <h3 css={{
+          display: 'inline',
+          ...LINK_STYLES['list-strong']
+          }}>{title}</h3>
+        </Link>
+        {description && (<p css={{
+          marginTop: SPACING['XS'],
+          color: COLORS.neutral['300']
+        }}>{description}</p>)}
+      </React.Fragment>
+    )
+  }
+
+
   return (
     <Link to={to} css={{
+      'display': 'block',
       ':hover h3': {
         ...LINK_STYLES['list-strong'][':hover']
       }

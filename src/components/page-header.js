@@ -15,9 +15,11 @@ export default function PageHeader({
   breadcrumb,
   title,
   summary,
-  imageData,
+  image,
   ...rest
 }) {
+  const imageData = image ? image[0].localFile.childImageSharp.fluid : null
+
   return (
     <Margins>
       <header
@@ -58,28 +60,33 @@ export default function PageHeader({
             {summary}
           </Text>
         </div>
-        <BackgroundImage
-          tag="div"
-          fluid={imageData}
-          css={{
-            display: 'none',
-            [MEDIA_QUERIES.LARGESCREEN]: {
-              display: 'block'
-            },
-            flex: "1 1 0",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            flexBasis: `calc(50% + ${SPACING['2XL']})`,
-            flexGrow: '0',
-            marginRight: `-${SPACING['2XL']}`
-          }}
-        />
-        <Img fluid={imageData} css={{
-          margin: `0 -${SPACING['M']}`,
-          [MEDIA_QUERIES.LARGESCREEN]: {
-            display: 'none'
-          }
-        }}/>
+        {imageData && (
+          <React.Fragment>
+            <BackgroundImage
+              tag="div"
+              fluid={imageData}
+              css={{
+                display: 'none',
+                [MEDIA_QUERIES.LARGESCREEN]: {
+                  display: 'block'
+                },
+                flex: "1 1 0",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                flexBasis: `calc(50% + ${SPACING['2XL']})`,
+                flexGrow: '0',
+                marginRight: `-${SPACING['2XL']}`
+              }}
+            />
+            <Img fluid={imageData} css={{
+              margin: `0 -${SPACING['M']}`,
+              [MEDIA_QUERIES.LARGESCREEN]: {
+                display: 'none'
+              }
+            }}/>
+          </React.Fragment>
+        )}
+        
       </header>
     </Margins>
   );

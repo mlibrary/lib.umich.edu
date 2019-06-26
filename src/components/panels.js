@@ -6,8 +6,8 @@ import {
   Margins
 } from '@umich-lib/core'
 
-import HTML from '../html'
-import Card from '../card'
+import HTML from './html'
+import Card from './card'
 
 function PanelTemplate({ title, children, shaded }) {
   return (
@@ -41,9 +41,11 @@ function PanelList({ children }) {
 function CardPanel({ data }) {
   const title = data.field_title
   const cards = data.relationships.field_cards
+  const template = data.relationships.field_card_template.field_machine_name
+  const noImage = template === 'standard_no_image'
 
   function getImage(images) {
-    return !images
+    return !images || noImage
       ? null
       : images[0].localFile.childImageSharp.fluid
   }
@@ -56,7 +58,7 @@ function CardPanel({ data }) {
             marginBottom: SPACING['M']
           }}>
             <Card
-              image={getImage(relationships.field_image)}
+              image={relationships ? getImage(relationships.field_image) : null}
               to={fields.slug}
               title={title}
               description={body.summary}
