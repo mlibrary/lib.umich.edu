@@ -46,7 +46,7 @@ export default function PageHeader({
           <Breadcrumb data={breadcrumb} />
           <Heading
             size="3XL"
-            level={2}
+            level={1}
             css={{
               [MEDIA_QUERIES.LARGESCREEN]: {
                 marginTop: SPACING["M"]

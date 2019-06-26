@@ -25,13 +25,13 @@ function PanelTemplate({ title, children, shaded }) {
   )
 }
 
-function PanelList({ children }) {
+function PanelList({ children, noImage }) {
   return (
     <ol css={{
       marginTop: SPACING['L'],
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-      gridGap: SPACING['M'],
+      gridGap: noImage ? `${SPACING['M']} ${SPACING['3XL']}` : SPACING['M']
     }}>
       {children}
     </ol>
@@ -52,7 +52,7 @@ function CardPanel({ data }) {
 
   return (
     <PanelTemplate title={title}>
-      <PanelList>
+      <PanelList noImage={noImage}>
         {cards.map(({ title, body, fields, relationships }) => (
           <li css={{
             marginBottom: SPACING['M']
