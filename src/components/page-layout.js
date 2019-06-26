@@ -1,4 +1,3 @@
-
 import React from "react"
 import {
   SPACING,
@@ -43,7 +42,7 @@ export function Side({ children, ...rest }) {
       }}
       {...rest}
     >
-
+      {children}
     </aside>
   )
 }
@@ -53,7 +52,8 @@ export function Content({ children, ...rest }) {
     <div
       css={{
         maxWidth: '38rem',
-        gridArea: 'content'
+        gridArea: 'content',
+        marginBottom: SPACING['4XL']
       }}
       {...rest}
     >

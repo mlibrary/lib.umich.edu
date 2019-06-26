@@ -1,5 +1,7 @@
-const fetch = require("fetch-retry")
-const { createBreadcrumb } = require(`./breadcrumb`)
+const path = require(`path`)
+const fetch = require("node-fetch")
+const { createBreadcrumb } = require(`./create-breadcrumb`)
+
 /**
  * Implement Gatsby's Node APIs in this file.
  *
@@ -124,18 +126,24 @@ const drupal_node_types_we_care_about = [
 ]
 
 // Create a slug for each page and set it as a field on the node.
-exports.onCreateNode = ({ node, actions }, { baseUrl }) => {
+exports.onCreateNode = async(
+  { node, actions },
+  { baseUrl }
+) => {
   const { createNodeField } = actions
+
+  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
 
   // Check for Drupal node type.
   // Substring off the "node__" part.
   if (drupal_node_types_we_care_about.includes(node.internal.type.substring(6))) {
 
+    
     // Handle creating breadcrumb for node.
     createBreadcrumb({
       node,
       createNodeField,
-      baseUrl
+      baseUrl: baseUrlWithoutTrailingSlash
     })
 
     // Create slug field to be used in the URL
@@ -153,25 +161,76 @@ exports.onCreateNode = ({ node, actions }, { baseUrl }) => {
     This is useful for side navigation.
   */
   if (node.field_parent_menu) {
-    fetch(baseUrl + node.field_parent_menu, {
-      retries: 5,
-      retryDelay: 2500
-    })
-      .catch(err => console.error(err))
-      .then(response => response.json())
-      .then(data => {
-        const sanitizedData = sanitizeDrupalView(data)
-        /*
-          Take the uuid off each item and make an array of those.
-          Or send an empty array.
-        */
-        const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : ['no-parents']
+    const url = baseUrlWithoutTrailingSlash + node.field_parent_menu
 
-        createNodeField({
-          node,
-          name: "parents",
-          value
-        })
-      })
+    const response = await fetch(url)
+    const data = await response.json()
+    const sanitizedData = sanitizeDrupalView(data)
+    const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : ['no-parents']
+    
+    createNodeField({
+      node,
+      name: "parents",
+      value
+    })
   }
+}
+
+// Implement the Gatsby API “createPages”. This is called once the
+// data layer is bootstrapped to let plugins create pages from data.
+exports.createPages = ({ actions, graphql }, { baseUrl }) => {
+  const { createPage } = actions
+
+  return new Promise((resolve, reject) => {
+    const basicTemplate = path.resolve(`src/templates/basic.js`);
+
+    // Query for nodes to use in creating pages.
+    resolve(
+      graphql(
+        `
+          {
+            basicAllNodePage: allNodePage(filter: {
+              relationships: {
+                field_design_template: {
+                  field_machine_name: { eq: "basic" }
+                }
+              }
+            }) {
+              edges {
+                node {
+                  fields {
+                    slug
+                    parents
+                  }
+                }
+              }
+            }
+          }
+        `
+      ).then(result => {
+        if (result.errors) {
+          reject(result.errors)
+        }
+
+        const {
+          basicAllNodePage
+        } = result.data
+
+        function handleCreatePages(edges, template) {
+          edges.forEach(({ node }) => {
+            createPage({
+              path: node.fields.slug,
+              component: template,
+              context: {
+                slug: node.fields.slug,
+                parents: node.fields.parents
+              }
+            })
+          })
+        }
+
+        handleCreatePages(basicAllNodePage.edges, basicTemplate)
+      })
+    )
+  })
 }

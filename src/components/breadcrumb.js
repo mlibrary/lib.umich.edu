@@ -6,10 +6,6 @@ import {
 import Link from './link'
 
 export default ({ data }) => {
-  if (!data) {
-    return null
-  }
-
   /*
     Breadcrumb data is provided as encoded JSON.
     We need to decode it and check if it's valid.
@@ -23,7 +19,7 @@ export default ({ data }) => {
   return (
     <Breadcrumb>
       {parsed_data.map(({ text, to }, i) => (
-        <BreadcrumbItem>
+        <BreadcrumbItem key={to + i}>
           {to ? (
             <Link to={to}>{text}</Link>
           ) : (
