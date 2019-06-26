@@ -23,7 +23,7 @@ export default function LandingTemplate({ data, ...rest }) {
       <PageHeader
         breadcrumb={fields.breadcrumb}
         title={title}
-        summary={body.summary}
+        summary={body ? body.summary : null}
         image={relationships.field_image}
       />
       <Margins>
