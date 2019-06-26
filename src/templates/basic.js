@@ -17,6 +17,7 @@ import {
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import SideNavigation from '../components/side-navigation'
+import Panels from '../components/panels'
 
 function BasicTemplate({ data, ...rest }) {
   const {
@@ -25,6 +26,8 @@ function BasicTemplate({ data, ...rest }) {
     fields,
     relationships
   } = data.page
+
+  console.log('BasicTemplate', data, rest)
 
   return (
     <Layout>
@@ -47,6 +50,8 @@ function BasicTemplate({ data, ...rest }) {
             {body && <HTML html={body.value}/>}
           </Content>
         </Template>
+
+        <Panels data={relationships.field_panels} />
       </Margins>
     </Layout>
   )
@@ -70,6 +75,63 @@ export const query = graphql`
             title
             fields {
               slug
+            }
+          }
+        }
+        field_panels {
+          ... on paragraph__card_panel {
+            field_title
+            id
+            relationships {
+              field_card_template {
+                field_machine_name
+              }
+              field_cards {
+                ... on node__page {
+                  title
+                  body {
+                    summary
+                  }
+                  fields {
+                    slug
+                  }
+                }
+                ... on node__building {
+                  title
+                  body {
+                    summary
+                  }
+                  fields {
+                    slug
+                  }
+                  relationships {
+                    field_image {
+                      localFile {
+                        childImageSharp {
+                          fluid(maxWidth: 800, quality: 80) {
+                            ...GatsbyImageSharpFluid
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              } 
+            }
+          }
+          ... on paragraph__text_panel {
+            field_title
+            id
+            relationships {
+              field_text_template {
+                field_machine_name
+              }
+              field_text_card {
+                field_title
+                field_body {
+                  processed
+                }
+              }
             }
           }
         }

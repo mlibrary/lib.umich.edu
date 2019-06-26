@@ -53,7 +53,7 @@ const renderHast = new rehypeReact({
     h4: Heading4,
     h5: Heading5,
     h6: Heading6,
-    a: ({children, ...other}) => ({ to, children }) => <Link to={to}>{children}</Link>,
+    a: ({children, href, ...other}) => <Link to={href}>{children}</Link>,
     p: ({children}) => <Text>{children}</Text>,
     strong: ({children}) => <strong css={{ fontWeight: '800' }}>{children}</strong>,
     ul: ({ children }) => <List type="bulleted">{children}</List>,
@@ -77,7 +77,7 @@ const renderHast = new rehypeReact({
                   drupal_id
                   localFile {
                     childImageSharp {
-                      fluid(maxWidth: 500, quality: 90) {
+                      fluid(maxWidth: 1280, quality: 80) {
                         ...GatsbyImageSharpFluid
                       }
                     }
