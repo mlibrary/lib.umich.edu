@@ -53,10 +53,13 @@ function CardPanel({ data }) {
   return (
     <PanelTemplate title={title}>
       <PanelList noImage={noImage}>
-        {cards.map(({ title, body, fields, relationships }) => (
-          <li css={{
-            marginBottom: SPACING['S']
-          }}>
+        {cards.map(({ title, body, fields, relationships }, i) => (
+          <li
+            css={{
+              marginBottom: SPACING['S']
+            }}
+            key={i + title}
+          >
             <Card
               image={relationships ? getImage(relationships.field_image) : null}
               to={fields.slug}
