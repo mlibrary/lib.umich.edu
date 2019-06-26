@@ -4,7 +4,8 @@ import {
   Heading,
   SPACING,
   LINK_STYLES,
-  COLORS
+  COLORS,
+  MEDIA_QUERIES
 } from '@umich-lib/core'
 
 const activeStyle = {
@@ -70,7 +71,12 @@ export default function SideNavigation({
   })
 
   return (
-    <nav>
+    <nav css={{
+      display: 'none',
+      [MEDIA_QUERIES.LARGESCREEN]: {
+        display: 'block'
+      }
+    }}>
       <Heading size="S" level={2}>{parent[0].title}</Heading>
       <ol css={{ marginTop: SPACING['M'], marginBottom: SPACING['L'] }}>
         {items.map(({ to, text }) =>
