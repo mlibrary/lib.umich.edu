@@ -6,8 +6,8 @@ import {
   Margins
 } from '@umich-lib/core'
 
-import HTML from '../html'
-import Card from '../card'
+import HTML from './html'
+import Card from './card'
 
 function PanelTemplate({ title, children, shaded }) {
   return (
@@ -25,13 +25,13 @@ function PanelTemplate({ title, children, shaded }) {
   )
 }
 
-function PanelList({ children }) {
+function PanelList({ children, noImage }) {
   return (
     <ol css={{
       marginTop: SPACING['L'],
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-      gridGap: SPACING['M'],
+      gridGap: noImage ? `${SPACING['M']} ${SPACING['3XL']}` : SPACING['M']
     }}>
       {children}
     </ol>
@@ -41,22 +41,27 @@ function PanelList({ children }) {
 function CardPanel({ data }) {
   const title = data.field_title
   const cards = data.relationships.field_cards
+  const template = data.relationships.field_card_template.field_machine_name
+  const noImage = template === 'standard_no_image'
 
   function getImage(images) {
-    return !images
+    return !images || noImage
       ? null
       : images[0].localFile.childImageSharp.fluid
   }
 
   return (
     <PanelTemplate title={title}>
-      <PanelList>
-        {cards.map(({ title, body, fields, relationships }) => (
-          <li css={{
-            marginBottom: SPACING['M']
-          }}>
+      <PanelList noImage={noImage}>
+        {cards.map(({ title, body, fields, relationships }, i) => (
+          <li
+            css={{
+              marginBottom: SPACING['S']
+            }}
+            key={i + title}
+          >
             <Card
-              image={getImage(relationships.field_image)}
+              image={relationships ? getImage(relationships.field_image) : null}
               to={fields.slug}
               title={title}
               description={body.summary}
