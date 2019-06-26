@@ -37,6 +37,7 @@ function BasicTemplate({ data, ...rest }) {
             <SideNavigation
               parent={relationships.field_parent_page}
               data={data.parents}
+              parentOrder={rest.pageContext.parents}
             />
           </Side>
           <Content>
@@ -78,6 +79,7 @@ export const query = graphql`
       edges {
         node {
           title
+          drupal_id
           fields {
             slug
           }

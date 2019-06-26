@@ -37,16 +37,32 @@ function SideNavLink({ to, ...rest }) {
   )
 }
 
-export default function SideNavigation({ parent, data }) {
+/*
+  We need to reorder the nodes by Drupal uuids that
+  are listed in `order`.
 
+  This maintains the child/parent order menu system
+  that content editors set in the CMS.
+*/
+function OrderNodes(order, nodes) {
+  return order.map(id => nodes.find(({ node }) => node.drupal_id === id))
+}
+
+export default function SideNavigation({
+  parent,
+  parentOrder,
+  data
+}) {
   if (!parent || !data) {
     return null
   }
 
+  const nodes = OrderNodes(parentOrder, data.edges)
+
   /*
     Process source data for the component
   */
-  const items = data.edges.map(({ node }) => {
+  const items = nodes.map(({ node }) => {
     return {
       text: node.title,
       to: node.fields.slug
