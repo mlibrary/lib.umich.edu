@@ -55,7 +55,7 @@ function CardPanel({ data }) {
       <PanelList noImage={noImage}>
         {cards.map(({ title, body, fields, relationships }) => (
           <li css={{
-            marginBottom: SPACING['M']
+            marginBottom: SPACING['S']
           }}>
             <Card
               image={relationships ? getImage(relationships.field_image) : null}
