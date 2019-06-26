@@ -27,8 +27,6 @@ function BasicTemplate({ data, ...rest }) {
     relationships
   } = data.page
 
-  console.log('BasicTemplate', data, rest)
-
   return (
     <Layout>
       <Margins>
