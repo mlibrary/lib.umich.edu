@@ -86,7 +86,7 @@ function TextPanel({ data }) {
             maxWidth: '28rem'
           }}>
             <Heading level={2} size="L" css={{
-              marginBottom: SPACING['L']
+              marginBottom: SPACING['M']
             }}>{title}</Heading>
             <HTML html={html} />
           </div>
