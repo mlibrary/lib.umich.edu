@@ -48,9 +48,8 @@ function BasicTemplate({ data, ...rest }) {
             {body && <HTML html={body.value}/>}
           </Content>
         </Template>
-
-        <Panels data={relationships.field_panels} />
       </Margins>
+      <Panels data={relationships.field_panels} />
     </Layout>
   )
 }

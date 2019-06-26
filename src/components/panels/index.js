@@ -2,23 +2,25 @@ import React from 'react'
 import {
   Heading,
   SPACING,
-  COLORS
+  COLORS,
+  Margins
 } from '@umich-lib/core'
 
 import HTML from '../html'
 import Card from '../card'
 
-function PanelTemplate({ title, children }) {
+function PanelTemplate({ title, children, shaded }) {
   return (
     <section css={{
-      marginTop: SPACING['3XL'],
       paddingTop: SPACING['3XL'],
-      paddingBottom: SPACING['M'],
-      marginBottom: SPACING['3XL'],
-      borderTop: `solid 1px ${COLORS.neutral['100']}`
+      paddingBottom: SPACING['3XL'],
+      borderTop: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+      background: shaded ? COLORS.blue['100'] : ''
     }}>
-      {title && (<Heading level={2} size="L">{title}</Heading>)}
-      {children}
+      <Margins>
+        {title && (<Heading level={2} size="L">{title}</Heading>)}
+        {children}
+      </Margins>
     </section>
   )
 }
@@ -29,7 +31,7 @@ function PanelList({ children }) {
       marginTop: SPACING['L'],
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-      gridGap: SPACING['M']
+      gridGap: SPACING['M'],
     }}>
       {children}
     </ol>
@@ -74,7 +76,7 @@ function TextPanel({ data }) {
     const html = data.relationships.field_text_card[0].field_body.processed
 
     return (
-      <PanelTemplate>
+      <PanelTemplate shaded>
         <div css={{
           display: 'flex',
           justifyContent: 'center'
