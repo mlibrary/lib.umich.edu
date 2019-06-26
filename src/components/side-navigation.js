@@ -71,13 +71,16 @@ export default function SideNavigation({
   })
 
   return (
-    <nav css={{
-      display: 'none',
-      [MEDIA_QUERIES.LARGESCREEN]: {
-        display: 'block'
-      }
-    }}>
-      <Heading size="S" level={2}>{parent[0].title}</Heading>
+    <nav
+      css={{
+        display: 'none',
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          display: 'block'
+        }
+      }}
+      aria-labelledby="side-nav-heading"
+    >
+      <Heading size="S" level={2} id="side-nav-heading">{parent[0].title}</Heading>
       <ol css={{ marginTop: SPACING['M'], marginBottom: SPACING['L'] }}>
         {items.map(({ to, text }) =>
           <li key={to + text}>
