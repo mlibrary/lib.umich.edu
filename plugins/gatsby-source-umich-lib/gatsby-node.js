@@ -121,8 +121,9 @@ exports.sourceNodes = async (
 }
 
 const drupal_node_types_we_care_about = [
+  'page',
   'building',
-  'page'
+  'section_page'
 ]
 
 // Create a slug for each page and set it as a field on the node.
@@ -137,8 +138,6 @@ exports.onCreateNode = async(
   // Check for Drupal node type.
   // Substring off the "node__" part.
   if (drupal_node_types_we_care_about.includes(node.internal.type.substring(6))) {
-
-    
     // Handle creating breadcrumb for node.
     createBreadcrumb({
       node,
@@ -184,19 +183,23 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   return new Promise((resolve, reject) => {
     const basicTemplate = path.resolve(`src/templates/basic.js`);
     const landingTemplate = path.resolve(`src/templates/landing.js`);
+    const sectionTemplate = path.resolve(`src/templates/section.js`);
 
     function getTemplate(node) {
       const {
         field_machine_name
       } = node.relationships.field_design_template
 
-      if (field_machine_name === 'basic') {
-        return basicTemplate
-      } else if (field_machine_name === 'landing_page') {
-        return landingTemplate
+      switch (field_machine_name) {
+        case 'basic':
+          return basicTemplate
+        case 'landing_page':
+          return landingTemplate
+        case 'section':
+          return sectionTemplate
+        default:
+          return null
       }
-
-      return null
     }
 
     // Query for nodes to use in creating pages.
@@ -227,14 +230,44 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 }
               }
             }
+            sections: allNodeSectionPage(filter: {
+              relationships: {
+                field_design_template: {
+                  field_machine_name: {
+                    in: ["section"]
+                  }
+                }
+              }
+            }) {
+              edges {
+                node {
+                  fields {
+                    slug
+                    parents
+                  }
+                  relationships {
+                    field_design_template {
+                      field_machine_name
+                    }
+                  }
+                }
+              }
+            }
           }
         `
       ).then(result => {
         if (result.errors) {
           reject(result.errors)
         }
+
+        const {
+          pages,
+          sections
+        } = result.data
+
+        const edges = pages.edges.concat(sections.edges)
         
-        result.data.pages.edges.forEach(({ node }) => {
+        edges.forEach(({ node }) => {
           const template = getTemplate(node)
 
           if (template) {
