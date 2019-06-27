@@ -6,6 +6,7 @@ import {
 } from '@umich-lib/core'
 
 import Layout from "../components/layout"
+import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
 import HTML from '../components/html'
 import Panels from '../components/panels'
@@ -20,6 +21,7 @@ export default function LandingTemplate({ data, ...rest }) {
 
   return (
     <Layout>
+      <SEO title={title} />
       <PageHeader
         breadcrumb={fields.breadcrumb}
         title={title}

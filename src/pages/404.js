@@ -8,9 +8,11 @@ import {
   Margins,
   COLORS
 } from '@umich-lib/core'
+import SEO from '../components/seo'
 
 const NotFoundPage = () => (
   <Layout>
+    <SEO title="404" />
     <Margins>
       <Heading size="3XL" level="1" css={{ marginTop: SPACING['3XL'], marginBottom: SPACING['L'] }}><span
         css={{
