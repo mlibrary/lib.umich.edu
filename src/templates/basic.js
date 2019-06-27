@@ -8,6 +8,7 @@ import {
 } from '@umich-lib/core'
 
 import Layout from "../components/layout"
+import SEO from '../components/seo'
 import {
   Template,
   Top,
@@ -29,6 +30,7 @@ function BasicTemplate({ data, ...rest }) {
 
   return (
     <Layout>
+      <SEO title={title} />
       <Margins>
         <Template>
           <Top>

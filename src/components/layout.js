@@ -1,21 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Helmet from 'react-helmet'
 import { Global } from '@emotion/core'
 import { StaticQuery, graphql } from 'gatsby'
+
+import { UniversalHeader, GlobalStyleSheet } from '@umich-lib/core'
+
 import Header from './header'
 import Footer from './footer'
-import { UniversalHeader, GlobalStyleSheet } from '@umich-lib/core'
 
 const Layout = ({ children }) => (
   <StaticQuery
     query={graphql`
       {
-        site {
-          siteMetadata {
-            title
-          }
-        }
         allNavPrimary {
           edges {
             node {
@@ -50,9 +46,6 @@ const Layout = ({ children }) => (
       }
     `}
     render={data => {
-      const {
-        title
-      } = data.site.siteMetadata
       const primary = data.allNavPrimary.edges[0].node.nav
       const secondary = data.allNavUtility.edges[0].node.nav
 
@@ -65,18 +58,6 @@ const Layout = ({ children }) => (
             }
           }}
           />
-          <Helmet
-            title={title}
-            link={[
-              {
-                rel: 'shortcut icon',
-                type: 'image/png',
-                href: 'https://raw.githubusercontent.com/mlibrary/umich-lib-ui/master/www/static/favicon.ico'
-              }
-            ]}
-          >
-            <html lang="en" />
-          </Helmet>
           <div css={{
             minHeight: '100%',
             display: 'grid',
