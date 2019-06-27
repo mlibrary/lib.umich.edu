@@ -3,8 +3,6 @@ import { Link } from 'gatsby'
 import BackgroundImage from 'gatsby-background-image'
 import {
   COLORS,
-  TYPOGRAPHY,
-  Heading,
   SPACING,
   LINK_STYLES
 } from '@umich-lib/core'
