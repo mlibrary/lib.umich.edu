@@ -52,10 +52,10 @@ export default ({ primary, secondary }) => (
                     <Link
                       to={to}
                       css={{
-                        ...LINK_STYLES['special-subtle'],
+                        ...LINK_STYLES['special'],
                         padding: `${SPACING['S']} 0`,
                         ':hover': {
-                          '.text': LINK_STYLES['special-subtle'][':hover']
+                          '.text': LINK_STYLES['special'][':hover']
                         }
                       }}
                     ><span className="text">{text}</span></Link>

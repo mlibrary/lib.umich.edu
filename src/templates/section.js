@@ -1,13 +1,11 @@
 import React from 'react'
 import { graphql } from "gatsby"
 
-import {
-  Margins
-} from '@umich-lib/core'
-
 import Layout from "../components/layout"
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
+import HorizontalNavigation from '../components/horizontal-navigation'
+import Panels from '../components/panels'
 
 function SectionTemplate({ data, ...rest }) {
   const {
@@ -15,7 +13,8 @@ function SectionTemplate({ data, ...rest }) {
     field_header_title,
     field_horizontal_nav_title,
     fields,
-    body
+    body,
+    relationships
   } = data.page
 
   return (
@@ -25,10 +24,10 @@ function SectionTemplate({ data, ...rest }) {
         breadcrumb={fields.breadcrumb}
         title={field_header_title}
         summary={body ? body.summary : null}
+        image={relationships.field_image}
       />
-      <Margins>
-        {field_horizontal_nav_title}
-      </Margins>
+      <HorizontalNavigation />
+      <Panels data={relationships.field_panels} />
     </Layout>
   )
 }
@@ -36,13 +35,89 @@ function SectionTemplate({ data, ...rest }) {
 export default SectionTemplate
 
 export const query = graphql`
+  fragment BuildingCardFragment on node__building {
+    title
+    body {
+      summary
+    }
+    fields {
+      slug
+    }
+    field_building_address {
+      locality
+      address_line1
+      postal_code
+      administrative_area
+    }
+    relationships {
+      field_image {
+        localFile {
+          childImageSharp {
+            fluid(maxWidth: 600, quality: 80) {
+              ...GatsbyImageSharpFluid
+            }
+          }
+        }
+      }
+    }
+  }
+
+  fragment CardPanelFragment on paragraph__card_panel {
+    field_title
+    id
+    relationships {
+      field_card_template {
+        field_machine_name
+      }
+      field_cards {
+        ... on node__building {
+          ...BuildingCardFragment
+        }
+      } 
+    }
+  }
+
   query($slug: String!) {
     page: nodeSectionPage(fields: { slug: { eq: $slug } }) {
       title
       field_header_title
       field_horizontal_nav_title
+      body {
+        summary
+      }
       fields {
         breadcrumb
+      }
+      relationships {
+        field_image {
+          localFile {
+            childImageSharp {
+              fluid(maxWidth: 800, quality: 80) {
+                ...GatsbyImageSharpFluid
+              }
+            }
+          }
+        }
+        field_panels {
+          ... on paragraph__card_panel {
+            ...CardPanelFragment
+          }
+          ... on paragraph__text_panel {
+            field_title
+            id
+            relationships {
+              field_text_template {
+                field_machine_name
+              }
+              field_text_card {
+                field_title
+                field_body {
+                  processed
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

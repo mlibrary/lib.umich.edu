@@ -31,7 +31,7 @@ function SideNavLink({ to, ...rest }) {
           ...activeStyle
         },
         ':hover .text': {
-          ...LINK_STYLES['special-subtle'][':hover']
+          ...LINK_STYLES['special'][':hover']
         },
       }}
     />

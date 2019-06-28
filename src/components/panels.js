@@ -3,11 +3,13 @@ import {
   Heading,
   SPACING,
   COLORS,
-  Margins
+  Margins,
+  Icon
 } from '@umich-lib/core'
 
 import HTML from './html'
 import Card from './card'
+import Address from './address'
 
 function PanelTemplate({ title, children, shaded }) {
   return (
@@ -31,7 +33,9 @@ function PanelList({ children, noImage }) {
       marginTop: SPACING['L'],
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-      gridGap: noImage ? `${SPACING['M']} ${SPACING['3XL']}` : SPACING['M']
+      gridGap: noImage
+        ? `${SPACING['M']} ${SPACING['3XL']}`
+        : `${SPACING['XL']} ${SPACING['M']}`
     }}>
       {children}
     </ol>
@@ -43,6 +47,7 @@ function CardPanel({ data }) {
   const cards = data.relationships.field_cards
   const template = data.relationships.field_card_template.field_machine_name
   const noImage = template === 'standard_no_image'
+  const useSummary = template !== 'address_and_hours'
 
   function getImage(images) {
     return !images || noImage
@@ -50,10 +55,33 @@ function CardPanel({ data }) {
       : images[0].localFile.childImageSharp.fluid
   }
 
+  function renderCardChildren(rest) {
+    if (template === 'address_and_hours') {
+      return (
+        <div css={{
+          display: 'flex',
+          marginTop: SPACING['XS']
+        }}>
+          <span css={{
+            color: COLORS.maize['500'],
+            marginRight: SPACING['2XS']
+          }}>
+            <Icon d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+          </span>
+          <Address
+            data={rest.field_building_address}
+          />
+        </div>
+      )
+    }
+
+    return null
+  }
+
   return (
     <PanelTemplate title={title}>
       <PanelList noImage={noImage}>
-        {cards.map(({ title, body, fields, relationships }, i) => (
+        {cards.map(({ title, body, fields, relationships, ...rest }, i) => (
           <li
             css={{
               marginBottom: SPACING['S']
@@ -64,7 +92,8 @@ function CardPanel({ data }) {
               image={relationships ? getImage(relationships.field_image) : null}
               to={fields.slug}
               title={title}
-              description={body.summary}
+              description={useSummary ? body.summary : null}
+              children={renderCardChildren(rest)}
             />
           </li>
         ))}
@@ -88,7 +117,7 @@ function TextPanel({ data }) {
         }}>
           <div css={{
             textAlign: 'center',
-            maxWidth: '28rem'
+            maxWidth: '38rem'
           }}>
             <Heading level={2} size="L" css={{
               marginBottom: SPACING['M']

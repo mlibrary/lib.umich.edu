@@ -7,28 +7,32 @@ import {
   LINK_STYLES
 } from '@umich-lib/core'
 
+import LAYERS from '../styles/layers'
+
 export default function Card({
   title,
   subtitle,
   image,
   to,
-  description
+  description,
+  children
 }) {
   if (!image) {
     return (
       <React.Fragment>
         <Link to={to} css={{
-          ...LINK_STYLES['list-strong']
+          ...LINK_STYLES['description']
         }}>
           <h3 css={{
           display: 'inline',
-          ...LINK_STYLES['list-strong']
+          ...LINK_STYLES['description']
           }}>{title}</h3>
         </Link>
         {description && (<p css={{
           marginTop: SPACING['XS'],
           color: COLORS.neutral['300']
         }}>{description}</p>)}
+        {children}
       </React.Fragment>
     )
   }
@@ -37,8 +41,10 @@ export default function Card({
   return (
     <Link to={to} css={{
       'display': 'block',
-      ':hover h3': {
-        ...LINK_STYLES['list-strong'][':hover']
+      ':hover': {
+        'h3': {
+          ...LINK_STYLES['description'][':hover']
+        }
       }
     }}>
       {image && (<BackgroundImage
@@ -55,12 +61,14 @@ export default function Card({
       {subtitle && (<p>{subtitle}</p>)}
       <h3 css={{
         display: 'inline',
-        ...LINK_STYLES['list-strong']
+        marginBottom: SPACING['XS'],
+        ...LINK_STYLES['description']
       }}>{title}</h3>
       {description && (<p css={{
         marginTop: SPACING['XS'],
         color: COLORS.neutral['300']
       }}>{description}</p>)}
+      {children}
     </Link>
   )
 }
