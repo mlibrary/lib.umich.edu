@@ -78,7 +78,7 @@ const renderHast = new rehypeReact({
                   localFile {
                     childImageSharp {
                       fluid(maxWidth: 800, quality: 70) {
-                        ...GatsbyImageSharpFluid
+                        ...GatsbyImageSharpFluid_noBase64
                       }
                     }
                   }
@@ -101,7 +101,7 @@ const renderHast = new rehypeReact({
       const matchedImage = drupalImageNodes.allFileFile.edges.filter(
         edge => edge.node.drupal_id === props['data-entity-uuid']
       )
-
+      
       try {
         return <Img fluid={matchedImage[0].node.localFile.childImageSharp.fluid} alt={props.alt} />
       }
