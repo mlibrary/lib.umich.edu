@@ -53,7 +53,7 @@ export const query = graphql`
       field_image {
         localFile {
           childImageSharp {
-            fluid(maxWidth: 600, quality: 80) {
+            fluid(maxWidth: 600, quality: 70) {
               ...GatsbyImageSharpFluid
             }
           }
@@ -92,7 +92,7 @@ export const query = graphql`
         field_image {
           localFile {
             childImageSharp {
-              fluid(maxWidth: 800, quality: 80) {
+              fluid(maxWidth: 1280, quality: 70) {
                 ...GatsbyImageSharpFluid
               }
             }
