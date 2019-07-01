@@ -8,9 +8,6 @@ import {
 } from '@umich-lib/core'
 
 export default function HorizontalNavigation({ data }) {
-
-  console.log('data', data)
-
   return (
     <nav css={{
       borderTop: `solid 1px ${COLORS.neutral['100']}`,
