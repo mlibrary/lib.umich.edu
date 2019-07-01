@@ -7,8 +7,6 @@ import {
   LINK_STYLES
 } from '@umich-lib/core'
 
-import LAYERS from '../styles/layers'
-
 export default function Card({
   title,
   subtitle,

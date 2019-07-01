@@ -6,8 +6,7 @@ import {
   SPACING,
   Text,
   Margins,
-  MEDIA_QUERIES,
-  COLORS
+  MEDIA_QUERIES
 } from "@umich-lib/core";
 
 import Breadcrumb from './breadcrumb'
