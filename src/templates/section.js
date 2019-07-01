@@ -43,8 +43,7 @@ function SectionTemplate({ data, ...rest }) {
           size="L"
           level="1"
           css={{
-            marginTop: SPACING['3XL'],
-            marginBottom: `-${SPACING['L']}`
+            marginTop: SPACING['3XL']
           }}
         >{field_horizontal_nav_title}</Heading>
       </Margins>
