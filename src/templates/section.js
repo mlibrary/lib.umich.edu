@@ -17,11 +17,13 @@ function SectionTemplate({ data, ...rest }) {
     relationships
   } = data.page
 
+  const breadcrumb = relationships.field_parent_page[0].fields.breadcrumb 
+
   return (
     <Layout>
       <SEO title={title} />
       <PageHeader
-        breadcrumb={fields.breadcrumb}
+        breadcrumb={breadcrumb}
         title={field_header_title}
         summary={body ? body.summary : null}
         image={relationships.field_image}
@@ -89,6 +91,18 @@ export const query = graphql`
         breadcrumb
       }
       relationships {
+        field_parent_page {
+          ... on node__page {
+            fields {
+              breadcrumb
+            }
+          }
+          ... on node__building {
+            fields {
+              breadcrumb
+            }
+          }
+        }
         field_image {
           localFile {
             childImageSharp {
