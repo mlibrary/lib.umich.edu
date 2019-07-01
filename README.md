@@ -22,6 +22,16 @@
     ```sh
     npm run develop
     ```
+    
+## Help and troubleshooting
+
+Sometimes when changing git branches for example you might need to run Gatsby clean.
+
+```
+npm run clean
+```
+
+https://www.gatsbyjs.org/docs/gatsby-cli/#clean
 
 ## 💫 Stage
 
