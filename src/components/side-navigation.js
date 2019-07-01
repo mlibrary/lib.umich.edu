@@ -8,6 +8,8 @@ import {
   MEDIA_QUERIES
 } from '@umich-lib/core'
 
+import OrderNodes from './utilities/order-nodes'
+
 const activeStyle = {
   display: 'inline-block',
   borderLeft: `solid 3px ${COLORS.teal[400]}`,
@@ -36,17 +38,6 @@ function SideNavLink({ to, ...rest }) {
       }}
     />
   )
-}
-
-/*
-  We need to reorder the nodes by Drupal uuids that
-  are listed in `order`.
-
-  This maintains the child/parent order menu system
-  that content editors set in the CMS.
-*/
-function OrderNodes(order, nodes) {
-  return order.map(id => nodes.find(({ node }) => node.drupal_id === id))
 }
 
 export default function SideNavigation({

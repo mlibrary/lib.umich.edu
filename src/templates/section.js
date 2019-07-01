@@ -18,18 +18,11 @@ function SectionTemplate({ data, ...rest }) {
     title,
     field_header_title,
     field_horizontal_nav_title,
-    fields,
     body,
     relationships
   } = data.page
 
   const breadcrumb = relationships.field_parent_page[0].fields.breadcrumb 
-  const nav = [
-    {
-      to: fields.slug,
-      text: field_horizontal_nav_title
-    }
-  ]
 
   return (
     <Layout>
@@ -41,7 +34,11 @@ function SectionTemplate({ data, ...rest }) {
         summary={body ? body.summary : null}
         image={relationships.field_image}
       />
-      <HorizontalNavigation data={nav} />
+      <HorizontalNavigation
+        data={data.parents}
+        parent={relationships.field_parent_page}
+        parentOrder={rest.pageContext.parents}
+      />
       <Margins>
         <Heading
           size="L"
@@ -102,7 +99,7 @@ export const query = graphql`
     }
   }
 
-  query($slug: String!) {
+  query($slug: String!, $parents: [String]) {
     page: nodeSectionPage(fields: { slug: { eq: $slug } }) {
       title
       field_header_title
@@ -154,6 +151,18 @@ export const query = graphql`
                 }
               }
             }
+          }
+        }
+      }
+    }
+    parents: allNodeSectionPage(filter: { drupal_id: { in: $parents } }) {
+      edges {
+        node {
+          title
+          field_horizontal_nav_title
+          drupal_id
+          fields {
+            slug
           }
         }
       }
