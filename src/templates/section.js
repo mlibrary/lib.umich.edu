@@ -18,6 +18,12 @@ function SectionTemplate({ data, ...rest }) {
   } = data.page
 
   const breadcrumb = relationships.field_parent_page[0].fields.breadcrumb 
+  const nav = [
+    {
+      to: fields.slug,
+      text: field_horizontal_nav_title
+    }
+  ]
 
   return (
     <Layout>
@@ -28,7 +34,7 @@ function SectionTemplate({ data, ...rest }) {
         summary={body ? body.summary : null}
         image={relationships.field_image}
       />
-      <HorizontalNavigation />
+      <HorizontalNavigation data={nav} />
       <Panels data={relationships.field_panels} />
     </Layout>
   )
@@ -89,6 +95,7 @@ export const query = graphql`
       }
       fields {
         breadcrumb
+        slug
       }
       relationships {
         field_parent_page {
