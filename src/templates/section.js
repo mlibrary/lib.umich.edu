@@ -1,6 +1,12 @@
 import React from 'react'
 import { graphql } from "gatsby"
 
+import {
+  Heading,
+  Margins,
+  SPACING
+} from '@umich-lib/core'
+
 import Layout from "../components/layout"
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
@@ -29,12 +35,23 @@ function SectionTemplate({ data, ...rest }) {
     <Layout>
       <SEO title={title} />
       <PageHeader
+        headingLevel={2}
         breadcrumb={breadcrumb}
         title={field_header_title}
         summary={body ? body.summary : null}
         image={relationships.field_image}
       />
       <HorizontalNavigation data={nav} />
+      <Margins>
+        <Heading
+          size="L"
+          level="1"
+          css={{
+            marginTop: SPACING['3XL'],
+            marginBottom: `-${SPACING['L']}`
+          }}
+        >{field_horizontal_nav_title}</Heading>
+      </Margins>
       <Panels data={relationships.field_panels} />
     </Layout>
   )

@@ -16,11 +16,13 @@ function PanelTemplate({ title, children, shaded }) {
     <section css={{
       paddingTop: SPACING['3XL'],
       paddingBottom: SPACING['3XL'],
-      borderTop: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+      borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
       background: shaded ? COLORS.blue['100'] : ''
     }}>
       <Margins>
-        {title && (<Heading level={2} size="L">{title}</Heading>)}
+        {title && (<Heading level={2} size="L" css={{
+          marginBottom: SPACING['XL']
+        }}>{title}</Heading>)}
         {children}
       </Margins>
     </section>
@@ -30,7 +32,6 @@ function PanelTemplate({ title, children, shaded }) {
 function PanelList({ children, noImage }) {
   return (
     <ol css={{
-      marginTop: SPACING['L'],
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
       gridGap: noImage
