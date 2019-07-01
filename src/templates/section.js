@@ -36,7 +36,6 @@ function SectionTemplate({ data, ...rest }) {
       />
       <HorizontalNavigation
         data={data.parents}
-        parent={relationships.field_parent_page}
         parentOrder={rest.pageContext.parents}
       />
       <Margins>
