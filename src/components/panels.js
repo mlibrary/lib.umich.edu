@@ -4,11 +4,12 @@ import {
   SPACING,
   COLORS,
   Margins,
-  Icon
+  Icon,
+  Card,
+  MEDIA_QUERIES
 } from '@umich-lib/core'
 
 import HTML from './html'
-import Card from './card'
 import Address from './address'
 
 function PanelTemplate({ title, children, shaded }) {
@@ -32,6 +33,9 @@ function PanelTemplate({ title, children, shaded }) {
 function PanelList({ children, noImage }) {
   return (
     <ol css={{
+      [MEDIA_QUERIES.LARGESCREEN]: {
+        margin: `0 -${SPACING['M']}`
+      },
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
       gridGap: noImage
@@ -53,7 +57,7 @@ function CardPanel({ data }) {
   function getImage(images) {
     return !images || noImage
       ? null
-      : images[0].localFile.childImageSharp.fluid
+      : images[0].localFile.childImageSharp.fluid.src
   }
 
   function renderCardChildren(rest) {
@@ -78,6 +82,7 @@ function CardPanel({ data }) {
 
     return null
   }
+  
 
   return (
     <PanelTemplate title={title}>
@@ -91,10 +96,14 @@ function CardPanel({ data }) {
           >
             <Card
               image={relationships ? getImage(relationships.field_image) : null}
-              to={fields.slug}
+              href={fields.slug}
               title={title}
-              description={useSummary ? body.summary : null}
-              children={renderCardChildren(rest)}
+              children={
+                useSummary ? body.summary : renderCardChildren(rest)
+              }
+              css={{
+                height: '100%'
+              }}
             />
           </li>
         ))}
