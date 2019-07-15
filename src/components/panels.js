@@ -3,22 +3,27 @@ import {
   Heading,
   SPACING,
   COLORS,
-  Margins
+  Margins,
+  Icon,
+  Card,
+  MEDIA_QUERIES
 } from '@umich-lib/core'
 
 import HTML from './html'
-import Card from './card'
+import Address from './address'
 
 function PanelTemplate({ title, children, shaded }) {
   return (
     <section css={{
       paddingTop: SPACING['3XL'],
       paddingBottom: SPACING['3XL'],
-      borderTop: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+      borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
       background: shaded ? COLORS.blue['100'] : ''
     }}>
       <Margins>
-        {title && (<Heading level={2} size="L">{title}</Heading>)}
+        {title && (<Heading level={2} size="L" css={{
+          marginBottom: SPACING['XL']
+        }}>{title}</Heading>)}
         {children}
       </Margins>
     </section>
@@ -28,10 +33,14 @@ function PanelTemplate({ title, children, shaded }) {
 function PanelList({ children, noImage }) {
   return (
     <ol css={{
-      marginTop: SPACING['L'],
+      [MEDIA_QUERIES.LARGESCREEN]: {
+        margin: `0 -${SPACING['M']}`
+      },
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-      gridGap: noImage ? `${SPACING['M']} ${SPACING['3XL']}` : SPACING['M']
+      gridGap: noImage
+        ? `${SPACING['M']} ${SPACING['3XL']}`
+        : `${SPACING['XL']} ${SPACING['M']}`
     }}>
       {children}
     </ol>
@@ -43,17 +52,42 @@ function CardPanel({ data }) {
   const cards = data.relationships.field_cards
   const template = data.relationships.field_card_template.field_machine_name
   const noImage = template === 'standard_no_image'
+  const useSummary = template !== 'address_and_hours'
 
   function getImage(images) {
     return !images || noImage
       ? null
-      : images[0].localFile.childImageSharp.fluid
+      : images[0].localFile.childImageSharp.fluid.src
   }
+
+  function renderCardChildren(rest) {
+    if (template === 'address_and_hours') {
+      return (
+        <div css={{
+          display: 'flex',
+          marginTop: SPACING['XS']
+        }}>
+          <span css={{
+            color: COLORS.maize['500'],
+            marginRight: SPACING['2XS']
+          }}>
+            <Icon d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+          </span>
+          <Address
+            data={rest.field_building_address}
+          />
+        </div>
+      )
+    }
+
+    return null
+  }
+  
 
   return (
     <PanelTemplate title={title}>
       <PanelList noImage={noImage}>
-        {cards.map(({ title, body, fields, relationships }, i) => (
+        {cards.map(({ title, body, fields, relationships, ...rest }, i) => (
           <li
             css={{
               marginBottom: SPACING['S']
@@ -62,9 +96,14 @@ function CardPanel({ data }) {
           >
             <Card
               image={relationships ? getImage(relationships.field_image) : null}
-              to={fields.slug}
+              href={fields.slug}
               title={title}
-              description={body.summary}
+              children={
+                useSummary ? body.summary : renderCardChildren(rest)
+              }
+              css={{
+                height: '100%'
+              }}
             />
           </li>
         ))}
@@ -88,7 +127,7 @@ function TextPanel({ data }) {
         }}>
           <div css={{
             textAlign: 'center',
-            maxWidth: '28rem'
+            maxWidth: '38rem'
           }}>
             <Heading level={2} size="L" css={{
               marginBottom: SPACING['M']
