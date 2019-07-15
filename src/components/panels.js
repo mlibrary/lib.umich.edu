@@ -5,10 +5,10 @@ import {
   COLORS,
   Margins,
   Icon,
-  Card,
   MEDIA_QUERIES
 } from '@umich-lib/core'
 
+import Card from './card'
 import Link from './link'
 import HTML from './html'
 import Address from './address'
