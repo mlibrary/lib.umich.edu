@@ -29,7 +29,7 @@ export default function LandingTemplate({ data, ...rest }) {
         image={relationships.field_image}
       />
       <Margins>
-        {body && <HTML html={body.value}/>}
+        {body && <HTML html={body.processed}/>}
       </Margins>
       <Panels data={relationships.field_panels} />
     </Layout>
@@ -44,7 +44,7 @@ export const query = graphql`
         breadcrumb
       }
       body {
-        value
+        processed
         summary
       }
       relationships {

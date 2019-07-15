@@ -47,7 +47,7 @@ function BasicTemplate({ data, ...rest }) {
             <Heading size="3XL" level={1} css={{
               marginBottom: SPACING['XL']
             }}>{title}</Heading>
-            {body && <HTML html={body.value}/>}
+            {body && <HTML html={body.processed}/>}
           </Content>
         </Template>
       </Margins>
@@ -66,7 +66,7 @@ export const query = graphql`
         breadcrumb
       }
       body {
-        value
+        processed
       }
       relationships {
         field_parent_page {

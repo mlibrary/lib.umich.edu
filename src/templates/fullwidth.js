@@ -35,7 +35,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
         >
           {title}
         </Heading>
-        {body && <HTML html={body.value}/>}
+        {body && <HTML html={body.processed}/>}
       </Margins>
       <Panels data={relationships.field_panels} />
     </Layout>
@@ -50,7 +50,7 @@ export const query = graphql`
         breadcrumb
       }
       body {
-        value
+        processed
       }
       relationships {
         field_parent_page {
