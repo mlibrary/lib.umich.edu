@@ -19,10 +19,11 @@ function SectionTemplate({ data, ...rest }) {
     field_header_title,
     field_horizontal_nav_title,
     body,
+    fields,
     relationships
   } = data.page
 
-  const breadcrumb = relationships.field_parent_page[0].fields.breadcrumb 
+  const breadcrumb = fields.breadcrumb 
 
   return (
     <Layout>
@@ -62,6 +63,7 @@ export const query = graphql`
     }
     fields {
       slug
+      breadcrumb
     }
     field_building_address {
       locality
@@ -111,11 +113,6 @@ export const query = graphql`
       }
       relationships {
         field_parent_page {
-          ... on node__page {
-            fields {
-              breadcrumb
-            }
-          }
           ... on node__building {
             fields {
               breadcrumb
