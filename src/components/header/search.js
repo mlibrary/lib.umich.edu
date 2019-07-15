@@ -32,6 +32,7 @@ function Search() {
       />
       <Button
         type="submit"
+        kind="primary"
         css={{
           marginLeft: SPACING['XS']
         }}
