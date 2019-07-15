@@ -15,12 +15,17 @@ import Address from './address'
 
 function PanelTemplate({ title, children, shaded }) {
   return (
-    <section css={{
-      paddingTop: SPACING['3XL'],
-      paddingBottom: SPACING['3XL'],
-      borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
-      background: shaded ? COLORS.blue['100'] : ''
-    }}>
+    <section
+      css={{
+        paddingTop: SPACING['3XL'],
+        paddingBottom: SPACING['3XL'],
+        background: shaded ? COLORS.blue['100'] : '',
+        borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+        ':last-of-type': {
+          borderBottom: 'none'
+        }
+      }}
+    >
       <Margins>
         {title && (<Heading level={2} size="L" css={{
           marginBottom: SPACING['XL']
