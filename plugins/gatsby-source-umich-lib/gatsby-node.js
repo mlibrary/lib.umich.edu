@@ -182,6 +182,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
 
   return new Promise((resolve, reject) => {
     const basicTemplate = path.resolve(`src/templates/basic.js`);
+    const fullWidthTemplate = path.resolve(`src/templates/fullwidth.js`);
     const landingTemplate = path.resolve(`src/templates/landing.js`);
     const sectionTemplate = path.resolve(`src/templates/section.js`);
 
@@ -193,6 +194,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
       switch (field_machine_name) {
         case 'basic':
           return basicTemplate
+        case 'full_width':
+          return fullWidthTemplate
         case 'landing_page':
           return landingTemplate
         case 'section':
@@ -211,7 +214,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               relationships: {
                 field_design_template: {
                   field_machine_name: {
-                    in: ["landing_page", "basic"]
+                    in: ["landing_page", "basic", "full_width"]
                   }
                 }
               }
