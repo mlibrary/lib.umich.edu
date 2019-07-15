@@ -23,7 +23,7 @@ function processBreadcrumbData({
     getParentItem(data[0])
 
     // Reverse order and add current page to the end.
-    result = result.reverse().concat({ text: node.title })
+    result = result.reverse()
 
     return result
   }

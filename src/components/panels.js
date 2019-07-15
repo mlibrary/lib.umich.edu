@@ -5,21 +5,27 @@ import {
   COLORS,
   Margins,
   Icon,
-  Card,
   MEDIA_QUERIES
 } from '@umich-lib/core'
 
+import Card from './card'
+import Link from './link'
 import HTML from './html'
 import Address from './address'
 
 function PanelTemplate({ title, children, shaded }) {
   return (
-    <section css={{
-      paddingTop: SPACING['3XL'],
-      paddingBottom: SPACING['3XL'],
-      borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
-      background: shaded ? COLORS.blue['100'] : ''
-    }}>
+    <section
+      css={{
+        paddingTop: SPACING['3XL'],
+        paddingBottom: SPACING['3XL'],
+        background: shaded ? COLORS.blue['100'] : '',
+        borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+        ':last-of-type': {
+          borderBottom: 'none'
+        }
+      }}
+    >
       <Margins>
         {title && (<Heading level={2} size="L" css={{
           marginBottom: SPACING['XL']
@@ -33,9 +39,6 @@ function PanelTemplate({ title, children, shaded }) {
 function PanelList({ children, noImage }) {
   return (
     <ol css={{
-      [MEDIA_QUERIES.LARGESCREEN]: {
-        margin: `0 -${SPACING['M']}`
-      },
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
       gridGap: noImage
@@ -115,6 +118,7 @@ function CardPanel({ data }) {
 function TextPanel({ data }) {
   const title = data.field_title
   const template = data.relationships.field_text_template.field_machine_name
+  const cards = data.relationships.field_text_card
 
   if (template === 'full_width_text_template') {
     const html = data.relationships.field_text_card[0].field_body.processed
@@ -135,6 +139,41 @@ function TextPanel({ data }) {
             <HTML html={html} />
           </div>
         </div>
+      </PanelTemplate>
+    )
+  }
+
+  if (template === 'grid_text_template_with_linked_title') {
+    return (
+      <PanelTemplate title={title}>
+        <PanelList>
+          {cards.map(({
+            field_title,
+            field_body,
+            field_link
+          }, i) => (
+            <li
+              css={{
+                marginBottom: SPACING['S']
+              }}
+              key={i + field_title}
+            >
+              <div
+                css={{
+                  marginBottom: SPACING['XS']
+                }}
+              >
+                <Link
+                  to={field_link.uri}
+                  kind="description"
+                >
+                  {field_title}
+                </Link>
+              </div>
+              <HTML html={field_body.processed} />
+            </li>
+          ))}
+        </PanelList>
       </PanelTemplate>
     )
   }
