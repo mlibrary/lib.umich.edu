@@ -1,17 +1,17 @@
 const COLORS = require('@umich-lib/core').COLORS
 
-const defaultDrupalBaseUrl = 'https://cms.dev.lib.umich.edu'
-
 module.exports = {
   siteMetadata: {
-    title: 'University of Michigan Library'
+    title: 'University of Michigan Library',
+    siteUrl: 'https://preview.lib.umich.edu/'
   },
   plugins: [
     'gatsby-plugin-netlify',
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
-        policy: [{ userAgent: '*', disallow: '/' }]
+        policy: [{ userAgent: '*', disallow: '/' }],
+        sitemap: null
       }
     },
     'gatsby-transformer-sharp',
