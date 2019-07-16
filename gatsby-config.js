@@ -7,6 +7,7 @@ module.exports = {
     title: 'University of Michigan Library'
   },
   plugins: [
+    'gatsby-plugin-netlify',
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
     {
