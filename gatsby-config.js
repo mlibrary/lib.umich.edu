@@ -8,6 +8,12 @@ module.exports = {
   },
   plugins: [
     'gatsby-plugin-netlify',
+    {
+      resolve: 'gatsby-plugin-robots-txt',
+      options: {
+        policy: [{ userAgent: '*', disallow: '/' }]
+      }
+    },
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
     {
