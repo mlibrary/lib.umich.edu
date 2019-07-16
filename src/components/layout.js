@@ -7,6 +7,7 @@ import { UniversalHeader, GlobalStyleSheet } from '@umich-lib/core'
 
 import Header from './header'
 import Footer from './footer'
+import DevelopmentAlert from './development-alert'
 
 const Layout = ({ children }) => (
   <StaticQuery
@@ -61,14 +62,17 @@ const Layout = ({ children }) => (
           <div css={{
             minHeight: '100%',
             display: 'grid',
-            gridTemplateRows: 'auto auto 1fr auto',
+            gridTemplateRows: 'auto 1fr auto',
             gridTemplateColumns: '100%'
           }}>
-            <UniversalHeader />
-            <Header
-              primary={primary}
-              secondary={secondary}
-            />
+            <div>
+              <DevelopmentAlert />
+              <UniversalHeader />
+              <Header
+                primary={primary}
+                secondary={secondary}
+              />
+            </div>
             <main>
               {children}
             </main>
