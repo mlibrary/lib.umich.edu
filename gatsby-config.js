@@ -1,5 +1,7 @@
 const COLORS = require('@umich-lib/core').COLORS
 
+const defaultDrupalBaseUrl = 'https://cms.dev.lib.umich.edu'
+
 module.exports = {
   siteMetadata: {
     title: 'University of Michigan Library'
@@ -10,13 +12,13 @@ module.exports = {
     {
       resolve: 'gatsby-source-drupal',
       options: {
-        baseUrl: process.env.DRUPAL_BASE_URL
+        baseUrl: process.env.DRUPAL_BASE_URL || defaultDrupalBaseUrl
       },
     },
     {
       resolve: 'gatsby-source-umich-lib',
       options: {
-        baseUrl: process.env.DRUPAL_BASE_URL
+        baseUrl: process.env.DRUPAL_BASE_URL || defaultDrupalBaseUrl
       },
     },
     'gatsby-plugin-react-helmet',
