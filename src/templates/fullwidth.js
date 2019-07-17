@@ -11,6 +11,7 @@ import Layout from "../components/layout"
 import SEO from '../components/seo'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
+import HorizontalNavigation from '../components/horizontal-navigation'
 import Panels from '../components/panels'
 
 export default function FullWidthTemplate({ data, ...rest }) {
@@ -35,6 +36,14 @@ export default function FullWidthTemplate({ data, ...rest }) {
         >
           {title}
         </Heading>
+      </Margins>
+
+      <HorizontalNavigation
+        data={data.parents}
+        parentOrder={rest.pageContext.parents}
+      />
+
+      <Margins>
         {body && <HTML html={body.processed}/>}
       </Margins>
       <Panels data={relationships.field_panels} />
@@ -43,7 +52,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
 }
 
 export const query = graphql`
-  query($slug: String!) {
+  query($slug: String!, $parents: [String]) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       title
       fields {
@@ -119,6 +128,17 @@ export const query = graphql`
                 }
               }
             }
+          }
+        }
+      }
+    }
+    parents: allNodePage(filter: { drupal_id: { in: $parents } }) {
+      edges {
+        node {
+          title
+          drupal_id
+          fields {
+            slug
           }
         }
       }

@@ -25,7 +25,7 @@ export default function HorizontalNavigation({
   const items = nodes.map(({ node }) => {
     return {
       to: node.fields.slug,
-      text: node.field_horizontal_nav_title
+      text: node.field_horizontal_nav_title || node.title
     }
   })
 
@@ -33,7 +33,8 @@ export default function HorizontalNavigation({
     <nav css={{
       borderTop: `solid 1px ${COLORS.neutral['100']}`,
       borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-      background: COLORS.blue['100']
+      background: COLORS.blue['100'],
+      marginBottom: SPACING['2XL']
     }}>
       <Margins>
         <ol>
