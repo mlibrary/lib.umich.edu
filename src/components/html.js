@@ -6,12 +6,14 @@ import {
   Heading,
   Text,
   List,
-  COLORS
+  COLORS,
+  Alert
 } from '@umich-lib/core'
 import unified from "unified"
 import rehype from "rehype-parse"
 import Prose from './prose'
 import Link from './link'
+
 /**
   Headings
 */
@@ -62,23 +64,39 @@ const renderHast = new rehypeReact({
     em: (props) => <em {...props} css={{ fontStyle: 'italic' }} />,
     'text': Text,
     'lede': ({ children, ...other }) => <Text lede {...other}>{children}</Text>,
-    img: (props) => {
+    'div': (props) => {
+      /*
+        Can we find a matching image? The div has a data
+        attribute of the Drupal entity uuid to match on.
+
+        We expect to find it. If it's in the HTML then it
+        must be an entity brought in by the source plugin.
+
+        If it's not found, then something is probably wrong.
+      */
+
       /*
         Get all Drupal images so that we can later replace the generated
         html img tag with the Gatsby Image component.
       */
-      const drupalImageNodes = useStaticQuery(
+      const allMediaImageNodes = useStaticQuery(
         graphql`
           query {
-            allFileFile {
+            allMediaImage {
               edges {
                 node {
-                  filename
                   drupal_id
-                  localFile {
-                    childImageSharp {
-                      fluid(maxWidth: 800, quality: 70) {
-                        ...GatsbyImageSharpFluid_noBase64
+                  field_media_image {
+                    alt
+                  }
+                  relationships {
+                    field_media_image {
+                      localFile {
+                        childImageSharp {
+                          fluid(maxWidth: 800, quality: 70) {
+                            ...GatsbyImageSharpFluid_noBase64
+                          }
+                        }
                       }
                     }
                   }
@@ -89,28 +107,29 @@ const renderHast = new rehypeReact({
         `
       )
 
-      /*
-        Can we find a matching image? The html img has a data
-        attribute of the Drupal entity uuid to match on.
+      if (props['data-entity-uuid']) {
+        try {
+          const matchedImage = allMediaImageNodes.allMediaImage.edges.filter(
+            edge => edge.node.drupal_id === props['data-entity-uuid']
+          )[0]
 
-        We expect to find it. If it's in the HTML then it
-        must be an entity brought in by the source plugin.
+          return (
+            <Img
+              fluid={matchedImage.node.relationships.field_media_image.localFile.childImageSharp.fluid}
+              alt={matchedImage.node.field_media_image.alt}
+            />
+          )
+        }
+        catch(error) {
+          console.warn(error, 'Unable to render image with Drupal entity uuid', props['data-entity-uuid'])
+        }
 
-        If it's not found, then something is probably wrong.
-      */
-      const matchedImage = drupalImageNodes.allFileFile.edges.filter(
-        edge => edge.node.drupal_id === props['data-entity-uuid']
-      )
-      
-      try {
-        return <Img fluid={matchedImage[0].node.localFile.childImageSharp.fluid} alt={props.alt} />
+        return <Alert intent="warning">Something went wrong when rendering media images.</Alert>
       }
-      catch(error) {
-        console.warn(error, 'Unable to render image with Drupal entity uuid', props['data-entity-uuid'])
-      }
 
-      return null
-    }
+      return props.children
+    },
+    img: () => null
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
