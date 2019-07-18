@@ -10,10 +10,21 @@ import {
 import Layout from "../components/layout"
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
+import PageHeaderMini from '../components/page-header-mini'
 import HorizontalNavigation from '../components/horizontal-navigation'
 import Panels from '../components/panels'
 
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
+
+function renderHorziontalNavigationCSS(isRootPage) {
+  if (!isRootPage) {
+    return {
+      borderTop: 'none'
+    }
+  }
+
+  return {}
+}
 
 function SectionTemplate({ data, ...rest }) {
   const {
@@ -27,27 +38,34 @@ function SectionTemplate({ data, ...rest }) {
   } = data.page
   const parentNode = relationships.field_parent_page[0]
   const breadcrumb = fields.breadcrumb
+  const isRootPage = field_root_page_ ? true : false
 
   /*
     Use the parent page if not the root
     for PageHeader summary and image.
   */
-  const summary = field_root_page_
+  const summary = isRootPage
     ? body.summary
     : parentNode.body.summary
-  const image = field_root_page_
-    ? relationships.field_image
-    : parentNode.relationships.field_image
 
   return (
     <Layout>
       <SEO title={title} />
-      <PageHeader
-        breadcrumb={breadcrumb}
-        title={field_header_title}
-        summary={summary}
-        image={image}
-      />
+      
+      {isRootPage ? (
+        <PageHeader
+          breadcrumb={breadcrumb}
+          title={field_header_title}
+          summary={summary}
+          image={relationships.field_image}
+        />
+      ) : (
+        <PageHeaderMini
+          breadcrumb={breadcrumb}
+          title={field_header_title}
+        />
+      )}
+      
       <HorizontalNavigation
         items={processHorizontalNavigationData({
           parentNodeOrderByDrupalId: rest.pageContext.parents,
@@ -55,9 +73,10 @@ function SectionTemplate({ data, ...rest }) {
           currentNode: data.page,
           childrenNodeOrderByDrupalId: rest.pageContext.children,
           childrenNodes: data.children.edges,
-          isRootPage: field_root_page_ ? true : false,
+          isRootPage,
           parentNode
         })}
+        css={renderHorziontalNavigationCSS(isRootPage)}
       />
       <Margins>
         <Heading
@@ -114,17 +133,6 @@ export const query = graphql`
       summary
     }
     drupal_id
-    relationships {
-      field_image {
-        localFile {
-          childImageSharp {
-            fluid(maxWidth: 1280, quality: 70) {
-              ...GatsbyImageSharpFluid_noBase64
-            }
-          }
-        }
-      }
-    }
   }
 
   fragment BuildingNodeFragment on node__building {

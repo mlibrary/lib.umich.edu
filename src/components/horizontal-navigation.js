@@ -7,18 +7,21 @@ import {
   Margins
 } from '@umich-lib/core'
 
-export default function HorizontalNavigation({ items }) {
+export default function HorizontalNavigation({ items, ...rest }) {
   if (!items) {
     return null
   }
 
   return (
-    <nav css={{
-      borderTop: `solid 1px ${COLORS.neutral['100']}`,
-      borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-      background: COLORS.blue['100'],
-      marginBottom: SPACING['2XL']
-    }}>
+    <nav
+      css={{
+        borderTop: `solid 1px ${COLORS.neutral['100']}`,
+        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+        background: COLORS.blue['100'],
+        marginBottom: SPACING['2XL']
+      }}
+      {...rest}
+    >
       <Margins>
         <ol>
           {items.map(({ to, text }, i) => (
