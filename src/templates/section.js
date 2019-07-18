@@ -16,6 +16,9 @@ import Panels from '../components/panels'
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 
 function SectionTemplate({ data, ...rest }) {
+
+  console.log('data', data)
+
   const {
     title,
     field_header_title,
@@ -127,6 +130,29 @@ export const query = graphql`
     }
   }
 
+  fragment BuildingNodeFragment on node__building {
+    title
+    field_horizontal_nav_title
+    fields {
+      slug
+    }
+    body {
+      summary
+    }
+    drupal_id
+    relationships {
+      field_image {
+        localFile {
+          childImageSharp {
+            fluid(maxWidth: 1280, quality: 70) {
+              ...GatsbyImageSharpFluid_noBase64
+            }
+          }
+        }
+      }
+    }
+  }
+
   fragment CardPanelFragment on paragraph__card_panel {
     field_title
     id
@@ -159,6 +185,9 @@ export const query = graphql`
         field_parent_page {
           ... on node__section_page {
             ...SectionNodeFragment
+          }
+          ... on node__building {
+            ...BuildingNodeFragment
           }
         }
         field_image {
