@@ -153,26 +153,29 @@ exports.onCreateNode = async(
     })
   }
 
-  /*
-    Check if the node has field_parent_menu. This will be
-    a list of Drupal entitity IDs to use for look up.
+  async function createParentChildFields(fieldId, name) {
+    if (node[fieldId]) {
+      const url = baseUrlWithoutTrailingSlash + node[fieldId]
+      const response = await fetch(url)
+      const data = await response.json()
+      const sanitizedData = sanitizeDrupalView(data)
+      const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : [`no-${name}`]
+      
+      createNodeField({
+        node,
+        name,
+        value
+      })
+    }
 
-    This is useful for side navigation.
-  */
-  if (node.field_parent_menu) {
-    const url = baseUrlWithoutTrailingSlash + node.field_parent_menu
-
-    const response = await fetch(url)
-    const data = await response.json()
-    const sanitizedData = sanitizeDrupalView(data)
-    const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : ['no-parents']
-    
-    createNodeField({
-      node,
-      name: "parents",
-      value
-    })
+    return
   }
+
+  const parents = createParentChildFields('field_parent_menu', 'parents')
+  const children = createParentChildFields('field_child_menu', 'children')
+
+  await parents()
+  await children()
 }
 
 // Implement the Gatsby API “createPages”. This is called once the
@@ -224,6 +227,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   fields {
                     slug
                     parents
+                    children
                   }
                   relationships {
                     field_design_template {
@@ -247,6 +251,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   fields {
                     slug
                     parents
+                    children
                   }
                   relationships {
                     field_design_template {
@@ -279,7 +284,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               component: template,
               context: {
                 slug: node.fields.slug,
-                parents: node.fields.parents
+                parents: node.fields.parents,
+                children: node.fields.children
               }
             })
           }

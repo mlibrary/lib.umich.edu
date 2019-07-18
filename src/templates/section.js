@@ -13,36 +13,44 @@ import PageHeader from '../components/page-header'
 import HorizontalNavigation from '../components/horizontal-navigation'
 import Panels from '../components/panels'
 
+import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
+
 function SectionTemplate({ data, ...rest }) {
   const {
     title,
     field_header_title,
     field_horizontal_nav_title,
+    field_root_page_,
     body,
     fields,
     relationships
   } = data.page
-
-  const breadcrumb = fields.breadcrumb 
+  const breadcrumb = fields.breadcrumb
 
   return (
     <Layout>
       <SEO title={title} />
       <PageHeader
-        headingLevel={2}
         breadcrumb={breadcrumb}
         title={field_header_title}
         summary={body ? body.summary : null}
         image={relationships.field_image}
       />
       <HorizontalNavigation
-        data={data.parents}
-        parentOrder={rest.pageContext.parents}
+        items={processHorizontalNavigationData({
+          parentNodeOrderByDrupalId: rest.pageContext.parents,
+          parentNodes: data.parents.edges,
+          currentNode: data.page,
+          childrenNodeOrderByDrupalId: rest.pageContext.children,
+          childrenNodes: data.children.edges,
+          isRootPage: field_root_page_ ? true : false,
+          parentNode: relationships.field_parent_page[0]
+        })}
       />
       <Margins>
         <Heading
           size="L"
-          level="1"
+          level={1}
           css={{
             marginTop: SPACING['3XL']
           }}
@@ -84,6 +92,15 @@ export const query = graphql`
     }
   }
 
+  fragment SectionNodeFragment on node__section_page {
+    title
+    field_horizontal_nav_title
+    fields {
+      slug
+    }
+    drupal_id
+  }
+
   fragment CardPanelFragment on paragraph__card_panel {
     field_title
     id
@@ -99,11 +116,12 @@ export const query = graphql`
     }
   }
 
-  query($slug: String!, $parents: [String]) {
+  query($slug: String!, $parents: [String], $children: [String]) {
     page: nodeSectionPage(fields: { slug: { eq: $slug } }) {
       title
       field_header_title
       field_horizontal_nav_title
+      field_root_page_
       body {
         summary
       }
@@ -113,10 +131,8 @@ export const query = graphql`
       }
       relationships {
         field_parent_page {
-          ... on node__building {
-            fields {
-              breadcrumb
-            }
+          ... on node__section_page {
+            ...SectionNodeFragment
           }
         }
         field_image {
@@ -153,12 +169,14 @@ export const query = graphql`
     parents: allNodeSectionPage(filter: { drupal_id: { in: $parents } }) {
       edges {
         node {
-          title
-          field_horizontal_nav_title
-          drupal_id
-          fields {
-            slug
-          }
+          ...SectionNodeFragment
+        }
+      }
+    }
+    children: allNodeSectionPage(filter: { drupal_id: { in: $children } }) {
+      edges {
+        node {
+          ...SectionNodeFragment
         }
       }
     }

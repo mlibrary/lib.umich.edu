@@ -7,27 +7,10 @@ import {
   Margins
 } from '@umich-lib/core'
 
-import OrderNodes from './utilities/order-nodes'
-
-export default function HorizontalNavigation({
-  data,
-  parentOrder
-}) {
-  /*
-    Re order the nodes and filter out undefined ones.
-  */
-  const nodes = OrderNodes(parentOrder, data.edges)
-    .filter(node => node !== undefined)
-
-  /*
-    Make a list of { to, text } objs for rendering.
-  */
-  const items = nodes.map(({ node }) => {
-    return {
-      to: node.fields.slug,
-      text: node.field_horizontal_nav_title || node.title
-    }
-  })
+export default function HorizontalNavigation({ items }) {
+  if (!items) {
+    return null
+  }
 
   return (
     <nav css={{
