@@ -171,11 +171,8 @@ exports.onCreateNode = async(
     return
   }
 
-  const parents = createParentChildFields('field_parent_menu', 'parents')
-  const children = createParentChildFields('field_child_menu', 'children')
-
-  await parents()
-  await children()
+  await createParentChildFields('field_parent_menu', 'parents')
+  await createParentChildFields('field_child_menu', 'children')
 }
 
 // Implement the Gatsby API “createPages”. This is called once the
