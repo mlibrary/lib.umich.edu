@@ -16,9 +16,6 @@ import Panels from '../components/panels'
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 
 function SectionTemplate({ data, ...rest }) {
-
-  console.log('data', data)
-
   const {
     title,
     field_header_title,
