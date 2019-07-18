@@ -25,7 +25,19 @@ function SectionTemplate({ data, ...rest }) {
     fields,
     relationships
   } = data.page
+  const parentNode = relationships.field_parent_page[0]
   const breadcrumb = fields.breadcrumb
+
+  /*
+    Use the parent page if not the root
+    for PageHeader summary and image.
+  */
+  const summary = field_root_page_
+    ? body.summary
+    : parentNode.body.summary
+  const image = field_root_page_
+    ? relationships.field_image
+    : parentNode.relationships.field_image
 
   return (
     <Layout>
@@ -33,8 +45,8 @@ function SectionTemplate({ data, ...rest }) {
       <PageHeader
         breadcrumb={breadcrumb}
         title={field_header_title}
-        summary={body ? body.summary : null}
-        image={relationships.field_image}
+        summary={summary}
+        image={image}
       />
       <HorizontalNavigation
         items={processHorizontalNavigationData({
@@ -44,7 +56,7 @@ function SectionTemplate({ data, ...rest }) {
           childrenNodeOrderByDrupalId: rest.pageContext.children,
           childrenNodes: data.children.edges,
           isRootPage: field_root_page_ ? true : false,
-          parentNode: relationships.field_parent_page[0]
+          parentNode
         })}
       />
       <Margins>
@@ -98,7 +110,21 @@ export const query = graphql`
     fields {
       slug
     }
+    body {
+      summary
+    }
     drupal_id
+    relationships {
+      field_image {
+        localFile {
+          childImageSharp {
+            fluid(maxWidth: 1280, quality: 70) {
+              ...GatsbyImageSharpFluid_noBase64
+            }
+          }
+        }
+      }
+    }
   }
 
   fragment CardPanelFragment on paragraph__card_panel {
