@@ -11,7 +11,7 @@ import {
 
 import Breadcrumb from './breadcrumb'
 
-export default function PageHeader({
+export default function PageHeaderMini({
   breadcrumb,
   title,
   ...rest
@@ -19,7 +19,7 @@ export default function PageHeader({
   return (
     <header
       css={{
-        background: COLORS.blue['100']
+        background: COLORS.blue['100'],
       }}
       {...rest}
     >
@@ -34,7 +34,15 @@ export default function PageHeader({
             paddingLeft: "0"
           }}
         >
-          <Breadcrumb data={breadcrumb} />
+          <Breadcrumb
+            data={breadcrumb}
+            css={{
+              [MEDIA_QUERIES.LARGESCREEN]: {
+                paddingTop: SPACING['L'],
+                paddingBottom: SPACING['L']
+              }
+            }}
+          />
           <Heading
             size="3XL"
             level={1}

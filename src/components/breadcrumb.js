@@ -5,7 +5,7 @@ import {
 } from '@umich-lib/core'
 import Link from './link'
 
-export default function BreadcrumbContainer ({ data }) {
+export default function BreadcrumbContainer ({ data, ...rest }) {
   /*
     Breadcrumb data is provided as encoded JSON.
     We need to decode it and check if it's valid.
@@ -17,7 +17,7 @@ export default function BreadcrumbContainer ({ data }) {
   }
 
   return (
-    <Breadcrumb>
+    <Breadcrumb {...rest}>
       {parsed_data.map(({ text, to }, i) => (
         <BreadcrumbItem key={to + i}>
           {to ? (
