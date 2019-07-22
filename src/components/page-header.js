@@ -73,9 +73,8 @@ export default function PageHeader({
                 flex: "1 1 0",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                flexBasis: `calc(50% + ${SPACING['2XL']})`,
-                flexGrow: '0',
-                marginRight: `-${SPACING['2XL']}`
+                flexBasis: `calc(50%)`,
+                flexGrow: '0'
               }}
             />
             <Img fluid={imageData} css={{
