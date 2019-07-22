@@ -39,11 +39,13 @@ function PanelTemplate({ title, children, shaded }) {
 function PanelList({ children, noImage }) {
   return (
     <ol css={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-      gridGap: noImage
-        ? `${SPACING['M']} ${SPACING['3XL']}`
-        : `${SPACING['XL']} ${SPACING['M']}`
+      [MEDIA_QUERIES.LARGESCREEN]: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+        gridGap: noImage
+          ? `${SPACING['M']} ${SPACING['3XL']}`
+          : `${SPACING['XL']} ${SPACING['M']}`
+      }
     }}>
       {children}
     </ol>
