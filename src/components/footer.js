@@ -10,7 +10,7 @@ function Footer() {
   return (
     <footer css={{
       minHeight: '14rem',
-      background: COLORS['teal']['400']
+      background: COLORS['teal']['500']
     }}>
 
       <Margins>
