@@ -13,25 +13,26 @@ import Link from './link'
 import HTML from './html'
 import Address from './address'
 
-function PanelTemplate({ title, children, shaded, headingLevel }) {
+function PanelTemplate({ title, children, shaded, ...rest }) {
   return (
     <section
       css={{
-        paddingTop: SPACING['3XL'],
-        paddingBottom: SPACING['3XL'],
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          paddingTop: SPACING['4XL'],
-          paddingBottom: SPACING['4XL'],
-        },
         background: shaded ? COLORS.blue['100'] : '',
         borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
         ':last-of-type': {
           borderBottom: 'none'
+        },
+        paddingTop: SPACING['XL'],
+        paddingBottom: SPACING['XL'],
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          paddingTop: SPACING['3XL'],
+          paddingBottom: SPACING['3XL'],
         }
       }}
+      {...rest}
     >
       <Margins>
-        {title && (<Heading level={headingLevel} size="L" css={{
+        {title && (<Heading level={2} size="L" css={{
           marginBottom: SPACING['XL']
         }}>{title}</Heading>)}
         {children}
@@ -40,15 +41,21 @@ function PanelTemplate({ title, children, shaded, headingLevel }) {
   )
 }
 
-function PanelList({ children }) {
+function PanelList({
+  largeScreenTwoColumn,
+  children,
+  ...rest
+}) {
   return (
-    <ol css={{
-      [MEDIA_QUERIES.LARGESCREEN]: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-        gridGap: `${SPACING['XL']} ${SPACING['M']}`
-      }
-    }}>
+      <ol css={{
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gridGap: `${SPACING['XL']} ${SPACING['M']}`
+        }
+      }}
+    {...rest}
+    >
       {children}
     </ol>
   )
@@ -92,8 +99,10 @@ function CardPanel({ data, headingLevel = 2 }) {
   
 
   return (
-    <PanelTemplate title={title} headingLevel={headingLevel}>
-      <PanelList noImage={noImage}>
+    <PanelTemplate
+      title={title}
+    >
+      <PanelList>
         {cards.map(({ title, body, fields, relationships, ...rest }, i) => (
           <li
             key={i + title}
@@ -131,7 +140,17 @@ function TextPanel({ data }) {
     const html = data.relationships.field_text_card[0].field_body.processed
 
     return (
-      <PanelTemplate shaded>
+      <PanelTemplate
+        shaded
+        css={{
+          paddingTop: SPACING['3XL'],
+          paddingBottom: SPACING['3XL'],
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            paddingTop: SPACING['4XL'],
+            paddingBottom: SPACING['4XL'],
+          }
+        }}
+      >
         <div css={{
           display: 'flex',
           justifyContent: 'center'
@@ -141,7 +160,7 @@ function TextPanel({ data }) {
             maxWidth: '38rem'
           }}>
             <Heading level={2} size="L" css={{
-              marginBottom: SPACING['L']
+              marginBottom: SPACING['M']
             }}>{title}</Heading>
             <div css={{ color: COLORS.neutral['300'] }}>
               <HTML html={html} />
@@ -155,13 +174,27 @@ function TextPanel({ data }) {
   if (template === 'grid_text_template_with_linked_title') {
     return (
       <PanelTemplate title={title}>
-        <PanelList>
+        <PanelList
+          css={{
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))'
+            }
+          }}
+        >
           {cards.map(({
             field_title,
             field_body,
             field_link
           }, i) => (
-            <li key={i + field_title}>
+            <li
+              key={i + field_title}
+              css={{
+                marginBottom: SPACING['XL'],
+                [MEDIA_QUERIES.LARGESCREEN]: {
+                  margin: '0'
+                }
+              }}
+            >
               <div
                 css={{
                   marginBottom: SPACING['XS']
