@@ -13,12 +13,16 @@ import Link from './link'
 import HTML from './html'
 import Address from './address'
 
-function PanelTemplate({ title, children, shaded }) {
+function PanelTemplate({ title, children, shaded, headingLevel }) {
   return (
     <section
       css={{
         paddingTop: SPACING['3XL'],
         paddingBottom: SPACING['3XL'],
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          paddingTop: SPACING['4XL'],
+          paddingBottom: SPACING['4XL'],
+        },
         background: shaded ? COLORS.blue['100'] : '',
         borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
         ':last-of-type': {
@@ -27,7 +31,7 @@ function PanelTemplate({ title, children, shaded }) {
       }}
     >
       <Margins>
-        {title && (<Heading level={2} size="L" css={{
+        {title && (<Heading level={headingLevel} size="L" css={{
           marginBottom: SPACING['XL']
         }}>{title}</Heading>)}
         {children}
@@ -36,15 +40,13 @@ function PanelTemplate({ title, children, shaded }) {
   )
 }
 
-function PanelList({ children, noImage }) {
+function PanelList({ children }) {
   return (
     <ol css={{
       [MEDIA_QUERIES.LARGESCREEN]: {
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-        gridGap: noImage
-          ? `${SPACING['M']} ${SPACING['3XL']}`
-          : `${SPACING['XL']} ${SPACING['M']}`
+        gridGap: `${SPACING['XL']} ${SPACING['M']}`
       }
     }}>
       {children}
@@ -52,7 +54,7 @@ function PanelList({ children, noImage }) {
   )
 }
 
-function CardPanel({ data }) {
+function CardPanel({ data, headingLevel = 2 }) {
   const title = data.field_title
   const cards = data.relationships.field_cards
   const template = data.relationships.field_card_template.field_machine_name
@@ -90,14 +92,17 @@ function CardPanel({ data }) {
   
 
   return (
-    <PanelTemplate title={title}>
+    <PanelTemplate title={title} headingLevel={headingLevel}>
       <PanelList noImage={noImage}>
         {cards.map(({ title, body, fields, relationships, ...rest }, i) => (
           <li
-            css={{
-              marginBottom: SPACING['S']
-            }}
             key={i + title}
+            css={{
+              marginBottom: SPACING['XL'],
+              [MEDIA_QUERIES.LARGESCREEN]: {
+                margin: '0'
+              }
+            }}
           >
             <Card
               image={relationships ? getImage(relationships.field_image) : null}
@@ -136,9 +141,11 @@ function TextPanel({ data }) {
             maxWidth: '38rem'
           }}>
             <Heading level={2} size="L" css={{
-              marginBottom: SPACING['M']
+              marginBottom: SPACING['L']
             }}>{title}</Heading>
-            <HTML html={html} />
+            <div css={{ color: COLORS.neutral['300'] }}>
+              <HTML html={html} />
+            </div>
           </div>
         </div>
       </PanelTemplate>
@@ -154,12 +161,7 @@ function TextPanel({ data }) {
             field_body,
             field_link
           }, i) => (
-            <li
-              css={{
-                marginBottom: SPACING['S']
-              }}
-              key={i + field_title}
-            >
+            <li key={i + field_title}>
               <div
                 css={{
                   marginBottom: SPACING['XS']
@@ -172,7 +174,9 @@ function TextPanel({ data }) {
                   {field_title}
                 </Link>
               </div>
-              <HTML html={field_body.processed} />
+              <div css={{ color: COLORS.neutral['300'] }}>
+                <HTML html={field_body.processed} />
+              </div>
             </li>
           ))}
         </PanelList>

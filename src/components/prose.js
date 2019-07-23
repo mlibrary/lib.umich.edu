@@ -5,7 +5,7 @@ import {
 
 
 const Prose = styled("div")({
-  "> *": {
+  "> *:not(:last-child)": {
     marginBottom: SPACING["M"]
   },
   "> h2:not(:last-child)": {

@@ -1,11 +1,7 @@
 import React from 'react'
 import { graphql } from "gatsby"
 
-import {
-  Heading,
-  Margins,
-  SPACING
-} from '@umich-lib/core'
+import VisuallyHidden from '@reach/visually-hidden'
 
 import Layout from "../components/layout"
 import SEO from '../components/seo'
@@ -30,7 +26,6 @@ function SectionTemplate({ data, ...rest }) {
   const {
     title,
     field_header_title,
-    field_horizontal_nav_title,
     field_root_page_,
     body,
     fields,
@@ -78,16 +73,10 @@ function SectionTemplate({ data, ...rest }) {
         })}
         css={renderHorziontalNavigationCSS(isRootPage)}
       />
-      <Margins>
-        <Heading
-          size="L"
-          level={1}
-          css={{
-            marginTop: SPACING['3XL']
-          }}
-        >{field_horizontal_nav_title}</Heading>
-      </Margins>
-      <Panels data={relationships.field_panels} />
+      <VisuallyHidden><h1>{title}</h1></VisuallyHidden>
+      <Panels
+        data={relationships.field_panels}
+      />
     </Layout>
   )
 }

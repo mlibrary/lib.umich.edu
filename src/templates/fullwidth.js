@@ -30,9 +30,6 @@ export default function FullWidthTemplate({ data, ...rest }) {
         <Heading
           size="3XL"
           level={1}
-          css={{
-            marginBottom: SPACING['XL']
-          }}
         >
           {title}
         </Heading>
