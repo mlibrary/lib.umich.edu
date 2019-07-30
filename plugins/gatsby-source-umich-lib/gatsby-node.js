@@ -123,7 +123,9 @@ exports.sourceNodes = async (
 const drupal_node_types_we_care_about = [
   'page',
   'building',
-  'section_page'
+  'section_page',
+  'location',
+  'room'
 ]
 
 // Create a slug for each page and set it as a field on the node.

@@ -112,6 +112,71 @@ export const query = graphql`
     }
   }
 
+  fragment LocationCardFragment on node__location {
+    title
+    body {
+      summary
+    }
+    fields {
+      slug
+    }
+    field_building_address {
+      locality
+      address_line1
+      postal_code
+      administrative_area
+    }
+    field_address_is_different_from_
+    relationships {
+      field_image {
+        localFile {
+          childImageSharp {
+            fluid(maxWidth: 1280, quality: 70) {
+              ...GatsbyImageSharpFluid_noBase64
+            }
+          }
+        }
+      }
+      field_parent_location {
+        field_building_address {
+          locality
+          address_line1
+          postal_code
+          administrative_area
+        }
+      }
+    }
+  }
+
+  fragment RoomCardFragment on node__room {
+    title
+    body {
+      summary
+    }
+    fields {
+      slug
+    }
+    relationships {
+      field_image {
+        localFile {
+          childImageSharp {
+            fluid(maxWidth: 1280, quality: 70) {
+              ...GatsbyImageSharpFluid_noBase64
+            }
+          }
+        }
+      }
+      field_room_building {
+        field_building_address {
+          locality
+          address_line1
+          postal_code
+          administrative_area
+        }
+      }
+    }
+  }
+
   fragment SectionNodeFragment on node__section_page {
     title
     field_horizontal_nav_title
@@ -134,6 +199,12 @@ export const query = graphql`
       summary
     }
     drupal_id
+    field_building_address {
+      locality
+      address_line1
+      postal_code
+      administrative_area
+    }
     relationships {
       field_image {
         localFile {
@@ -157,6 +228,12 @@ export const query = graphql`
       field_cards {
         ... on node__building {
           ...BuildingCardFragment
+        }
+        ... on node__location {
+          ...LocationCardFragment
+        }
+        ... on node__room {
+          ...RoomCardFragment
         }
       } 
     }

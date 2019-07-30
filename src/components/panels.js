@@ -74,7 +74,7 @@ function CardPanel({ data, headingLevel = 2 }) {
       : images[0].localFile.childImageSharp.fluid.src
   }
 
-  function renderCardChildren(rest) {
+  function renderCardChildren(data) {
     if (template === 'address_and_hours') {
       return (
         <div css={{
@@ -87,9 +87,7 @@ function CardPanel({ data, headingLevel = 2 }) {
           }}>
             <Icon d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
           </span>
-          <Address
-            data={rest.field_building_address}
-          />
+          <Address data={data} />
         </div>
       )
     }
@@ -103,9 +101,9 @@ function CardPanel({ data, headingLevel = 2 }) {
       title={title}
     >
       <PanelList>
-        {cards.map(({ title, body, fields, relationships, ...rest }, i) => (
+        {cards.map((card, i) => (
           <li
-            key={i + title}
+            key={i + card.title}
             css={{
               marginBottom: SPACING['XL'],
               [MEDIA_QUERIES.LARGESCREEN]: {
@@ -114,11 +112,11 @@ function CardPanel({ data, headingLevel = 2 }) {
             }}
           >
             <Card
-              image={relationships ? getImage(relationships.field_image) : null}
-              href={fields.slug}
-              title={title}
+              image={card.relationships ? getImage(card.relationships.field_image) : null}
+              href={card.fields.slug}
+              title={card.title}
               children={
-                useSummary ? body.summary : renderCardChildren(rest)
+                useSummary ? card.body.summary : renderCardChildren(card)
               }
               css={{
                 height: '100%'
