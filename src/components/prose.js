@@ -12,13 +12,13 @@ const Prose = styled("div")({
     marginTop: SPACING["2XL"]
   },
   "> h3:not(:last-child)": {
-    marginTop: SPACING["XL"]
+    marginTop: SPACING["M"]
   },
   "> h4:not(:last-child)": {
-    marginTop: SPACING["XL"]
+    marginTop: SPACING["M"]
   },
   "> h5:not(:last-child)": {
-    marginTop: SPACING["XL"]
+    marginTop: SPACING["M"]
   },
   li: {
     marginBottom: SPACING["XS"]

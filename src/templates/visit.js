@@ -1,27 +1,39 @@
 import React from 'react'
 import { graphql } from "gatsby"
+import VisuallyHidden from "@reach/visually-hidden";
 
 import {
   Margins,
+  Heading,
+  List,
+  SPACING,
+  MEDIA_QUERIES
 } from '@umich-lib/core'
 
 import Layout from "../components/layout"
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
-import HTML from '../components/html'
+import Prose from "../components/prose"
 import HorizontalNavigation from '../components/horizontal-navigation'
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 
 export default function VisitTemplate({ data, ...rest }) {
   const {
     title,
-    body,
+    field_horizontal_nav_title,
     fields,
     relationships,
+    body,
     field_root_page_
   } = data.page
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
+
+  const {
+    field_visit,
+    field_parking,
+    field_amenities
+  } = relationships
 
   return (
     <Layout>
@@ -44,7 +56,42 @@ export default function VisitTemplate({ data, ...rest }) {
         })}
       />
       <Margins>
-        {body && <HTML html={body.processed}/>}
+        <div css={{
+          paddingTop: SPACING['XL'],
+          paddingBottom: SPACING['XL'],
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            paddingTop: SPACING['3XL'],
+            paddingBottom: SPACING['3XL'],
+          }
+        }}>
+          <Prose>
+            <Heading level="1" size="XL">
+              <VisuallyHidden>{title}</VisuallyHidden>
+              <span aria-hidden="true">{field_horizontal_nav_title}</span>
+            </Heading>
+            <List type="bulleted">
+              {field_visit.map(({name}, i) => <li key={i + name}>{name}</li>)}
+            </List>
+
+            <Heading level="2" size="M">Getting here</Heading>
+
+            <Heading level="3" size="XS">Parking</Heading>
+            <List type="bulleted">
+              {field_parking.map(({name}, i) => <li key={i + name}>{name}</li>)}
+            </List>
+
+            <Heading level="2" size="M">Amentities</Heading>
+            <List
+              type="bulleted"
+              css={{
+                columns: '2',
+                columnGap: SPACING['2XL']
+              }}
+            >
+              {field_amenities.map(({name}, i) => <li key={i + name}>{name}</li>)}
+            </List>
+          </Prose>
+        </div>
       </Margins>
     </Layout>
   )
@@ -61,7 +108,6 @@ export const query = graphql`
         slug
       }
       body {
-        processed
         summary
       }
       relationships {
@@ -78,6 +124,15 @@ export const query = graphql`
           ... on node__section_page {
             ...SectionNodeFragment
           }
+        }
+        field_visit {
+          name
+        }
+        field_parking {
+          name
+        }
+        field_amenities {
+          name
         }
       }
     }
