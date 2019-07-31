@@ -1,5 +1,5 @@
 const path = require(`path`)
-const fetch = require("node-fetch")
+const { fetch } = require('./fetch');
 const { createBreadcrumb } = require(`./create-breadcrumb`)
 
 /**
@@ -104,16 +104,10 @@ exports.sourceNodes = async (
     Fetch data from Drupal for primary and utlity,
     process it, then create nodes for each.
   */
-  const nav_primary_data =
-    await fetch(baseUrlWithoutTrailingSlash + '/api/nav/primary')
-    .then(response => response.json())
-
+  const nav_primary_data = await fetch(baseUrlWithoutTrailingSlash + '/api/nav/primary')
   createNavNode('nav-primary', 'NavPrimary', nav_primary_data[0].children)
 
-  const nav_utility_data =
-    await fetch(baseUrlWithoutTrailingSlash + '/api/nav/utility')
-    .then(response => response.json())
-
+  const nav_utility_data = await fetch(baseUrlWithoutTrailingSlash + '/api/nav/utility')
   createNavNode('nav-utlity', 'NavUtility', nav_utility_data[0].children)
 
   // Tell Gatsby we're done.
@@ -158,8 +152,7 @@ exports.onCreateNode = async(
   async function createParentChildFields(fieldId, name) {
     if (node[fieldId]) {
       const url = baseUrlWithoutTrailingSlash + node[fieldId]
-      const response = await fetch(url)
-      const data = await response.json()
+      const data = await fetch(url)
       const sanitizedData = sanitizeDrupalView(data)
       const value = sanitizedData ? sanitizedData.map(({ uuid }) => uuid) : [`no-${name}`]
       

@@ -1,4 +1,4 @@
-const fetch = require("node-fetch")
+const { fetch } = require('./fetch');
 
 // Breadcumb
 // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
@@ -54,8 +54,7 @@ async function createBreadcrumb({
   }
 
   if (node.field_breadcrumb) {
-    const response = await fetch(baseUrl + node.field_breadcrumb)
-    const data = await response.json()
+    const data = await fetch(baseUrl + node.field_breadcrumb)
     const breadcrumb = processBreadcrumbData({ node, data })
 
     if (breadcrumb) {
