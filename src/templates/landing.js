@@ -19,6 +19,8 @@ export default function LandingTemplate({ data, ...rest }) {
     relationships
   } = data.page
 
+  const image = relationships.field_media_image
+
   return (
     <Layout>
       <SEO title={title} />
@@ -26,7 +28,7 @@ export default function LandingTemplate({ data, ...rest }) {
         breadcrumb={fields.breadcrumb}
         title={title}
         summary={body ? body.summary : null}
-        image={relationships.field_image}
+        image={relationships.field_media_image && relationships.field_media_image.relationships.field_media_image}
       />
       <Margins>
         {body && <HTML html={body.processed}/>}
@@ -48,11 +50,15 @@ export const query = graphql`
         summary
       }
       relationships {
-        field_image {
-          localFile {
-            childImageSharp {
-              fluid(maxWidth: 1280, quality: 70) {
-                ...GatsbyImageSharpFluid_noBase64
+        field_media_image {
+          relationships {
+            field_media_image {
+              localFile {
+                childImageSharp {
+                  fluid(maxWidth: 1280, quality: 70) {
+                    ...GatsbyImageSharpFluid_noBase64
+                  }
+                }
               }
             }
           }
@@ -84,24 +90,7 @@ export const query = graphql`
                   }
                 }
                 ... on node__building {
-                  title
-                  body {
-                    summary
-                  }
-                  fields {
-                    slug
-                  }
-                  relationships {
-                    field_image {
-                      localFile {
-                        childImageSharp {
-                          fluid(maxWidth: 600, quality: 70) {
-                            ...GatsbyImageSharpFluid_noBase64
-                          }
-                        }
-                      }
-                    }
-                  }
+                  ...BuildingFragment
                 }
               } 
             }
