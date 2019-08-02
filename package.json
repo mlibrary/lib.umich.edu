@@ -45,6 +45,7 @@
     "url": "https://github.com/mlibrary/lib.umich.edu"
   },
   "devDependencies": {
+    "bottleneck": "^2.19.4",
     "fetch-retry": "^2.2.2"
   }
 }

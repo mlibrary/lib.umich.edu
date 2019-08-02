@@ -1,4 +1,5 @@
 const fetch = require('fetch-retry');
+const Bottleneck = require("bottleneck/es5");
 
 function fetchWithRetry(url) {
   return fetch(url, {
@@ -12,4 +13,10 @@ function fetchWithRetry(url) {
   })
 }
 
-exports.fetch = fetchWithRetry
+const limiter = new Bottleneck({
+  maxConcurrent: 50
+});
+
+const fetchWithRetryAndLimited = limiter.wrap(fetchWithRetry)
+
+exports.fetch = fetchWithRetryAndLimited
