@@ -19,8 +19,6 @@ export default function LandingTemplate({ data, ...rest }) {
     relationships
   } = data.page
 
-  const image = relationships.field_media_image
-
   return (
     <Layout>
       <SEO title={title} />
