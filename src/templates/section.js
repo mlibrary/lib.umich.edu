@@ -136,6 +136,7 @@ export const query = graphql`
       }
     }
   }
+
   fragment BuildingFragment on node__building {
     title
     field_horizontal_nav_title
@@ -172,6 +173,9 @@ export const query = graphql`
           }
         }
       }
+      field_hours_open {
+        ...HoursFragment
+      }
       field_parent_page {
         ... on node__section_page {
           ...SectionNodeFragment
@@ -189,6 +193,34 @@ export const query = graphql`
       }
       field_amenities {
         name
+      }
+    }
+  }
+
+  fragment HoursFragment on Node {
+    ... on Node {
+      __typename
+    }
+    ... on paragraph__labor_day_holiday_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      }
+    }
+    ... on paragraph__fall_and_winter_semester_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
       }
     }
   }

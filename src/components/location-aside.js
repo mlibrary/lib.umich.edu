@@ -8,6 +8,7 @@ import {
   SPACING
 } from '@umich-lib/core'
 import Link from './link'
+import Hours from './hours'
 
 const icon_paths = {
   'address': 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
@@ -57,7 +58,8 @@ export default function LocationAside({
   administrative_area,
   locality,
   postal_code,
-  field_phone_number
+  field_phone_number,
+  field_hours_open
 }) {
   return (
     <React.Fragment>
@@ -74,7 +76,7 @@ export default function LocationAside({
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
           }}>Hours</Heading>
-          <Text>[to be implemented]</Text>
+          <Hours data={field_hours_open} />
           <Link to="/locations-and-hours/hours-view">View all hours</Link>
         </LayoutWithIcon>
 

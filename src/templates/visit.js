@@ -30,7 +30,7 @@ export default function VisitTemplate({ data, ...rest }) {
     field_root_page_,
     field_access,
     field_building_address,
-    field_phone_number
+    field_phone_number,
   } = data.page
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
@@ -38,7 +38,8 @@ export default function VisitTemplate({ data, ...rest }) {
   const {
     field_visit,
     field_parking,
-    field_amenities
+    field_amenities,
+    field_hours_open
   } = relationships
 
   return (
@@ -68,6 +69,7 @@ export default function VisitTemplate({ data, ...rest }) {
             title={title}
               field_phone_number={field_phone_number}
               {...field_building_address}
+              field_hours_open={field_hours_open}
             />
           </TemplateSide>
           <TemplateContent>
