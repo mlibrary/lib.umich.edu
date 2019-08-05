@@ -67,7 +67,7 @@ export default function VisitTemplate({ data, ...rest }) {
           }
         }}>
           <Prose>
-            <Heading level="1" size="XL">
+            <Heading level="1" size="L">
               <VisuallyHidden>{title}</VisuallyHidden>
               <span aria-hidden="true">{field_horizontal_nav_title}</span>
             </Heading>
