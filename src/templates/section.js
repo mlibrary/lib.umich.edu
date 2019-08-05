@@ -84,6 +84,46 @@ function SectionTemplate({ data, ...rest }) {
 export default SectionTemplate
 
 export const query = graphql`
+  fragment PageFragment on node__page {
+    title
+    field_local_navigation
+    fields {
+      breadcrumb
+    }
+    body {
+      processed
+    }
+    relationships {
+      field_parent_page {
+        ... on node__page {
+          title
+          fields {
+            slug
+          }
+        }
+      }
+      field_panels {
+        ... on paragraph__card_panel {
+          ...CardPanelFragment
+        }
+        ... on paragraph__text_panel {
+          field_title
+          id
+          relationships {
+            field_text_template {
+              field_machine_name
+            }
+            field_text_card {
+              field_title
+              field_body {
+                processed
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   fragment BuildingFragment on node__building {
     title
     field_horizontal_nav_title
