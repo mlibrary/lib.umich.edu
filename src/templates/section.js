@@ -141,6 +141,7 @@ export const query = graphql`
     field_horizontal_nav_title
     drupal_id
     field_root_page_
+    field_phone_number,
     body {
       summary
     }

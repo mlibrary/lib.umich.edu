@@ -7,7 +7,8 @@ import {
   Heading,
   List,
   SPACING,
-  MEDIA_QUERIES
+  MEDIA_QUERIES,
+  COLORS
 } from '@umich-lib/core'
 
 import Layout from "../components/layout"
@@ -17,6 +18,7 @@ import Prose from "../components/prose"
 import HorizontalNavigation from '../components/horizontal-navigation'
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 import HTML from '../components/html'
+import LocationAside from '../components/location-aside'
 
 export default function VisitTemplate({ data, ...rest }) {
   const {
@@ -26,7 +28,9 @@ export default function VisitTemplate({ data, ...rest }) {
     relationships,
     body,
     field_root_page_,
-    field_access
+    field_access,
+    field_building_address,
+    field_phone_number
   } = data.page
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
@@ -58,34 +62,36 @@ export default function VisitTemplate({ data, ...rest }) {
         })}
       />
       <Margins>
-        <div css={{
-          paddingTop: SPACING['XL'],
-          paddingBottom: SPACING['XL'],
-          [MEDIA_QUERIES.LARGESCREEN]: {
-            paddingTop: SPACING['3XL'],
-            paddingBottom: SPACING['3XL'],
-          }
-        }}>
-          <Prose>
-            <Heading level="1" size="L">
-              <VisuallyHidden>{title}</VisuallyHidden>
-              <span aria-hidden="true">{field_horizontal_nav_title}</span>
-            </Heading>
-            <HTMLList data={field_visit} />
+        <Template>
+          <TemplateSide> 
+            <LocationAside
+            title={title}
+              field_phone_number={field_phone_number}
+              {...field_building_address}
+            />
+          </TemplateSide>
+          <TemplateContent>
+            <Prose>
+              <Heading level="1" size="L">
+                <VisuallyHidden>{title}</VisuallyHidden>
+                <span aria-hidden="true">{field_horizontal_nav_title}</span>
+              </Heading>
+              <HTMLList data={field_visit} />
 
-            <Heading level="2" size="M">Getting here</Heading>
-            <Heading level="3" size="XS">Parking</Heading>
-            <HTMLList data={field_parking} />
+              <Heading level="2" size="M">Getting here</Heading>
+              <Heading level="3" size="XS">Parking</Heading>
+              <HTMLList data={field_parking} />
 
-            <Heading level="3" size="XS">Access</Heading>
-            <HTML html={field_access.processed} />
+              <Heading level="3" size="XS">Access</Heading>
+              <HTML html={field_access.processed} />
 
-            <Heading level="2" size="M">Amentities</Heading>
-            <List type="bulleted">
-              {field_amenities.map(({name}, i) => <li key={i + name}>{name}</li>)}
-            </List>
-          </Prose>
-        </div>
+              <Heading level="2" size="M">Amentities</Heading>
+              <List type="bulleted">
+                {field_amenities.map(({name}, i) => <li key={i + name}>{name}</li>)}
+              </List>
+            </Prose>
+          </TemplateContent>
+        </Template>
       </Margins>
     </Layout>
   )
@@ -96,6 +102,68 @@ function HTMLList({ data }) {
     <List type="bulleted">
       {data.map(({description}, i) => <li key={i + description.processed}><HTML html={description.processed} /></li>)}
     </List>
+  )
+}
+
+function Template({ children, ...rest }) {
+  return (
+    <div
+      css={{
+        paddingTop: SPACING['XL'],
+        paddingBottom: SPACING['XL'],
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          paddingTop: SPACING['3XL'],
+          paddingBottom: SPACING['3XL'],
+          display: "grid",
+          gridTemplateAreas: `
+            "content side"
+          `,
+          gridTemplateColumns: `1fr calc(21rem + ${SPACING['4XL']}) `
+        }
+      }}
+      {...rest}
+    >
+      {children}
+    </div>
+  )
+}
+
+function TemplateSide({ children, ...rest }) {
+  return (
+    <aside
+      css={{
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          gridArea: 'side',
+          marginLeft: SPACING['3XL'],
+          paddingLeft: SPACING['3XL'],
+          borderLeft: `solid 1px ${COLORS.neutral['100']}`,
+          borderBottom: 'none'
+        },
+        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+        paddingBottom: SPACING['2XL'],
+        marginBottom: SPACING['2XL']
+      }}
+      {...rest}
+    >
+      {children}
+    </aside>
+  )
+}
+
+function TemplateContent({ children, ...rest }) {
+  return (
+    <div
+      css={{
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          maxWidth: '38rem',
+          gridArea: 'content',
+        },
+        marginBottom: SPACING['XL']
+      }}
+      {...rest}
+    >
+      {children}
+    </div>
   )
 }
 
