@@ -42,7 +42,7 @@ export default function VisitTemplate({ data, ...rest }) {
         breadcrumb={fields.breadcrumb}
         title={title}
         summary={body ? body.summary : null}
-        image={relationships.field_image}
+        image={relationships.field_media_image.relationships.field_media_image}
       />
       <HorizontalNavigation
         items={processHorizontalNavigationData({
@@ -100,41 +100,7 @@ export default function VisitTemplate({ data, ...rest }) {
 export const query = graphql`
   query($slug: String!, $parents: [String], $children: [String]) {
     page: nodeBuilding(fields: { slug: { eq: $slug } }) {
-      title
-      field_horizontal_nav_title
-      field_root_page_
-      fields {
-        breadcrumb
-        slug
-      }
-      body {
-        summary
-      }
-      relationships {
-        field_image {
-          localFile {
-            childImageSharp {
-              fluid(maxWidth: 1280, quality: 70) {
-                ...GatsbyImageSharpFluid_noBase64
-              }
-            }
-          }
-        }
-        field_parent_page {
-          ... on node__section_page {
-            ...SectionNodeFragment
-          }
-        }
-        field_visit {
-          name
-        }
-        field_parking {
-          name
-        }
-        field_amenities {
-          name
-        }
-      }
+      ...BuildingFragment
     }
     parents: allNodeSectionPage(filter: { drupal_id: { in: $parents } }) {
       edges {

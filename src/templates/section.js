@@ -88,6 +88,7 @@ export const query = graphql`
     title
     field_horizontal_nav_title
     drupal_id
+    field_root_page_
     body {
       summary
     }
@@ -114,6 +115,20 @@ export const query = graphql`
             }
           }
         }
+      }
+      field_parent_page {
+        ... on node__section_page {
+          ...SectionNodeFragment
+        }
+      }
+      field_visit {
+        name
+      }
+      field_parking {
+        name
+      }
+      field_amenities {
+        name
       }
     }
   }
