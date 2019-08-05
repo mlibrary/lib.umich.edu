@@ -6,7 +6,8 @@ import {
   SPACING,
   Text,
   Margins,
-  MEDIA_QUERIES
+  MEDIA_QUERIES,
+  COLORS
 } from "@umich-lib/core";
 
 import Breadcrumb from './breadcrumb'
@@ -18,7 +19,7 @@ export default function PageHeader({
   image,
   ...rest
 }) {
-  const imageData = image ? image[0].localFile.childImageSharp.fluid : null
+  const imageData = image ? image.localFile.childImageSharp.fluid : null
 
   return (
     <Margins>

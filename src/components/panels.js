@@ -22,6 +22,9 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
         ':last-of-type': {
           borderBottom: 'none'
         },
+        ':first-of-type': {
+          borderTop: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+        },
         paddingTop: SPACING['XL'],
         paddingBottom: SPACING['XL'],
         [MEDIA_QUERIES.LARGESCREEN]: {
@@ -68,10 +71,10 @@ function CardPanel({ data, headingLevel = 2 }) {
   const noImage = template === 'standard_no_image'
   const useSummary = template !== 'address_and_hours'
 
-  function getImage(images) {
-    return !images || noImage
+  function getImage(image) {
+    return !image || noImage
       ? null
-      : images[0].localFile.childImageSharp.fluid.src
+      : image.relationships.field_media_image.localFile.childImageSharp.fluid.src
   }
 
   function renderCardChildren(data) {
@@ -112,7 +115,7 @@ function CardPanel({ data, headingLevel = 2 }) {
             }}
           >
             <Card
-              image={card.relationships ? getImage(card.relationships.field_image) : null}
+              image={card.relationships ? getImage(card.relationships.field_media_image) : null}
               href={card.fields.slug}
               title={card.title}
               children={

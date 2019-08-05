@@ -16,7 +16,7 @@
     "gatsby-plugin-react-helmet": "^3.1.2",
     "gatsby-plugin-robots-txt": "^1.5.0",
     "gatsby-plugin-sharp": "^2.2.7",
-    "gatsby-source-drupal": "^3.2.0",
+    "gatsby-source-drupal": "^3.2.12",
     "gatsby-transformer-sharp": "^2.2.2",
     "prettier": "^1.18.2",
     "react": "^16.8.6",
@@ -45,6 +45,7 @@
     "url": "https://github.com/mlibrary/lib.umich.edu"
   },
   "devDependencies": {
+    "bottleneck": "^2.19.4",
     "fetch-retry": "^2.2.2"
   }
 }

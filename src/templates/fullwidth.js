@@ -86,24 +86,7 @@ export const query = graphql`
                   }
                 }
                 ... on node__building {
-                  title
-                  body {
-                    summary
-                  }
-                  fields {
-                    slug
-                  }
-                  relationships {
-                    field_image {
-                      localFile {
-                        childImageSharp {
-                          fluid(maxWidth: 600, quality: 70) {
-                            ...GatsbyImageSharpFluid_noBase64
-                          }
-                        }
-                      }
-                    }
-                  }
+                  ...BuildingFragment
                 }
               } 
             }
