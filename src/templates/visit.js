@@ -81,13 +81,7 @@ export default function VisitTemplate({ data, ...rest }) {
             </List>
 
             <Heading level="2" size="M">Amentities</Heading>
-            <List
-              type="bulleted"
-              css={{
-                columns: '2',
-                columnGap: SPACING['2XL']
-              }}
-            >
+            <List type="bulleted">
               {field_amenities.map(({name}, i) => <li key={i + name}>{name}</li>)}
             </List>
           </Prose>
