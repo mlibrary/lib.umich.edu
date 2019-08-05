@@ -52,7 +52,7 @@ function SectionTemplate({ data, ...rest }) {
           breadcrumb={breadcrumb}
           title={field_header_title}
           summary={summary}
-          image={relationships.field_image}
+          image={relationships.field_media_image.relationships.field_media_image}
         />
       ) : (
         <PageHeaderMini
@@ -84,8 +84,10 @@ function SectionTemplate({ data, ...rest }) {
 export default SectionTemplate
 
 export const query = graphql`
-  fragment BuildingCardFragment on node__building {
+  fragment BuildingFragment on node__building {
     title
+    field_horizontal_nav_title
+    drupal_id
     body {
       summary
     }
@@ -100,11 +102,15 @@ export const query = graphql`
       administrative_area
     }
     relationships {
-      field_image {
-        localFile {
-          childImageSharp {
-            fluid(maxWidth: 600, quality: 70) {
-              ...GatsbyImageSharpFluid_noBase64
+      field_media_image {
+        relationships {
+          field_media_image {
+            localFile {
+              childImageSharp {
+                fluid(maxWidth: 600, quality: 70) {
+                  ...GatsbyImageSharpFluid_noBase64
+                }
+              }
             }
           }
         }
@@ -112,7 +118,7 @@ export const query = graphql`
     }
   }
 
-  fragment LocationCardFragment on node__location {
+  fragment LocationFragment on node__location {
     title
     body {
       summary
@@ -128,11 +134,15 @@ export const query = graphql`
     }
     field_address_is_different_from_
     relationships {
-      field_image {
-        localFile {
-          childImageSharp {
-            fluid(maxWidth: 1280, quality: 70) {
-              ...GatsbyImageSharpFluid_noBase64
+      field_media_image {
+        relationships {
+          field_media_image {
+            localFile {
+              childImageSharp {
+                fluid(maxWidth: 1280, quality: 70) {
+                  ...GatsbyImageSharpFluid_noBase64
+                }
+              }
             }
           }
         }
@@ -157,11 +167,15 @@ export const query = graphql`
       slug
     }
     relationships {
-      field_image {
-        localFile {
-          childImageSharp {
-            fluid(maxWidth: 1280, quality: 70) {
-              ...GatsbyImageSharpFluid_noBase64
+      field_media_image {
+        relationships {
+          field_media_image {
+            localFile {
+              childImageSharp {
+                fluid(maxWidth: 1280, quality: 70) {
+                  ...GatsbyImageSharpFluid_noBase64
+                }
+              }
             }
           }
         }
@@ -189,35 +203,6 @@ export const query = graphql`
     drupal_id
   }
 
-  fragment BuildingNodeFragment on node__building {
-    title
-    field_horizontal_nav_title
-    fields {
-      slug
-    }
-    body {
-      summary
-    }
-    drupal_id
-    field_building_address {
-      locality
-      address_line1
-      postal_code
-      administrative_area
-    }
-    relationships {
-      field_image {
-        localFile {
-          childImageSharp {
-            fluid(maxWidth: 1280, quality: 70) {
-              ...GatsbyImageSharpFluid_noBase64
-            }
-          }
-        }
-      }
-    }
-  }
-
   fragment CardPanelFragment on paragraph__card_panel {
     field_title
     id
@@ -227,10 +212,10 @@ export const query = graphql`
       }
       field_cards {
         ... on node__building {
-          ...BuildingCardFragment
+          ...BuildingFragment
         }
         ... on node__location {
-          ...LocationCardFragment
+          ...LocationFragment
         }
         ... on node__room {
           ...RoomCardFragment
@@ -258,14 +243,18 @@ export const query = graphql`
             ...SectionNodeFragment
           }
           ... on node__building {
-            ...BuildingNodeFragment
+            ...BuildingFragment
           }
         }
-        field_image {
-          localFile {
-            childImageSharp {
-              fluid(maxWidth: 1280, quality: 70) {
-                ...GatsbyImageSharpFluid_noBase64
+        field_media_image {
+          relationships {
+            field_media_image {
+              localFile {
+                childImageSharp {
+                  fluid(maxWidth: 1280, quality: 70) {
+                    ...GatsbyImageSharpFluid_noBase64
+                  }
+                }
               }
             }
           }
