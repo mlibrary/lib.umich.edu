@@ -3,6 +3,12 @@ import { graphql } from "gatsby"
 
 import VisuallyHidden from '@reach/visually-hidden'
 
+import {
+  Heading,
+  Margins,
+  SPACING
+} from '@umich-lib/core'
+
 import Layout from "../components/layout"
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
@@ -28,6 +34,7 @@ function SectionTemplate({ data, ...rest }) {
     field_header_title,
     field_root_page_,
     body,
+    field_horizontal_nav_title,
     fields,
     relationships
   } = data.page
@@ -73,7 +80,12 @@ function SectionTemplate({ data, ...rest }) {
         })}
         css={renderHorziontalNavigationCSS(isRootPage)}
       />
-      <VisuallyHidden><h1>{title}</h1></VisuallyHidden>
+      <Margins>
+        <Heading level="1" size="L" css={{ marginTop: SPACING['3XL'] }}>
+          <VisuallyHidden>{title}</VisuallyHidden>
+          <span aria-hidden="true">{field_horizontal_nav_title}</span>
+        </Heading>
+      </Margins>
       <Panels
         data={relationships.field_panels}
       />
@@ -142,6 +154,9 @@ export const query = graphql`
       postal_code
       administrative_area
     }
+    field_access {
+      processed
+    }
     relationships {
       field_media_image {
         relationships {
@@ -161,11 +176,15 @@ export const query = graphql`
           ...SectionNodeFragment
         }
       }
-      field_visit {
-        name
-      }
       field_parking {
-        name
+        description {
+          processed
+        }
+      }
+      field_visit {
+        description {
+          processed
+        }
       }
       field_amenities {
         name

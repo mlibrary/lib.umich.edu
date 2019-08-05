@@ -16,6 +16,7 @@ import PageHeader from '../components/page-header'
 import Prose from "../components/prose"
 import HorizontalNavigation from '../components/horizontal-navigation'
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
+import HTML from '../components/html'
 
 export default function VisitTemplate({ data, ...rest }) {
   const {
@@ -24,7 +25,8 @@ export default function VisitTemplate({ data, ...rest }) {
     fields,
     relationships,
     body,
-    field_root_page_
+    field_root_page_,
+    field_access
   } = data.page
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
@@ -69,16 +71,14 @@ export default function VisitTemplate({ data, ...rest }) {
               <VisuallyHidden>{title}</VisuallyHidden>
               <span aria-hidden="true">{field_horizontal_nav_title}</span>
             </Heading>
-            <List type="bulleted">
-              {field_visit.map(({name}, i) => <li key={i + name}>{name}</li>)}
-            </List>
+            <HTMLList data={field_visit} />
 
             <Heading level="2" size="M">Getting here</Heading>
-
             <Heading level="3" size="XS">Parking</Heading>
-            <List type="bulleted">
-              {field_parking.map(({name}, i) => <li key={i + name}>{name}</li>)}
-            </List>
+            <HTMLList data={field_parking} />
+
+            <Heading level="3" size="XS">Access</Heading>
+            <HTML html={field_access.processed} />
 
             <Heading level="2" size="M">Amentities</Heading>
             <List type="bulleted">
@@ -88,6 +88,14 @@ export default function VisitTemplate({ data, ...rest }) {
         </div>
       </Margins>
     </Layout>
+  )
+}
+
+function HTMLList({ data }) {
+  return (
+    <List type="bulleted">
+      {data.map(({description}, i) => <li key={i + description.processed}><HTML html={description.processed} /></li>)}
+    </List>
   )
 }
 

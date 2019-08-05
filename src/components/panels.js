@@ -22,9 +22,6 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
         ':last-of-type': {
           borderBottom: 'none'
         },
-        ':first-of-type': {
-          borderTop: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
-        },
         paddingTop: SPACING['XL'],
         paddingBottom: SPACING['XL'],
         [MEDIA_QUERIES.LARGESCREEN]: {
