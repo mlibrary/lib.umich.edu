@@ -136,6 +136,7 @@ export const query = graphql`
       }
     }
   }
+
   fragment BuildingFragment on node__building {
     title
     field_horizontal_nav_title
@@ -172,6 +173,9 @@ export const query = graphql`
           }
         }
       }
+      field_hours_open {
+        ...HoursFragment
+      }
       field_parent_page {
         ... on node__section_page {
           ...SectionNodeFragment
@@ -193,19 +197,223 @@ export const query = graphql`
     }
   }
 
+  fragment HoursFragment on Node {
+    ... on Node {
+      __typename
+    }
+    ... on paragraph__labor_day_holiday_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      }
+    }
+    ... on paragraph__fall_and_winter_semester_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      }
+    }
+    ... on paragraph__fall_study_break {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__thanksgiving_break_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__fall_exam_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__winter_break_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__intersession_after_new_year {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__spring_break_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__winter_exam_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__intersession_after_winter_exams {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__memorial_day_holiday_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__spring_term_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+        comment
+      } 
+    }
+    ... on paragraph__july_4_holiday_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__summer_term_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__intersession_after_summer_exams {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__hours_exceptions {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__hours_exceptions {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+        comment
+      } 
+    }
+  }
+
   fragment LocationFragment on node__location {
     title
+    field_horizontal_nav_title
+    drupal_id
+    field_root_page_
+    field_phone_number
+    field_address_is_different_from_
     body {
       summary
     }
     fields {
       slug
+      breadcrumb
     }
     field_building_address {
       locality
       address_line1
       postal_code
       administrative_area
+    }
+    field_access {
+      processed
     }
     field_address_is_different_from_
     relationships {
@@ -230,16 +438,45 @@ export const query = graphql`
           administrative_area
         }
       }
+      field_parent_page {
+        ... on node__section_page {
+          ...SectionNodeFragment
+        }
+      }
+      field_parking {
+        description {
+          processed
+        }
+      }
+      field_visit {
+        description {
+          processed
+        }
+      }
+      field_amenities {
+        name
+      }
+      field_hours_open {
+        ...HoursFragment
+      }
     }
   }
 
-  fragment RoomCardFragment on node__room {
+  fragment RoomFragment on node__room {
     title
+    field_horizontal_nav_title
+    drupal_id
+    field_root_page_
+    field_phone_number
     body {
       summary
     }
     fields {
       slug
+      breadcrumb
+    }
+    field_access {
+      processed
     }
     relationships {
       field_media_image {
@@ -262,6 +499,27 @@ export const query = graphql`
           postal_code
           administrative_area
         }
+      }
+      field_hours_open {
+        ...HoursFragment
+      }
+      field_parent_page {
+        ... on node__section_page {
+          ...SectionNodeFragment
+        }
+      }
+      field_parking {
+        description {
+          processed
+        }
+      }
+      field_visit {
+        description {
+          processed
+        }
+      }
+      field_amenities {
+        name
       }
     }
   }
@@ -293,7 +551,7 @@ export const query = graphql`
           ...LocationFragment
         }
         ... on node__room {
-          ...RoomCardFragment
+          ...RoomFragment
         }
       } 
     }

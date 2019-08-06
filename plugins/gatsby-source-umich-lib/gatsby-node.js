@@ -279,6 +279,54 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   }
                 }
               }
+            },
+            rooms: allNodeRoom(filter: {
+              relationships: {
+                field_design_template: {
+                  field_machine_name: {
+                    in: ["visit"]
+                  }
+                }
+              }
+            }) {
+              edges {
+                node {
+                  fields {
+                    slug
+                    children
+                    parents
+                  }
+                  relationships {
+                    field_design_template {
+                      field_machine_name
+                    }
+                  }
+                }
+              }
+            },
+            locations: allNodeLocation(filter: {
+              relationships: {
+                field_design_template: {
+                  field_machine_name: {
+                    in: ["visit"]
+                  }
+                }
+              }
+            }) {
+              edges {
+                node {
+                  fields {
+                    slug
+                    children
+                    parents
+                  }
+                  relationships {
+                    field_design_template {
+                      field_machine_name
+                    }
+                  }
+                }
+              }
             }
           }
         `
@@ -289,9 +337,15 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         const {
           pages,
           sections,
-          buildings
+          buildings,
+          rooms,
+          locations
         } = result.data
-        const edges = pages.edges.concat(sections.edges).concat(buildings.edges)
+        const edges = pages.edges
+          .concat(sections.edges)
+          .concat(buildings.edges)
+          .concat(rooms.edges)
+          .concat(locations.edges)
         
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
