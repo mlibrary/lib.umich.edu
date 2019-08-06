@@ -17,7 +17,18 @@ export default function Hours({ data }) {
   }
 
   const now = Date.now()
+  const today = new Date()
+  const exceptionHours = data.find(set => set.__typename === "paragraph__hours_exceptions")
+  const exceptionDay = exceptionHours.field_hours_open.find(d => d.day === today.getDay())
 
+  /*
+    Drupal sets a -1 to hours not set by editor.
+    We only care if hours are not -1.
+  */
+  if (exceptionDay.starthours !== -1) {
+    return <Time {...exceptionDay} />
+  }
+  
   /*
     Find the set of hours that are for now.
   */
@@ -32,20 +43,15 @@ export default function Hours({ data }) {
     // Note: Include start and end dates.
     return now >= start && now <= end
   })
-
-  /*
-   Catch if we did  not find any hours.
-  */
-  if (!hours) {
-    return <span>[not available]</span>
-  }
-
-  const today = new Date()
   const day = hours.field_hours_open.find(d => d.day === today.getDay())
 
+  return <Time {...day} />
+}
+
+function Time({ starthours, endhours, comment }) {
   // Needs to be 24 time format, ie ####.
-  const start = day.starthours < 1000 ? '0' + day.starthours : day.starthours
-  const end = day.endhours < 1000 ? '0' + day.endhours : day.endhours
+  const start = starthours < 1000 ? '0' + starthours : starthours
+  const end = endhours < 1000 ? '0' + endhours : endhours
 
   return (
     <React.Fragment>

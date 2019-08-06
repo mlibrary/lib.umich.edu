@@ -245,6 +245,18 @@ export const query = graphql`
         endhours
       } 
     }
+    ... on paragraph__hours_exceptions {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+        comment
+      } 
+    }
   }
 
   fragment LocationFragment on node__location {
