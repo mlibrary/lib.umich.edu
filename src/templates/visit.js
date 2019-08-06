@@ -66,8 +66,6 @@ export default function VisitTemplate({ data, ...rest }) {
 
   const address = getAddress()
 
-  console.log('address', address)
-
   return (
     <Layout>
       <SEO title={title} />
