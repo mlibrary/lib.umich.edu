@@ -42,6 +42,8 @@ export default function Hours({ data }) {
 
   const today = new Date()
   const day = hours.field_hours_open.find(d => d.day === today.getDay())
+
+  // Needs to be 24 time format, ie ####.
   const start = day.starthours < 1000 ? '0' + day.starthours : day.starthours
   const end = day.endhours < 1000 ? '0' + day.endhours : day.endhours
 
