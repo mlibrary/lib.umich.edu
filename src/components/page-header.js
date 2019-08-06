@@ -22,7 +22,9 @@ export default function PageHeader({
   const imageData = image ? image.localFile.childImageSharp.fluid : null
 
   return (
-    <Margins>
+    <Margins css={{
+      borderBottom: `solid 1px ${COLORS.neutral['100']}`
+    }}>
       <header
         css={{
           [MEDIA_QUERIES.LARGESCREEN]: {

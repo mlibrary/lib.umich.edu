@@ -15,7 +15,6 @@ export default function HorizontalNavigation({ items, ...rest }) {
   return (
     <nav
       css={{
-        borderTop: `solid 1px ${COLORS.neutral['100']}`,
         borderBottom: `solid 1px ${COLORS.neutral['100']}`,
         background: COLORS.blue['100']
       }}
