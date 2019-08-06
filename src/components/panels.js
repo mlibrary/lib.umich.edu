@@ -44,17 +44,29 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
 function PanelList({
   largeScreenTwoColumn,
   children,
+  twoColumns,
   ...rest
 }) {
+  const panelListGridStyles = {
+    [MEDIA_QUERIES.LARGESCREEN]: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+      gridGap: `${SPACING['XL']} ${SPACING['M']}`
+    }
+  }
+  const panelListColumnStyles = {
+    [MEDIA_QUERIES.LARGESCREEN]: {
+      columns: '2',
+      columnGap: SPACING['3XL'],
+      '> li': {
+        marginBottom: SPACING['XL']
+      }
+    }
+  }
+
   return (
-      <ol css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-          gridGap: `${SPACING['XL']} ${SPACING['M']}`
-        }
-      }}
-    {...rest}
+    <ol css={twoColumns ? panelListColumnStyles : panelListGridStyles}
+      {...rest}
     >
       {children}
     </ol>
@@ -100,7 +112,7 @@ function CardPanel({ data, headingLevel = 2 }) {
     <PanelTemplate
       title={title}
     >
-      <PanelList>
+      <PanelList twoColumns={noImage}>
         {cards.map((card, i) => (
           <li
             key={i + card.title}
@@ -172,13 +184,7 @@ function TextPanel({ data }) {
   if (template === 'grid_text_template_with_linked_title') {
     return (
       <PanelTemplate title={title}>
-        <PanelList
-          css={{
-            [MEDIA_QUERIES.LARGESCREEN]: {
-              gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))'
-            }
-          }}
-        >
+        <PanelList twoColumns={true}>
           {cards.map(({
             field_title,
             field_body,
