@@ -223,6 +223,28 @@ export const query = graphql`
         endhours
       }
     }
+    ... on paragraph__summer_term_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
+    ... on paragraph__spring_term_hours {
+      field_date_range {
+        value
+        end_value
+      }
+      field_hours_open {
+        day
+        starthours
+        endhours
+      } 
+    }
   }
 
   fragment LocationFragment on node__location {

@@ -77,7 +77,7 @@ export default function LocationAside({
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
           }}>Hours</Heading>
-          <Hours data={field_hours_open} />
+          <Text><Hours data={field_hours_open} /></Text>
           <Link to="/locations-and-hours/hours-view">View all hours</Link>
         </LayoutWithIcon>
 
