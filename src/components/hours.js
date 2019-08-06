@@ -19,14 +19,17 @@ export default function Hours({ data }) {
   const now = Date.now()
   const today = new Date()
   const exceptionHours = data.find(set => set.__typename === "paragraph__hours_exceptions")
-  const exceptionDay = exceptionHours.field_hours_open.find(d => d.day === today.getDay())
 
-  /*
-    Drupal sets a -1 to hours not set by editor.
-    We only care if hours are not -1.
-  */
-  if (exceptionDay.starthours !== -1) {
-    return <Time {...exceptionDay} />
+  if (exceptionHours) {
+    const exceptionDay = exceptionHours.field_hours_open.find(d => d.day === today.getDay())
+
+    /*
+      Drupal sets a -1 to hours not set by editor.
+      We only care if hours are not -1.
+    */
+    if (exceptionDay.starthours !== -1) {
+      return <Time {...exceptionDay} />
+    }
   }
   
   /*
