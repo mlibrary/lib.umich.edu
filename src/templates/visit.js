@@ -21,6 +21,15 @@ import HTML from '../components/html'
 import LocationAside from '../components/location-aside'
 
 export default function VisitTemplate({ data, ...rest }) {
+  /*
+    Is the data a room, building, or location?
+  */
+  const page = data.building ? data.building
+    : data.location ? data.location
+    : data.room ? data.room : null
+
+  console.log('page', page)
+
   const {
     title,
     field_horizontal_nav_title,
@@ -31,16 +40,33 @@ export default function VisitTemplate({ data, ...rest }) {
     field_access,
     field_building_address,
     field_phone_number,
-  } = data.page
+    field_address_is_different_from_
+  } = page
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
-
   const {
     field_visit,
     field_parking,
     field_amenities,
-    field_hours_open
+    field_hours_open,
+    field_room_building,
+    field_parent_location
   } = relationships
+
+  function getAddress() {
+    if (field_address_is_different_from_ === false) {
+      return field_parent_location.field_building_address
+    }
+
+    return field_building_address ? field_building_address
+    : field_room_building ? field_room_building.field_building_address
+    : field_parent_location ? field_parent_location.field_building_address
+    : {}
+  }
+
+  const address = getAddress()
+
+  console.log('address', address)
 
   return (
     <Layout>
@@ -55,7 +81,7 @@ export default function VisitTemplate({ data, ...rest }) {
         items={processHorizontalNavigationData({
           parentNodeOrderByDrupalId: rest.pageContext.parents,
           parentNodes: data.parents.edges,
-          currentNode: data.page,
+          currentNode: page,
           childrenNodeOrderByDrupalId: rest.pageContext.children,
           childrenNodes: data.children.edges,
           isRootPage,
@@ -66,9 +92,9 @@ export default function VisitTemplate({ data, ...rest }) {
         <Template>
           <TemplateSide> 
             <LocationAside
-            title={title}
+              title={title}
               field_phone_number={field_phone_number}
-              {...field_building_address}
+              {...address}
               field_hours_open={field_hours_open}
             />
           </TemplateSide>
@@ -171,8 +197,14 @@ function TemplateContent({ children, ...rest }) {
 
 export const query = graphql`
   query($slug: String!, $parents: [String], $children: [String]) {
-    page: nodeBuilding(fields: { slug: { eq: $slug } }) {
+    building: nodeBuilding(fields: { slug: { eq: $slug } }) {
       ...BuildingFragment
+    }
+    room: nodeRoom(fields: { slug: { eq: $slug } }) {
+      ...RoomFragment
+    }
+    location: nodeLocation(fields: { slug: { eq: $slug } }) {
+      ...LocationFragment
     }
     parents: allNodeSectionPage(filter: { drupal_id: { in: $parents } }) {
       edges {

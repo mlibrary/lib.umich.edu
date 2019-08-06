@@ -394,17 +394,26 @@ export const query = graphql`
 
   fragment LocationFragment on node__location {
     title
+    field_horizontal_nav_title
+    drupal_id
+    field_root_page_
+    field_phone_number
+    field_address_is_different_from_
     body {
       summary
     }
     fields {
       slug
+      breadcrumb
     }
     field_building_address {
       locality
       address_line1
       postal_code
       administrative_area
+    }
+    field_access {
+      processed
     }
     field_address_is_different_from_
     relationships {
@@ -429,16 +438,45 @@ export const query = graphql`
           administrative_area
         }
       }
+      field_parent_page {
+        ... on node__section_page {
+          ...SectionNodeFragment
+        }
+      }
+      field_parking {
+        description {
+          processed
+        }
+      }
+      field_visit {
+        description {
+          processed
+        }
+      }
+      field_amenities {
+        name
+      }
+      field_hours_open {
+        ...HoursFragment
+      }
     }
   }
 
-  fragment RoomCardFragment on node__room {
+  fragment RoomFragment on node__room {
     title
+    field_horizontal_nav_title
+    drupal_id
+    field_root_page_
+    field_phone_number
     body {
       summary
     }
     fields {
       slug
+      breadcrumb
+    }
+    field_access {
+      processed
     }
     relationships {
       field_media_image {
@@ -461,6 +499,27 @@ export const query = graphql`
           postal_code
           administrative_area
         }
+      }
+      field_hours_open {
+        ...HoursFragment
+      }
+      field_parent_page {
+        ... on node__section_page {
+          ...SectionNodeFragment
+        }
+      }
+      field_parking {
+        description {
+          processed
+        }
+      }
+      field_visit {
+        description {
+          processed
+        }
+      }
+      field_amenities {
+        name
       }
     }
   }
@@ -492,7 +551,7 @@ export const query = graphql`
           ...LocationFragment
         }
         ... on node__room {
-          ...RoomCardFragment
+          ...RoomFragment
         }
       } 
     }
