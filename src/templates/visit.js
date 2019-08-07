@@ -79,10 +79,10 @@ export default function VisitTemplate({ data, ...rest }) {
               <HTMLList data={field_visit} />
 
               <Heading level="2" size="M">Getting here</Heading>
-              <Heading level="3" size="XS">Parking</Heading>
+              <Heading level="3" size="2XS" css={{ fontWeight: '700' }}>Parking</Heading>
               <HTMLList data={field_parking} />
 
-              <Heading level="3" size="XS">Access</Heading>
+              <Heading level="3" size="2XS" css={{ fontWeight: '700' }}>Access</Heading>
               <HTML html={field_access.processed} />
 
               <Heading level="2" size="M">Amentities</Heading>
