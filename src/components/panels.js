@@ -91,9 +91,7 @@ function CardPanel({ data, headingLevel = 2 }) {
   function renderCardChildren(data) {
     if (template === 'address_and_hours') {
       return (
-        <div css={{
-          color: COLORS.neutral['400']
-        }}>
+        <React.Fragment>
           <div css={{
             display: 'flex',
             marginTop: SPACING['XS']
@@ -118,7 +116,7 @@ function CardPanel({ data, headingLevel = 2 }) {
             </span>
             <Hours node={data} />
           </div>
-        </div>
+        </React.Fragment>
       )
     }
 

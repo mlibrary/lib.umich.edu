@@ -70,14 +70,14 @@ function getAddressData(node) {
 
 export default function LocationAside({ node }) {
   const {
-    title
+    title,
+    field_phone_number
   } = node
   const {
     address_line1,
     locality,
     administrative_area,
-    postal_code,
-    field_phone_number
+    postal_code
   } = getAddressData(node)
   
   return (
@@ -120,9 +120,7 @@ export default function LocationAside({ node }) {
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
           }}>Contact</Heading>
-          <Link to="/">Ask a librarian</Link>
-          <Text>{field_phone_number}</Text>
-          <Link to="/">View staff directory</Link>
+          {field_phone_number && <Link to={"tel:" + field_phone_number}>{field_phone_number}</Link>}
         </LayoutWithIcon>
       </address>
     </React.Fragment>
