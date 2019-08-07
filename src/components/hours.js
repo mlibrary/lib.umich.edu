@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import * as moment from 'moment';
 
-export default function Hours({ data }) {
+function getHoursData(node) {
+  const {
+    field_hours_open,
+    field_room_building
+  } = node.relationships
+
+  if (field_room_building) {
+    return field_room_building.relationships.field_hours_open
+  }
+
+  return field_hours_open
+}
+
+export default function Hours({ node }) {
   const [initialized, setInitialized] = useState(false)
 
   /*
@@ -12,7 +25,9 @@ export default function Hours({ data }) {
     setInitialized(true)
   }, [initialized])
 
-  if (!initialized) {
+  const data = getHoursData(node)
+  
+  if (!initialized || data.length === 0) {
     return null
   }
 

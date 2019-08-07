@@ -479,6 +479,13 @@ export const query = graphql`
       processed
     }
     relationships {
+      field_room_building {
+        relationships {
+          field_hours_open {
+            ...HoursFragment
+          }
+        }
+      }
       field_media_image {
         relationships {
           field_media_image {

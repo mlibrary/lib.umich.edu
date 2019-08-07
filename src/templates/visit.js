@@ -28,8 +28,6 @@ export default function VisitTemplate({ data, ...rest }) {
     : data.location ? data.location
     : data.room ? data.room : null
 
-  console.log('page', page)
-
   const {
     title,
     field_horizontal_nav_title,
@@ -37,10 +35,7 @@ export default function VisitTemplate({ data, ...rest }) {
     relationships,
     body,
     field_root_page_,
-    field_access,
-    field_building_address,
-    field_phone_number,
-    field_address_is_different_from_
+    field_access
   } = page
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
@@ -48,23 +43,7 @@ export default function VisitTemplate({ data, ...rest }) {
     field_visit,
     field_parking,
     field_amenities,
-    field_hours_open,
-    field_room_building,
-    field_parent_location
   } = relationships
-
-  function getAddress() {
-    if (field_address_is_different_from_ === false) {
-      return field_parent_location.field_building_address
-    }
-
-    return field_building_address ? field_building_address
-    : field_room_building ? field_room_building.field_building_address
-    : field_parent_location ? field_parent_location.field_building_address
-    : {}
-  }
-
-  const address = getAddress()
 
   return (
     <Layout>
@@ -89,12 +68,7 @@ export default function VisitTemplate({ data, ...rest }) {
       <Margins>
         <Template>
           <TemplateSide> 
-            <LocationAside
-              title={title}
-              field_phone_number={field_phone_number}
-              {...address}
-              field_hours_open={field_hours_open}
-            />
+            <LocationAside node={page} />
           </TemplateSide>
           <TemplateContent>
             <Prose>

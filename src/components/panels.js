@@ -12,6 +12,8 @@ import Card from './card'
 import Link from './link'
 import HTML from './html'
 import Address from './address'
+import Hours from './hours'
+import icons from '../reusable/icons'
 
 function PanelTemplate({ title, children, shaded, ...rest }) {
   return (
@@ -90,16 +92,32 @@ function CardPanel({ data, headingLevel = 2 }) {
     if (template === 'address_and_hours') {
       return (
         <div css={{
-          display: 'flex',
-          marginTop: SPACING['XS']
+          color: COLORS.neutral['400']
         }}>
-          <span css={{
-            color: COLORS.maize['500'],
-            marginRight: SPACING['2XS']
+          <div css={{
+            display: 'flex',
+            marginTop: SPACING['XS']
           }}>
-            <Icon d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-          </span>
-          <Address data={data} />
+            <span css={{
+              color: COLORS.maize['500'],
+              marginRight: SPACING['XS']
+            }}>
+              <Icon d={icons['address']} />
+            </span>
+            <Address data={data} />
+          </div>
+          <div css={{
+            display: 'flex',
+            marginTop: SPACING['XS']
+          }}>
+            <span css={{
+              color: COLORS.maize['500'],
+              marginRight: SPACING['XS']
+            }}>
+              <Icon d={icons['clock']} />
+            </span>
+            <Hours node={data} />
+          </div>
         </div>
       )
     }
