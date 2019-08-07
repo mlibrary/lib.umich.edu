@@ -19,6 +19,7 @@ export default function HorizontalNavigation({ items, ...rest }) {
         background: COLORS.blue['100']
       }}
       {...rest}
+      aria-label="Local"
     >
       <Margins>
         <ol>

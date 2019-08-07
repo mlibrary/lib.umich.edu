@@ -82,6 +82,21 @@ export default function LocationAside({ node }) {
   
   return (
     <React.Fragment>
+      <section
+        aria-labelledby="todays-hours"
+        css={{
+          marginBottom: SPACING['3XL']
+        }}
+      >
+        <LayoutWithIcon d={icons['clock']} palette="indigo">
+          <Heading level="2" size="M" id="todays-hours" css={{
+            paddingTop: SPACING['2XS'],
+            paddingBottom: SPACING['2XS']
+          }}>Hours</Heading>
+          <Text><strong css={{ fontWeight: '700' }}>General:</strong> <Hours node={node} /></Text>
+          <Link to="/locations-and-hours/hours-view">View all hours</Link>
+        </LayoutWithIcon>
+      </section>
       <address
         aria-label="Address and contact information"
         css={{
@@ -90,15 +105,6 @@ export default function LocationAside({ node }) {
           }
         }}
       >
-        <LayoutWithIcon d={icons['clock']} palette="indigo">
-          <Heading level="2" size="M" css={{
-            paddingTop: SPACING['2XS'],
-            paddingBottom: SPACING['2XS']
-          }}>Hours</Heading>
-          <Text><strong css={{ fontWeight: '700' }}>General:</strong> <Hours node={node} /></Text>
-          <Link to="/locations-and-hours/hours-view">View all hours</Link>
-        </LayoutWithIcon>
-
         <LayoutWithIcon d={icons['address']} palette="orange">
           <Heading level="2" size="M" css={{
             paddingTop: SPACING['2XS'],
