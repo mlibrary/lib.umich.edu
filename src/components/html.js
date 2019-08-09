@@ -86,9 +86,6 @@ const renderHast = new rehypeReact({
               edges {
                 node {
                   drupal_id
-                  field_media_image {
-                    alt
-                  }
                   relationships {
                     field_media_image {
                       localFile {
