@@ -18,9 +18,10 @@ module.exports = {
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
     {
-      resolve: 'gatsby-source-drupal',
+      resolve: 'gatsby-source-drupal-preview',
       options: {
-        baseUrl: process.env.DRUPAL_BASE_URL || defaultDrupalBaseUrl
+        baseUrl: process.env.DRUPAL_BASE_URL || defaultDrupalBaseUrl,
+        preview: true
       },
     },
     {
