@@ -207,6 +207,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -218,6 +219,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -229,6 +231,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -240,6 +243,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -251,6 +255,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -262,6 +267,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -273,6 +279,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -284,6 +291,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -295,6 +303,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -306,6 +315,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -317,6 +327,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -328,6 +339,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -340,6 +352,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -351,6 +364,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -362,6 +376,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -373,6 +388,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -384,6 +400,7 @@ export const query = graphql`
         end_value
       }
       field_hours_open {
+        comment
         day
         starthours
         endhours
@@ -468,6 +485,7 @@ export const query = graphql`
     drupal_id
     field_root_page_
     field_phone_number
+    field_hours_different_from_build
     body {
       summary
     }

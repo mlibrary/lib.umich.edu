@@ -3,11 +3,14 @@ import * as moment from 'moment';
 
 function getHoursData(node) {
   const {
+    field_hours_different_from_build
+  } = node
+  const {
     field_hours_open,
     field_room_building
   } = node.relationships
 
-  if (field_room_building) {
+  if (!field_hours_different_from_build && field_room_building) {
     return field_room_building.relationships.field_hours_open
   }
 
@@ -47,6 +50,7 @@ export default function Hours({ node }) {
     }
   }
   
+  
   /*
     Find the set of hours that are for now.
   */
@@ -66,10 +70,22 @@ export default function Hours({ node }) {
   return <Time {...day} />
 }
 
+/*
+  - Display hours if start and end are not equal
+  - Display comment if one exists
+*/
 function Time({ starthours, endhours, comment }) {
+  if (comment) {
+    return <React.Fragment>{comment}</React.Fragment>
+  }
+
   // Needs to be 24 time format, ie ####.
   const start = starthours < 1000 ? '0' + starthours : starthours
   const end = endhours < 1000 ? '0' + endhours : endhours
+
+  if (start === end) {
+    return null
+  }
 
   return (
     <React.Fragment>
