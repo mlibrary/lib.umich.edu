@@ -36,7 +36,8 @@ function SectionTemplate({ data, ...rest }) {
     body,
     field_horizontal_nav_title,
     fields,
-    relationships
+    relationships,
+    drupal_internal__nid
   } = data.page
   const parentNode = relationships.field_parent_page[0]
   const breadcrumb = fields.breadcrumb
@@ -50,8 +51,10 @@ function SectionTemplate({ data, ...rest }) {
     ? body.summary
     : parentNode.body.summary
 
+  console.log('drupal_internal__nid', drupal_internal__nid)
+
   return (
-    <Layout>
+    <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
       
       {isRootPage ? (
@@ -99,6 +102,8 @@ export const query = graphql`
   fragment PageFragment on node__page {
     title
     field_local_navigation
+    drupal_id
+    drupal_internal__nid
     fields {
       breadcrumb
     }
@@ -141,6 +146,7 @@ export const query = graphql`
     title
     field_horizontal_nav_title
     drupal_id
+    drupal_internal__nid
     field_root_page_
     field_phone_number,
     body {
@@ -413,6 +419,7 @@ export const query = graphql`
     title
     field_horizontal_nav_title
     drupal_id
+    drupal_internal__nid
     field_root_page_
     field_phone_number
     field_address_is_different_from_
@@ -483,6 +490,7 @@ export const query = graphql`
     title
     field_horizontal_nav_title
     drupal_id
+    drupal_internal__nid
     field_root_page_
     field_phone_number
     field_hours_different_from_build
@@ -552,6 +560,8 @@ export const query = graphql`
   fragment SectionNodeFragment on node__section_page {
     title
     field_horizontal_nav_title
+    drupal_internal__nid
+    drupal_id
     fields {
       slug
     }
@@ -563,6 +573,7 @@ export const query = graphql`
 
   fragment CardPanelFragment on paragraph__card_panel {
     field_title
+    drupal_id
     id
     relationships {
       field_card_template {
@@ -588,6 +599,7 @@ export const query = graphql`
       field_header_title
       field_horizontal_nav_title
       field_root_page_
+      drupal_internal__nid
       body {
         summary
       }

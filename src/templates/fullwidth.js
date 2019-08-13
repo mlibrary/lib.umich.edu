@@ -19,11 +19,12 @@ export default function FullWidthTemplate({ data, ...rest }) {
     title,
     body,
     fields,
+    drupal_internal__nid,
     relationships
   } = data.page
 
   return (
-    <Layout>
+    <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
@@ -52,6 +53,7 @@ export const query = graphql`
   query($slug: String!, $parents: [String]) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       title
+      drupal_internal__nid
       fields {
         breadcrumb
       }

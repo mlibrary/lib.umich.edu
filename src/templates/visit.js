@@ -33,6 +33,7 @@ export default function VisitTemplate({ data, ...rest }) {
     field_horizontal_nav_title,
     fields,
     relationships,
+    drupal_internal__nid,
     body,
     field_root_page_,
     field_access
@@ -46,7 +47,7 @@ export default function VisitTemplate({ data, ...rest }) {
   } = relationships
 
   return (
-    <Layout>
+    <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
       <main>
         <header aria-label="Location description">

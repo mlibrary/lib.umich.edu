@@ -9,7 +9,7 @@ import Header from './header'
 import Footer from './footer'
 import DevelopmentAlert from './development-alert'
 
-const Layout = ({ children }) => (
+const Layout = ({ children, drupalNid }) => (
   <StaticQuery
     query={graphql`
       {
@@ -78,6 +78,13 @@ const Layout = ({ children }) => (
             </main>
             <Footer />
           </div>
+          {drupalNid && (
+            <div
+              css={{ display: 'none' }}
+              id="drupalNid"
+              data-drupal-nid={drupalNid}
+            />
+          )}
         </React.Fragment>
       )
     }}

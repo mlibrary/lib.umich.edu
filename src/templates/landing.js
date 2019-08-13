@@ -16,12 +16,13 @@ export default function LandingTemplate({ data, ...rest }) {
     title,
     body,
     fields,
-    relationships
+    relationships,
+    drupal_internal__nid
   } = data.page
 
   return (
     <Layout>
-      <SEO title={title} />
+      <SEO title={title} drupalNid={drupal_internal__nid} />
       <PageHeader
         breadcrumb={fields.breadcrumb}
         title={title}
@@ -40,6 +41,7 @@ export const query = graphql`
   query($slug: String!, $parents: [String]) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       title
+      drupal_internal__nid
       fields {
         breadcrumb
       }

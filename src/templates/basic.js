@@ -24,13 +24,14 @@ function BasicTemplate({ data, ...rest }) {
   const {
     title,
     body,
+    drupal_internal__nid,
     fields,
     relationships,
     field_local_navigation
   } = data.page
 
   return (
-    <Layout>
+    <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
       <Margins>
         <Template>
