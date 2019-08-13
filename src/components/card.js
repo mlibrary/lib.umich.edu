@@ -1,7 +1,5 @@
 import React from 'react'
-import {
-  Card as CoreCard
-} from '@umich-lib/core'
+import CoreCard from '../reusable/components/card'
 import { Link } from 'gatsby'
 
 export default function Card({
