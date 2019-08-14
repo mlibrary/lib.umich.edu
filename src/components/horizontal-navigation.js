@@ -4,7 +4,10 @@ import { Link } from 'gatsby'
 import {
   SPACING,
   COLORS,
-  Margins
+  Margins,
+  MEDIA_QUERIES,
+  LargeScreen,
+  SmallScreen
 } from '@umich-lib/core'
 
 export default function HorizontalNavigation({ items, ...rest }) {
@@ -15,6 +18,10 @@ export default function HorizontalNavigation({ items, ...rest }) {
   return (
     <nav
       css={{
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          position: 'sticky',
+          top: '0',
+        },
         borderBottom: `solid 1px ${COLORS.neutral['100']}`,
         background: COLORS.blue['100']
       }}
@@ -27,22 +34,42 @@ export default function HorizontalNavigation({ items, ...rest }) {
             <li
               key={i + to}
               css={{
-                display: 'inline-block',
-                marginRight: SPACING['L']
+                [MEDIA_QUERIES.LARGESCREEN]: {
+                  display: 'inline-block',
+                  marginRight: SPACING['L'],
+                }
               }}
             >
-              <Link
-                css={{
-                  display: 'inline-block',
-                  fontWeight: '600',
-                  paddingTop: SPACING['L'],
-                  paddingBottom: `calc(${SPACING['L']} - 4px)`
-                }}
-                activeStyle={{
-                  borderBottom: `solid 4px ${COLORS.teal['400']}`
-                }}
-                to={to}
-              >{text}</Link>
+              <LargeScreen>
+                <Link
+                  css={{
+                    display: 'inline-block',
+                    fontWeight: '600',
+                    paddingTop: SPACING['L'],
+                    paddingBottom: `calc(${SPACING['L']} - 4px)`
+                  }}
+                  activeStyle={{
+                    borderBottom: `solid 4px ${COLORS.teal['400']}`,
+                  }}
+                  to={to}
+                >{text}</Link>
+              </LargeScreen>
+              <SmallScreen>
+                <Link
+                  css={{
+                    display: 'block',
+                    fontWeight: '600',
+                    paddingTop: SPACING['M'],
+                    paddingBottom: SPACING['M'],
+                    paddingLeft: `calc(${SPACING['M']} - 4px)`,
+                    marginLeft: `-${SPACING['M']}`
+                  }}
+                  activeStyle={{
+                    borderLeft: `solid 4px ${COLORS.teal['400']}`,
+                  }}
+                  to={to}
+                >{text}</Link>
+              </SmallScreen>
             </li>
           ))}
         </ol>
