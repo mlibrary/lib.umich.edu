@@ -71,7 +71,8 @@ function getAddressData(node) {
 export default function LocationAside({ node }) {
   const {
     title,
-    field_phone_number
+    field_phone_number,
+    field_email
   } = node
   const {
     address_line1,
@@ -126,7 +127,10 @@ export default function LocationAside({ node }) {
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
           }}>Contact</Heading>
-          {field_phone_number && <Link to={"tel:" + field_phone_number}>{field_phone_number}</Link>}
+          <div css={{ '> p': { marginBottom: SPACING['2XS'] } }}>
+            {field_phone_number && <p><Link to={"tel:" + field_phone_number}>{field_phone_number}</Link></p>}
+            {field_email && <p><Link to={"mailto:" + field_email}>{field_email}</Link></p>}
+          </div>
         </LayoutWithIcon>
       </address>
     </React.Fragment>

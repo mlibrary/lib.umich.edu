@@ -148,7 +148,8 @@ export const query = graphql`
     drupal_id
     drupal_internal__nid
     field_root_page_
-    field_phone_number,
+    field_phone_number
+    field_email
     body {
       summary
     }
@@ -422,6 +423,7 @@ export const query = graphql`
     drupal_internal__nid
     field_root_page_
     field_phone_number
+    field_email
     field_address_is_different_from_
     body {
       summary
@@ -493,6 +495,7 @@ export const query = graphql`
     drupal_internal__nid
     field_root_page_
     field_phone_number
+    field_email
     field_hours_different_from_build
     body {
       summary
