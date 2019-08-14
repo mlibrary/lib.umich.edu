@@ -180,6 +180,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const fullWidthTemplate = path.resolve(`src/templates/fullwidth.js`);
     const landingTemplate = path.resolve(`src/templates/landing.js`);
     const sectionTemplate = path.resolve(`src/templates/section.js`);
+    const sectionLocasideTemplate = path.resolve(`src/templates/section-locaside.js`);
     const visitTemplate = path.resolve(`src/templates/visit.js`);
 
     function getTemplate(node) {
@@ -198,6 +199,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return sectionTemplate
         case 'visit':
           return visitTemplate
+        case 'section_locaside':
+          return sectionLocasideTemplate
         default:
           return null
       }
@@ -236,7 +239,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               relationships: {
                 field_design_template: {
                   field_machine_name: {
-                    in: ["section"]
+                    in: ["section", "section_locaside"]
                   }
                 }
               }
