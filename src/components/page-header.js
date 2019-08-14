@@ -22,74 +22,76 @@ export default function PageHeader({
   const imageData = image ? image.localFile.childImageSharp.fluid : null
 
   return (
-    <Margins css={{
+    <div css={{
       borderBottom: `solid 1px ${COLORS.neutral['100']}`
     }}>
-      <header
-        css={{
-          [MEDIA_QUERIES.LARGESCREEN]: {
-            display: "flex",
-            alignItems: "stretch",
-            minHeight: '350px'
-          }
-        }}
-        {...rest}
-      >
-        <div
+      <Margins>
+        <header
           css={{
             [MEDIA_QUERIES.LARGESCREEN]: {
-              flex: "1 1 0",
-            },
-            paddingBottom: SPACING['L'],
-            paddingTop: '0',
-            paddingRight: SPACING['2XL'],
-            paddingLeft: "0"
+              display: "flex",
+              alignItems: "stretch",
+              minHeight: '350px'
+            }
           }}
+          {...rest}
         >
-          <Breadcrumb data={breadcrumb} />
-          <Heading
-            size="3XL"
-            level={1}
+          <div
             css={{
               [MEDIA_QUERIES.LARGESCREEN]: {
-                marginTop: SPACING["M"]
+                flex: "1 1 0",
               },
-              marginBottom: SPACING["M"]
+              paddingBottom: SPACING['L'],
+              paddingTop: '0',
+              paddingRight: SPACING['2XL'],
+              paddingLeft: "0"
             }}
           >
-            {title}
-          </Heading>
-          <Text lede>
-            {summary}
-          </Text>
-        </div>
-        {imageData && (
-          <React.Fragment>
-            <BackgroundImage
-              tag="div"
-              fluid={imageData}
+            <Breadcrumb data={breadcrumb} />
+            <Heading
+              size="3XL"
+              level={1}
               css={{
-                display: 'none',
                 [MEDIA_QUERIES.LARGESCREEN]: {
-                  display: 'block'
+                  marginTop: SPACING["M"]
                 },
-                flex: "1 1 0",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                flexBasis: `calc(50%)`,
-                flexGrow: '0'
+                marginBottom: SPACING["M"]
               }}
-            />
-            <Img fluid={imageData} css={{
-              margin: `0 -${SPACING['M']}`,
-              [MEDIA_QUERIES.LARGESCREEN]: {
-                display: 'none'
-              }
-            }}/>
-          </React.Fragment>
-        )}
-        
-      </header>
-    </Margins>
+            >
+              {title}
+            </Heading>
+            <Text lede>
+              {summary}
+            </Text>
+          </div>
+          {imageData && (
+            <React.Fragment>
+              <BackgroundImage
+                tag="div"
+                fluid={imageData}
+                css={{
+                  display: 'none',
+                  [MEDIA_QUERIES.LARGESCREEN]: {
+                    display: 'block'
+                  },
+                  flex: "1 1 0",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  flexBasis: `calc(50%)`,
+                  flexGrow: '0'
+                }}
+              />
+              <Img fluid={imageData} css={{
+                margin: `0 -${SPACING['M']}`,
+                [MEDIA_QUERIES.LARGESCREEN]: {
+                  display: 'none'
+                }
+              }}/>
+            </React.Fragment>
+          )}
+          
+        </header>
+      </Margins>
+    </div>
   );
 }
