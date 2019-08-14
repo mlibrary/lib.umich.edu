@@ -93,7 +93,7 @@ export default function LocationAside({ node }) {
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
           }}>Hours</Heading>
-          <Text><strong css={{ fontWeight: '700' }}>General:</strong> <Hours node={node} /></Text>
+          <Text><Hours node={node} /></Text>
           <Link to="/locations-and-hours/hours-view">View all hours</Link>
         </LayoutWithIcon>
       </section>
