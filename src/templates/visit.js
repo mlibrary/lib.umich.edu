@@ -140,19 +140,25 @@ function TemplateSide({ children, ...rest }) {
     <aside
       css={{
         [MEDIA_QUERIES.LARGESCREEN]: {
-          gridArea: 'side',
+          gridArea: 'side'
+        },
+      }}
+      {...rest}
+    >
+      <div css={{
+        [MEDIA_QUERIES.LARGESCREEN]: {
           marginLeft: SPACING['3XL'],
           paddingLeft: SPACING['3XL'],
           borderLeft: `solid 1px ${COLORS.neutral['100']}`,
-          borderBottom: 'none'
+          borderBottom: 'none',
+          paddingBottom: 0
         },
         borderBottom: `solid 1px ${COLORS.neutral['100']}`,
         paddingBottom: SPACING['2XL'],
         marginBottom: SPACING['2XL']
-      }}
-      {...rest}
-    >
-      {children}
+      }}>
+        {children}
+      </div>
     </aside>
   )
 }

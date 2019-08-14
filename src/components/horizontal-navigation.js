@@ -65,6 +65,7 @@ export default function HorizontalNavigation({ items, ...rest }) {
                     marginLeft: `-${SPACING['M']}`
                   }}
                   activeStyle={{
+                    fontWeight: '700',
                     borderLeft: `solid 4px ${COLORS.teal['400']}`,
                   }}
                   to={to}
