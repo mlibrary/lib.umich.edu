@@ -51,8 +51,6 @@ function SectionTemplate({ data, ...rest }) {
     ? body.summary
     : parentNode.body.summary
 
-  console.log('drupal_internal__nid', drupal_internal__nid)
-
   return (
     <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
