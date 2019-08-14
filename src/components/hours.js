@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import * as moment from 'moment';
 
+/*
+  Hours could be on the current node
+  or on a parent node, depending
+  on some fields.
+*/
 function getHoursData(node) {
   const {
     field_hours_different_from_build
@@ -17,6 +22,29 @@ function getHoursData(node) {
   return field_hours_open
 }
 
+/*
+  - Put "paragraph__hours_exceptions" first
+  - Add all the other ranges in the order presented
+  - Then add "paragraph__fall_and_winter_semester_hours" last
+*/
+function prioritizeHours(hours) {
+  const types = [
+    'paragraph__hours_exceptions',
+    'paragraph__fall_and_winter_semester_hours'
+  ]
+  const exceptions = hours.find(set => set.__typename === types[0])
+  const fallAndWinter = hours.find(set => set.__typename === types[1])
+  const everythingElse = hours.filter(set => !types.includes(set.__typename))
+
+  const prioritized = [].concat(
+    exceptions,
+    everythingElse,
+    fallAndWinter
+  ).filter(el => el != null)
+
+  return prioritized
+}
+
 export default function Hours({ node }) {
   const [initialized, setInitialized] = useState(false)
 
@@ -28,28 +56,14 @@ export default function Hours({ node }) {
     setInitialized(true)
   }, [initialized])
 
-  const data = getHoursData(node)
-  
+  const data = prioritizeHours(getHoursData(node))
+
   if (!initialized || data.length === 0) {
     return null
   }
 
   const now = Date.now()
   const today = new Date()
-  const exceptionHours = data.find(set => set.__typename === "paragraph__hours_exceptions")
-
-  if (exceptionHours) {
-    const exceptionDay = exceptionHours.field_hours_open.find(d => d.day === today.getDay())
-
-    /*
-      Drupal sets a -1 to hours not set by editor.
-      We only care if hours are not -1.
-    */
-    if (exceptionDay.starthours !== -1) {
-      return <Time {...exceptionDay} />
-    }
-  }
-  
   
   /*
     Find the set of hours that are for now.
