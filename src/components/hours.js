@@ -59,7 +59,7 @@ export default function Hours({ node }) {
   const data = prioritizeHours(getHoursData(node))
 
   if (!initialized || data.length === 0) {
-    return null
+    return <React.Fragment>…</React.Fragment>
   }
 
   const now = Date.now()
