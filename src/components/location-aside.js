@@ -90,7 +90,7 @@ export default function LocationAside({ node }) {
         }}
       >
         <LayoutWithIcon d={icons['clock']} palette="indigo">
-          <Heading level="2" size="M" id="todays-hours" css={{
+          <Heading level={2} size="M" id="todays-hours" css={{
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
           }}>Hours</Heading>
@@ -107,7 +107,7 @@ export default function LocationAside({ node }) {
         }}
       >
         <LayoutWithIcon d={icons['address']} palette="orange">
-          <Heading level="2" size="M" css={{
+          <Heading level={2} size="M" css={{
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
           }}>Address</Heading>
@@ -123,7 +123,7 @@ export default function LocationAside({ node }) {
         </LayoutWithIcon>
 
         <LayoutWithIcon d={icons['phone']} palette="maize">
-          <Heading level="2" size="M" css={{
+          <Heading level={2} size="M" css={{
             paddingTop: SPACING['2XS'],
             paddingBottom: SPACING['2XS']
           }}>Contact</Heading>
