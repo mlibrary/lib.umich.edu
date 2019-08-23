@@ -42,6 +42,9 @@ function SectionTemplate({ data, ...rest }) {
   const parentNode = relationships.field_parent_page[0]
   const breadcrumb = fields.breadcrumb
   const isRootPage = field_root_page_ ? true : false
+  const pageHeaderImage =
+    relationships.field_media_image
+    && relationships.field_media_image.relationships.field_media_image
 
   /*
     Use the parent page if not the root
@@ -60,7 +63,7 @@ function SectionTemplate({ data, ...rest }) {
           breadcrumb={breadcrumb}
           title={field_header_title}
           summary={summary}
-          image={relationships.field_media_image.relationships.field_media_image}
+          image={pageHeaderImage}
         />
       ) : (
         <PageHeaderMini
@@ -82,7 +85,7 @@ function SectionTemplate({ data, ...rest }) {
         css={renderHorziontalNavigationCSS(isRootPage)}
       />
       <Margins>
-        <Heading level="1" size="L" css={{ marginTop: SPACING['3XL'] }}>
+        <Heading level={1} size="L" css={{ marginTop: SPACING['3XL'] }}>
           <VisuallyHidden>{title}</VisuallyHidden>
           <span aria-hidden="true">{field_horizontal_nav_title}</span>
         </Heading>
