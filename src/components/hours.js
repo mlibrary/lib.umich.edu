@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import * as moment from 'moment';
+import * as moment from 'moment'
 
 /*
   Hours could be on the current node
@@ -7,13 +7,8 @@ import * as moment from 'moment';
   on some fields.
 */
 function getHoursData(node) {
-  const {
-    field_hours_different_from_build
-  } = node
-  const {
-    field_hours_open,
-    field_room_building
-  } = node.relationships
+  const { field_hours_different_from_build } = node
+  const { field_hours_open, field_room_building } = node.relationships
 
   if (!field_hours_different_from_build && field_room_building) {
     return field_room_building.relationships.field_hours_open
@@ -30,17 +25,15 @@ function getHoursData(node) {
 function prioritizeHours(hours) {
   const types = [
     'paragraph__hours_exceptions',
-    'paragraph__fall_and_winter_semester_hours'
+    'paragraph__fall_and_winter_semester_hours',
   ]
   const exceptions = hours.find(set => set.__typename === types[0])
   const fallAndWinter = hours.find(set => set.__typename === types[1])
   const everythingElse = hours.filter(set => !types.includes(set.__typename))
 
-  const prioritized = [].concat(
-    exceptions,
-    everythingElse,
-    fallAndWinter
-  ).filter(el => el != null)
+  const prioritized = []
+    .concat(exceptions, everythingElse, fallAndWinter)
+    .filter(el => el != null)
 
   return prioritized
 }
@@ -64,12 +57,13 @@ export default function Hours({ node }) {
 
   const now = Date.now()
   const today = new Date()
-  
+
   /*
     Find the set of hours that are for now.
   */
   const hours = data.find(set => {
-    if (!set.field_date_range) { // no range available in this set of hours.
+    if (!set.field_date_range) {
+      // no range available in this set of hours.
       return false
     }
 
