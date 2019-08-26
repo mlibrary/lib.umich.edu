@@ -36,6 +36,8 @@ function renderHorziontalNavigationCSS(isRootPage) {
 }
 
 function SectionTemplate({ data, ...rest }) {
+  console.log('data', data, rest)
+
   const {
     title,
     field_header_title,
@@ -89,9 +91,6 @@ function SectionTemplate({ data, ...rest }) {
       />
 
       <Template>
-        <TemplateSide>
-        
-        </TemplateSide>
         <TemplateContent>
           <Prose>
             <Heading level="1" size="L">
@@ -102,6 +101,11 @@ function SectionTemplate({ data, ...rest }) {
             {body && <HTML html={body.processed}/>}
           </Prose>
         </TemplateContent>
+        <TemplateSide>
+          {relationships.field_design_template.field_machine_name === 'section_locaside' && (
+            <p>TODO: Location aside content</p>
+          )}
+        </TemplateSide>
       </Template>
       
       <Panels
@@ -633,6 +637,9 @@ export const query = graphql`
         ... on node__building {
           ...BuildingFragment
         }
+      }
+      field_design_template {
+        field_machine_name
       }
       field_media_image {
         relationships {
