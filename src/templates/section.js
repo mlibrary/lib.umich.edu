@@ -1,13 +1,9 @@
 import React from 'react'
-import { graphql } from "gatsby"
+import { graphql } from 'gatsby'
 
 import VisuallyHidden from '@reach/visually-hidden'
 
-import {
-  Heading,
-  Margins,
-  SPACING
-} from '@umich-lib/core'
+import { Heading, Margins, SPACING } from '@umich-lib/core'
 
 import {
   Template,
@@ -28,7 +24,7 @@ import processHorizontalNavigationData from '../components/utilities/process-hor
 function renderHorziontalNavigationCSS(isRootPage) {
   if (!isRootPage) {
     return {
-      borderTop: 'none'
+      borderTop: 'none',
     }
   }
 
@@ -36,8 +32,6 @@ function renderHorziontalNavigationCSS(isRootPage) {
 }
 
 function SectionTemplate({ data, ...rest }) {
-  console.log('data', data, rest)
-
   const {
     title,
     field_header_title,
@@ -46,36 +40,34 @@ function SectionTemplate({ data, ...rest }) {
     field_horizontal_nav_title,
     fields,
     relationships,
-    drupal_internal__nid
+    drupal_internal__nid,
   } = data.page
   const parentNode = relationships.field_parent_page[0]
   const breadcrumb = fields.breadcrumb
   const isRootPage = field_root_page_ ? true : false
+  const pageHeaderImage =
+    relationships.field_media_image &&
+    relationships.field_media_image.relationships.field_media_image
 
   /*
     Use the parent page if not the root
     for PageHeader summary and image.
   */
-  const summary = isRootPage
-    ? body.summary
-    : parentNode.body.summary
+  const summary = isRootPage ? body.summary : parentNode.body.summary
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
-      
+
       {isRootPage ? (
         <PageHeader
           breadcrumb={breadcrumb}
           title={field_header_title}
           summary={summary}
-          image={relationships.field_media_image.relationships.field_media_image}
+          image={pageHeaderImage}
         />
       ) : (
-        <PageHeaderMini
-          breadcrumb={breadcrumb}
-          title={field_header_title}
-        />
+        <PageHeaderMini breadcrumb={breadcrumb} title={field_header_title} />
       )}
        <HorizontalNavigation
         items={processHorizontalNavigationData({
@@ -85,7 +77,7 @@ function SectionTemplate({ data, ...rest }) {
           childrenNodeOrderByDrupalId: rest.pageContext.children,
           childrenNodes: data.children.edges,
           isRootPage,
-          parentNode
+          parentNode,
         })}
         css={renderHorziontalNavigationCSS(isRootPage)}
       />
@@ -261,7 +253,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__thanksgiving_break_hours {
       field_date_range {
@@ -273,7 +265,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__fall_exam_hours {
       field_date_range {
@@ -285,7 +277,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__winter_break_hours {
       field_date_range {
@@ -297,7 +289,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__intersession_after_new_year {
       field_date_range {
@@ -309,7 +301,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__spring_break_hours {
       field_date_range {
@@ -321,7 +313,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__winter_exam_hours {
       field_date_range {
@@ -333,7 +325,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__intersession_after_winter_exams {
       field_date_range {
@@ -345,7 +337,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__memorial_day_holiday_hours {
       field_date_range {
@@ -357,7 +349,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__spring_term_hours {
       field_date_range {
@@ -370,7 +362,7 @@ export const query = graphql`
         starthours
         endhours
         comment
-      } 
+      }
     }
     ... on paragraph__july_4_holiday_hours {
       field_date_range {
@@ -382,7 +374,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__summer_term_hours {
       field_date_range {
@@ -394,7 +386,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__intersession_after_summer_exams {
       field_date_range {
@@ -406,7 +398,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__hours_exceptions {
       field_date_range {
@@ -418,7 +410,7 @@ export const query = graphql`
         day
         starthours
         endhours
-      } 
+      }
     }
     ... on paragraph__hours_exceptions {
       field_date_range {
@@ -431,7 +423,7 @@ export const query = graphql`
         starthours
         endhours
         comment
-      } 
+      }
     }
   }
 
@@ -611,7 +603,7 @@ export const query = graphql`
         ... on node__room {
           ...RoomFragment
         }
-      } 
+      }
     }
   }
 
