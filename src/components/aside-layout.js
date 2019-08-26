@@ -12,10 +12,8 @@ export function Template({ children, ...rest }) {
     <Margins>
       <div
         css={{
-          paddingTop: SPACING['XL'],
           paddingBottom: SPACING['XL'],
           [MEDIA_QUERIES.LARGESCREEN]: {
-            paddingTop: SPACING['3XL'],
             paddingBottom: SPACING['3XL'],
             display: "grid",
             gridTemplateAreas: `

@@ -43,13 +43,14 @@ function SectionTemplate({ data, ...rest }) {
     relationships,
     drupal_internal__nid,
   } = data.page
+
   const parentNode = relationships.field_parent_page[0]
   const breadcrumb = fields.breadcrumb
   const isRootPage = field_root_page_ ? true : false
   const pageHeaderImage =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image
-
+  const hasBody = body && body.processed && body.processed.length
   /*
     Use the parent page if not the root
     for PageHeader summary and image.
@@ -83,23 +84,34 @@ function SectionTemplate({ data, ...rest }) {
         css={renderHorziontalNavigationCSS(isRootPage)}
       />
 
-      <Template>
-        <TemplateContent>
-          <Prose>
-            <Heading level="1" size="L">
-              <VisuallyHidden>{title}</VisuallyHidden>
-              <span aria-hidden="true">{field_horizontal_nav_title}</span>
-            </Heading>
+      {hasBody ? (
+        <Template>
+          <TemplateContent>
+            <Prose>
+              <Heading level="1" size="L">
+                <VisuallyHidden>{title}</VisuallyHidden>
+                <span aria-hidden="true">{field_horizontal_nav_title}</span>
+              </Heading>
 
-            {body && <HTML html={body.processed}/>}
-          </Prose>
-        </TemplateContent>
-        <TemplateSide>
+              {body && <HTML html={body.processed}/>}
+            </Prose>
+          </TemplateContent>
           {relationships.field_design_template.field_machine_name === 'section_locaside' && parentNode && (
-            <LocationAside node={parentNode} />
+            <TemplateSide>
+              <LocationAside node={parentNode} />
+            </TemplateSide>
           )}
-        </TemplateSide>
-      </Template>
+        </Template>
+      ) : (
+        <Margins>
+          <Heading level="1" size="L">
+            <VisuallyHidden>{title}</VisuallyHidden>
+            <span aria-hidden="true">{field_horizontal_nav_title}</span>
+          </Heading>
+        </Margins>
+      )}
+
+      
       
       <Panels
         data={relationships.field_panels}
