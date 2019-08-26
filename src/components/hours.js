@@ -79,6 +79,11 @@ export default function Hours({ node }) {
     // Note: Include start and end dates.
     return now >= start && now <= end
   })
+
+  if (!hours) {
+    return 'n/a'
+  }
+
   const day = hours.field_hours_open.find(d => d.day === today.getDay())
 
   return <Time {...day} />
