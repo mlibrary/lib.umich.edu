@@ -85,7 +85,7 @@ function CardPanel({ data, headingLevel = 2 }) {
   function getImage(image) {
     return !image || noImage
       ? null
-      : image.relationships.field_media_image.localFile.childImageSharp.fluid.src
+      : image.relationships.field_media_image.localFile.childImageSharp.fluid
   }
 
   function renderCardChildren(data) {
