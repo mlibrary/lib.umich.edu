@@ -3,7 +3,6 @@ import { graphql } from "gatsby"
 import VisuallyHidden from "@reach/visually-hidden";
 
 import {
-  Margins,
   Heading,
   List
 } from '@umich-lib/core'

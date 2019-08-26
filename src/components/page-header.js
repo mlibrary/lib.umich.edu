@@ -57,9 +57,11 @@ export default function PageHeader({
             >
               {title}
             </Heading>
-            <Text lede>
-              {summary}
-            </Text>
+            {summary && (
+              <Text lede>
+                {summary}
+              </Text>
+            )}
           </div>
           {imageData && (
             <React.Fragment>

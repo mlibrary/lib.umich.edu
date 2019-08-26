@@ -3,8 +3,7 @@ import { graphql } from "gatsby"
 
 import {
   Margins,
-  Heading,
-  SPACING
+  Heading
 } from '@umich-lib/core'
 
 import Layout from "../components/layout"

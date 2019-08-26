@@ -3,7 +3,7 @@ import { graphql } from 'gatsby'
 
 import VisuallyHidden from '@reach/visually-hidden'
 
-import { Heading, Margins, SPACING } from '@umich-lib/core'
+import { Heading, Margins } from '@umich-lib/core'
 
 import {
   Template,
@@ -88,7 +88,7 @@ function SectionTemplate({ data, ...rest }) {
         <Template>
           <TemplateContent>
             <Prose>
-              <Heading level="1" size="L">
+              <Heading level={1} size="L">
                 <VisuallyHidden>{title}</VisuallyHidden>
                 <span aria-hidden="true">{field_horizontal_nav_title}</span>
               </Heading>
@@ -104,14 +104,12 @@ function SectionTemplate({ data, ...rest }) {
         </Template>
       ) : (
         <Margins>
-          <Heading level="1" size="L">
+          <Heading level={1} size="L">
             <VisuallyHidden>{title}</VisuallyHidden>
             <span aria-hidden="true">{field_horizontal_nav_title}</span>
           </Heading>
         </Margins>
       )}
-
-      
       
       <Panels
         data={relationships.field_panels}
@@ -472,7 +470,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 1280, quality: 70) {
+                fluid(maxWidth: 640, quality: 70) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
@@ -544,7 +542,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 1280, quality: 70) {
+                fluid(maxWidth: 640, quality: 70) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
@@ -651,7 +649,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 1280, quality: 70) {
+                fluid(maxWidth: 640, quality: 70) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }

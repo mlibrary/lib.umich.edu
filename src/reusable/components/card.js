@@ -121,7 +121,7 @@ Card.propTypes = {
   * Provide a Gatsby image object to image. This is purely decorative
   * and shouldn't be required to understand the Card.
   **/
-  image: PropTypes.node.isRequired,
+  image: PropTypes.object,
 
   /*
   * The title should briefly describe where the Card will take
@@ -142,7 +142,7 @@ Card.propTypes = {
   /*
   * Provide a url for where this card should route to.
   **/
-  href: PropTypes.string.isRequired,
+  href: PropTypes.string,
 
   /*
   * An optional parameter to allow overriding the anchor rendering.
