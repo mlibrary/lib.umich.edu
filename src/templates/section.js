@@ -3,7 +3,7 @@ import { graphql } from 'gatsby'
 
 import VisuallyHidden from '@reach/visually-hidden'
 
-import { Heading, Margins } from '@umich-lib/core'
+import { Heading, Margins, MEDIA_QUERIES } from '@umich-lib/core'
 
 import {
   Template,
@@ -97,7 +97,12 @@ function SectionTemplate({ data, ...rest }) {
             </Prose>
           </TemplateContent>
           {relationships.field_design_template.field_machine_name === 'section_locaside' && parentNode && (
-            <TemplateSide>
+            <TemplateSide css={{
+              display: 'none',
+              [MEDIA_QUERIES.LARGESCREEN]: {
+                display: 'block'
+              }
+            }}>
               <LocationAside node={parentNode} />
             </TemplateSide>
           )}
