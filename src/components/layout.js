@@ -8,6 +8,7 @@ import { UniversalHeader, GlobalStyleSheet } from '@umich-lib/core'
 import Header from './header'
 import Footer from './footer'
 import DevelopmentAlert from './development-alert'
+import { COLORS } from '@umich-lib/styles';
 
 const Layout = ({ children, drupalNid }) => (
   <StaticQuery
@@ -56,6 +57,12 @@ const Layout = ({ children, drupalNid }) => (
           <Global styles={{
             'html, body, #___gatsby, #___gatsby > div': {
               height: '100%'
+            },
+            "*:focus": {
+              outlineColor: COLORS.neutral['300'],
+              outlineOffset: '4px',
+              outlineWidth: '2px',
+              outlineStyle: 'ridge'
             }
           }}
           />

@@ -35,6 +35,7 @@ function processAddressData(data) {
       if (data.relationships.field_parent_location) {
         return data.relationships.field_parent_location.field_building_address
       }
+      break;
     default:
       return undefined
   }

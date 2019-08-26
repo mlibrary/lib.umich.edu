@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types';
+import BackgroundImage from 'gatsby-background-image'
 import {
   COLORS,
   SPACING,
@@ -64,21 +65,19 @@ export default function Card({
   const content = (
     <React.Fragment>
       {image && (
-        <div
+        <BackgroundImage
           aria-hidden="true"
           data-card-image
+          tag="div"
+          fluid={image}
           css={{
             backgroundColor: COLORS.blue['100'],
-            backgroundImage: `url(${image})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: '50% 50%',
             paddingTop: '66.67%',
             marginBottom: SPACING['S'],
-            borderRadius: '2px'
+            borderRadius: '2px',
+            zIndex: '-1'
           }}
-        >
-        </div>
+        />
       )}
 
       <p role="heading">
@@ -119,10 +118,10 @@ export default function Card({
 
 Card.propTypes = {
   /*
-  * Provide a url to an image. This is purely decorative
+  * Provide a Gatsby image object to image. This is purely decorative
   * and shouldn't be required to understand the Card.
   **/
-  image: PropTypes.string.isRequired,
+  image: PropTypes.object,
 
   /*
   * The title should briefly describe where the Card will take
@@ -143,7 +142,7 @@ Card.propTypes = {
   /*
   * Provide a url for where this card should route to.
   **/
-  href: PropTypes.string.isRequired,
+  href: PropTypes.string,
 
   /*
   * An optional parameter to allow overriding the anchor rendering.

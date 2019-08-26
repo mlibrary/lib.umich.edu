@@ -1,6 +1,4 @@
 import React from "react";
-import BackgroundImage from 'gatsby-background-image'
-import Img from "gatsby-image"
 import {
   Heading,
   SPACING,

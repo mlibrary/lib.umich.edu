@@ -195,6 +195,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         case 'landing_page':
           return landingTemplate
         case 'section':
+        case 'section_locaside':
           return sectionTemplate
         case 'visit':
           return visitTemplate
@@ -236,7 +237,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               relationships: {
                 field_design_template: {
                   field_machine_name: {
-                    in: ["section"]
+                    in: ["section", "section_locaside"]
                   }
                 }
               }

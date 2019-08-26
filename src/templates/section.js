@@ -3,14 +3,22 @@ import { graphql } from 'gatsby'
 
 import VisuallyHidden from '@reach/visually-hidden'
 
-import { Heading, Margins, SPACING } from '@umich-lib/core'
+import { Heading, Margins, MEDIA_QUERIES } from '@umich-lib/core'
 
-import Layout from '../components/layout'
+import {
+  Template,
+  TemplateSide,
+  TemplateContent
+} from '../components/aside-layout'
+import Prose from "../components/prose"
+import Layout from "../components/layout"
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
 import PageHeaderMini from '../components/page-header-mini'
 import HorizontalNavigation from '../components/horizontal-navigation'
 import Panels from '../components/panels'
+import HTML from '../components/html'
+import LocationAside from '../components/location-aside'
 
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 
@@ -35,13 +43,14 @@ function SectionTemplate({ data, ...rest }) {
     relationships,
     drupal_internal__nid,
   } = data.page
+
   const parentNode = relationships.field_parent_page[0]
   const breadcrumb = fields.breadcrumb
   const isRootPage = field_root_page_ ? true : false
   const pageHeaderImage =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image
-
+  const hasBody = body && body.processed && body.processed.length
   /*
     Use the parent page if not the root
     for PageHeader summary and image.
@@ -62,8 +71,7 @@ function SectionTemplate({ data, ...rest }) {
       ) : (
         <PageHeaderMini breadcrumb={breadcrumb} title={field_header_title} />
       )}
-
-      <HorizontalNavigation
+       <HorizontalNavigation
         items={processHorizontalNavigationData({
           parentNodeOrderByDrupalId: rest.pageContext.parents,
           parentNodes: data.parents.edges,
@@ -75,13 +83,42 @@ function SectionTemplate({ data, ...rest }) {
         })}
         css={renderHorziontalNavigationCSS(isRootPage)}
       />
-      <Margins>
-        <Heading level={1} size="L" css={{ marginTop: SPACING['3XL'] }}>
-          <VisuallyHidden>{title}</VisuallyHidden>
-          <span aria-hidden="true">{field_horizontal_nav_title}</span>
-        </Heading>
-      </Margins>
-      <Panels data={relationships.field_panels} />
+
+      {hasBody ? (
+        <Template>
+          <TemplateContent>
+            <Prose>
+              <Heading level={1} size="L">
+                <VisuallyHidden>{title}</VisuallyHidden>
+                <span aria-hidden="true">{field_horizontal_nav_title}</span>
+              </Heading>
+
+              {body && <HTML html={body.processed}/>}
+            </Prose>
+          </TemplateContent>
+          {relationships.field_design_template.field_machine_name === 'section_locaside' && parentNode && (
+            <TemplateSide css={{
+              display: 'none',
+              [MEDIA_QUERIES.LARGESCREEN]: {
+                display: 'block'
+              }
+            }}>
+              <LocationAside node={parentNode} />
+            </TemplateSide>
+          )}
+        </Template>
+      ) : (
+        <Margins>
+          <Heading level={1} size="L">
+            <VisuallyHidden>{title}</VisuallyHidden>
+            <span aria-hidden="true">{field_horizontal_nav_title}</span>
+          </Heading>
+        </Margins>
+      )}
+      
+      <Panels
+        data={relationships.field_panels}
+      />
     </Layout>
   )
 }
@@ -438,7 +475,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 1280, quality: 70) {
+                fluid(maxWidth: 640, quality: 70) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
@@ -510,7 +547,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 1280, quality: 70) {
+                fluid(maxWidth: 640, quality: 70) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
@@ -586,63 +623,71 @@ export const query = graphql`
     }
   }
 
+  fragment SectionFragment on node__section_page {
+    title
+    field_header_title
+    field_horizontal_nav_title
+    field_root_page_
+    drupal_internal__nid
+    body {
+      summary
+      processed
+    }
+    fields {
+      breadcrumb
+      slug
+    }
+    relationships {
+      field_parent_page {
+        ... on node__section_page {
+          ...SectionNodeFragment
+        }
+        ... on node__building {
+          ...BuildingFragment
+        }
+      }
+      field_design_template {
+        field_machine_name
+      }
+      field_media_image {
+        relationships {
+          field_media_image {
+            localFile {
+              childImageSharp {
+                fluid(maxWidth: 640, quality: 70) {
+                  ...GatsbyImageSharpFluid_noBase64
+                }
+              }
+            }
+          }
+        }
+      }
+      field_panels {
+        ... on paragraph__card_panel {
+          ...CardPanelFragment
+        }
+        ... on paragraph__text_panel {
+          field_title
+          id
+          relationships {
+            field_text_template {
+              field_machine_name
+            }
+            field_text_card {
+              field_title
+              field_body {
+                processed
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   query($slug: String!, $parents: [String], $children: [String]) {
     page: nodeSectionPage(fields: { slug: { eq: $slug } }) {
-      title
-      field_header_title
-      field_horizontal_nav_title
-      field_root_page_
-      drupal_internal__nid
-      body {
-        summary
-      }
-      fields {
-        breadcrumb
-        slug
-      }
-      relationships {
-        field_parent_page {
-          ... on node__section_page {
-            ...SectionNodeFragment
-          }
-          ... on node__building {
-            ...BuildingFragment
-          }
-        }
-        field_media_image {
-          relationships {
-            field_media_image {
-              localFile {
-                childImageSharp {
-                  fluid(maxWidth: 1280, quality: 70) {
-                    ...GatsbyImageSharpFluid_noBase64
-                  }
-                }
-              }
-            }
-          }
-        }
-        field_panels {
-          ... on paragraph__card_panel {
-            ...CardPanelFragment
-          }
-          ... on paragraph__text_panel {
-            field_title
-            id
-            relationships {
-              field_text_template {
-                field_machine_name
-              }
-              field_text_card {
-                field_title
-                field_body {
-                  processed
-                }
-              }
-            }
-          }
-        }
-      }
+      ...SectionFragment
     }
     parents: allNodeSectionPage(filter: { drupal_id: { in: $parents } }) {
       edges {

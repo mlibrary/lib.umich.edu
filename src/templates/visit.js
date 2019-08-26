@@ -3,13 +3,15 @@ import { graphql } from "gatsby"
 import VisuallyHidden from "@reach/visually-hidden";
 
 import {
-  Margins,
   Heading,
-  List,
-  SPACING,
-  MEDIA_QUERIES,
-  COLORS
+  List
 } from '@umich-lib/core'
+
+import {
+  Template,
+  TemplateSide,
+  TemplateContent
+} from '../components/aside-layout'
 
 import Layout from "../components/layout"
 import SEO from '../components/seo'
@@ -69,36 +71,34 @@ export default function VisitTemplate({ data, ...rest }) {
             parentNode
           })}
         />
-        <Margins>
-          <section aria-label="Hours, parking, access, and amenities">
-            <Template>
-              <TemplateSide> 
-                <LocationAside node={page} />
-              </TemplateSide>
-              <TemplateContent>
-                <Prose>
-                  <Heading level={1} size="L">
-                    <VisuallyHidden>{title}</VisuallyHidden>
-                    <span aria-hidden="true">{field_horizontal_nav_title}</span>
-                  </Heading>
-                  <HTMLList data={field_visit} />
+        <section aria-label="Hours, parking, access, and amenities">
+          <Template>
+            <TemplateSide> 
+              <LocationAside node={page} />
+            </TemplateSide>
+            <TemplateContent>
+              <Prose>
+                <Heading level={1} size="L">
+                  <VisuallyHidden>{title}</VisuallyHidden>
+                  <span aria-hidden="true">{field_horizontal_nav_title}</span>
+                </Heading>
+                <HTMLList data={field_visit} />
 
-                  <Heading level={2} size="M">Getting here</Heading>
-                  <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>Parking</Heading>
-                  <HTMLList data={field_parking} />
+                <Heading level={2} size="M">Getting here</Heading>
+                <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>Parking</Heading>
+                <HTMLList data={field_parking} />
 
-                  <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>Access</Heading>
-                  <HTML html={field_access.processed} />
+                <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>Access</Heading>
+                <HTML html={field_access.processed} />
 
-                  <Heading level={2} size="M">Amentities</Heading>
-                  <List type="bulleted">
-                    {field_amenities.map(({name}, i) => <li key={i + name}>{name}</li>)}
-                  </List>
-                </Prose>
-              </TemplateContent>
-            </Template>
-          </section>
-        </Margins>
+                <Heading level={2} size="M">Amentities</Heading>
+                <List type="bulleted">
+                  {field_amenities.map(({name}, i) => <li key={i + name}>{name}</li>)}
+                </List>
+              </Prose>
+            </TemplateContent>
+          </Template>
+        </section>
       </main>
     </Layout>
   )
@@ -109,74 +109,6 @@ function HTMLList({ data }) {
     <List type="bulleted">
       {data.map(({description}, i) => <li key={i + description.processed}><HTML html={description.processed} /></li>)}
     </List>
-  )
-}
-
-function Template({ children, ...rest }) {
-  return (
-    <div
-      css={{
-        paddingTop: SPACING['XL'],
-        paddingBottom: SPACING['XL'],
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          paddingTop: SPACING['3XL'],
-          paddingBottom: SPACING['3XL'],
-          display: "grid",
-          gridTemplateAreas: `
-            "content side"
-          `,
-          gridTemplateColumns: `1fr calc(21rem + ${SPACING['4XL']}) `
-        }
-      }}
-      {...rest}
-    >
-      {children}
-    </div>
-  )
-}
-
-function TemplateSide({ children, ...rest }) {
-  return (
-    <aside
-      css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          gridArea: 'side'
-        },
-      }}
-      {...rest}
-    >
-      <div css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          marginLeft: SPACING['3XL'],
-          paddingLeft: SPACING['3XL'],
-          borderLeft: `solid 1px ${COLORS.neutral['100']}`,
-          borderBottom: 'none',
-          paddingBottom: 0
-        },
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-        paddingBottom: SPACING['2XL'],
-        marginBottom: SPACING['2XL']
-      }}>
-        {children}
-      </div>
-    </aside>
-  )
-}
-
-function TemplateContent({ children, ...rest }) {
-  return (
-    <div
-      css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          maxWidth: '38rem',
-          gridArea: 'content',
-        },
-        marginBottom: SPACING['XL']
-      }}
-      {...rest}
-    >
-      {children}
-    </div>
   )
 }
 

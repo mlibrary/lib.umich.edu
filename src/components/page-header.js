@@ -52,17 +52,16 @@ export default function PageHeader({
               size="3XL"
               level={1}
               css={{
-                [MEDIA_QUERIES.LARGESCREEN]: {
-                  marginTop: SPACING["M"]
-                },
                 marginBottom: SPACING["M"]
               }}
             >
               {title}
             </Heading>
-            <Text lede>
-              {summary}
-            </Text>
+            {summary && (
+              <Text lede>
+                {summary}
+              </Text>
+            )}
           </div>
           {imageData && (
             <React.Fragment>
