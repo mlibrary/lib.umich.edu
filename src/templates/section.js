@@ -18,6 +18,7 @@ import PageHeaderMini from '../components/page-header-mini'
 import HorizontalNavigation from '../components/horizontal-navigation'
 import Panels from '../components/panels'
 import HTML from '../components/html'
+import LocationAside from '../components/location-aside'
 
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 
@@ -94,8 +95,8 @@ function SectionTemplate({ data, ...rest }) {
           </Prose>
         </TemplateContent>
         <TemplateSide>
-          {relationships.field_design_template.field_machine_name === 'section_locaside' && (
-            <p>TODO: Location aside content</p>
+          {relationships.field_design_template.field_machine_name === 'section_locaside' && parentNode && (
+            <LocationAside node={parentNode} />
           )}
         </TemplateSide>
       </Template>
