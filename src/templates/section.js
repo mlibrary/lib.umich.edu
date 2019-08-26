@@ -9,12 +9,19 @@ import {
   SPACING
 } from '@umich-lib/core'
 
+import {
+  Template,
+  TemplateSide,
+  TemplateContent
+} from '../components/aside-layout'
+import Prose from "../components/prose"
 import Layout from "../components/layout"
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
 import PageHeaderMini from '../components/page-header-mini'
 import HorizontalNavigation from '../components/horizontal-navigation'
 import Panels from '../components/panels'
+import HTML from '../components/html'
 
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 
@@ -68,8 +75,7 @@ function SectionTemplate({ data, ...rest }) {
           title={field_header_title}
         />
       )}
-      
-      <HorizontalNavigation
+       <HorizontalNavigation
         items={processHorizontalNavigationData({
           parentNodeOrderByDrupalId: rest.pageContext.parents,
           parentNodes: data.parents.edges,
@@ -81,12 +87,23 @@ function SectionTemplate({ data, ...rest }) {
         })}
         css={renderHorziontalNavigationCSS(isRootPage)}
       />
-      <Margins>
-        <Heading level="1" size="L" css={{ marginTop: SPACING['3XL'] }}>
-          <VisuallyHidden>{title}</VisuallyHidden>
-          <span aria-hidden="true">{field_horizontal_nav_title}</span>
-        </Heading>
-      </Margins>
+
+      <Template>
+        <TemplateSide>
+        
+        </TemplateSide>
+        <TemplateContent>
+          <Prose>
+            <Heading level="1" size="L">
+              <VisuallyHidden>{title}</VisuallyHidden>
+              <span aria-hidden="true">{field_horizontal_nav_title}</span>
+            </Heading>
+
+            {body && <HTML html={body.processed}/>}
+          </Prose>
+        </TemplateContent>
+      </Template>
+      
       <Panels
         data={relationships.field_panels}
       />

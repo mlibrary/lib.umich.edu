@@ -180,7 +180,6 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const fullWidthTemplate = path.resolve(`src/templates/fullwidth.js`);
     const landingTemplate = path.resolve(`src/templates/landing.js`);
     const sectionTemplate = path.resolve(`src/templates/section.js`);
-    const sectionLocasideTemplate = path.resolve(`src/templates/section-locaside.js`);
     const visitTemplate = path.resolve(`src/templates/visit.js`);
 
     function getTemplate(node) {
@@ -196,11 +195,10 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         case 'landing_page':
           return landingTemplate
         case 'section':
+        case 'section_locaside':
           return sectionTemplate
         case 'visit':
           return visitTemplate
-        case 'section_locaside':
-          return sectionLocasideTemplate
         default:
           return null
       }
