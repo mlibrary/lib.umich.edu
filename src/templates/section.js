@@ -121,15 +121,17 @@ function SectionTemplate({ data, ...rest }) {
         </Margins>
       )}
 
-      <Margins>
-        <div
-          css={{
-            marginBottom: SPACING['3XL'],
-          }}
-        >
-          {fields.slug === '/locations-and-hours/hours-view' && <HoursTable />}
-        </div>
-      </Margins>
+      {fields.slug === '/locations-and-hours/hours-view' && (
+        <Margins>
+          <div
+            css={{
+              marginBottom: SPACING['3XL'],
+            }}
+          >
+            <HoursTable />
+          </div>
+        </Margins>
+      )}
 
       <Panels data={relationships.field_panels} />
     </Layout>
