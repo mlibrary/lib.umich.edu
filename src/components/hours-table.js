@@ -114,7 +114,7 @@ export default function HoursTable() {
                     css={{
                       position: 'absolute',
                       marginLeft: `calc(-0.75rem + -3px)`,
-                      marginTop: `calc(-2rem + -7px)`,
+                      marginTop: `calc(-2rem + -6px)`,
                       display: `inline-block`,
                       padding: '0 0.5rem',
                       background: '#FFCB05',
