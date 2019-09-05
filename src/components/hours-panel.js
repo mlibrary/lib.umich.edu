@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Margins, Heading, SPACING } from '@umich-lib/core'
+import { Margins, Heading, SPACING, Button } from '@umich-lib/core'
 import * as moment from 'moment'
 
 import { displayHours } from '../utils/hours'
@@ -7,6 +7,7 @@ import HoursTable from './hours-table'
 
 export default function HoursPanelContainer({ data }) {
   const [initialized, setInitialized] = useState(false)
+  const [weekOffset, setWeekOffset] = useState(0)
 
   useEffect(() => {
     setInitialized(true)
@@ -19,12 +20,41 @@ export default function HoursPanelContainer({ data }) {
   const { relationships } = data
   const { title } = relationships.field_parent_card[0]
 
-  const now = moment() // next / prev week container UI will control this ...
-  const tableData = transformTableData(data, now)
-
   return (
     <Margins>
-      <HoursPanel title={title} tableData={tableData} />
+      <div
+        css={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginTop: SPACING['L'],
+          marginBottom: SPACING['L'],
+          '> *:not(:last-of-type)': {
+            marginRight: SPACING['M'],
+          },
+        }}
+      >
+        <Button
+          onClick={() => {
+            setWeekOffset(weekOffset + 1)
+          }}
+        >
+          Previous week
+        </Button>
+        <Button
+          onClick={() => {
+            setWeekOffset(weekOffset - 1)
+          }}
+        >
+          Next week
+        </Button>
+      </div>
+      <HoursPanel
+        title={title}
+        tableData={transformTableData({
+          node: data,
+          now: moment().add(weekOffset, 'weeks'),
+        })}
+      />
     </Margins>
   )
 }
@@ -52,7 +82,7 @@ function HoursPanel({ title, tableData = {} }) {
   )
 }
 
-function transformTableData(node, now) {
+function transformTableData({ node, now }) {
   const { field_cards, field_parent_card } = node.relationships
 
   /*
@@ -91,8 +121,8 @@ function transformTableData(node, now) {
     ]
   */
   const rows = [
-    getRow(field_parent_card[0], true),
-    ...field_cards.map(n => getRow(n)),
+    getRow(field_parent_card[0], now, true),
+    ...field_cards.map(n => getRow(n, now)),
   ]
 
   return {
@@ -167,11 +197,11 @@ function transformTableData(node, now) {
     '10am - 5pm'
   ]
 */
-function getRow(node, isParent) {
+function getRow(node, nowWithWeekOffset, isParent) {
   let hours = []
 
   for (let i = 0; i < 7; i++) {
-    const now = moment().day(i)
+    const now = moment(nowWithWeekOffset).day(i)
     const display = displayHours({
       node,
       now,
