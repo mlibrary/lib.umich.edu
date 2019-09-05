@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
-import { COLORS, MEDIA_QUERIES } from '@umich-lib/core'
+import { COLORS } from '@umich-lib/core'
 
-export default function HoursTable({ data }) {
+export default function HoursTable({ data, highlightToday = false }) {
   const [todayIndex, setTodayIndex] = useState(-1)
 
   /*
@@ -11,9 +11,13 @@ export default function HoursTable({ data }) {
     not the "Today" highlight.
   */
   useEffect(() => {
-    const today = new Date()
-    setTodayIndex(today.getDay() + 2) // Add two. Sun is 0 and Sun starts as 2nd nth-child.
-  }, [todayIndex])
+    if (highlightToday) {
+      const today = new Date()
+      setTodayIndex(today.getDay() + 2) // Add two. Sun is 0 and Sun starts as 2nd nth-child.
+    } else {
+      setTodayIndex(-1)
+    }
+  }, [highlightToday])
 
   return (
     <table

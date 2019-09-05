@@ -35,14 +35,14 @@ export default function HoursPanelContainer({ data }) {
       >
         <Button
           onClick={() => {
-            setWeekOffset(weekOffset + 1)
+            setWeekOffset(weekOffset - 1)
           }}
         >
           Previous week
         </Button>
         <Button
           onClick={() => {
-            setWeekOffset(weekOffset - 1)
+            setWeekOffset(weekOffset + 1)
           }}
         >
           Next week
@@ -50,6 +50,7 @@ export default function HoursPanelContainer({ data }) {
       </div>
       <HoursPanel
         title={title}
+        isCurrentWeek={weekOffset === 0}
         tableData={transformTableData({
           node: data,
           now: moment().add(weekOffset, 'weeks'),
@@ -59,7 +60,7 @@ export default function HoursPanelContainer({ data }) {
   )
 }
 
-function HoursPanel({ title, tableData = {} }) {
+function HoursPanel({ title, isCurrentWeek, tableData = {} }) {
   return (
     <section
       css={{
@@ -77,7 +78,7 @@ function HoursPanel({ title, tableData = {} }) {
       >
         {title}
       </Heading>
-      <HoursTable data={tableData} />
+      <HoursTable data={tableData} highlightToday={isCurrentWeek} />
     </section>
   )
 }
