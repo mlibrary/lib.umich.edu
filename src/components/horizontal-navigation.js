@@ -25,7 +25,8 @@ export default function HorizontalNavigation({ items, ...rest }) {
           marginBottom: SPACING['3XL']
         },
         borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-        background: COLORS.blue['100']
+        background: COLORS.blue['100'],
+        zIndex: '1'
       }}
       {...rest}
       aria-label="Local"

@@ -6,6 +6,9 @@ import {
 } from '@umich-lib/core'
 import * as moment from 'moment'
 
+import {
+  displayHours
+} from '../utils/hours'
 import Hours from './todays-hours'
 import HoursTable from './hours-table'
 
@@ -25,7 +28,7 @@ export default function HoursPanelContainer({ data }) {
   } = data
   const {
     title
-  } = relationships.field_parent_card
+  } = relationships.field_parent_card[0]
 
   const now = moment() // next / prev week container UI will control this ...
   const tableData = transformTableData(data, now)
@@ -44,13 +47,14 @@ function HoursPanel({ title, tableData = {} }) {
   return (
     <section css={{
       marginTop: SPACING['L'],
-      marginBottom: SPACING['3XL']
+      marginBottom: SPACING['4XL']
     }}>
       <Heading
         level={2}
         size="L"
         css={{
-          fontWeight: '700'
+          fontWeight: '700',
+          marginBottom: SPACING['2XL']
         }}
       >
         {title}
@@ -92,7 +96,7 @@ function transformTableData(data, now) {
 
   /*
     Make the rows.
-      1. title (th)
+      1. title (th[scope="row"])
       2-n. The hours.
 
     [
@@ -104,8 +108,8 @@ function transformTableData(data, now) {
     ]
   */
   const rows = [
-    getRow(field_parent_card, true),
-    ...field_cards.map(card => getRow(card))
+    getRow(data, true),
+    ...field_cards.map(card => getRow(data))
   ]
 
   return {
@@ -171,13 +175,22 @@ function transformTableData(data, now) {
   return dummyData
 }
 
-function getRow(data, isParent) {
-  //console.log('data', data)
+/*
+  Return
+
+  [
+    'General',
+    '24 hours',
+    '10am - 5pm'
+  ]
+*/
+function getRow(node, isParent) {
+  console.log('getRow', data)
   
   let hours = []
 
   for (let i = 0; i < 7; i++) {
-    hours = hours.concat(`${i}`)
+    hours = hours.concat(displayHours(moment.day(i)))
   }
 
   return [

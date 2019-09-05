@@ -612,10 +612,16 @@ export const query = graphql`
         ... on node__building {
           ...BuildingFragment
         }
+        ... on node__location {
+          ...LocationFragment
+        }
       }
       field_cards {
         ... on node__room {
           ...RoomFragment
+        }
+        ... on node__location {
+          ...LocationFragment
         }
       }
     }

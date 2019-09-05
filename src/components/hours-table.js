@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { COLORS } from '@umich-lib/core'
+import { COLORS, MEDIA_QUERIES } from '@umich-lib/core'
 
 export default function HoursTable({ data }) {
   const [todayIndex, setTodayIndex] = useState(-1)
@@ -42,6 +42,11 @@ export default function HoursTable({ data }) {
         [`tbody > tr:last-child td:nth-child(${todayIndex})`]: {
           borderBottom: 'solid 3px #FFCB05',
         },
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          'th[scope="row"]': {
+            width: '18rem'
+          }
+        }
       }}
     >
       <thead>
@@ -64,7 +69,7 @@ export default function HoursTable({ data }) {
                       padding: '0 0.5rem',
                       background: '#FFCB05',
                       borderRadius: '2px 2px 0 0',
-                      fontWeight: '600',
+                      fontWeight: '600'
                     }}
                     aria-hidden="true"
                   >
