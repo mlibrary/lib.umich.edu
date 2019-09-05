@@ -5,23 +5,25 @@ import * as moment from 'moment'
   or on a parent node, depending
   on some fields.
 */
-export function getHoursFromNode(node) {
+export function getHoursFromNode({ node }) {
   const { field_hours_different_from_build } = node
   const { field_hours_open, field_room_building } = node.relationships
 
   if (!field_hours_different_from_build && field_room_building) {
-    return prioritizeHours(field_room_building.relationships.field_hours_open)
+    return prioritizeHours({
+      hours: field_room_building.relationships.field_hours_open,
+    })
   }
 
-  return prioritizeHours(field_hours_open)
+  return prioritizeHours({ hours: field_hours_open })
 }
 
 /*
   Pass in a node and moment "now" and get back 
   formated string for hours from "now".
 */
-export function findHoursByNodeForNow(node, now) {
-  const allHours = getHoursFromNode(node)
+export function findHoursSetByNodeForNow({ node, now }) {
+  const allHours = getHoursFromNode({ node })
 
   const nowHour = allHours.find(set => {
     if (!set.field_date_range) {
@@ -40,9 +42,20 @@ export function findHoursByNodeForNow(node, now) {
   return nowHour
 }
 
-export function displayHours(node, now) {
-  const hours = findHoursByNodeForNow(node, now)
-  const { starthours, endhours, comment } = hours.field_hours_open.find(d => d === now.day())
+export function displayHours({ node, now }) {
+  const hoursSet = findHoursSetByNodeForNow({ node, now })
+
+  if (!hoursSet) {
+    return null
+  }
+
+  const hoursForNow = hoursSet.field_hours_open.find(d => d.day === now.day())
+
+  if (!hoursForNow) {
+    return null
+  }
+
+  const { starthours, endhours, comment } = hoursForNow
 
   if (comment) {
     return comment
@@ -56,9 +69,11 @@ export function displayHours(node, now) {
     return null
   }
 
-  return moment(start, 'HHmm').format('ha')
-    + ' - '
-    + moment(end, 'HHmm').format('ha')
+  return (
+    moment(start, 'HHmm').format('ha') +
+    ' - ' +
+    moment(end, 'HHmm').format('ha')
+  )
 }
 
 /*
@@ -66,7 +81,7 @@ export function displayHours(node, now) {
   - Add all the other ranges in the order presented
   - Then add "paragraph__fall_and_winter_semester_hours" last
 */
-function prioritizeHours(hours) {
+function prioritizeHours({ hours }) {
   const types = [
     'paragraph__hours_exceptions',
     'paragraph__fall_and_winter_semester_hours',

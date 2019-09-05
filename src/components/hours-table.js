@@ -21,6 +21,7 @@ export default function HoursTable({ data }) {
         width: '100%',
         marginTop: '2rem',
         textAlign: 'left',
+        tableLayout: 'fixed',
         'th, td': {
           padding: '0.75rem',
           borderBottom: 'solid 1px #E5E9ED',
@@ -42,16 +43,11 @@ export default function HoursTable({ data }) {
         [`tbody > tr:last-child td:nth-child(${todayIndex})`]: {
           borderBottom: 'solid 3px #FFCB05',
         },
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          'th[scope="row"]': {
-            width: '18rem'
-          }
-        }
       }}
     >
       <thead>
         <tr>
-          <th />
+          <th colspan="2" />
           {data.headings.map(({ text, subtext }, i) => (
             <th scope="col" aria-current={i + 2 === todayIndex}>
               <div
@@ -69,7 +65,7 @@ export default function HoursTable({ data }) {
                       padding: '0 0.5rem',
                       background: '#FFCB05',
                       borderRadius: '2px 2px 0 0',
-                      fontWeight: '600'
+                      fontWeight: '600',
                     }}
                     aria-hidden="true"
                   >
@@ -90,7 +86,13 @@ export default function HoursTable({ data }) {
           <tr>
             {row.map((col, i) => (
               <React.Fragment>
-                {i === 0 ? <th scope="row">{col}</th> : <td>{col}</td>}
+                {i === 0 ? (
+                  <th scope="row" colspan="2">
+                    {col}
+                  </th>
+                ) : (
+                  <td>{col}</td>
+                )}
               </React.Fragment>
             ))}
           </tr>

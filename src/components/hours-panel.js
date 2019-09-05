@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Margins,
-  Heading,
-  SPACING
-} from '@umich-lib/core'
+import { Margins, Heading, SPACING } from '@umich-lib/core'
 import * as moment from 'moment'
 
-import {
-  displayHours
-} from '../utils/hours'
-import Hours from './todays-hours'
+import { displayHours } from '../utils/hours'
 import HoursTable from './hours-table'
 
 export default function HoursPanelContainer({ data }) {
@@ -23,54 +16,44 @@ export default function HoursPanelContainer({ data }) {
     return null
   }
 
-  const {
-    relationships
-  } = data
-  const {
-    title
-  } = relationships.field_parent_card[0]
+  const { relationships } = data
+  const { title } = relationships.field_parent_card[0]
 
   const now = moment() // next / prev week container UI will control this ...
   const tableData = transformTableData(data, now)
 
   return (
     <Margins>
-      <HoursPanel
-        title={title}
-        tableData={tableData}
-      />
+      <HoursPanel title={title} tableData={tableData} />
     </Margins>
   )
 }
 
 function HoursPanel({ title, tableData = {} }) {
   return (
-    <section css={{
-      marginTop: SPACING['L'],
-      marginBottom: SPACING['4XL']
-    }}>
+    <section
+      css={{
+        marginTop: SPACING['L'],
+        marginBottom: SPACING['4XL'],
+      }}
+    >
       <Heading
         level={2}
         size="L"
         css={{
           fontWeight: '700',
-          marginBottom: SPACING['2XL']
+          marginBottom: SPACING['2XL'],
         }}
       >
         {title}
       </Heading>
-      <HoursTable
-        data={tableData}
-      />
+      <HoursTable data={tableData} />
     </section>
   )
 }
 
-function transformTableData(data, now) {
-  const {
-    field_cards,
-    field_parent_card
-  } = data.relationships
+function transformTableData(node, now) {
+  const { field_cards, field_parent_card } = node.relationships
 
   /*
     [
@@ -90,7 +73,7 @@ function transformTableData(data, now) {
   for (let i = 0; i < 7; i++) {
     headings = headings.concat({
       text: now.day(i).format('ddd'),
-      subtext: now.day(i).format('MMM D')
+      subtext: now.day(i).format('MMM D'),
     })
   }
 
@@ -108,13 +91,13 @@ function transformTableData(data, now) {
     ]
   */
   const rows = [
-    getRow(data, true),
-    ...field_cards.map(card => getRow(data))
+    getRow(field_parent_card[0], true),
+    ...field_cards.map(n => getRow(n)),
   ]
 
   return {
     headings,
-    rows
+    rows,
   }
 
   const dummyData = {
@@ -171,7 +154,7 @@ function transformTableData(data, now) {
       ],
     ],
   }
-  
+
   return dummyData
 }
 
@@ -185,15 +168,17 @@ function transformTableData(data, now) {
   ]
 */
 function getRow(node, isParent) {
-  console.log('getRow', data)
-  
   let hours = []
 
   for (let i = 0; i < 7; i++) {
-    hours = hours.concat(displayHours(moment.day(i)))
+    const now = moment().day(i)
+    const display = displayHours({
+      node,
+      now,
+    })
+
+    hours = hours.concat(display ? display : 'n/a')
   }
 
-  return [
-    isParent ? 'General' : data.title
-  ].concat(hours)
+  return [isParent ? 'General' : node.title].concat(hours)
 }
