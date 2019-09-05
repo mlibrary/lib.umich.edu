@@ -12,8 +12,9 @@ import Card from './card'
 import Link from './link'
 import HTML from './html'
 import Address from './address'
-import Hours from './hours'
+import Hours from './todays-hours'
 import icons from '../reusable/icons'
+import HoursPanel from '../components/hours-panel'
 
 function PanelTemplate({ title, children, shaded, ...rest }) {
   return (
@@ -251,9 +252,16 @@ export default function Panels({ data }) {
         const type = panel.__typename
         const id = panel.id
 
-        return type === 'paragraph__card_panel'
-          ? <CardPanel data={panel} key={id} />
-          : <TextPanel data={panel} key={id} />
+        switch (type) {
+          case 'paragraph__card_panel':
+            return <CardPanel data={panel} key={id} />
+          case 'paragraph__text_panel':
+            return <TextPanel data={panel} key={id} />
+          case 'paragraph__hours_panel':
+            return <HoursPanel data={panel} key={id} />
+          default:
+            return null
+        }
       })}
     </React.Fragment>
   )

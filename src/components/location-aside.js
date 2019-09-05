@@ -8,7 +8,7 @@ import {
   SPACING
 } from '@umich-lib/core'
 import Link from './link'
-import Hours from './hours'
+import Hours from './todays-hours'
 import icons from '../reusable/icons'
 
 function createGoogleMapsLink({ place_id, query }) {

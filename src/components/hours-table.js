@@ -2,62 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { COLORS } from '@umich-lib/core'
 
-const data = {
-  headings: [
-    {
-      text: 'Sun',
-      subtext: 'Apr 15',
-    },
-    {
-      text: 'Mon',
-      subtext: 'Apr 16',
-    },
-    {
-      text: 'Tue',
-      subtext: 'Apr 17',
-    },
-    {
-      text: 'Wed',
-      subtext: 'Apr 18',
-    },
-    {
-      text: 'Thu',
-      subtext: 'Apr 19',
-    },
-    {
-      text: 'Fri',
-      subtext: 'Apr 20',
-    },
-    {
-      text: 'Sat',
-      subtext: 'Apr 21',
-    },
-  ],
-  rows: [
-    [
-      'General',
-      '24 hours',
-      '24 hours',
-      '24 hours',
-      '24 hours',
-      '24 hours',
-      '24 hours',
-      '24 hours',
-    ],
-    [
-      'Computer and Video Game Archive',
-      'Closed',
-      '10am - 8pm',
-      '10am - 8pm',
-      '10am - 8pm',
-      '10am - 8pm',
-      '10am - 8pm',
-      'Closed',
-    ],
-  ],
-}
-
-export default function HoursTable() {
+export default function HoursTable({ data }) {
   const [todayIndex, setTodayIndex] = useState(-1)
 
   /*

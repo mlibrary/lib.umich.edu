@@ -19,7 +19,6 @@ import HorizontalNavigation from '../components/horizontal-navigation'
 import Panels from '../components/panels'
 import HTML from '../components/html'
 import LocationAside from '../components/location-aside'
-import HoursTable from '../components/hours-table'
 
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 
@@ -118,18 +117,6 @@ function SectionTemplate({ data, ...rest }) {
             <VisuallyHidden>{title}</VisuallyHidden>
             <span aria-hidden="true">{field_horizontal_nav_title}</span>
           </Heading>
-        </Margins>
-      )}
-
-      {fields.slug === '/locations-and-hours/hours-view' && (
-        <Margins>
-          <div
-            css={{
-              marginBottom: SPACING['3XL'],
-            }}
-          >
-            <HoursTable />
-          </div>
         </Margins>
       )}
 
@@ -616,6 +603,24 @@ export const query = graphql`
     drupal_id
   }
 
+  fragment HoursPanelFragment on paragraph__hours_panel {
+    ... on Node {
+      __typename
+    }
+    relationships {
+      field_parent_card {
+        ... on node__building {
+          ...BuildingFragment
+        }
+      }
+      field_cards {
+        ... on node__room {
+          ...RoomFragment
+        }
+      }
+    }
+  }
+
   fragment CardPanelFragment on paragraph__card_panel {
     field_title
     drupal_id
@@ -695,6 +700,9 @@ export const query = graphql`
               }
             }
           }
+        }
+        ... on paragraph__hours_panel {
+          ...HoursPanelFragment
         }
       }
     }
