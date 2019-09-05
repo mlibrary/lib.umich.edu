@@ -2,18 +2,16 @@ import React from 'react'
 import CoreCard from '../reusable/components/card'
 import { Link } from 'gatsby'
 
-export default function Card({
-  href,
-  ...rest
-}) {
+export default function Card({ href, ...rest }) {
   if (href.startsWith('/')) {
     return (
       <CoreCard
-        renderAnchor={({
-          anchorStyles,
-          children
-        }) => {
-          return <Link css={anchorStyles} to={href}>{children}</Link>
+        renderAnchor={({ anchorStyles, children }) => {
+          return (
+            <Link css={anchorStyles} to={href}>
+              {children}
+            </Link>
+          )
         }}
         {...rest}
       />

@@ -1,12 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 import BackgroundImage from 'gatsby-background-image'
 import {
   COLORS,
   SPACING,
   Z_SPACE,
   LINK_STYLES,
-  TYPOGRAPHY
+  TYPOGRAPHY,
 } from '@umich-lib/core'
 
 export default function Card({
@@ -27,14 +27,14 @@ export default function Card({
         ...Z_SPACE[8],
       },
       '[data-card-title]': {
-        ...LINK_STYLES['description'][':hover']
-      }
-    }
+        ...LINK_STYLES['description'][':hover'],
+      },
+    },
   }
 
   const anchorProps = {
     href,
-    ...rest
+    ...rest,
   }
 
   function renderChildren() {
@@ -44,22 +44,14 @@ export default function Card({
 
     const styles = {
       color: COLORS.neutral[300],
-      marginTop: SPACING['XS']
+      marginTop: SPACING['XS'],
     }
 
     if (typeof children === 'string') {
-      return (
-        <p css={styles}>
-          {children}
-        </p>
-      )
+      return <p css={styles}>{children}</p>
     }
 
-    return (
-      <div css={styles}>
-        {children}
-      </div>
-    )
+    return <div css={styles}>{children}</div>
   }
 
   const content = (
@@ -75,24 +67,32 @@ export default function Card({
             paddingTop: '66.67%',
             marginBottom: SPACING['S'],
             borderRadius: '2px',
-            zIndex: '-1'
+            zIndex: '-1',
           }}
         />
       )}
 
       <p role="heading">
-        {subtitle && (<span css={{
-          display: 'block',
-          color: COLORS.neutral[300],
-          marginBottom: SPACING['2XS'],
-          ...TYPOGRAPHY['3XS']
-        }}>{subtitle}</span>)}
+        {subtitle && (
+          <span
+            css={{
+              display: 'block',
+              color: COLORS.neutral[300],
+              marginBottom: SPACING['2XS'],
+              ...TYPOGRAPHY['3XS'],
+            }}
+          >
+            {subtitle}
+          </span>
+        )}
         <span
           css={{
             ...LINK_STYLES['description'],
           }}
           data-card-title
-        >{title}</span>
+        >
+          {title}
+        </span>
       </p>
 
       {renderChildren()}
@@ -103,51 +103,45 @@ export default function Card({
     return renderAnchor({
       ...anchorProps,
       anchorStyles: anchorStyles,
-      children: content
+      children: content,
     })
   }
 
-  return (
-    <a
-      {...anchorProps}
-      css={anchorStyles}
-      children={content}
-    />
-  )
+  return <a {...anchorProps} css={anchorStyles} children={content} />
 }
 
 Card.propTypes = {
   /*
-  * Provide a Gatsby image object to image. This is purely decorative
-  * and shouldn't be required to understand the Card.
-  **/
+   * Provide a Gatsby image object to image. This is purely decorative
+   * and shouldn't be required to understand the Card.
+   **/
   image: PropTypes.object,
 
   /*
-  * The title should briefly describe where the Card will take
-  * the user when they click on it.
-  **/
+   * The title should briefly describe where the Card will take
+   * the user when they click on it.
+   **/
   title: PropTypes.string.isRequired,
 
   /*
-  * Regular React element.
-  **/
+   * Regular React element.
+   **/
   children: PropTypes.node,
 
   /*
-  * An optional addition to the Card heading. Only use if necessary.
-  **/
+   * An optional addition to the Card heading. Only use if necessary.
+   **/
   subtitle: PropTypes.string,
 
   /*
-  * Provide a url for where this card should route to.
-  **/
+   * Provide a url for where this card should route to.
+   **/
   href: PropTypes.string,
 
   /*
-  * An optional parameter to allow overriding the anchor rendering.
-  * Useful for using Card along with react-router or other client
-  * side router libraries.
-  **/
-  renderAnchor: PropTypes.func
-};
+   * An optional parameter to allow overriding the anchor rendering.
+   * Useful for using Card along with react-router or other client
+   * side router libraries.
+   **/
+  renderAnchor: PropTypes.func,
+}

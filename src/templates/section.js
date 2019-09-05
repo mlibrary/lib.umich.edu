@@ -8,10 +8,10 @@ import { Heading, Margins, MEDIA_QUERIES } from '@umich-lib/core'
 import {
   Template,
   TemplateSide,
-  TemplateContent
+  TemplateContent,
 } from '../components/aside-layout'
-import Prose from "../components/prose"
-import Layout from "../components/layout"
+import Prose from '../components/prose'
+import Layout from '../components/layout'
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
 import PageHeaderMini from '../components/page-header-mini'
@@ -71,7 +71,7 @@ function SectionTemplate({ data, ...rest }) {
       ) : (
         <PageHeaderMini breadcrumb={breadcrumb} title={field_header_title} />
       )}
-       <HorizontalNavigation
+      <HorizontalNavigation
         items={processHorizontalNavigationData({
           parentNodeOrderByDrupalId: rest.pageContext.parents,
           parentNodes: data.parents.edges,
@@ -93,19 +93,23 @@ function SectionTemplate({ data, ...rest }) {
                 <span aria-hidden="true">{field_horizontal_nav_title}</span>
               </Heading>
 
-              {body && <HTML html={body.processed}/>}
+              {body && <HTML html={body.processed} />}
             </Prose>
           </TemplateContent>
-          {relationships.field_design_template.field_machine_name === 'section_locaside' && parentNode && (
-            <TemplateSide css={{
-              display: 'none',
-              [MEDIA_QUERIES.LARGESCREEN]: {
-                display: 'block'
-              }
-            }}>
-              <LocationAside node={parentNode} />
-            </TemplateSide>
-          )}
+          {relationships.field_design_template.field_machine_name ===
+            'section_locaside' &&
+            parentNode && (
+              <TemplateSide
+                css={{
+                  display: 'none',
+                  [MEDIA_QUERIES.LARGESCREEN]: {
+                    display: 'block',
+                  },
+                }}
+              >
+                <LocationAside node={parentNode} />
+              </TemplateSide>
+            )}
         </Template>
       ) : (
         <Margins>
@@ -115,10 +119,8 @@ function SectionTemplate({ data, ...rest }) {
           </Heading>
         </Margins>
       )}
-      
-      <Panels
-        data={relationships.field_panels}
-      />
+
+      <Panels data={relationships.field_panels} />
     </Layout>
   )
 }
@@ -199,7 +201,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 600, quality: 70) {
+                fluid(maxWidth: 640) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
@@ -475,7 +477,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640, quality: 70) {
+                fluid(maxWidth: 640) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
@@ -547,7 +549,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640, quality: 70) {
+                fluid(maxWidth: 640) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
@@ -654,7 +656,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640, quality: 70) {
+                fluid(maxWidth: 640) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }

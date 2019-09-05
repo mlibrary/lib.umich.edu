@@ -1,10 +1,10 @@
 const COLORS = require('@umich-lib/core').COLORS
-const defaultDrupalBaseUrl = "https://cms.dev.lib.umich.edu/"
+const defaultDrupalBaseUrl = 'https://cms.dev.lib.umich.edu/'
 
 module.exports = {
   siteMetadata: {
     title: 'University of Michigan Library',
-    siteUrl: 'https://preview.lib.umich.edu/'
+    siteUrl: 'https://preview.lib.umich.edu/',
   },
   plugins: [
     'gatsby-plugin-netlify',
@@ -12,22 +12,31 @@ module.exports = {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
         policy: [{ userAgent: '*', disallow: '/' }],
-        sitemap: null
-      }
+        sitemap: null,
+      },
     },
     'gatsby-transformer-sharp',
-    'gatsby-plugin-sharp',
+    {
+      resolve: 'gatsby-plugin-sharp',
+      options: {
+        defaultQuality: 70,
+        stripMetadata: true,
+        fluid: {
+          srcSetBreakpoints: [200, 340, 520, 890, 1280],
+        },
+      },
+    },
     {
       resolve: 'gatsby-source-drupal',
       options: {
         baseUrl: process.env.DRUPAL_BASE_URL || defaultDrupalBaseUrl,
-        preview: true
+        preview: true,
       },
     },
     {
       resolve: 'gatsby-source-umich-lib',
       options: {
-        baseUrl: process.env.DRUPAL_BASE_URL || defaultDrupalBaseUrl
+        baseUrl: process.env.DRUPAL_BASE_URL || defaultDrupalBaseUrl,
       },
     },
     'gatsby-plugin-react-helmet',
@@ -43,7 +52,7 @@ module.exports = {
         theme_color: COLORS.maize['400'],
         display: 'minimal-ui',
         icon: 'src/images/icon.png', // This path is relative to the root of the site.
-      }
-    }
+      },
+    },
   ],
 }

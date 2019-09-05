@@ -5,7 +5,7 @@ import {
   COLORS,
   Margins,
   Icon,
-  MEDIA_QUERIES
+  MEDIA_QUERIES,
 } from '@umich-lib/core'
 
 import Card from './card'
@@ -22,52 +22,56 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
         background: shaded ? COLORS.blue['100'] : '',
         borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
         ':last-of-type': {
-          borderBottom: 'none'
+          borderBottom: 'none',
         },
         paddingTop: SPACING['XL'],
         paddingBottom: SPACING['XL'],
         [MEDIA_QUERIES.LARGESCREEN]: {
           paddingTop: SPACING['3XL'],
           paddingBottom: SPACING['3XL'],
-        }
+        },
       }}
       {...rest}
     >
       <Margins>
-        {title && (<Heading level={2} size="L" css={{
-          marginBottom: SPACING['XL']
-        }}>{title}</Heading>)}
+        {title && (
+          <Heading
+            level={2}
+            size="L"
+            css={{
+              marginBottom: SPACING['XL'],
+            }}
+          >
+            {title}
+          </Heading>
+        )}
         {children}
       </Margins>
     </section>
   )
 }
 
-function PanelList({
-  largeScreenTwoColumn,
-  children,
-  twoColumns,
-  ...rest
-}) {
+function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
   const panelListGridStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-      gridGap: `${SPACING['XL']} ${SPACING['M']}`
-    }
+      gridGap: `${SPACING['XL']} ${SPACING['M']}`,
+    },
   }
   const panelListColumnStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
       columns: '2',
       columnGap: SPACING['3XL'],
       '> li': {
-        marginBottom: SPACING['XL']
-      }
-    }
+        marginBottom: SPACING['XL'],
+      },
+    },
   }
 
   return (
-    <ol css={twoColumns ? panelListColumnStyles : panelListGridStyles}
+    <ol
+      css={twoColumns ? panelListColumnStyles : panelListGridStyles}
       {...rest}
     >
       {children}
@@ -92,26 +96,34 @@ function CardPanel({ data, headingLevel = 2 }) {
     if (template === 'address_and_hours') {
       return (
         <React.Fragment>
-          <div css={{
-            display: 'flex',
-            marginTop: SPACING['XS']
-          }}>
-            <span css={{
-              color: COLORS.maize['500'],
-              marginRight: SPACING['XS']
-            }}>
+          <div
+            css={{
+              display: 'flex',
+              marginTop: SPACING['XS'],
+            }}
+          >
+            <span
+              css={{
+                color: COLORS.maize['500'],
+                marginRight: SPACING['XS'],
+              }}
+            >
               <Icon d={icons['address']} />
             </span>
             <Address data={data} />
           </div>
-          <div css={{
-            display: 'flex',
-            marginTop: SPACING['XS']
-          }}>
-            <span css={{
-              color: COLORS.maize['500'],
-              marginRight: SPACING['XS']
-            }}>
+          <div
+            css={{
+              display: 'flex',
+              marginTop: SPACING['XS'],
+            }}
+          >
+            <span
+              css={{
+                color: COLORS.maize['500'],
+                marginRight: SPACING['XS'],
+              }}
+            >
               <Icon d={icons['clock']} />
             </span>
             <Hours node={data} />
@@ -122,12 +134,9 @@ function CardPanel({ data, headingLevel = 2 }) {
 
     return null
   }
-  
 
   return (
-    <PanelTemplate
-      title={title}
-    >
+    <PanelTemplate title={title}>
       <PanelList twoColumns={noImage}>
         {cards.map((card, i) => (
           <li
@@ -135,19 +144,23 @@ function CardPanel({ data, headingLevel = 2 }) {
             css={{
               marginBottom: SPACING['XL'],
               [MEDIA_QUERIES.LARGESCREEN]: {
-                margin: '0'
-              }
+                margin: '0',
+              },
             }}
           >
             <Card
-              image={card.relationships ? getImage(card.relationships.field_media_image) : null}
+              image={
+                card.relationships
+                  ? getImage(card.relationships.field_media_image)
+                  : null
+              }
               href={card.fields.slug}
               title={card.title}
               children={
                 useSummary ? card.body.summary : renderCardChildren(card)
               }
               css={{
-                height: '100%'
+                height: '100%',
               }}
             />
           </li>
@@ -174,20 +187,30 @@ function TextPanel({ data }) {
           [MEDIA_QUERIES.LARGESCREEN]: {
             paddingTop: SPACING['4XL'],
             paddingBottom: SPACING['4XL'],
-          }
+          },
         }}
       >
-        <div css={{
-          display: 'flex',
-          justifyContent: 'center'
-        }}>
-          <div css={{
-            textAlign: 'center',
-            maxWidth: '38rem'
-          }}>
-            <Heading level={2} size="L" css={{
-              marginBottom: SPACING['M']
-            }}>{title}</Heading>
+        <div
+          css={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            css={{
+              textAlign: 'center',
+              maxWidth: '38rem',
+            }}
+          >
+            <Heading
+              level={2}
+              size="L"
+              css={{
+                marginBottom: SPACING['M'],
+              }}
+            >
+              {title}
+            </Heading>
             <div css={{ color: COLORS.neutral['300'] }}>
               <HTML html={html} />
             </div>
@@ -201,29 +224,22 @@ function TextPanel({ data }) {
     return (
       <PanelTemplate title={title}>
         <PanelList twoColumns={true}>
-          {cards.map(({
-            field_title,
-            field_body,
-            field_link
-          }, i) => (
+          {cards.map(({ field_title, field_body, field_link }, i) => (
             <li
               key={i + field_title}
               css={{
                 marginBottom: SPACING['XL'],
                 [MEDIA_QUERIES.LARGESCREEN]: {
-                  margin: '0'
-                }
+                  margin: '0',
+                },
               }}
             >
               <div
                 css={{
-                  marginBottom: SPACING['XS']
+                  marginBottom: SPACING['XS'],
                 }}
               >
-                <Link
-                  to={field_link.uri}
-                  kind="description"
-                >
+                <Link to={field_link.uri} kind="description">
                   {field_title}
                 </Link>
               </div>
@@ -251,9 +267,11 @@ export default function Panels({ data }) {
         const type = panel.__typename
         const id = panel.id
 
-        return type === 'paragraph__card_panel'
-          ? <CardPanel data={panel} key={id} />
-          : <TextPanel data={panel} key={id} />
+        return type === 'paragraph__card_panel' ? (
+          <CardPanel data={panel} key={id} />
+        ) : (
+          <TextPanel data={panel} key={id} />
+        )
       })}
     </React.Fragment>
   )
