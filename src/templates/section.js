@@ -610,15 +610,9 @@ export const query = graphql`
         field_machine_name
       }
       field_cards {
-        ... on node__building {
-          ...BuildingFragment
-        }
-        ... on node__location {
-          ...LocationFragment
-        }
-        ... on node__room {
-          ...RoomFragment
-        }
+        ...BuildingFragment
+        ...LocationFragment
+        ...RoomFragment
       }
     }
   }
