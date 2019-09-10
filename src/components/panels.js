@@ -245,8 +245,6 @@ export default function Panels({ data }) {
     return null
   }
 
-  console.log('data', data)
-
   return (
     <React.Fragment>
       {data.map(panel => {
