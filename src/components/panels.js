@@ -245,15 +245,24 @@ export default function Panels({ data }) {
     return null
   }
 
+  console.log('data', data)
+
   return (
     <React.Fragment>
       {data.map(panel => {
         const type = panel.__typename
         const id = panel.id
 
-        return type === 'paragraph__card_panel'
-          ? <CardPanel data={panel} key={id} />
-          : <TextPanel data={panel} key={id} />
+        switch (type) {
+          case 'paragraph__card_panel':
+            return <CardPanel data={panel} key={id} />
+          case 'paragraph__text_panel':
+            return <TextPanel data={panel} key={id} />
+          case 'paragraph__hours_panel':
+            return <p>[Hours panel in development]</p>
+          default:
+            return null
+        }
       })}
     </React.Fragment>
   )

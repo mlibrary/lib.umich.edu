@@ -633,12 +633,8 @@ export const query = graphql`
     }
     relationships {
       field_parent_page {
-        ... on node__section_page {
-          ...SectionNodeFragment
-        }
-        ... on node__building {
-          ...BuildingFragment
-        }
+        ...SectionNodeFragment
+        ...BuildingFragment
       }
       field_design_template {
         field_machine_name
@@ -657,9 +653,7 @@ export const query = graphql`
         }
       }
       field_panels {
-        ... on paragraph__card_panel {
-          ...CardPanelFragment
-        }
+        ...CardPanelFragment
         ... on paragraph__text_panel {
           field_title
           id
