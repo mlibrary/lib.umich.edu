@@ -55,6 +55,9 @@ function SectionTemplate({ data, ...rest }) {
     Use the parent page if not the root
     for PageHeader summary and image.
   */
+  console.log('body', body)
+  console.log('parentNode', parentNode)
+
   const summary = isRootPage ? body.summary : parentNode.body.summary
 
   return (
@@ -211,9 +214,7 @@ export const query = graphql`
         ...HoursFragment
       }
       field_parent_page {
-        ... on node__section_page {
-          ...SectionNodeFragment
-        }
+        ...SectionNodeFragment
       }
       field_parking {
         description {
@@ -634,7 +635,7 @@ export const query = graphql`
     relationships {
       field_parent_page {
         ...SectionNodeFragment
-        ...BuildingFragment
+        ...LocationFragment
       }
       field_design_template {
         field_machine_name
