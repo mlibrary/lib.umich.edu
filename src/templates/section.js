@@ -604,6 +604,7 @@ export const query = graphql`
   fragment HoursPanelFragment on paragraph__hours_panel {
     ... on Node {
       __typename
+      id
     }
     field_body {
       processed

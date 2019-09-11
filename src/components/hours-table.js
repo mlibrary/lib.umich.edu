@@ -37,23 +37,23 @@ export default function HoursTable({ data, highlightToday = false }) {
         'tbody th': {
           fontWeight: '700',
         },
-        [`th:nth-child(${todayIndex}), td:nth-child(${todayIndex})`]: {
+        [`th:nth-of-type(${todayIndex}), td:nth-of-type(${todayIndex})`]: {
           borderRight: 'solid 2px #FFCB05',
           borderLeft: 'solid 2px #FFCB05',
         },
-        [`thead th:nth-child(${todayIndex})`]: {
+        [`thead th:nth-of-type(${todayIndex})`]: {
           borderTop: 'solid 2px #FFCB05',
         },
-        [`tbody > tr:last-child td:nth-child(${todayIndex})`]: {
+        [`tbody > tr:last-child td:nth-of-type(${todayIndex})`]: {
           borderBottom: 'solid 2px #FFCB05',
         },
       }}
     >
       <thead>
         <tr>
-          <th colspan="2" />
+          <th colSpan="2" />
           {data.headings.map(({ text, subtext }, i) => (
-            <th scope="col" aria-current={i + 2 === todayIndex}>
+            <th scope="col" aria-current={i + 2 === todayIndex} key={text + subtext + i}>
               <div
                 css={{
                   position: 'relative',
@@ -92,12 +92,12 @@ export default function HoursTable({ data, highlightToday = false }) {
         </tr>
       </thead>
       <tbody>
-        {data.rows.map(row => (
-          <tr>
+        {data.rows.map((row, y) => (
+          <tr key={row + y}>
             {row.map((col, i) => (
-              <React.Fragment>
+              <React.Fragment key={row + col + y + i}>
                 {i === 0 ? (
-                  <th scope="row" colspan="2">
+                  <th scope="row" colSpan="2">
                     {col}
                   </th>
                 ) : (
