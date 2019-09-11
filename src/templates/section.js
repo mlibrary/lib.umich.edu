@@ -607,20 +607,11 @@ export const query = graphql`
     }
     relationships {
       field_parent_card {
-        ... on node__building {
-          ...BuildingFragment
-        }
-        ... on node__location {
-          ...LocationFragment
-        }
+        ...BuildingFragment
+        ...LocationFragment
       }
       field_cards {
-        ... on node__room {
-          ...RoomFragment
-        }
-        ... on node__location {
-          ...LocationFragment
-        }
+        ...RoomFragment
       }
     }
   }
