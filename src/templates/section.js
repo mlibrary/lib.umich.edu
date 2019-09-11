@@ -611,7 +611,11 @@ export const query = graphql`
         ...LocationFragment
       }
       field_cards {
-        ...RoomFragment
+        ... on Node {
+          __typename
+          ...LocationFragment
+          ...RoomFragment
+        }
       }
     }
   }

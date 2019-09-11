@@ -16,6 +16,10 @@ import Hours from './todays-hours'
 import icons from '../reusable/icons'
 import HoursPanel from '../components/hours-panel'
 
+import {
+  StateProvider
+} from './use-state'
+
 function PanelTemplate({ title, children, shaded, ...rest }) {
   return (
     <section
@@ -247,7 +251,7 @@ export default function Panels({ data }) {
   }
 
   return (
-    <React.Fragment>
+    <PanelStateWrapper>
       {data.map(panel => {
         const type = panel.__typename
         const id = panel.id
@@ -263,6 +267,30 @@ export default function Panels({ data }) {
             return null
         }
       })}
-    </React.Fragment>
+    </PanelStateWrapper>
+  )
+}
+
+function PanelStateWrapper({ children }) {
+  const initialState = {
+    weekOffset: 0
+  }
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'setWeekOffset':
+        return {
+          ...state,
+          weekOffset: action.weekOffset
+        }
+      default:
+        return state
+    }
+  }
+
+  return (
+    <StateProvider initialState={initialState} reducer={reducer}>
+      {children}
+    </StateProvider>
   )
 }

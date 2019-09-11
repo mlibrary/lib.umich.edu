@@ -5,9 +5,13 @@ import * as moment from 'moment'
 import { displayHours } from '../utils/hours'
 import HoursTable from './hours-table'
 
+import {
+  useStateValue
+} from './use-state'
+
 export default function HoursPanelContainer({ data }) {
   const [initialized, setInitialized] = useState(false)
-  const [weekOffset, setWeekOffset] = useState(0)
+  const [{ weekOffset }, dispatch] = useStateValue()
 
   useEffect(() => {
     setInitialized(true)
@@ -18,6 +22,11 @@ export default function HoursPanelContainer({ data }) {
   }
 
   const { relationships } = data
+
+  if (relationships.field_parent_card.length === 0) {
+    return null
+  }
+
   const { title } = relationships.field_parent_card[0]
 
   return (
@@ -34,16 +43,18 @@ export default function HoursPanelContainer({ data }) {
         }}
       >
         <Button
-          onClick={() => {
-            setWeekOffset(weekOffset + 1)
-          }}
+          onClick={() => dispatch({
+            type: 'setWeekOffset',
+            weekOffset: weekOffset + 1
+          })}
         >
           Previous week
         </Button>
         <Button
-          onClick={() => {
-            setWeekOffset(weekOffset - 1)
-          }}
+          onClick={() => dispatch({
+            type: 'setWeekOffset',
+            weekOffset: weekOffset - 1
+          })}
         >
           Next week
         </Button>
