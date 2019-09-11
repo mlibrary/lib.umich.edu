@@ -92,7 +92,7 @@ export default function HoursPanelContainer({ data }) {
     return null
   }
 
-  const { relationships, field_body } = data
+  const { relationships, field_body, id } = data
 
   if (relationships.field_parent_card.length === 0) {
     return null
@@ -106,6 +106,7 @@ export default function HoursPanelContainer({ data }) {
       <Margins>
         <HoursPanel
           title={title}
+          id={id}
           isCurrentWeek={weekOffset === 0}
           tableData={transformTableData({
             node: data,
@@ -119,7 +120,7 @@ export default function HoursPanelContainer({ data }) {
   )
 }
 
-function HoursPanel({ title, tableData = {}, isCurrentWeek, children }) {
+function HoursPanel({ title, id, tableData = {}, isCurrentWeek, children }) {
   return (
     <section
       css={{
@@ -134,12 +135,14 @@ function HoursPanel({ title, tableData = {}, isCurrentWeek, children }) {
           fontWeight: '700',
           marginBottom: SPACING['2XS'],
         }}
+        id={id}
       >
         {title}
       </Heading>
       {children}
       <HoursTable
         data={tableData}
+        headingId={id}
         dayOfWeek={isCurrentWeek ? moment().day() : false}
       />
     </section>
