@@ -23,6 +23,7 @@ export function HoursPanelNextPrev() {
         css={{
           display: 'flex',
           justifyContent: 'space-between',
+          alignItems: 'baseline',
           marginTop: SPACING['L'],
           marginBottom: SPACING['L'],
           '> *:not(:last-of-type)': {
