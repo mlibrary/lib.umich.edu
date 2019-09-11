@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Margins, Heading, SPACING, Button } from '@umich-lib/core'
+import { Margins, Heading, SPACING, Button, Icon } from '@umich-lib/core'
 import * as moment from 'moment'
 
 import { displayHours } from '../utils/hours'
@@ -11,10 +11,13 @@ import {
 
 export function HoursPanelNextPrev() {
   const [{ weekOffset }, dispatch] = useStateValue()
+  const from_date = moment().add(weekOffset, 'weeks').startOf('week');
+  const to_date = moment().add(weekOffset, 'weeks').endOf('week');
 
   return (
     <Margins 
-    data-hours-panel-next-previous>
+      data-hours-panel-next-previous
+    >
       <div
         css={{
           display: 'flex',
@@ -32,15 +35,18 @@ export function HoursPanelNextPrev() {
             weekOffset: weekOffset + 1
           })}
         >
-          Previous week
+          <Icon icon="navigate_before" /> Previous week
         </Button>
+        <Heading level={2} size="S" css={{ fontWeight: '700' }}>
+          {from_date.format('MMM D')} - {to_date.format('MMM D')}
+          </Heading>
         <Button
           onClick={() => dispatch({
             type: 'setWeekOffset',
             weekOffset: weekOffset - 1
           })}
         >
-          Next week
+          Next week <Icon icon="navigate_next" />
         </Button>
       </div>
     </Margins>

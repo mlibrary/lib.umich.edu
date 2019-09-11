@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { COLORS } from '@umich-lib/core'
+import { COLORS, SPACING } from '@umich-lib/core'
 
 export default function HoursTable({ data, highlightToday = false }) {
   const [todayIndex, setTodayIndex] = useState(-1)
@@ -38,14 +38,14 @@ export default function HoursTable({ data, highlightToday = false }) {
           fontWeight: '700',
         },
         [`th:nth-child(${todayIndex}), td:nth-child(${todayIndex})`]: {
-          borderRight: 'solid 3px #FFCB05',
-          borderLeft: 'solid 3px #FFCB05',
+          borderRight: 'solid 2px #FFCB05',
+          borderLeft: 'solid 2px #FFCB05',
         },
         [`thead th:nth-child(${todayIndex})`]: {
-          borderTop: 'solid 3px #FFCB05',
+          borderTop: 'solid 2px #FFCB05',
         },
         [`tbody > tr:last-child td:nth-child(${todayIndex})`]: {
-          borderBottom: 'solid 3px #FFCB05',
+          borderBottom: 'solid 2px #FFCB05',
         },
       }}
     >
@@ -63,23 +63,29 @@ export default function HoursTable({ data, highlightToday = false }) {
                   <span
                     css={{
                       position: 'absolute',
-                      marginLeft: `calc(-0.75rem + -3px)`,
-                      marginTop: `calc(-2rem + -6px)`,
+                      marginLeft: `calc(-0.75rem + -2px)`,
+                      marginTop: `calc(-2rem + -2px)`,
                       display: `inline-block`,
-                      padding: '0 0.5rem',
+                      padding: `0 ${SPACING['2XS']}`,
                       background: '#FFCB05',
                       borderRadius: '2px 2px 0 0',
-                      fontWeight: '600',
+                      fontWeight: '700',
+                      fontSize: '0.875rem'
                     }}
                     aria-hidden="true"
                   >
-                    Today
+                    TODAY
                   </span>
                 )}
-                <span css={{ display: 'block', fontWeight: '700' }}>
+                <span css={{
+                  display: 'block',
+                  fontWeight: '700',
+                  textTransform: 'uppercase',
+                  fontSize: '0.875rem'
+                }}>
                   {text}
                 </span>
-                <span css={{ colors: COLORS.neutral['300'] }}>{subtext}</span>
+                <span css={{ color: COLORS.neutral['300'] }}>{subtext}</span>
               </div>
             </th>
           ))}
