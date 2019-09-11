@@ -252,22 +252,43 @@ export default function Panels({ data }) {
 
   return (
     <PanelStateWrapper>
-      {data.map(panel => {
-        const type = panel.__typename
-        const id = panel.id
+      <HideNotFirstHoursNextPreviousButtons>
+        {data.map((panel, i) => {
+          const type = panel.__typename
+          const id = panel.id
 
-        switch (type) {
-          case 'paragraph__card_panel':
-            return <CardPanel data={panel} key={id} />
-          case 'paragraph__text_panel':
-            return <TextPanel data={panel} key={id} />
-          case 'paragraph__hours_panel':
-            return <HoursPanel data={panel} key={id} />
-          default:
-            return null
-        }
-      })}
+          switch (type) {
+            case 'paragraph__card_panel':
+              return <CardPanel data={panel} key={id} />
+            case 'paragraph__text_panel':
+              return <TextPanel data={panel} key={id} />
+            case 'paragraph__hours_panel':
+              return <HoursPanel data={panel} key={id} />
+            default:
+              return null
+          }
+        })}
+      </HideNotFirstHoursNextPreviousButtons>
     </PanelStateWrapper>
+  )
+}
+
+function HideNotFirstHoursNextPreviousButtons({
+  children
+}) {
+  return (
+    <div css={{
+      '[data-hours-panel-next-previous]': {
+        display: 'none'
+      },
+      '> [data-hours-panel]:first-of-type': {
+        '[data-hours-panel-next-previous]': {
+          display: 'block'
+        }
+      }
+    }}>
+      {children}
+    </div>
   )
 }
 

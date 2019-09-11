@@ -9,28 +9,12 @@ import {
   useStateValue
 } from './use-state'
 
-export default function HoursPanelContainer({ data }) {
-  const [initialized, setInitialized] = useState(false)
+export function HoursPanelNextPrev() {
   const [{ weekOffset }, dispatch] = useStateValue()
 
-  useEffect(() => {
-    setInitialized(true)
-  }, [initialized])
-
-  if (!initialized) {
-    return null
-  }
-
-  const { relationships } = data
-
-  if (relationships.field_parent_card.length === 0) {
-    return null
-  }
-
-  const { title } = relationships.field_parent_card[0]
-
   return (
-    <Margins>
+    <Margins 
+    data-hours-panel-next-previous>
       <div
         css={{
           display: 'flex',
@@ -59,14 +43,43 @@ export default function HoursPanelContainer({ data }) {
           Next week
         </Button>
       </div>
-      <HoursPanel
-        title={title}
-        tableData={transformTableData({
-          node: data,
-          now: moment().add(weekOffset, 'weeks'),
-        })}
-      />
     </Margins>
+  )
+}
+
+export default function HoursPanelContainer({ data }) {
+  const [initialized, setInitialized] = useState(false)
+  const [{ weekOffset }] = useStateValue()
+
+  useEffect(() => {
+    setInitialized(true)
+  }, [initialized])
+
+  if (!initialized) {
+    return null
+  }
+
+  const { relationships } = data
+
+  if (relationships.field_parent_card.length === 0) {
+    return null
+  }
+
+  const { title } = relationships.field_parent_card[0]
+
+  return (
+    <div data-hours-panel>
+      <HoursPanelNextPrev />
+      <Margins>
+        <HoursPanel
+          title={title}
+          tableData={transformTableData({
+            node: data,
+            now: moment().add(weekOffset, 'weeks'),
+          })}
+        />
+      </Margins>
+    </div>
   )
 }
 
