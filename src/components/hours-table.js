@@ -13,7 +13,7 @@ export default function HoursTable({ data, highlightToday = false }) {
   useEffect(() => {
     if (highlightToday) {
       const today = new Date()
-      setTodayIndex(today.getDay() + 2) // Add two. Sun is 0 and Sun starts as 2nd nth-child.
+      setTodayIndex(today.getDay() + 1) // Sun is 0 index.
     } else {
       setTodayIndex(-1)
     }
@@ -37,11 +37,11 @@ export default function HoursTable({ data, highlightToday = false }) {
         'tbody th': {
           fontWeight: '700',
         },
-        [`th:nth-of-type(${todayIndex}), td:nth-of-type(${todayIndex})`]: {
+        [`th:nth-of-type(${todayIndex + 1}), td:nth-of-type(${todayIndex})`]: {
           borderRight: 'solid 2px #FFCB05',
           borderLeft: 'solid 2px #FFCB05',
         },
-        [`thead th:nth-of-type(${todayIndex})`]: {
+        [`thead th:nth-of-type(${todayIndex + 1})`]: {
           borderTop: 'solid 2px #FFCB05',
         },
         [`tbody > tr:last-child td:nth-of-type(${todayIndex})`]: {
@@ -53,13 +53,13 @@ export default function HoursTable({ data, highlightToday = false }) {
         <tr>
           <th colSpan="2" />
           {data.headings.map(({ text, subtext }, i) => (
-            <th scope="col" aria-current={i + 2 === todayIndex} key={text + subtext + i}>
+            <th scope="col" aria-current={i === todayIndex} key={text + subtext + i}>
               <div
                 css={{
                   position: 'relative',
                 }}
               >
-                {i + 2 === todayIndex && (
+                {i + 1 === todayIndex && (
                   <span
                     css={{
                       position: 'absolute',
