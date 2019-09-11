@@ -9,7 +9,7 @@ import HoursTable from './hours-table'
 import {
   useStateValue
 } from './use-state'
-import getTransitionCSS from './transition'
+import getTransitionCSS from '../utils/transition'
 
 export function HoursPanelNextPrev() {
   const [{ weekOffset }, dispatch] = useStateValue()
