@@ -605,6 +605,9 @@ export const query = graphql`
     ... on Node {
       __typename
     }
+    field_body {
+      processed
+    }
     relationships {
       field_parent_card {
         ...BuildingFragment

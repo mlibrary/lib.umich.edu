@@ -23,7 +23,7 @@ export default function HoursTable({ data, highlightToday = false }) {
     <table
       css={{
         width: '100%',
-        marginTop: '2rem',
+        marginTop: SPACING['XL'],
         textAlign: 'left',
         tableLayout: 'fixed',
         'th, td': {

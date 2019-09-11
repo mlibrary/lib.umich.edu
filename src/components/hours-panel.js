@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Margins, Heading, SPACING, Button, Icon } from '@umich-lib/core'
 import * as moment from 'moment'
-
 import VisuallyHidden from '@reach/visually-hidden'
+
+import HTML from '../components/html'
 import { displayHours } from '../utils/hours'
 import HoursTable from './hours-table'
-
 import {
   useStateValue
 } from './use-state'
@@ -33,7 +33,7 @@ export function HoursPanelNextPrev() {
         <Button
           onClick={() => dispatch({
             type: 'setWeekOffset',
-            weekOffset: weekOffset + 1
+            weekOffset: weekOffset - 1
           })}
           kind="subtle"
         >
@@ -41,14 +41,14 @@ export function HoursPanelNextPrev() {
         </Button>
         <Heading level={2} size="S" css={{ fontWeight: '700' }}>
           <span aria-live="polite" aria-atomic="true">
-            <VisuallyHidden>Showing shours for </VisuallyHidden>
+            <VisuallyHidden>Showing hours for </VisuallyHidden>
             {from_date.format('MMM D')} - {to_date.format('MMM D')}
           </span>
           </Heading>
         <Button
           onClick={() => dispatch({
             type: 'setWeekOffset',
-            weekOffset: weekOffset - 1
+            weekOffset: weekOffset + 1
           })}
           kind="subtle"
         >
@@ -71,7 +71,7 @@ export default function HoursPanelContainer({ data }) {
     return null
   }
 
-  const { relationships } = data
+  const { relationships, field_body } = data
 
   if (relationships.field_parent_card.length === 0) {
     return null
@@ -80,7 +80,7 @@ export default function HoursPanelContainer({ data }) {
   const { title } = relationships.field_parent_card[0]
 
   return (
-    <div data-hours-panel>
+    <section data-hours-panel>
       <HoursPanelNextPrev />
       <Margins>
         <HoursPanel
@@ -90,13 +90,15 @@ export default function HoursPanelContainer({ data }) {
             node: data,
             now: moment().add(weekOffset, 'weeks'),
           })}
-        />
+        >
+          {field_body && <HTML html={field_body.processed}/>}
+        </HoursPanel>
       </Margins>
-    </div>
+    </section>
   )
 }
 
-function HoursPanel({ title, tableData = {}, isCurrentWeek }) {
+function HoursPanel({ title, tableData = {}, isCurrentWeek, children }) {
   return (
     <section
       css={{
@@ -109,11 +111,12 @@ function HoursPanel({ title, tableData = {}, isCurrentWeek }) {
         size="L"
         css={{
           fontWeight: '700',
-          marginBottom: SPACING['2XL'],
+          marginBottom: SPACING['2XS'],
         }}
       >
         {title}
       </Heading>
+      {children}
       <HoursTable data={tableData} highlightToday={isCurrentWeek} />
     </section>
   )
