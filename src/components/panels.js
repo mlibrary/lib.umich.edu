@@ -12,8 +12,13 @@ import Card from './card'
 import Link from './link'
 import HTML from './html'
 import Address from './address'
-import Hours from './hours'
+import Hours from './todays-hours'
 import icons from '../reusable/icons'
+import HoursPanel from '../components/hours-panel'
+
+import {
+  StateProvider
+} from './use-state'
 
 function PanelTemplate({ title, children, shaded, ...rest }) {
   return (
@@ -246,22 +251,67 @@ export default function Panels({ data }) {
   }
 
   return (
-    <React.Fragment>
-      {data.map(panel => {
-        const type = panel.__typename
-        const id = panel.id
+    <PanelStateWrapper>
+      <HideNotFirstHoursNextPreviousButtons>
+        {data.map((panel, i) => {
+          const type = panel.__typename
+          const id = panel.id
 
-        switch (type) {
-          case 'paragraph__card_panel':
-            return <CardPanel data={panel} key={id} />
-          case 'paragraph__text_panel':
-            return <TextPanel data={panel} key={id} />
-          case 'paragraph__hours_panel':
-            return <p>[Hours panel in development]</p>
-          default:
-            return null
+          switch (type) {
+            case 'paragraph__card_panel':
+              return <CardPanel data={panel} key={id} />
+            case 'paragraph__text_panel':
+              return <TextPanel data={panel} key={id} />
+            case 'paragraph__hours_panel':
+              return <HoursPanel data={panel} key={id} />
+            default:
+              return null
+          }
+        })}
+      </HideNotFirstHoursNextPreviousButtons>
+    </PanelStateWrapper>
+  )
+}
+
+function HideNotFirstHoursNextPreviousButtons({
+  children
+}) {
+  return (
+    <div css={{
+      '[data-hours-panel-next-previous]': {
+        display: 'none'
+      },
+      '> [data-hours-panel]:first-of-type': {
+        '[data-hours-panel-next-previous]': {
+          display: 'block'
         }
-      })}
-    </React.Fragment>
+      }
+    }}>
+      {children}
+    </div>
+  )
+}
+
+function PanelStateWrapper({ children }) {
+  const initialState = {
+    weekOffset: 0
+  }
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'setWeekOffset':
+        return {
+          ...state,
+          weekOffset: action.weekOffset
+        }
+      default:
+        return state
+    }
+  }
+
+  return (
+    <StateProvider initialState={initialState} reducer={reducer}>
+      {children}
+    </StateProvider>
   )
 }

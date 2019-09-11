@@ -59,10 +59,7 @@ const Layout = ({ children, drupalNid }) => (
               height: '100%'
             },
             "*:focus": {
-              outlineColor: COLORS.neutral['300'],
-              outlineOffset: '4px',
-              outlineWidth: '2px',
-              outlineStyle: 'ridge'
+              outlineColor: COLORS.blue['400']
             }
           }}
           />
