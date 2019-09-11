@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Margins, Heading, SPACING, Button, Icon } from '@umich-lib/core'
 import * as moment from 'moment'
 
+import VisuallyHidden from '@reach/visually-hidden'
 import { displayHours } from '../utils/hours'
 import HoursTable from './hours-table'
 
@@ -34,19 +35,24 @@ export function HoursPanelNextPrev() {
             type: 'setWeekOffset',
             weekOffset: weekOffset + 1
           })}
+          kind="subtle"
         >
-          <Icon icon="navigate_before" /> Previous week
+          <Icon icon="navigate_before" css={{ marginRight: SPACING['2XS'] }} /> Previous week
         </Button>
         <Heading level={2} size="S" css={{ fontWeight: '700' }}>
-          {from_date.format('MMM D')} - {to_date.format('MMM D')}
+          <span aria-live="polite" aria-atomic="true">
+            <VisuallyHidden>Showing shours for </VisuallyHidden>
+            {from_date.format('MMM D')} - {to_date.format('MMM D')}
+          </span>
           </Heading>
         <Button
           onClick={() => dispatch({
             type: 'setWeekOffset',
             weekOffset: weekOffset - 1
           })}
+          kind="subtle"
         >
-          Next week <Icon icon="navigate_next" />
+          Next week <Icon icon="navigate_next" css={{ marginLeft: SPACING['2XS'] }} />
         </Button>
       </div>
     </Margins>
