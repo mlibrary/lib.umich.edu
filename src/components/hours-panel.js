@@ -9,6 +9,7 @@ import HoursTable from './hours-table'
 import {
   useStateValue
 } from './use-state'
+import getTransitionCSS from './transition'
 
 export function HoursPanelNextPrev() {
   const [{ weekOffset }, dispatch] = useStateValue()
@@ -79,9 +80,9 @@ export default function HoursPanelContainer({ data }) {
   }
 
   const { title } = relationships.field_parent_card[0]
-
+  const transitionCSS = getTransitionCSS()
   return (
-    <section data-hours-panel>
+    <section data-hours-panel css={transitionCSS}>
       <HoursPanelNextPrev />
       <Margins>
         <HoursPanel
@@ -118,7 +119,10 @@ function HoursPanel({ title, tableData = {}, isCurrentWeek, children }) {
         {title}
       </Heading>
       {children}
-      <HoursTable data={tableData} highlightToday={isCurrentWeek} />
+      <HoursTable
+        data={tableData}
+        dayOfWeek={isCurrentWeek ? moment().day() : false}
+      />
     </section>
   )
 }
@@ -195,4 +199,12 @@ function getRow(node, nowWithWeekOffset, isParent) {
   }
 
   return [isParent ? 'General' : node.title].concat(hours)
+}
+
+function EaseInTransition({ children }) {
+  return (
+    <div>
+      {children}
+    </div>
+  )
 }

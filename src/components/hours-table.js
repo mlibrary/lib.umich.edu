@@ -2,22 +2,8 @@ import React, { useState, useEffect } from 'react'
 
 import { COLORS, SPACING } from '@umich-lib/core'
 
-export default function HoursTable({ data, highlightToday = false }) {
-  const [todayIndex, setTodayIndex] = useState(-1)
-
-  /*
-    We don't want to SSR the hours table since that
-    is dynamic to now. We can show the table, but
-    not the "Today" highlight.
-  */
-  useEffect(() => {
-    if (highlightToday) {
-      const today = new Date()
-      setTodayIndex(today.getDay() + 1) // Sun is 0 index.
-    } else {
-      setTodayIndex(-1)
-    }
-  }, [highlightToday])
+export default function HoursTable({ data, dayOfWeek = false }) {
+  const todayIndex = dayOfWeek !== false ? dayOfWeek + 1 : -1
 
   return (
     <table
