@@ -213,9 +213,7 @@ export const query = graphql`
         ...HoursFragment
       }
       field_parent_page {
-        ... on node__section_page {
-          ...SectionNodeFragment
-        }
+        ...SectionNodeFragment
       }
       field_parking {
         description {
@@ -636,15 +634,9 @@ export const query = graphql`
         field_machine_name
       }
       field_cards {
-        ... on node__building {
-          ...BuildingFragment
-        }
-        ... on node__location {
-          ...LocationFragment
-        }
-        ... on node__room {
-          ...RoomFragment
-        }
+        ...BuildingFragment
+        ...LocationFragment
+        ...RoomFragment
       }
     }
   }
@@ -665,12 +657,9 @@ export const query = graphql`
     }
     relationships {
       field_parent_page {
-        ... on node__section_page {
-          ...SectionNodeFragment
-        }
-        ... on node__building {
-          ...BuildingFragment
-        }
+        ...SectionNodeFragment
+        ...LocationFragment
+        ...BuildingFragment
       }
       field_design_template {
         field_machine_name
@@ -689,9 +678,7 @@ export const query = graphql`
         }
       }
       field_panels {
-        ... on paragraph__card_panel {
-          ...CardPanelFragment
-        }
+        ...CardPanelFragment
         ... on paragraph__text_panel {
           field_title
           id
