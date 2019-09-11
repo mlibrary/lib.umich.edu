@@ -73,6 +73,7 @@ export default function HoursPanelContainer({ data }) {
       <Margins>
         <HoursPanel
           title={title}
+          isCurrentWeek={weekOffset === 0}
           tableData={transformTableData({
             node: data,
             now: moment().add(weekOffset, 'weeks'),
@@ -83,7 +84,7 @@ export default function HoursPanelContainer({ data }) {
   )
 }
 
-function HoursPanel({ title, tableData = {} }) {
+function HoursPanel({ title, tableData = {}, isCurrentWeek }) {
   return (
     <section
       css={{
@@ -101,7 +102,7 @@ function HoursPanel({ title, tableData = {} }) {
       >
         {title}
       </Heading>
-      <HoursTable data={tableData} />
+      <HoursTable data={tableData} highlightToday={isCurrentWeek} />
     </section>
   )
 }
