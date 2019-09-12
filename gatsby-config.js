@@ -16,16 +16,7 @@ module.exports = {
       },
     },
     'gatsby-transformer-sharp',
-    {
-      resolve: 'gatsby-plugin-sharp',
-      options: {
-        defaultQuality: 70,
-        stripMetadata: true,
-        fluid: {
-          srcSetBreakpoints: [200, 340, 520, 890, 1280],
-        },
-      },
-    },
+    'gatsby-plugin-sharp',
     {
       resolve: 'gatsby-source-drupal',
       options: {
