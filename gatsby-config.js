@@ -15,14 +15,7 @@ module.exports = {
         sitemap: null,
       },
     },
-    {
-      resolve: 'gatsby-plugin-sharp',
-      options: {
-        defaultQuality: 70,
-        maxWidth: 960,
-        srcSetBreakpoints: [320, 640, 960],
-      },
-    },
+    'gatsby-plugin-sharp',
     'gatsby-transformer-sharp',
     'gatsby-background-image-es5',
     {
