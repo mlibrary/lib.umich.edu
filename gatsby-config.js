@@ -15,8 +15,16 @@ module.exports = {
         sitemap: null,
       },
     },
+    {
+      resolve: 'gatsby-plugin-sharp',
+      options: {
+        defaultQuality: 70,
+        maxWidth: 960,
+        srcSetBreakpoints: [320, 640, 960],
+      },
+    },
     'gatsby-transformer-sharp',
-    'gatsby-plugin-sharp',
+    'gatsby-background-image-es5',
     {
       resolve: 'gatsby-source-drupal',
       options: {
