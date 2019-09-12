@@ -1,10 +1,8 @@
 import React from 'react'
 import { Link } from 'gatsby'
-import {
-  COLORS
-} from '@umich-lib/core'
+import { COLORS } from '@umich-lib/core'
 
-const UMichBlockM = ({ size }) => (
+const UMichBlockM = ({ size, color }) => (
   <svg
     viewBox="0 0 202 144"
     css={{
@@ -12,7 +10,7 @@ const UMichBlockM = ({ size }) => (
       height: `${size}px`,
       marginRight: '8px',
       paddingRight: '8px',
-      borderRight: `solid 1px ${COLORS.blue['400']}`
+      borderRight: `solid 1px ${color}`,
     }}
   >
     <title>University of Michigan</title>
@@ -24,7 +22,7 @@ const UMichBlockM = ({ size }) => (
   </svg>
 )
 
-const UMichLibrary = ({ size }) => (
+const UMichLibrary = ({ size, color }) => (
   <svg
     viewBox="0 0 715 144"
     css={{
@@ -34,7 +32,7 @@ const UMichLibrary = ({ size }) => (
   >
     <title>Library</title>
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-      <g transform="translate(-281.000000, 0.000000)" fill={COLORS.blue['400']}>
+      <g transform="translate(-281.000000, 0.000000)" fill={color}>
         <polyline points="281.497 144 281.497 0.202 299.817 0.202 299.817 128.067 352.598 128.067 352.598 144 281.497 144"></polyline>
         <polygon points="374.194 143.94 392.511 143.94 392.511 0.202 374.194 0.202"></polygon>
         <path d="M436.948,128.067 L462.84,128.067 C482.357,128.067 489.334,114.123 489.334,103.573 C489.334,80.665 475.187,76.682 456.472,76.682 L436.948,76.682 L436.948,128.067 Z M436.948,60.747 L463.64,60.747 C477.974,60.547 484.954,51.788 484.954,37.845 C484.954,25.896 478.174,16.135 462.84,16.135 L436.948,16.135 L436.948,60.747 Z M418.625,144 L418.625,0.202 L465.433,0.202 C485.349,0.202 492.119,6.972 497.495,14.942 C502.481,22.71 503.275,31.276 503.275,34.059 C503.275,51.984 497.102,63.939 478.576,68.117 L478.576,69.117 C499.096,71.507 508.054,83.854 508.054,103.573 C508.054,140.417 481.165,144 464.833,144 L418.625,144 L418.625,144 Z"></path>
@@ -47,13 +45,21 @@ const UMichLibrary = ({ size }) => (
   </svg>
 )
 
-function Logo({ size }) {
+function Logo({ size, kind }) {
+  const color = kind === 'light' ? 'white' : COLORS.blue['400']
+
   return (
-    <div css={{
-      lineHeight: '0'
-    }}>
-      <a href="https://umich.edu/"><UMichBlockM size={size} /></a>
-      <Link to="/"><UMichLibrary size={size} /></Link>
+    <div
+      css={{
+        lineHeight: '0',
+      }}
+    >
+      <a href="https://umich.edu/">
+        <UMichBlockM size={size} color={color} />
+      </a>
+      <Link to="/">
+        <UMichLibrary size={size} color={color} />
+      </Link>
     </div>
   )
 }
