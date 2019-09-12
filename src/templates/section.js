@@ -201,8 +201,8 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640) {
-                  ...GatsbyImageSharpFluid_noBase64
+                fluid(maxWidth: 1280, quality: 70) {
+                  ...GatsbyImageSharpFluid_withWebp_noBase64
                 }
               }
             }
@@ -213,9 +213,7 @@ export const query = graphql`
         ...HoursFragment
       }
       field_parent_page {
-        ... on node__section_page {
-          ...SectionNodeFragment
-        }
+        ...SectionNodeFragment
       }
       field_parking {
         description {
@@ -477,8 +475,8 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640) {
-                  ...GatsbyImageSharpFluid_noBase64
+                fluid(maxWidth: 1280, quality: 70) {
+                  ...GatsbyImageSharpFluid_withWebp_noBase64
                 }
               }
             }
@@ -549,8 +547,8 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640) {
-                  ...GatsbyImageSharpFluid_noBase64
+                fluid(maxWidth: 1280, quality: 70) {
+                  ...GatsbyImageSharpFluid_withWebp_noBase64
                 }
               }
             }
@@ -603,6 +601,29 @@ export const query = graphql`
     drupal_id
   }
 
+  fragment HoursPanelFragment on paragraph__hours_panel {
+    ... on Node {
+      __typename
+      id
+    }
+    field_body {
+      processed
+    }
+    relationships {
+      field_parent_card {
+        ...BuildingFragment
+        ...LocationFragment
+      }
+      field_cards {
+        ... on Node {
+          __typename
+          ...LocationFragment
+          ...RoomFragment
+        }
+      }
+    }
+  }
+
   fragment CardPanelFragment on paragraph__card_panel {
     field_title
     drupal_id
@@ -612,15 +633,9 @@ export const query = graphql`
         field_machine_name
       }
       field_cards {
-        ... on node__building {
-          ...BuildingFragment
-        }
-        ... on node__location {
-          ...LocationFragment
-        }
-        ... on node__room {
-          ...RoomFragment
-        }
+        ...BuildingFragment
+        ...LocationFragment
+        ...RoomFragment
       }
     }
   }
@@ -641,12 +656,9 @@ export const query = graphql`
     }
     relationships {
       field_parent_page {
-        ... on node__section_page {
-          ...SectionNodeFragment
-        }
-        ... on node__building {
-          ...BuildingFragment
-        }
+        ...SectionNodeFragment
+        ...LocationFragment
+        ...BuildingFragment
       }
       field_design_template {
         field_machine_name
@@ -656,8 +668,8 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640) {
-                  ...GatsbyImageSharpFluid_noBase64
+                fluid(maxWidth: 1280, quality: 70) {
+                  ...GatsbyImageSharpFluid_withWebp_noBase64
                 }
               }
             }
@@ -665,9 +677,7 @@ export const query = graphql`
         }
       }
       field_panels {
-        ... on paragraph__card_panel {
-          ...CardPanelFragment
-        }
+        ...CardPanelFragment
         ... on paragraph__text_panel {
           field_title
           id
@@ -682,6 +692,9 @@ export const query = graphql`
               }
             }
           }
+        }
+        ... on paragraph__hours_panel {
+          ...HoursPanelFragment
         }
       }
     }

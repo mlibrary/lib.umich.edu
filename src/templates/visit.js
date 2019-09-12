@@ -126,14 +126,14 @@ export const query = graphql`
     parents: allNodeSectionPage(filter: { drupal_id: { in: $parents } }) {
       edges {
         node {
-          ...SectionNodeFragment
+          ...SectionFragment
         }
       }
     }
     children: allNodeSectionPage(filter: { drupal_id: { in: $children } }) {
       edges {
         node {
-          ...SectionNodeFragment
+          ...SectionFragment
         }
       }
     }
