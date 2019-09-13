@@ -643,6 +643,7 @@ export const query = graphql`
   fragment SectionFragment on node__section_page {
     title
     field_header_title
+    drupal_id
     field_horizontal_nav_title
     field_root_page_
     drupal_internal__nid
