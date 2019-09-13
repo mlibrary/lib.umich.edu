@@ -202,7 +202,7 @@ export const query = graphql`
             localFile {
               childImageSharp {
                 fluid(
-                  srcSetBreakpoints: [320, 640, 960]
+                  srcSetBreakpoints: [320, 640, 960, 1280]
                   maxWidth: 960
                   quality: 90
                 ) {
@@ -480,7 +480,7 @@ export const query = graphql`
             localFile {
               childImageSharp {
                 fluid(
-                  srcSetBreakpoints: [320, 640, 960]
+                  srcSetBreakpoints: [320, 640, 960, 1280]
                   maxWidth: 960
                   quality: 90
                 ) {
@@ -556,7 +556,7 @@ export const query = graphql`
             localFile {
               childImageSharp {
                 fluid(
-                  srcSetBreakpoints: [320, 640, 960]
+                  srcSetBreakpoints: [320, 640, 960, 1280]
                   maxWidth: 960
                   quality: 90
                 ) {
@@ -681,7 +681,7 @@ export const query = graphql`
             localFile {
               childImageSharp {
                 fluid(
-                  srcSetBreakpoints: [320, 640, 960]
+                  srcSetBreakpoints: [320, 640, 960, 1280]
                   maxWidth: 960
                   quality: 90
                 ) {
