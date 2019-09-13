@@ -6,6 +6,8 @@ import {
   Margins,
   Heading,
   MEDIA_QUERIES,
+  Chat,
+  SmallScreen,
 } from '@umich-lib/core'
 
 import Link from './link'
@@ -74,6 +76,13 @@ function Footer() {
                 Send us an email
               </Link>
             </p>
+            <SmallScreen
+              css={{
+                marginTop: SPACING['L'],
+              }}
+            >
+              <Chat />
+            </SmallScreen>
           </section>
           <section>
             <FooterHeading>Privacy and copyright</FooterHeading>

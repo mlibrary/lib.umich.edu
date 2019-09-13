@@ -6,9 +6,9 @@
 
 // You can delete this file if you're not using itimport React from "react"
 import React from 'react'
-import { Chat } from "@umich-lib/core"
+import { Chat, LargeScreen } from '@umich-lib/core'
 
-export const onClientEntry = () => {  
+export const onClientEntry = () => {
   // IntersectionObserver polyfill for gatsby-background-image (Safari, IE)
   if (typeof window.IntersectionObserver === `undefined`) {
     import(`intersection-observer`)
@@ -21,7 +21,9 @@ export const wrapPageElement = ({ element, props }) => {
   return (
     <React.Fragment>
       {element}
-      <Chat fixed />
+      <LargeScreen>
+        <Chat fixed />
+      </LargeScreen>
     </React.Fragment>
   )
 }
