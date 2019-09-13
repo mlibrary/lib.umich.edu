@@ -15,17 +15,9 @@ module.exports = {
         sitemap: null,
       },
     },
+    'gatsby-plugin-sharp',
     'gatsby-transformer-sharp',
-    {
-      resolve: 'gatsby-plugin-sharp',
-      options: {
-        defaultQuality: 70,
-        stripMetadata: true,
-        fluid: {
-          srcSetBreakpoints: [200, 340, 520, 890, 1280],
-        },
-      },
-    },
+    'gatsby-background-image-es5',
     {
       resolve: 'gatsby-source-drupal',
       options: {
