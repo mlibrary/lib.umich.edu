@@ -1,79 +1,131 @@
 import React, { useState, useEffect } from 'react'
 import * as moment from 'moment'
 import VisuallyHidden from '@reach/visually-hidden'
-import { Margins, Heading, SPACING, Button, Icon, MEDIA_QUERIES } from '@umich-lib/core'
+import {
+  Margins,
+  Heading,
+  SPACING,
+  Button,
+  Icon,
+  MEDIA_QUERIES,
+} from '@umich-lib/core'
 
 import HTML from '../components/html'
 import { displayHours } from '../utils/hours'
 import HoursTable from './hours-table'
-import {
-  useStateValue
-} from './use-state'
+import { useStateValue } from './use-state'
 import getTransitionCSS from '../utils/transition'
 
 export function HoursPanelNextPrev() {
   const [{ weekOffset }, dispatch] = useStateValue()
-  const from_date = moment().add(weekOffset, 'weeks').startOf('week');
-  const to_date = moment().add(weekOffset, 'weeks').endOf('week');
+  const from_date = moment()
+    .add(weekOffset, 'weeks')
+    .startOf('week')
+  const to_date = moment()
+    .add(weekOffset, 'weeks')
+    .endOf('week')
 
   return (
-    <Margins 
-      data-hours-panel-next-previous
-    >
+    <Margins data-hours-panel-next-previous>
       <div
         css={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'baseline',
           marginTop: SPACING['L'],
-          marginBottom: SPACING['L']
+          marginBottom: SPACING['L'],
         }}
       >
         <PreviousNextWeekButton
-          onClick={() => dispatch({
-            type: 'setWeekOffset',
-            weekOffset: weekOffset - 1
-          })}
+          onClick={() =>
+            dispatch({
+              type: 'setWeekOffset',
+              weekOffset: weekOffset - 1,
+            })
+          }
           type="previous"
-        >Previous week</PreviousNextWeekButton>
+        >
+          Previous week
+        </PreviousNextWeekButton>
         <Heading level={2} size="S" css={{ fontWeight: '700' }}>
           <span aria-live="polite" aria-atomic="true">
             <VisuallyHidden>Showing hours for </VisuallyHidden>
             {from_date.format('MMM D')} - {to_date.format('MMM D')}
           </span>
-          </Heading>
+        </Heading>
         <PreviousNextWeekButton
-          onClick={() => dispatch({
-            type: 'setWeekOffset',
-            weekOffset: weekOffset + 1
-          })}
+          onClick={() =>
+            dispatch({
+              type: 'setWeekOffset',
+              weekOffset: weekOffset + 1,
+            })
+          }
           type="next"
-        >Next week</PreviousNextWeekButton>
+        >
+          Next week
+        </PreviousNextWeekButton>
       </div>
     </Margins>
+  )
+}
+
+function IconWrapper(props) {
+  return (
+    <span
+      css={{
+        display: 'inline-block',
+        marginTop: '-2px',
+      }}
+      {...props}
+    />
   )
 }
 
 function PreviousNextWeekButton({ type, children, ...rest }) {
   return (
     <React.Fragment>
-      <Button {...rest} kind="subtle" css={{
-        display: 'none',
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          display: 'block'
-        }
-      }}>
-        {type === 'previous' && <span><Icon icon="navigate_before" css={{ marginRight: SPACING['2XS'] }} /></span>}
+      <Button
+        {...rest}
+        kind="subtle"
+        css={{
+          display: 'none',
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            display: 'flex',
+          },
+        }}
+      >
+        {type === 'previous' && (
+          <IconWrapper>
+            <Icon
+              icon="navigate_before"
+              css={{ marginRight: SPACING['2XS'] }}
+            />
+          </IconWrapper>
+        )}
         {children}
-        {type === 'next' && <span><Icon icon="navigate_next" css={{ marginLeft: SPACING['2XS'] }} /></span>}
+        {type === 'next' && (
+          <IconWrapper>
+            <Icon icon="navigate_next" css={{ marginLeft: SPACING['2XS'] }} />
+          </IconWrapper>
+        )}
       </Button>
-      <Button {...rest} kind="subtle" css={{
-        display: 'block',
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          display: 'none'
-        }
-      }}>
-        <span>{type === 'previous' ? <Icon icon="navigate_before" /> : <Icon icon="navigate_next" />}</span>
+      <Button
+        {...rest}
+        kind="subtle"
+        css={{
+          display: 'flex',
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            display: 'none',
+          },
+        }}
+      >
+        <IconWrapper>
+          {type === 'previous' ? (
+            <Icon icon="navigate_before" />
+          ) : (
+            <Icon icon="navigate_next" />
+          )}
+        </IconWrapper>
         <VisuallyHidden>{children}</VisuallyHidden>
       </Button>
     </React.Fragment>
@@ -113,7 +165,7 @@ export default function HoursPanelContainer({ data }) {
             now: moment().add(weekOffset, 'weeks'),
           })}
         >
-          {field_body && <HTML html={field_body.processed}/>}
+          {field_body && <HTML html={field_body.processed} />}
         </HoursPanel>
       </Margins>
     </section>
