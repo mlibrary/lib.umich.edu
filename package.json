@@ -7,7 +7,7 @@
     "@reach/visually-hidden": "^0.1.4",
     "@umich-lib/core": "^1.0.0-beta.6",
     "gatsby": "^2.13.24",
-    "gatsby-background-image": "^0.8.0",
+    "gatsby-background-image-es5": "^0.8.9",
     "gatsby-image": "^2.2.6",
     "gatsby-plugin-emotion": "^4.1.2",
     "gatsby-plugin-manifest": "^2.2.3",

@@ -90,8 +90,12 @@ const renderHast = new rehypeReact({
                     field_media_image {
                       localFile {
                         childImageSharp {
-                          fluid(maxWidth: 800) {
-                            ...GatsbyImageSharpFluid_noBase64
+                          fluid(
+                            srcSetBreakpoints: [300, 600]
+                            maxWidth: 960
+                            quality: 90
+                          ) {
+                            ...GatsbyImageSharpFluid_withWebp_noBase64
                           }
                         }
                       }

@@ -201,7 +201,11 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 1280, quality: 70) {
+                fluid(
+                  srcSetBreakpoints: [320, 640, 960, 1280]
+                  maxWidth: 960
+                  quality: 90
+                ) {
                   ...GatsbyImageSharpFluid_withWebp_noBase64
                 }
               }
@@ -475,7 +479,11 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 1280, quality: 70) {
+                fluid(
+                  srcSetBreakpoints: [320, 640, 960, 1280]
+                  maxWidth: 960
+                  quality: 90
+                ) {
                   ...GatsbyImageSharpFluid_withWebp_noBase64
                 }
               }
@@ -547,7 +555,11 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 1280, quality: 70) {
+                fluid(
+                  srcSetBreakpoints: [320, 640, 960, 1280]
+                  maxWidth: 960
+                  quality: 90
+                ) {
                   ...GatsbyImageSharpFluid_withWebp_noBase64
                 }
               }
@@ -668,7 +680,11 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 1280, quality: 70) {
+                fluid(
+                  srcSetBreakpoints: [320, 640, 960, 1280]
+                  maxWidth: 960
+                  quality: 90
+                ) {
                   ...GatsbyImageSharpFluid_withWebp_noBase64
                 }
               }
