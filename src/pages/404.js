@@ -13,10 +13,13 @@ import SEO from '../components/seo'
 const NotFoundPage = () => (
   <Layout>
     <SEO title="404" />
-    <Margins>
-      <Heading size="3XL" level="1" css={{ marginTop: SPACING['3XL'], marginBottom: SPACING['L'] }}><span
+    <Margins css={{
+      marginTop: SPACING['4XL'],
+      marginBottom: SPACING['4XL'],
+    }}>
+      <Heading size="3XL" level="1" css={{ marginBottom: SPACING['M'] }}><span
         css={{
-          fontSize: '66%',
+          fontSize: '60%',
           display: 'block',
           color: COLORS.orange['400']
         }}>404</span>Page not found</Heading>
