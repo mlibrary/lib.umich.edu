@@ -95,6 +95,10 @@ function CardPanel({ data, headingLevel = 2 }) {
       : image.relationships.field_media_image.localFile.childImageSharp.fluid
   }
 
+  function getSummary(body) {
+    return body ? body.summary : null
+  }
+
   function renderCardChildren(data) {
     if (template === 'address_and_hours') {
       return (
@@ -160,7 +164,7 @@ function CardPanel({ data, headingLevel = 2 }) {
               href={card.fields.slug}
               title={card.title}
               children={
-                useSummary ? card.body.summary : renderCardChildren(card)
+                useSummary ? getSummary(card.body) : renderCardChildren(card)
               }
               css={{
                 height: '100%',
@@ -242,7 +246,7 @@ function TextPanel({ data }) {
                   marginBottom: SPACING['XS'],
                 }}
               >
-                <Link to={field_link.uri} kind="description">
+                <Link to={field_link[0].uri} kind="description">
                   {field_title}
                 </Link>
               </div>
@@ -263,6 +267,8 @@ export default function Panels({ data }) {
   if (!data) {
     return null
   }
+
+  console.log('data', data)
 
   return (
     <PanelStateWrapper>
