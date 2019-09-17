@@ -672,6 +672,7 @@ export const query = graphql`
         ...SectionNodeFragment
         ...LocationFragment
         ...BuildingFragment
+        ...RoomFragment
       }
       field_design_template {
         field_machine_name
