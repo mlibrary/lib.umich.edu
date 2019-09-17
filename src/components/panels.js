@@ -268,8 +268,6 @@ export default function Panels({ data }) {
     return null
   }
 
-  console.log('data', data)
-
   return (
     <PanelStateWrapper>
       <HideNotFirstHoursNextPreviousButtons>
