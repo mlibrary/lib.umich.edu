@@ -171,6 +171,18 @@ export const query = graphql`
     }
   }
 
+  fragment PageCardFragment on node__page {
+    title
+    field_local_navigation
+    drupal_id
+    body {
+      summary
+    }
+    fields {
+      slug
+    }
+  }
+
   fragment BuildingFragment on node__building {
     title
     field_horizontal_nav_title
@@ -648,6 +660,7 @@ export const query = graphql`
         ...BuildingFragment
         ...LocationFragment
         ...RoomFragment
+        ...PageCardFragment
       }
     }
   }
