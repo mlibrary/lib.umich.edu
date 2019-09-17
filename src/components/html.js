@@ -49,7 +49,12 @@ const renderHast = new rehypeReact({
     h4: Heading4,
     h5: Heading5,
     h6: Heading6,
-    a: ({ children, href, ...other }) => <Link to={href}>{children}</Link>,
+    a: ({ children, href, ...other }) => {
+      if (!children || !href) { // Don't render links without a label or href
+        return null
+      }
+      return <Link to={href}>{children}</Link>
+    },
     p: ({ children }) => <Text>{children}</Text>,
     strong: ({ children }) => (
       <strong css={{ fontWeight: '800' }}>{children}</strong>
