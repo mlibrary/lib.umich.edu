@@ -91,7 +91,7 @@ export default function VisitTemplate({ data, ...rest }) {
                 <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>Access</Heading>
                 <HTML html={field_access.processed} />
 
-                <Heading level={2} size="M">Amentities</Heading>
+                <Heading level={2} size="M">Amenities</Heading>
                 <List type="bulleted">
                   {field_amenities.map(({name}, i) => <li key={i + name}>{name}</li>)}
                 </List>
