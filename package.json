@@ -4,6 +4,8 @@
   "dependencies": {
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
+    "@gatsby-contrib/gatsby-plugin-elasticlunr-search": "^2.3.0",
+    "@reach/combobox": "^0.1.1",
     "@reach/visually-hidden": "^0.1.4",
     "@umich-lib/core": "^1.0.0-beta.6",
     "gatsby": "^2.13.24",
