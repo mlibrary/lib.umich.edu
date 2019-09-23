@@ -1,6 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
-import { SPACING, Icon, TextInput, Button } from '@umich-lib/core'
+import {
+  SPACING,
+  Icon,
+  TextInput,
+  Button,
+  Z_SPACE,
+  COLORS,
+} from '@umich-lib/core'
 import VisuallyHidden from '@reach/visually-hidden'
 import { Index } from 'elasticlunr'
 import { useThrottle } from 'use-throttle'
@@ -10,6 +17,7 @@ import {
   ComboboxPopover,
   ComboboxList,
   ComboboxOption,
+  ComboboxOptionText,
 } from '@reach/combobox'
 
 export default function Search() {
@@ -19,12 +27,49 @@ export default function Search() {
 
   return (
     <Combobox>
-      <ComboboxInput aria-label="Search this site" onChange={handleChange} />
+      <ComboboxInput
+        aria-label="Search this site"
+        onChange={handleChange}
+        css={{
+          fontSize: '1rem',
+          margin: '0',
+          border: 'solid 1px rgba(0,0,0,0.5)',
+          boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.1)',
+          borderRadius: '4px',
+          padding: '0.5rem 0.75rem',
+          width: '18rem',
+          appearance: 'textfield',
+          fontFamily: 'inherit',
+          boxSizing: 'border-box',
+        }}
+        type="search"
+        autocomplete="off"
+      />
       {results && (
-        <ComboboxPopover>
+        <ComboboxPopover
+          css={{
+            background: 'white',
+            border: `solid 1px ${COLORS.neutral['100']}`,
+            ...Z_SPACE[16],
+            zIndex: '1',
+          }}
+        >
           <ComboboxList aria-label="Results">
             {results.slice(0, 10).map((result, index) => (
-              <ComboboxOption key={index} value={result.title} />
+              <ComboboxOption
+                key={index}
+                value={result.title}
+                css={{
+                  padding: `${SPACING['XS']} ${SPACING['M']}`,
+                  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+                  ['[data-user-value]']: {
+                    fontWeight: '700',
+                    background: COLORS.maize['200'],
+                  },
+                }}
+              >
+                <ComboboxOptionText />
+              </ComboboxOption>
             ))}
           </ComboboxList>
         </ComboboxPopover>
