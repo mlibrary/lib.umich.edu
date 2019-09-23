@@ -1,47 +1,75 @@
-import React from 'react'
-import {
-  SPACING,
-  Icon,
-  TextInput,
-  Button
-} from '@umich-lib/core'
+import React, { useState, useMemo, useEffect } from 'react'
+import { useStaticQuery, graphql } from 'gatsby'
+import { SPACING, Icon, TextInput, Button } from '@umich-lib/core'
 import VisuallyHidden from '@reach/visually-hidden'
+import { Index } from 'elasticlunr'
+import { useThrottle } from 'use-throttle'
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxPopover,
+  ComboboxList,
+  ComboboxOption,
+} from '@reach/combobox'
 
-function Search() {
+export default function Search() {
+  const [query, setQuery] = useState('')
+  const results = useSearch(query)
+  const handleChange = e => setQuery(e.target.value)
+
   return (
-    <form
-      action="https://search.lib.umich.edu/everything"
-      method="get"
-      css={{
-        display: 'flex',
-        height: '2.5rem',
-        'input': {
-          height: '100%'
-        }
-      }}
-      role="search"
-      aria-label="Sitewide"
-    >
-      <TextInput
-        id="search-query"
-        labelText="Query"
-        type="search"
-        hideLabel
-        name="query"
-        placeholder="Search"
-      />
-      <Button
-        type="submit"
-        kind="primary"
-        css={{
-          marginLeft: SPACING['XS']
-        }}
-      >
-        <Icon icon="search" size={20} />
-        <VisuallyHidden>Submit</VisuallyHidden>
-      </Button>
-    </form>
+    <Combobox>
+      <ComboboxInput aria-label="Search this site" onChange={handleChange} />
+      {results && (
+        <ComboboxPopover>
+          <ComboboxList aria-label="Results">
+            {results.slice(0, 10).map((result, index) => (
+              <ComboboxOption key={index} value={result.title} />
+            ))}
+          </ComboboxList>
+        </ComboboxPopover>
+      )}
+    </Combobox>
   )
 }
 
-export default Search
+let index
+
+function getOrCreateIndex() {
+  const siteIndex = useIndex()
+
+  if (index) {
+    return index
+  } else {
+    index = Index.load(siteIndex)
+    return index
+  }
+}
+
+function useSearch(query) {
+  const index = getOrCreateIndex()
+  const throttledQuery = useThrottle(query, 100)
+
+  return useMemo(() => {
+    if (query.trim() === '') {
+      return null
+    } else {
+      return index
+        .search(query, { expand: true })
+        .map(({ ref }) => index.documentStore.getDoc(ref))
+    }
+  }, [throttledQuery])
+}
+
+export const useIndex = () => {
+  const { siteSearchIndex } = useStaticQuery(
+    graphql`
+      query SearchIndexQuery {
+        siteSearchIndex {
+          index
+        }
+      }
+    `
+  )
+  return siteSearchIndex.index
+}
