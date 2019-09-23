@@ -26,56 +26,88 @@ export default function Search() {
   const handleChange = e => setQuery(e.target.value)
 
   return (
-    <Combobox>
-      <ComboboxInput
-        aria-label="Search this site"
-        onChange={handleChange}
-        placeholder="Search this site"
-        css={{
-          fontSize: '1rem',
-          margin: '0',
-          border: 'solid 1px rgba(0,0,0,0.5)',
-          boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.1)',
-          borderRadius: '4px',
-          padding: '0.5rem 0.75rem',
-          width: '18rem',
-          appearance: 'textfield',
-          fontFamily: 'inherit',
-          boxSizing: 'border-box',
-        }}
-        type="search"
-        autocomplete="off"
-      />
-      {results && (
-        <ComboboxPopover
+    <form
+      action="https://search.lib.umich.edu/everything"
+      method="get"
+      css={{
+        display: 'flex',
+        height: '2.5rem',
+        input: {
+          height: '100%',
+        },
+      }}
+      role="search"
+      aria-label="Sitewide"
+    >
+      <Combobox>
+        <ComboboxInput
+          aria-label="Search this site"
+          onChange={handleChange}
+          placeholder="Search this site"
           css={{
-            background: 'white',
-            border: `solid 1px ${COLORS.neutral['100']}`,
-            ...Z_SPACE[16],
-            zIndex: '1',
+            fontSize: '1rem',
+            margin: '0',
+            border: 'solid 1px rgba(0,0,0,0.5)',
+            boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.1)',
+            borderRadius: '4px',
+            padding: '0.5rem 0.75rem',
+            width: '100%',
+            appearance: 'textfield',
+            fontFamily: 'inherit',
+            boxSizing: 'border-box',
           }}
-        >
-          <ComboboxList aria-label="Results">
-            {results.slice(0, 10).map((result, index) => (
-              <ComboboxOption
-                key={index}
-                value={result.title}
-                css={{
-                  padding: `${SPACING['XS']} ${SPACING['M']}`,
-                  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-                  ['[data-user-value]']: {
-                    fontWeight: '700',
-                    background: COLORS.maize['200'],
-                  },
-                }}
-              >
-                <ComboboxOptionText />
-              </ComboboxOption>
-            ))}
-          </ComboboxList>
-        </ComboboxPopover>
-      )}
-    </Combobox>
+          type="search"
+          autoComplete="off"
+        />
+        {results && (
+          <ComboboxPopover
+            css={{
+              background: 'white',
+              border: `solid 1px ${COLORS.neutral['100']}`,
+              ...Z_SPACE[16],
+              zIndex: '1',
+            }}
+          >
+            <ComboboxList
+              aria-label="Results"
+              css={{
+                '[aria-selected="true"]': {
+                  background: COLORS.blue['100'],
+                },
+              }}
+            >
+              {results.slice(0, 10).map((result, index) => (
+                <ComboboxOption
+                  key={index}
+                  value={result.title}
+                  css={{
+                    padding: `${SPACING['XS']} ${SPACING['M']}`,
+                    borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+                    ['[data-user-value]']: {
+                      fontWeight: '700',
+                      background: COLORS.maize['200'],
+                    },
+                  }}
+                >
+                  <ComboboxOptionText />
+                </ComboboxOption>
+              ))}
+            </ComboboxList>
+          </ComboboxPopover>
+        )}
+      </Combobox>
+
+      <Button
+        type="submit"
+        kind="primary"
+        css={{
+          marginLeft: SPACING['XS'],
+        }}
+      >
+        <Icon icon="search" size={20} />
+        <VisuallyHidden>Submit</VisuallyHidden>
+      </Button>
+    </form>
   )
 }
 
