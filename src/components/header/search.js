@@ -30,6 +30,7 @@ export default function Search() {
       <ComboboxInput
         aria-label="Search this site"
         onChange={handleChange}
+        placeholder="Search this site"
         css={{
           fontSize: '1rem',
           margin: '0',
