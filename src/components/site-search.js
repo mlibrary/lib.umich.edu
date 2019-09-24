@@ -198,9 +198,20 @@ function SiteSearch() {
   )
 }
 
+let searchIndex
+
+function getOrCreateIndex(siteIndex) {
+  if (searchIndex) {
+    return searchIndex
+  } else {
+    searchIndex = Index.load(siteIndex)
+    return searchIndex
+  }
+}
+
 function useSearch(query) {
-  const searchIndex = useIndex()
-  const index = Index.load(searchIndex)
+  const siteIndex = useIndex()
+  const index = getOrCreateIndex(siteIndex)
 
   return useMemo(() => {
     if (query.trim() === '') {
