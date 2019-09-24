@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
+import { useStaticQuery, graphql } from 'gatsby'
+import { Index } from 'elasticlunr'
 import {
   SPACING,
   Icon,
@@ -11,11 +13,22 @@ import {
 } from '@umich-lib/core'
 import VisuallyHidden from '@reach/visually-hidden'
 import { DialogOverlay, DialogContent } from "@reach/dialog"
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxPopover,
+  ComboboxList,
+  ComboboxOption,
+  ComboboxOptionText,
+} from '@reach/combobox'
 
 import "@reach/dialog/styles.css"
 
 function SiteSearch() {
+  const [query, setQuery] = useState('')
+  const results = useSearch(query)
   const [open, setOpen] = useState(false)
+  const handleChange = e => setQuery(e.target.value)
 
   return (
     <React.Fragment>
@@ -59,44 +72,134 @@ function SiteSearch() {
       >
         <Margins>
           <DialogContent>
-            <div css={{
-              display: 'flex',
-              alignItems: 'center'
-            }}>
-              <span css={{
-                height: '100%',
-                padding: `${SPACING['S']} ${SPACING['M']}`
+            <Combobox onSelect={item => console.log('item selected', item)}>
+              <div css={{
+                display: 'flex',
+                alignItems: 'center'
               }}>
-                <Icon icon="search" size={24} />
-              </span>
-              <TextInput
-                id="site-search"
-                labelText="Search this site"
-                type="search"
-                hideLabel
-                name="query"
-                placeholder="Search this site"
-                autoComplete="off"
-                onClick={() => setOpen(true)}
-              />
-              <Button
-                type="submit"
-                kind="subtle"
-                onClick={() => setOpen(false)}
-                css={{
-                  padding: `${SPACING['S']} ${SPACING['M']}`,
-                  marginLeft: SPACING['S'],
-                }}
-              >
-                <Icon icon="close" size={24} />
-                <VisuallyHidden>Close</VisuallyHidden>
-              </Button>
-            </div>
+                <span css={{
+                  height: '100%',
+                  padding: `${SPACING['S']} ${SPACING['M']}`
+                }}>
+                  <Icon icon="search" size={24} />
+                </span>
+                <ComboboxInput
+                  aria-label="Search this site"
+                  onChange={handleChange}
+                  placeholder="Search this site"
+                  css={{
+                    fontSize: '1rem',
+                    margin: '0',
+                    border: 'solid 1px rgba(0,0,0,0.5)',
+                    boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.1)',
+                    borderRadius: '4px',
+                    padding: '0.5rem 0.75rem',
+                    width: '100%',
+                    appearance: 'textfield',
+                    fontFamily: 'inherit',
+                    boxSizing: 'border-box',
+                  }}
+                  type="search"
+                  autoComplete="off"
+                  autocomplete={false}
+                />
+                <Button
+                  type="submit"
+                  kind="subtle"
+                  onClick={() => setOpen(false)}
+                  css={{
+                    padding: `${SPACING['S']} ${SPACING['M']}`,
+                    marginLeft: SPACING['S'],
+                  }}
+                >
+                  <Icon icon="close" size={24} />
+                  <VisuallyHidden>Close</VisuallyHidden>
+                </Button>
+              </div>
+              {results && (
+                <ComboboxPopover
+                  css={{
+                    background: 'white',
+                    ...Z_SPACE[16],
+                    zIndex: '1',
+                  }}
+                >
+                  <ComboboxList
+                    aria-label="Results"
+                    css={{
+                      '[aria-selected="true"]': {
+                        background: COLORS.blue['100'],
+                        borderLeftColor: COLORS.teal['400']
+                      },
+                    }}
+                  >
+                    {results.slice(0, 7).map((result, index) => (
+                      <ComboboxOption
+                        key={index}
+                        value={result.title}
+                        css={{
+                          padding: `${SPACING['S']} ${SPACING['M']}`,
+                          borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+                          borderLeft: `solid 4px`,
+                          borderLeftColor: 'transparent',
+                          '[data-user-value]': {
+                            fontWeight: '700',
+                            background: COLORS.maize['200'],
+                          },
+                        }}
+                      >
+                        <ComboboxOptionText />
+                      </ComboboxOption>
+                    ))}
+                  </ComboboxList>
+                </ComboboxPopover>
+              )}
+            </Combobox>
           </DialogContent>
         </Margins>
       </DialogOverlay>
     </React.Fragment>
   )
+}
+
+let index
+
+function getOrCreateIndex() {
+  const siteIndex = useIndex()
+
+  if (index) {
+    return index
+  } else {
+    index = Index.load(siteIndex)
+    return index
+  }
+}
+
+function useSearch(query) {
+  const index = getOrCreateIndex()
+
+  return useMemo(() => {
+    if (query.trim() === '') {
+      return null
+    } else {
+      return index
+        .search(query, { expand: true })
+        .map(({ ref }) => index.documentStore.getDoc(ref))
+    }
+  }, [query])
+}
+
+const useIndex = () => {
+  const { siteSearchIndex } = useStaticQuery(
+    graphql`
+      query SearchIndexQuery {
+        siteSearchIndex {
+          index
+        }
+      }
+    `
+  )
+  return siteSearchIndex.index
 }
 
 export default SiteSearch
