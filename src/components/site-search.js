@@ -4,7 +4,6 @@ import { Index } from 'elasticlunr'
 import {
   SPACING,
   Icon,
-  TextInput,
   Button,
   Z_SPACE,
   Margins,
@@ -51,7 +50,8 @@ export default function SiteSearchWrapper() {
 
 function SiteSearch() {
   const [query, setQuery] = useState('')
-  const results = useSearch(query)
+  const siteIndex = useIndex()
+  const results = useSearch(query, siteIndex)
   const [open, setOpen] = useState(false)
   const handleChange = e => setQuery(e.target.value)
   
@@ -220,8 +220,7 @@ function getOrCreateIndex(siteIndex) {
   }
 }
 
-function useSearch(query) {
-  const siteIndex = useIndex()
+function useSearch(query, siteIndex) {
   const index = getOrCreateIndex(siteIndex)
 
   return useMemo(() => {
@@ -236,26 +235,14 @@ function useSearch(query) {
 }
 
 const useIndex = () => {
-  /*
-    TODO:
-    Figure out why this area of the code only
-    errors on Netlify, but not local dev or build.
-
-    Wrapping in a try catch to move on.
-  */
-  try {
-    const { siteSearchIndex } = useStaticQuery(
-      graphql`
-        query SearchIndexQuery {
-          siteSearchIndex {
-            index
-          }
+  const { siteSearchIndex } = useStaticQuery(
+    graphql`
+      query SearchIndexQuery {
+        siteSearchIndex {
+          index
         }
-      `
-    )
-    return siteSearchIndex.index
-  }
-  catch(error) {
-    return null
-  }
+      }
+    `
+  )
+  return siteSearchIndex.index
 }
