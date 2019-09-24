@@ -9,7 +9,7 @@ import {
 
 import Nav from './primary-nav'
 import Logo from './logo'
-import Search from './search'
+import SiteSearch from '../site-search'
 
 export default ({ primary, secondary }) => (
   <header css={{
@@ -68,7 +68,7 @@ export default ({ primary, secondary }) => (
             maxWidth: '18rem',
             marginBottom: SPACING['M']
           }}>
-            <Search />
+            <SiteSearch />
           </div>
         </div>
       </div>
