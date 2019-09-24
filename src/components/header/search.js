@@ -1,12 +1,12 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
 import {
   SPACING,
   Icon,
-  TextInput,
   Button,
   Z_SPACE,
   COLORS,
+  MEDIA_QUERIES
 } from '@umich-lib/core'
 import VisuallyHidden from '@reach/visually-hidden'
 import { Index } from 'elasticlunr'
@@ -55,6 +55,9 @@ export default function Search() {
             appearance: 'textfield',
             fontFamily: 'inherit',
             boxSizing: 'border-box',
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              width: '16rem'
+            }
           }}
           type="search"
           autoComplete="off"
@@ -83,7 +86,7 @@ export default function Search() {
                   css={{
                     padding: `${SPACING['XS']} ${SPACING['M']}`,
                     borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-                    ['[data-user-value]']: {
+                    '[data-user-value]': {
                       fontWeight: '700',
                       background: COLORS.maize['200'],
                     },

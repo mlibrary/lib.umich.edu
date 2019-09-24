@@ -264,7 +264,7 @@ function NavPrimary({ items }) {
   )
 }
 
-function NavPrimaryItem({ to, text, children, i }) {
+function NavPrimaryItem({ text, i }) {
   const [{ open }, dispatch] = useStateValue();
   const isOpen = open === i
 
