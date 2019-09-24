@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useStaticQuery, graphql, navigate, Link } from 'gatsby'
 import { Index } from 'elasticlunr'
 import {
@@ -93,8 +93,8 @@ function SiteSearch() {
             },
             padding: '0',
             'input': {
+              ...TYPOGRAPHY['XS'],
               padding: `${SPACING['S']} ${SPACING['M']}`,
-              fontSize: '1.2rem',
               boxShadow: 'none',
               border: 'none'
             }
@@ -133,7 +133,6 @@ function SiteSearch() {
                   }}
                   type="search"
                   autoComplete="off"
-                  autocomplete={false}
                 />
                 <Button
                   type="submit"
@@ -155,10 +154,12 @@ function SiteSearch() {
                     css={{
                       borderTop: `solid 2px ${COLORS.neutral['100']}`,
                       '[aria-selected="true"]': {
-                        background: COLORS.teal['100'],
-                        borderLeftColor: COLORS.teal['400'],
-                        borderBottomColor: COLORS.teal['200'],
-                        textDecoration: 'underline',
+                        background: COLORS.teal['400'],
+                        color: 'white',
+                        fontWeight: '700',
+                        '[data-user-value]': {
+                          background: 'transparent'
+                        }
                       },
                       paddingBottom: SPACING['S']
                     }}
@@ -168,7 +169,8 @@ function SiteSearch() {
                       size="3XS"
                       css={{
                         padding: `${SPACING['M']} ${SPACING['M']}`,
-                        paddingBottom: SPACING['XS']
+                        paddingBottom: SPACING['XS'],
+                        color: COLORS.neutral['300']
                       }}
                     >Results</Heading>
                     {results.length === 0 && (
@@ -183,8 +185,6 @@ function SiteSearch() {
                         css={{
                           ...TYPOGRAPHY['XS'],
                           borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-                          borderLeft: `solid 4px`,
-                          borderLeftColor: 'transparent',
                           '[data-user-value]': {
                             fontWeight: '700',
                             background: COLORS.maize['200']
@@ -194,7 +194,7 @@ function SiteSearch() {
                         <Link to={result.slug} css={{
                           display: 'block',
                           padding: `${SPACING['S']} ${SPACING['M']}`,
-                          paddingLeft: `calc(${SPACING['M']} - 4px)`,
+                          paddingLeft: `${SPACING['M']}`,
                           ":hover": {
                             textDecoration: 'underline'
                           }
@@ -226,21 +226,19 @@ function getOrCreateIndex(siteIndex) {
 function useSearch(query, siteIndex) {
   const index = getOrCreateIndex(siteIndex)
 
-  return useMemo(() => {
-    if (query.trim() === '') {
-      return null
-    } else {
-      return index
-        .search(query, { expand: true })
-        .map(({ ref }) => index.documentStore.getDoc(ref))
-    }
-  }, [query])
+  if (query.trim() === '') {
+    return null
+  } else {
+    return index
+      .search(query, { expand: true })
+      .map(({ ref }) => index.documentStore.getDoc(ref))
+  }
 }
 
 const useIndex = () => {
   const { siteSearchIndex } = useStaticQuery(
     graphql`
-      query SearchIndexQuery {
+      query {
         siteSearchIndex {
           index
         }
