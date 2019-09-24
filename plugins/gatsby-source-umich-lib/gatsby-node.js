@@ -134,18 +134,22 @@ exports.onCreateNode = async(
   // Check for Drupal node type.
   // Substring off the "node__" part.
   if (drupal_node_types_we_care_about.includes(node.internal.type.substring(6))) {
-    // Handle creating breadcrumb for node.
     createBreadcrumb({
       node,
       createNodeField,
       baseUrl: baseUrlWithoutTrailingSlash
     })
 
-    // Create slug field to be used in the URL
     createNodeField({
       node,
       name: `slug`,
       value: node.path.alias,
+    })
+
+    createNodeField({
+      node,
+      name: `title`,
+      value: node.title,
     })
   }
 
@@ -222,6 +226,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     parents
                     children
                   }
@@ -246,6 +251,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     parents
                     children
                   }
@@ -270,6 +276,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     children
                     parents
                   }
@@ -294,6 +301,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     children
                     parents
                   }
@@ -318,6 +326,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     children
                     parents
                   }

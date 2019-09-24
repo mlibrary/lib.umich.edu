@@ -46,5 +46,16 @@ module.exports = {
         icon: 'src/images/icon.png', // This path is relative to the root of the site.
       },
     },
+    {
+      resolve: `@gatsby-contrib/gatsby-plugin-elasticlunr-search`,
+      options: {
+        fields: ['title'],
+        resolvers: {
+          SitePage: {
+            title: node => node.context.title,
+          },
+        },
+      },
+    },
   ],
 }
