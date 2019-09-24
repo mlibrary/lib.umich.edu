@@ -152,7 +152,7 @@ function NavDropdown({ children, toggleNavNode }) {
         type: 'reset'
       })
     };
-  }, []);
+  }, [dispatch]);
 
   function closeDropdown() {
     dispatch({
@@ -204,7 +204,7 @@ function NavDropdown({ children, toggleNavNode }) {
       document.removeEventListener("mouseup", handleClick);
       document.addEventListener("keydown", handleKeydown);
     };
-  }, []);
+  });
 
   return (
     <div

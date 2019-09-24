@@ -180,7 +180,7 @@ function NavDropdown({ items, primaryNode }) {
       document.removeEventListener("mouseup", handleClick);
       document.addEventListener("keydown", handleKeydown);
     };
-  }, []);
+  });
 
   return (
     <div
@@ -215,7 +215,7 @@ function NavPanel({ items }) {
         panelOpen: 0
       })
     }
-  }, [openPanel])
+  }, [openPanel, dispatch])
 
   return (
     <div css={{
@@ -309,7 +309,7 @@ function NavPanelItemLinks({
       type: 'setMinHeight',
       minHeight: ref.current.clientHeight
     })
-  }, [])
+  }, [dispatch])
 
   function columnStyles() {
     if (items.length > 4) {
