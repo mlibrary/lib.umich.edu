@@ -198,16 +198,16 @@ function SiteSearch() {
   )
 }
 
-let index
+let searchIndex
 
 function getOrCreateIndex() {
   const siteIndex = useIndex()
 
-  if (index) {
-    return index
+  if (searchIndex) {
+    return searchIndex
   } else {
-    index = Index.load(siteIndex)
-    return index
+    searchIndex = Index.load(siteIndex)
+    return searchIndex
   }
 }
 
