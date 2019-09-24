@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { useStaticQuery, graphql } from 'gatsby'
+import { useStaticQuery, graphql, navigate } from 'gatsby'
 import { Index } from 'elasticlunr'
 import {
   SPACING,
@@ -54,6 +54,11 @@ function SiteSearch() {
   const results = useSearch(query)
   const [open, setOpen] = useState(false)
   const handleChange = e => setQuery(e.target.value)
+  
+  function handleSelect(term) {
+    const page = results.find(r => r.title === term)
+    navigate(page.slug)
+  }
 
   return (
     <React.Fragment>
@@ -97,7 +102,7 @@ function SiteSearch() {
       >
         <Margins>
           <DialogContent>
-            <Combobox onSelect={item => console.log('item selected', item)}>
+            <Combobox onSelect={item => handleSelect(item)}>
               <div css={{
                 display: 'flex',
                 alignItems: 'center',
@@ -225,14 +230,26 @@ function useSearch(query) {
 }
 
 const useIndex = () => {
-  const { siteSearchIndex } = useStaticQuery(
-    graphql`
-      query SearchIndexQuery {
-        siteSearchIndex {
-          index
+  /*
+    TODO:
+    Figure out why this area of the code only
+    errors on Netlify, but not local dev or build.
+
+    Wrapping in a try catch to move on.
+  */
+  try {
+    const { siteSearchIndex } = useStaticQuery(
+      graphql`
+        query SearchIndexQuery {
+          siteSearchIndex {
+            index
+          }
         }
-      }
-    `
-  )
-  return siteSearchIndex.index
+      `
+    )
+    return siteSearchIndex.index
+  }
+  catch(error) {
+    return null
+  }
 }

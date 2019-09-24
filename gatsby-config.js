@@ -49,10 +49,11 @@ module.exports = {
     {
       resolve: `@gatsby-contrib/gatsby-plugin-elasticlunr-search`,
       options: {
-        fields: ['title'],
+        fields: ['title', 'slug'],
         resolvers: {
           SitePage: {
             title: node => node.context.title,
+            slug: node => node.context.slug
           },
         },
       },
