@@ -155,7 +155,8 @@ function SiteSearch() {
                       borderTop: `solid 2px ${COLORS.neutral['100']}`,
                       '[aria-selected="true"]': {
                         background: COLORS.blue['100'],
-                        borderLeftColor: COLORS.teal['400']
+                        borderLeftColor: COLORS.teal['400'],
+                        textDecoration: 'underline'
                       },
                       paddingBottom: SPACING['S']
                     }}
