@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useStaticQuery, graphql, navigate, Link } from 'gatsby'
+import { StaticQuery, graphql, navigate, Link } from 'gatsby'
 import { Index } from 'elasticlunr'
 import {
   SPACING,
@@ -43,15 +43,25 @@ function BrowserOnly({ children }) {
 
 export default function SiteSearchWrapper() {
   return (
-    <BrowserOnly>
-      <SiteSearch />
-    </BrowserOnly>
+    <StaticQuery
+      query={graphql`
+        query SiteSearchIndex {
+          siteSearchIndex {
+            index
+          }
+        }
+      `}
+      render={data => (
+        <BrowserOnly>
+          <SiteSearch siteIndex={data.siteSearchIndex.index} />
+        </BrowserOnly>
+      )}
+    />
   )
 }
 
-function SiteSearch() {
+function SiteSearch({ siteIndex }) {
   const [query, setQuery] = useState('')
-  const siteIndex = useIndex()
   const results = useSearch(query, siteIndex)
   const [open, setOpen] = useState(false)
   const handleChange = e => setQuery(e.target.value)
@@ -233,17 +243,4 @@ function useSearch(query, siteIndex) {
       .search(query, { expand: true })
       .map(({ ref }) => index.documentStore.getDoc(ref))
   }
-}
-
-const useIndex = () => {
-  const { siteSearchIndex } = useStaticQuery(
-    graphql`
-      query {
-        siteSearchIndex {
-          index
-        }
-      }
-    `
-  )
-  return siteSearchIndex.index
 }
