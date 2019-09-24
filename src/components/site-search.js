@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { useStaticQuery, graphql, navigate } from 'gatsby'
+import { useStaticQuery, graphql, navigate, Link } from 'gatsby'
 import { Index } from 'elasticlunr'
 import {
   SPACING,
@@ -178,8 +178,6 @@ function SiteSearch() {
                         key={index}
                         value={result.title}
                         css={{
-                          padding: `${SPACING['S']} ${SPACING['M']}`,
-                          paddingLeft: `calc(${SPACING['M']} - 4px)`,
                           borderBottom: `solid 1px ${COLORS.neutral['100']}`,
                           borderLeft: `solid 4px`,
                           borderLeftColor: 'transparent',
@@ -189,7 +187,14 @@ function SiteSearch() {
                           },
                         }}
                       >
-                        <ComboboxOptionText />
+                        <Link to={result.slug} css={{
+                          display: 'block',
+                          padding: `${SPACING['S']} ${SPACING['M']}`,
+                          paddingLeft: `calc(${SPACING['M']} - 4px)`,
+                          ":hover": {
+                            textDecoration: 'underline'
+                          }
+                        }}><ComboboxOptionText /></Link>
                       </ComboboxOption>
                     ))}
                   </ComboboxList>
