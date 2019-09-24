@@ -9,7 +9,8 @@ import {
   Z_SPACE,
   Margins,
   MEDIA_QUERIES,
-  COLORS
+  COLORS,
+  Heading
 } from '@umich-lib/core'
 import VisuallyHidden from '@reach/visually-hidden'
 import { DialogOverlay, DialogContent } from "@reach/dialog"
@@ -58,9 +59,9 @@ function SiteSearch() {
             width: '100%',
             ...Z_SPACE[16],
             [MEDIA_QUERIES.LARGESCREEN]: {
-              maxWidth: '66%'
+              maxWidth: '80%'
             },
-            padding: SPACING['S'],
+            padding: '0',
             'input': {
               padding: `${SPACING['S']} ${SPACING['M']}`,
               fontSize: '1.2rem',
@@ -75,7 +76,8 @@ function SiteSearch() {
             <Combobox onSelect={item => console.log('item selected', item)}>
               <div css={{
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                padding: SPACING['S'],
               }}>
                 <span css={{
                   height: '100%',
@@ -117,28 +119,38 @@ function SiteSearch() {
                 </Button>
               </div>
               {results && (
-                <ComboboxPopover
-                  css={{
-                    background: 'white',
-                    ...Z_SPACE[16],
-                    zIndex: '1',
-                  }}
-                >
+                <ComboboxPopover portal={false}>
                   <ComboboxList
                     aria-label="Results"
                     css={{
+                      borderTop: `solid 2px ${COLORS.neutral['100']}`,
                       '[aria-selected="true"]': {
                         background: COLORS.blue['100'],
                         borderLeftColor: COLORS.teal['400']
                       },
+                      paddingBottom: SPACING['S']
                     }}
                   >
-                    {results.slice(0, 7).map((result, index) => (
+                    <Heading
+                      level={2}
+                      size="3XS"
+                      css={{
+                        padding: `${SPACING['M']} ${SPACING['M']}`,
+                        paddingBottom: SPACING['XS']
+                      }}
+                    >Results</Heading>
+                    {results.length === 0 && (
+                      <p css={{
+                        padding: `${SPACING['S']} ${SPACING['M']}`,
+                      }}>No results match your search.</p>
+                    )}
+                    {results.slice(0, 10).map((result, index) => (
                       <ComboboxOption
                         key={index}
                         value={result.title}
                         css={{
                           padding: `${SPACING['S']} ${SPACING['M']}`,
+                          paddingLeft: `calc(${SPACING['M']} - 4px)`,
                           borderBottom: `solid 1px ${COLORS.neutral['100']}`,
                           borderLeft: `solid 4px`,
                           borderLeftColor: 'transparent',
