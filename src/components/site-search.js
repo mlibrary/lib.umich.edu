@@ -9,7 +9,8 @@ import {
   Margins,
   MEDIA_QUERIES,
   COLORS,
-  Heading
+  Heading,
+  TYPOGRAPHY
 } from '@umich-lib/core'
 import VisuallyHidden from '@reach/visually-hidden'
 import { DialogOverlay, DialogContent } from "@reach/dialog"
@@ -154,9 +155,10 @@ function SiteSearch() {
                     css={{
                       borderTop: `solid 2px ${COLORS.neutral['100']}`,
                       '[aria-selected="true"]': {
-                        background: COLORS.blue['100'],
+                        background: COLORS.teal['100'],
                         borderLeftColor: COLORS.teal['400'],
-                        textDecoration: 'underline'
+                        borderBottomColor: COLORS.teal['200'],
+                        textDecoration: 'underline',
                       },
                       paddingBottom: SPACING['S']
                     }}
@@ -179,12 +181,13 @@ function SiteSearch() {
                         key={index}
                         value={result.title}
                         css={{
+                          ...TYPOGRAPHY['XS'],
                           borderBottom: `solid 1px ${COLORS.neutral['100']}`,
                           borderLeft: `solid 4px`,
                           borderLeftColor: 'transparent',
                           '[data-user-value]': {
                             fontWeight: '700',
-                            background: COLORS.maize['200'],
+                            background: COLORS.maize['200']
                           },
                         }}
                       >
