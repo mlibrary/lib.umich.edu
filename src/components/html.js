@@ -63,7 +63,7 @@ function Div({ children, ...props }) {
                         maxWidth: 960
                         quality: 90
                       ) {
-                        ...GatsbyImageSharpFluid_withWebp_noBase64
+                        ...GatsbyImageSharpFluid_noBase64
                       }
                     }
                   }
