@@ -11,7 +11,7 @@ function Header({
     <React.Fragment>
       <div
         css={{
-          [`@media only screen and (max-width: 1200px)`]: {
+          [`@media only screen and (max-width: 1014px)`]: {
             display: 'none'
           }
         }}
@@ -23,7 +23,7 @@ function Header({
       </div>
       <div
         css={{
-          [`@media only screen and (min-width: 1201px)`]: {
+          [`@media only screen and (min-width: 1015px)`]: {
             display: 'none'
           }
         }}
