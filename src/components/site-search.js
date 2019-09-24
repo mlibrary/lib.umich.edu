@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
 import { Index } from 'elasticlunr'
 import {
@@ -24,6 +24,30 @@ import {
 } from '@reach/combobox'
 
 import "@reach/dialog/styles.css"
+
+function BrowserOnly({ children }) {
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(() => {
+    if (!hydrated) {
+      setHydrated(true)
+    }
+  }, [hydrated])
+
+  if (!hydrated) {
+    return null
+  }
+
+  return children
+}
+
+export default function SiteSearchWrapper() {
+  return (
+    <BrowserOnly>
+      <SiteSearch />
+    </BrowserOnly>
+  )
+}
 
 function SiteSearch() {
   const [query, setQuery] = useState('')
@@ -213,5 +237,3 @@ const useIndex = () => {
   )
   return siteSearchIndex.index
 }
-
-export default SiteSearch
