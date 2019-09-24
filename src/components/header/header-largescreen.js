@@ -9,7 +9,7 @@ import {
 
 import Nav from './primary-nav'
 import Logo from './logo'
-import Search from './search'
+import Search from '../site-search'
 
 export default ({ primary, secondary }) => (
   <header css={{

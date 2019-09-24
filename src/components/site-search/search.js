@@ -27,8 +27,7 @@ export default function Search() {
 
   return (
     <form
-      action="https://search.lib.umich.edu/everything"
-      method="get"
+      onSubmit={(e) => e.preventDefault()}
       css={{
         display: 'flex',
         height: '2.5rem',
@@ -37,7 +36,7 @@ export default function Search() {
         },
       }}
       role="search"
-      aria-label="Sitewide"
+      aria-label="Site"
     >
       <Combobox>
         <ComboboxInput
@@ -75,7 +74,7 @@ export default function Search() {
               aria-label="Results"
               css={{
                 '[aria-selected="true"]': {
-                  background: COLORS.blue['100'],
+                  background: COLORS.blue['100']
                 },
               }}
             >
@@ -142,7 +141,7 @@ function useSearch(query) {
   }, [throttledQuery])
 }
 
-export const useIndex = () => {
+const useIndex = () => {
   const { siteSearchIndex } = useStaticQuery(
     graphql`
       query SearchIndexQuery {

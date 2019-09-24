@@ -10,7 +10,7 @@ import {
   LINK_STYLES
 } from '@umich-lib/core'
 
-import Search from './search'
+import Search from '../site-search'
 import Logo from './logo'
 
 const StateContext = createContext();
