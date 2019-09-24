@@ -59,7 +59,7 @@ function Div({ children, ...props }) {
                   localFile {
                     childImageSharp {
                       fluid(
-                        srcSetBreakpoints: [300, 600]
+                        srcSetBreakpoints: [640, 960, 1280]
                         maxWidth: 960
                         quality: 90
                       ) {
