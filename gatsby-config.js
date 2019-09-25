@@ -52,10 +52,11 @@ module.exports = {
         fields: ['title', 'slug'],
         resolvers: {
           SitePage: {
-            title: node => node.context ? node.context.title : undefined,
-            slug: node => node.context ? node.context.slug : undefined
+            title: node => node.context.title,
+            slug: node => node.context.slug
           },
-        }
+        },
+        filter: (node) => node.context !== undefined
       },
     },
   ],

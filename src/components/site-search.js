@@ -52,9 +52,7 @@ export default function SiteSearchWrapper() {
         }
       `}
       render={data => (
-        <BrowserOnly>
-          <SiteSearch siteIndex={data.siteSearchIndex.index} />
-        </BrowserOnly>
+        <SiteSearch siteIndex={data.siteSearchIndex.index} />
       )}
     />
   )
@@ -77,18 +75,37 @@ function SiteSearch({ siteIndex }) {
         role="search"
         aria-label="Sitewide"
       >
-        <Button
-          type="submit"
-          kind="primary"
+        <button
           onClick={() => setOpen(true)}
+          css={{
+            display: 'flex',
+            marginLeft: 'auto'
+          }}
         >
           <span css={{
-            height: '100%'
+            textAlign: 'left',
+            display: 'inline-block',
+            padding: `${SPACING['XS']} ${SPACING['M']}`,
+            border: `solid 1px ${COLORS.neutral['200']}`,
+            background: COLORS.blue['100'],
+            borderRadius: '2px 0 0 2px',
+            borderRight: 'none',
+            color: COLORS.neutral['300'],
+            paddingRight: SPACING['L']
+          }}>Search this site</span>
+          <span aria-hidden="true" css={{
+            background: COLORS.maize['400'],
+            display: 'inline-block',
+            padding: `${SPACING['XS']} ${SPACING['S']}`,
+            border: `solid 1px ${COLORS.maize['400']}`
           }}>
-            <Icon icon="search" size={20} />
+            <span css={{
+              height: '100%'
+            }}>
+              <Icon icon="search" size={20} />
+            </span>
           </span>
-          <VisuallyHidden>Search this site</VisuallyHidden>
-        </Button>
+        </button>
       </div>
       <DialogOverlay
         isOpen={open}

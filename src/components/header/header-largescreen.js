@@ -65,7 +65,7 @@ export default ({ primary, secondary }) => (
             </nav>
           )}
           <div css={{
-            maxWidth: '18rem',
+            flexBasis: '18rem',
             marginBottom: SPACING['M']
           }}>
             <SiteSearch />
