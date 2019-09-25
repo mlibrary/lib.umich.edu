@@ -22,8 +22,9 @@ import {
   ComboboxOption,
   ComboboxOptionText,
 } from '@reach/combobox'
-
 import "@reach/dialog/styles.css"
+
+import getTransitionCSS from '../utils/transition'
 
 function BrowserOnly({ children }) {
   const [hydrated, setHydrated] = useState(false)
@@ -113,6 +114,7 @@ function SiteSearch({ siteIndex }) {
         isOpen={open}
         onDismiss={() => setOpen(false)}
         css={{
+          ...getTransitionCSS('0.1'),
           zIndex: '1',
           '[data-reach-dialog-content]': {
             borderRadius: '2px',
