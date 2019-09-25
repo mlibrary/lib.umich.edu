@@ -42,8 +42,8 @@ const Heading6 = ({ children, ...other }) => (
   </Heading>
 )
 
-function Div({ children, ...props }) {
-    /*
+function Image({ children, ...props }) {
+  /*
     Get all Drupal images so that we can later replace the generated
     html img tag with the Gatsby Image component.
   */
@@ -136,8 +136,8 @@ const renderHast = new rehypeReact({
         {children}
       </Text>
     ),
-    div: Div,
-    img: () => null,
+    div: ({ children }) => children,
+    img: Image,
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
