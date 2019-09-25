@@ -115,6 +115,7 @@ function SiteSearch({ siteIndex }) {
         onDismiss={() => setOpen(false)}
         css={{
           ...getTransitionCSS('0.1'),
+          background: 'white',
           zIndex: '1',
           '[data-reach-dialog-content]': {
             borderRadius: '2px',
