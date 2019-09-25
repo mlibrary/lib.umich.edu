@@ -94,7 +94,7 @@ function SiteSearch({ siteIndex }) {
             color: COLORS.neutral['300'],
             paddingRight: SPACING['L'],
             width: '100%'
-          }}>Search this site</span>
+          }}>Search lib.umich.edu</span>
           <span aria-hidden="true" css={{
             background: COLORS.maize['400'],
             display: 'inline-block',
@@ -146,9 +146,9 @@ function SiteSearch({ siteIndex }) {
                   <Icon icon="search" size={24} />
                 </span>
                 <ComboboxInput
-                  aria-label="Search this site"
+                  aria-label="Search lib.umich.edu"
                   onChange={handleChange}
-                  placeholder="Search this site"
+                  placeholder="Search lib.umich.edu"
                   css={{
                     fontSize: '1rem',
                     margin: '0',
