@@ -10,7 +10,7 @@ import {
   LINK_STYLES
 } from '@umich-lib/core'
 
-import Search from './search'
+import Search from '../site-search'
 import Logo from './logo'
 
 const StateContext = createContext();
@@ -216,7 +216,7 @@ function NavDropdown({ children, toggleNavNode }) {
         background: 'white',
         right: 'calc(-1rem)', // Less the side site margin on small screens.
         boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
-        zIndex: '101'
+        zIndex: '1'
       }}
       ref={dropdownNode}
     >

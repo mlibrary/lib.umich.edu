@@ -79,7 +79,7 @@ function SiteSearch({ siteIndex }) {
           onClick={() => setOpen(true)}
           css={{
             display: 'flex',
-            marginLeft: 'auto'
+            width: '100%'
           }}
         >
           <span css={{
@@ -91,13 +91,15 @@ function SiteSearch({ siteIndex }) {
             borderRadius: '2px 0 0 2px',
             borderRight: 'none',
             color: COLORS.neutral['300'],
-            paddingRight: SPACING['L']
+            paddingRight: SPACING['L'],
+            width: '100%'
           }}>Search this site</span>
           <span aria-hidden="true" css={{
             background: COLORS.maize['400'],
             display: 'inline-block',
             padding: `${SPACING['XS']} ${SPACING['S']}`,
-            border: `solid 1px ${COLORS.maize['400']}`
+            border: `solid 1px ${COLORS.maize['400']}`,
+            borderRadius: '0 2px 2px 0',
           }}>
             <span css={{
               height: '100%'
@@ -111,13 +113,11 @@ function SiteSearch({ siteIndex }) {
         isOpen={open}
         onDismiss={() => setOpen(false)}
         css={{
+          zIndex: '1',
           '[data-reach-dialog-content]': {
             borderRadius: '2px',
             width: '100%',
             ...Z_SPACE[16],
-            [MEDIA_QUERIES.LARGESCREEN]: {
-              maxWidth: '80%'
-            },
             padding: '0',
             'input': {
               ...TYPOGRAPHY['XS'],

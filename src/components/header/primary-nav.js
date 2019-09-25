@@ -191,7 +191,7 @@ function NavDropdown({ items, primaryNode }) {
         background: 'white',
         left: '0',
         boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
-        zIndex: '101'
+        zIndex: '1'
       }}
       ref={dropdownNode}
     >
