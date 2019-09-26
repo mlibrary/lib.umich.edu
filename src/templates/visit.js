@@ -2,7 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import VisuallyHidden from '@reach/visually-hidden'
 
-import { Heading, List } from '@umich-lib/core'
+import { Heading, List, COLORS } from '@umich-lib/core'
 
 import {
   Template,
@@ -18,6 +18,7 @@ import HorizontalNavigation from '../components/horizontal-navigation'
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 import HTML from '../components/html'
 import LocationAside from '../components/location-aside'
+import Panels from '../components/panels'
 
 export default function VisitTemplate({ data, ...rest }) {
   /*
@@ -108,6 +109,16 @@ export default function VisitTemplate({ data, ...rest }) {
             </TemplateContent>
           </Template>
         </section>
+
+        <div
+          css={{
+            'section:nth-child(odd)': {
+              background: COLORS.blue['100'],
+            },
+          }}
+        >
+          <Panels data={relationships.field_panels} />
+        </div>
       </main>
     </Layout>
   )

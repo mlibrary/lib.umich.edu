@@ -10,7 +10,7 @@ export const query = graphql`
         field_machine_name
       }
       field_cards {
-        ...buildingFragment
+        ...buildingCardFragment
         ...locationFragment
         ...roomFragment
         ...pageCardFragment

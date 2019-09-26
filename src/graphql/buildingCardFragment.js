@@ -1,7 +1,8 @@
 import { graphql } from 'gatsby'
 
 export const query = graphql`
-  fragment buildingFragment on node__building {
+  fragment buildingCardFragment on node__building {
+    __typename
     title
     field_horizontal_nav_title
     drupal_id
@@ -42,33 +43,6 @@ export const query = graphql`
             }
           }
         }
-      }
-      field_panels {
-        ... on Node {
-          __typename
-        }
-        ... on paragraph__card_panel {
-          ...CardPanelFragment
-        }
-      }
-      field_hours_open {
-        ...hoursFragment
-      }
-      field_parent_page {
-        ...sectionCardFragment
-      }
-      field_parking {
-        description {
-          processed
-        }
-      }
-      field_visit {
-        description {
-          processed
-        }
-      }
-      field_amenities {
-        name
       }
     }
   }
