@@ -82,6 +82,10 @@ export function displayHours({ node, now }) {
   - Then add "paragraph__fall_and_winter_semester_hours" last
 */
 function prioritizeHours({ hours }) {
+  if (!hours) {
+    return []
+  }
+
   const types = [
     'paragraph__hours_exceptions',
     'paragraph__fall_and_winter_semester_hours',
