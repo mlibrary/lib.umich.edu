@@ -42,6 +42,73 @@ const Heading6 = ({ children, ...other }) => (
   </Heading>
 )
 
+function Image({ children, ...props }) {
+  /*
+    Get all Drupal images so that we can later replace the generated
+    html img tag with the Gatsby Image component.
+  */
+  const allMediaImageNodes = useStaticQuery(
+    graphql`
+      query {
+        allMediaImage {
+          edges {
+            node {
+              drupal_id
+              relationships {
+                field_media_image {
+                  localFile {
+                    childImageSharp {
+                      fluid(
+                        srcSetBreakpoints: [640, 960, 1280]
+                        maxWidth: 960
+                        quality: 90
+                      ) {
+                        ...GatsbyImageSharpFluid_noBase64
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `
+  )
+
+  if (props['data-entity-uuid']) {
+    try {
+      const matchedImage = allMediaImageNodes.allMediaImage.edges.filter(
+        edge => edge.node.drupal_id === props['data-entity-uuid']
+      )[0]
+
+      return (
+        <Img
+          fluid={
+            matchedImage.node.relationships.field_media_image.localFile
+              .childImageSharp.fluid
+          }
+          alt={matchedImage.node.field_media_image.alt}
+        />
+      )
+    } catch (error) {
+      console.warn(
+        error,
+        'Unable to render image with Drupal entity uuid',
+        props['data-entity-uuid']
+      )
+    }
+
+    return (
+      <Alert intent="warning">
+        Something went wrong when rendering media images.
+      </Alert>
+    )
+  }
+
+  return children
+}
+
 const renderHast = new rehypeReact({
   components: {
     h2: Heading2,
@@ -50,7 +117,8 @@ const renderHast = new rehypeReact({
     h5: Heading5,
     h6: Heading6,
     a: ({ children, href, ...other }) => {
-      if (!children || !href) { // Don't render links without a label or href
+      if (!children || !href) {
+        // Don't render links without a label or href
         return null
       }
       return <Link to={href}>{children}</Link>
@@ -69,83 +137,8 @@ const renderHast = new rehypeReact({
         {children}
       </Text>
     ),
-    div: props => {
-      /*
-        Can we find a matching image? The div has a data
-        attribute of the Drupal entity uuid to match on.
-
-        We expect to find it. If it's in the HTML then it
-        must be an entity brought in by the source plugin.
-
-        If it's not found, then something is probably wrong.
-      */
-
-      /*
-        Get all Drupal images so that we can later replace the generated
-        html img tag with the Gatsby Image component.
-      */
-      const allMediaImageNodes = useStaticQuery(
-        graphql`
-          query {
-            allMediaImage {
-              edges {
-                node {
-                  drupal_id
-                  relationships {
-                    field_media_image {
-                      localFile {
-                        childImageSharp {
-                          fluid(
-                            srcSetBreakpoints: [300, 600]
-                            maxWidth: 960
-                            quality: 90
-                          ) {
-                            ...GatsbyImageSharpFluid_withWebp_noBase64
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        `
-      )
-
-      if (props['data-entity-uuid']) {
-        try {
-          const matchedImage = allMediaImageNodes.allMediaImage.edges.filter(
-            edge => edge.node.drupal_id === props['data-entity-uuid']
-          )[0]
-
-          return (
-            <Img
-              fluid={
-                matchedImage.node.relationships.field_media_image.localFile
-                  .childImageSharp.fluid
-              }
-              alt={matchedImage.node.field_media_image.alt}
-            />
-          )
-        } catch (error) {
-          console.warn(
-            error,
-            'Unable to render image with Drupal entity uuid',
-            props['data-entity-uuid']
-          )
-        }
-
-        return (
-          <Alert intent="warning">
-            Something went wrong when rendering media images.
-          </Alert>
-        )
-      }
-
-      return props.children
-    },
-    img: () => null,
+    div: ({ children }) => children,
+    img: Image,
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
