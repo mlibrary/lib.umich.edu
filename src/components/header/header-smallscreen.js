@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useReducer, useEffect, useRef } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useRef,
+} from 'react'
 import { Link } from 'gatsby'
 import VisuallyHidden from '@reach/visually-hidden'
 import {
@@ -7,73 +13,68 @@ import {
   COLORS,
   Icon,
   Margins,
-  LINK_STYLES
+  LINK_STYLES,
 } from '@umich-lib/core'
 
 import Search from './search'
 import Logo from './logo'
 
-const StateContext = createContext();
+const StateContext = createContext()
 
-const StateProvider = ({reducer, initialState, children}) =>(
+const StateProvider = ({ reducer, initialState, children }) => (
   <StateContext.Provider value={useReducer(reducer, initialState)}>
     {children}
   </StateContext.Provider>
-);
+)
 
-const useStateValue = () => useContext(StateContext);
+const useStateValue = () => useContext(StateContext)
 
-function SmallScreenHeader({
-  primary,
-  secondary
-}) {
+function SmallScreenHeader({ primary, secondary }) {
   const reducer = (state, action) => {
     switch (action.type) {
       case 'setOpenNav':
         return {
           ...state,
-          openNav: action.openNav
+          openNav: action.openNav,
         }
       case 'setOpen':
         return {
           ...state,
-          open: action.open
-        };
+          open: action.open,
+        }
       case 'setPanelOpen':
         return {
           ...state,
-          panelOpen: action.panelOpen
-        };
+          panelOpen: action.panelOpen,
+        }
       case 'reset':
         return {}
       default:
-        return state;
+        return state
     }
-  };
+  }
 
   return (
-    <StateProvider
-      initialState={{}}
-      reducer={reducer}
-    >
+    <StateProvider initialState={{}} reducer={reducer}>
       <header
         css={{
-          borderBottom: `solid 1px ${COLORS.neutral['100']}`
+          borderBottom: `solid 1px ${COLORS.neutral['100']}`,
         }}
       >
         <Margins>
-          <div css={{
-            position: 'relative'
-          }}>
-            <div css={{
-              padding: `${SPACING['M']} 0`
-            }}>
+          <div
+            css={{
+              position: 'relative',
+            }}
+          >
+            <div
+              css={{
+                padding: `${SPACING['M']} 0`,
+              }}
+            >
               <Logo size={32} />
             </div>
-            <Nav
-              primary={primary}
-              secondary={secondary}
-            />
+            <Nav primary={primary} secondary={secondary} />
           </div>
         </Margins>
       </header>
@@ -82,7 +83,7 @@ function SmallScreenHeader({
 }
 
 function Nav({ primary, secondary }) {
-  const [{ openNav, open }, dispatch] = useStateValue();
+  const [{ openNav, open }, dispatch] = useStateValue()
   const isOpen = openNav === true
   const toggleNavNode = useRef()
 
@@ -95,41 +96,37 @@ function Nav({ primary, secondary }) {
           right: 0,
           padding: SPACING['M'],
           marginRight: `-${SPACING['M']}`,
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
         ref={toggleNavNode}
         aria-expanded={isOpen}
-        onClick={() => dispatch({
-          type: 'setOpenNav',
-          openNav: !isOpen
-        })}
+        onClick={() =>
+          dispatch({
+            type: 'setOpenNav',
+            openNav: !isOpen,
+          })
+        }
       >
         {isOpen ? (
-          <Icon
-            icon="close"
-            size={32}
-          />
+          <Icon icon="close" size={32} />
         ) : (
-          <Icon
-            d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"
-            size={32}
-          />
+          <Icon d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" size={32} />
         )}
         <VisuallyHidden>Navigation</VisuallyHidden>
       </button>
       {isOpen && (
         <NavDropdown toggleNavNode={toggleNavNode}>
           {!Number.isInteger(open) && (
-            <div css={{
-              padding: SPACING['M'],
-              borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-            }}>
+            <div
+              css={{
+                padding: SPACING['M'],
+                borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+              }}
+            >
               <Search />
             </div>
           )}
-          {primary && (
-            <NavPrimary items={primary} />
-          )}
+          {primary && <NavPrimary items={primary} />}
           {secondary && !Number.isInteger(open) && (
             <NavSecondary items={secondary} />
           )}
@@ -140,7 +137,7 @@ function Nav({ primary, secondary }) {
 }
 
 function NavDropdown({ children, toggleNavNode }) {
-  const [, dispatch] = useStateValue();
+  const [, dispatch] = useStateValue()
   const dropdownNode = useRef()
 
   /*
@@ -149,15 +146,15 @@ function NavDropdown({ children, toggleNavNode }) {
   useEffect(() => {
     return () => {
       dispatch({
-        type: 'reset'
+        type: 'reset',
       })
-    };
-  }, []);
+    }
+  }, [dispatch])
 
   function closeDropdown() {
     dispatch({
       type: 'setOpenNav',
-      open: null
+      open: null,
     })
   }
 
@@ -187,24 +184,24 @@ function NavDropdown({ children, toggleNavNode }) {
         closeDropdown()
       }
     }
-  };
-  
+  }
+
   function handleKeydown(e) {
     if (e.keyCode === 27) {
       // ESC key
       closeDropdown()
     }
-  };
+  }
 
   useEffect(() => {
-    document.addEventListener("mouseup", handleClick);
-    document.addEventListener("keydown", handleKeydown);
+    document.addEventListener('mouseup', handleClick)
+    document.addEventListener('keydown', handleKeydown)
 
     return () => {
-      document.removeEventListener("mouseup", handleClick);
-      document.addEventListener("keydown", handleKeydown);
-    };
-  }, []);
+      document.removeEventListener('mouseup', handleClick)
+      document.addEventListener('keydown', handleKeydown)
+    }
+  })
 
   return (
     <div
@@ -216,7 +213,7 @@ function NavDropdown({ children, toggleNavNode }) {
         background: 'white',
         right: 'calc(-1rem)', // Less the side site margin on small screens.
         boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
-        zIndex: '101'
+        zIndex: '101',
       }}
       ref={dropdownNode}
     >
@@ -228,7 +225,7 @@ function NavDropdown({ children, toggleNavNode }) {
 function NavSecondary({ items }) {
   return (
     <ul aria-label="Utility">
-      {items.map(({to, text}, i) => (
+      {items.map(({ to, text }, i) => (
         <li key={i + text}>
           <Link
             to={to}
@@ -236,9 +233,11 @@ function NavSecondary({ items }) {
               ...nav_item_styles,
               ...TYPOGRAPHY['3XS'],
               color: COLORS.neutral['300'],
-              background: COLORS.blue['100']
+              background: COLORS.blue['100'],
             }}
-          >{text}</Link>
+          >
+            {text}
+          </Link>
         </li>
       ))}
     </ul>
@@ -246,26 +245,24 @@ function NavSecondary({ items }) {
 }
 
 function NavPrimary({ items }) {
-  const [{ open }] = useStateValue();
+  const [{ open }] = useStateValue()
 
   // Is an primary nav item open.
   if (Number.isInteger(open)) {
-    return (
-      <NavPanelSecondary {...items[open]} />
-    )
+    return <NavPanelSecondary {...items[open]} />
   }
 
   return (
     <ul aria-label="Main">
-      {items.map((item, i) =>
+      {items.map((item, i) => (
         <NavPrimaryItem {...item} i={i} key={i + item.text} />
-      )}
+      ))}
     </ul>
   )
 }
 
 function NavPrimaryItem({ to, text, children, i }) {
-  const [{ open }, dispatch] = useStateValue();
+  const [{ open }, dispatch] = useStateValue()
   const isOpen = open === i
 
   return (
@@ -273,13 +270,15 @@ function NavPrimaryItem({ to, text, children, i }) {
       <button
         css={{
           ...nav_item_styles,
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
         aria-expanded={isOpen}
-        onClick={() => dispatch({
-          type: 'setOpen',
-          open: isOpen ? null : i
-        })}
+        onClick={() =>
+          dispatch({
+            type: 'setOpen',
+            open: isOpen ? null : i,
+          })
+        }
       >
         {text} <NextIcon />
       </button>
@@ -289,19 +288,27 @@ function NavPrimaryItem({ to, text, children, i }) {
 
 function BeforeIcon() {
   return (
-    <span css={{
-      paddingRight: SPACING['S'],
-      lineHeight: '1'
-    }}><Icon icon="navigate_before" size={24}/></span>
+    <span
+      css={{
+        paddingRight: SPACING['S'],
+        lineHeight: '1',
+      }}
+    >
+      <Icon icon="navigate_before" size={24} />
+    </span>
   )
 }
 
 function NextIcon() {
   return (
-    <span css={{
-      paddingLeft: SPACING['S'],
-      lineHeight: '1'
-    }}><Icon icon="navigate_next" size={24}/></span>
+    <span
+      css={{
+        paddingLeft: SPACING['S'],
+        lineHeight: '1',
+      }}
+    >
+      <Icon icon="navigate_next" size={24} />
+    </span>
   )
 }
 
@@ -314,11 +321,11 @@ const nav_item_styles = {
   borderBottom: `solid 1px ${COLORS.neutral['100']}`,
   textDecoration: 'none',
   color: COLORS.neutral['400'],
-  cursor: 'pointer'
+  cursor: 'pointer',
 }
 
 function NavPanelSecondary({ text, to, children }) {
-  const [{ panelOpen }, dispatch] = useStateValue();
+  const [{ panelOpen }, dispatch] = useStateValue()
   const beforeNode = useRef(null)
 
   useEffect(() => {
@@ -328,23 +335,23 @@ function NavPanelSecondary({ text, to, children }) {
   }, [panelOpen])
 
   if (Number.isInteger(panelOpen)) {
-    return (
-      <NavPanelTertiary {...children[panelOpen]}  />
-    )
+    return <NavPanelTertiary {...children[panelOpen]} />
   }
 
   return (
     <div>
       <button
         css={{
-          ...nav_item_styles
+          ...nav_item_styles,
         }}
         ref={beforeNode}
         aria-expanded={true}
-        onClick={() => dispatch({
-          type: 'setOpen',
-          open: null
-        })}
+        onClick={() =>
+          dispatch({
+            type: 'setOpen',
+            open: null,
+          })
+        }
       >
         <BeforeIcon />
         <span css={{ fontWeight: '800' }}>{text}</span>
@@ -360,19 +367,20 @@ function NavPanelSecondary({ text, to, children }) {
                   justifyContent: 'space-between',
                 }}
                 aria-expanded={false}
-                onClick={() => dispatch({
-                  type: 'setPanelOpen',
-                  panelOpen: i
-                })}
+                onClick={() =>
+                  dispatch({
+                    type: 'setPanelOpen',
+                    panelOpen: i,
+                  })
+                }
               >
                 {item.text}
                 <NextIcon />
               </button>
             ) : (
-              <Link
-                to={item.to}
-                css={nav_item_styles}
-              >{item.text}</Link>
+              <Link to={item.to} css={nav_item_styles}>
+                {item.text}
+              </Link>
             )}
           </li>
         ))}
@@ -382,7 +390,7 @@ function NavPanelSecondary({ text, to, children }) {
 }
 
 function NavPanelTertiary({ text, to, children }) {
-  const [, dispatch] = useStateValue();
+  const [, dispatch] = useStateValue()
   const beforeNode = useRef()
 
   useEffect(() => {
@@ -393,12 +401,14 @@ function NavPanelTertiary({ text, to, children }) {
     <div>
       <button
         css={{
-          ...nav_item_styles
+          ...nav_item_styles,
         }}
-        onClick={() => dispatch({
-          type: 'setPanelOpen',
-          panelOpen: null
-        })}
+        onClick={() =>
+          dispatch({
+            type: 'setPanelOpen',
+            panelOpen: null,
+          })
+        }
         ref={beforeNode}
         aria-expanded={true}
       >
@@ -409,10 +419,9 @@ function NavPanelTertiary({ text, to, children }) {
       <ul>
         {children.map((item, i) => (
           <li key={i + item.text}>
-            <Link
-              to={item.to}
-              css={nav_item_styles}
-            >{item.text}</Link>
+            <Link to={item.to} css={nav_item_styles}>
+              {item.text}
+            </Link>
           </li>
         ))}
         <li>
@@ -423,15 +432,16 @@ function NavPanelTertiary({ text, to, children }) {
               fontSize: '1rem',
               fontWeight: '800',
               ':hover': {
-                '.text': LINK_STYLES['list-strong'][':hover']
-              }
+                '.text': LINK_STYLES['list-strong'][':hover'],
+              },
             }}
           >
-            <span
-              className="text"
-              css={{ marginRight: '0.5rem' }}
-            >View all {text}</span>
-            <span><Icon d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" /></span>
+            <span className="text" css={{ marginRight: '0.5rem' }}>
+              View all {text}
+            </span>
+            <span>
+              <Icon d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+            </span>
           </Link>
         </li>
       </ul>
