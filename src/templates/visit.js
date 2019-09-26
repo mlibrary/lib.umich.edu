@@ -1,22 +1,19 @@
 import React from 'react'
-import { graphql } from "gatsby"
-import VisuallyHidden from "@reach/visually-hidden";
+import { graphql } from 'gatsby'
+import VisuallyHidden from '@reach/visually-hidden'
 
-import {
-  Heading,
-  List
-} from '@umich-lib/core'
+import { Heading, List } from '@umich-lib/core'
 
 import {
   Template,
   TemplateSide,
-  TemplateContent
+  TemplateContent,
 } from '../components/aside-layout'
 
-import Layout from "../components/layout"
+import Layout from '../components/layout'
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
-import Prose from "../components/prose"
+import Prose from '../components/prose'
 import HorizontalNavigation from '../components/horizontal-navigation'
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 import HTML from '../components/html'
@@ -26,9 +23,13 @@ export default function VisitTemplate({ data, ...rest }) {
   /*
     Is the data a room, building, or location?
   */
-  const page = data.building ? data.building
-    : data.location ? data.location
-    : data.room ? data.room : null
+  const page = data.building
+    ? data.building
+    : data.location
+    ? data.location
+    : data.room
+    ? data.room
+    : null
 
   const {
     title,
@@ -38,15 +39,11 @@ export default function VisitTemplate({ data, ...rest }) {
     drupal_internal__nid,
     body,
     field_root_page_,
-    field_access
+    field_access,
   } = page
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
-  const {
-    field_visit,
-    field_parking,
-    field_amenities,
-  } = relationships
+  const { field_visit, field_parking, field_amenities } = relationships
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -57,7 +54,9 @@ export default function VisitTemplate({ data, ...rest }) {
             breadcrumb={fields.breadcrumb}
             title={title}
             summary={body ? body.summary : null}
-            image={relationships.field_media_image.relationships.field_media_image}
+            image={
+              relationships.field_media_image.relationships.field_media_image
+            }
           />
         </header>
         <HorizontalNavigation
@@ -68,12 +67,12 @@ export default function VisitTemplate({ data, ...rest }) {
             childrenNodeOrderByDrupalId: rest.pageContext.children,
             childrenNodes: data.children.edges,
             isRootPage,
-            parentNode
+            parentNode,
           })}
         />
         <section aria-label="Hours, parking, access, and amenities">
           <Template>
-            <TemplateSide> 
+            <TemplateSide>
               <LocationAside node={page} />
             </TemplateSide>
             <TemplateContent>
@@ -84,16 +83,26 @@ export default function VisitTemplate({ data, ...rest }) {
                 </Heading>
                 <HTMLList data={field_visit} />
 
-                <Heading level={2} size="M">Getting here</Heading>
-                <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>Parking</Heading>
+                <Heading level={2} size="M">
+                  Getting here
+                </Heading>
+                <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
+                  Parking
+                </Heading>
                 <HTMLList data={field_parking} />
 
-                <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>Access</Heading>
+                <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
+                  Access
+                </Heading>
                 <HTML html={field_access.processed} />
 
-                <Heading level={2} size="M">Amenities</Heading>
+                <Heading level={2} size="M">
+                  Amenities
+                </Heading>
                 <List type="bulleted">
-                  {field_amenities.map(({name}, i) => <li key={i + name}>{name}</li>)}
+                  {field_amenities.map(({ name }, i) => (
+                    <li key={i + name}>{name}</li>
+                  ))}
                 </List>
               </Prose>
             </TemplateContent>
@@ -107,7 +116,11 @@ export default function VisitTemplate({ data, ...rest }) {
 function HTMLList({ data }) {
   return (
     <List type="bulleted">
-      {data.map(({description}, i) => <li key={i + description.processed}><HTML html={description.processed} /></li>)}
+      {data.map(({ description }, i) => (
+        <li key={i + description.processed}>
+          <HTML html={description.processed} />
+        </li>
+      ))}
     </List>
   )
 }
@@ -115,25 +128,25 @@ function HTMLList({ data }) {
 export const query = graphql`
   query($slug: String!, $parents: [String], $children: [String]) {
     building: nodeBuilding(fields: { slug: { eq: $slug } }) {
-      ...BuildingFragment
+      ...buildingFragment
     }
     room: nodeRoom(fields: { slug: { eq: $slug } }) {
-      ...RoomFragment
+      ...roomFragment
     }
     location: nodeLocation(fields: { slug: { eq: $slug } }) {
-      ...LocationFragment
+      ...locationFragment
     }
     parents: allNodeSectionPage(filter: { drupal_id: { in: $parents } }) {
       edges {
         node {
-          ...SectionFragment
+          ...sectionCardFragment
         }
       }
     }
     children: allNodeSectionPage(filter: { drupal_id: { in: $children } }) {
       edges {
         node {
-          ...SectionFragment
+          ...sectionCardFragment
         }
       }
     }

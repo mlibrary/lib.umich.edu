@@ -1,12 +1,9 @@
 import React from 'react'
-import { graphql } from "gatsby"
+import { graphql } from 'gatsby'
 
-import {
-  Margins,
-  Heading
-} from '@umich-lib/core'
+import { Margins, Heading } from '@umich-lib/core'
 
-import Layout from "../components/layout"
+import Layout from '../components/layout'
 import SEO from '../components/seo'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
@@ -14,23 +11,14 @@ import HorizontalNavigation from '../components/horizontal-navigation'
 import Panels from '../components/panels'
 
 export default function FullWidthTemplate({ data, ...rest }) {
-  const {
-    title,
-    body,
-    fields,
-    drupal_internal__nid,
-    relationships
-  } = data.page
+  const { title, body, fields, drupal_internal__nid, relationships } = data.page
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
-        <Heading
-          size="3XL"
-          level={1}
-        >
+        <Heading size="3XL" level={1}>
           {title}
         </Heading>
       </Margins>
@@ -40,9 +28,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
         parentOrder={rest.pageContext.parents}
       />
 
-      <Margins>
-        {body && <HTML html={body.processed}/>}
-      </Margins>
+      <Margins>{body && <HTML html={body.processed} />}</Margins>
       <Panels data={relationships.field_panels} />
     </Layout>
   )
@@ -87,9 +73,9 @@ export const query = graphql`
                   }
                 }
                 ... on node__building {
-                  ...BuildingFragment
+                  ...buildingFragment
                 }
-              } 
+              }
             }
           }
           ... on paragraph__text_panel {

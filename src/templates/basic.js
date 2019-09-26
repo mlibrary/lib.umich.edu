@@ -1,20 +1,11 @@
 import React from 'react'
-import { graphql } from "gatsby"
+import { graphql } from 'gatsby'
 
-import {
-  Margins,
-  Heading,
-  SPACING
-} from '@umich-lib/core'
+import { Margins, Heading, SPACING } from '@umich-lib/core'
 
-import Layout from "../components/layout"
+import Layout from '../components/layout'
 import SEO from '../components/seo'
-import {
-  Template,
-  Top,
-  Side,
-  Content
-} from '../components/page-layout'
+import { Template, Top, Side, Content } from '../components/page-layout'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import SideNavigation from '../components/side-navigation'
@@ -27,7 +18,7 @@ function BasicTemplate({ data, ...rest }) {
     drupal_internal__nid,
     fields,
     relationships,
-    field_local_navigation
+    field_local_navigation,
   } = data.page
 
   return (
@@ -48,10 +39,16 @@ function BasicTemplate({ data, ...rest }) {
             )}
           </Side>
           <Content>
-            <Heading size="3XL" level={1} css={{
-              marginBottom: SPACING['XL']
-            }}>{title}</Heading>
-            {body && <HTML html={body.processed}/>}
+            <Heading
+              size="3XL"
+              level={1}
+              css={{
+                marginBottom: SPACING['XL'],
+              }}
+            >
+              {title}
+            </Heading>
+            {body && <HTML html={body.processed} />}
           </Content>
         </Template>
       </Margins>
@@ -65,7 +62,7 @@ export default BasicTemplate
 export const query = graphql`
   query($slug: String!, $parents: [String]) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
-      ...PageFragment
+      ...pageFragment
     }
     parents: allNodePage(filter: { drupal_id: { in: $parents } }) {
       edges {
