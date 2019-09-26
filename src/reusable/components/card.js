@@ -67,7 +67,6 @@ export default function Card({
             paddingTop: '66.67%',
             marginBottom: SPACING['S'],
             borderRadius: '2px',
-            zIndex: '-1',
           }}
         />
       )}
