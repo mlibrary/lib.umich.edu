@@ -2,10 +2,8 @@ import React from 'react'
 import BackgroundImage from 'gatsby-background-image-es5'
 import VisuallyHidden from '@reach/visually-hidden'
 import {
-  Heading,
   SPACING,
   Margins,
-  COLORS,
   Button,
   Icon,
   TextInput,
@@ -107,7 +105,7 @@ function Caption({ caption }) {
       bottom: '0',
       padding: `${SPACING['2XS']} ${SPACING['S']}`,
       background: 'rgba(0,0,0,0.6)',
-      '*, a': {
+      '*, a, span': {
         color: 'white',
         borderColor: 'white',
         boxShadow: 'none',
