@@ -25,7 +25,8 @@ export default ({ primary, secondary }) => (
         <div css={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'flex-end'
+          alignItems: 'flex-end',
+          marginTop: SPACING['XS']
         }}>
           <Nav
             items={primary}
