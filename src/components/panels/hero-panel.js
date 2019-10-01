@@ -12,6 +12,7 @@ import {
   MEDIA_QUERIES,
   TYPOGRAPHY,
 } from '@umich-lib/core'
+import HTML from '../html'
 
 const MEDIAQUERIES = {
   'XL': '@media only screen and (min-width: 1200px)',
@@ -28,7 +29,7 @@ const heroHeightCSS = {
 }
 
 export default function HeroPanel({ data }) {
-  console.log('data', data)
+  const caption = data.field_caption_text.processed
 
   return (
     <Margins css={{
@@ -92,8 +93,36 @@ export default function HeroPanel({ data }) {
             <Search labelId={"help-find"} />
           </div>
         </div>
+        <Caption caption={caption} />
       </BackgroundSection>
     </Margins>
+  )
+}
+
+function Caption({ caption }) {
+  return (
+    <div css={{
+      position: 'absolute',
+      right: '0',
+      bottom: '0',
+      padding: `${SPACING['2XS']} ${SPACING['S']}`,
+      background: 'rgba(0,0,0,0.6)',
+      '*, a': {
+        color: 'white',
+        borderColor: 'white',
+        boxShadow: 'none',
+        ':hover': {
+          boxShadow: 'none',
+          color: 'white',
+          borderColor: 'white'
+        }
+      },
+      'a': {
+        textDecoration: 'underline'
+      }
+    }}>
+      <HTML html={caption} />
+    </div>
   )
 }
 
