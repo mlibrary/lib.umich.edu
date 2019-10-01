@@ -10,11 +10,11 @@ import {
   MEDIA_QUERIES,
 } from '@umich-lib/core'
 
-import HTML from '../components/html'
-import { displayHours } from '../utils/hours'
-import HoursTable from './hours-table'
-import { useStateValue } from './use-state'
-import getTransitionCSS from '../utils/transition'
+import HTML from '../html'
+import HoursTable from '../hours-table'
+import { useStateValue } from '../use-state'
+import getTransitionCSS from '../../utils/transition'
+import { displayHours } from '../../utils/hours'
 
 export function HoursPanelNextPrev() {
   const [{ weekOffset }, dispatch] = useStateValue()

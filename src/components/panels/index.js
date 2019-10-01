@@ -8,15 +8,17 @@ import {
   MEDIA_QUERIES,
 } from '@umich-lib/core'
 
-import Card from './card'
-import Link from './link'
-import HTML from './html'
-import Address from './address'
-import Hours from './todays-hours'
-import icons from '../reusable/icons'
-import HoursPanel from '../components/hours-panel'
+import Card from '../card'
+import Link from '../link'
+import HTML from '../html'
+import Address from '../address'
+import Hours from '../todays-hours'
+import icons from '../../reusable/icons'
+import HoursPanel from './hours-panel'
+import HeroPanel from './hero-panel'
 
-import { StateProvider } from './use-state'
+
+import { StateProvider } from '../use-state'
 
 function PanelTemplate({ title, children, shaded, ...rest }) {
   return (
@@ -282,6 +284,8 @@ export default function Panels({ data }) {
               return <TextPanel data={panel} key={id} />
             case 'paragraph__hours_panel':
               return <HoursPanel data={panel} key={id} />
+            case 'paragraph__hero_panel':
+                return <HeroPanel data={panel} key={id} />
             default:
               return null
           }
