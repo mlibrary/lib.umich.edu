@@ -14,6 +14,11 @@ export const query = graphql`
             uri
             title
           }
+          relationships {
+            field_link_template {
+              field_machine_name
+            }
+          }
         }
         ... on paragraph__hours_panel_lite {
           id
