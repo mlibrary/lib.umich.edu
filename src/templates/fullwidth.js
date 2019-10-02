@@ -1,7 +1,7 @@
 import React from 'react'
 import { graphql } from 'gatsby'
 
-import { Margins, Heading } from '@umich-lib/core'
+import { Margins, Heading, SPACING } from '@umich-lib/core'
 
 import Layout from '../components/layout'
 import SEO from '../components/seo'
@@ -12,13 +12,16 @@ import Panels from '../components/panels'
 
 export default function FullWidthTemplate({ data, ...rest }) {
   const { title, body, fields, drupal_internal__nid, relationships } = data.page
+  const panels = relationships.field_panels
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
-        <Heading size="3XL" level={1}>
+        <Heading size="3XL" level={1} css={{
+          marginBottom: panels.length ? '0' : SPACING['XL']
+        }}>
           {title}
         </Heading>
       </Margins>
@@ -28,8 +31,17 @@ export default function FullWidthTemplate({ data, ...rest }) {
         parentOrder={rest.pageContext.parents}
       />
 
-      {body && <Margins><HTML html={body.processed} /></Margins>}
-      <Panels data={relationships.field_panels} />
+      {body && (
+        <Margins css={{
+          marginBottom: panels.length ? '0' : SPACING['5XL']
+        }}>
+          <HTML
+            html={body.processed}
+          />
+        </Margins>
+      )}
+
+      <Panels data={panels} />
     </Layout>
   )
 }
