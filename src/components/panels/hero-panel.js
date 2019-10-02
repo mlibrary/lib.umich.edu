@@ -27,7 +27,7 @@ const heroHeightCSS = {
 }
 
 export default function HeroPanel({ data }) {
-  const caption = data.field_caption_text.processed
+  const caption = data.field_caption_text && data.field_caption_text.processed
 
   return (
     <Margins css={{
@@ -91,7 +91,7 @@ export default function HeroPanel({ data }) {
             <Search labelId={"help-find"} />
           </div>
         </div>
-        <Caption caption={caption} />
+        {caption && <Caption caption={caption} />}
       </BackgroundSection>
     </Margins>
   )

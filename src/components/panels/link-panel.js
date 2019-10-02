@@ -6,7 +6,6 @@ import {
 import Link from '../link'
 
 export default function LinkPanel({ data }) {
-  console.log('data', data)
   const {
     field_title,
     field_link

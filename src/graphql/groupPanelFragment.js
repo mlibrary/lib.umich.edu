@@ -24,6 +24,7 @@ export const query = graphql`
                 __typename
                 ...locationFragment
                 ...roomFragment
+                ...buildingFragment
               }
             }
           }

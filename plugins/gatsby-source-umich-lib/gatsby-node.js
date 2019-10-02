@@ -49,7 +49,19 @@ exports.sourceNodes = async (
     baseUrl
   }
 ) => {
-  const { createNode } = actions
+  const { createTypes, createNode } = actions
+  const typeDefs = `
+    type HTML {
+      processed: String
+    }
+
+    type paragraph__hero_panel implements Node {
+      field_caption_text: HTML
+    }
+  `
+
+  createTypes(typeDefs)
+
   /*
       Transform Drupal data and make a list of this shape:
       {
