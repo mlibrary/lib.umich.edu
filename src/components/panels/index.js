@@ -16,7 +16,9 @@ import Hours from '../todays-hours'
 import icons from '../../reusable/icons'
 import HoursPanel from './hours-panel'
 import HeroPanel from './hero-panel'
-
+import GroupPanel from './group-panel'
+import HoursLitePanel from './hours-lite-panel'
+import LinkPanel from './link-panel'
 
 import { StateProvider } from '../use-state'
 
@@ -278,6 +280,12 @@ export default function Panels({ data }) {
           const id = panel.id
 
           switch (type) {
+            case 'paragraph__hours_panel_lite':
+              return <HoursLitePanel data={panel} key={id} />
+            case 'paragraph__link_panel':
+              return <LinkPanel data={panel} key={id} />
+            case 'paragraph__group_panel':
+              return <GroupPanel data={panel} key={id} />
             case 'paragraph__card_panel':
               return <CardPanel data={panel} key={id} />
             case 'paragraph__text_panel':

@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment heroPanelFragment on paragraph__hero_panel {
+    id
     field_caption_text {
       processed
     }

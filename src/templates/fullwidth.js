@@ -28,7 +28,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
         parentOrder={rest.pageContext.parents}
       />
 
-      <Margins>{body && <HTML html={body.processed} />}</Margins>
+      {body && <Margins><HTML html={body.processed} /></Margins>}
       <Panels data={relationships.field_panels} />
     </Layout>
   )
