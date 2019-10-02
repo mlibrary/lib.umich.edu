@@ -2,11 +2,7 @@ import React from 'react'
 import {
   SPACING,
   Margins,
-  Button,
-  Icon,
-  TextInput,
   MEDIA_QUERIES,
-  TYPOGRAPHY,
   COLORS
 } from '@umich-lib/core'
 
