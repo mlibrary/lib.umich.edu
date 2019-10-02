@@ -41,7 +41,7 @@ export default function HoursLitePanel({ data }) {
             display: 'flex'
           }}>
             <span css={{
-              display: 'inline-block',
+              display: 'inline',
               color: COLORS.maize['500'],
               width: '1.5rem'
             }}>
@@ -49,10 +49,12 @@ export default function HoursLitePanel({ data }) {
             </span>
             <Link kind="list" to={h.to} css={{ flex: '1' }}>
               <span css={{
-                display: 'inline-block'
+                display: 'inline'
               }}>
                 <span css={{
-                  marginRight: SPACING['XS']
+                  [MEDIAQUERIES['M']]: {
+                    marginRight: SPACING['XS']
+                  }
                 }}>{h.text}</span>
                 <span css={{
                   display: 'block',
