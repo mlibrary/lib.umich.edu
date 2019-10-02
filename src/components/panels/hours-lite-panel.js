@@ -116,7 +116,7 @@ function processHoursData(data) {
   const result = data.map(node => {
     return {
       text: node.title,
-      subText: displayHours({node, now}),
+      subText: 'TODAY: ' + displayHours({node, now}),
       to: node.fields.slug
     }
   })
