@@ -29,6 +29,7 @@ export default function LinkPanel({ data }) {
             <Link kind="list" to={d.uri}>{d.title}</Link>
           </li>
         ))}
+        <li><Link kind="list-strong" to="https://search.lib.umich.edu/databases/browse">View all databases</Link></li>
       </ol>
     </section>
   )
