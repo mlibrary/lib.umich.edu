@@ -36,40 +36,40 @@ export default function HoursLitePanel({ data }) {
           marginBottom: SPACING['S']
         }
       }}>
-        <li>
-          {hours.map((h, i) => (
-            <li key={i + h.text + h.to} css={{
-              display: 'flex'
+        {hours.map((h, i) => (
+          <li key={i + h.text + h.to} css={{
+            display: 'flex'
+          }}>
+            <span css={{
+              display: 'inline-block',
+              color: COLORS.maize['500'],
+              width: '1.5rem'
             }}>
+              <Icon d={icons['clock']} />
+            </span>
+            <Link kind="list" to={h.to} css={{ flex: '1' }}>
               <span css={{
-                display: 'inline-block',
-                color: COLORS.maize['500'],
-                width: '1.5rem'
+                display: 'inline-block'
               }}>
-                <Icon d={icons['clock']} />
-              </span>
-              <Link kind="list" to={h.to} css={{ flex: '1' }}>
                 <span css={{
-                  display: 'inline-block'
-                }}>
-                  <span css={{
-                    marginRight: SPACING['XS']
-                  }}>{h.text}</span>
-                  <span css={{
-                    display: 'block',
-                    [MEDIAQUERIES['M']]: {
-                      display: 'inline-block'
-                    },
-                    ...TYPOGRAPHY['3XS'],
-                    color: COLORS.neutral['300'],
-                    textTransform: 'uppercase',
-                    fontWeight: '700',
-                    fontSize: '0.875rem',
-                  }}>{h.subText}</span>
-                </span>
-              </Link>
+                  marginRight: SPACING['XS']
+                }}>{h.text}</span>
+                <span css={{
+                  display: 'block',
+                  [MEDIAQUERIES['M']]: {
+                    display: 'inline-block'
+                  },
+                  ...TYPOGRAPHY['3XS'],
+                  color: COLORS.neutral['300'],
+                  textTransform: 'uppercase',
+                  fontWeight: '700',
+                  fontSize: '0.875rem',
+                }}>{h.subText}</span>
+              </span>
+            </Link>
             </li>
           ))}
+        <li>
           <Link kind="list-strong" to="/locations-and-hours" css={{
             marginLeft: '1.5rem'
           }}>
