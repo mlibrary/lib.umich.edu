@@ -14,8 +14,9 @@ export default function LinkPanel({ data }) {
     <section>
       <Heading level={2} size="XL">{field_title}</Heading>
       <ol css={{
-        maxWidth: '26rem',
+        maxWidth: '24rem',
         columns: '2',
+        columnGap: SPACING['XL'],
         marginTop: SPACING['L'],
         'li': {
           marginBottom: SPACING['S']

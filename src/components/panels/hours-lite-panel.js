@@ -58,7 +58,9 @@ export default function HoursLitePanel({ data }) {
                 }}>{h.text}</span>
                 <span css={{
                   display: 'block',
+                  marginTop: SPACING['3XS'],
                   [MEDIAQUERIES['M']]: {
+                    marginTop: '0',
                     display: 'inline-block'
                   },
                   ...TYPOGRAPHY['3XS'],
