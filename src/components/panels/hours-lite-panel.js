@@ -43,7 +43,8 @@ export default function HoursLitePanel({ data }) {
             <span css={{
               display: 'inline',
               color: COLORS.maize['500'],
-              width: '1.5rem'
+              width: '1.5rem',
+              flexShrink: '0'
             }}>
               <Icon d={icons['clock']} />
             </span>
