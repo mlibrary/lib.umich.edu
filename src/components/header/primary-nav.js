@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {
   createContext,
   useContext,
@@ -178,7 +179,7 @@ function NavDropdown({ items, primaryNode }) {
       document.removeEventListener('mouseup', handleClick)
       document.addEventListener('keydown', handleKeydown)
     }
-  })
+  }, [])
 
   return (
     <div
@@ -213,7 +214,7 @@ function NavPanel({ items }) {
         panelOpen: 0,
       })
     }
-  }, [openPanel, dispatch])
+  }, [openPanel])
 
   return (
     <div
@@ -311,7 +312,7 @@ function NavPanelItemLinks({ parentItem, items }) {
       type: 'setMinHeight',
       minHeight: ref.current.clientHeight,
     })
-  })
+  }, [])
 
   function columnStyles() {
     if (items.length > 4) {

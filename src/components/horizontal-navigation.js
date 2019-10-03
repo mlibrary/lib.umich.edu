@@ -31,15 +31,22 @@ export default function HorizontalNavigation({ items, ...rest }) {
       {...rest}
       aria-label="Local"
     >
-      <Margins>
+      <Margins css={{
+        padding: '0',
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          padding: `0 ${SPACING['2XL']}`
+        }
+      }}>
         <ol>
           {items.map(({ to, text }, i) => (
             <li
               key={i + to}
               css={{
+                borderTop: `solid 1px ${COLORS.neutral['100']}`,
                 [MEDIA_QUERIES.LARGESCREEN]: {
                   display: 'inline-block',
                   marginRight: SPACING['L'],
+                  border: 'none'
                 }
               }}
             >
@@ -64,12 +71,13 @@ export default function HorizontalNavigation({ items, ...rest }) {
                     fontWeight: '600',
                     paddingTop: SPACING['M'],
                     paddingBottom: SPACING['M'],
-                    paddingLeft: `calc(${SPACING['M']} - 4px)`,
-                    marginLeft: `-${SPACING['M']}`
+                    paddingLeft: `calc(${SPACING['M']} - 4px)`
                   }}
                   activeStyle={{
                     fontWeight: '700',
                     borderLeft: `solid 4px ${COLORS.teal['400']}`,
+                    background: COLORS.teal['100'],
+                    color: COLORS.teal['400']
                   }}
                   to={to}
                 >{text}</Link>
