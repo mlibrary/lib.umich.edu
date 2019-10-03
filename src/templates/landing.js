@@ -13,7 +13,7 @@ export default function LandingTemplate({ data, ...rest }) {
   const { title, body, fields, relationships, drupal_internal__nid } = data.page
 
   return (
-    <Layout>
+    <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} drupalNid={drupal_internal__nid} />
       <PageHeader
         breadcrumb={fields.breadcrumb}

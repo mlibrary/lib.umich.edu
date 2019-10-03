@@ -51,6 +51,8 @@ export default function SideNavigation({
 
   const nodes = OrderNodes(parentOrder, data.edges)
 
+  console.log('nodes', nodes)
+
   /*
     Process source data for the component
   */
