@@ -24,7 +24,7 @@ export function Template({ children, ...rest }) {
         }}
         {...rest}
       >
-          {children}
+        {children}
       </div>
     </Margins>
   )

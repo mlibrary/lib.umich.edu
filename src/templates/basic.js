@@ -21,6 +21,8 @@ function BasicTemplate({ data, ...rest }) {
     field_local_navigation,
   } = data.page
 
+  console.log('data', data, rest)
+
   return (
     <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
@@ -31,11 +33,7 @@ function BasicTemplate({ data, ...rest }) {
           </Top>
           <Side>
             {field_local_navigation && (
-              <SideNavigation
-                parent={relationships.field_parent_page}
-                data={data.parents}
-                parentOrder={rest.pageContext.parents}
-              />
+              <SideNavigation to={fields.slug} title={relationships.field_parent_page[0].title} />
             )}
           </Side>
           <Content>
@@ -60,20 +58,9 @@ function BasicTemplate({ data, ...rest }) {
 export default BasicTemplate
 
 export const query = graphql`
-  query($slug: String!, $parents: [String]) {
+  query($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
-    }
-    parents: allNodePage(filter: { drupal_id: { in: $parents } }) {
-      edges {
-        node {
-          title
-          drupal_id
-          fields {
-            slug
-          }
-        }
-      }
     }
   }
 `
