@@ -21,8 +21,6 @@ function BasicTemplate({ data, ...rest }) {
     field_local_navigation,
   } = data.page
 
-  console.log('data', data, rest)
-
   return (
     <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
