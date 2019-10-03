@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/59ae5f56-8fc2-40ef-b9ca-ca5030541aaf/deploy-status)](https://app.netlify.com/sites/lib-umich/deploys)
+
 ## 🚀 Quick start
 
 1.  **Clone `lib.umich.edu`.**

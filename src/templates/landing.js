@@ -87,7 +87,7 @@ export const query = graphql`
                   }
                 }
                 ... on node__building {
-                  ...BuildingFragment
+                  ...buildingFragment
                 }
               }
             }

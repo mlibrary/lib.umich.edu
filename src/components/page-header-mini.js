@@ -17,7 +17,9 @@ export default function PageHeaderMini({
   return (
     <header
       css={{
-        background: COLORS.blue['100'],
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          background: COLORS.blue['100'],
+        }
       }}
       {...rest}
     >
@@ -45,7 +47,9 @@ export default function PageHeaderMini({
             size="3XL"
             level={1}
             css={{
+              paddingBottom: SPACING['L'],
               [MEDIA_QUERIES.LARGESCREEN]: {
+                padding: '0',
                 marginTop: SPACING["S"]
               }
             }}

@@ -117,7 +117,8 @@ const renderHast = new rehypeReact({
     h5: Heading5,
     h6: Heading6,
     a: ({ children, href, ...other }) => {
-      if (!children || !href) { // Don't render links without a label or href
+      if (!children || !href) {
+        // Don't render links without a label or href
         return null
       }
       return <Link to={href}>{children}</Link>

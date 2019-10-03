@@ -1,4 +1,11 @@
-import React, {createContext, useContext, useReducer, useEffect, useRef} from 'react'
+/* eslint-disable */
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useRef,
+} from 'react'
 import { Link } from 'gatsby'
 import {
   COLORS,
@@ -7,53 +14,52 @@ import {
   Heading,
   Icon,
   Alert,
-  LINK_STYLES
+  LINK_STYLES,
 } from '@umich-lib/core'
 
-const StateContext = createContext();
+const StateContext = createContext()
 
-const StateProvider = ({reducer, initialState, children}) =>(
+const StateProvider = ({ reducer, initialState, children }) => (
   <StateContext.Provider value={useReducer(reducer, initialState)}>
     {children}
   </StateContext.Provider>
-);
+)
 
-const useStateValue = () => useContext(StateContext);
+const useStateValue = () => useContext(StateContext)
 
-function Nav({ items }) {  
+function Nav({ items }) {
   const reducer = (state, action) => {
     switch (action.type) {
       case 'setOpen':
         return {
           ...state,
-          open: action.open
-        };
+          open: action.open,
+        }
       case 'setPanelOpen':
         return {
           ...state,
-          panelOpen: action.panelOpen
-        };
+          panelOpen: action.panelOpen,
+        }
       case 'setMinHeight':
         return {
           ...state,
-          minHeight: action.minHeight
-        };
-        
+          minHeight: action.minHeight,
+        }
+
       default:
-        return state;
+        return state
     }
-  };
+  }
 
   return (
-    <StateProvider
-      initialState={{ panelOpen: 0 }}
-      reducer={reducer}
-    >
+    <StateProvider initialState={{ panelOpen: 0 }} reducer={reducer}>
       <nav aria-label="Main">
-        <ul css={{
-          display: 'flex',
-          alignItems: 'center'
-        }}>
+        <ul
+          css={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           {items.map(({ text, to, children }, i) => (
             <NavPrimaryItem
               key={i + text}
@@ -69,19 +75,15 @@ function Nav({ items }) {
   )
 }
 
-function NavPrimaryItem({
-  text,
-  items,
-  i
-}) {
-  const [{ open }, dispatch] = useStateValue();
+function NavPrimaryItem({ text, items, i }) {
+  const [{ open }, dispatch] = useStateValue()
   const isOpen = open === i
   const primaryNode = useRef()
 
   function activeStyles() {
     if (isOpen) {
       return {
-        borderColor: COLORS.teal['400']
+        borderColor: COLORS.teal['400'],
       }
     }
   }
@@ -92,15 +94,17 @@ function NavPrimaryItem({
       css={{
         display: 'inline-block',
         '> button': {
-          marginRight: SPACING['L']
-        }
+          marginRight: SPACING['L'],
+        },
       }}
     >
       <button
-        onClick={() => dispatch({
-          type: 'setOpen',
-          open: isOpen ? null : i
-        })}
+        onClick={() =>
+          dispatch({
+            type: 'setOpen',
+            open: isOpen ? null : i,
+          })
+        }
         aria-expanded={isOpen}
         css={{
           ...TYPOGRAPHY['XS'],
@@ -109,31 +113,26 @@ function NavPrimaryItem({
           cursor: 'pointer',
           paddingTop: SPACING['M'],
           paddingBottom: `calc(${SPACING['M']} - 3px)`,
-          ...activeStyles()
+          ...activeStyles(),
         }}
         ref={primaryNode}
       >
         {text}
       </button>
 
-      {isOpen && (
-        <NavDropdown
-          items={items}
-          primaryNode={primaryNode}
-        />
-      )}
+      {isOpen && <NavDropdown items={items} primaryNode={primaryNode} />}
     </li>
   )
 }
 
 function NavDropdown({ items, primaryNode }) {
-  const [, dispatch] = useStateValue();
+  const [, dispatch] = useStateValue()
   const dropdownNode = useRef()
 
   function closeDropdown() {
     dispatch({
       type: 'setOpen',
-      open: null
+      open: null,
     })
   }
 
@@ -163,24 +162,24 @@ function NavDropdown({ items, primaryNode }) {
         closeDropdown()
       }
     }
-  };
-  
+  }
+
   function handleKeydown(e) {
     if (e.keyCode === 27) {
       // ESC key
       closeDropdown()
     }
-  };
+  }
 
   useEffect(() => {
-    document.addEventListener("mouseup", handleClick);
-    document.addEventListener("keydown", handleKeydown);
+    document.addEventListener('mouseup', handleClick)
+    document.addEventListener('keydown', handleKeydown)
 
     return () => {
-      document.removeEventListener("mouseup", handleClick);
-      document.addEventListener("keydown", handleKeydown);
-    };
-  });
+      document.removeEventListener('mouseup', handleClick)
+      document.addEventListener('keydown', handleKeydown)
+    }
+  }, [])
 
   return (
     <div
@@ -191,7 +190,7 @@ function NavDropdown({ items, primaryNode }) {
         background: 'white',
         left: '0',
         boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
-        zIndex: '1'
+        zIndex: '101',
       }}
       ref={dropdownNode}
     >
@@ -201,7 +200,7 @@ function NavDropdown({ items, primaryNode }) {
 }
 
 function NavPanel({ items }) {
-  const [{ openPanel, minHeight }, dispatch] = useStateValue();
+  const [{ openPanel, minHeight }, dispatch] = useStateValue()
 
   const minHeightValue = minHeight > 340 ? minHeight : 340
 
@@ -212,39 +211,42 @@ function NavPanel({ items }) {
     return () => {
       dispatch({
         type: 'setPanelOpen',
-        panelOpen: 0
+        panelOpen: 0,
       })
     }
   }, [openPanel, dispatch])
 
   return (
-    <div css={{
-      position: 'relative',
-    }}>
-      <ul css={{
-        width: '24rem',
-        borderRight: `solid 1px ${COLORS.neutral[100]}`,
-        padding: `${SPACING['S']} 0`,
-        minHeight: minHeightValue
-      }}>
+    <div
+      css={{
+        position: 'relative',
+      }}
+    >
+      <ul
+        css={{
+          width: '24rem',
+          borderRight: `solid 1px ${COLORS.neutral[100]}`,
+          padding: `${SPACING['S']} 0`,
+          minHeight: minHeightValue,
+        }}
+      >
         {items.map((item, i) => (
           <NavPanelItem {...item} i={i} key={i + item.text} />
         ))}
       </ul>
     </div>
-    
   )
 }
 
 function NavPanelItem({ text, to, description, children, i }) {
-  const [{ panelOpen }, dispatch] = useStateValue();
+  const [{ panelOpen }, dispatch] = useStateValue()
   const isOpen = panelOpen === i
 
   function activeStyles() {
     if (isOpen) {
       return {
         borderColor: COLORS.teal['400'],
-        background: COLORS.teal['100']
+        background: COLORS.teal['100'],
       }
     }
 
@@ -263,33 +265,37 @@ function NavPanelItem({ text, to, description, children, i }) {
           paddingLeft: `calc(${SPACING['L']} - 5px)`,
           borderLeft: 'solid 5px transparent',
           textAlign: 'left',
-          ":hover": {
+          ':hover': {
             cursor: 'pointer',
             '.text': {
-              ...LINK_STYLES['list-strong'][':hover']
-            }
+              ...LINK_STYLES['list-strong'][':hover'],
+            },
           },
-          ...activeStyles()
+          ...activeStyles(),
         }}
-        onClick={() => dispatch({
-          type: 'setPanelOpen',
-          panelOpen: panelOpen === i ? null : i
-        })}
+        onClick={() =>
+          dispatch({
+            type: 'setPanelOpen',
+            panelOpen: panelOpen === i ? null : i,
+          })
+        }
         aria-expanded={panelOpen === i}
       >
-      <span
-        className="text"
-        css={{
-          ...LINK_STYLES['list-strong'],
-          fontSize: '1rem'
-        }}
-      >
-        {text}
-      </span><Icon icon="navigate_next" /></button>
-        
+        <span
+          className="text"
+          css={{
+            ...LINK_STYLES['list-strong'],
+            fontSize: '1rem',
+          }}
+        >
+          {text}
+        </span>
+        <Icon icon="navigate_next" />
+      </button>
+
       {isOpen && (
         <NavPanelItemLinks
-          parentItem={{ text, to, description, }}
+          parentItem={{ text, to, description }}
           items={children}
         />
       )}
@@ -297,17 +303,14 @@ function NavPanelItem({ text, to, description, children, i }) {
   )
 }
 
-function NavPanelItemLinks({
-  parentItem,
-  items
-}) {
-  const [, dispatch] = useStateValue();
+function NavPanelItemLinks({ parentItem, items }) {
+  const [, dispatch] = useStateValue()
   const ref = useRef()
 
   useEffect(() => {
     dispatch({
       type: 'setMinHeight',
-      minHeight: ref.current.clientHeight
+      minHeight: ref.current.clientHeight,
     })
   }, [dispatch])
 
@@ -315,7 +318,7 @@ function NavPanelItemLinks({
     if (items.length > 4) {
       return {
         columns: items.length > 4 ? '2' : 'none',
-        columnGap: SPACING["L"],
+        columnGap: SPACING['L'],
       }
     }
 
@@ -323,27 +326,36 @@ function NavPanelItemLinks({
   }
 
   return (
-    <div css={{
-      position: 'absolute',
-      right: '0',
-      top: '0',
-      width: 'calc(100% - 24rem)',
-      padding: `${SPACING['XL']} ${SPACING['2XL']}`,
-    }}
-    ref={ref}
+    <div
+      css={{
+        position: 'absolute',
+        right: '0',
+        top: '0',
+        width: 'calc(100% - 24rem)',
+        padding: `${SPACING['XL']} ${SPACING['2XL']}`,
+      }}
+      ref={ref}
     >
-      <Heading size="M" level={2}>{parentItem.text}</Heading>
-      {parentItem.description && (<p css={{
-        color: COLORS.neutral[300],
-        paddingTop: SPACING['XS']
-      }}>{parentItem.description}</p>)}
+      <Heading size="M" level={2}>
+        {parentItem.text}
+      </Heading>
+      {parentItem.description && (
+        <p
+          css={{
+            color: COLORS.neutral[300],
+            paddingTop: SPACING['XS'],
+          }}
+        >
+          {parentItem.description}
+        </p>
+      )}
       {items ? (
         <ul
           css={{
             ...columnStyles(),
             paddingTop: SPACING['L'],
             marginTop: SPACING['M'],
-            borderTop: `solid 1px ${COLORS.neutral['100']}`
+            borderTop: `solid 1px ${COLORS.neutral['100']}`,
           }}
         >
           {items.map(({ text, to }, i) => (
@@ -355,30 +367,40 @@ function NavPanelItemLinks({
                   fontSize: '1rem',
                   padding: `${SPACING['XS']} 0`,
                   ':hover': {
-                    '.text': LINK_STYLES['list'][':hover']
-                  }
+                    '.text': LINK_STYLES['list'][':hover'],
+                  },
                 }}
-              ><span className="text">{text}</span></Link>
+              >
+                <span className="text">{text}</span>
+              </Link>
             </li>
           ))}
           {parentItem.to && (
             <li>
-              <Link to={parentItem.to} css={{
-                display: 'block',
-                fontSize: '1rem',
-                padding: `${SPACING['XS']} 0`,
-                fontWeight: '800',
-                ':hover': {
-                  '.text': LINK_STYLES['list-strong'][':hover']
-                }
-              }}><span className="text">View all {parentItem.text}</span> <Icon d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" /></Link>
+              <Link
+                to={parentItem.to}
+                css={{
+                  display: 'block',
+                  fontSize: '1rem',
+                  padding: `${SPACING['XS']} 0`,
+                  fontWeight: '800',
+                  ':hover': {
+                    '.text': LINK_STYLES['list-strong'][':hover'],
+                  },
+                }}
+              >
+                <span className="text">View all {parentItem.text}</span>{' '}
+                <Icon d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+              </Link>
             </li>
           )}
         </ul>
       ) : (
-        <div css={{
-          padding: `${SPACING['L']} 0`
-        }}>
+        <div
+          css={{
+            padding: `${SPACING['L']} 0`,
+          }}
+        >
           <Alert intent="warning">
             <span style={{ fontSize: '1rem' }}>
               This navigation panel does not have any pages to show.
