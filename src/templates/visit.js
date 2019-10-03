@@ -49,77 +49,75 @@ export default function VisitTemplate({ data, ...rest }) {
   return (
     <Layout drupalNid={drupal_internal__nid}>
       <SEO title={title} />
-      <main>
-        <header aria-label="Location description">
-          <PageHeader
-            breadcrumb={fields.breadcrumb}
-            title={title}
-            summary={body ? body.summary : null}
-            image={
-              relationships.field_media_image.relationships.field_media_image
-            }
-          />
-        </header>
-        <HorizontalNavigation
-          items={processHorizontalNavigationData({
-            parentNodeOrderByDrupalId: rest.pageContext.parents,
-            parentNodes: data.parents.edges,
-            currentNode: page,
-            childrenNodeOrderByDrupalId: rest.pageContext.children,
-            childrenNodes: data.children.edges,
-            isRootPage,
-            parentNode,
-          })}
+      <header aria-label="Location description">
+        <PageHeader
+          breadcrumb={fields.breadcrumb}
+          title={title}
+          summary={body ? body.summary : null}
+          image={
+            relationships.field_media_image.relationships.field_media_image
+          }
         />
-        <section aria-label="Hours, parking, access, and amenities">
-          <Template>
-            <TemplateSide>
-              <LocationAside node={page} />
-            </TemplateSide>
-            <TemplateContent>
-              <Prose>
-                <Heading level={1} size="L">
-                  <VisuallyHidden>{title}</VisuallyHidden>
-                  <span aria-hidden="true">{field_horizontal_nav_title}</span>
-                </Heading>
-                <HTMLList data={field_visit} />
+      </header>
+      <HorizontalNavigation
+        items={processHorizontalNavigationData({
+          parentNodeOrderByDrupalId: rest.pageContext.parents,
+          parentNodes: data.parents.edges,
+          currentNode: page,
+          childrenNodeOrderByDrupalId: rest.pageContext.children,
+          childrenNodes: data.children.edges,
+          isRootPage,
+          parentNode,
+        })}
+      />
+      <section aria-label="Hours, parking, access, and amenities">
+        <Template>
+          <TemplateSide>
+            <LocationAside node={page} />
+          </TemplateSide>
+          <TemplateContent>
+            <Prose>
+              <Heading level={1} size="L">
+                <VisuallyHidden>{title}</VisuallyHidden>
+                <span aria-hidden="true">{field_horizontal_nav_title}</span>
+              </Heading>
+              <HTMLList data={field_visit} />
 
-                <Heading level={2} size="M">
-                  Getting here
-                </Heading>
-                <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
-                  Parking
-                </Heading>
-                <HTMLList data={field_parking} />
+              <Heading level={2} size="M">
+                Getting here
+              </Heading>
+              <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
+                Parking
+              </Heading>
+              <HTMLList data={field_parking} />
 
-                <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
-                  Access
-                </Heading>
-                <HTML html={field_access.processed} />
+              <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
+                Access
+              </Heading>
+              <HTML html={field_access.processed} />
 
-                <Heading level={2} size="M">
-                  Amenities
-                </Heading>
-                <List type="bulleted">
-                  {field_amenities.map(({ name }, i) => (
-                    <li key={i + name}>{name}</li>
-                  ))}
-                </List>
-              </Prose>
-            </TemplateContent>
-          </Template>
-        </section>
+              <Heading level={2} size="M">
+                Amenities
+              </Heading>
+              <List type="bulleted">
+                {field_amenities.map(({ name }, i) => (
+                  <li key={i + name}>{name}</li>
+                ))}
+              </List>
+            </Prose>
+          </TemplateContent>
+        </Template>
+      </section>
 
-        <div
-          css={{
-            'section:nth-child(odd)': {
-              background: COLORS.blue['100'],
-            },
-          }}
-        >
-          <Panels data={relationships.field_panels} />
-        </div>
-      </main>
+      <div
+        css={{
+          'section:nth-child(odd)': {
+            background: COLORS.blue['100'],
+          },
+        }}
+      >
+        <Panels data={relationships.field_panels} />
+      </div>
     </Layout>
   )
 }
