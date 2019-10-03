@@ -9,6 +9,7 @@ import {
   TextInput,
   MEDIA_QUERIES,
   TYPOGRAPHY,
+  COLORS
 } from '@umich-lib/core'
 import HTML from '../html'
 
@@ -144,7 +145,7 @@ function BackgroundSection({ data, children, ...rest }) {
         <BackgroundImage
           Tag="section"
           fluid={getImageData('horizontal')}
-          backgroundColor={`#040e18`}
+          backgroundColor={COLORS.neutral['100']}
           css={{
             backgroundPosition: 'center left 20%',
             backgroundSize: 'cover'
@@ -163,7 +164,7 @@ function BackgroundSection({ data, children, ...rest }) {
         <BackgroundImage
           Tag="section"
           fluid={getImageData('vertical')}
-          backgroundColor={`#040e18`}
+          backgroundColor={COLORS.neutral['100']}
           css={{
             backgroundPosition: 'center top 33%'
           }}
