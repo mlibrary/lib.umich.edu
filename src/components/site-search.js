@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { StaticQuery, graphql, navigate, Link } from 'gatsby'
 import { Index } from 'elasticlunr'
 import {
@@ -7,7 +7,6 @@ import {
   Button,
   Z_SPACE,
   Margins,
-  MEDIA_QUERIES,
   COLORS,
   Heading,
   TYPOGRAPHY
@@ -25,22 +24,6 @@ import {
 import "@reach/dialog/styles.css"
 
 import getTransitionCSS from '../utils/transition'
-
-function BrowserOnly({ children }) {
-  const [hydrated, setHydrated] = useState(false)
-
-  useEffect(() => {
-    if (!hydrated) {
-      setHydrated(true)
-    }
-  }, [hydrated])
-
-  if (!hydrated) {
-    return null
-  }
-
-  return children
-}
 
 export default function SiteSearchWrapper() {
   return (
