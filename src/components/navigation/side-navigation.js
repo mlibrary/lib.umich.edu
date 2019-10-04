@@ -25,11 +25,7 @@ function getSiteMapBranch({ data, to }) {
 
 export default function SideNavigation({ to }) {
   /*
-    TODO:
-
-    - [ ] Find where this page slug exists in the nav tree.
-    - [ ] Use that node of the tree to render siblings and children
-          of siblings and self.
+    TODO
     - [ ] Consider how to move this logic to build step
           as a "local navigation" field.
   */
