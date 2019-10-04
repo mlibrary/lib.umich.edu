@@ -31,6 +31,7 @@ function BasicTemplate({ data, ...rest }) {
 
   const navBranch = useNavigationBranch(fields.slug)
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
+  const smallScreenItems = smallScreenBranch.children
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -55,12 +56,12 @@ function BasicTemplate({ data, ...rest }) {
             >
               {title}
             </Heading>
-            {field_local_navigation && smallScreenBranch && (
+            {field_local_navigation && smallScreenItems && (
               <SmallScreen>
                 <div css={{
                   margin: `0 -${SPACING['M']}`
                 }}>
-                  <HorizontalNavigation items={smallScreenBranch.children} />
+                  <HorizontalNavigation items={smallScreenItems} />
                 </div>
               </SmallScreen>
             )}
