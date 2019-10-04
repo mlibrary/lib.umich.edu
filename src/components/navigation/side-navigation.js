@@ -1,5 +1,5 @@
 import React from 'react'
-import { graphql, useStaticQuery, Link } from 'gatsby'
+import { Link } from 'gatsby'
 import {
   Heading,
   SPACING,
@@ -9,71 +9,7 @@ import {
   LargeScreen
 } from '@umich-lib/core'
 
-function getSiteMapBranch({ data, to }) {
-  const find = n => to.includes(n.to)
-  const root = data.find(find)
-
-  if (root) {
-    const parent = root.children.find(find)
-
-    if (parent) {
-      return parent
-    }
-  }
-
-  return null
-}
-
-export default function SideNavigation({ to }) {
-  /*
-    TODO
-    - [ ] Consider how to move this logic to build step
-          as a "local navigation" field.
-  */
-  const data = useStaticQuery(
-    graphql`
-      {
-        allNavPrimary {
-          edges {
-            node {
-              nav {
-                to
-                text
-                children {
-                  text
-                  to
-                  children {
-                    text
-                    to
-                    children {
-                      text
-                      to
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        allNavUtility {
-          edges {
-            node {
-              nav {
-                to
-                text
-              }
-            }
-          }
-        }
-      }
-    `
-  )
-
-  const branch = getSiteMapBranch({
-    data: data.allNavPrimary.edges[0].node.nav,
-    to
-  })
-
+export default function SideNavigation({ to, branch }) {
   if (!branch) {
     return null
   }
