@@ -1,5 +1,5 @@
 import React from 'react'
-import { StaticQuery, graphql, useStaticQuery, Link } from 'gatsby'
+import { graphql, useStaticQuery, Link } from 'gatsby'
 import {
   Heading,
   SPACING,
@@ -7,6 +7,7 @@ import {
   MEDIA_QUERIES,
   Icon
 } from '@umich-lib/core'
+import HorizontalNavigation from './horizontal-navigation'
 
 export default function SideNavigation({
   title,
@@ -67,6 +68,9 @@ export default function SideNavigation({
     .map(p => "/" + p)
   const parentPath = path
     .slice(0, path.length - 1)
+  const depth = path.findIndex((p, i) => {
+    return path.slice(0, i+1).join('') === to
+  })
 
   const siblings = parentPath.reduce((acc, p, y) => {
     const fullPath = parentPath.slice(0, y+1).join('')
@@ -80,35 +84,48 @@ export default function SideNavigation({
   }, primaryNavData)
 
   return (
-    <nav
-      css={{
-        display: 'none',
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          display: 'block'
-        }
-      }}
-      aria-labelledby="side-nav-heading"
-    >
-      <Heading size="S" level={2} id="side-nav-heading">{title}</Heading>
-      <ol css={{
-        marginTop: SPACING['XS'],
-        marginBottom: SPACING['M'],
-        '> li:not(:last-of-type)': {
-          borderBottom: `solid 1px ${COLORS.neutral['100']}`
-        }
-      }}>
-        {siblings.map(sibling =>
-          <li key={sibling.to + sibling.text}>
-            <SideNavLink
-              path={to}
-              item={sibling}
-            >
-              {sibling.text}
-            </SideNavLink>
-          </li>
-        )}
-      </ol>
-    </nav>
+    <React.Fragment>
+      {depth > 2 && (
+        <div css={{
+            display: 'block',
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              display: 'none'
+            }
+          }}
+        >
+          <HorizontalNavigation items={siblings} />
+        </div>
+      )}
+      <nav
+        css={{
+          display: 'none',
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            display: 'block'
+          }
+        }}
+        aria-labelledby="side-nav-heading"
+      >
+        <Heading size="S" level={2} id="side-nav-heading">{title}</Heading>
+        <ol css={{
+          marginTop: SPACING['XS'],
+          marginBottom: SPACING['M'],
+          '> li:not(:last-of-type)': {
+            borderBottom: `solid 1px ${COLORS.neutral['100']}`
+          }
+        }}>
+          {siblings.map(sibling =>
+            <li key={sibling.to + sibling.text}>
+              <SideNavLink
+                path={to}
+                item={sibling}
+              >
+                {sibling.text}
+              </SideNavLink>
+            </li>
+          )}
+        </ol>
+      </nav>
+    </React.Fragment>
   )
 }
 
