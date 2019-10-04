@@ -99,9 +99,6 @@ export default function SideNavigation({ to }) {
         <ol css={{
           marginTop: SPACING['XS'],
           marginBottom: SPACING['M'],
-          '> li': {
-            padding: `${SPACING['S']} 0`
-          },
           '> li:not(:last-of-type)': {
             borderBottom: `solid 1px ${COLORS.neutral['100']}`
           }
@@ -122,7 +119,7 @@ export default function SideNavigation({ to }) {
   )
 }
 
-function SideNavLink({ path, item, children }) {
+function SideNavLink({ path, item, children, ...rest }) {
   const hasChildren = item.children ? true : false
   const renderChildren = hasChildren && path.includes(item.to)
   const isActive = path === item.to
@@ -141,8 +138,11 @@ function SideNavLink({ path, item, children }) {
           fontWeight: isActive ? '700' : 'inherit',
           ':hover': {
             textDecoration: 'underline'
-          }
+          },
+          paddingTop: SPACING['S'],
+          paddingBottom: hasChildren ? SPACING['XS'] : SPACING['S']
         }}
+        {...rest}
       >
         {children}
         {hasChildren && (
@@ -153,14 +153,18 @@ function SideNavLink({ path, item, children }) {
       </Link>
       {renderChildren && (
         <ol css={{
-          paddingTop: SPACING['XS'],
+          paddingBottom: SPACING['XS'],
         }}>
           {item.children.map(child => (
-            <li css={{
-              padding: `${SPACING['XS']} 0`,
-              paddingLeft: SPACING['M'],
-            }}>
-              <SideNavLink path={path} item={child}>{child.text}</SideNavLink>
+            <li>
+              <SideNavLink
+                path={path}
+                item={child}
+                css={{
+                  padding: `${SPACING['XS']} 0`,
+                  paddingLeft: SPACING['M'],
+                }}
+              >{child.text}</SideNavLink>
             </li>
           ))}
         </ol>
