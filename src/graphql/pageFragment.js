@@ -8,6 +8,7 @@ export const query = graphql`
     drupal_internal__nid
     fields {
       breadcrumb
+      slug
     }
     body {
       processed

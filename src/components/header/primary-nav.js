@@ -113,6 +113,9 @@ function NavPrimaryItem({ text, items, i }) {
           cursor: 'pointer',
           paddingTop: SPACING['M'],
           paddingBottom: `calc(${SPACING['M']} - 3px)`,
+          ':hover': {
+            borderColor: COLORS.teal['400'],
+          },
           ...activeStyles(),
         }}
         ref={primaryNode}
