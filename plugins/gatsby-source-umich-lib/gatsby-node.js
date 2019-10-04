@@ -300,7 +300,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               relationships: {
                 field_design_template: {
                   field_machine_name: {
-                    in: ["visit"]
+                    in: ["visit", "basic"]
                   }
                 }
               }

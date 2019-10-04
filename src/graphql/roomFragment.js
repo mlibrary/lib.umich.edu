@@ -10,6 +10,7 @@ export const query = graphql`
     field_phone_number
     field_email
     field_hours_different_from_build
+    field_local_navigation
     body {
       summary
     }

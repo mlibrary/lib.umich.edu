@@ -12,6 +12,12 @@ import SideNavigation from '../components/navigation/side-navigation'
 import Panels from '../components/panels'
 
 function BasicTemplate({ data, ...rest }) {
+  const node = data.page
+    ? data.page
+    : data.room
+    ? data.room
+    : null
+
   const {
     title,
     body,
@@ -19,7 +25,7 @@ function BasicTemplate({ data, ...rest }) {
     fields,
     relationships,
     field_local_navigation,
-  } = data.page
+  } = node
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -59,6 +65,9 @@ export const query = graphql`
   query($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
+    }
+    room: nodeRoom(fields: { slug: { eq: $slug } }) {
+      ...roomFragment
     }
   }
 `
