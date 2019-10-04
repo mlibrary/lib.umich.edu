@@ -60,10 +60,14 @@ export default function useNavigationBranch(to, type) {
     to
   })
 
-  if (branch && type === 'small') {
-    const next = branch.children.find(n => to.includes(n.to))
+  if (type === 'small') {
+    if (branch && branch.children) {
+      const next = branch.children.find(n => to.includes(n.to))
+  
+      return next
+    }
 
-    return next
+    return null
   }
 
   return branch
