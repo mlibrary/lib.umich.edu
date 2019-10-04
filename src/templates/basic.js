@@ -31,7 +31,7 @@ function BasicTemplate({ data, ...rest }) {
 
   const navBranch = useNavigationBranch(fields.slug)
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
-  const smallScreenItems = smallScreenBranch.children
+  const smallScreenItems = smallScreenBranch ? smallScreenBranch.children : null
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
