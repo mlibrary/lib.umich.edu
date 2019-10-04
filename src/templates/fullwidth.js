@@ -7,7 +7,7 @@ import Layout from '../components/layout'
 import SEO from '../components/seo'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
-import HorizontalNavigation from '../components/horizontal-navigation'
+import HorizontalNavigation from '../components/navigation/horizontal-navigation'
 import Panels from '../components/panels'
 
 export default function FullWidthTemplate({ data, ...rest }) {

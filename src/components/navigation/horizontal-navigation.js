@@ -54,11 +54,11 @@ export default function HorizontalNavigation({ items, ...rest }) {
                 <Link
                   css={{
                     display: 'inline-block',
-                    fontWeight: '600',
                     paddingTop: SPACING['L'],
                     paddingBottom: `calc(${SPACING['L']} - 4px)`
                   }}
                   activeStyle={{
+                    fontWeight: '700',
                     borderBottom: `solid 4px ${COLORS.teal['400']}`,
                   }}
                   to={to}
@@ -68,7 +68,6 @@ export default function HorizontalNavigation({ items, ...rest }) {
                 <Link
                   css={{
                     display: 'block',
-                    fontWeight: '600',
                     paddingTop: SPACING['M'],
                     paddingBottom: SPACING['M'],
                     paddingLeft: `calc(${SPACING['M']} - 4px)`

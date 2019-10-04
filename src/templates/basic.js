@@ -8,7 +8,7 @@ import SEO from '../components/seo'
 import { Template, Top, Side, Content } from '../components/page-layout'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
-import SideNavigation from '../components/side-navigation'
+import SideNavigation from '../components/navigation/side-navigation'
 import Panels from '../components/panels'
 
 function BasicTemplate({ data, ...rest }) {

@@ -37,8 +37,10 @@ export function Side({ children, ...rest }) {
   return (
     <aside
       css={{
-        gridArea: 'side',
-        marginRight: SPACING['3XL']
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          gridArea: 'side',
+          marginRight: SPACING['3XL']
+        }
       }}
       {...rest}
     >
