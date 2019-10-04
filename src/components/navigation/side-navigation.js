@@ -5,7 +5,8 @@ import {
   SPACING,
   COLORS,
   MEDIA_QUERIES,
-  Icon
+  Icon,
+  LargeScreen
 } from '@umich-lib/core'
 
 function getSiteMapBranch({ data, to }) {
@@ -85,7 +86,7 @@ export default function SideNavigation({ to }) {
   }
 
   return (
-    <React.Fragment>
+    <LargeScreen>
       <nav
         css={{
           display: 'none',
@@ -115,7 +116,7 @@ export default function SideNavigation({ to }) {
           )}
         </ol>
       </nav>
-    </React.Fragment>
+    </LargeScreen>
   )
 }
 
@@ -133,20 +134,25 @@ function SideNavLink({ path, item, children, ...rest }) {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          paddingRight: SPACING['XS'],
+          paddingRight: SPACING['S'],
           color: isActive ? COLORS.teal['400'] : 'inherit',
           fontWeight: isActive ? '700' : 'inherit',
           ':hover': {
             textDecoration: 'underline'
           },
-          paddingTop: SPACING['S'],
-          paddingBottom: hasChildren ? SPACING['XS'] : SPACING['S']
+          paddingTop: SPACING['M'],
+          paddingBottom: renderChildren ? SPACING['XS'] : SPACING['M']
         }}
         {...rest}
       >
         {children}
         {hasChildren && (
-          <span css={{ lineHeight: '1', color: COLORS.neutral['400'] }}>
+          <span
+            css={{
+              paddingLeft: SPACING['XS'],
+              lineHeight: '1',
+              color: COLORS.neutral['400']
+            }}>
             <Icon icon="expand_more" />
           </span>
         )}
