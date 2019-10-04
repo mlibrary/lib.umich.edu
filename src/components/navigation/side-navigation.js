@@ -7,12 +7,23 @@ import {
   MEDIA_QUERIES,
   Icon
 } from '@umich-lib/core'
-import HorizontalNavigation from './horizontal-navigation'
 
-export default function SideNavigation({
-  title,
-  to
-}) {
+function getSiteMapBranch({ data, to }) {
+  const find = n => to.includes(n.to)
+  const root = data.find(find)
+
+  if (root) {
+    const parent = root.children.find(find)
+
+    if (parent) {
+      return parent
+    }
+  }
+
+  return null
+}
+
+export default function SideNavigation({ to }) {
   /*
     TODO:
 
@@ -61,41 +72,24 @@ export default function SideNavigation({
     `
   )
 
-  const primaryNavData = data.allNavPrimary.edges[0].node.nav
-  const path = to
-    .substring(1)
-    .split('/')
-    .map(p => "/" + p)
-  const parentPath = path
-    .slice(0, path.length - 1)
-  const depth = path.findIndex((p, i) => {
-    return path.slice(0, i+1).join('') === to
+  const branch = getSiteMapBranch({
+    data: data.allNavPrimary.edges[0].node.nav,
+    to
   })
 
-  const siblings = parentPath.reduce((acc, p, y) => {
-    const fullPath = parentPath.slice(0, y+1).join('')
-    const match = acc.find(i => i.to === fullPath)
+  if (!branch) {
+    return null
+  }
 
-    if (match) {
-      return match.children
-    }
+  const title = branch.text
+  const items = branch.children
 
-    return acc
-  }, primaryNavData)
+  if (!items) {
+    return null
+  }
 
   return (
     <React.Fragment>
-      {depth > 2 && (
-        <div css={{
-            display: 'block',
-            [MEDIA_QUERIES.LARGESCREEN]: {
-              display: 'none'
-            }
-          }}
-        >
-          <HorizontalNavigation items={siblings} />
-        </div>
-      )}
       <nav
         css={{
           display: 'none',
@@ -109,17 +103,20 @@ export default function SideNavigation({
         <ol css={{
           marginTop: SPACING['XS'],
           marginBottom: SPACING['M'],
+          '> li': {
+            padding: `${SPACING['S']} 0`
+          },
           '> li:not(:last-of-type)': {
             borderBottom: `solid 1px ${COLORS.neutral['100']}`
           }
         }}>
-          {siblings.map(sibling =>
-            <li key={sibling.to + sibling.text}>
+          {items.map(item =>
+            <li key={item.to + item.text}>
               <SideNavLink
                 path={to}
-                item={sibling}
+                item={item}
               >
-                {sibling.text}
+                {item.text}
               </SideNavLink>
             </li>
           )}
@@ -129,65 +126,49 @@ export default function SideNavigation({
   )
 }
 
-function SideNavLink({ path, item, children, ...rest }) {
-  const { to } = item
-  const isActive = path === to
-  const showChildren = isActive && item.children
-  const activePaddingStyles = showChildren ? {
-    paddingBottom: SPACING['XS']
-  } : {}
-  const activeStyles = isActive ? {
-    fontWeight: '700',
-    color: COLORS.teal['400'],
-    ...activePaddingStyles
-  } : {}
-  const activeContainerStyles = isActive ? {
-    paddingBottom: showChildren ? SPACING['XS'] : '0'
-  } : {}
+function SideNavLink({ path, item, children }) {
+  const hasChildren = item.children ? true : false
+  const renderChildren = hasChildren && path.includes(item.to)
+  const isActive = path === item.to
 
   return (
-    <div css={{
-      ...activeContainerStyles,
-      'li a': {
-        paddingLeft: SPACING['M'],
-        paddingTop: SPACING['XS'],
-        paddingBottom: SPACING['XS'],
-      }
-    }}>
+    <React.Fragment>
       <Link
         kind="list"
-        to={to}
+        to={item.to}
         css={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          cursor: 'pointer',
-          paddingTop: SPACING['S'],
-          paddingBottom: SPACING['S'],
           paddingRight: SPACING['XS'],
+          color: isActive ? COLORS.teal['400'] : 'inherit',
+          fontWeight: isActive ? '700' : 'inherit',
           ':hover': {
             textDecoration: 'underline'
-          },
-          ...activeStyles
+          }
         }}
       >
-        <span data-link-text>{children}</span>
-        {item.children && (<span css={{
-          color: COLORS.neutral['400'],
-          paddingLeft: SPACING['XS'],
-          lineHeight: '1'
-        }}><Icon icon="expand_more" /></span>)}
+        {children}
+        {hasChildren && (
+          <span css={{ lineHeight: '1', color: COLORS.neutral['400'] }}>
+            <Icon icon="expand_more" />
+          </span>
+        )}
       </Link>
-      {showChildren && (
-        <ol>
+      {renderChildren && (
+        <ol css={{
+          paddingTop: SPACING['XS'],
+        }}>
           {item.children.map(child => (
-            <li>
+            <li css={{
+              padding: `${SPACING['XS']} 0`,
+              paddingLeft: SPACING['M'],
+            }}>
               <SideNavLink path={path} item={child}>{child.text}</SideNavLink>
             </li>
           ))}
         </ol>
       )}
-    </div>
+    </React.Fragment>
   )
 }
-
