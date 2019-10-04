@@ -148,6 +148,7 @@ function SideNavLink({ path, item, children, ...rest }) {
         {children}
         {hasChildren && (
           <span
+            aria-hidden="true"
             css={{
               paddingLeft: SPACING['XS'],
               lineHeight: '1',
