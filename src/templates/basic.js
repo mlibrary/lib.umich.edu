@@ -14,11 +14,7 @@ import Panels from '../components/panels'
 import useNavigationBranch from '../components/navigation/use-navigation-branch'
 
 function BasicTemplate({ data, ...rest }) {
-  const node = data.page
-    ? data.page
-    : data.room
-    ? data.room
-    : null
+  const node = data.page ? data.page : data.room ? data.room : null
 
   const {
     title,
@@ -45,6 +41,17 @@ function BasicTemplate({ data, ...rest }) {
             {field_local_navigation && (
               <SideNavigation to={fields.slug} branch={navBranch} />
             )}
+            {field_local_navigation && smallScreenItems && (
+              <SmallScreen>
+                <div
+                  css={{
+                    margin: `0 -${SPACING['M']}`,
+                  }}
+                >
+                  <HorizontalNavigation items={smallScreenItems} />
+                </div>
+              </SmallScreen>
+            )}
           </Side>
           <Content>
             <Heading
@@ -56,15 +63,6 @@ function BasicTemplate({ data, ...rest }) {
             >
               {title}
             </Heading>
-            {field_local_navigation && smallScreenItems && (
-              <SmallScreen>
-                <div css={{
-                  margin: `0 -${SPACING['M']}`
-                }}>
-                  <HorizontalNavigation items={smallScreenItems} />
-                </div>
-              </SmallScreen>
-            )}
             {body && <HTML html={body.processed} />}
           </Content>
         </Template>
