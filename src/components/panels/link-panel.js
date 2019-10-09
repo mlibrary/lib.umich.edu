@@ -34,7 +34,7 @@ export default function LinkPanel({ data }) {
                 css={{
                   display: 'block',
                   paddingBottom: SPACING['S'],
-                  [':hover']: {
+                  ':hover': {
                     boxShadow: 'none',
                     '[data-text]': {
                       ...LINK_STYLES['list'][':hover']
