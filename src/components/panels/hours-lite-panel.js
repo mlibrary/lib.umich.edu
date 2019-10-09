@@ -46,7 +46,8 @@ export default function HoursLitePanel({ data }) {
             }}>
               <Icon d={icons['clock']} />
             </span>
-            <GatsbyLink to={h.to} css={{ flex: '1' }} css={{
+            <GatsbyLink to={h.to} css={{
+              flex: '1',
               ':hover span': {
                 textDecoration: 'underline'
               },
