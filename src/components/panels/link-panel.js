@@ -1,7 +1,8 @@
 import React from 'react'
 import {
   SPACING,
-  Heading
+  Heading,
+  LINK_STYLES
 } from '@umich-lib/core'
 import Link from '../link'
 
@@ -21,16 +22,28 @@ export default function LinkPanel({ data }) {
           maxWidth: '24rem',
           columns: '2',
           columnGap: SPACING['XL'],
-          marginTop: SPACING['L'],
-          'li': {
-            marginBottom: SPACING['S']
-          }
+          marginTop: SPACING['L']
         }}>
           {field_link.map((d, i) => (
             <li
               key={d.title + i}
             >
-              <Link kind="list" to={d.uri}>{d.title}</Link>
+              <Link
+                kind="list"
+                to={d.uri}
+                css={{
+                  display: 'block',
+                  paddingBottom: SPACING['S'],
+                  [':hover']: {
+                    boxShadow: 'none',
+                    '[data-text]': {
+                      ...LINK_STYLES['list'][':hover']
+                    }
+                  }
+                }}
+              >
+                <span data-text>{d.title}</span>
+              </Link>
             </li>
           ))}
         </ol>
