@@ -7,14 +7,13 @@ import Panels from '../components/panels'
 
 function BasicTemplate({ data, ...rest }) {
   const {
-    title,
     drupal_internal__nid,
     relationships,
   } = data.page
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO title={title} />
+      <SEO />
       <Panels data={relationships.field_panels} />
     </Layout>
   )
