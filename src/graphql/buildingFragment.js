@@ -57,11 +57,6 @@ export const query = graphql`
       field_parent_page {
         ...sectionCardFragment
       }
-      field_parking {
-        description {
-          processed
-        }
-      }
       field_visit {
         description {
           processed
