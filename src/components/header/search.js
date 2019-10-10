@@ -29,7 +29,7 @@ function Search() {
       }}
     >
       <TextInput
-        id="search-query"
+        id="site-search-query"
         labelText="Query"
         type="search"
         hideLabel
