@@ -20,15 +20,12 @@ const Layout = ({ children, drupalNid }) => (
               nav {
                 to
                 text
-                description
                 children {
                   text
                   to
-                  description,
                   children {
                     text
                     to
-                    description
                   }
                 }
               }
