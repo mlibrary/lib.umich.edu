@@ -89,7 +89,7 @@ export default function VisitTemplate({ data, ...rest }) {
               <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
                 Parking
               </Heading>
-              <HTMLList data={field_parking} />
+              {field_parking && (<HTMLList data={field_parking} />)}
 
               <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
                 Access
