@@ -58,11 +58,6 @@ export const query = graphql`
           ...sectionCardFragment
         }
       }
-      field_parking {
-        description {
-          processed
-        }
-      }
       field_visit {
         description {
           processed
