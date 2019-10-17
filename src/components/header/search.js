@@ -1,16 +1,17 @@
 import React from 'react'
+import { navigate } from 'gatsby'
 import {
   SPACING,
   Icon,
   TextInput,
   Button
 } from '@umich-lib/core'
+
 import VisuallyHidden from '@reach/visually-hidden'
 
 function Search() {
   return (
     <form
-      action="https://search.lib.umich.edu/everything"
       method="get"
       css={{
         display: 'flex',
@@ -21,14 +22,19 @@ function Search() {
       }}
       role="search"
       aria-label="Sitewide"
+      onSubmit={e => {
+        e.preventDefault()
+
+        navigate("/search")
+      }}
     >
       <TextInput
-        id="search-query"
+        id="site-search-query"
         labelText="Query"
         type="search"
         hideLabel
         name="query"
-        placeholder="Search"
+        placeholder="Search this site"
       />
       <Button
         type="submit"

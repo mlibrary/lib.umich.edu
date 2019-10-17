@@ -22,7 +22,6 @@ const Layout = ({ children, drupalNid }) => (
                 children {
                   text
                   to
-                  description
                   children {
                     text
                     to

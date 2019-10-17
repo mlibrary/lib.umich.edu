@@ -193,7 +193,7 @@ function Search({ labelId }) {
       aria-labelledby={labelId}
     >
       <TextInput
-        id="search-query"
+        id="library-search-query"
         labelText="Query"
         type="search"
         hideLabel

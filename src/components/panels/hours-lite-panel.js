@@ -8,6 +8,7 @@ import {
   Heading,
 } from '@umich-lib/core'
 import * as moment from 'moment'
+import { Link as GatsbyLink } from 'gatsby'
 
 import Link from '../link'
 import icons from '../../reusable/icons'
@@ -31,10 +32,7 @@ export default function HoursLitePanel({ data }) {
       <Heading level={2} size="XL">{field_title}</Heading>
 
       <ol css={{
-        marginTop: SPACING['L'],
-        'li': {
-          marginBottom: SPACING['S']
-        }
+        marginTop: SPACING['L']
       }}>
         {hours.map((h, i) => (
           <li key={i + h.text + h.to} css={{
@@ -48,17 +46,25 @@ export default function HoursLitePanel({ data }) {
             }}>
               <Icon d={icons['clock']} />
             </span>
-            <Link kind="list" to={h.to} css={{ flex: '1' }}>
-              <span css={{
-                display: 'inline'
-              }}>
-                <span css={{
+            <GatsbyLink to={h.to} css={{
+              flex: '1',
+              ':hover span': {
+                textDecoration: 'underline'
+              },
+              paddingBottom: `${SPACING['S']}`
+            }}>
+              <span>
+                <span
+                  data-text
+                  css={{
+                  display: 'block',
                   [MEDIAQUERIES['M']]: {
+                    display: 'inline-block',
                     marginRight: SPACING['XS']
                   }
                 }}>{h.text}</span>
                 <span css={{
-                  display: 'block',
+                  display: 'inline-block',
                   marginTop: SPACING['3XS'],
                   [MEDIAQUERIES['M']]: {
                     marginTop: '0',
@@ -71,7 +77,7 @@ export default function HoursLitePanel({ data }) {
                   fontSize: '0.875rem',
                 }}>{h.subText}</span>
               </span>
-            </Link>
+            </GatsbyLink>
             </li>
           ))}
         <li>
