@@ -46,9 +46,7 @@ function A11yMessage() {
         marginTop: SPACING['XS'],
       }}
     >
-      <strong css={{ fontWeight: '700' }}>
-        Thursday is accessibility day.
-      </strong>{' '}
+      <strong css={{ fontWeight: '700' }}>Monday is accessibility day.</strong>{' '}
       Your visible cursor has been disabled to encourage keyboard only use.
     </p>
   )
