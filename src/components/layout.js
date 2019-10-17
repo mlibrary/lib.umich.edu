@@ -3,12 +3,11 @@ import PropTypes from 'prop-types'
 import { Global } from '@emotion/core'
 import { StaticQuery, graphql } from 'gatsby'
 
-import { UniversalHeader, GlobalStyleSheet } from '@umich-lib/core'
+import { UniversalHeader, GlobalStyleSheet, COLORS } from '@umich-lib/core'
 
 import Header from './header'
 import Footer from './footer'
 import DevelopmentAlert from './development-alert'
-import { COLORS } from '@umich-lib/styles';
 
 const Layout = ({ children, drupalNid }) => (
   <StaticQuery
@@ -20,15 +19,13 @@ const Layout = ({ children, drupalNid }) => (
               nav {
                 to
                 text
-                description
                 children {
                   text
                   to
-                  description,
+                  description
                   children {
                     text
                     to
-                    description
                   }
                 }
               }
@@ -54,32 +51,30 @@ const Layout = ({ children, drupalNid }) => (
       return (
         <React.Fragment>
           <GlobalStyleSheet />
-          <Global styles={{
-            'html, body, #___gatsby, #___gatsby > div': {
-              height: '100%'
-            },
-            "*:focus": {
-              outlineColor: COLORS.blue['400']
-            }
-          }}
+          <Global
+            styles={{
+              'html, body, #___gatsby, #___gatsby > div': {
+                height: '100%',
+              },
+              '*:focus': {
+                outlineColor: COLORS.blue['400'],
+              },
+            }}
           />
-          <div css={{
-            minHeight: '100%',
-            display: 'grid',
-            gridTemplateRows: 'auto 1fr auto',
-            gridTemplateColumns: '100%'
-          }}>
+          <div
+            css={{
+              minHeight: '100%',
+              display: 'grid',
+              gridTemplateRows: 'auto 1fr auto',
+              gridTemplateColumns: '100%',
+            }}
+          >
             <div>
               <DevelopmentAlert />
               <UniversalHeader />
-              <Header
-                primary={primary}
-                secondary={secondary}
-              />
+              <Header primary={primary} secondary={secondary} />
             </div>
-            <main>
-              {children}
-            </main>
+            <main>{children}</main>
             <Footer />
           </div>
           {drupalNid && (
