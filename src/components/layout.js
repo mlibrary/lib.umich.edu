@@ -3,11 +3,29 @@ import PropTypes from 'prop-types'
 import { Global } from '@emotion/core'
 import { StaticQuery, graphql } from 'gatsby'
 
-import { UniversalHeader, GlobalStyleSheet, COLORS } from '@umich-lib/core'
+import {
+  UniversalHeader,
+  GlobalStyleSheet,
+  COLORS,
+  Alert,
+  Margins,
+} from '@umich-lib/core'
 
 import Header from './header'
 import Footer from './footer'
 import DevelopmentAlert from './development-alert'
+import AccessibilityModeAlert from './accessibility-mode-alert'
+
+const a11yMode = process.env.ACCESSIBILITY_MODE === 'true'
+
+if (a11yMode) {
+  let date = new Date()
+  let dayOfWeek = date.getDay()
+
+  if (dayOfWeek === 4) {
+    import('no-mouse-days')
+  }
+}
 
 const Layout = ({ children, drupalNid }) => (
   <StaticQuery
@@ -69,6 +87,7 @@ const Layout = ({ children, drupalNid }) => (
             }}
           >
             <div>
+              {a11yMode && <AccessibilityModeAlert />}
               <DevelopmentAlert />
               <UniversalHeader />
               <Header primary={primary} secondary={secondary} />

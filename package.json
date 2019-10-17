@@ -20,6 +20,7 @@
     "gatsby-transformer-sharp": "^2.2.19",
     "intersection-observer": "^0.7.0",
     "moment": "^2.24.0",
+    "no-mouse-days": "0.0.1",
     "prettier": "^1.18.2",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
