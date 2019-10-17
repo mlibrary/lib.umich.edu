@@ -22,7 +22,7 @@ if (a11yMode) {
   let date = new Date()
   let dayOfWeek = date.getDay()
 
-  if (dayOfWeek === 4) {
+  if (dayOfWeek === 1) {
     import('no-mouse-days')
   }
 }
