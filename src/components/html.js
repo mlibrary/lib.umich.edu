@@ -139,6 +139,7 @@ const renderHast = new rehypeReact({
     ),
     div: ({ children }) => children,
     img: Image,
+    u: ({ children }) => children
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
