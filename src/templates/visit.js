@@ -44,7 +44,7 @@ export default function VisitTemplate({ data, ...rest }) {
   } = page
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
-  const { field_visit, field_parking, field_amenities } = relationships
+  const { field_visit, field_amenities } = relationships
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -86,14 +86,7 @@ export default function VisitTemplate({ data, ...rest }) {
               <Heading level={2} size="M">
                 Getting here
               </Heading>
-              <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
-                Parking
-              </Heading>
-              {field_parking && (<HTMLList data={field_parking} />)}
 
-              <Heading level={3} size="2XS" css={{ fontWeight: '700' }}>
-                Access
-              </Heading>
               <HTML html={field_access.processed} />
 
               <Heading level={2} size="M">
