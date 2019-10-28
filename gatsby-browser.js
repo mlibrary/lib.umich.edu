@@ -35,7 +35,9 @@ export const wrapPageElement = ({ element, props }) => {
     <React.Fragment>
       {element}
       <LargeScreen>
-        <Chat fixed />
+        <span id="ask-a-librarian-chat">
+          <Chat fixed />
+        </span>
       </LargeScreen>
     </React.Fragment>
   )
