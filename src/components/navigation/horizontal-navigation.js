@@ -7,7 +7,7 @@ import {
   Margins,
   MEDIA_QUERIES,
   LargeScreen,
-  SmallScreen
+  SmallScreen,
 } from '@umich-lib/core'
 
 export default function HorizontalNavigation({ items, ...rest }) {
@@ -22,21 +22,23 @@ export default function HorizontalNavigation({ items, ...rest }) {
         [MEDIA_QUERIES.LARGESCREEN]: {
           position: 'sticky',
           top: '0',
-          marginBottom: SPACING['3XL']
+          marginBottom: SPACING['3XL'],
         },
         borderBottom: `solid 1px ${COLORS.neutral['100']}`,
         background: COLORS.blue['100'],
-        zIndex: '1'
+        zIndex: '0',
       }}
       {...rest}
       aria-label="Local"
     >
-      <Margins css={{
-        padding: '0',
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          padding: `0 ${SPACING['2XL']}`
-        }
-      }}>
+      <Margins
+        css={{
+          padding: '0',
+          [MEDIA_QUERIES.LARGESCREEN]: {
+            padding: `0 ${SPACING['2XL']}`,
+          },
+        }}
+      >
         <ol>
           {items.map(({ to, text }, i) => (
             <li
@@ -46,8 +48,8 @@ export default function HorizontalNavigation({ items, ...rest }) {
                 [MEDIA_QUERIES.LARGESCREEN]: {
                   display: 'inline-block',
                   marginRight: SPACING['L'],
-                  border: 'none'
-                }
+                  border: 'none',
+                },
               }}
             >
               <LargeScreen>
@@ -55,14 +57,16 @@ export default function HorizontalNavigation({ items, ...rest }) {
                   css={{
                     display: 'inline-block',
                     paddingTop: SPACING['L'],
-                    paddingBottom: `calc(${SPACING['L']} - 4px)`
+                    paddingBottom: `calc(${SPACING['L']} - 4px)`,
                   }}
                   activeStyle={{
                     fontWeight: '700',
                     borderBottom: `solid 4px ${COLORS.teal['400']}`,
                   }}
                   to={to}
-                >{text}</Link>
+                >
+                  {text}
+                </Link>
               </LargeScreen>
               <SmallScreen>
                 <Link
@@ -70,16 +74,18 @@ export default function HorizontalNavigation({ items, ...rest }) {
                     display: 'block',
                     paddingTop: SPACING['M'],
                     paddingBottom: SPACING['M'],
-                    paddingLeft: `calc(${SPACING['M']} - 4px)`
+                    paddingLeft: `calc(${SPACING['M']} - 4px)`,
                   }}
                   activeStyle={{
                     fontWeight: '700',
                     borderLeft: `solid 4px ${COLORS.teal['400']}`,
                     background: COLORS.teal['100'],
-                    color: COLORS.teal['400']
+                    color: COLORS.teal['400'],
                   }}
                   to={to}
-                >{text}</Link>
+                >
+                  {text}
+                </Link>
               </SmallScreen>
             </li>
           ))}

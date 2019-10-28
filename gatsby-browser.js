@@ -7,6 +7,8 @@
 // You can delete this file if you're not using itimport React from "react"
 import React from 'react'
 import { Chat, LargeScreen } from '@umich-lib/core'
+import DevelopmentMessage from './src/components/development-message'
+import VisuallyHidden from '@reach/visually-hidden'
 
 export const onClientEntry = () => {
   // IntersectionObserver polyfill for gatsby-background-image (Safari, IE)
@@ -33,6 +35,7 @@ export const wrapPageElement = ({ element, props }) => {
   // including location, data, etc - you don't need to pass it
   return (
     <React.Fragment>
+      <DevelopmentMessage />
       {element}
       <LargeScreen>
         <span id="ask-a-librarian-chat">

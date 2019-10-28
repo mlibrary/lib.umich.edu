@@ -11,7 +11,6 @@ import {
 } from '@umich-lib/core'
 import Header from './header'
 import Footer from './footer'
-import DevelopmentAlert from './development-alert'
 
 const Layout = ({ children, drupalNid }) => (
   <StaticQuery
@@ -118,7 +117,6 @@ const Layout = ({ children, drupalNid }) => (
               </Margins>
             </section>
             <section>
-              <DevelopmentAlert />
               <UniversalHeader />
               <Header primary={primary} secondary={secondary} />
             </section>
