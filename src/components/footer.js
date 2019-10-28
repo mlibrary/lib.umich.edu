@@ -69,8 +69,7 @@ function Footer() {
             paddingTop: SPACING['2XL'],
             paddingBottom: SPACING['2XL'],
             [MEDIA_QUERIES.LARGESCREEN]: {
-              paddingTop: SPACING['4XL'],
-              paddingBottom: SPACING['3XL'],
+              paddingTop: SPACING['3XL'],
               columns: '3',
               columnGap: SPACING['XL'],
               '& section': {

@@ -13,6 +13,19 @@ export const onClientEntry = () => {
   if (typeof window.IntersectionObserver === `undefined`) {
     import(`intersection-observer`)
   }
+
+  if (process.env.GATSBY_ACCESSIBILITY_MODE == 'true') {
+    let date = new Date()
+    let dayOfWeek = date.getDay()
+
+    if (dayOfWeek === 1) {
+      import('no-mouse-days').then(() => {
+        console.log(
+          'No Mouse Days activated. Credit: https://github.com/marcysutton/no-mouse-days'
+        )
+      })
+    }
+  }
 }
 
 export const wrapPageElement = ({ element, props }) => {
