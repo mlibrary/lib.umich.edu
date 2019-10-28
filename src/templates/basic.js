@@ -25,8 +25,10 @@ function BasicTemplate({ data, ...rest }) {
     field_local_navigation,
   } = node
 
-  console.log('body', body)
-
+  const panelsData = relationships.field_panels ? relationships.field_panels : []
+  const cardPanels = panelsData.filter(({ __typename }) => __typename === 'paragraph__card_panel')
+  const panels = panelsData.filter(({ __typename }) => __typename !== 'paragraph__card_panel')
+  
   const navBranch = useNavigationBranch(fields.slug)
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
   const smallScreenItems = smallScreenBranch ? smallScreenBranch.children : null
@@ -66,10 +68,17 @@ function BasicTemplate({ data, ...rest }) {
               {title}
             </Heading>
             {body && <HTML html={body.processed} />}
+            <div css={{
+              '[data-panel-margins]': {
+                padding: '0'
+              }
+            }}>
+              <Panels data={cardPanels} />
+            </div>
           </Content>
         </Template>
       </Margins>
-      <Panels data={relationships.field_panels} />
+      <Panels data={panels} />
     </Layout>
   )
 }

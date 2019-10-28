@@ -40,7 +40,7 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
       }}
       {...rest}
     >
-      <Margins>
+      <Margins data-panel-margins>
         {title && (
           <Heading
             level={2}
