@@ -53,7 +53,6 @@ export function Content({ children, ...rest }) {
   return (
     <div
       css={{
-        maxWidth: '38rem',
         gridArea: 'content',
         marginBottom: SPACING['XL']
       }}
