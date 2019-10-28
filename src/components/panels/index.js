@@ -71,6 +71,7 @@ function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
       columns: '2',
       columnGap: SPACING['3XL'],
       '> li': {
+        breakInside: 'avoid',
         marginBottom: SPACING['XL'],
       },
     },
