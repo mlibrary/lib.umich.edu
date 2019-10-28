@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Global } from '@emotion/core'
 import { StaticQuery, graphql } from 'gatsby'
-import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import {
   UniversalHeader,
   GlobalStyleSheet,
