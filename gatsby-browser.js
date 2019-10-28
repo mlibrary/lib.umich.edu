@@ -14,7 +14,7 @@ export const onClientEntry = () => {
     import(`intersection-observer`)
   }
 
-  if (process.env.GATSBY_ACCESSIBILITY_MODE == 'true') {
+  if (process.env.GATSBY_ACCESSIBILITY_MODE === 'true') {
     let date = new Date()
     let dayOfWeek = date.getDay()
 
