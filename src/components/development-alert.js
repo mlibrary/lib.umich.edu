@@ -1,20 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Alert, Margins, SPACING } from '@umich-lib/core'
 
 import Link from './link'
 
-let a11yMode = false
-
-if (process.env.ACCESSIBILITY_MODE === 'true') {
-  let date = new Date()
-  let dayOfWeek = date.getDay()
-
-  if (dayOfWeek === 1) {
-    a11yMode = true
-    import('no-mouse-days')
-  }
-}
+const ACCESSIBILITY_MODE = process.env.GATSBY_ACCESSIBILITY_MODE == 'true'
 
 export default function DevelopmentAlert() {
   return (
@@ -32,11 +22,33 @@ export default function DevelopmentAlert() {
             This is an in progress development site. Visit our current website
             at <Link to="https://www.lib.umich.edu">lib.umich.edu</Link>.
           </p>
-          {a11yMode && <A11yMessage />}
+          <NoMouseDay />
         </Margins>
       </Alert>
     </div>
   )
+}
+
+function NoMouseDay() {
+  const [active, setActive] = useState(false)
+
+  useEffect(() => {
+    if (ACCESSIBILITY_MODE) {
+      let date = new Date()
+      let dayOfWeek = date.getDay()
+
+      if (dayOfWeek === 1) {
+        setActive(true)
+      }
+    }
+  }, [])
+
+  if (active) {
+    import('no-mouse-days')
+    return <A11yMessage />
+  }
+
+  return null
 }
 
 function A11yMessage() {
