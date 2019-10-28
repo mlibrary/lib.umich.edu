@@ -25,6 +25,8 @@ function BasicTemplate({ data, ...rest }) {
     field_local_navigation,
   } = node
 
+  console.log('body', body)
+
   const navBranch = useNavigationBranch(fields.slug)
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
   const smallScreenItems = smallScreenBranch ? smallScreenBranch.children : null
