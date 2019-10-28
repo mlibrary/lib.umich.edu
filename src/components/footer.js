@@ -39,17 +39,17 @@ const items = [
   {
     text: 'Send us an email',
     to: '/ask-librarian',
-    icon: 'email',
+    icon: 'mail_outline',
   },
   {
     text: 'Giving',
     to: '/about-us/give-library',
-    icon: 'book',
+    icon: 'favorite_border',
   },
   {
     text: 'Accessibility',
     to: '/accessibility',
-    icon: 'person',
+    icon: 'accessible_forward',
   },
 ]
 
@@ -130,7 +130,7 @@ function Footer() {
                   padding: `${SPACING['XS']} 0`,
                 }}
               >
-                <IconText icon="close">Jobs at the library</IconText>
+                <IconText icon="work">Jobs at the library</IconText>
               </PlainLink>
             </p>
 
