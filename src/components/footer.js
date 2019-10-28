@@ -60,7 +60,11 @@ function Footer() {
   return (
     <footer
       css={{
-        background: COLORS['neutral']['100'],
+        background: COLORS['blue']['400'],
+        color: 'white',
+        '*:focus': {
+          outlineColor: 'white',
+        },
       }}
     >
       <Margins>
@@ -82,6 +86,9 @@ function Footer() {
             },
             'a:hover': {
               textDecoration: 'underline',
+            },
+            'h2, h3': {
+              color: COLORS['blue']['200'],
             },
           }}
         >
@@ -182,7 +189,7 @@ function Footer() {
               [MEDIA_QUERIES.LARGESCREEN]: {
                 border: '0',
                 padding: '0',
-                borderLeft: `solid 1px ${COLORS.blue['200']}`,
+                borderLeft: `solid 1px ${COLORS.blue['300']}`,
                 paddingLeft: SPACING['XL'],
                 marginLeft: `-${SPACING['2XL']}`,
               },
@@ -234,7 +241,7 @@ function Footer() {
       </Margins>
       <div
         css={{
-          background: COLORS['blue']['200'],
+          background: COLORS['blue']['500'],
           padding: `${SPACING['M']} 0`,
         }}
       >
