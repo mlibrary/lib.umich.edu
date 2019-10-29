@@ -1,5 +1,5 @@
 const COLORS = require('@umich-lib/core').COLORS
-const defaultDrupalBaseUrl = 'https://cms.dev.lib.umich.edu/'
+const defaultDrupalBaseUrl = 'https://cms.lib.umich.edu/'
 
 module.exports = {
   siteMetadata: {
