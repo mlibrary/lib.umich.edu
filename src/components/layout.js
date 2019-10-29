@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Global } from '@emotion/core'
-import { StaticQuery, graphql } from 'gatsby'
 import {
   UniversalHeader,
   GlobalStyleSheet,
@@ -9,6 +8,7 @@ import {
   SPACING,
   Margins,
 } from '@umich-lib/core'
+import { Link as GatsbyLink } from 'gatsby'
 import Header from './header'
 import Footer from './footer'
 import DevelopmentAlert from './development-alert'
@@ -52,7 +52,7 @@ function Layout({ children, drupalNid }) {
                 textDecoration: 'underline',
                 padding: SPACING['XS'],
               },
-              'ul > li:first-of-type': {
+              'ul > li:not(:last-of-type)': {
                 marginBottom: SPACING['M'],
               },
               li: {
@@ -73,12 +73,15 @@ function Layout({ children, drupalNid }) {
           <Margins>
             <ul>
               <li>
-                <a href="#maincontent">Skip to content</a>
+                <a href="#maincontent">Skip to main content</a>
               </li>
               <li>
                 <a href="#ask-a-librarian-chat">
                   Skip to Ask a Librarian chat
                 </a>
+              </li>
+              <li>
+                <GatsbyLink to="/site-map">View site map</GatsbyLink>
               </li>
             </ul>
           </Margins>
