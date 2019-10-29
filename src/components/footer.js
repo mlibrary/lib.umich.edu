@@ -50,6 +50,11 @@ const items = [
     text: 'Accessibility',
     to: '/accessibility',
     icon: 'accessible_forward',
+  },,
+  {
+    text: 'Site map',
+    to: '/site-map',
+    icon: 'map',
   },
 ]
 

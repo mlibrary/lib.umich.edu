@@ -16,6 +16,7 @@ import {
   Alert,
   LINK_STYLES,
 } from '@umich-lib/core'
+import VisuallyHidden from '@reach/visually-hidden'
 
 const StateContext = createContext()
 
@@ -53,7 +54,10 @@ function Nav({ items }) {
 
   return (
     <StateProvider initialState={{ panelOpen: 0 }} reducer={reducer}>
-      <nav aria-label="Main">
+      <nav aria-label="Main" aria-describedby="main-nav-description">
+        <VisuallyHidden>
+          <p id="main-nav-description">Expand main navigation buttons to view related content groups and associated links.</p>
+        </VisuallyHidden>
         <ul
           css={{
             display: 'flex',
