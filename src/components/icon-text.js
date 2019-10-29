@@ -7,7 +7,7 @@ export default function IconText({ d, icon, children, ...rest }) {
   return (
     <span css={{ display: 'flex' }}>
       <span css={{
-        width: '1.5rem',
+        width: '1.75rem',
         flexShrink: '0',
         marginTop: '-2px'
       }}>

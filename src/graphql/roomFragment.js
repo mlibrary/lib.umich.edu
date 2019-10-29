@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment roomFragment on node__room {
+    __typename
     title
     field_horizontal_nav_title
     drupal_id
@@ -22,13 +23,30 @@ export const query = graphql`
     field_access {
       processed
     }
+    field_room_number
+    field_phone_number
+    field_booking_email
     relationships {
       field_room_building {
+        title
+        field_building_address {
+          locality
+          address_line1
+          postal_code
+          administrative_area
+        }
         relationships {
           field_hours_open {
             ...hoursFragment
           }
         }
+        
+      }
+      field_parent_location {
+        title
+      }
+      field_floor {
+        name
       }
       field_media_image {
         relationships {
@@ -45,14 +63,6 @@ export const query = graphql`
               }
             }
           }
-        }
-      }
-      field_room_building {
-        field_building_address {
-          locality
-          address_line1
-          postal_code
-          administrative_area
         }
       }
       field_hours_open {
