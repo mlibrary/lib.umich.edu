@@ -111,6 +111,9 @@ function DestinationLocationInfo({ node }) {
 
   const phone_number = node.field_phone_number
   const email = node.field_booking_email
+  const floor_split = field_floor.name.split(" - ")
+  const floor = floor_split[floor_split.length - 1]
+  const room = "Room " + node.field_room_number
 
   return (
     <div css={{
@@ -132,7 +135,7 @@ function DestinationLocationInfo({ node }) {
       <p>
         <IconText d={icons['address']}>
           <span>
-            {locationTitle}, {field_floor.name}, {node.field_room_number}
+            {locationTitle}, {floor}, {room}
             <span css={{ display: 'block' }}><Link to="/404">View floorplan</Link></span>
           </span>
         </IconText>
