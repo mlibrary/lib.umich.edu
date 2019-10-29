@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
+import { CookiesProvider, useCookies } from 'react-cookie';
+import { Heading, SPACING, Button, List, Icon, MEDIA_QUERIES } from '@umich-lib/core'
 
-import { Heading, SPACING, Button, List } from '@umich-lib/core'
-
-import { DialogOverlay, DialogContent } from './dialog'
+import Dialog from './dialog'
 import Link from './link'
 
 const ACCESSIBILITY_MODE = process.env.GATSBY_ACCESSIBILITY_MODE === 'true'
 
 export default function DevelopmentMessage() {
+  const [cookies, setCookie] = useCookies()
+  const defaultShowDialog = cookies['hide-lib-umich-msg'] ? false : true
   const [noMouseDay, setNoMouseDay] = useState(false)
-  const [showDialog, setShowDialog] = React.useState(true)
-  const close = () => setShowDialog(false)
-  const buttonRef = React.useRef()
+  const [showDialog, setShowDialog] = React.useState(defaultShowDialog)
 
   useEffect(() => {
     if (ACCESSIBILITY_MODE) {
@@ -24,56 +24,80 @@ export default function DevelopmentMessage() {
     }
   }, [])
 
+  const close = () => {
+    setCookie('hide-lib-umich-msg', 'true', { maxAge: 86400 })
+    setShowDialog(false)
+  }
+
   return (
-    <DialogOverlay
-      isOpen={showDialog}
-      onDismiss={close}
-      initialFocusRef={buttonRef}
-    >
-      <DialogContent
+    <CookiesProvider>
+      <Dialog
+        isOpen={showDialog}
         css={{
-          '> *:not(:last-child)': {
-            marginBottom: SPACING['M'],
-          },
+          position: 'relative',
         }}
       >
-        <Heading level={2} size="M" css={{ fontWeight: '700' }}>
-          This is an in progress development site
-        </Heading>
-        <p>
-          You can visit our current website at{' '}
-          <Link to="https://www.lib.umich.edu">lib.umich.edu</Link>.
-        </p>
-        <List type="bulleted">
-          <li>
-            <Link to="/release-notes">View release notes</Link>
-          </li>
-          <li>
-            <Link to="https://umlib.us/wr-qc">Send questions and comments</Link>{' '}
-            to the website redesign team
-          </li>
-        </List>
-        {noMouseDay && <A11yMessage />}
-
         <div
           css={{
-            display: 'flex',
-            alignItems: 'center',
-            '> *': {
-              marginRight: SPACING['S'],
+            '> *:not(:last-child)': {
+              marginBottom: SPACING['M'],
             },
           }}
         >
-          <Button onClick={() => close()} ref={buttonRef}>
-            Continue
-          </Button>
-          <span>or</span>
-          <span>
-            <Link to="https://www.lib.umich.edu/">lib.umich.edu</Link>
-          </span>
+          <Button css={{
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            lineHeight:  '0',
+            padding: SPACING['S'],
+            margin: SPACING['S']
+          }} kind="reset" onClick={() => close()}><Icon title="Dismiss" icon="close" /></Button>
+          <Heading level={2} size="M" css={{ fontWeight: '700', marginRight: SPACING['XL'] }}>
+            This is an in progress development site
+          </Heading>
+          <p>
+            You can visit our current website at{' '}
+            <Link to="https://www.lib.umich.edu">lib.umich.edu</Link>.
+          </p>
+          <List type="bulleted">
+            <li>
+              <Link to="/release-notes">View release notes</Link>
+            </li>
+            <li>
+              <Link to="https://umlib.us/wr-qc">Send questions and comments</Link>{' '}
+              to the website redesign team
+            </li>
+          </List>
+          {noMouseDay && <A11yMessage />}
+
+          <div
+            css={{
+              '> *': {
+                display: 'block',
+                marginBottom: SPACING['S'],
+              },
+              [MEDIA_QUERIES.LARGESCREEN]: {
+                display: 'flex',
+                alignItems: 'center',
+                '> *': {
+                  margin: 0,
+                  marginRight: SPACING['S'],
+                },
+              },
+              paddingTop: SPACING['S'],
+            }}
+          >
+            <Button onClick={() => close()}>
+              Continue
+            </Button>
+            <span>or</span>
+            <span>
+              <Link to="https://www.lib.umich.edu/">lib.umich.edu</Link>
+            </span>
+          </div>
         </div>
-      </DialogContent>
-    </DialogOverlay>
+      </Dialog>
+    </CookiesProvider>
   )
 }
 
