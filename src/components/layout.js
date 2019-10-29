@@ -8,7 +8,6 @@ import {
 } from '@umich-lib/core'
 import Header from './header'
 import Footer from './footer'
-import DevelopmentMessage from './development-message'
 import SkipLinks from './skip-links'
 import useNavigationData from '../hooks/use-navigation-data'
 
@@ -37,7 +36,6 @@ function Layout({ children, drupalNid }) {
         }}
       >
         <section>
-          <DevelopmentMessage />
           <SkipLinks />
           <UniversalHeader />
           <Header primary={primary} secondary={secondary} />
