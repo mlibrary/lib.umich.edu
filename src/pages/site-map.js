@@ -3,7 +3,6 @@ import Layout from '../components/layout'
 
 import {
   Heading,
-  Text,
   SPACING,
   Margins,
   COLORS,
