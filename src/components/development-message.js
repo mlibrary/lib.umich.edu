@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { CookiesProvider, useCookies } from 'react-cookie';
-import { Heading, SPACING, Button, List, Icon, MEDIA_QUERIES, COLORS, Z_SPACE } from '@umich-lib/core'
+import { useCookies } from 'react-cookie';
+import { Heading, SPACING, Button, List, Icon, MEDIA_QUERIES } from '@umich-lib/core'
 
 import Dialog from './dialog'
 import Link from './link'
@@ -32,6 +32,7 @@ export default function DevelopmentMessage() {
   return (
     <Dialog
       isOpen={showDialog}
+      aria-labelledby="dev-msg-heading"
       css={{
         position: 'relative',
       }}
@@ -51,7 +52,7 @@ export default function DevelopmentMessage() {
           padding: SPACING['S'],
           margin: SPACING['S']
         }} kind="reset" onClick={() => close()}><Icon title="Dismiss" icon="close" /></Button>
-        <Heading level={2} size="M" css={{ fontWeight: '700', marginRight: SPACING['XL'] }}>
+        <Heading level={2} size="M" id="dev-msg-heading" css={{ fontWeight: '700', marginRight: SPACING['XL'] }}>
           This is an in progress development site
         </Heading>
         <p>

@@ -16,7 +16,7 @@ import createGoogleMapsUrl from './utilities/create-google-maps-url'
 
 const locationURL = createGoogleMapsUrl({
   query:
-    'University of Michigan Library, 913 S. University Avenue, Ann Arbor, MI 48109',
+    'University of Michigan Library, 913 S. University Avenue, Ann Arbor, MI 48109'
 })
 
 const items = [

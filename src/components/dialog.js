@@ -1,6 +1,6 @@
 import React from 'react'
 import { Dialog } from '@reach/dialog'
-import { Z_SPACE, MEDIA_QUERIES, SPACING } from '@umich-lib/core'
+import { Z_SPACE, MEDIA_QUERIES } from '@umich-lib/core'
 
 import '@reach/dialog/styles.css'
 
