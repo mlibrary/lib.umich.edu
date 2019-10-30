@@ -10,6 +10,7 @@ import Header from './header'
 import Footer from './footer'
 import SkipLinks from './skip-links'
 import useNavigationData from '../hooks/use-navigation-data'
+import DevelopmentMessage from './development-message'
 
 function Layout({ children, drupalNid }) {
   const { primary, secondary } = useNavigationData()
@@ -36,6 +37,7 @@ function Layout({ children, drupalNid }) {
         }}
       >
         <section>
+          <DevelopmentMessage />
           <SkipLinks />
           <UniversalHeader />
           <Header primary={primary} secondary={secondary} />

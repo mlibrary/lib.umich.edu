@@ -6,7 +6,6 @@
 
 // You can delete this file if you're not using itimport React from "react"
 import React from 'react'
-import DevelopmentMessage from './src/components/development-message'
 import { Chat, LargeScreen, COLORS } from '@umich-lib/core'
 
 export const onClientEntry = () => {
@@ -34,7 +33,6 @@ export const wrapPageElement = ({ element, props }) => {
   // including location, data, etc - you don't need to pass it
   return (
     <React.Fragment>
-      <DevelopmentMessage />
       {element}
       <LargeScreen>
         <span id="ask-a-librarian-chat" css={{
