@@ -14,7 +14,7 @@ function fetchWithRetry(url) {
 }
 
 const limiter = new Bottleneck({
-  maxConcurrent: 40
+  maxConcurrent: 25
 });
 
 const fetchWithRetryAndLimited = limiter.wrap(fetchWithRetry)
