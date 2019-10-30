@@ -13,7 +13,9 @@ export function Template({ children, ...rest }) {
           `,
           gridTemplateColumns: `calc(216px + ${SPACING['4XL']}) 1fr`,
           gridTemplateRows: 'auto 1fr',
+          marginBottom: SPACING['5XL'],
         },
+        marginBottom: SPACING['4XL'],
       }}
       {...rest}
     >
