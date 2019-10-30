@@ -9,6 +9,13 @@ module.exports = {
   plugins: [
     'gatsby-plugin-netlify',
     {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `images`,
+        path: `${__dirname}/src/images/`,
+      },
+    },
+    {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
         policy: [{ userAgent: '*', disallow: '/' }],
