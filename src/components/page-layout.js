@@ -1,22 +1,19 @@
-import React from "react"
-import {
-  SPACING,
-  MEDIA_QUERIES
-} from '@umich-lib/core'
+import React from 'react'
+import { SPACING, MEDIA_QUERIES } from '@umich-lib/core'
 
 export function Template({ children, ...rest }) {
   return (
     <div
       css={{
         [MEDIA_QUERIES.LARGESCREEN]: {
-          display: "grid",
+          display: 'grid',
           gridTemplateAreas: `
             "top top"
             "side content"
           `,
           gridTemplateColumns: `calc(216px + ${SPACING['4XL']}) 1fr`,
-          gridTemplateRows: "auto 1fr",
-        }
+          gridTemplateRows: 'auto 1fr',
+        },
       }}
       {...rest}
     >
@@ -39,8 +36,8 @@ export function Side({ children, ...rest }) {
       css={{
         [MEDIA_QUERIES.LARGESCREEN]: {
           gridArea: 'side',
-          marginRight: SPACING['3XL']
-        }
+          marginRight: SPACING['3XL'],
+        },
       }}
       {...rest}
     >
@@ -54,7 +51,7 @@ export function Content({ children, ...rest }) {
     <div
       css={{
         gridArea: 'content',
-        marginBottom: SPACING['XL']
+        marginBottom: SPACING['XL'],
       }}
       {...rest}
     >
