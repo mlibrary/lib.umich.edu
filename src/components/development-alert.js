@@ -34,7 +34,7 @@ export default function DevelopmentAlert() {
           <p css={{
 
           }}>
-            This is an in progress development site (<Link kind="subtle" to="/release-notesrelease">release notes</Link>). Use our <Link kind="subtle" to="https://umlib.us/wr-qc">contact form</Link> to send questions and comments. You can visit our current website
+            This is an in progress development site (<Link kind="subtle" to="/release-notes">release notes</Link>). Use our <Link kind="subtle" to="https://umlib.us/wr-qc">contact form</Link> to send questions and comments. You can visit our current website
             at <Link kind="subtle" to="https://www.lib.umich.edu">lib.umich.edu</Link>.
           </p>
           {noMouseDay && <A11yMessage />}
