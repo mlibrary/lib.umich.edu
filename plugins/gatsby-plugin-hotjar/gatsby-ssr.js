@@ -1,11 +1,12 @@
 const React = require('react')
 
-exports.onRenderBody = ({ setPostBodyComponents }, pluginOptions) => {
-  if (process.env.NODE_ENV === `production`) {
-    const {id, sv} = pluginOptions
+const onRenderBody = ({ setPostBodyComponents }, pluginOptions) => {
+  const { id, sv } = pluginOptions
+
+  if (id && sv) {
     setPostBodyComponents([
       <script
-        key={`gatsby-plugin-hotjar`}
+        key="gatsby-plugin-hotjar"
         dangerouslySetInnerHTML={{
           __html: `
             (function(h,o,t,j,a,r){
@@ -21,6 +22,6 @@ exports.onRenderBody = ({ setPostBodyComponents }, pluginOptions) => {
       />,
     ])
   }
-
-  return null
 }
+
+export { onRenderBody }
