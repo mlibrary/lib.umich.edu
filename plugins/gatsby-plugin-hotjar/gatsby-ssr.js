@@ -1,9 +1,9 @@
-import React from "react"
+const React = require('react')
 
 exports.onRenderBody = ({ setPostBodyComponents }, pluginOptions) => {
   if (process.env.NODE_ENV === `production`) {
     const {id, sv} = pluginOptions
-    return setPostBodyComponents([
+    setPostBodyComponents([
       <script
         key={`gatsby-plugin-hotjar`}
         dangerouslySetInnerHTML={{
