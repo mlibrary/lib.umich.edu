@@ -53,5 +53,12 @@ module.exports = {
         icon: 'src/images/icon.png', // This path is relative to the root of the site.
       },
     },
+    {
+      resolve: `gatsby-plugin-hotjar`,
+      options: {
+        id: process.env.HOTJAR_ID,
+        sv: process.env.HOTJAR_SNIPPET_VERSION
+      },
+    },
   ],
 }
