@@ -194,7 +194,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const sectionTemplate = path.resolve(`src/templates/section.js`);
     const visitTemplate = path.resolve(`src/templates/visit.js`);
     const homeTemplate = path.resolve(`src/templates/home.js`);
-    const destinationTemplate = path.resolve(`src/templates/destination.js`);
+    const destinationBodyTemplate = path.resolve(`src/templates/destination-body.js`);
+    const destinationFullTemplate = path.resolve(`src/templates/destination-full.js`);
 
     function getTemplate(node) {
       const {
@@ -216,8 +217,9 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         case 'visit':
           return visitTemplate
         case 'destination_body':
+            return destinationBodyTemplate
         case 'destination_full':
-          return destinationTemplate
+          return destinationFullTemplate
         default:
           return null
       }
