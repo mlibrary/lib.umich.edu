@@ -136,7 +136,7 @@ function DestinationLocationInfo({ node }) {
         <IconText d={icons['address']}>
           <span>
             {locationTitle}, {floor}, {room}
-            <span css={{ display: 'block' }}><Link to="/404">View floorplan</Link></span>
+            <span css={{ display: 'block' }}><Link to="#">View floorplan (coming soon)</Link></span>
           </span>
         </IconText>
       </p>
