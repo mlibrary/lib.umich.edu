@@ -120,9 +120,7 @@ function DestinationLocationInfo({ node }) {
       '> *:not(:last-child)': {
         marginBottom: SPACING['M']
       },
-      marginBottom: SPACING['XL'],
-      paddingBottom: SPACING['XL'],
-      borderBottom: `solid 1px ${COLORS.neutral['100']}`
+      marginBottom: SPACING['2XL'],
     }}>
       <p>
         <IconText icon="access_time">
