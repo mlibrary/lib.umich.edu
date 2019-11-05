@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   SPACING,
   Icon,
@@ -22,10 +22,15 @@ const MEDIAQUERIES = {
 }
 
 export default function HoursLitePanel({ data }) {
+  const [initialized, setInitialized] = useState(false)
   const {
     field_title
   } = data
-  const hours = processHoursData(data.relationships.field_cards)
+  const hours = processHoursData(data.relationships.field_cards, initialized)
+
+  useEffect(() => {
+    setInitialized(true)
+  }, [])
 
   return (
     <section>
@@ -117,12 +122,20 @@ const hoursDataExample = [
 ]
 */
 
-function processHoursData(data) {
-  const now = moment()
+function processHoursData(data, initialized) {
+  function hours(node) {
+    if (initialized) {
+      const now = moment()
+      return displayHours({node, now})
+    }
+
+    return '...'
+  }
+
   const result = data.map(node => {
     return {
       text: node.title,
-      subText: 'TODAY: ' + displayHours({node, now}),
+      subText: 'TODAY: ' + hours(node),
       to: node.fields.slug
     }
   })
