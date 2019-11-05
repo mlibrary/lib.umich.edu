@@ -9,7 +9,7 @@ import {
 } from '@umich-lib/core'
 import Link from './link'
 import Hours from './todays-hours'
-import icons from '../reusable/icons'
+import icons from '../maybe-design-system/icons'
 import createGoogleMapsURL from './utilities/create-google-maps-url'
 
 function LayoutWithIcon({ d, palette, children }) {

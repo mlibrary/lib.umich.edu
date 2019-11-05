@@ -9,7 +9,7 @@ import {
 } from '@umich-lib/core'
 
 import fdlp from '../images/fdlp.png'
-import icons from '../reusable/icons'
+import icons from '../maybe-design-system/icons'
 import PlainLink from './plain-link'
 import IconText from './icon-text'
 import createGoogleMapsUrl from './utilities/create-google-maps-url'

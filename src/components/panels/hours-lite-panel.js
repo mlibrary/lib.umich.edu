@@ -11,7 +11,7 @@ import * as moment from 'moment'
 import { Link as GatsbyLink } from 'gatsby'
 
 import Link from '../link'
-import icons from '../../reusable/icons'
+import icons from '../../maybe-design-system/icons'
 import { displayHours } from '../../utils/hours'
 
 const MEDIAQUERIES = {
