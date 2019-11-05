@@ -2,7 +2,6 @@ import React from 'react'
 import {
   SPACING,
   Icon,
-  MEDIA_QUERIES,
   TYPOGRAPHY,
   COLORS,
   Heading,
@@ -12,14 +11,8 @@ import { Link as GatsbyLink } from 'gatsby'
 
 import Link from '../link'
 import icons from '../../maybe-design-system/icons'
+import MEDIA_QUERIES from '../../maybe-design-system/media-queries.js'
 import { displayHours } from '../../utils/hours'
-
-const MEDIAQUERIES = {
-  'XL': '@media only screen and (min-width: 1200px)',
-  'L': '@media only screen and (min-width:920px)',
-  'M': '@media only screen and (min-width: 720px)',
-  'S': MEDIA_QUERIES.LARGESCREEN
-}
 
 export default function HoursLitePanel({ data }) {
   const {
@@ -58,7 +51,7 @@ export default function HoursLitePanel({ data }) {
                   data-text
                   css={{
                   display: 'block',
-                  [MEDIAQUERIES['M']]: {
+                  [MEDIA_QUERIES['M']]: {
                     display: 'inline-block',
                     marginRight: SPACING['XS']
                   }
@@ -66,7 +59,7 @@ export default function HoursLitePanel({ data }) {
                 <span css={{
                   display: 'inline-block',
                   marginTop: SPACING['3XS'],
-                  [MEDIAQUERIES['M']]: {
+                  [MEDIA_QUERIES['M']]: {
                     marginTop: '0',
                     display: 'inline-block'
                   },
