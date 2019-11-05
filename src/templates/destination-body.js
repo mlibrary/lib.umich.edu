@@ -7,8 +7,7 @@ import {
   SPACING,
   Margins,
   Text,
-  SmallScreen,
-  COLORS
+  SmallScreen
 } from '@umich-lib/core'
 
 import { Template, Top, Side, Content } from '../components/page-layout'

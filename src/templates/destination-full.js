@@ -7,7 +7,6 @@ import {
   SPACING,
   Margins,
   Text,
-  SmallScreen,
 } from '@umich-lib/core'
 
 import {
@@ -18,9 +17,6 @@ import {
 import Breadcrumb from '../components/breadcrumb'
 import TemplateLayout from './template-layout'
 import getNode from '../utils/get-node'
-import SideNavigation from '../components/navigation/side-navigation'
-import HorizontalNavigation from '../components/navigation/horizontal-navigation'
-import useNavigationBranch from '../components/navigation/use-navigation-branch'
 import Panels from '../components/panels'
 import HTML from '../components/html'
 import IconText from '../components/icon-text'
@@ -31,8 +27,6 @@ import Link from '../components/link'
 function DestinationTemplate({ data, ...rest }) {
   const node = getNode(data)
 
-  console.log('node', node)
-
   const {
     title,
     fields,
@@ -42,11 +36,6 @@ function DestinationTemplate({ data, ...rest }) {
   const image =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image
-  const field_image_caption =
-    relationships.field_media_image &&
-    relationships.field_media_image.field_image_caption &&
-    relationships.field_media_image.field_image_caption.processed
-
   const imageData = image ? image.localFile.childImageSharp.fluid : null
 
   return (

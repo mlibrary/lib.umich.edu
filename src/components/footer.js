@@ -19,6 +19,7 @@ const locationURL = createGoogleMapsUrl({
     'University of Michigan Library, 913 S. University Avenue, Ann Arbor, MI 48109',
 })
 
+// eslint-disable-next-line
 const items = [
   {
     text: (
