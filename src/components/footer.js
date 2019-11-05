@@ -50,7 +50,8 @@ const items = [
     text: 'Accessibility',
     to: '/accessibility',
     icon: 'accessible_forward',
-  },,
+  },
+  ,
   {
     text: 'Site map',
     to: '/site-map',
@@ -155,7 +156,7 @@ function Footer() {
               }}
             >
               <PlainLink
-                to="/staff-directory"
+                to="/about-us/staff-directory"
                 css={{
                   display: 'inline-block',
                   padding: `${SPACING['XS']} 0`,
