@@ -2,10 +2,11 @@ import React from 'react'
 
 import {
   SPACING,
-  MEDIA_QUERIES,
   COLORS,
   Margins
 } from '@umich-lib/core'
+
+import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 
 export function Template({ children, ...rest }) {
   return (
@@ -13,7 +14,7 @@ export function Template({ children, ...rest }) {
       <div
         css={{
           paddingBottom: SPACING['XL'],
-          [MEDIA_QUERIES.LARGESCREEN]: {
+          [MEDIA_QUERIES['L']]: {
             paddingBottom: SPACING['3XL'],
             display: "grid",
             gridTemplateAreas: `
@@ -34,15 +35,14 @@ export function TemplateSide({ children, ...rest }) {
   return (
     <aside
       css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES['L']]: {
           gridArea: 'side'
         },
       }}
       {...rest}
     >
       <div css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          marginLeft: SPACING['3XL'],
+        [MEDIA_QUERIES['L']]: {
           paddingLeft: SPACING['3XL'],
           borderLeft: `solid 1px ${COLORS.neutral['100']}`,
           borderBottom: 'none',
@@ -62,9 +62,10 @@ export function TemplateContent({ children, ...rest }) {
   return (
     <div
       css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES['L']]: {
           maxWidth: '38rem',
           gridArea: 'content',
+          marginRight: SPACING['2XL'],
         },
         marginBottom: SPACING['XL']
       }}

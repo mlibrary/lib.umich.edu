@@ -9,7 +9,7 @@ import {
 } from '@umich-lib/core'
 
 import fdlp from '../images/fdlp.png'
-import icons from '../reusable/icons'
+import icons from '../maybe-design-system/icons'
 import PlainLink from './plain-link'
 import IconText from './icon-text'
 import createGoogleMapsUrl from './utilities/create-google-maps-url'
@@ -19,6 +19,7 @@ const locationURL = createGoogleMapsUrl({
     'University of Michigan Library, 913 S. University Avenue, Ann Arbor, MI 48109',
 })
 
+// eslint-disable-next-line
 const items = [
   {
     text: (
