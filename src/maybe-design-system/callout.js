@@ -13,7 +13,7 @@ export default function Callout({ children, ...rest }) {
         padding: SPACING['XL'],
         border: `solid 1px ${COLORS.neutral['100']}`,
         borderLeft: `solid 4px ${COLORS.maize['400']}`,
-        borderRadius: '4px',
+        borderRadius: '2px',
         maxWidth: '38rem'
       }}
       data-umich-lib-callout
