@@ -33,15 +33,6 @@ export default function SiteMap() {
     <Layout>
       <SEO title="Site map" />
       <Margins css={{
-        'ol ol': {
-          borderLeft: `solid 1px ${COLORS['blue']['200']}`
-        },
-        '> ol': {
-          [MEDIA_QUERIES.LARGESCREEN]: {
-            columns: '2',
-          },
-          breakInside: 'avoid',
-        },
         marginBottom: SPACING['4XL']
       }}>
         <Breadcrumb data={JSON.stringify(breadcrumbData)} />
@@ -52,29 +43,49 @@ export default function SiteMap() {
         <Heading size="M" level={2} css={{
           marginTop: SPACING['XL']
         }}>Utility navigation</Heading>
-        <NestLinkedList data={secondary} />
+        <ol>
+          {secondary.map(({ text, to, children }) => (
+            <li key={to} css={{
+              margin: SPACING['S'],
+              marginLeft: '0'
+            }}>
+              <Link to={to}>{text}</Link>
+            </li>
+          ))}
+        </ol>
 
         <Heading size="M" level={2} css={{
           marginTop: SPACING['XL']
         }}>Main navigation</Heading>
-        <NestLinkedList data={primary} />
+        <div css={{
+          '> ol': {
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              columns: '2',
+            },
+            breakInside: 'avoid',
+            '> li': {
+              marginBottom: SPACING['4XL'],
+            }
+          },
+          marginBottom: SPACING['4XL']
+        }}>
+          <NestLinkedList data={primary} />
+        </div>
       </Margins>
     </Layout>
   )
 }
 
-function NestLinkedList({ data }) {
+function NestLinkedList({ data, ...rest }) {
   return (
     <ol css={{
-      listStyleType: 'decimal',
-      listStylePosition: 'inside', 
       'li li': {
-        marginLeft: SPACING['XL']
+        marginLeft: SPACING['L']
       },
       '> li': {
         breakInside: 'avoid'
       }
-    }}>
+    }} {...rest}>
       {data.map(({ text, to, children }) => (
         <li key={to} css={{
           margin: SPACING['S'],
