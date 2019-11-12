@@ -7,6 +7,7 @@ import unified from 'unified'
 import rehype from 'rehype-parse'
 import Prose from './prose'
 import Link from './link'
+import Callout from '../maybe-design-system/callout'
 
 /**
   Headings
@@ -123,7 +124,13 @@ const renderHast = new rehypeReact({
       }
       return <Link to={href}>{children}</Link>
     },
-    p: ({ children }) => <Text>{children}</Text>,
+    p: ({ children, className }) => {
+      if (className === 'umich-lib-callout') {
+        return <Callout>{children}</Callout>
+      }
+
+      return <Text>{children}</Text>
+    },
     strong: ({ children }) => (
       <strong css={{ fontWeight: '800' }}>{children}</strong>
     ),

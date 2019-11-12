@@ -3,7 +3,6 @@ import {
   SPACING
 } from '@umich-lib/core'
 
-
 const Prose = styled("div")({
   "> *:not(:last-child)": {
     marginBottom: SPACING["M"]
@@ -22,6 +21,15 @@ const Prose = styled("div")({
   },
   li: {
     marginBottom: SPACING["XS"]
+  },
+  '[data-umich-lib-callout]': {
+    margin: `${SPACING['3XL']} 0`,
+  },
+  '[data-umich-lib-callout] + [data-umich-lib-callout]': {
+    marginTop: SPACING['L']
+  },
+  '[data-umich-lib-callout] + h2, [data-umich-lib-callout] + h3, [data-umich-lib-callout] + h4': {
+    marginTop: SPACING['4XL']
   }
 });
 
