@@ -6,6 +6,8 @@ export const query = graphql`
     field_local_navigation
     drupal_id
     drupal_internal__nid
+    field_seo_title
+    field_seo_keywords
     fields {
       breadcrumb
       slug
@@ -35,6 +37,9 @@ export const query = graphql`
             }
             field_text_card {
               field_title
+              field_link {
+                uri
+              }
               field_body {
                 processed
               }
