@@ -4,9 +4,7 @@ import Layout from '../components/layout'
 import {
   Heading,
   SPACING,
-  Margins,
-  COLORS,
-  TYPOGRAPHY
+  Margins
 } from '@umich-lib/core'
 import SEO from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
