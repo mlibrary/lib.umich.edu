@@ -4,14 +4,13 @@ import Layout from '../components/layout'
 import {
   Heading,
   SPACING,
-  Margins,
-  COLORS,
-  MEDIA_QUERIES
+  Margins
 } from '@umich-lib/core'
 import SEO from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
 import useNavigationData from '../hooks/use-navigation-data'
+import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 
 const breadcrumbData = [
   {
@@ -23,6 +22,7 @@ const breadcrumbData = [
   }
 ]
 
+
 export default function SiteMap() {
   const {
     primary,
@@ -33,31 +33,46 @@ export default function SiteMap() {
     <Layout>
       <SEO title="Site map" />
       <Margins css={{
-        'ol ol': {
-          borderLeft: `solid 1px ${COLORS['blue']['200']}`
-        },
-        '> ol': {
-          [MEDIA_QUERIES.LARGESCREEN]: {
-            columns: '2',
-          },
-          breakInside: 'avoid',
-        },
-        marginBottom: SPACING['4XL']
+        marginBottom: SPACING['4XL'],
       }}>
         <Breadcrumb data={JSON.stringify(breadcrumbData)} />
         <Heading size="3XL" level={1} css={{
           marginBottom: SPACING['L']
         }}>Site map</Heading>
 
-        <Heading size="M" level={2} css={{
+        <Heading size="L" level={2} css={{
           marginTop: SPACING['XL']
         }}>Utility navigation</Heading>
         <NestLinkedList data={secondary} />
 
-        <Heading size="M" level={2} css={{
+        <Heading size="L" level={2} css={{
           marginTop: SPACING['XL']
         }}>Main navigation</Heading>
-        <NestLinkedList data={primary} />
+        <div css={{
+          '> ol': {
+            [MEDIA_QUERIES['M']]: {
+              columns: '2'
+            },
+            [MEDIA_QUERIES['L']]: {
+              columns: '3'
+            }
+          },
+          '> ol > li': {
+            breakInside: 'avoid',
+            marginBottom: SPACING['3XL'],
+          },
+          '> ol > li > ol': {
+            listStyleType: 'lower-alpha'
+          },
+          '> ol > li > ol > li > ol': {
+            listStyleType: 'lower-roman'
+          },
+          '> ol > li > ol > li > ol ol': {
+            listStyleType: 'disc'
+          }
+        }}>
+          <NestLinkedList data={primary} />
+        </div>
       </Margins>
     </Layout>
   )
@@ -67,10 +82,7 @@ function NestLinkedList({ data }) {
   return (
     <ol css={{
       listStyleType: 'decimal',
-      listStylePosition: 'inside', 
-      'li li': {
-        marginLeft: SPACING['XL']
-      },
+      marginLeft: SPACING['L'],
       '> li': {
         breakInside: 'avoid'
       }
