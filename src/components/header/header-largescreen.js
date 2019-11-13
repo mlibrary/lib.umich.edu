@@ -4,7 +4,8 @@ import {
   Margins,
   COLORS,
   SPACING,
-  LINK_STYLES
+  LINK_STYLES,
+  Icon,
 } from '@umich-lib/core'
 
 import Nav from './primary-nav'
@@ -41,7 +42,7 @@ export default ({ primary, secondary }) => (
               aria-label="Utility"
             >
               <ul>
-                {secondary.map(({ text, to }, i) => (
+                {secondary.map(({ text, to, icon }, i) => (
                   <li css={{
                       display: 'inline-block',
                       ':not(:last-child)': {
@@ -59,7 +60,13 @@ export default ({ primary, secondary }) => (
                           '.text': LINK_STYLES['special'][':hover']
                         }
                       }}
-                    ><span className="text">{text}</span></Link>
+                    >
+                      {icon && <Icon icon={icon} size={14} css={{
+                        marginRight: SPACING['2XS'],
+                        marginTop: '-2px'
+                      }} />}
+                      <span className="text">{text}</span>
+                    </Link>
                   </li>
                 ))}
               </ul>

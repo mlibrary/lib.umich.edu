@@ -29,6 +29,7 @@ const useNavigationData = () => {
               nav {
                 to
                 text
+                icon
               }
             }
           }
