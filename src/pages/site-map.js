@@ -6,12 +6,13 @@ import {
   SPACING,
   Margins,
   COLORS,
-  MEDIA_QUERIES
+  TYPOGRAPHY
 } from '@umich-lib/core'
 import SEO from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
 import useNavigationData from '../hooks/use-navigation-data'
+import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 
 const breadcrumbData = [
   {
@@ -23,6 +24,7 @@ const breadcrumbData = [
   }
 ]
 
+
 export default function SiteMap() {
   const {
     primary,
@@ -33,41 +35,43 @@ export default function SiteMap() {
     <Layout>
       <SEO title="Site map" />
       <Margins css={{
-        marginBottom: SPACING['4XL']
+        marginBottom: SPACING['4XL'],
       }}>
         <Breadcrumb data={JSON.stringify(breadcrumbData)} />
         <Heading size="3XL" level={1} css={{
           marginBottom: SPACING['L']
         }}>Site map</Heading>
 
-        <Heading size="M" level={2} css={{
+        <Heading size="L" level={2} css={{
           marginTop: SPACING['XL']
         }}>Utility navigation</Heading>
-        <ol>
-          {secondary.map(({ text, to, children }) => (
-            <li key={to} css={{
-              margin: SPACING['S'],
-              marginLeft: '0'
-            }}>
-              <Link to={to}>{text}</Link>
-            </li>
-          ))}
-        </ol>
+        <NestLinkedList data={secondary} />
 
-        <Heading size="M" level={2} css={{
+        <Heading size="L" level={2} css={{
           marginTop: SPACING['XL']
         }}>Main navigation</Heading>
         <div css={{
           '> ol': {
-            [MEDIA_QUERIES.LARGESCREEN]: {
-              columns: '2',
+            [MEDIA_QUERIES['M']]: {
+              columns: '2'
             },
-            breakInside: 'avoid',
-            '> li': {
-              marginBottom: SPACING['4XL'],
+            [MEDIA_QUERIES['L']]: {
+              columns: '3'
             }
           },
-          marginBottom: SPACING['4XL']
+          '> ol > li': {
+            breakInside: 'avoid',
+            marginBottom: SPACING['3XL'],
+          },
+          '> ol > li > ol': {
+            listStyleType: 'lower-alpha'
+          },
+          '> ol > li > ol > li > ol': {
+            listStyleType: 'lower-roman'
+          },
+          '> ol > li > ol > li > ol ol': {
+            listStyleType: 'disc'
+          }
         }}>
           <NestLinkedList data={primary} />
         </div>
@@ -76,16 +80,15 @@ export default function SiteMap() {
   )
 }
 
-function NestLinkedList({ data, ...rest }) {
+function NestLinkedList({ data }) {
   return (
     <ol css={{
-      'li li': {
-        marginLeft: SPACING['L']
-      },
+      listStyleType: 'decimal',
+      marginLeft: SPACING['L'],
       '> li': {
         breakInside: 'avoid'
       }
-    }} {...rest}>
+    }}>
       {data.map(({ text, to, children }) => (
         <li key={to} css={{
           margin: SPACING['S'],
