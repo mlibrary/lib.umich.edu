@@ -75,6 +75,7 @@ function Image() {
       css={{
         display: 'block',
         [MEDIA_QUERIES['M']]: {
+          margin: SPACING['L'],
           float: 'right',
           width: '40vw',
           shapeMargin: SPACING['XL'],
