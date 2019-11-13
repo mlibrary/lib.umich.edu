@@ -37,6 +37,9 @@ export const query = graphql`
             }
             field_text_card {
               field_title
+              field_link {
+                uri
+              }
               field_body {
                 processed
               }
