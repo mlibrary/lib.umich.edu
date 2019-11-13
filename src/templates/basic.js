@@ -2,15 +2,13 @@ import React from 'react'
 import { graphql } from 'gatsby'
 
 import { Margins, Heading, SPACING, SmallScreen } from '@umich-lib/core'
-
-import Layout from '../components/layout'
-import SEO from '../components/seo'
 import { Template, Top, Side, Content } from '../components/page-layout'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import SideNavigation from '../components/navigation/side-navigation'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
 import Panels from '../components/panels'
+import TemplateLayout from './template-layout'
 import useNavigationBranch from '../components/navigation/use-navigation-branch'
 
 function BasicTemplate({ data, ...rest }) {
@@ -19,7 +17,6 @@ function BasicTemplate({ data, ...rest }) {
   const {
     title,
     body,
-    drupal_internal__nid,
     fields,
     relationships,
     field_local_navigation,
@@ -34,8 +31,7 @@ function BasicTemplate({ data, ...rest }) {
   const smallScreenItems = smallScreenBranch ? smallScreenBranch.children : null
 
   return (
-    <Layout drupalNid={drupal_internal__nid}>
-      <SEO title={title} />
+    <TemplateLayout node={node}>
       <Margins>
         <Template>
           <Top>
@@ -79,7 +75,7 @@ function BasicTemplate({ data, ...rest }) {
         </Template>
       </Margins>
       <Panels data={panels} />
-    </Layout>
+    </TemplateLayout>
   )
 }
 

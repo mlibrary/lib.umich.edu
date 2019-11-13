@@ -41,10 +41,10 @@ function SEO({ description, lang, meta, keywords, title }) {
               },
             ]
               .concat(
-                keywords.length > 0
+                keywords
                   ? {
                       name: 'keywords',
-                      content: keywords.join(', '),
+                      content: keywords,
                     }
                   : []
               )

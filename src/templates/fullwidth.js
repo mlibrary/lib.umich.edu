@@ -3,20 +3,19 @@ import { graphql } from 'gatsby'
 
 import { Margins, Heading, SPACING } from '@umich-lib/core'
 
-import Layout from '../components/layout'
-import SEO from '../components/seo'
+import TemplateLayout from './template-layout'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
 import Panels from '../components/panels'
 
 export default function FullWidthTemplate({ data, ...rest }) {
-  const { title, body, fields, drupal_internal__nid, relationships } = data.page
+  const node = data.page
+  const { title, body, fields, relationships } = node
   const panels = relationships.field_panels
 
   return (
-    <Layout drupalNid={drupal_internal__nid}>
-      <SEO title={title} />
+    <TemplateLayout node={node}>
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
         <Heading size="3XL" level={1} css={{
@@ -42,7 +41,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
       )}
 
       <Panels data={panels} />
-    </Layout>
+    </TemplateLayout>
   )
 }
 
