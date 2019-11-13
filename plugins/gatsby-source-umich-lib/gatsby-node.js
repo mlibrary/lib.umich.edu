@@ -85,6 +85,10 @@ exports.sourceNodes = async (
       if (item.children && item.children.length) {
         navItem.children = processDrupalNavData(item.children);
       }
+
+      if (item.field_icon) {
+        navItem.icon = item.field_icon
+      }
   
       return navItem;
     });
