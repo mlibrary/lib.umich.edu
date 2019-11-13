@@ -48,67 +48,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
 export const query = graphql`
   query($slug: String!, $parents: [String]) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
-      title
-      drupal_internal__nid
-      fields {
-        breadcrumb
-      }
-      body {
-        processed
-      }
-      relationships {
-        field_parent_page {
-          ... on node__page {
-            title
-            fields {
-              slug
-            }
-          }
-        }
-        field_panels {
-          ... on paragraph__card_panel {
-            field_title
-            id
-            relationships {
-              field_card_template {
-                field_machine_name
-              }
-              field_cards {
-                ... on node__page {
-                  title
-                  body {
-                    summary
-                  }
-                  fields {
-                    slug
-                  }
-                }
-                ... on node__building {
-                  ...buildingFragment
-                }
-              }
-            }
-          }
-          ... on paragraph__text_panel {
-            field_title
-            id
-            relationships {
-              field_text_template {
-                field_machine_name
-              }
-              field_text_card {
-                field_title
-                field_link {
-                  uri
-                }
-                field_body {
-                  processed
-                }
-              }
-            }
-          }
-        }
-      }
+      ...pageFragment
     }
     parents: allNodePage(filter: { drupal_id: { in: $parents } }) {
       edges {
