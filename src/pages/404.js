@@ -48,7 +48,7 @@ const NotFoundPage = () => {
             <li>The web address wasn’t copied fully</li>
           </List>
 
-          <Text>If the web address is correct, please contact us at <Link to="/ask-a-librarian">Ask a Librarian</Link> and we’ll do our best to find what you’re looking for.</Text>
+          <Text>If the web address is correct, please contact us at <Link to="/ask-librarian">Ask a Librarian</Link> and we’ll do our best to find what you’re looking for.</Text>
 
           <Text>You can also visit the <Link to="/">homepage</Link>, navigate through our menu options, or use site search.</Text>
         </Prose>
