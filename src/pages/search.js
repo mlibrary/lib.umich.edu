@@ -25,8 +25,6 @@ export default function PlaceholderSearchResultsPage() {
     }
   `)
 
-  console.log('imageData', imageData)
-
   return (
     <Layout>
       <SEO title="Search results" />
