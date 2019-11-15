@@ -12,6 +12,8 @@ export const query = graphql`
     field_email
     field_hours_different_from_build
     field_local_navigation
+    field_is_location_
+    field_display_hours_
     body {
       summary
       processed
