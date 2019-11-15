@@ -40,14 +40,6 @@ export default function SiteMap() {
           marginBottom: SPACING['L']
         }}>Site map</Heading>
 
-        <Heading size="L" level={2} css={{
-          marginTop: SPACING['XL']
-        }}>Utility navigation</Heading>
-        <NestLinkedList data={secondary} />
-
-        <Heading size="L" level={2} css={{
-          marginTop: SPACING['XL']
-        }}>Main navigation</Heading>
         <div css={{
           '> ol': {
             [MEDIA_QUERIES['M']]: {
@@ -71,7 +63,15 @@ export default function SiteMap() {
             listStyleType: 'disc'
           }
         }}>
+          <Heading size="L" level={2} css={{
+            marginTop: SPACING['XL']
+          }}>Main navigation</Heading>
           <NestLinkedList data={primary} />
+
+          <Heading size="L" level={2} css={{
+            marginTop: SPACING['XL']
+          }}>Utility navigation</Heading>
+          <NestLinkedList data={secondary} />
         </div>
       </Margins>
     </Layout>

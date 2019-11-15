@@ -27,9 +27,20 @@ const useNavigationData = () => {
           edges {
             node {
               nav {
-                to
                 text
-                icon
+                to
+                children {
+                  to
+                  text
+                  children {
+                    text
+                    to
+                    children {
+                      to
+                      text
+                    }
+                  }
+                }
               }
             }
           }
