@@ -108,7 +108,8 @@ function SiteSearch({ siteIndex }) {
           >
             {results.length === 0 && (
               <p css={{
-                padding: `${SPACING['XS']} ${SPACING['M']}`,
+                padding: SPACING['S'],
+                color: COLORS.neutral['300']
               }}>No results found.</p>
             )}
             {results.slice(0, 10).map((result, index) => (
