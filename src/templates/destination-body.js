@@ -19,10 +19,7 @@ import HorizontalNavigation from '../components/navigation/horizontal-navigation
 import useNavigationBranch from '../components/navigation/use-navigation-branch'
 import Panels from '../components/panels'
 import HTML from '../components/html'
-import IconText from '../components/icon-text'
-import icons from '../maybe-design-system/icons'
-import Hours from '../components/todays-hours'
-import Link from '../components/link'
+import DestinationLocationInfo from '../components/destination-location-info'
 
 function DestinationTemplate({ data, ...rest }) {
   const node = getNode(data)
@@ -69,13 +66,6 @@ function DestinationTemplate({ data, ...rest }) {
             <div css={{
               maxWidth: '38rem'
             }}>
-              <Img
-                css={{
-                  width: '100%',
-                  borderRadius: '2px'
-                }}
-                fluid={imageData}
-              />
               <Heading level={1} size="3XL" css={{
                 marginTop: SPACING['S'],
                 marginBottom: SPACING['L']
@@ -85,6 +75,15 @@ function DestinationTemplate({ data, ...rest }) {
               }}>{body.summary}</Text>
 
               <DestinationLocationInfo node={node} />
+
+              <Img
+                css={{
+                  width: '100%',
+                  borderRadius: '2px',
+                  marginBottom: SPACING['2XL']
+                }}
+                fluid={imageData}
+              />
             </div>
 
             {body && <HTML html={body.processed} />}
@@ -94,60 +93,6 @@ function DestinationTemplate({ data, ...rest }) {
         </Template>
       </Margins>
     </TemplateLayout>
-  )
-}
-
-function DestinationLocationInfo({ node }) {
-  const {
-    field_parent_location,
-    field_room_building,
-    field_floor,
-  } = node.relationships
-
-  const locationTitle = field_parent_location
-    ? field_parent_location.title
-    : field_room_building.title
-
-  const phone_number = node.field_phone_number
-  const email = node.field_booking_email
-  const floor_split = field_floor.name.split(" - ")
-  const floor = floor_split[floor_split.length - 1]
-  const room = "Room " + node.field_room_number
-
-  return (
-    <div css={{
-      '> *:not(:last-child)': {
-        marginBottom: SPACING['M']
-      },
-      marginBottom: SPACING['2XL'],
-    }}>
-      <p>
-        <IconText icon="access_time">
-          <span>
-            Today: <Hours node={node} />
-            <span css={{ display: 'block' }}><Link to="/locations-and-hours/hours-view">View all hours</Link></span>
-          </span>
-        </IconText>
-      </p>
-      <p>
-        <IconText d={icons['address']}>
-          <span>
-            {locationTitle}, {floor}, {room}
-            <span css={{ display: 'block' }}><Link to="#">View floorplan (coming soon)</Link></span>
-          </span>
-        </IconText>
-      </p>
-      <p>
-        <IconText d={icons['phone']}>
-          <Link to={`tel:+1-${phone_number}`}>{phone_number}</Link>
-        </IconText>
-      </p>
-      <p>
-        <IconText icon="mail_outline">
-          <Link to={`mailto:${email}`}>{email}</Link>
-        </IconText>
-      </p>
-    </div>
   )
 }
 
