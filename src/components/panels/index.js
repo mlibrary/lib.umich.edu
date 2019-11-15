@@ -13,7 +13,7 @@ import Link from '../link'
 import HTML from '../html'
 import Address from '../address'
 import Hours from '../todays-hours'
-import icons from '../../reusable/icons'
+import icons from '../../maybe-design-system/icons'
 import HoursPanel from './hours-panel'
 import HeroPanel from './hero-panel'
 import GroupPanel from './group-panel'
@@ -40,7 +40,7 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
       }}
       {...rest}
     >
-      <Margins>
+      <Margins data-panel-margins>
         {title && (
           <Heading
             level={2}
@@ -71,6 +71,7 @@ function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
       columns: '2',
       columnGap: SPACING['3XL'],
       '> li': {
+        breakInside: 'avoid',
         marginBottom: SPACING['XL'],
       },
     },

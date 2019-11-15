@@ -14,9 +14,9 @@ function Link({ to, kind = 'default', ...other }) {
     return (
       <GatsbyLink
         to={to}
-      ><span css={{
-        ...LINK_STYLES[kind]
-      }} {...other} /></GatsbyLink>
+        css={{...LINK_STYLES[kind]}}
+        {...other}
+      />
     )
   }
 

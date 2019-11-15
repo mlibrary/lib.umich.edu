@@ -1,34 +1,43 @@
 import React from 'react'
 import { graphql } from 'gatsby'
+import Img from 'gatsby-image'
 
-import { Margins, Heading, SPACING, SmallScreen } from '@umich-lib/core'
+import {
+  Heading,
+  SPACING,
+  Margins,
+  Text,
+  SmallScreen
+} from '@umich-lib/core'
+
 import { Template, Top, Side, Content } from '../components/page-layout'
-import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
+import TemplateLayout from './template-layout'
+import getNode from '../utils/get-node'
 import SideNavigation from '../components/navigation/side-navigation'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
-import Panels from '../components/panels'
-import TemplateLayout from './template-layout'
 import useNavigationBranch from '../components/navigation/use-navigation-branch'
+import Panels from '../components/panels'
+import HTML from '../components/html'
+import DestinationLocationInfo from '../components/destination-location-info'
 
-function BasicTemplate({ data, ...rest }) {
-  const node = data.page ? data.page : data.room ? data.room : null
-
+function DestinationTemplate({ data, ...rest }) {
+  const node = getNode(data)
   const {
     title,
-    body,
     fields,
+    body,
     relationships,
-    field_local_navigation,
+    field_local_navigation
   } = node
 
-  const panelsData = relationships.field_panels ? relationships.field_panels : []
-  const cardPanels = panelsData.filter(({ __typename }) => __typename === 'paragraph__card_panel')
-  const panels = panelsData.filter(({ __typename }) => __typename !== 'paragraph__card_panel')
-  
   const navBranch = useNavigationBranch(fields.slug)
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
   const smallScreenItems = smallScreenBranch ? smallScreenBranch.children : null
+  const image =
+    relationships.field_media_image &&
+    relationships.field_media_image.relationships.field_media_image
+  const imageData = image ? image.localFile.childImageSharp.fluid : null
 
   return (
     <TemplateLayout node={node}>
@@ -54,32 +63,40 @@ function BasicTemplate({ data, ...rest }) {
             )}
           </Side>
           <Content>
-            <Heading
-              size="3XL"
-              level={1}
-              css={{
-                marginBottom: SPACING['L'],
-              }}
-            >
-              {title}
-            </Heading>
-            {body && <HTML html={body.processed} />}
             <div css={{
-              '[data-panel-margins]': {
-                padding: '0'
-              }
+              maxWidth: '38rem'
             }}>
-              <Panels data={cardPanels} />
+              <Heading level={1} size="3XL" css={{
+                marginTop: SPACING['S'],
+                marginBottom: SPACING['L']
+              }}>{title}</Heading>
+              <Text lede css={{
+                marginBottom: SPACING['XL']
+              }}>{body.summary}</Text>
+
+              <DestinationLocationInfo node={node} />
+
+              <Img
+                css={{
+                  width: '100%',
+                  borderRadius: '2px',
+                  marginBottom: SPACING['2XL']
+                }}
+                fluid={imageData}
+              />
             </div>
+
+            {body && <HTML html={body.processed} />}
+
+            <Panels data={relationships.field_panels} />
           </Content>
         </Template>
       </Margins>
-      <Panels data={panels} />
     </TemplateLayout>
   )
 }
 
-export default BasicTemplate
+export default DestinationTemplate
 
 export const query = graphql`
   query($slug: String!) {

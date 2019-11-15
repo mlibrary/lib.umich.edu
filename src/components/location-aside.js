@@ -9,15 +9,8 @@ import {
 } from '@umich-lib/core'
 import Link from './link'
 import Hours from './todays-hours'
-import icons from '../reusable/icons'
-
-function createGoogleMapsLink({ place_id, query }) {
-  const place_query = place_id ? `&destination_place_id=${place_id}` : '' 
-
-  return "https://www.google.com/maps/dir/?api=1" 
-    + `&destination=${query}`
-    + place_query
-}
+import icons from '../maybe-design-system/icons'
+import createGoogleMapsURL from './utilities/create-google-maps-url'
 
 function LayoutWithIcon({ d, palette, children }) {
   return (
@@ -115,7 +108,7 @@ export default function LocationAside({ node }) {
           <Text>{address_line1}</Text>
           <Text>{locality}, {administrative_area} {postal_code}</Text>
           <Link
-            to={createGoogleMapsLink({
+            to={createGoogleMapsURL({
               query: `${title} ${address_line1} ${locality}`,
               place_id: null
             })}

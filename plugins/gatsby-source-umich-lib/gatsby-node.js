@@ -85,6 +85,10 @@ exports.sourceNodes = async (
       if (item.children && item.children.length) {
         navItem.children = processDrupalNavData(item.children);
       }
+
+      if (item.field_icon) {
+        navItem.icon = item.field_icon
+      }
   
       return navItem;
     });
@@ -198,6 +202,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const sectionTemplate = path.resolve(`src/templates/section.js`);
     const visitTemplate = path.resolve(`src/templates/visit.js`);
     const homeTemplate = path.resolve(`src/templates/home.js`);
+    const destinationBodyTemplate = path.resolve(`src/templates/destination-body.js`);
+    const destinationFullTemplate = path.resolve(`src/templates/destination-full.js`);
 
     function getTemplate(node) {
       const {
@@ -218,6 +224,10 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return sectionTemplate
         case 'visit':
           return visitTemplate
+        case 'destination_body':
+            return destinationBodyTemplate
+        case 'destination_full':
+          return destinationFullTemplate
         default:
           return null
       }
@@ -232,7 +242,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               relationships: {
                 field_design_template: {
                   field_machine_name: {
-                    in: ["landing_page", "basic", "full_width", "homepage"]
+                    in: ["landing_page", "basic", "full_width", "homepage", "destination_body", "destination_full"]
                   }
                 }
               }
@@ -307,7 +317,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               relationships: {
                 field_design_template: {
                   field_machine_name: {
-                    in: ["visit"]
+                    in: ["visit", "basic", "destination_body", "destination_full"]
                   }
                 }
               }

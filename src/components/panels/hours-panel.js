@@ -272,5 +272,5 @@ function getRow(node, nowWithWeekOffset, isParent) {
     hours = hours.concat(display ? display : 'n/a')
   }
 
-  return [isParent ? 'General' : node.title].concat(hours)
+  return [isParent ? 'Main hours' : node.title].concat(hours)
 }

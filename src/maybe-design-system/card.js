@@ -71,7 +71,7 @@ export default function Card({
         />
       )}
 
-      <p role="heading">
+      <p role="heading" aria-level="3">
         {subtitle && (
           <span
             css={{

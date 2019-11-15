@@ -225,7 +225,7 @@ function NavDropdown({ children, toggleNavNode }) {
 function NavSecondary({ items }) {
   return (
     <ul aria-label="Utility">
-      {items.map(({ to, text }, i) => (
+      {items.map(({ to, text, icon }, i) => (
         <li key={i + text}>
           <Link
             to={to}
@@ -236,7 +236,16 @@ function NavSecondary({ items }) {
               background: COLORS.blue['100'],
             }}
           >
-            {text}
+            {icon && (
+              <Icon
+                icon={icon}
+                css={{
+                  marginRight: SPACING['2XS'],
+                  marginTop: '-2px'
+                }}
+              />
+            )}
+            <span>{text}</span>
           </Link>
         </li>
       ))}

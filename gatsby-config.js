@@ -1,5 +1,5 @@
 const COLORS = require('@umich-lib/core').COLORS
-const defaultDrupalBaseUrl = 'https://cms.dev.lib.umich.edu/'
+const defaultDrupalBaseUrl = 'https://cms.lib.umich.edu/'
 
 module.exports = {
   siteMetadata: {
@@ -8,6 +8,13 @@ module.exports = {
   },
   plugins: [
     'gatsby-plugin-netlify',
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `images`,
+        path: `${__dirname}/src/images/`,
+      },
+    },
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {

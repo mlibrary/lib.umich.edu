@@ -1,6 +1,7 @@
 import React from 'react'
 import BackgroundImage from 'gatsby-background-image-es5'
 import VisuallyHidden from '@reach/visually-hidden'
+import { useWindowSize } from "@reach/window-size";
 import {
   SPACING,
   Margins,
@@ -9,6 +10,7 @@ import {
   TextInput,
   MEDIA_QUERIES,
   TYPOGRAPHY,
+  COLORS
 } from '@umich-lib/core'
 import HTML from '../html'
 
@@ -126,53 +128,43 @@ function Caption({ caption }) {
 
 function BackgroundSection({ data, children, ...rest }) {
   const { field_hero_images } = data.relationships
+  const { width } = useWindowSize();
 
   function getImageData(type) {
     return field_hero_images.find(
       node => node.field_orientation === type
     ).relationships.field_media_image.localFile.childImageSharp.fluid
   }
+
+  if (width > 720) {
+    return (
+      <BackgroundImage
+        Tag="section"
+        fluid={getImageData('horizontal')}
+        backgroundColor={COLORS.neutral['100']}
+        css={{
+          backgroundPosition: 'center left 20%',
+          backgroundSize: 'cover'
+        }}
+        {...rest}
+      >
+        {children}
+      </BackgroundImage>
+      )
+  }
   
   return (
-    <React.Fragment>
-      <div css={{
-        display: 'none',
-        [MEDIAQUERIES['M']]: {
-          display: 'block'
-        }
-      }}>
-        <BackgroundImage
-          Tag="section"
-          fluid={getImageData('horizontal')}
-          backgroundColor={`#040e18`}
-          css={{
-            backgroundPosition: 'center left 20%',
-            backgroundSize: 'cover'
-          }}
-          {...rest}
-        >
-          {children}
-        </BackgroundImage>
-      </div>
-      <div css={{
-        display: 'block',
-        [MEDIAQUERIES['M']]: {
-          display: 'none'
-        }
-      }}>
-        <BackgroundImage
-          Tag="section"
-          fluid={getImageData('vertical')}
-          backgroundColor={`#040e18`}
-          css={{
-            backgroundPosition: 'center top 33%'
-          }}
-          {...rest}
-        >
-          {children}
-        </BackgroundImage>
-      </div>
-    </React.Fragment>
+    <BackgroundImage
+      Tag="section"
+      fluid={getImageData('vertical')}
+      backgroundColor={COLORS.neutral['100']}
+      css={{
+        backgroundPosition: 'center top 33%'
+      }}
+      {...rest}
+    >
+      {children}
+    </BackgroundImage>
   )
 }
 
@@ -192,7 +184,7 @@ function Search({ labelId }) {
       aria-labelledby={labelId}
     >
       <TextInput
-        id="search-query"
+        id="library-search-query"
         labelText="Query"
         type="search"
         hideLabel

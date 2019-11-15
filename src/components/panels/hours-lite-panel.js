@@ -1,40 +1,36 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   SPACING,
   Icon,
-  MEDIA_QUERIES,
   TYPOGRAPHY,
   COLORS,
   Heading,
 } from '@umich-lib/core'
 import * as moment from 'moment'
+import { Link as GatsbyLink } from 'gatsby'
 
 import Link from '../link'
-import icons from '../../reusable/icons'
+import icons from '../../maybe-design-system/icons'
+import MEDIA_QUERIES from '../../maybe-design-system/media-queries.js'
 import { displayHours } from '../../utils/hours'
 
-const MEDIAQUERIES = {
-  'XL': '@media only screen and (min-width: 1200px)',
-  'L': '@media only screen and (min-width:920px)',
-  'M': '@media only screen and (min-width: 720px)',
-  'S': MEDIA_QUERIES.LARGESCREEN
-}
-
 export default function HoursLitePanel({ data }) {
+  const [initialized, setInitialized] = useState(false)
   const {
     field_title
   } = data
-  const hours = processHoursData(data.relationships.field_cards)
+  const hours = processHoursData(data.relationships.field_cards, initialized)
+
+  useEffect(() => {
+    setInitialized(true)
+  }, [])
 
   return (
     <section>
       <Heading level={2} size="XL">{field_title}</Heading>
 
       <ol css={{
-        marginTop: SPACING['L'],
-        'li': {
-          marginBottom: SPACING['S']
-        }
+        marginTop: SPACING['L']
       }}>
         {hours.map((h, i) => (
           <li key={i + h.text + h.to} css={{
@@ -48,19 +44,27 @@ export default function HoursLitePanel({ data }) {
             }}>
               <Icon d={icons['clock']} />
             </span>
-            <Link kind="list" to={h.to} css={{ flex: '1' }}>
-              <span css={{
-                display: 'inline'
-              }}>
-                <span css={{
-                  [MEDIAQUERIES['M']]: {
+            <GatsbyLink to={h.to} css={{
+              flex: '1',
+              ':hover span': {
+                textDecoration: 'underline'
+              },
+              paddingBottom: `${SPACING['S']}`
+            }}>
+              <span>
+                <span
+                  data-text
+                  css={{
+                  display: 'block',
+                  [MEDIA_QUERIES['M']]: {
+                    display: 'inline-block',
                     marginRight: SPACING['XS']
                   }
                 }}>{h.text}</span>
                 <span css={{
-                  display: 'block',
+                  display: 'inline-block',
                   marginTop: SPACING['3XS'],
-                  [MEDIAQUERIES['M']]: {
+                  [MEDIA_QUERIES['M']]: {
                     marginTop: '0',
                     display: 'inline-block'
                   },
@@ -71,7 +75,7 @@ export default function HoursLitePanel({ data }) {
                   fontSize: '0.875rem',
                 }}>{h.subText}</span>
               </span>
-            </Link>
+            </GatsbyLink>
             </li>
           ))}
         <li>
@@ -111,12 +115,20 @@ const hoursDataExample = [
 ]
 */
 
-function processHoursData(data) {
-  const now = moment()
+function processHoursData(data, initialized) {
+  function hours(node) {
+    if (initialized) {
+      const now = moment()
+      return displayHours({node, now})
+    }
+
+    return '...'
+  }
+
   const result = data.map(node => {
     return {
       text: node.title,
-      subText: 'TODAY: ' + displayHours({node, now}),
+      subText: 'TODAY: ' + hours(node),
       to: node.fields.slug
     }
   })
