@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StaticQuery, graphql, navigate, Link } from 'gatsby'
 import { Index } from 'elasticlunr'
 import { SPACING, Z_SPACE, COLORS } from '@umich-lib/core'
@@ -13,6 +13,16 @@ import {
 import '@reach/dialog/styles.css'
 
 export default function SiteSearchWrapper() {
+  const [initialized, setInitialized] = useState(false)
+
+  useEffect(() => {
+    setInitialized(true)
+  }, [])
+
+  if (!initialized) {
+    return null
+  }
+
   return (
     <StaticQuery
       query={graphql`
@@ -32,6 +42,7 @@ let searchIndex
 function SiteSearch({ siteIndex }) {
   const [query, setQuery] = useState('')
   const results = useSearch(query, siteIndex)
+
   const handleChange = e => setQuery(e.target.value)
 
   function handleSelect(term) {
