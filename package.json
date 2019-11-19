@@ -38,7 +38,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
+    "build": "gatsby build && ps auxw ; false",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "develop": "gatsby develop",
