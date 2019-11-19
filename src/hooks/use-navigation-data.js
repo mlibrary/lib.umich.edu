@@ -28,6 +28,7 @@ const useNavigationData = () => {
             node {
               nav {
                 text
+                icon
                 to
                 children {
                   to
