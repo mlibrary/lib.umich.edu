@@ -1,18 +1,7 @@
 import React, { useState } from 'react'
 import { StaticQuery, graphql, navigate, Link } from 'gatsby'
 import { Index } from 'elasticlunr'
-import {
-  SPACING,
-  Icon,
-  Button,
-  Z_SPACE,
-  Margins,
-  COLORS,
-  Heading,
-  TYPOGRAPHY
-} from '@umich-lib/core'
-import VisuallyHidden from '@reach/visually-hidden'
-import { DialogOverlay, DialogContent } from "@reach/dialog"
+import { SPACING, Z_SPACE, COLORS } from '@umich-lib/core'
 import {
   Combobox,
   ComboboxInput,
@@ -21,9 +10,7 @@ import {
   ComboboxOption,
   ComboboxOptionText,
 } from '@reach/combobox'
-import "@reach/dialog/styles.css"
-
-import getTransitionCSS from '../utils/transition'
+import '@reach/dialog/styles.css'
 
 export default function SiteSearchWrapper() {
   return (
@@ -35,9 +22,7 @@ export default function SiteSearchWrapper() {
           }
         }
       `}
-      render={data => (
-        <SiteSearch siteIndex={data.siteSearchIndex.index} />
-      )}
+      render={data => <SiteSearch siteIndex={data.siteSearchIndex.index} />}
     />
   )
 }
@@ -48,7 +33,7 @@ function SiteSearch({ siteIndex }) {
   const [query, setQuery] = useState('')
   const results = useSearch(query, siteIndex)
   const handleChange = e => setQuery(e.target.value)
-  
+
   function handleSelect(term) {
     const page = results.find(r => r.title === term)
     navigate(page.slug)
@@ -56,10 +41,14 @@ function SiteSearch({ siteIndex }) {
 
   return (
     <Combobox onSelect={item => handleSelect(item)}>
-      <div role="search" aria-label="Search this site" css={{
-        display: 'flex',
-        alignItems: 'center',
-      }}>
+      <div
+        role="search"
+        aria-label="Search this site"
+        css={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         <ComboboxInput
           aria-label="Search this site"
           onChange={handleChange}
@@ -80,9 +69,11 @@ function SiteSearch({ siteIndex }) {
         />
       </div>
       {results && (
-        <ComboboxPopover portal={false} css={{
-          position: 'relative',
-        }}>
+        <ComboboxPopover
+          css={{
+            position: 'relative',
+          }}
+        >
           <ComboboxList
             persistSelection
             aria-label="Results"
@@ -98,19 +89,23 @@ function SiteSearch({ siteIndex }) {
                 color: 'white',
                 fontWeight: '700',
                 '[data-user-value]': {
-                  background: 'transparent'
-                }
+                  background: 'transparent',
+                },
               },
               '[data-reach-combobox-option]:not(:last-of-type)': {
                 borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-              }
+              },
             }}
           >
             {results.length === 0 && (
-              <p css={{
-                padding: SPACING['S'],
-                color: COLORS.neutral['300']
-              }}>No results found.</p>
+              <p
+                css={{
+                  padding: SPACING['S'],
+                  color: COLORS.neutral['300'],
+                }}
+              >
+                No results found.
+              </p>
             )}
             {results.slice(0, 10).map((result, index) => (
               <ComboboxOption
@@ -119,17 +114,22 @@ function SiteSearch({ siteIndex }) {
                 css={{
                   '[data-user-value]': {
                     fontWeight: '700',
-                    background: COLORS.maize['200']
+                    background: COLORS.maize['200'],
                   },
                 }}
               >
-                <Link to={result.slug} css={{
-                  display: 'block',
-                  padding: SPACING['S'],
-                  ":hover": {
-                    textDecoration: 'underline'
-                  }
-                }}><ComboboxOptionText /></Link>
+                <Link
+                  to={result.slug}
+                  css={{
+                    display: 'block',
+                    padding: SPACING['S'],
+                    ':hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  <ComboboxOptionText />
+                </Link>
               </ComboboxOption>
             ))}
           </ComboboxList>
