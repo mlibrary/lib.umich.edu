@@ -70,7 +70,7 @@ export default function VisitTemplate({ data, ...rest }) {
           parentNode,
         })}
       />
-      <section aria-label="Hours, parking, access, and amenities">
+      <section aria-label="Hours, parking, and amenities">
         <Template>
           <TemplateSide>
             <LocationAside node={page} />
@@ -89,14 +89,18 @@ export default function VisitTemplate({ data, ...rest }) {
 
               <HTML html={field_access.processed} />
 
-              <Heading level={2} size="M">
-                Amenities
-              </Heading>
-              <List type="bulleted">
-                {field_amenities.map(({ name }, i) => (
-                  <li key={i + name}>{name}</li>
-                ))}
-              </List>
+              {field_amenities.length && (
+                <React.Fragment>
+                  <Heading level={2} size="M">
+                    Amenities
+                  </Heading>
+                  <List type="bulleted">
+                    {field_amenities.map(({ name }, i) => (
+                      <li key={i + name}>{name}</li>
+                    ))}
+                  </List>
+                </React.Fragment>
+              )}
             </Prose>
           </TemplateContent>
         </Template>
