@@ -69,6 +69,9 @@ export const query = graphql`
       field_hours_open {
         ...hoursFragment
       }
+      field_floor {
+        name
+      }
     }
   }
 `
