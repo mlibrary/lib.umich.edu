@@ -7,7 +7,7 @@ require('dotenv').config({
   path: `.env.${activeEnv}`,
 })
 
-const DRUPAL_URL = process.env.DRUPAL_URL
+const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 
 module.exports = {
   siteMetadata: {
