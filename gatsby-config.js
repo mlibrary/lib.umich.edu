@@ -1,5 +1,13 @@
 const COLORS = require('@umich-lib/core').COLORS
-const defaultDrupalBaseUrl = 'https://cms.lib.umich.edu/'
+
+let activeEnv =
+  process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV || 'development'
+console.log(`Using environment config: '${activeEnv}'`)
+require('dotenv').config({
+  path: `.env.${activeEnv}`,
+})
+
+const DRUPAL_URL = process.env.DRUPAL_URL
 
 module.exports = {
   siteMetadata: {
@@ -28,14 +36,13 @@ module.exports = {
     {
       resolve: 'gatsby-source-drupal',
       options: {
-        baseUrl: process.env.DRUPAL_BASE_URL || defaultDrupalBaseUrl,
-        preview: true,
+        baseUrl: DRUPAL_URL,
       },
     },
     {
       resolve: 'gatsby-source-umich-lib',
       options: {
-        baseUrl: process.env.DRUPAL_BASE_URL || defaultDrupalBaseUrl,
+        baseUrl: DRUPAL_URL,
       },
     },
     'gatsby-plugin-react-helmet',
