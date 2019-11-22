@@ -62,7 +62,6 @@ function Image({ children, ...props }) {
                       fluid(
                         srcSetBreakpoints: [640, 960, 1280]
                         maxWidth: 960
-                        quality: 90
                       ) {
                         ...GatsbyImageSharpFluid_noBase64
                       }
@@ -146,7 +145,7 @@ const renderHast = new rehypeReact({
     ),
     div: ({ children }) => children,
     img: Image,
-    u: ({ children }) => children
+    u: ({ children }) => children,
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.

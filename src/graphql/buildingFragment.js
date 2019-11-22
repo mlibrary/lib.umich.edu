@@ -32,11 +32,10 @@ export const query = graphql`
             localFile {
               childImageSharp {
                 fluid(
-                  srcSetBreakpoints: [320, 640, 960, 1280]
+                  srcSetBreakpoints: [320, 640, 960]
                   maxWidth: 960
-                  quality: 90
                 ) {
-                  ...GatsbyImageSharpFluid_withWebp_noBase64
+                  ...GatsbyImageSharpFluid_noBase64
                 }
               }
             }

@@ -63,7 +63,7 @@ function Image() {
       file(relativePath: { eq: "404.png" }) {
         childImageSharp {
           fluid(quality: 80, maxWidth: 1280) {
-            ...GatsbyImageSharpFluid_withWebp_noBase64
+            ...GatsbyImageSharpFluid_noBase64
           }
         }
       }

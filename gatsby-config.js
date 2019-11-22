@@ -8,7 +8,6 @@ require('dotenv').config({
 })
 
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
-
 console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
 
 module.exports = {
@@ -32,8 +31,16 @@ module.exports = {
         sitemap: null,
       },
     },
-    'gatsby-plugin-sharp',
     'gatsby-transformer-sharp',
+    {
+      resolve: 'gatsby-plugin-sharp',
+      options: {
+        stripMetadata: true,
+        maxWidth: 640,
+        srcSetBreakpoints: [340],
+        pngCompressionSpeed: 10,
+      },
+    },
     'gatsby-background-image-es5',
     {
       resolve: 'gatsby-source-drupal',
