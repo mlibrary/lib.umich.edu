@@ -38,7 +38,7 @@ module.exports = {
         stripMetadata: true,
         maxWidth: 640,
         srcSetBreakpoints: [340],
-        pngCompressionSpeed: 10,
+        pngCompressionSpeed: 9,
       },
     },
     'gatsby-background-image-es5',

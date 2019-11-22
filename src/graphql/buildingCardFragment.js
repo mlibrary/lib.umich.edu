@@ -32,10 +32,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(
-                  srcSetBreakpoints: [320, 640, 960]
-                  maxWidth: 960
-                ) {
+                fluid(maxWidth: 320) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
