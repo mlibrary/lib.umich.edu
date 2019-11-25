@@ -73,7 +73,7 @@ function Image() {
     query {
       file(relativePath: { eq: "404.png" }) {
         childImageSharp {
-          fluid {
+          fluid(maxWidth: 640) {
             ...GatsbyImageSharpFluid_noBase64
           }
         }

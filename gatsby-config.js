@@ -33,15 +33,13 @@ module.exports = {
     },
     'gatsby-transformer-sharp',
     {
-      resolve: 'gatsby-plugin-sharp',
+      resolve: `gatsby-plugin-sharp`,
       options: {
+        maxWidth: 1280,
         stripMetadata: true,
-        maxWidth: 640,
-        srcSetBreakpoints: [340],
-        pngCompressionSpeed: 9,
+        defaultQuality: 75,
       },
     },
-    'gatsby-background-image-es5',
     {
       resolve: 'gatsby-source-drupal',
       options: {

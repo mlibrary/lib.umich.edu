@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BackgroundImage from 'gatsby-background-image-es5'
+import BackgroundImage from 'gatsby-background-image'
 import {
   COLORS,
   SPACING,
@@ -19,6 +19,8 @@ export default function Card({
   children,
   ...rest
 }) {
+  console.log('image', image)
+
   const anchorStyles = {
     display: 'block',
     maxWidth: '600px',

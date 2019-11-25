@@ -11,7 +11,7 @@ export default function PlaceholderSearchResultsPage() {
     query {
       file(relativePath: { eq: "squirrel.png" }) {
         childImageSharp {
-          fluid {
+          fluid(maxWidth: 640) {
             ...GatsbyImageSharpFluid_noBase64
           }
         }
