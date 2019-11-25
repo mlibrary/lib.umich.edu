@@ -59,11 +59,7 @@ function Image({ children, ...props }) {
                 field_media_image {
                   localFile {
                     childImageSharp {
-                      fluid(
-                        srcSetBreakpoints: [640, 960, 1280]
-                        maxWidth: 960
-                        quality: 90
-                      ) {
+                      fluid(maxWidth: 640) {
                         ...GatsbyImageSharpFluid_noBase64
                       }
                     }
@@ -146,7 +142,7 @@ const renderHast = new rehypeReact({
     ),
     div: ({ children }) => children,
     img: Image,
-    u: ({ children }) => children
+    u: ({ children }) => children,
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
