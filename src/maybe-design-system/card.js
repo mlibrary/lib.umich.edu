@@ -19,8 +19,6 @@ export default function Card({
   children,
   ...rest
 }) {
-  console.log('image', image)
-
   const anchorStyles = {
     display: 'block',
     maxWidth: '600px',
