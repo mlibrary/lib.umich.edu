@@ -79,7 +79,7 @@ export default ({ primary, secondary }) => (
           )}
           <div
             css={{
-              flexBasis: '20rem',
+              flexBasis: '21rem',
               marginBottom: SPACING['M'],
             }}
           >
