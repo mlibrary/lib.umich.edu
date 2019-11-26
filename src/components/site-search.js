@@ -53,10 +53,11 @@ function SiteSearch({ siteIndex }) {
       >
         <Icon
           icon="search"
-          size={18}
+          size={20}
           css={{
             position: 'absolute',
             left: SPACING['XS'],
+            color: COLORS.neutral['300'],
           }}
         />
         <ComboboxInput
@@ -79,6 +80,10 @@ function SiteSearch({ siteIndex }) {
             border: `solid 1px ${COLORS.neutral['300']}`,
             alignItems: 'center',
             boxShadow: `inset 0 1px 4px rgba(0,0,0,0.1)`,
+            '::placeholder': {
+              color: COLORS.neutral['300'],
+              opacity: 1,
+            },
           }}
         />
         <ComboboxPopover>
