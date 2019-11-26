@@ -11,7 +11,7 @@
     "@reach/window-size": "^0.6.1",
     "@umich-lib/core": "^2.0.2",
     "gatsby": "^2.18.0",
-    "gatsby-background-image-es5": "^0.9.6",
+    "gatsby-background-image": "^0.9.7",
     "gatsby-image": "^2.2.33",
     "gatsby-plugin-emotion": "^4.1.15",
     "gatsby-plugin-manifest": "^2.2.29",
