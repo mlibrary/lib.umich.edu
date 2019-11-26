@@ -1,7 +1,7 @@
 import React from 'react'
-import BackgroundImage from 'gatsby-background-image-es5'
+import BackgroundImage from 'gatsby-background-image'
 import VisuallyHidden from '@reach/visually-hidden'
-import { useWindowSize } from "@reach/window-size";
+import { useWindowSize } from '@reach/window-size'
 import {
   SPACING,
   Margins,
@@ -10,65 +10,72 @@ import {
   TextInput,
   MEDIA_QUERIES,
   TYPOGRAPHY,
-  COLORS
+  COLORS,
 } from '@umich-lib/core'
 import HTML from '../html'
 
 const MEDIAQUERIES = {
-  'XL': '@media only screen and (min-width: 1200px)',
-  'L': '@media only screen and (min-width:920px)',
-  'M': '@media only screen and (min-width: 720px)',
-  'S': MEDIA_QUERIES.LARGESCREEN
+  XL: '@media only screen and (min-width: 1200px)',
+  L: '@media only screen and (min-width:920px)',
+  M: '@media only screen and (min-width: 720px)',
+  S: MEDIA_QUERIES.LARGESCREEN,
 }
 
 const heroHeightCSS = {
   minHeight: '18rem',
   [MEDIAQUERIES['L']]: {
-    minHeight: '25rem'
-  }
+    minHeight: '25rem',
+  },
 }
 
 export default function HeroPanel({ data }) {
   const caption = data.field_caption_text && data.field_caption_text.processed
 
   return (
-    <Margins css={{
-      padding: '0',
-      [MEDIA_QUERIES.LARGESCREEN]: {
-        padding: '0'
-      },
-      [MEDIAQUERIES['M']]: {
-        padding: '0'
-      },
-      [MEDIAQUERIES['L']]: {
-        padding: `0 ${SPACING['2XL']}`
-      }
-    }}>
+    <Margins
+      css={{
+        padding: '0',
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          padding: '0',
+        },
+        [MEDIAQUERIES['M']]: {
+          padding: '0',
+        },
+        [MEDIAQUERIES['L']]: {
+          padding: `0 ${SPACING['2XL']}`,
+        },
+      }}
+    >
       <BackgroundSection
         data={data}
         css={{
           ...heroHeightCSS,
-        }}>
-        <div css={{
-          ...heroHeightCSS,
-          [MEDIAQUERIES['M']]: {
-            ...heroHeightCSS[MEDIAQUERIES['M']],
-            display: 'flex',
-            alignItems: 'center'
-          }
-        }}>
-          <div css={{
-            maxWidth: '28rem',
-            margin: '0 auto',
-            padding: SPACING['M'],
-            paddingTop: SPACING['XL'],
+        }}
+      >
+        <div
+          css={{
+            ...heroHeightCSS,
             [MEDIAQUERIES['M']]: {
-              width: '34rem',
-              maxWidth: '100%',
-              margin: 0,
-              padding: SPACING['XL'],
-            }
-          }}>
+              ...heroHeightCSS[MEDIAQUERIES['M']],
+              display: 'flex',
+              alignItems: 'center',
+            },
+          }}
+        >
+          <div
+            css={{
+              maxWidth: '28rem',
+              margin: '0 auto',
+              padding: SPACING['M'],
+              paddingTop: SPACING['XL'],
+              [MEDIAQUERIES['M']]: {
+                width: '34rem',
+                maxWidth: '100%',
+                margin: 0,
+                padding: SPACING['XL'],
+              },
+            }}
+          >
             <h1
               id="help-find"
               css={{
@@ -83,14 +90,16 @@ export default function HeroPanel({ data }) {
                   padding: '0',
                   ...TYPOGRAPHY['XL'],
                   textAlign: 'left',
-                  marginBottom: SPACING['M']
+                  marginBottom: SPACING['M'],
                 },
                 [MEDIAQUERIES['L']]: {
                   fontSize: '2.25rem',
-                }
+                },
               }}
-            >What can we help you find?</h1>
-            <Search labelId={"help-find"} />
+            >
+              What can we help you find?
+            </h1>
+            <Search labelId={'help-find'} />
           </div>
         </div>
         {caption && <Caption caption={caption} />}
@@ -101,26 +110,28 @@ export default function HeroPanel({ data }) {
 
 function Caption({ caption }) {
   return (
-    <div css={{
-      position: 'absolute',
-      right: '0',
-      bottom: '0',
-      padding: `${SPACING['2XS']} ${SPACING['S']}`,
-      background: 'rgba(0,0,0,0.6)',
-      '*, a, span': {
-        color: 'white',
-        borderColor: 'white',
-        boxShadow: 'none',
-        ':hover': {
-          boxShadow: 'none',
+    <div
+      css={{
+        position: 'absolute',
+        right: '0',
+        bottom: '0',
+        padding: `${SPACING['2XS']} ${SPACING['S']}`,
+        background: 'rgba(0,0,0,0.6)',
+        '*, a, span': {
           color: 'white',
-          borderColor: 'white'
-        }
-      },
-      'a': {
-        textDecoration: 'underline'
-      }
-    }}>
+          borderColor: 'white',
+          boxShadow: 'none',
+          ':hover': {
+            boxShadow: 'none',
+            color: 'white',
+            borderColor: 'white',
+          },
+        },
+        a: {
+          textDecoration: 'underline',
+        },
+      }}
+    >
       <HTML html={caption} />
     </div>
   )
@@ -128,12 +139,11 @@ function Caption({ caption }) {
 
 function BackgroundSection({ data, children, ...rest }) {
   const { field_hero_images } = data.relationships
-  const { width } = useWindowSize();
+  const { width } = useWindowSize()
 
   function getImageData(type) {
-    return field_hero_images.find(
-      node => node.field_orientation === type
-    ).relationships.field_media_image.localFile.childImageSharp.fluid
+    return field_hero_images.find(node => node.field_orientation === type)
+      .relationships.field_media_image.localFile.childImageSharp.fluid
   }
 
   if (width > 720) {
@@ -144,22 +154,22 @@ function BackgroundSection({ data, children, ...rest }) {
         backgroundColor={COLORS.neutral['100']}
         css={{
           backgroundPosition: 'center left 20%',
-          backgroundSize: 'cover'
+          backgroundSize: 'cover',
         }}
         {...rest}
       >
         {children}
       </BackgroundImage>
-      )
+    )
   }
-  
+
   return (
     <BackgroundImage
       Tag="section"
       fluid={getImageData('vertical')}
       backgroundColor={COLORS.neutral['100']}
       css={{
-        backgroundPosition: 'center top 33%'
+        backgroundPosition: 'center top 33%',
       }}
       {...rest}
     >
@@ -176,9 +186,9 @@ function Search({ labelId }) {
       css={{
         display: 'flex',
         height: '2.5rem',
-        'input': {
-          height: '100%'
-        }
+        input: {
+          height: '100%',
+        },
       }}
       role="search"
       aria-labelledby={labelId}
@@ -195,7 +205,7 @@ function Search({ labelId }) {
         type="submit"
         kind="primary"
         css={{
-          marginLeft: SPACING['XS']
+          marginLeft: SPACING['XS'],
         }}
       >
         <Icon icon="search" size={20} />

@@ -42,7 +42,6 @@ export const query = graphql`
             ...hoursFragment
           }
         }
-        
       }
       field_parent_location {
         title
@@ -55,12 +54,8 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(
-                  srcSetBreakpoints: [320, 640, 960, 1280]
-                  maxWidth: 960
-                  quality: 90
-                ) {
-                  ...GatsbyImageSharpFluid_withWebp_noBase64
+                fluid(maxWidth: 640) {
+                  ...GatsbyImageSharpFluid_noBase64
                 }
               }
             }
