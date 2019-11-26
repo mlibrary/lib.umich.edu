@@ -102,23 +102,52 @@ function SiteSearch({ siteIndex }) {
                 },
               }}
             >
-              <p
+              <div
                 css={{
-                  padding: `${SPACING['S']} ${SPACING['M']}`,
-                  color: COLORS.neutral['300'],
-                  background: COLORS.blue['100'],
                   borderBottom: `solid 1px`,
                   borderBottomColor: COLORS.neutral['100'],
                 }}
               >
                 {results.length === 0 ? (
-                  'No results found'
+                  <p
+                    css={{
+                      padding: `${SPACING['S']} ${SPACING['M']}`,
+                      color: COLORS.neutral['300'],
+                    }}
+                  >
+                    <span
+                      css={{
+                        display: 'block',
+                        fontWeight: '600',
+                        color: COLORS.neutral['400'],
+                      }}
+                    >
+                      No results for "{query}".
+                    </span>
+                    <span
+                      css={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        marginTop: SPACING['2XS'],
+                      }}
+                    >
+                      Search tips: some terms require exact match. Try typing
+                      the entire term, or use a different word or phrase.
+                    </span>
+                  </p>
                 ) : (
-                  <span css={{ fontSize: '0.875rem' }}>
+                  <p
+                    css={{
+                      fontSize: '0.875rem',
+                      padding: `${SPACING['S']} ${SPACING['M']}`,
+                      color: COLORS.neutral['300'],
+                      background: COLORS.blue['100'],
+                    }}
+                  >
                     ↑↓ to navigate, enter to select, esc to dismiss
-                  </span>
+                  </p>
                 )}
-              </p>
+              </div>
               {results.slice(0, 10).map((result, index) => (
                 <ComboboxOption
                   key={index}
