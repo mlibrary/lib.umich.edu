@@ -54,7 +54,8 @@ function SiteSearch({ siteIndex }) {
           icon="search"
           size={24}
           css={{
-            marginRight: '-2rem',
+            position: 'relative',
+            right: '-2rem',
           }}
         />
         <ComboboxInput
