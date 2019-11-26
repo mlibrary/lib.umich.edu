@@ -92,13 +92,10 @@ function SiteSearch({ siteIndex }) {
                 width: '100%',
                 background: 'white',
                 ...Z_SPACE['16'],
-                '[aria-selected="true"]': {
-                  background: COLORS.teal['400'],
-                  color: 'white',
-                  fontWeight: '700',
-                  '[data-user-value]': {
-                    background: 'transparent',
-                  },
+                '[aria-selected="true"] a': {
+                  background: COLORS.teal['100'],
+                  borderLeft: `solid 4px ${COLORS.teal['400']}`,
+                  paddingLeft: `calc(${SPACING['M']} - 4px)`,
                 },
                 '[data-reach-combobox-option]:not(:last-of-type)': {
                   borderBottom: `solid 1px ${COLORS.neutral['100']}`,
@@ -107,7 +104,7 @@ function SiteSearch({ siteIndex }) {
             >
               <p
                 css={{
-                  padding: SPACING['S'],
+                  padding: `${SPACING['S']} ${SPACING['M']}`,
                   color: COLORS.neutral['300'],
                   background: COLORS.blue['100'],
                   borderBottom: `solid 1px`,
@@ -137,13 +134,31 @@ function SiteSearch({ siteIndex }) {
                     to={result.slug}
                     css={{
                       display: 'block',
-                      padding: SPACING['S'],
-                      ':hover': {
+                      padding: `${SPACING['S']} ${SPACING['M']}`,
+                      ':hover [data-suggested-value]': {
                         textDecoration: 'underline',
                       },
                     }}
                   >
-                    <ComboboxOptionText />
+                    <p>
+                      <ComboboxOptionText />
+                    </p>
+                    {result.summary && (
+                      <p
+                        css={{
+                          display: '-webkit-box',
+                          color: COLORS.neutral['300'],
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          '-webkit-line-clamp': '2',
+                          '-webkit-box-orient': 'vertical',
+                          fontSize: '0.875rem',
+                          marginTop: SPACING['2XS'],
+                        }}
+                      >
+                        {result.summary}
+                      </p>
+                    )}
                   </Link>
                 </ComboboxOption>
               ))}
