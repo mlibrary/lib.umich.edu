@@ -53,7 +53,7 @@ function SiteSearch({ siteIndex }) {
       >
         <Icon
           icon="search"
-          size={24}
+          size={18}
           css={{
             position: 'absolute',
             left: SPACING['XS'],
@@ -75,7 +75,7 @@ function SiteSearch({ siteIndex }) {
             background: 'none',
             borderRadius: '2px',
             padding: SPACING['XS'],
-            paddingLeft: '2.1rem',
+            paddingLeft: `calc(18px + ${SPACING['S']})`,
             border: `solid 1px ${COLORS.neutral['300']}`,
             alignItems: 'center',
             boxShadow: `inset 0 1px 4px rgba(0,0,0,0.1)`,
