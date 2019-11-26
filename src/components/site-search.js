@@ -46,6 +46,7 @@ function SiteSearch({ siteIndex }) {
         role="search"
         aria-label="Search this site"
         css={{
+          position: 'relative',
           display: 'flex',
           alignItems: 'center',
         }}
@@ -54,8 +55,8 @@ function SiteSearch({ siteIndex }) {
           icon="search"
           size={24}
           css={{
-            position: 'relative',
-            right: '-2rem',
+            position: 'absolute',
+            left: SPACING['XS'],
           }}
         />
         <ComboboxInput
