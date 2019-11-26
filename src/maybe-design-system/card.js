@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BackgroundImage from 'gatsby-background-image-es5'
+import BackgroundImage from 'gatsby-background-image'
 import {
   COLORS,
   SPACING,
