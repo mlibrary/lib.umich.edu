@@ -57,6 +57,12 @@ function getAddressData(node) {
     : {}
 }
 
+function getParentName({ node }) {
+  console.log('node', node)
+
+  return '<parent name>'
+}
+
 export default function LocationAside({ node }) {
   const { title, field_phone_number, field_email } = node
   const {
@@ -66,6 +72,7 @@ export default function LocationAside({ node }) {
     postal_code,
   } = getAddressData(node)
   const floor = getFloor({ node })
+  const name = getParentName({ node })
 
   return (
     <React.Fragment>
@@ -112,8 +119,8 @@ export default function LocationAside({ node }) {
           >
             Address
           </Heading>
-          <Text>{title}</Text>
           {floor && <Text>{floor}</Text>}
+          {name && <Text>{name}</Text>}
           <Text>{address_line1}</Text>
           <Text>
             {locality}, {administrative_area} {postal_code}
