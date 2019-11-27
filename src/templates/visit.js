@@ -89,7 +89,7 @@ export default function VisitTemplate({ data, ...rest }) {
 
               <HTML html={field_access.processed} />
 
-              {field_amenities.length && (
+              {field_amenities.length > 0 && (
                 <React.Fragment>
                   <Heading level={2} size="M">
                     Amenities
