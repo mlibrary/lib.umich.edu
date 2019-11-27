@@ -58,7 +58,6 @@ function getAddressData(node) {
 }
 
 function getName({ node }) {
-  console.log('node', node)
   const { field_parent_location, field_room_building } = node.relationships
 
   return field_parent_location
