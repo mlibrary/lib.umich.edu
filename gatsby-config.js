@@ -10,8 +10,6 @@ require('dotenv').config({
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
 
-console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
-
 module.exports = {
   siteMetadata: {
     title: 'University of Michigan Library',
