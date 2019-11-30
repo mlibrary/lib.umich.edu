@@ -19,6 +19,7 @@ import HeroPanel from './hero-panel'
 import GroupPanel from './group-panel'
 import HoursLitePanel from './hours-lite-panel'
 import LinkPanel from './link-panel'
+import getParentTitle from '../../utils/get-parent-title'
 
 import { StateProvider } from '../use-state'
 
@@ -94,6 +95,14 @@ function CardPanel({ data, headingLevel = 2 }) {
   const noImage = template === 'standard_no_image'
   const useSummary = template !== 'address_and_hours'
 
+  function getCardSubtitle(card) {
+    if (template === 'destination_card_template') {
+      return getParentTitle({ node: card })
+    }
+
+    return null
+  }
+
   function getImage(image) {
     return !image || noImage
       ? null
@@ -167,6 +176,7 @@ function CardPanel({ data, headingLevel = 2 }) {
                   : null
               }
               href={card.fields.slug}
+              subtitle={getCardSubtitle(card)}
               title={card.title}
               children={
                 useSummary ? getSummary(card.body) : renderCardChildren(card)
@@ -280,6 +290,8 @@ export default function Panels({ data }) {
           const type = panel.__typename
           const id = panel.id
 
+          console.log('panel', type, panel)
+
           switch (type) {
             case 'paragraph__hours_panel_lite':
               return <HoursLitePanel data={panel} key={id} />
@@ -294,7 +306,7 @@ export default function Panels({ data }) {
             case 'paragraph__hours_panel':
               return <HoursPanel data={panel} key={id} />
             case 'paragraph__hero_panel':
-                return <HeroPanel data={panel} key={id} />
+              return <HeroPanel data={panel} key={id} />
             default:
               return null
           }
