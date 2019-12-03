@@ -42,6 +42,7 @@ export const query = graphql`
         }
       }
       field_parent_location {
+        title
         field_building_address {
           locality
           address_line1
@@ -64,6 +65,9 @@ export const query = graphql`
       }
       field_hours_open {
         ...hoursFragment
+      }
+      field_floor {
+        name
       }
     }
   }
