@@ -12,6 +12,11 @@ import { getFloor } from '../utils/location-utils'
 export default function DestinationLocationInfo({ node }) {
   const { field_parent_location, field_room_building } = node.relationships
 
+  // Node Page content types do not have destination info.
+  if (node.__typename === 'node__page') {
+    return null
+  }
+
   const shouldDisplayHours =
     node.field_is_location_ && node.field_display_hours_
 

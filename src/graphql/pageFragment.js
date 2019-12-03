@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment pageFragment on node__page {
+    __typename
     title
     field_local_navigation
     drupal_id
@@ -16,6 +17,19 @@ export const query = graphql`
       processed
     }
     relationships {
+      field_media_image {
+        relationships {
+          field_media_image {
+            localFile {
+              childImageSharp {
+                fluid(maxWidth: 640) {
+                  ...GatsbyImageSharpFluid_noBase64
+                }
+              }
+            }
+          }
+        }
+      }
       field_parent_page {
         ... on node__page {
           title
