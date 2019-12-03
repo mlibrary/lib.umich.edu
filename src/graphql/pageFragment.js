@@ -15,6 +15,7 @@ export const query = graphql`
     }
     body {
       processed
+      summary
     }
     relationships {
       field_media_image {
