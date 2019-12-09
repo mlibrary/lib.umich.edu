@@ -42,12 +42,8 @@ export const query = graphql`
         }
       }
       field_parent_location {
-        title
-        field_building_address {
-          locality
-          address_line1
-          postal_code
-          administrative_area
+        ... on node__location {
+          ...locationCardFragment
         }
       }
       field_parent_page {

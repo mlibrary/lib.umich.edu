@@ -44,7 +44,9 @@ export const query = graphql`
         }
       }
       field_parent_location {
-        title
+        ... on node__location {
+          title
+        }
       }
       field_floor {
         name
