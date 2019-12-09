@@ -40,6 +40,7 @@ export const query = graphql`
         }
       }
       field_panels {
+        __typename
         ... on paragraph__card_panel {
           ...CardPanelFragment
         }
