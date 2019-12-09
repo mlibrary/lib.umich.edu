@@ -5,13 +5,15 @@ function Address({ data, ...rest }) {
     locality,
     address_line1,
     postal_code,
-    administrative_area
+    administrative_area,
   } = processAddressData(data)
 
   return (
     <address {...rest}>
       <p>{address_line1}</p>
-      <p>{locality}, {administrative_area} {postal_code}</p>
+      <p>
+        {locality}, {administrative_area} {postal_code}
+      </p>
     </address>
   )
 }
@@ -35,7 +37,7 @@ function processAddressData(data) {
       if (data.relationships.field_parent_location) {
         return data.relationships.field_parent_location.field_building_address
       }
-      break;
+      break
     default:
       return undefined
   }

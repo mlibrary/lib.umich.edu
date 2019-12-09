@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment locationFragment on node__location {
+    __typename
     title
     field_horizontal_nav_title
     drupal_id

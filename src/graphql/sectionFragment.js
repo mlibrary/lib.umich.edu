@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment sectionFragment on node__section_page {
+    __typename
     title
     field_header_title
     drupal_id
