@@ -1,6 +1,6 @@
 import React from 'react'
 import { Heading, SPACING, TYPOGRAPHY, COLORS } from '@umich-lib/core'
-import { getFloor, getParentTitle, getImage } from '../../utils'
+import { getFloor, getParentTitle, getImage, getRoom } from '../../utils'
 import HTML from '../html'
 import CardImage from '../../maybe-design-system/card-image'
 import MEDIA_QUERIES from '../../maybe-design-system/media-queries'
@@ -11,9 +11,11 @@ export default function DestinationHorizontalPanel({ data }) {
     const parentTitle = getParentTitle({ node: card })
     const floor = getFloor({ node: card })
     const imageData = getImage({ node: card })
+    const room = getRoom({ node: card })
+
     return {
       title: card.title,
-      subtitle: `${parentTitle}, ${floor}`,
+      subtitle: `${parentTitle}, ${floor}, ${room}`,
       image: imageData.localFile.childImageSharp,
       content: <HTML html={card.body.processed} />,
     }
