@@ -27,6 +27,9 @@ export const query = graphql`
     field_access {
       processed
     }
+    field_url {
+      uri
+    }
     field_address_is_different_from_
     relationships {
       field_media_image {

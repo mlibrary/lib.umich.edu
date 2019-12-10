@@ -28,6 +28,9 @@ export const query = graphql`
     field_room_number
     field_phone_number
     field_booking_email
+    field_url {
+      uri
+    }
     relationships {
       field_room_building {
         title

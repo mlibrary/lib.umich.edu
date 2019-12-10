@@ -115,6 +115,14 @@ function CardPanel({ data, headingLevel = 2 }) {
       : image.relationships.field_media_image.localFile.childImageSharp.fluid
   }
 
+  function getCardHref(card) {
+    if (card.field_url) {
+      return card.field_url.uri
+    }
+
+    return card.fields.slug
+  }
+
   function getSummary(body) {
     return body ? body.summary : null
   }
@@ -181,7 +189,7 @@ function CardPanel({ data, headingLevel = 2 }) {
                   ? getImage(card.relationships.field_media_image)
                   : null
               }
-              href={card.fields.slug}
+              href={getCardHref(card)}
               subtitle={getCardSubtitle(card)}
               title={card.title}
               children={
