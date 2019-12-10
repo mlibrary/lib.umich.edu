@@ -290,8 +290,6 @@ export default function Panels({ data }) {
           const type = panel.__typename
           const id = panel.id
 
-          console.log('panel', type, panel)
-
           switch (type) {
             case 'paragraph__hours_panel_lite':
               return <HoursLitePanel data={panel} key={id} />
