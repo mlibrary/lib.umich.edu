@@ -43,11 +43,16 @@ export const query = graphql`
         }
       }
       field_parent_location {
+        __typename
         ... on node__location {
           ...locationCardFragment
         }
+        ... on node__building {
+          ...buildingCardFragment
+        }
       }
       field_parent_page {
+        __typename
         ... on node__section_page {
           ...sectionCardFragment
         }
