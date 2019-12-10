@@ -19,6 +19,7 @@ import HeroPanel from './hero-panel'
 import GroupPanel from './group-panel'
 import HoursLitePanel from './hours-lite-panel'
 import LinkPanel from './link-panel'
+import DestinationHorizontalPanel from './destination-horizontal-panel'
 import getParentTitle from '../../utils/get-parent-title'
 
 import { StateProvider } from '../use-state'
@@ -89,9 +90,14 @@ function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
 }
 
 function CardPanel({ data, headingLevel = 2 }) {
+  const template = data.relationships.field_card_template.field_machine_name
+
+  if (template === 'destination_hor_card_template') {
+    return <DestinationHorizontalPanel data={data} />
+  }
+
   const title = data.field_title
   const cards = data.relationships.field_cards
-  const template = data.relationships.field_card_template.field_machine_name
   const noImage = template === 'standard_no_image'
   const useSummary = template !== 'address_and_hours'
 
@@ -306,7 +312,7 @@ export default function Panels({ data }) {
             case 'paragraph__hero_panel':
               return <HeroPanel data={panel} key={id} />
             default:
-              return null
+              throw new Error('Unknown panel type', type)
           }
         })}
       </HideNotFirstHoursNextPreviousButtons>
