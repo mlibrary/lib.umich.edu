@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment locationFragment on node__location {
+    __typename
     title
     field_horizontal_nav_title
     drupal_id
@@ -42,12 +43,8 @@ export const query = graphql`
         }
       }
       field_parent_location {
-        title
-        field_building_address {
-          locality
-          address_line1
-          postal_code
-          administrative_area
+        ... on node__location {
+          ...locationCardFragment
         }
       }
       field_parent_page {
@@ -65,6 +62,9 @@ export const query = graphql`
       }
       field_hours_open {
         ...hoursFragment
+      }
+      field_floor {
+        name
       }
     }
   }

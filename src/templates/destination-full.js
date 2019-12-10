@@ -40,7 +40,7 @@ function DestinationTemplate({ data, ...rest }) {
           {title}
         </Heading>
       </Margins>
-      <Template>
+      <Template asideWidth={'26rem'}>
         <TemplateContent>
           <div
             css={{
@@ -71,6 +71,7 @@ function DestinationTemplate({ data, ...rest }) {
               '> div': {
                 border: 'none',
                 paddingLeft: '0',
+                maxWidth: '38rem',
               },
             }}
           >

@@ -2,13 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import Img from 'gatsby-image'
 
-import {
-  Heading,
-  SPACING,
-  Margins,
-  Text,
-  SmallScreen
-} from '@umich-lib/core'
+import { Heading, SPACING, Margins, Text, SmallScreen } from '@umich-lib/core'
 
 import { Template, Top, Side, Content } from '../components/page-layout'
 import Breadcrumb from '../components/breadcrumb'
@@ -23,13 +17,7 @@ import DestinationLocationInfo from '../components/destination-location-info'
 
 function DestinationTemplate({ data, ...rest }) {
   const node = getNode(data)
-  const {
-    title,
-    fields,
-    body,
-    relationships,
-    field_local_navigation
-  } = node
+  const { title, fields, body, relationships, field_local_navigation } = node
 
   const navBranch = useNavigationBranch(fields.slug)
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
@@ -63,16 +51,29 @@ function DestinationTemplate({ data, ...rest }) {
             )}
           </Side>
           <Content>
-            <div css={{
-              maxWidth: '38rem'
-            }}>
-              <Heading level={1} size="3XL" css={{
-                marginTop: SPACING['S'],
-                marginBottom: SPACING['L']
-              }}>{title}</Heading>
-              <Text lede css={{
-                marginBottom: SPACING['XL']
-              }}>{body.summary}</Text>
+            <div
+              css={{
+                maxWidth: '38rem',
+              }}
+            >
+              <Heading
+                level={1}
+                size="3XL"
+                css={{
+                  marginTop: SPACING['S'],
+                  marginBottom: SPACING['L'],
+                }}
+              >
+                {title}
+              </Heading>
+              <Text
+                lede
+                css={{
+                  marginBottom: SPACING['XL'],
+                }}
+              >
+                {body.summary}
+              </Text>
 
               <DestinationLocationInfo node={node} />
 
@@ -80,7 +81,7 @@ function DestinationTemplate({ data, ...rest }) {
                 css={{
                   width: '100%',
                   borderRadius: '2px',
-                  marginBottom: SPACING['2XL']
+                  marginBottom: SPACING['2XL'],
                 }}
                 fluid={imageData}
               />
