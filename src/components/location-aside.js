@@ -6,7 +6,7 @@ import Hours from './todays-hours'
 import icons from '../maybe-design-system/icons'
 import createGoogleMapsURL from './utilities/create-google-maps-url'
 
-import getFloor from '../utils'
+import { getFloor } from '../utils'
 
 function LayoutWithIcon({ d, palette, children }) {
   return (

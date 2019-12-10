@@ -3,8 +3,6 @@ import BackgroundImage from 'gatsby-background-image'
 import { COLORS, SPACING } from '@umich-lib/core'
 
 export default function CardImage({ image }) {
-  console.log('image', image)
-
   return (
     <BackgroundImage
       aria-hidden="true"

@@ -7,7 +7,7 @@ import icons from '../maybe-design-system/icons'
 import Hours from '../components/todays-hours'
 import Link from '../components/link'
 
-import getFloor from '../utils'
+import { getFloor } from '../utils'
 
 export default function DestinationLocationInfo({ node }) {
   const { field_parent_location, field_room_building } = node.relationships
