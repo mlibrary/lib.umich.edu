@@ -19,6 +19,8 @@ import HeroPanel from './hero-panel'
 import GroupPanel from './group-panel'
 import HoursLitePanel from './hours-lite-panel'
 import LinkPanel from './link-panel'
+import DestinationHorizontalPanel from './destination-horizontal-panel'
+import getParentTitle from '../../utils/get-parent-title'
 
 import { StateProvider } from '../use-state'
 
@@ -88,16 +90,37 @@ function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
 }
 
 function CardPanel({ data, headingLevel = 2 }) {
+  const template = data.relationships.field_card_template.field_machine_name
+
+  if (template === 'destination_hor_card_template') {
+    return <DestinationHorizontalPanel data={data} />
+  }
+
   const title = data.field_title
   const cards = data.relationships.field_cards
-  const template = data.relationships.field_card_template.field_machine_name
   const noImage = template === 'standard_no_image'
   const useSummary = template !== 'address_and_hours'
+
+  function getCardSubtitle(card) {
+    if (template === 'destination_card_template') {
+      return getParentTitle({ node: card })
+    }
+
+    return null
+  }
 
   function getImage(image) {
     return !image || noImage
       ? null
       : image.relationships.field_media_image.localFile.childImageSharp.fluid
+  }
+
+  function getCardHref(card) {
+    if (card.field_url) {
+      return card.field_url.uri
+    }
+
+    return card.fields.slug
   }
 
   function getSummary(body) {
@@ -166,7 +189,8 @@ function CardPanel({ data, headingLevel = 2 }) {
                   ? getImage(card.relationships.field_media_image)
                   : null
               }
-              href={card.fields.slug}
+              href={getCardHref(card)}
+              subtitle={getCardSubtitle(card)}
               title={card.title}
               children={
                 useSummary ? getSummary(card.body) : renderCardChildren(card)
@@ -294,9 +318,9 @@ export default function Panels({ data }) {
             case 'paragraph__hours_panel':
               return <HoursPanel data={panel} key={id} />
             case 'paragraph__hero_panel':
-                return <HeroPanel data={panel} key={id} />
+              return <HeroPanel data={panel} key={id} />
             default:
-              return null
+              throw new Error('Unknown panel type', type)
           }
         })}
       </HideNotFirstHoursNextPreviousButtons>

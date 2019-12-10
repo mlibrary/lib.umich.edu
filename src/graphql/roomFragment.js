@@ -28,6 +28,9 @@ export const query = graphql`
     field_room_number
     field_phone_number
     field_booking_email
+    field_url {
+      uri
+    }
     relationships {
       field_room_building {
         title
@@ -56,7 +59,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640) {
+                fluid(maxWidth: 920) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
