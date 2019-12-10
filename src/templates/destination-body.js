@@ -107,5 +107,8 @@ export const query = graphql`
     room: nodeRoom(fields: { slug: { eq: $slug } }) {
       ...roomFragment
     }
+    location: nodeLocation(fields: { slug: { eq: $slug } }) {
+      ...locationFragment
+    }
   }
 `
