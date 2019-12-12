@@ -12,5 +12,20 @@ export const query = graphql`
     fields {
       slug
     }
+    relationships {
+      field_media_image {
+        relationships {
+          field_media_image {
+            localFile {
+              childImageSharp {
+                fluid(maxWidth: 920) {
+                  ...GatsbyImageSharpFluid_noBase64
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 `
