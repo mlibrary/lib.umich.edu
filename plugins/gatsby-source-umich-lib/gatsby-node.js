@@ -252,6 +252,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     parents
@@ -277,6 +278,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     parents
@@ -302,6 +304,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     children
@@ -334,6 +337,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     children
@@ -361,6 +365,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     children
@@ -397,6 +402,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               component: template,
               context: {
                 ...node.fields,
+                title: node.title,
                 drupal_nid: node.drupal_internal__nid,
               },
             })
