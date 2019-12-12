@@ -257,6 +257,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                     parents
                     children
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -281,6 +282,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                     parents
                     children
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -305,6 +307,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                     children
                     parents
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -336,6 +339,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                     children
                     parents
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -362,6 +366,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                     children
                     parents
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -392,6 +397,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               component: template,
               context: {
                 ...node.fields,
+                drupal_nid: node.drupal_internal__nid,
               },
             })
           }
