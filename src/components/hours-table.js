@@ -6,7 +6,7 @@ import HoursTableSmallscreens from './hours-table-smallscreens'
 
 export default function HoursTableContainer(props) {
   const isLargeScreen = useMediaQuery({
-    query: MEDIA_QUERIES.XL,
+    query: '(min-width: 1100px)',
   })
 
   if (isLargeScreen) {

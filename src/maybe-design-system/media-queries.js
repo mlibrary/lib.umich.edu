@@ -1,9 +1,9 @@
 import { MEDIA_QUERIES as MQ } from '@umich-lib/core'
 
 const MEDIA_QUERIES = {
-  XL: '(min-width: 1200px)',
-  L: '(min-width: 920px)',
-  M: '(min-width: 720px)',
+  XL: '@media only screen and (min-width: 1200px)',
+  L: '@media only screen and (min-width: 920px)',
+  M: '@media only screen and (min-width: 720px)',
   S: MQ.LARGESCREEN,
 }
 
