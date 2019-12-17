@@ -75,6 +75,7 @@ function RelatedLinks({ data }) {
       <PanelList
         css={{
           gridAutoFlow: 'column',
+          alignItems: 'self-start',
         }}
       >
         {field_link.map(link => (
@@ -102,6 +103,7 @@ function FancyLink({ link }) {
         display: 'block',
         padding: SPACING['M'],
         background: COLORS.teal['100'],
+        border: `solid 1px ${COLORS.teal['200']}`,
         ':hover [data-link]': LINK_STYLES['description'][':hover'],
         borderRadius: '2px',
       }}
