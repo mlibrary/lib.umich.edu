@@ -108,7 +108,7 @@ export default function VisitTemplate({ data, ...rest }) {
 
       <div
         css={{
-          'section:nth-child(odd)': {
+          'section:nth-of-type(odd)': {
             background: COLORS.blue['100'],
           },
         }}
