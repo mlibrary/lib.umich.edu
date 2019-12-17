@@ -10,7 +10,6 @@ export default function HoursTable({ data, headingId, dayOfWeek = false }) {
       css={{
         overflowX: 'auto',
       }}
-      tabIndex="0"
       role="group"
       aria-labelledby={headingId}
     >

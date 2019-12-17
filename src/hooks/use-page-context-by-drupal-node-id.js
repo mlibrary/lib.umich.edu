@@ -21,9 +21,16 @@ export default function usePageContextByDrupalNodeID() {
 
   return data.allSitePage.edges.reduce((memo, edge) => {
     const { context } = edge.node
-    memo = {
-      ...memo,
-      [context.drupal_nid]: context,
+
+    if (context) {
+      const { drupal_nid } = context
+
+      if (drupal_nid) {
+        memo = {
+          ...memo,
+          [drupal_nid]: context,
+        }
+      }
     }
 
     return memo

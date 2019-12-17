@@ -78,8 +78,8 @@ function RelatedLinks({ data }) {
           alignItems: 'self-start',
         }}
       >
-        {field_link.map(link => (
-          <FancyLink link={link} />
+        {field_link.map((link, i) => (
+          <FancyLink link={link} key={link.uri + i} />
         ))}
       </PanelList>
     </PanelTemplate>
