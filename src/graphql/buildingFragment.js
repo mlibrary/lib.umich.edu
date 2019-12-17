@@ -42,9 +42,8 @@ export const query = graphql`
       }
       field_panels {
         __typename
-        ... on paragraph__card_panel {
-          ...CardPanelFragment
-        }
+        ...CardPanelFragment
+        ...linkPanelFragment
       }
       field_hours_open {
         ...hoursFragment

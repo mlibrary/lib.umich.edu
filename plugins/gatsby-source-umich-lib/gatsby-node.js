@@ -252,11 +252,13 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     parents
                     children
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -276,11 +278,13 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     parents
                     children
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -300,11 +304,13 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     children
                     parents
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -331,11 +337,13 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     children
                     parents
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -357,11 +365,13 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     children
                     parents
                   }
+                  drupal_internal__nid
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -392,6 +402,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               component: template,
               context: {
                 ...node.fields,
+                title: node.title,
+                drupal_nid: node.drupal_internal__nid,
               },
             })
           }
