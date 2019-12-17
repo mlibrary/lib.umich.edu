@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "bottleneck": "^2.19.5",
-    "fetch-retry": "^2.2.3"
+    "fetch-retry": "^2.2.3",
+    "gatsby-plugin-remove-trailing-slashes": "^2.1.17"
   }
 }

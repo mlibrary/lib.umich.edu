@@ -16,6 +16,7 @@ module.exports = {
     siteUrl: 'https://preview.lib.umich.edu/',
   },
   plugins: [
+    `gatsby-plugin-remove-trailing-slashes`,
     'gatsby-plugin-netlify',
     {
       resolve: `gatsby-source-filesystem`,
