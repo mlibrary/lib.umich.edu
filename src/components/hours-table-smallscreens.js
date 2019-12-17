@@ -27,6 +27,7 @@ export default function HoursTableSmallscreens({
             marginTop: SPACING['XS'],
             'caption, th, td': {
               padding: `${SPACING['2XS']} ${SPACING['XS']}`,
+              paddingTop: `calc(${SPACING['2XS']} - 2px)`,
             },
             th: {
               width: '9rem',
@@ -95,7 +96,7 @@ export default function HoursTableSmallscreens({
           aria-expanded={show}
           onClick={() => setShow(!show)}
           css={{
-            marginTop: SPACING['M'],
+            marginTop: SPACING['S'],
           }}
         >
           <span
@@ -122,6 +123,9 @@ function HoursSlot({ children, isToday }) {
             width: '4.5rem',
             textAlign: 'center',
             background: COLORS.maize['400'],
+            fontWeight: '600',
+            fontSize: '0.875rem',
+            textTransform: 'uppercase',
           }}
         >
           Today
