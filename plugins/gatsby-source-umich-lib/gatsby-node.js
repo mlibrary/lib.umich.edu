@@ -144,6 +144,7 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
   if (
     drupal_node_types_we_care_about.includes(node.internal.type.substring(6))
   ) {
+    // Handle creating breadcrumb for node.
     createBreadcrumb({
       node,
       createNodeField,
@@ -368,7 +369,9 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               filter: {
                 relationships: {
                   field_design_template: {
-                    field_machine_name: { in: ["visit"] }
+                    field_machine_name: {
+                      in: ["visit", "destination_body", "destination_full"]
+                    }
                   }
                 }
               }

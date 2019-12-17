@@ -1,27 +1,25 @@
 import React from 'react'
 
-import {
-  SPACING,
-  COLORS,
-  Margins
-} from '@umich-lib/core'
+import { SPACING, COLORS, Margins } from '@umich-lib/core'
 
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 
-export function Template({ children, ...rest }) {
+export function Template({ children, asideWidth, ...rest }) {
+  const asWidth = asideWidth ? asideWidth : '21rem'
+
   return (
     <Margins>
       <div
         css={{
           paddingBottom: SPACING['XL'],
-          [MEDIA_QUERIES['L']]: {
+          [MEDIA_QUERIES['XL']]: {
             paddingBottom: SPACING['3XL'],
-            display: "grid",
+            display: 'grid',
             gridTemplateAreas: `
               "content side"
             `,
-            gridTemplateColumns: `1fr calc(21rem + ${SPACING['4XL']}) `
-          }
+            gridTemplateColumns: `1fr calc(${asWidth} + ${SPACING['4XL']}) `,
+          },
         }}
         {...rest}
       >
@@ -36,22 +34,24 @@ export function TemplateSide({ children, ...rest }) {
     <aside
       css={{
         [MEDIA_QUERIES['L']]: {
-          gridArea: 'side'
+          gridArea: 'side',
         },
       }}
       {...rest}
     >
-      <div css={{
-        [MEDIA_QUERIES['L']]: {
-          paddingLeft: SPACING['3XL'],
-          borderLeft: `solid 1px ${COLORS.neutral['100']}`,
-          borderBottom: 'none',
-          paddingBottom: 0
-        },
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-        paddingBottom: SPACING['2XL'],
-        marginBottom: SPACING['2XL']
-      }}>
+      <div
+        css={{
+          [MEDIA_QUERIES['XL']]: {
+            paddingLeft: SPACING['3XL'],
+            borderLeft: `solid 1px ${COLORS.neutral['100']}`,
+            borderBottom: 'none',
+            paddingBottom: 0,
+          },
+          borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+          paddingBottom: SPACING['2XL'],
+          marginBottom: SPACING['2XL'],
+        }}
+      >
         {children}
       </div>
     </aside>
@@ -67,7 +67,7 @@ export function TemplateContent({ children, ...rest }) {
           gridArea: 'content',
           marginRight: SPACING['2XL'],
         },
-        marginBottom: SPACING['XL']
+        marginBottom: SPACING['XL'],
       }}
       {...rest}
     >

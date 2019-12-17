@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment locationFragment on node__location {
+    __typename
     title
     field_horizontal_nav_title
     drupal_id
@@ -26,6 +27,9 @@ export const query = graphql`
     field_access {
       processed
     }
+    field_url {
+      uri
+    }
     field_address_is_different_from_
     relationships {
       field_media_image {
@@ -33,7 +37,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640) {
+                fluid(maxWidth: 920) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
@@ -42,14 +46,16 @@ export const query = graphql`
         }
       }
       field_parent_location {
-        field_building_address {
-          locality
-          address_line1
-          postal_code
-          administrative_area
+        __typename
+        ... on node__location {
+          ...locationCardFragment
+        }
+        ... on node__building {
+          ...buildingCardFragment
         }
       }
       field_parent_page {
+        __typename
         ... on node__section_page {
           ...sectionCardFragment
         }
@@ -64,6 +70,9 @@ export const query = graphql`
       }
       field_hours_open {
         ...hoursFragment
+      }
+      field_floor {
+        name
       }
     }
   }

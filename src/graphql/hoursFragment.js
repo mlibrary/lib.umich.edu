@@ -2,9 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment hoursFragment on Node {
-    ... on Node {
-      __typename
-    }
+    __typename
     ... on paragraph__labor_day_holiday_hours {
       field_date_range {
         value

@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment sectionFragment on node__section_page {
+    __typename
     title
     field_header_title
     drupal_id
@@ -31,7 +32,7 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 640) {
+                fluid(maxWidth: 920) {
                   ...GatsbyImageSharpFluid_noBase64
                 }
               }
@@ -40,6 +41,7 @@ export const query = graphql`
         }
       }
       field_panels {
+        __typename
         ...CardPanelFragment
         ... on paragraph__text_panel {
           field_title

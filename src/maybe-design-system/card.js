@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BackgroundImage from 'gatsby-background-image'
 import {
   COLORS,
   SPACING,
@@ -8,6 +7,7 @@ import {
   LINK_STYLES,
   TYPOGRAPHY,
 } from '@umich-lib/core'
+import CardImage from './card-image'
 
 export default function Card({
   title,
@@ -56,20 +56,7 @@ export default function Card({
 
   const content = (
     <React.Fragment>
-      {image && (
-        <BackgroundImage
-          aria-hidden="true"
-          data-card-image
-          tag="div"
-          fluid={image}
-          css={{
-            backgroundColor: COLORS.blue['100'],
-            paddingTop: '66.67%',
-            marginBottom: SPACING['S'],
-            borderRadius: '2px',
-          }}
-        />
-      )}
+      {image && <CardImage image={image} />}
 
       <p role="heading" aria-level="3">
         {subtitle && (

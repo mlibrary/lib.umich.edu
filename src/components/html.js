@@ -59,7 +59,7 @@ function Image({ children, ...props }) {
                 field_media_image {
                   localFile {
                     childImageSharp {
-                      fluid(maxWidth: 640) {
+                      fluid(maxWidth: 920) {
                         ...GatsbyImageSharpFluid_noBase64
                       }
                     }
