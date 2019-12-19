@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import { StaticQuery, graphql, navigate, Link } from 'gatsby'
-import { Index } from 'elasticlunr'
+import React, { useState, useEffect } from 'react'
+import { navigate, Link } from 'gatsby'
 import { SPACING, Z_SPACE, COLORS, Icon } from '@umich-lib/core'
 import {
   Combobox,
@@ -12,26 +11,24 @@ import {
 } from '@reach/combobox'
 import '@reach/dialog/styles.css'
 
-export default function SiteSearchWrapper() {
-  return (
-    <StaticQuery
-      query={graphql`
-        query SiteSearchIndex {
-          siteSearchIndex {
-            index
-          }
-        }
-      `}
-      render={data => <SiteSearch siteIndex={data.siteSearchIndex.index} />}
-    />
-  )
-}
-
-let searchIndex
-
-function SiteSearch({ siteIndex }) {
+export default function SiteSearch({ siteIndex }) {
   const [query, setQuery] = useState('')
-  const results = useSearch(query, siteIndex)
+  const [results, setResults] = useState([])
+
+  useEffect(() => {
+    if (!query || !window.__LUNR__) {
+      setResults([])
+      return
+    }
+    const lunrIndex = window.__LUNR__['en']
+    const searchResults = lunrIndex.index.search('*' + query + '*')
+
+    setResults(
+      searchResults.map(({ ref }) => {
+        return lunrIndex.store[ref]
+      })
+    )
+  }, [query])
 
   const handleChange = e => setQuery(e.target.value)
 
@@ -204,25 +201,4 @@ function SiteSearch({ siteIndex }) {
       </div>
     </Combobox>
   )
-}
-
-function getOrCreateIndex(siteIndex) {
-  if (searchIndex) {
-    return searchIndex
-  } else {
-    searchIndex = Index.load(siteIndex)
-    return searchIndex
-  }
-}
-
-function useSearch(query, siteIndex) {
-  const index = getOrCreateIndex(siteIndex)
-
-  if (query.trim() === '') {
-    return null
-  } else {
-    return index
-      .search(query, { expand: true })
-      .map(({ ref }) => index.documentStore.getDoc(ref))
-  }
 }
