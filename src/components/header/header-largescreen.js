@@ -14,7 +14,7 @@ import Search from './search'
 
 export default ({ primary, secondary }) => (
   <header css={{
-    borderBottom: `solid 1px ${COLORS.neutral[100]}`
+    borderBottom: `solid 2px ${COLORS.neutral[100]}`
   }}>
     <Margins>
       <div css={{
