@@ -58,7 +58,7 @@ function SmallScreenHeader({ primary, secondary }) {
     <StateProvider initialState={{}} reducer={reducer}>
       <header
         css={{
-          borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+          borderBottom: `solid 2px ${COLORS.neutral['100']}`,
         }}
       >
         <Margins>
@@ -241,7 +241,7 @@ function NavSecondary({ items }) {
                 icon={icon}
                 css={{
                   marginRight: SPACING['2XS'],
-                  marginTop: '-2px'
+                  marginTop: '-2px',
                 }}
               />
             )}
