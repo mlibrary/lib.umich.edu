@@ -75,7 +75,7 @@ module.exports = {
           {
             name: 'title',
             store: true,
-            attributes: { boost: 10 },
+            attributes: { boost: 5 },
           },
           {
             name: 'summary',
