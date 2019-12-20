@@ -1,7 +1,6 @@
 import React from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { COLORS, SPACING } from '@umich-lib/core'
-import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import HoursTableSmallscreens from './hours-table-smallscreens'
 
 export default function HoursTableContainer(props) {
