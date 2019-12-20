@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { navigate, Link } from 'gatsby'
-import { SPACING, Z_SPACE, COLORS, Icon } from '@umich-lib/core'
+import { SPACING, Z_SPACE, COLORS, Icon, Alert } from '@umich-lib/core'
 import {
   Combobox,
   ComboboxInput,
@@ -11,8 +11,11 @@ import {
 } from '@reach/combobox'
 import '@reach/dialog/styles.css'
 
-export default function SiteSearch({ siteIndex }) {
+const lunr = require('lunr')
+
+export default function SiteSearch() {
   const [query, setQuery] = useState('')
+  const [error, setError] = useState(null)
   const [results, setResults] = useState([])
 
   useEffect(() => {
@@ -21,13 +24,25 @@ export default function SiteSearch({ siteIndex }) {
       return
     }
     const lunrIndex = window.__LUNR__['en']
-    const searchResults = lunrIndex.index.search('*' + query + '*')
 
-    setResults(
-      searchResults.map(({ ref }) => {
-        return lunrIndex.store[ref]
-      })
-    )
+    try {
+      const searchResults = lunrIndex.index.search('*' + query + '*')
+
+      setResults(
+        searchResults.map(({ ref }) => {
+          return lunrIndex.store[ref]
+        })
+      )
+
+      setError(null)
+    } catch (e) {
+      if (e instanceof lunr.QueryParseError) {
+        setError({ query: query, error: e })
+        return
+      } else {
+        throw e
+      }
+    }
   }, [query])
 
   const handleChange = e => setQuery(e.target.value)
@@ -112,7 +127,12 @@ export default function SiteSearch({ siteIndex }) {
                   borderBottomColor: COLORS.neutral['100'],
                 }}
               >
-                {results.length === 0 ? (
+                {error ? (
+                  <Alert intent="error">
+                    <strong css={{ fontWeight: '600' }}>Error: </strong>
+                    {error.error.message}
+                  </Alert>
+                ) : results.length === 0 ? (
                   <p
                     css={{
                       padding: `${SPACING['S']} ${SPACING['M']}`,
