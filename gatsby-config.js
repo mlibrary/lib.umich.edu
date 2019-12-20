@@ -68,9 +68,25 @@ module.exports = {
       },
     },
     {
-      resolve: `@gatsby-contrib/gatsby-plugin-elasticlunr-search`,
+      resolve: `gatsby-plugin-lunr`,
       options: {
-        fields: ['title', 'slug', 'summary'],
+        languages: [{ name: 'en' }],
+        fields: [
+          {
+            name: 'title',
+            store: true,
+            attributes: { boost: 2 },
+          },
+          {
+            name: 'summary',
+            store: true,
+          },
+
+          {
+            name: 'slug',
+            store: true,
+          },
+        ],
         resolvers: {
           SitePage: {
             title: node => (node.context ? node.context.title : null),
