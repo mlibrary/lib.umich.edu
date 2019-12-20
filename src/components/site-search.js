@@ -43,7 +43,10 @@ export default function SiteSearch({ label }) {
 
       setResults(
         searchResults.map(({ ref }) => {
-          return lunrIndex.store[ref]
+          return {
+            ...lunrIndex.store[ref],
+            slug: ref.split(' /')[1],
+          }
         })
       )
 

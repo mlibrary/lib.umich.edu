@@ -81,17 +81,10 @@ module.exports = {
             name: 'summary',
             store: true,
           },
-
-          {
-            name: 'slug',
-            store: true,
-            attributes: { boost: 0 },
-          },
         ],
         resolvers: {
           SitePage: {
             title: node => (node.context ? node.context.title : null),
-            slug: node => (node.context ? node.context.slug : null),
             summary: node => (node.context ? node.context.summary : null),
           },
         },
