@@ -13,7 +13,7 @@ import '@reach/dialog/styles.css'
 
 const lunr = require('lunr')
 
-export default function SiteSearch() {
+export default function SiteSearch({ label }) {
   const [query, setQuery] = useState('')
   const [error, setError] = useState(null)
   const [results, setResults] = useState([])
@@ -27,14 +27,19 @@ export default function SiteSearch() {
 
     try {
       const searchResults = lunrIndex.index.query(q => {
-        /*
-          A boolean OR between the non-stemmed and stemmed fields.
-        */
-        q.term(lunr.tokenizer(query))
+        q.term(lunr.tokenizer(query), {
+          boost: 3,
+        })
+        q.term(lunr.tokenizer(query), {
+          boost: 2,
+          wildcard: lunr.Query.wildcard.TRAILING,
+        })
         q.term(lunr.tokenizer(query), {
           wildcard: lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
         })
       })
+
+      console.log('searchResults', searchResults)
 
       setResults(
         searchResults.map(({ ref }) => {
@@ -64,7 +69,7 @@ export default function SiteSearch() {
     <Combobox onSelect={item => handleSelect(item)}>
       <div
         role="search"
-        aria-label="Search this site"
+        aria-label={label}
         css={{
           position: 'relative',
           display: 'flex',
@@ -81,9 +86,9 @@ export default function SiteSearch() {
           }}
         />
         <ComboboxInput
-          aria-label="Search this site"
+          aria-label={label}
           onChange={handleChange}
-          placeholder="Search this site"
+          placeholder={label}
           type="search"
           autoComplete="off"
           autocomplete={false}
