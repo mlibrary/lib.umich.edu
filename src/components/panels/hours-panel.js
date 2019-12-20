@@ -239,9 +239,25 @@ function transformTableData({ node, now }) {
       ]
     ]
   */
+
+  function sortByTitle(a, b) {
+    const titleA = a.title.toUpperCase()
+    const titleB = b.title.toUpperCase()
+
+    if (titleA < titleB) {
+      return -1
+    }
+
+    if (titleA > titleB) {
+      return 1
+    }
+
+    return 0
+  }
+
   const rows = [
     getRow(field_parent_card[0], now, true),
-    ...field_cards.map(n => getRow(n, now)),
+    ...field_cards.sort(sortByTitle).map(n => getRow(n, now)),
   ]
 
   return {
