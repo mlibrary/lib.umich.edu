@@ -75,7 +75,7 @@ module.exports = {
           {
             name: 'title',
             store: true,
-            attributes: { boost: 2 },
+            attributes: { boost: 10 },
           },
           {
             name: 'summary',
@@ -85,6 +85,7 @@ module.exports = {
           {
             name: 'slug',
             store: true,
+            attributes: { boost: 0 },
           },
         ],
         resolvers: {
