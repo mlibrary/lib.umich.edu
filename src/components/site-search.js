@@ -26,11 +26,17 @@ export default function SiteSearch() {
     const lunrIndex = window.__LUNR__['en']
 
     try {
+      // Let lunr do a "smart search"
+      const searchResults = lunrIndex.index.search(query)
+
+      /*
+      // Build the search with query terms.
       const searchResults = lunrIndex.index.query(q =>
         q.term(lunr.tokenizer(query), {
           wildcard: lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
         })
       )
+      */
 
       setResults(
         searchResults.map(({ ref }) => {
