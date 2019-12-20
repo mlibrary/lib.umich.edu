@@ -266,6 +266,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   body {
                     summary
                   }
+                  field_seo_keywords
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -411,6 +412,9 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
           const summary = node.body ? node.body.summary : null
+          const keywords = node.field_seo_keywords
+            ? node.field_seo_keywords
+            : ''
 
           if (template) {
             createPage({
@@ -419,6 +423,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               context: {
                 ...node.fields,
                 summary,
+                keywords: keywords,
               },
             })
           }

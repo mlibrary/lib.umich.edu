@@ -75,10 +75,15 @@ module.exports = {
           {
             name: 'title',
             store: true,
-            attributes: { boost: 5 },
+            attributes: { boost: 9 },
           },
           {
             name: 'summary',
+            store: true,
+            attributes: { boost: 3 },
+          },
+          {
+            name: 'keywords',
             store: true,
           },
         ],
@@ -86,6 +91,7 @@ module.exports = {
           SitePage: {
             title: node => (node.context ? node.context.title : null),
             summary: node => (node.context ? node.context.summary : null),
+            keywords: node => (node.context ? node.context.keywords : null),
           },
         },
       },
