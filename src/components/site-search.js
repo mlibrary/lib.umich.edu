@@ -39,8 +39,6 @@ export default function SiteSearch({ label }) {
         })
       })
 
-      console.log('searchResults', searchResults)
-
       setResults(
         searchResults.map(({ ref }) => {
           return {
