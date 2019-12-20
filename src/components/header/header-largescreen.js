@@ -9,7 +9,7 @@ import SiteSearch from '../site-search'
 export default ({ primary, secondary }) => (
   <header
     css={{
-      borderBottom: `solid 1px ${COLORS.neutral[100]}`,
+      borderBottom: `solid 2px ${COLORS.neutral[100]}`,
     }}
   >
     <Margins>
@@ -83,7 +83,7 @@ export default ({ primary, secondary }) => (
               marginBottom: SPACING['M'],
             }}
           >
-            <SiteSearch />
+            <SiteSearch label="Search this site" />
           </div>
         </div>
       </div>
