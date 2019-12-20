@@ -54,7 +54,7 @@ export default function SiteSearch({ label }) {
         setError({ query: query, error: e })
         return
       } else {
-        throw e
+        console.log('Site search error', e)
       }
     }
   }, [query])
