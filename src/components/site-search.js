@@ -26,11 +26,15 @@ export default function SiteSearch() {
     const lunrIndex = window.__LUNR__['en']
 
     try {
-      const searchResults = lunrIndex.index.query(q =>
+      const searchResults = lunrIndex.index.query(q => {
+        /*
+          A boolean OR between the non-stemmed and stemmed fields.
+        */
+        q.term(lunr.tokenizer(query))
         q.term(lunr.tokenizer(query), {
           wildcard: lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
         })
-      )
+      })
 
       setResults(
         searchResults.map(({ ref }) => {
@@ -132,10 +136,7 @@ export default function SiteSearch() {
                 }}
               >
                 {error ? (
-                  <Alert intent="error">
-                    <strong css={{ fontWeight: '600' }}>Error: </strong>
-                    {error.error.message}
-                  </Alert>
+                  <Alert intent="error">{error.error.message}</Alert>
                 ) : results.length === 0 ? (
                   <p
                     css={{
