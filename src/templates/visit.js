@@ -34,7 +34,7 @@ export default function VisitTemplate({ data, ...rest }) {
 
   const {
     title,
-    field_horizontal_nav_title,
+    field_title_context,
     fields,
     relationships,
     drupal_internal__nid,
@@ -79,7 +79,7 @@ export default function VisitTemplate({ data, ...rest }) {
             <Prose>
               <Heading level={1} size="L">
                 <VisuallyHidden>{title}</VisuallyHidden>
-                <span aria-hidden="true">{field_horizontal_nav_title}</span>
+                <span aria-hidden="true">{field_title_context}</span>
               </Heading>
               <HTMLList data={field_visit} />
 
