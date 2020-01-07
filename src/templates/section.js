@@ -35,10 +35,10 @@ function renderHorziontalNavigationCSS(isRootPage) {
 function SectionTemplate({ data, ...rest }) {
   const {
     title,
+    field_title_context,
     field_header_title,
     field_root_page_,
     body,
-    field_title_context,
     fields,
     relationships,
     drupal_internal__nid,

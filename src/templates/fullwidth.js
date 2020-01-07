@@ -11,17 +11,21 @@ import Panels from '../components/panels'
 
 export default function FullWidthTemplate({ data, ...rest }) {
   const node = data.page
-  const { title, body, fields, relationships } = node
+  const { field_title_context, body, fields, relationships } = node
   const panels = relationships.field_panels
 
   return (
     <TemplateLayout node={node}>
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
-        <Heading size="3XL" level={1} css={{
-          marginBottom: panels.length ? '0' : SPACING['XL']
-        }}>
-          {title}
+        <Heading
+          size="3XL"
+          level={1}
+          css={{
+            marginBottom: panels.length ? '0' : SPACING['XL'],
+          }}
+        >
+          {field_title_context}
         </Heading>
       </Margins>
 
@@ -31,12 +35,12 @@ export default function FullWidthTemplate({ data, ...rest }) {
       />
 
       {body && (
-        <Margins css={{
-          marginBottom: panels.length ? '0' : SPACING['5XL']
-        }}>
-          <HTML
-            html={body.processed}
-          />
+        <Margins
+          css={{
+            marginBottom: panels.length ? '0' : SPACING['5XL'],
+          }}
+        >
+          <HTML html={body.processed} />
         </Margins>
       )}
 
