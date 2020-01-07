@@ -7,7 +7,6 @@ export const query = graphql`
     field_local_navigation
     drupal_id
     drupal_internal__nid
-    field_seo_title
     field_seo_keywords
     fields {
       breadcrumb

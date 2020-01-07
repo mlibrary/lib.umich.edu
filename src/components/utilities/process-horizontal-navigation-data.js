@@ -14,23 +14,29 @@ export default function processHorizontalNavigationData({
     not parent data.
   */
   if (isRootPage) {
-    return createNavItems(currentNode, childrenNodeOrderByDrupalId, childrenNodes)
+    return createNavItems(
+      currentNode,
+      childrenNodeOrderByDrupalId,
+      childrenNodes
+    )
   }
 
   return createNavItems(parentNode, parentNodeOrderByDrupalId, parentNodes)
 }
 
 function createNavItems(firstNode, orderedIds, nodes) {
-  const nodesOrdered = orderNodes(orderedIds, nodes)
-    .filter(node => node !== undefined)
+  const nodesOrdered = orderNodes(orderedIds, nodes).filter(
+    node => node !== undefined
+  )
 
-  return [].concat(createNavItem(firstNode))
+  return []
+    .concat(createNavItem(firstNode))
     .concat(nodesOrdered.map(({ node }) => createNavItem(node)))
 }
 
 function createNavItem(node) {
   return {
     to: node.fields.slug,
-    text: node.field_horizontal_nav_title || node.title
+    text: node.field_title_context,
   }
 }

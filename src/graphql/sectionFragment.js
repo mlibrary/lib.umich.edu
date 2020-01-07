@@ -6,7 +6,7 @@ export const query = graphql`
     title
     field_header_title
     drupal_id
-    field_horizontal_nav_title
+    field_title_context
     field_root_page_
     drupal_internal__nid
     body {
