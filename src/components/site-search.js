@@ -114,9 +114,7 @@ export default function SiteSearch({ label }) {
         />
         <ComboboxPopover>
           {results && (
-            <ComboboxList
-              persistSelection
-              aria-label="Results"
+            <div
               css={{
                 position: 'absolute',
                 top: '0',
@@ -125,14 +123,9 @@ export default function SiteSearch({ label }) {
                 width: '100%',
                 background: 'white',
                 ...Z_SPACE['16'],
-                '[aria-selected="true"] a': {
-                  background: COLORS.teal['100'],
-                  borderLeft: `solid 4px ${COLORS.teal['400']}`,
-                  paddingLeft: `calc(${SPACING['M']} - 4px)`,
-                },
-                '[data-reach-combobox-option]:not(:last-of-type)': {
-                  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-                },
+                maxHeight: '70vh',
+                overflow: 'hidden',
+                overflowY: 'auto',
               }}
             >
               <div
@@ -183,50 +176,65 @@ export default function SiteSearch({ label }) {
                   </p>
                 )}
               </div>
-              {results.slice(0, 10).map((result, index) => (
-                <ComboboxOption
-                  key={index}
-                  value={result.title}
-                  css={{
-                    '[data-user-value]': {
-                      fontWeight: '700',
-                      background: COLORS.maize['200'],
-                    },
-                  }}
-                >
-                  <Link
-                    to={result.slug}
+              <ComboboxList
+                persistSelection
+                aria-label="Results"
+                css={{
+                  '[aria-selected="true"] a': {
+                    background: COLORS.teal['100'],
+                    borderLeft: `solid 4px ${COLORS.teal['400']}`,
+                    paddingLeft: `calc(${SPACING['M']} - 4px)`,
+                  },
+                  '[data-reach-combobox-option]:not(:last-of-type)': {
+                    borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+                  },
+                }}
+              >
+                {results.slice(0, 10).map((result, index) => (
+                  <ComboboxOption
+                    key={index}
+                    value={result.title}
                     css={{
-                      display: 'block',
-                      padding: `${SPACING['S']} ${SPACING['M']}`,
-                      ':hover [data-suggested-value]': {
-                        textDecoration: 'underline',
+                      '[data-user-value]': {
+                        fontWeight: '700',
+                        background: COLORS.maize['200'],
                       },
                     }}
                   >
-                    <p>
-                      <ComboboxOptionText />
-                    </p>
-                    {result.summary && (
-                      <p
-                        css={{
-                          display: '-webkit-box',
-                          color: COLORS.neutral['300'],
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          '-webkit-line-clamp': '2',
-                          '-webkit-box-orient': 'vertical',
-                          fontSize: '0.875rem',
-                          marginTop: SPACING['2XS'],
-                        }}
-                      >
-                        {result.summary}
+                    <Link
+                      to={result.slug}
+                      css={{
+                        display: 'block',
+                        padding: `${SPACING['S']} ${SPACING['M']}`,
+                        ':hover [data-suggested-value]': {
+                          textDecoration: 'underline',
+                        },
+                      }}
+                    >
+                      <p>
+                        <ComboboxOptionText />
                       </p>
-                    )}
-                  </Link>
-                </ComboboxOption>
-              ))}
-            </ComboboxList>
+                      {result.summary && (
+                        <p
+                          css={{
+                            display: '-webkit-box',
+                            color: COLORS.neutral['300'],
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            '-webkit-line-clamp': '2',
+                            '-webkit-box-orient': 'vertical',
+                            fontSize: '0.875rem',
+                            marginTop: SPACING['2XS'],
+                          }}
+                        >
+                          {result.summary}
+                        </p>
+                      )}
+                    </Link>
+                  </ComboboxOption>
+                ))}
+              </ComboboxList>
+            </div>
           )}
         </ComboboxPopover>
       </div>
