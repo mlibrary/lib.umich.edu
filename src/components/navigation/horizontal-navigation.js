@@ -26,7 +26,7 @@ export default function HorizontalNavigation({ items, ...rest }) {
         },
         borderBottom: `solid 1px ${COLORS.neutral['100']}`,
         background: COLORS.blue['100'],
-        zIndex: '1'
+        zIndex: '0'
       }}
       {...rest}
       aria-label="Local"

@@ -4,6 +4,7 @@ import React, {
   useReducer,
   useEffect,
   useRef,
+  useState,
 } from 'react'
 import { Link } from 'gatsby'
 import VisuallyHidden from '@reach/visually-hidden'
@@ -16,8 +17,8 @@ import {
   LINK_STYLES,
 } from '@umich-lib/core'
 
-import Search from './search'
 import Logo from './logo'
+import SiteSearchModal from '../site-search-modal'
 
 const StateContext = createContext()
 
@@ -83,19 +84,36 @@ function SmallScreenHeader({ primary, secondary }) {
 }
 
 function Nav({ primary, secondary }) {
+  const [isSearching, setSearching] = useState(false)
   const [{ openNav, open }, dispatch] = useStateValue()
   const isOpen = openNav === true
   const toggleNavNode = useRef()
 
   return (
-    <nav aria-label="Main and utility">
+    <nav
+      aria-label="Main and utility"
+      css={{
+        position: 'absolute',
+        top: 0,
+        right: 0,
+      }}
+    >
+      <button
+        onClick={() => setSearching(!isSearching)}
+        css={{
+          padding: `${SPACING['M']} ${SPACING['XS']}`,
+        }}
+      >
+        <Icon icon="search" size={32} />
+        <VisuallyHidden>Search this site</VisuallyHidden>
+      </button>
+      {isSearching && (
+        <SiteSearchModal handleDismiss={() => setSearching(false)} />
+      )}
       <button
         css={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          padding: SPACING['M'],
-          marginRight: `-${SPACING['M']}`,
+          padding: `${SPACING['M']} ${SPACING['XS']}`,
+          marginRight: `-${SPACING['XS']}`,
           cursor: 'pointer',
         }}
         ref={toggleNavNode}
@@ -116,16 +134,6 @@ function Nav({ primary, secondary }) {
       </button>
       {isOpen && (
         <NavDropdown toggleNavNode={toggleNavNode}>
-          {!Number.isInteger(open) && (
-            <div
-              css={{
-                padding: SPACING['M'],
-                borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-              }}
-            >
-              <Search />
-            </div>
-          )}
           {primary && <NavPrimary items={primary} />}
           {secondary && !Number.isInteger(open) && (
             <NavSecondary items={secondary} />

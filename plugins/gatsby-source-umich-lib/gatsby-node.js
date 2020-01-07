@@ -151,11 +151,16 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
       baseUrl: baseUrlWithoutTrailingSlash,
     })
 
-    // Create slug field to be used in the URL
     createNodeField({
       node,
       name: `slug`,
       value: node.path.alias,
+    })
+
+    createNodeField({
+      node,
+      name: `title`,
+      value: node.title,
     })
   }
 
@@ -254,9 +259,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     parents
                     children
                   }
+                  body {
+                    summary
+                  }
+                  field_seo_keywords
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -278,8 +288,12 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     parents
                     children
+                  }
+                  body {
+                    summary
                   }
                   relationships {
                     field_design_template {
@@ -302,8 +316,12 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     children
                     parents
+                  }
+                  body {
+                    summary
                   }
                   relationships {
                     field_design_template {
@@ -333,8 +351,12 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     children
                     parents
+                  }
+                  body {
+                    summary
                   }
                   relationships {
                     field_design_template {
@@ -359,8 +381,12 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   fields {
                     slug
+                    title
                     children
                     parents
+                  }
+                  body {
+                    summary
                   }
                   relationships {
                     field_design_template {
@@ -385,6 +411,10 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
+          const summary = node.body ? node.body.summary : null
+          const keywords = node.field_seo_keywords
+            ? node.field_seo_keywords
+            : ''
 
           if (template) {
             createPage({
@@ -392,6 +422,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               component: template,
               context: {
                 ...node.fields,
+                summary,
+                keywords: keywords,
               },
             })
           }

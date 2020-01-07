@@ -4,7 +4,7 @@ import { Margins, COLORS, SPACING, LINK_STYLES, Icon } from '@umich-lib/core'
 
 import Nav from './primary-nav'
 import Logo from './logo'
-import Search from './search'
+import SiteSearch from '../site-search'
 
 export default ({ primary, secondary }) => (
   <header
@@ -79,11 +79,11 @@ export default ({ primary, secondary }) => (
           )}
           <div
             css={{
-              maxWidth: '18rem',
+              flexBasis: '21rem',
               marginBottom: SPACING['M'],
             }}
           >
-            <Search />
+            <SiteSearch label="Search this site" />
           </div>
         </div>
       </div>
