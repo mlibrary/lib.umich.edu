@@ -19,7 +19,7 @@ import DestinationLocationInfo from '../components/destination-location-info'
 function DestinationTemplate({ data, ...rest }) {
   const node = getNode(data)
 
-  const { title, fields, body, relationships } = node
+  const { field_title_context, fields, body, relationships } = node
   const image =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image
@@ -37,7 +37,7 @@ function DestinationTemplate({ data, ...rest }) {
             marginBottom: SPACING['L'],
           }}
         >
-          {title}
+          {field_title_context}
         </Heading>
       </Margins>
       <Template asideWidth={'26rem'}>

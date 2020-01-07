@@ -15,17 +15,23 @@ function BasicTemplate({ data, ...rest }) {
   const node = data.page ? data.page : data.room ? data.room : null
 
   const {
-    title,
+    field_title_context,
     body,
     fields,
     relationships,
     field_local_navigation,
   } = node
 
-  const panelsData = relationships.field_panels ? relationships.field_panels : []
-  const cardPanels = panelsData.filter(({ __typename }) => __typename === 'paragraph__card_panel')
-  const panels = panelsData.filter(({ __typename }) => __typename !== 'paragraph__card_panel')
-  
+  const panelsData = relationships.field_panels
+    ? relationships.field_panels
+    : []
+  const cardPanels = panelsData.filter(
+    ({ __typename }) => __typename === 'paragraph__card_panel'
+  )
+  const panels = panelsData.filter(
+    ({ __typename }) => __typename !== 'paragraph__card_panel'
+  )
+
   const navBranch = useNavigationBranch(fields.slug)
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
   const smallScreenItems = smallScreenBranch ? smallScreenBranch.children : null
@@ -61,14 +67,16 @@ function BasicTemplate({ data, ...rest }) {
                 marginBottom: SPACING['L'],
               }}
             >
-              {title}
+              {field_title_context}
             </Heading>
             {body && <HTML html={body.processed} />}
-            <div css={{
-              '[data-panel-margins]': {
-                padding: '0'
-              }
-            }}>
+            <div
+              css={{
+                '[data-panel-margins]': {
+                  padding: '0',
+                },
+              }}
+            >
               <Panels data={cardPanels} />
             </div>
           </Content>
