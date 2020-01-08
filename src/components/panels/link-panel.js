@@ -72,12 +72,17 @@ function RelatedLinks({ data }) {
   const { field_title, field_link } = data
   return (
     <PanelTemplate title={field_title}>
-      <ol>
+      <ol
+        css={{
+          '> li:not(:last-of-type)': {
+            marginBottom: SPACING['S'],
+          },
+        }}
+      >
         {field_link.map((link, i) => (
           <li
             css={{
-              maxWidth: '420px',
-              marginBottom: SPACING['S'],
+              maxWidth: '34rem',
             }}
           >
             <FancyLink link={link} key={link.uri + i} />
@@ -104,6 +109,7 @@ function FancyLink({ link }) {
       css={{
         display: 'block',
         padding: SPACING['M'],
+        paddingRight: SPACING['L'],
         background: COLORS.teal['100'],
         ':hover [data-link]': LINK_STYLES['description'][':hover'],
         borderRadius: '2px',
