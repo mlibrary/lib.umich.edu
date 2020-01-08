@@ -151,11 +151,16 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
       baseUrl: baseUrlWithoutTrailingSlash,
     })
 
-    // Create slug field to be used in the URL
     createNodeField({
       node,
       name: `slug`,
       value: node.path.alias,
+    })
+
+    createNodeField({
+      node,
+      name: `title`,
+      value: node.title,
     })
   }
 
@@ -255,10 +260,15 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   title
                   fields {
                     slug
+                    title
                     parents
                     children
                   }
                   drupal_internal__nid
+                  body {
+                    summary
+                  }
+                  field_seo_keywords
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -281,10 +291,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   title
                   fields {
                     slug
+                    title
                     parents
                     children
                   }
                   drupal_internal__nid
+                  body {
+                    summary
+                  }
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -307,10 +321,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   title
                   fields {
                     slug
+                    title
                     children
                     parents
                   }
                   drupal_internal__nid
+                  body {
+                    summary
+                  }
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -340,10 +358,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   title
                   fields {
                     slug
+                    title
                     children
                     parents
                   }
                   drupal_internal__nid
+                  body {
+                    summary
+                  }
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -368,10 +390,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   title
                   fields {
                     slug
+                    title
                     children
                     parents
                   }
                   drupal_internal__nid
+                  body {
+                    summary
+                  }
                   relationships {
                     field_design_template {
                       field_machine_name
@@ -395,6 +421,10 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
+          const summary = node.body ? node.body.summary : null
+          const keywords = node.field_seo_keywords
+            ? node.field_seo_keywords
+            : ''
 
           if (template) {
             createPage({
@@ -404,6 +434,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 ...node.fields,
                 title: node.title,
                 drupal_nid: node.drupal_internal__nid,
+                summary,
+                keywords: keywords,
               },
             })
           }

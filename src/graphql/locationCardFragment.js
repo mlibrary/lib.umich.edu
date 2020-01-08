@@ -4,6 +4,7 @@ export const query = graphql`
   fragment locationCardFragment on node__location {
     __typename
     title
+    field_title_context
     field_url {
       uri
     }

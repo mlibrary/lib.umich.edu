@@ -10,8 +10,8 @@ const fadeIn = keyframes`
   }
 `
 
-export default function getTransitionCSS() {
+export default function getTransitionCSS(speed = "0.25") {
   return {
-    animation: `${fadeIn} 0.5s ease-in`
+    animation: `${fadeIn} ${speed}s ease-in`
   }
 }

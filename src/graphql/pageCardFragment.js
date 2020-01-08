@@ -4,6 +4,7 @@ export const query = graphql`
   fragment pageCardFragment on node__page {
     __typename
     title
+    field_title_context
     field_local_navigation
     drupal_id
     body {

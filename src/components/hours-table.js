@@ -1,18 +1,25 @@
 import React from 'react'
-
+import { useMediaQuery } from 'react-responsive'
 import { COLORS, SPACING } from '@umich-lib/core'
+import HoursTableSmallscreens from './hours-table-smallscreens'
 
-export default function HoursTable({ data, headingId, dayOfWeek = false }) {
+export default function HoursTableContainer(props) {
+  const isLargeScreen = useMediaQuery({
+    query: '(min-width: 1100px)',
+  })
+
+  if (isLargeScreen) {
+    return <HoursTable {...props} />
+  }
+
+  return <HoursTableSmallscreens {...props} />
+}
+
+function HoursTable({ data, headingId, dayOfWeek = false }) {
   const todayIndex = dayOfWeek !== false ? dayOfWeek + 1 : -1
 
   return (
-    <div
-      css={{
-        overflowX: 'auto',
-      }}
-      role="group"
-      aria-labelledby={headingId}
-    >
+    <div role="group" aria-labelledby={headingId}>
       <table
         css={{
           width: '100%',

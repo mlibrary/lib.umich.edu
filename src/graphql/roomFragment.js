@@ -4,7 +4,7 @@ export const query = graphql`
   fragment roomFragment on node__room {
     __typename
     title
-    field_horizontal_nav_title
+    field_title_context
     drupal_id
     drupal_internal__nid
     field_root_page_

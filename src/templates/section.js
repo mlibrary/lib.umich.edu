@@ -35,10 +35,10 @@ function renderHorziontalNavigationCSS(isRootPage) {
 function SectionTemplate({ data, ...rest }) {
   const {
     title,
+    field_title_context,
     field_header_title,
     field_root_page_,
     body,
-    field_horizontal_nav_title,
     fields,
     relationships,
     drupal_internal__nid,
@@ -90,7 +90,7 @@ function SectionTemplate({ data, ...rest }) {
             <Prose>
               <Heading level={1} size="L">
                 <VisuallyHidden>{title}</VisuallyHidden>
-                <span aria-hidden="true">{field_horizontal_nav_title}</span>
+                <span aria-hidden="true">{field_title_context}</span>
               </Heading>
 
               {body && <HTML html={body.processed} />}
@@ -115,7 +115,7 @@ function SectionTemplate({ data, ...rest }) {
         <Margins>
           <Heading level={1} size="L">
             <VisuallyHidden>{title}</VisuallyHidden>
-            <span aria-hidden="true">{field_horizontal_nav_title}</span>
+            <span aria-hidden="true">{field_title_context}</span>
           </Heading>
         </Margins>
       )}

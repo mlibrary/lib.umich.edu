@@ -56,12 +56,15 @@ function Nav({ items }) {
     <StateProvider initialState={{ panelOpen: 0 }} reducer={reducer}>
       <nav aria-label="Main" aria-describedby="main-nav-description">
         <VisuallyHidden>
-          <p id="main-nav-description">Expand main navigation buttons to view related content groups and associated links.</p>
+          <p id="main-nav-description">
+            Expand main navigation buttons to view related content groups and
+            associated links.
+          </p>
         </VisuallyHidden>
         <ul
           css={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'stretch',
           }}
         >
           {items.map(({ text, to, children }, i) => (
@@ -120,6 +123,7 @@ function NavPrimaryItem({ text, items, i }) {
           ':hover': {
             borderColor: COLORS.teal['400'],
           },
+          height: '100%',
           ...activeStyles(),
         }}
         ref={primaryNode}
@@ -221,7 +225,7 @@ function NavPanel({ items }) {
         panelOpen: 0,
       })
     }
-  }, [openPanel])
+  }, [openPanel, dispatch])
 
   return (
     <div
@@ -319,7 +323,7 @@ function NavPanelItemLinks({ parentItem, items }) {
       type: 'setMinHeight',
       minHeight: ref.current.clientHeight,
     })
-  }, [])
+  }, [dispatch])
 
   function columnStyles() {
     if (items.length > 4) {

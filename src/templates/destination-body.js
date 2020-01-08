@@ -17,7 +17,13 @@ import DestinationLocationInfo from '../components/destination-location-info'
 
 function DestinationTemplate({ data, ...rest }) {
   const node = getNode(data)
-  const { title, fields, body, relationships, field_local_navigation } = node
+  const {
+    field_title_context,
+    fields,
+    body,
+    relationships,
+    field_local_navigation,
+  } = node
 
   const navBranch = useNavigationBranch(fields.slug)
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
@@ -64,7 +70,7 @@ function DestinationTemplate({ data, ...rest }) {
                   marginBottom: SPACING['L'],
                 }}
               >
-                {title}
+                {field_title_context}
               </Heading>
               <Text
                 lede
