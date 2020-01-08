@@ -61,10 +61,4 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
       h1.focus()
     }
   }
-
-  /*
-    Potential plan:
-    1. Find h1
-    2. If found, add index -1 and set focus to h1.
-  */
 }
