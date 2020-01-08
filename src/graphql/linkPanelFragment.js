@@ -9,6 +9,7 @@ export const query = graphql`
       uri
       title
     }
+    field_placement
     relationships {
       field_link_template {
         field_machine_name

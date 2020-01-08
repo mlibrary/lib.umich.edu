@@ -6,6 +6,7 @@ export const query = graphql`
     field_title
     drupal_id
     id
+    field_placement
     relationships {
       field_card_template {
         field_machine_name

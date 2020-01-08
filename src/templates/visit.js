@@ -19,6 +19,7 @@ import processHorizontalNavigationData from '../components/utilities/process-hor
 import HTML from '../components/html'
 import LocationAside from '../components/location-aside'
 import Panels from '../components/panels'
+import transformNodePanels from '../utils/transform-node-panels'
 
 export default function VisitTemplate({ data, ...rest }) {
   /*
@@ -45,6 +46,7 @@ export default function VisitTemplate({ data, ...rest }) {
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
   const { field_visit, field_amenities } = relationships
+  const { bodyPanels, fullPanels } = transformNodePanels({ node: page })
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -102,6 +104,8 @@ export default function VisitTemplate({ data, ...rest }) {
                 </React.Fragment>
               )}
             </Prose>
+
+            <Panels data={bodyPanels} />
           </TemplateContent>
         </Template>
       </section>
@@ -113,7 +117,7 @@ export default function VisitTemplate({ data, ...rest }) {
           },
         }}
       >
-        <Panels data={relationships.field_panels} />
+        <Panels data={fullPanels} />
       </div>
     </Layout>
   )

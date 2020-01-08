@@ -3,7 +3,7 @@ import { SPACING, Heading, LINK_STYLES, Icon } from '@umich-lib/core'
 import Link from '../link'
 import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id'
 import { COLORS } from '@umich-lib/styles'
-import { PanelTemplate, PanelList } from './index'
+import { PanelTemplate } from './index'
 import PlainLink from '../plain-link'
 
 export default function LinkPanel({ data }) {
@@ -71,17 +71,19 @@ function DatabaseLinkList({ data }) {
 function RelatedLinks({ data }) {
   const { field_title, field_link } = data
   return (
-    <PanelTemplate title={field_title} shaded={false}>
-      <PanelList
-        css={{
-          gridAutoFlow: 'column',
-          alignItems: 'self-start',
-        }}
-      >
+    <PanelTemplate title={field_title}>
+      <ol>
         {field_link.map((link, i) => (
-          <FancyLink link={link} key={link.uri + i} />
+          <li
+            css={{
+              maxWidth: '420px',
+              marginBottom: SPACING['S'],
+            }}
+          >
+            <FancyLink link={link} key={link.uri + i} />
+          </li>
         ))}
-      </PanelList>
+      </ol>
     </PanelTemplate>
   )
 }
@@ -103,7 +105,6 @@ function FancyLink({ link }) {
         display: 'block',
         padding: SPACING['M'],
         background: COLORS.teal['100'],
-        border: `solid 1px ${COLORS.teal['200']}`,
         ':hover [data-link]': LINK_STYLES['description'][':hover'],
         borderRadius: '2px',
       }}

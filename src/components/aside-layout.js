@@ -20,6 +20,12 @@ export function Template({ children, asideWidth, ...rest }) {
             `,
             gridTemplateColumns: `1fr calc(${asWidth} + ${SPACING['4XL']}) `,
           },
+          '[data-panel-margins], [data-panel]': {
+            padding: '0',
+          },
+          '[data-panel] h2': {
+            marginTop: SPACING['2XL'],
+          },
         }}
         {...rest}
       >

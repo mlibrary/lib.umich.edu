@@ -28,6 +28,7 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
   return (
     <section
       data-can-be-shaded={shaded}
+      data-panel
       css={{
         background: shaded ? COLORS.blue['100'] : '',
         borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
@@ -47,7 +48,7 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
         {title && (
           <Heading
             level={2}
-            size="L"
+            size="M"
             css={{
               marginBottom: SPACING['XL'],
             }}

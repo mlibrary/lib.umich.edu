@@ -15,6 +15,12 @@ export function Template({ children, ...rest }) {
           gridTemplateRows: 'auto 1fr',
           marginBottom: SPACING['5XL'],
         },
+        '[data-panel-margins], [data-panel]': {
+          padding: '0',
+        },
+        '[data-panel] h2': {
+          marginTop: SPACING['2XL'],
+        },
         marginBottom: SPACING['4XL'],
       }}
       {...rest}
