@@ -58,6 +58,7 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
 
     if (h1) {
       h1.setAttribute('tabindex', '-1')
+      h1.classList.add('focus')
       h1.focus()
     }
   }
