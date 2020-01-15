@@ -28,7 +28,7 @@ export function HoursPanelNextPrev() {
   const hoursRange = {
     text: `${from_date.format('MMM D')} - ${to_date.format('MMM D')}`,
     label: `Showing hours from ${from_date.format(
-      'dddd, MMMM Do YYYY'
+      'dddd, MMMM Do, YYYY'
     )} to ${to_date.format('dddd, MMMM Do, YYYY')}`,
   }
 
