@@ -49,6 +49,7 @@ export default function HoursTableSmallscreens({
                 borderRight: `solid 2px ${COLORS.maize['400']}`,
               },
               'th, td': {
+                borderTop: `solid 2px ${COLORS.maize['400']}`,
                 borderBottom: `solid 2px ${COLORS.maize['400']}`,
               },
             },
