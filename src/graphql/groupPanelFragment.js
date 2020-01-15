@@ -8,19 +8,7 @@ export const query = graphql`
     relationships {
       field_panel_group {
         __typename
-        ... on paragraph__link_panel {
-          id
-          field_title
-          field_link {
-            uri
-            title
-          }
-          relationships {
-            field_link_template {
-              field_machine_name
-            }
-          }
-        }
+        ...linkPanelFragment
         ... on paragraph__hours_panel_lite {
           id
           field_title

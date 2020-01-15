@@ -83,6 +83,9 @@ export const query = graphql`
       field_amenities {
         name
       }
+      field_panels {
+        ...linkPanelFragment
+      }
     }
   }
 `

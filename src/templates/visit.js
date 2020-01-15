@@ -19,6 +19,7 @@ import processHorizontalNavigationData from '../components/utilities/process-hor
 import HTML from '../components/html'
 import LocationAside from '../components/location-aside'
 import Panels from '../components/panels'
+import transformNodePanels from '../utils/transform-node-panels'
 
 export default function VisitTemplate({ data, ...rest }) {
   /*
@@ -45,6 +46,7 @@ export default function VisitTemplate({ data, ...rest }) {
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
   const { field_visit, field_amenities } = relationships
+  const { bodyPanels, fullPanels } = transformNodePanels({ node: page })
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -77,7 +79,14 @@ export default function VisitTemplate({ data, ...rest }) {
           </TemplateSide>
           <TemplateContent>
             <Prose>
-              <Heading level={1} size="L" data-page-heading>
+              <Heading
+                level={1}
+                size="XL"
+                css={{
+                  fontWeight: '600',
+                }}
+                data-page-heading
+              >
                 <VisuallyHidden>{title}</VisuallyHidden>
                 <span aria-hidden="true">{field_title_context}</span>
               </Heading>
@@ -102,18 +111,20 @@ export default function VisitTemplate({ data, ...rest }) {
                 </React.Fragment>
               )}
             </Prose>
+
+            <Panels data={bodyPanels} />
           </TemplateContent>
         </Template>
       </section>
 
       <div
         css={{
-          'section:nth-child(odd)': {
+          'section:nth-of-type(odd)': {
             background: COLORS.blue['100'],
           },
         }}
       >
-        <Panels data={relationships.field_panels} />
+        <Panels data={fullPanels} />
       </div>
     </Layout>
   )

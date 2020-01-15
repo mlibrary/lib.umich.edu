@@ -45,6 +45,9 @@ export const query = graphql`
           }
         }
       }
+      field_panels {
+        ...linkPanelFragment
+      }
       field_parent_location {
         __typename
         ... on node__location {

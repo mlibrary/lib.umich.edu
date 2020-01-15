@@ -2,11 +2,11 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment hoursPanelFragment on paragraph__hours_panel {
-    __typename
     ... on Node {
       __typename
       id
     }
+    field_placement
     field_body {
       processed
     }

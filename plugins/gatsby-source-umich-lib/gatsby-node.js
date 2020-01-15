@@ -257,12 +257,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     title
                     parents
                     children
                   }
+                  drupal_internal__nid
                   body {
                     summary
                   }
@@ -286,12 +288,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     title
                     parents
                     children
                   }
+                  drupal_internal__nid
                   body {
                     summary
                   }
@@ -314,12 +318,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     title
                     children
                     parents
                   }
+                  drupal_internal__nid
                   body {
                     summary
                   }
@@ -349,12 +355,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     title
                     children
                     parents
                   }
+                  drupal_internal__nid
                   body {
                     summary
                   }
@@ -379,12 +387,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             ) {
               edges {
                 node {
+                  title
                   fields {
                     slug
                     title
                     children
                     parents
                   }
+                  drupal_internal__nid
                   body {
                     summary
                   }
@@ -422,6 +432,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               component: template,
               context: {
                 ...node.fields,
+                title: node.title,
+                drupal_nid: node.drupal_internal__nid,
                 summary,
                 keywords: keywords,
               },
