@@ -1,11 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Global } from '@emotion/core'
-import {
-  UniversalHeader,
-  GlobalStyleSheet,
-  COLORS,
-} from '@umich-lib/core'
+import { UniversalHeader, GlobalStyleSheet, COLORS } from '@umich-lib/core'
 import Header from './header'
 import Footer from './footer'
 import DevelopmentAlert from './development-alert'
@@ -25,6 +21,19 @@ function Layout({ children, drupalNid }) {
           },
           '*:focus': {
             outlineColor: COLORS.blue['400'],
+          },
+          'h1.focus': {
+            position: 'relative',
+            '&:focus': {
+              outline: '0',
+              '&:before': {
+                content: '""',
+                position: 'absolute',
+                height: '100%',
+                left: '-0.3em',
+                borderLeft: `solid 4px ${COLORS.teal['400']}`,
+              },
+            },
           },
         }}
       />

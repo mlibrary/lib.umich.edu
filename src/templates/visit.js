@@ -85,6 +85,7 @@ export default function VisitTemplate({ data, ...rest }) {
                 css={{
                   fontWeight: '600',
                 }}
+                data-page-heading
               >
                 <VisuallyHidden>{title}</VisuallyHidden>
                 <span aria-hidden="true">{field_title_context}</span>

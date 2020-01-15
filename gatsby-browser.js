@@ -35,14 +35,34 @@ export const wrapPageElement = ({ element, props }) => {
     <React.Fragment>
       {element}
       <LargeScreen>
-        <span id="ask-a-librarian-chat" css={{
-          'button': {
-            outlineColor: COLORS.maize['400']
-          }
-        }}>
+        <span
+          id="ask-a-librarian-chat"
+          css={{
+            button: {
+              outlineColor: COLORS.maize['400'],
+            },
+          }}
+        >
           <Chat fixed />
         </span>
       </LargeScreen>
     </React.Fragment>
   )
+}
+
+export const onRouteUpdate = ({ location, prevLocation }) => {
+  const oldPath = prevLocation ? prevLocation.pathname : null
+
+  if (oldPath) {
+    const dataPageHeading = document.querySelector('[data-page-heading]')
+    const h1 = document.querySelector('h1')
+
+    const pageHeading = dataPageHeading ? dataPageHeading : h1
+
+    if (pageHeading) {
+      pageHeading.setAttribute('tabindex', '-1')
+      pageHeading.classList.add('focus')
+      pageHeading.focus()
+    }
+  }
 }

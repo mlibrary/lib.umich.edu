@@ -25,5 +25,5 @@ export default function Hours({ node }) {
     return 'n/a'
   }
 
-  return <React.Fragment>{hours}</React.Fragment>
+  return <span aria-label={hours.label}>{hours.text}</span>
 }

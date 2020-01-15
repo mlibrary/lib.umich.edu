@@ -40,7 +40,7 @@ export function Top({ children, ...rest }) {
 
 export function Side({ children, ...rest }) {
   return (
-    <aside
+    <region
       css={{
         [MEDIA_QUERIES.LARGESCREEN]: {
           gridArea: 'side',
@@ -50,7 +50,7 @@ export function Side({ children, ...rest }) {
       {...rest}
     >
       {children}
-    </aside>
+    </region>
   )
 }
 

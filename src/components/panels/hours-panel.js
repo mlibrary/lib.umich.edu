@@ -25,6 +25,13 @@ export function HoursPanelNextPrev() {
     .add(weekOffset, 'weeks')
     .endOf('week')
 
+  const hoursRange = {
+    text: `${from_date.format('MMM D')} - ${to_date.format('MMM D')}`,
+    label: `Showing hours from ${from_date.format(
+      'dddd, MMMM Do, YYYY'
+    )} to ${to_date.format('dddd, MMMM Do, YYYY')}`,
+  }
+
   return (
     <Margins data-hours-panel-next-previous>
       <div
@@ -48,9 +55,12 @@ export function HoursPanelNextPrev() {
           Previous week
         </PreviousNextWeekButton>
         <Heading level={2} size="S" css={{ fontWeight: '700' }}>
-          <span aria-live="polite" aria-atomic="true">
-            <VisuallyHidden>Showing hours for </VisuallyHidden>
-            {from_date.format('MMM D')} - {to_date.format('MMM D')}
+          <span
+            aria-live="polite"
+            aria-atomic="true"
+            aria-label={hoursRange.label}
+          >
+            {hoursRange.text}
           </span>
         </Heading>
         <PreviousNextWeekButton
@@ -208,12 +218,14 @@ function transformTableData({ node, now }) {
     [
       {
         text: 'Sun',
-        subtext: 'Apr 15'
+        subtext: 'Apr 15',
+        label: 'Sunday, April 15th'
       },
       ...
       {
         text: 'Sat',
-        subtext: 'Apr 21'
+        subtext: 'Apr 21',
+        label: 'Saturday, April 21th'
       },
     ]
   */
@@ -223,6 +235,7 @@ function transformTableData({ node, now }) {
     headings = headings.concat({
       text: now.day(i).format('ddd'),
       subtext: now.day(i).format('MMM D'),
+      label: now.day(i).format('dddd, MMMM Do'),
     })
   }
 
@@ -233,8 +246,8 @@ function transformTableData({ node, now }) {
 
     [
       [
-        'General',
-        '24 hours',
+        { text: 'General', label: 'General' },
+        { text: '24 hours', label: '24 hours' },
         ...
       ]
     ]
@@ -277,6 +290,9 @@ function transformTableData({ node, now }) {
 */
 function getRow(node, nowWithWeekOffset, isParent) {
   let hours = []
+  const notAvailableRow = { text: 'n/a', label: 'Not available' }
+  const rowHeadingText = [isParent ? 'Main hours' : node.title]
+  const mainHoursRow = { text: rowHeadingText, label: rowHeadingText }
 
   for (let i = 0; i < 7; i++) {
     const now = moment(nowWithWeekOffset).day(i)
@@ -285,8 +301,8 @@ function getRow(node, nowWithWeekOffset, isParent) {
       now,
     })
 
-    hours = hours.concat(display ? display : 'n/a')
+    hours = hours.concat(display ? display : notAvailableRow)
   }
 
-  return [isParent ? 'Main hours' : node.title].concat(hours)
+  return [mainHoursRow].concat(hours)
 }
