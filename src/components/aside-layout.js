@@ -31,7 +31,7 @@ export function Template({ children, asideWidth, ...rest }) {
 
 export function TemplateSide({ children, ...rest }) {
   return (
-    <aside
+    <region
       css={{
         [MEDIA_QUERIES['L']]: {
           gridArea: 'side',
@@ -54,7 +54,7 @@ export function TemplateSide({ children, ...rest }) {
       >
         {children}
       </div>
-    </aside>
+    </region>
   )
 }
 
