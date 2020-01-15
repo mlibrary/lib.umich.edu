@@ -74,7 +74,7 @@ export function displayHours({ node, now }) {
 
   const text =
     moment(start, 'HHmm').format('h a') +
-    '–' +
+    ' - ' +
     moment(end, 'HHmm').format('h a')
   const label =
     moment(start, 'HHmm').format('h a') +
@@ -85,12 +85,6 @@ export function displayHours({ node, now }) {
     text,
     label,
   }
-
-  return (
-    moment(start, 'HHmm').format('h a') +
-    '–' +
-    moment(end, 'HHmm').format('h a')
-  )
 }
 
 /*
