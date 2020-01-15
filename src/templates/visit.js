@@ -77,7 +77,7 @@ export default function VisitTemplate({ data, ...rest }) {
           </TemplateSide>
           <TemplateContent>
             <Prose>
-              <Heading level={1} size="L">
+              <Heading level={1} size="L" data-page-heading>
                 <VisuallyHidden>{title}</VisuallyHidden>
                 <span aria-hidden="true">{field_title_context}</span>
               </Heading>

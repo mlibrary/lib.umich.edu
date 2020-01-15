@@ -54,12 +54,15 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
   const oldPath = prevLocation ? prevLocation.pathname : null
 
   if (oldPath) {
+    const dataPageHeading = document.querySelector('[data-page-heading]')
     const h1 = document.querySelector('h1')
 
-    if (h1) {
-      h1.setAttribute('tabindex', '-1')
-      h1.classList.add('focus')
-      h1.focus()
+    const pageHeading = dataPageHeading ? dataPageHeading : h1
+
+    if (pageHeading) {
+      pageHeading.setAttribute('tabindex', '-1')
+      pageHeading.classList.add('focus')
+      pageHeading.focus()
     }
   }
 }
