@@ -58,7 +58,10 @@ export function displayHours({ node, now }) {
   const { starthours, endhours, comment } = hoursForNow
 
   if (comment) {
-    return comment
+    return {
+      text: comment,
+      label: comment,
+    }
   }
 
   // Needs to be 24 time format, ie ####.
@@ -69,10 +72,24 @@ export function displayHours({ node, now }) {
     return null
   }
 
+  const text =
+    moment(start, 'HHmm').format('h a') +
+    '–' +
+    moment(end, 'HHmm').format('h a')
+  const label =
+    moment(start, 'HHmm').format('h a') +
+    ' to ' +
+    moment(end, 'HHmm').format('h a')
+
+  return {
+    text,
+    label,
+  }
+
   return (
-    moment(start, 'HHmm').format('ha') +
-    ' - ' +
-    moment(end, 'HHmm').format('ha')
+    moment(start, 'HHmm').format('h a') +
+    '–' +
+    moment(end, 'HHmm').format('h a')
   )
 }
 

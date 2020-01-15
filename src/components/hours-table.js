@@ -54,11 +54,12 @@ function HoursTable({ data, headingId, dayOfWeek = false }) {
         <thead>
           <tr>
             <th colSpan="2" />
-            {data.headings.map(({ text, subtext }, i) => (
+            {data.headings.map(({ text, subtext, label }, i) => (
               <th
                 scope="col"
                 aria-current={i === todayIndex}
                 key={text + subtext + i}
+                aria-label={label}
               >
                 <div
                   css={{
@@ -103,13 +104,13 @@ function HoursTable({ data, headingId, dayOfWeek = false }) {
           {data.rows.map((row, y) => (
             <tr key={row + y}>
               {row.map((col, i) => (
-                <React.Fragment key={row + col + y + i}>
+                <React.Fragment key={row + col.label + y + i}>
                   {i === 0 ? (
-                    <th scope="row" colSpan="2">
-                      {col}
+                    <th scope="row" colSpan="2" aria-label={col.label}>
+                      {col.text}
                     </th>
                   ) : (
-                    <td>{col}</td>
+                    <td aria-label={col.label}>{col.text}</td>
                   )}
                 </React.Fragment>
               ))}
