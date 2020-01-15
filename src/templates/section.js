@@ -113,7 +113,7 @@ function SectionTemplate({ data, ...rest }) {
         </Template>
       ) : (
         <Margins>
-          <Heading level={1} size="L">
+          <Heading level={1} size="L" data-page-heading>
             <VisuallyHidden>{title}</VisuallyHidden>
             <span aria-hidden="true">{field_title_context}</span>
           </Heading>
