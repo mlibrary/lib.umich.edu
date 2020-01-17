@@ -444,3 +444,24 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     )
   })
 }
+
+exports.onPostBuild = async ({ baseUrl }) => {
+  const https = require('https');
+  const fs = require('fs');
+  var dir = 'public';
+  if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+  }
+  const file = fs.createWriteStream("public/_redirects");
+  const getfile = https.get("https://cms.lib.umich.edu/_redirects", function(response) {
+    response.pipe(file);
+      file.on('finish', function() {
+        console.log('_redirects file downloaded');
+      });
+      file.on('error', function () {
+        console.log('There was an error downloading _redirects file');
+      });
+  });
+
+  return
+}
