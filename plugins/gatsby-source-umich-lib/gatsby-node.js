@@ -445,7 +445,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   })
 }
 
-//exports.onPostBootstrap = async ({ baseUrl }) => {
+exports.onPreBootstrap = async ({ baseUrl }) => {
   const https = require('https');
   const fs = require('fs');
   var dir = 'public';
@@ -463,5 +463,5 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
       });
   });
 
-//  return
-//}
+  return
+}
