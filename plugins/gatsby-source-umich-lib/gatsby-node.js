@@ -144,25 +144,6 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
   if (
     drupal_node_types_we_care_about.includes(node.internal.type.substring(6))
   ) {
-    if (node.path.alias) {
-      console.log('Checking node '+node.path.alias+' for redirects');
-      const readline = require('readline');
-      const fs = require('fs');
-      const readInterface = readline.createInterface({
-        input: fs.createReadStream('public/_redirects'),
-      });
-      readInterface.on('line', function(line) {
-        if (line) {
-          const urls = line.split(' ');
-          if (urls[0] == node.path.alias) {
-            console.log('Deleting node '+urls[0]+' to allow redirect. Annoying.');
-            const { deleteNode } = actions
-//            deleteNode({node})
-//            return
-          }
-        }
-      });
-    }
     // Handle creating breadcrumb for node.
     createBreadcrumb({
       node,
@@ -476,42 +457,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         })
       })
     )
-/*
-    const readline = require('readline');
-    const fs = require('fs');
-    const readInterface = readline.createInterface({
-      input: fs.createReadStream('public/_redirects'),
-    });
-    const {createRedirect} = actions
-    readInterface.on('line', function(line) {
-      if (line) {
-        const urls = line.split(' ');
-        console.log('Creating client-side redirect from '+urls[0]+' to '+urls[1]);
-        createRedirect({ fromPath: urls[0], toPath: urls[1], isPermanent: true, redirectInBrowser: true, force: true })
-      }
-    });
-*/
   })
-}
-
-exports.onCreatePage = ({ page, actions }) => {
-  console.log('Checking page '+page.path+' for redirects');
-  const readline = require('readline');
-  const fs = require('fs');
-  const readInterface = readline.createInterface({
-    input: fs.createReadStream('public/_redirects'),
-  });
-  readInterface.on('line', function(line) {
-    if (line) {
-      const urls = line.split(' ');
-      //const oldPage = Object.assign({}, page)
-      if (urls[0] == page.path) {
-        console.log('Deleting page '+urls[0]+' to allow redirect. Annoying.');
-        const { deletePage } = actions
-        deletePage(page)
-      }
-    }
-  });
 }
 
 exports.onPreBootstrap = async ({ baseUrl }) => {
