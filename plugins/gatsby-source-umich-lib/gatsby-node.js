@@ -1,6 +1,7 @@
 const path = require(`path`)
 const { fetch } = require('./fetch')
 const { createBreadcrumb } = require(`./create-breadcrumb`)
+const { createStaffNodes } = require(`./create-staff-nodes`)
 
 /**
  * Implement Gatsby's Node APIs in this file.
@@ -120,6 +121,13 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
     baseUrlWithoutTrailingSlash + '/api/nav/utility'
   )
   createNavNode('nav-utlity', 'NavUtility', nav_utility_data[0].children)
+
+  /*
+    Fetch Staff person related data. Used for creating
+    Staff Directory and Specialist pages.
+  */
+  const staffRawData = await fetch(baseUrlWithoutTrailingSlash + '/api/staff')
+  createStaffNodes({ createNode, staffRawData })
 
   // Tell Gatsby we're done.
   return

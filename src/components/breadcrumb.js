@@ -1,17 +1,14 @@
 import React from 'react'
-import {
-  Breadcrumb,
-  BreadcrumbItem
-} from '@umich-lib/core'
+import { Breadcrumb, BreadcrumbItem } from '@umich-lib/core'
 import Link from './link'
 
-export default function BreadcrumbContainer ({ data, ...rest }) {
+export default function BreadcrumbContainer({ data, ...rest }) {
   /*
     Breadcrumb data is provided as encoded JSON.
     We need to decode it and check if it's valid.
   */
   const parsed_data = JSON.parse(data)
-  
+
   if (!parsed_data) {
     return null
   }
