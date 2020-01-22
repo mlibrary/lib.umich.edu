@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
 import {
   Heading,
@@ -12,9 +12,15 @@ import Layout from '../components/layout'
 import SEO from '../components/seo'
 import Link from '../components/link'
 import Breadcrumb from '../components/breadcrumb'
-import VisuallyHidden from '@reach/visually-hidden'
+import useDebounce from '../hooks/use-debounce'
+
+const lunr = require('lunr')
 
 export default function StaffDirectoryContainer() {
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState([])
+  const debouncedQuery = useDebounce(query, 250)
+
   const staffData = useStaticQuery(graphql`
     {
       allStaff(sort: { order: ASC, fields: uniqname }) {
@@ -38,6 +44,46 @@ export default function StaffDirectoryContainer() {
     }
   })
 
+  useEffect(() => {
+    if (!window.__SDI__) {
+      // create staff directory index if it does not exist
+      window.__SDI__ = lunr(function() {
+        this.ref('uniqname')
+        this.field('name')
+        this.field('uniqname')
+        this.field('title')
+
+        staff.forEach(function(person) {
+          this.add(person)
+        }, this)
+      })
+    }
+
+    if (!debouncedQuery) {
+      setResults(staff)
+      return
+    }
+
+    // Get the staff directory index
+    const index = window.__SDI__
+
+    try {
+      const results = index.search(debouncedQuery).map(({ ref }) => {
+        return staff.find(({ uniqname }) => uniqname === ref)
+      })
+
+      setResults(results)
+    } catch {
+      return
+    }
+  }, [debouncedQuery])
+
+  function handleChange(e) {
+    if (e.target.name === 'query') {
+      setQuery(e.target.value)
+    }
+  }
+
   const filters = [
     {
       label: 'Department',
@@ -51,10 +97,19 @@ export default function StaffDirectoryContainer() {
     },
   ]
 
-  return <StaffDirectory filters={filters} staff={staff} />
+  return (
+    <StaffDirectory
+      handleChange={handleChange}
+      filters={filters}
+      staff={staff}
+      results={results}
+    />
+  )
 }
 
-function StaffDirectory({ filters, staff }) {
+function StaffDirectory({ handleChange, filters, staff, results }) {
+  const staffInView = results.slice(0, 20)
+
   return (
     <Layout>
       <SEO title="Staff Directory" />
@@ -95,6 +150,7 @@ function StaffDirectory({ filters, staff }) {
             gridGap: SPACING['S'],
             input: {
               lineHeight: '1.5',
+              height: '40px',
             },
             marginBottom: SPACING['XL'],
           }}
@@ -102,6 +158,8 @@ function StaffDirectory({ filters, staff }) {
           <TextInput
             id="search"
             labelText="Search by name, uniqname, or title"
+            name="query"
+            onChange={e => handleChange(e)}
           />
           {filters.map(({ label, name, options }) => (
             <Select label={label} name={name} options={options} />
@@ -110,6 +168,8 @@ function StaffDirectory({ filters, staff }) {
 
         <table
           css={{
+            width: '100%',
+            tableLayout: 'fixed',
             'th, td': {
               padding: `${SPACING['S']} 0`,
               paddingRight: SPACING['L'],
@@ -122,19 +182,22 @@ function StaffDirectory({ filters, staff }) {
           }}
         >
           <caption>
-            <VisuallyHidden>Staff Directory</VisuallyHidden> {staff.length}{' '}
-            results
+            {results.length ? (
+              <p>{results.length} results</p>
+            ) : (
+              <p>No results.</p>
+            )}
           </caption>
           <thead>
             <tr>
               <th>Name</th>
               <th>Contact info</th>
-              <th>Title</th>
+              <th colSpan="2">Title</th>
               <th>Department</th>
             </tr>
           </thead>
           <tbody>
-            {staff.map(({ uniqname, name, title, email, phone }) => (
+            {staffInView.map(({ uniqname, name, title, email, phone }) => (
               <tr key={uniqname}>
                 <td>
                   <Link to={`staff/` + uniqname}>{name}</Link>
@@ -153,7 +216,7 @@ function StaffDirectory({ filters, staff }) {
                     </span>
                   )}
                 </td>
-                <td>{title}</td>
+                <td colSpan="2">{title}</td>
                 <td>[todo]</td>
               </tr>
             ))}
@@ -198,6 +261,7 @@ function Select({ label, name, options }) {
             border: `solid 1px ${COLORS.neutral['300']}`,
             borderRadius: '4px',
             lineHeight: '1.5',
+            height: '40px',
           }}
         >
           {options.map(opt => (

@@ -213,6 +213,9 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const destinationFullTemplate = path.resolve(
       `src/templates/destination-full.js`
     )
+    const staffDirectoryTemplate = path.resolve(
+      `src/templates/staff-directory.js`
+    )
 
     function getTemplate(node) {
       const { field_machine_name } = node.relationships.field_design_template
@@ -235,6 +238,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return destinationBodyTemplate
         case 'destination_full':
           return destinationFullTemplate
+        case 'staff_directory':
+          return staffDirectoryTemplate
         default:
           return null
       }
@@ -257,6 +262,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                         "homepage"
                         "destination_body"
                         "destination_full"
+                        "staff_directory"
                       ]
                     }
                   }
