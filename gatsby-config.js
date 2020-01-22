@@ -44,6 +44,10 @@ module.exports = {
       resolve: 'gatsby-source-drupal',
       options: {
         baseUrl: DRUPAL_URL,
+        apiBase: `jsonapi`,
+        filters: {
+          page: "filter[field_redirect_node]=0",
+        }
       },
     },
     {
@@ -96,5 +100,6 @@ module.exports = {
         },
       },
     },
+    `gatsby-plugin-client-side-redirect`
   ],
 }
