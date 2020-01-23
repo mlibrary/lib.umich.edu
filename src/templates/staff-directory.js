@@ -310,8 +310,9 @@ function NoResults({ image }) {
           "y".
         </li>
         <li>
-          If one of your search terms are required add a "+" or "-" if it must
-          not contain. "+map -digital"
+          If one of your search terms are required add a "+" or if it must not
+          contain that term add a "-". Searching "+map -digital" will include
+          "map", but exclude "digital".
         </li>
       </ul>
     </div>
