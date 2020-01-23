@@ -293,15 +293,12 @@ function NoResults({ image }) {
           },
         }}
       >
-        <li>
-          Consider adding a wildcard (*). Search "Lib*" to match anything that
-          beings with "Lib".
-        </li>
+        <li>Search "Lib*" to match anything that beings with "Lib".</li>
         <li>
           Search "L*y" to match anything that beings with "L" and ends with "y".
         </li>
         <li>
-          Search "title:librarian" to find people with "librarian" in their
+          Search "title:librarian" to match people with "librarian" in their
           title.
         </li>
         <li>
