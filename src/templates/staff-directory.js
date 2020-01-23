@@ -270,6 +270,16 @@ function StaffDirectory({ handleChange, filters, results, image }) {
 }
 
 function NoResults({ image }) {
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(() => {
+    setHydrated(true)
+  }, [hydrated])
+
+  if (!hydrated) {
+    return null
+  }
+
   return (
     <div
       css={{
