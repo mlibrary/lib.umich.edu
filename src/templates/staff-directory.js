@@ -9,6 +9,7 @@ import {
   Icon,
   Button,
   Alert,
+  TYPOGRAPHY,
 } from '@umich-lib/core'
 import Img from 'gatsby-image'
 import VisuallyHidden from '@reach/visually-hidden'
@@ -272,11 +273,43 @@ function NoResults({ image }) {
   return (
     <div
       css={{
-        marginTop: SPACING['4XL'],
-        marginBottom: SPACING['4XL'],
         textAlign: 'center',
+        maxWidth: '32rem',
+        margin: '0 auto',
+        marginTop: SPACING['2XL'],
+        marginBottom: SPACING['4XL'],
       }}
     >
+      <Heading size="XL" level="2" css={{ marginBottom: SPACING['M'] }}>
+        No results found
+      </Heading>
+
+      <ul
+        css={{
+          textAlign: 'left',
+          listStyle: 'disc',
+          li: {
+            marginBottom: SPACING['S'],
+          },
+        }}
+      >
+        <li>
+          Consider adding a wildcard (*). Search "Lib*" to match anything that
+          beings with "Lib".
+        </li>
+        <li>
+          Search "L*y" to match anything that beings with "L" and ends with "y".
+        </li>
+        <li>
+          Search "title:librarian" to find people with "librarian" in their
+          title.
+        </li>
+        <li>
+          Search "+map -digital" if it must contain "map" and not contain
+          "digital".
+        </li>
+      </ul>
+
       <Img
         fluid={image.childImageSharp.fluid}
         alt=""
@@ -286,35 +319,6 @@ function NoResults({ image }) {
           marginBottom: SPACING['L'],
         }}
       />
-      <Heading size="XL" level="2" css={{ marginBottom: SPACING['M'] }}>
-        No results found
-      </Heading>
-
-      <ul
-        css={{
-          maxWidth: '32rem',
-          margin: '0 auto',
-          textAlign: 'left',
-          listStyle: 'auto',
-          li: {
-            marginBottom: SPACING['S'],
-          },
-        }}
-      >
-        <li>
-          Consider adding a wildcard (*) to your search. Search "Lib*" to match
-          anything that beings with "Lib".
-        </li>
-        <li>
-          Or search "L*y" to match anything that beings with "L" and ends with
-          "y".
-        </li>
-        <li>
-          If one of your search terms are required add a "+" or if it must not
-          contain that term add a "-". Searching "+map -digital" will include
-          "map", but exclude "digital".
-        </li>
-      </ul>
     </div>
   )
 }
