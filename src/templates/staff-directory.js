@@ -301,19 +301,23 @@ function NoResults({ image }) {
           li: {
             marginBottom: SPACING['S'],
           },
+          strong: {
+            fontWeight: '600',
+          },
         }}
       >
         <li>
-          Search "Lib*" to match anything that beings with "Lib" or "L*y" to
-          match anything that begins with "L" and ends with "y".
+          Search <strong>"Lib*"</strong> to match anything that begins with
+          "Lib" or <strong>"L*y"</strong> to match anything that begins with "L"
+          and ends with "y" .
         </li>
         <li>
-          Search "title:librarian" to match people with "librarian" in their
-          title.
+          Search <strong>"title:librarian"</strong> to match people with
+          "librarian" in their title.
         </li>
         <li>
-          Search "+map -digital" if it must contain "map" and not contain
-          "digital".
+          Search <strong>"+map -digital"</strong> if it must contain "map" and
+          not contain "digital".
         </li>
       </ul>
 
