@@ -287,13 +287,15 @@ function NoResults({ image }) {
         }}
       />
       <Heading size="XL" level="2" css={{ marginBottom: SPACING['M'] }}>
-        No results found.
+        No results found
       </Heading>
 
       <ul
         css={{
-          maxWidth: '20rem',
+          maxWidth: '32rem',
           margin: '0 auto',
+          textAlign: 'left',
+          listStyle: 'auto',
           li: {
             marginBottom: SPACING['S'],
           },
@@ -306,6 +308,10 @@ function NoResults({ image }) {
         <li>
           Or search "L*y" to match anything that beings with "L" and ends with
           "y".
+        </li>
+        <li>
+          If one of your search terms are required add a "+" or "-" if it must
+          not contain. "+map -digital"
         </li>
       </ul>
     </div>
