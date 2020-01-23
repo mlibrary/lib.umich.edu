@@ -303,9 +303,9 @@ function NoResults({ image }) {
           },
         }}
       >
-        <li>Search "Lib*" to match anything that beings with "Lib".</li>
         <li>
-          Search "L*y" to match anything that beings with "L" and ends with "y".
+          Search "Lib*" to match anything that beings with "Lib" or "L*y" to
+          match anything that begins with "L" and ends with "y".
         </li>
         <li>
           Search "title:librarian" to match people with "librarian" in their
