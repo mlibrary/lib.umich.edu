@@ -7,7 +7,11 @@ import {
   TextInput,
   COLORS,
   Icon,
+  Button,
+  Alert,
 } from '@umich-lib/core'
+import Img from 'gatsby-image'
+import VisuallyHidden from '@reach/visually-hidden'
 import Layout from '../components/layout'
 import SEO from '../components/seo'
 import Link from '../components/link'
@@ -21,7 +25,7 @@ export default function StaffDirectoryContainer() {
   const [results, setResults] = useState([])
   const debouncedQuery = useDebounce(query, 250)
 
-  const staffData = useStaticQuery(graphql`
+  const queryData = useStaticQuery(graphql`
     {
       allStaff(sort: { order: ASC, fields: uniqname }) {
         edges {
@@ -34,15 +38,24 @@ export default function StaffDirectoryContainer() {
           }
         }
       }
+      file(relativePath: { eq: "squirrel.png" }) {
+        childImageSharp {
+          fluid(maxWidth: 920) {
+            ...GatsbyImageSharpFluid_noBase64
+          }
+        }
+      }
     }
   `)
 
   // Flatten it out a bit for presentation
-  const staff = staffData.allStaff.edges.map(({ node }) => {
+  const staff = queryData.allStaff.edges.map(({ node }) => {
     return {
       ...node,
     }
   })
+
+  const image = queryData.file
 
   useEffect(() => {
     if (!window.__SDI__) {
@@ -103,12 +116,24 @@ export default function StaffDirectoryContainer() {
       filters={filters}
       staff={staff}
       results={results}
+      image={image}
     />
   )
 }
 
-function StaffDirectory({ handleChange, filters, staff, results }) {
-  const staffInView = results.slice(0, 20)
+function StaffDirectory({ handleChange, filters, results, image }) {
+  const [show, setShow] = useState(20)
+  const staffInView = results.slice(0, show)
+  const resultsSummary = results.length
+    ? `${results.length} results`
+    : `No results`
+
+  const showMoreText =
+    show < results.length ? `${show} of ${results.length} people` : null
+
+  function showMore() {
+    setShow(results.length)
+  }
 
   return (
     <Layout>
@@ -152,7 +177,7 @@ function StaffDirectory({ handleChange, filters, staff, results }) {
               lineHeight: '1.5',
               height: '40px',
             },
-            marginBottom: SPACING['XL'],
+            marginBottom: SPACING['S'],
           }}
         >
           <TextInput
@@ -170,11 +195,14 @@ function StaffDirectory({ handleChange, filters, staff, results }) {
           css={{
             width: '100%',
             tableLayout: 'fixed',
+            marginBottom: SPACING['XL'],
             'th, td': {
-              padding: `${SPACING['S']} 0`,
-              paddingRight: SPACING['L'],
+              padding: `${SPACING['XS']} 0`,
               textAlign: 'left',
               borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+            },
+            'td:not(:last-of-type)': {
+              paddingRight: SPACING['XL'],
             },
             th: {
               color: COLORS.neutral['300'],
@@ -182,11 +210,9 @@ function StaffDirectory({ handleChange, filters, staff, results }) {
           }}
         >
           <caption>
-            {results.length ? (
-              <p>{results.length} results</p>
-            ) : (
-              <p>No results.</p>
-            )}
+            <VisuallyHidden>
+              <Alert>{resultsSummary}</Alert>
+            </VisuallyHidden>
           </caption>
           <thead>
             <tr>
@@ -222,8 +248,67 @@ function StaffDirectory({ handleChange, filters, staff, results }) {
             ))}
           </tbody>
         </table>
+
+        {showMoreText && (
+          <>
+            <p
+              css={{
+                marginBottom: SPACING['M'],
+              }}
+            >
+              {showMoreText}
+            </p>
+            <Button onClick={showMore}>Show all</Button>
+          </>
+        )}
+
+        {!results.length && <NoResults image={image} />}
       </Margins>
     </Layout>
+  )
+}
+
+function NoResults({ image }) {
+  return (
+    <div
+      css={{
+        marginTop: SPACING['4XL'],
+        marginBottom: SPACING['4XL'],
+        textAlign: 'center',
+      }}
+    >
+      <Img
+        fluid={image.childImageSharp.fluid}
+        alt=""
+        css={{
+          maxWidth: '16rem',
+          margin: '0 auto',
+          marginBottom: SPACING['L'],
+        }}
+      />
+      <Heading size="XL" level="2" css={{ marginBottom: SPACING['M'] }}>
+        No results found.
+      </Heading>
+
+      <ul
+        css={{
+          maxWidth: '20rem',
+          margin: '0 auto',
+          li: {
+            marginBottom: SPACING['S'],
+          },
+        }}
+      >
+        <li>
+          Consider adding a wildcard (*) to your search. Search "Lib*" to match
+          anything that beings with "Lib".
+        </li>
+        <li>
+          Or search "L*y" to match anything that beings with "L" and ends with
+          "y".
+        </li>
+      </ul>
+    </div>
   )
 }
 
