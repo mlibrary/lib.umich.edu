@@ -469,14 +469,15 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   })
 }
 
-exports.onPreBootstrap = async ({ baseUrl }) => {
+exports.onPreBootstrap = async ({}, { baseUrl }) => {
   const dir = 'public'
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
   }
   const file = fs.createWriteStream('public/_redirects')
+  const url = removeTrailingSlash(baseUrl)
 
-  https.get('https://cms.lib.umich.edu/_redirects', function(response) {
+  https.get(url + '/_redirects', function(response) {
     response.pipe(file)
     file.on('finish', function() {
       console.log('_redirects file downloaded')
