@@ -1,6 +1,9 @@
 const path = require(`path`)
 const { fetch } = require('./fetch')
 const { createBreadcrumb } = require(`./create-breadcrumb`)
+const https = require('https')
+const fs = require('fs')
+const readline = require('readline')
 
 /**
  * Implement Gatsby's Node APIs in this file.
@@ -190,19 +193,25 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
 // Implement the Gatsby API “createPages”. This is called once the
 // data layer is bootstrapped to let plugins create pages from data.
 exports.createPages = ({ actions, graphql }, { baseUrl }) => {
-  const readline = require('readline');
-  const fs = require('fs');
   const readInterface = readline.createInterface({
     input: fs.createReadStream('public/_redirects'),
-  });
-  const {createRedirect} = actions
+  })
+  const { createRedirect } = actions
   readInterface.on('line', function(line) {
     if (line) {
-      const urls = line.split(' ');
-      console.log('Creating client-side redirect from '+urls[0]+' to '+urls[1]);
-      createRedirect({ fromPath: urls[0], toPath: urls[1], isPermanent: true, redirectInBrowser: true, force: true })
+      const urls = line.split(' ')
+      console.log(
+        'Creating client-side redirect from ' + urls[0] + ' to ' + urls[1]
+      )
+      createRedirect({
+        fromPath: urls[0],
+        toPath: urls[1],
+        isPermanent: true,
+        redirectInBrowser: true,
+        force: true,
+      })
     }
-  });
+  })
 
   const { createPage } = actions
 
@@ -461,22 +470,21 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
 }
 
 exports.onPreBootstrap = async ({ baseUrl }) => {
-  const https = require('https');
-  const fs = require('fs');
-  var dir = 'public';
-  if (!fs.existsSync(dir)){
-      fs.mkdirSync(dir);
+  const dir = 'public'
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir)
   }
-  const file = fs.createWriteStream("public/_redirects");
-  const getfile = https.get("https://cms.lib.umich.edu/_redirects", function(response) {
-    response.pipe(file);
-      file.on('finish', function() {
-        console.log('_redirects file downloaded');
-      });
-      file.on('error', function () {
-        console.log('There was an error downloading _redirects file');
-      });
-  });
+  const file = fs.createWriteStream('public/_redirects')
+
+  https.get('https://cms.lib.umich.edu/_redirects', function(response) {
+    response.pipe(file)
+    file.on('finish', function() {
+      console.log('_redirects file downloaded')
+    })
+    file.on('error', function() {
+      console.log('There was an error downloading _redirects file')
+    })
+  })
 
   return
 }
