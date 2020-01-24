@@ -208,7 +208,6 @@ const StaffDirectory = React.memo(function StaffDirectory({
         >
           Staff Directory
         </Heading>
-        {results}
 
         <div
           css={{
