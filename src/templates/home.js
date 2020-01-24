@@ -7,7 +7,7 @@ import Panels from '../components/panels'
 import VisuallyHidden from '@reach/visually-hidden'
 
 function BasicTemplate({ data, ...rest }) {
-  const { drupal_internal__nid, relationships, title } = data.page
+  const { drupal_internal__nid, relationships } = data.page
 
   return (
     <Layout drupalNid={drupal_internal__nid}>

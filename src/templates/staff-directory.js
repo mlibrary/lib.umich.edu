@@ -9,13 +9,15 @@ import {
   Icon,
   Button,
   Alert,
-  TYPOGRAPHY,
+  List,
+  Text,
 } from '@umich-lib/core'
 import Img from 'gatsby-image'
 import VisuallyHidden from '@reach/visually-hidden'
 import Layout from '../components/layout'
 import SEO from '../components/seo'
 import Link from '../components/link'
+import Prose from '../components/prose'
 import Breadcrumb from '../components/breadcrumb'
 import useDebounce from '../hooks/use-debounce'
 
@@ -23,6 +25,7 @@ const lunr = require('lunr')
 
 export default function StaffDirectoryContainer() {
   const [query, setQuery] = useState('')
+  const [activeFilters, setActiveFilters] = useState({})
   const [results, setResults] = useState([])
   const debouncedQuery = useDebounce(query, 250)
   const queryData = useStaticQuery(graphql`
@@ -89,7 +92,7 @@ export default function StaffDirectoryContainer() {
     }
 
     if (!debouncedQuery) {
-      setResults(staff)
+      setResults(filterResults({ activeFilters, results: staff }))
       return
     }
 
@@ -101,16 +104,31 @@ export default function StaffDirectoryContainer() {
         return staff.find(({ uniqname }) => uniqname === ref)
       })
 
-      setResults(results)
+      setResults(filterResults({ activeFilters, results }))
     } catch {
       return
     }
-  }, [debouncedQuery])
+  }, [debouncedQuery, activeFilters])
 
   function handleChange(e) {
-    if (e.target.name === 'query') {
-      setQuery(e.target.value)
+    const { name, value } = e.target
+    if (name === 'query') {
+      setQuery(value)
+      return
     }
+
+    let activeFiltersCopy = { ...activeFilters }
+
+    if (value.startsWith('All ')) {
+      delete activeFiltersCopy[name]
+    } else {
+      activeFiltersCopy = {
+        ...activeFiltersCopy,
+        [name]: value,
+      }
+    }
+
+    setActiveFilters(activeFiltersCopy)
   }
 
   const filters = [
@@ -123,18 +141,12 @@ export default function StaffDirectoryContainer() {
           .sort()
       ),
     },
-    {
-      label: 'Division',
-      name: 'division',
-      options: ['All divisions'],
-    },
   ]
 
   return (
     <StaffDirectory
       handleChange={handleChange}
       filters={filters}
-      staff={staff}
       results={results}
       image={image}
     />
@@ -191,7 +203,7 @@ function StaffDirectory({ handleChange, filters, results, image }) {
         <div
           css={{
             display: 'grid',
-            gridTemplateColumns: `2fr 1fr 1fr`,
+            gridTemplateColumns: `3fr 2fr`,
             gridGap: SPACING['S'],
             input: {
               lineHeight: '1.5',
@@ -207,7 +219,12 @@ function StaffDirectory({ handleChange, filters, results, image }) {
             onChange={e => handleChange(e)}
           />
           {filters.map(({ label, name, options }) => (
-            <Select label={label} name={name} options={options} />
+            <Select
+              label={label}
+              name={name}
+              options={options}
+              onChange={e => handleChange(e)}
+            />
           ))}
         </div>
 
@@ -304,50 +321,52 @@ function NoResults({ image }) {
   return (
     <div
       css={{
-        textAlign: 'center',
-        maxWidth: '32rem',
-        margin: '0 auto',
+        display: 'grid',
+        gridTemplateColumns: `3fr 2fr`,
+        gridGap: SPACING['4XL'],
         marginTop: SPACING['2XL'],
         marginBottom: SPACING['4XL'],
       }}
     >
-      <Heading size="XL" level="2" css={{ marginBottom: SPACING['M'] }}>
-        No results found
-      </Heading>
+      <Prose>
+        <Heading size="L" level={2}>
+          Oh no! We couldn't find anyone.
+        </Heading>
 
-      <ul
-        css={{
-          textAlign: 'left',
-          listStyle: 'disc',
-          li: {
-            marginBottom: SPACING['S'],
-          },
-          strong: {
-            fontWeight: '600',
-          },
-        }}
-      >
-        <li>
-          Search <strong>"Lib*"</strong> to match anything that begins with
-          "Lib" or <strong>"L*y"</strong> to match anything that begins with "L"
-          and ends with "y" .
-        </li>
-        <li>
-          Search <strong>"title:librarian"</strong> to match people with
-          "librarian" in their title.
-        </li>
-        <li>
-          Search <strong>"+map -digital"</strong> if it must contain "map" and
-          not contain "digital".
-        </li>
-      </ul>
+        <Text lede>
+          Consider the following search techniques to help you get the results
+          you're looking for.
+        </Text>
+
+        <List
+          type="bulleted"
+          css={{
+            strong: {
+              fontWeight: '600',
+            },
+          }}
+        >
+          <li>
+            <strong>"Lib*"</strong> to find anything that begins with "Lib" or{' '}
+            <strong>"L*y"</strong> to find anything that begins with "L" and
+            ends with "y" .
+          </li>
+          <li>
+            <strong>"title:librarian"</strong> to find people with "librarian"
+            in their title.
+          </li>
+          <li>
+            <strong>"+map -digital"</strong> if it must contain "map" and not
+            contain "digital".
+          </li>
+        </List>
+      </Prose>
 
       <Img
         fluid={image.childImageSharp.fluid}
         alt=""
         css={{
-          maxWidth: '16rem',
-          margin: '0 auto',
+          maxWidth: '18rem',
           marginBottom: SPACING['L'],
         }}
       />
@@ -355,7 +374,7 @@ function NoResults({ image }) {
   )
 }
 
-function Select({ label, name, options }) {
+function Select({ label, name, options, ...rest }) {
   return (
     <label>
       <span
@@ -380,7 +399,6 @@ function Select({ label, name, options }) {
             appearance: 'none',
             fontFamily: 'inherit',
             fontSize: 'inherit',
-            border: 'none',
             boxShadow: 'none',
             background: 'transparent',
             backgroundImage: 'none',
@@ -391,6 +409,7 @@ function Select({ label, name, options }) {
             lineHeight: '1.5',
             height: '40px',
           }}
+          {...rest}
         >
           {options.map(opt => (
             <option id={name + opt} value={opt}>
@@ -409,4 +428,48 @@ function Select({ label, name, options }) {
       </div>
     </label>
   )
+}
+
+/*
+  // Filter out results that do not
+  // have a key/value that matches
+  // all active filters.
+
+  // Example of a result.
+  {
+    name: "Jon Earley",
+    title: "User Interface Design Engineer",
+    department: "Design and Discovery",
+    division: "Library Information Technology"
+  }
+
+  // Example of active filters.
+  {
+    department: "Design and Discovery",
+    division: "Library Information Technology"
+  }
+*/
+function filterResults({ activeFilters, results }) {
+  const filterKeys = Object.keys(activeFilters)
+
+  // If no active filters, then just return all the results.
+  if (filterKeys === 0) {
+    return results
+  }
+
+  // Filter to results that have all active filters.
+  return results.filter(result => {
+    // Track how many filters apply to this result.
+    let i = 0
+
+    filterKeys.forEach(k => {
+      //console.log('for each filter key', result, k, result[k], activeFilters[k])
+
+      if (result[k] === activeFilters[k]) {
+        i = i + 1
+      }
+    })
+
+    return i === filterKeys.length
+  })
 }
