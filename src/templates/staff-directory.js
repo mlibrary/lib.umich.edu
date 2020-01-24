@@ -38,7 +38,8 @@ export default function StaffDirectoryContainer() {
             title
             email
             phone
-            department_drupal_nid
+            department_nid
+            division_nid
           }
         }
       }
@@ -72,7 +73,8 @@ export default function StaffDirectoryContainer() {
   const staff = queryData.allStaff.edges.map(({ node }) => {
     return {
       ...node,
-      department: departments[node.department_drupal_nid],
+      department: departments[node.department_nid],
+      division: departments[node.division_nid],
     }
   })
 
@@ -119,7 +121,7 @@ export default function StaffDirectoryContainer() {
 
     let activeFiltersCopy = { ...activeFilters }
 
-    if (value.startsWith('All ')) {
+    if (value.startsWith('All')) {
       delete activeFiltersCopy[name]
     } else {
       activeFiltersCopy = {
@@ -133,9 +135,9 @@ export default function StaffDirectoryContainer() {
 
   const filters = [
     {
-      label: 'Department',
+      label: 'Department or Division',
       name: 'department',
-      options: ['All departments'].concat(
+      options: ['All'].concat(
         Object.keys(departments)
           .map(d => departments[d])
           .sort()
@@ -153,7 +155,12 @@ export default function StaffDirectoryContainer() {
   )
 }
 
-function StaffDirectory({ handleChange, filters, results, image }) {
+const StaffDirectory = React.memo(function StaffDirectory({
+  handleChange,
+  filters,
+  results,
+  image,
+}) {
   const [show, setShow] = useState(20)
   const staffInView = results.slice(0, show)
   const resultsSummary = results.length
@@ -161,7 +168,9 @@ function StaffDirectory({ handleChange, filters, results, image }) {
     : `No results`
 
   const showMoreText =
-    show < results.length ? `${show} of ${results.length} people` : null
+    show < results.length
+      ? `Showing ${show} of ${results.length} results`
+      : null
 
   function showMore() {
     setShow(results.length)
@@ -199,6 +208,7 @@ function StaffDirectory({ handleChange, filters, results, image }) {
         >
           Staff Directory
         </Heading>
+        {results}
 
         <div
           css={{
@@ -255,7 +265,7 @@ function StaffDirectory({ handleChange, filters, results, image }) {
             <tr>
               <th>Name</th>
               <th>Contact info</th>
-              <th colSpan="2">Title</th>
+              <th>Title</th>
               <th>Department</th>
             </tr>
           </thead>
@@ -280,8 +290,12 @@ function StaffDirectory({ handleChange, filters, results, image }) {
                       </span>
                     )}
                   </td>
-                  <td colSpan="2">{title}</td>
-                  <td>{department}</td>
+                  <td>{title}</td>
+                  <td>
+                    <Link to="#" kind="subtle">
+                      {department}
+                    </Link>
+                  </td>
                 </tr>
               )
             )}
@@ -305,7 +319,7 @@ function StaffDirectory({ handleChange, filters, results, image }) {
       </Margins>
     </Layout>
   )
-}
+})
 
 function NoResults({ image }) {
   const [hydrated, setHydrated] = useState(false)
@@ -463,9 +477,22 @@ function filterResults({ activeFilters, results }) {
     let i = 0
 
     filterKeys.forEach(k => {
-      //console.log('for each filter key', result, k, result[k], activeFilters[k])
-
-      if (result[k] === activeFilters[k]) {
+      // Oh but department is special.
+      /*
+        An active department filter must be searched for in 
+        a user's "department" AND "division" field, since
+        the those are actually the same from the data,
+        but are displayed seperately and have their own fields
+        on a user.
+      */
+      if (k === 'department') {
+        if (
+          result[k] === activeFilters[k] ||
+          result['division'] === activeFilters[k]
+        ) {
+          i = i + 1
+        }
+      } else if (result[k] === activeFilters[k]) {
         i = i + 1
       }
     })
