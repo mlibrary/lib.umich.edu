@@ -116,7 +116,11 @@ export default function StaffDirectoryContainer({ data }) {
 
   return (
     <TemplateLayout node={node}>
-      <Margins>
+      <Margins
+        css={{
+          marginBottom: SPACING['2XL'],
+        }}
+      >
         <Breadcrumb data={fields.breadcrumb} />
         <Heading
           size="3XL"
