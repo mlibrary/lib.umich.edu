@@ -240,94 +240,96 @@ const StaffDirectory = React.memo(function StaffDirectory({
           ))}
         </div>
 
-        <div
-          tabindex="0"
-          css={{
-            overflowX: 'auto',
-          }}
-          role="group"
-          aria-labeledby="caption"
-        >
-          <table
+        {results.length > 0 && (
+          <div
+            tabindex="0"
             css={{
-              width: '100%',
-              minWidth: '720px',
-              tableLayout: 'fixed',
-              marginBottom: SPACING['XL'],
-              'th, td': {
-                padding: `${SPACING['XS']} 0`,
-                textAlign: 'left',
-                borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-              },
-              'td:not(:last-of-type)': {
-                paddingRight: SPACING['XL'],
-              },
-              th: {
-                color: COLORS.neutral['300'],
-              },
+              overflowX: 'auto',
             }}
+            role="group"
+            aria-labeledby="caption"
           >
-            <caption
-              id="caption"
+            <table
               css={{
-                textAlign: 'left',
+                width: '100%',
+                minWidth: '720px',
+                tableLayout: 'fixed',
+                marginBottom: SPACING['XL'],
+                'th, td': {
+                  padding: `${SPACING['XS']} 0`,
+                  textAlign: 'left',
+                  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+                },
+                'td:not(:last-of-type)': {
+                  paddingRight: SPACING['XL'],
+                },
+                th: {
+                  color: COLORS.neutral['300'],
+                },
               }}
             >
-              <VisuallyHidden>
-                <Alert>{resultsSummary}</Alert>
-              </VisuallyHidden>
-
-              <p
+              <caption
+                id="caption"
                 css={{
-                  ['@media only screen and (min-width: 720px)']: {
-                    display: 'none',
-                  },
+                  textAlign: 'left',
                 }}
               >
-                (Scroll to see more)
-              </p>
-            </caption>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Contact info</th>
-                <th>Title</th>
-                <th>Department</th>
-              </tr>
-            </thead>
-            <tbody>
-              {staffInView.map(
-                ({ uniqname, name, title, email, phone, department }) => (
-                  <tr key={uniqname}>
-                    <td>
-                      <Link to={`staff/` + uniqname}>{name}</Link>
-                    </td>
-                    <td>
-                      <span css={{ display: 'block' }}>
-                        <Link to={`mailto:` + email} kind="subtle">
-                          {email}
-                        </Link>
-                      </span>
-                      {phone && (
-                        <span>
-                          <Link to={`tel:1-` + phone} kind="subtle">
-                            {phone}
+                <VisuallyHidden>
+                  <Alert>{resultsSummary}</Alert>
+                </VisuallyHidden>
+
+                <p
+                  css={{
+                    ['@media only screen and (min-width: 720px)']: {
+                      display: 'none',
+                    },
+                  }}
+                >
+                  (Scroll to see more)
+                </p>
+              </caption>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Contact info</th>
+                  <th>Title</th>
+                  <th>Department</th>
+                </tr>
+              </thead>
+              <tbody>
+                {staffInView.map(
+                  ({ uniqname, name, title, email, phone, department }) => (
+                    <tr key={uniqname}>
+                      <td>
+                        <Link to={`staff/` + uniqname}>{name}</Link>
+                      </td>
+                      <td>
+                        <span css={{ display: 'block' }}>
+                          <Link to={`mailto:` + email} kind="subtle">
+                            {email}
                           </Link>
                         </span>
-                      )}
-                    </td>
-                    <td>{title}</td>
-                    <td>
-                      <Link to="#" kind="subtle">
-                        {department}
-                      </Link>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
-        </div>
+                        {phone && (
+                          <span>
+                            <Link to={`tel:1-` + phone} kind="subtle">
+                              {phone}
+                            </Link>
+                          </span>
+                        )}
+                      </td>
+                      <td>{title}</td>
+                      <td>
+                        <Link to="#" kind="subtle">
+                          {department}
+                        </Link>
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {showMoreText && (
           <>
