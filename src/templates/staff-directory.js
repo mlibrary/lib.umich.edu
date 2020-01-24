@@ -362,11 +362,12 @@ function NoResults({ image }) {
   return (
     <div
       css={{
-        display: 'grid',
-        gridTemplateColumns: `3fr 2fr`,
-        gridGap: SPACING['4XL'],
-        marginTop: SPACING['2XL'],
-        marginBottom: SPACING['4XL'],
+        [MEDIA_QUERIES['L']]: {
+          display: 'grid',
+          gridTemplateColumns: `3fr 2fr`,
+          gridGap: SPACING['4XL'],
+        },
+        marginBottom: SPACING['2XL'],
       }}
     >
       <Prose>
@@ -408,7 +409,11 @@ function NoResults({ image }) {
         alt=""
         css={{
           maxWidth: '18rem',
-          marginBottom: SPACING['L'],
+          margin: '1rem auto',
+          [MEDIA_QUERIES['L']]: {
+            margin: '0',
+            marginBottom: SPACING['L'],
+          },
         }}
       />
     </div>
