@@ -25,7 +25,6 @@ export default function StaffDirectoryContainer() {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const debouncedQuery = useDebounce(query, 250)
-
   const queryData = useStaticQuery(graphql`
     {
       allStaff(sort: { order: ASC, fields: uniqname }) {
@@ -36,6 +35,15 @@ export default function StaffDirectoryContainer() {
             title
             email
             phone
+            department_drupal_nid
+          }
+        }
+      }
+      allNodeDepartment {
+        edges {
+          node {
+            title
+            drupal_internal__nid
           }
         }
       }
@@ -48,15 +56,22 @@ export default function StaffDirectoryContainer() {
       }
     }
   `)
-
-  // Flatten it out a bit for presentation
+  const image = queryData.file
+  const departments = queryData.allNodeDepartment.edges.reduce(
+    (acc, { node }) => {
+      return {
+        ...acc,
+        [node.drupal_internal__nid]: node.title,
+      }
+    },
+    {}
+  )
   const staff = queryData.allStaff.edges.map(({ node }) => {
     return {
       ...node,
+      department: departments[node.department_drupal_nid],
     }
   })
-
-  const image = queryData.file
 
   useEffect(() => {
     if (!window.__SDI__) {
@@ -102,7 +117,11 @@ export default function StaffDirectoryContainer() {
     {
       label: 'Department',
       name: 'department',
-      options: ['All departments'],
+      options: ['All departments'].concat(
+        Object.keys(departments)
+          .map(d => departments[d])
+          .sort()
+      ),
     },
     {
       label: 'Division',
@@ -224,29 +243,31 @@ function StaffDirectory({ handleChange, filters, results, image }) {
             </tr>
           </thead>
           <tbody>
-            {staffInView.map(({ uniqname, name, title, email, phone }) => (
-              <tr key={uniqname}>
-                <td>
-                  <Link to={`staff/` + uniqname}>{name}</Link>
-                </td>
-                <td>
-                  <span css={{ display: 'block' }}>
-                    <Link to={`mailto:` + email} kind="subtle">
-                      {email}
-                    </Link>
-                  </span>
-                  {phone && (
-                    <span>
-                      <Link to={`tel:1-` + phone} kind="subtle">
-                        {phone}
+            {staffInView.map(
+              ({ uniqname, name, title, email, phone, department }) => (
+                <tr key={uniqname}>
+                  <td>
+                    <Link to={`staff/` + uniqname}>{name}</Link>
+                  </td>
+                  <td>
+                    <span css={{ display: 'block' }}>
+                      <Link to={`mailto:` + email} kind="subtle">
+                        {email}
                       </Link>
                     </span>
-                  )}
-                </td>
-                <td colSpan="2">{title}</td>
-                <td>[todo]</td>
-              </tr>
-            ))}
+                    {phone && (
+                      <span>
+                        <Link to={`tel:1-` + phone} kind="subtle">
+                          {phone}
+                        </Link>
+                      </span>
+                    )}
+                  </td>
+                  <td colSpan="2">{title}</td>
+                  <td>{department}</td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
 

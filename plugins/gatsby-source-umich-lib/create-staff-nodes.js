@@ -64,7 +64,7 @@ function processRawMetadata(data) {
     title: field_user_work_title,
     email: field_user_email,
     phone: field_user_phone === '000-000-0000' ? null : field_user_phone,
-    department_drupal_id: field_user_department.split(', ')[1],
+    department_drupal_nid: field_user_department.split(', ')[1],
   }
 
   return processedMetadata
