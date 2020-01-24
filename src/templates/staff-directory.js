@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useStaticQuery, graphql } from 'gatsby'
+import { graphql } from 'gatsby'
 import {
   Heading,
   SPACING,
@@ -14,64 +14,32 @@ import {
 } from '@umich-lib/core'
 import Img from 'gatsby-image'
 import VisuallyHidden from '@reach/visually-hidden'
-import Layout from '../components/layout'
-import SEO from '../components/seo'
 import Link from '../components/link'
 import Prose from '../components/prose'
 import Breadcrumb from '../components/breadcrumb'
 import useDebounce from '../hooks/use-debounce'
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
+import TemplateLayout from './template-layout'
+import HTML from '../components/html'
 
 const lunr = require('lunr')
 
-export default function StaffDirectoryContainer() {
+export default function StaffDirectoryContainer({ data }) {
+  const node = data.page
+  const { file, allNodeDepartment, allStaff } = data
+  const { body, fields, field_title_context } = node
   const [query, setQuery] = useState('')
   const [activeFilters, setActiveFilters] = useState({})
   const [results, setResults] = useState([])
   const debouncedQuery = useDebounce(query, 250)
-  const queryData = useStaticQuery(graphql`
-    {
-      allStaff(sort: { order: ASC, fields: uniqname }) {
-        edges {
-          node {
-            uniqname
-            name
-            title
-            email
-            phone
-            department_nid
-            division_nid
-          }
-        }
-      }
-      allNodeDepartment {
-        edges {
-          node {
-            title
-            drupal_internal__nid
-          }
-        }
-      }
-      file(relativePath: { eq: "squirrel.png" }) {
-        childImageSharp {
-          fluid(maxWidth: 920) {
-            ...GatsbyImageSharpFluid_noBase64
-          }
-        }
-      }
+  const image = file
+  const departments = allNodeDepartment.edges.reduce((acc, { node }) => {
+    return {
+      ...acc,
+      [node.drupal_internal__nid]: node.title,
     }
-  `)
-  const image = queryData.file
-  const departments = queryData.allNodeDepartment.edges.reduce(
-    (acc, { node }) => {
-      return {
-        ...acc,
-        [node.drupal_internal__nid]: node.title,
-      }
-    },
-    {}
-  )
-  const staff = queryData.allStaff.edges.map(({ node }) => {
+  }, {})
+  const staff = allStaff.edges.map(({ node }) => {
     return {
       ...node,
       department: departments[node.department_nid],
@@ -147,12 +115,37 @@ export default function StaffDirectoryContainer() {
   ]
 
   return (
-    <StaffDirectory
-      handleChange={handleChange}
-      filters={filters}
-      results={results}
-      image={image}
-    />
+    <TemplateLayout node={node}>
+      <Margins>
+        <Breadcrumb data={fields.breadcrumb} />
+        <Heading
+          size="3XL"
+          level={1}
+          css={{
+            marginBottom: SPACING['XL'],
+          }}
+        >
+          {field_title_context}
+        </Heading>
+
+        {body && (
+          <div
+            css={{
+              marginBottom: SPACING['XL'],
+            }}
+          >
+            <HTML html={body.processed} />{' '}
+          </div>
+        )}
+
+        <StaffDirectory
+          handleChange={handleChange}
+          filters={filters}
+          results={results}
+          image={image}
+        />
+      </Margins>
+    </TemplateLayout>
   )
 }
 
@@ -178,175 +171,143 @@ const StaffDirectory = React.memo(function StaffDirectory({
   }
 
   return (
-    <Layout>
-      <SEO title="Staff Directory" />
-      <Margins
+    <React.Fragment>
+      <div
         css={{
-          marginBottom: SPACING['4XL'],
+          display: 'grid',
+          gridGap: SPACING['S'],
+          [MEDIA_QUERIES['S']]: {
+            gridTemplateColumns: `3fr 2fr`,
+          },
+          input: {
+            lineHeight: '1.5',
+            height: '40px',
+          },
+          marginBottom: SPACING['M'],
         }}
       >
-        <Breadcrumb
-          data={JSON.stringify([
-            {
-              text: 'Home',
-              to: '/',
-            },
-            {
-              text: 'About Us',
-              to: '/about-us',
-            },
-            {
-              text: 'Staff Directory',
-            },
-          ])}
+        <TextInput
+          id="search"
+          labelText="Search by name, uniqname, or title"
+          name="query"
+          onChange={e => handleChange(e)}
         />
-        <Heading
-          size="3XL"
-          level={1}
-          css={{
-            marginBottom: SPACING['L'],
-          }}
-        >
-          Staff Directory
-        </Heading>
-
-        <div
-          css={{
-            display: 'grid',
-            gridGap: SPACING['S'],
-            [MEDIA_QUERIES['S']]: {
-              gridTemplateColumns: `3fr 2fr`,
-            },
-            input: {
-              lineHeight: '1.5',
-              height: '40px',
-            },
-            marginBottom: SPACING['M'],
-          }}
-        >
-          <TextInput
-            id="search"
-            labelText="Search by name, uniqname, or title"
-            name="query"
+        {filters.map(({ label, name, options }) => (
+          <Select
+            label={label}
+            name={name}
+            options={options}
             onChange={e => handleChange(e)}
           />
-          {filters.map(({ label, name, options }) => (
-            <Select
-              label={label}
-              name={name}
-              options={options}
-              onChange={e => handleChange(e)}
-            />
-          ))}
-        </div>
+        ))}
+      </div>
 
-        {results.length > 0 && (
-          <div
-            tabindex="0"
+      {results.length > 0 && (
+        <div
+          tabindex="0"
+          css={{
+            overflowX: 'auto',
+          }}
+          role="group"
+          aria-labeledby="caption"
+        >
+          <table
             css={{
-              overflowX: 'auto',
+              width: '100%',
+              minWidth: '720px',
+              tableLayout: 'fixed',
+              marginBottom: SPACING['XL'],
+              'th, td': {
+                padding: `${SPACING['XS']} 0`,
+                textAlign: 'left',
+                borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+              },
+              'td:not(:last-of-type)': {
+                paddingRight: SPACING['XL'],
+              },
+              th: {
+                color: COLORS.neutral['300'],
+              },
             }}
-            role="group"
-            aria-labeledby="caption"
           >
-            <table
+            <caption
+              id="caption"
               css={{
-                width: '100%',
-                minWidth: '720px',
-                tableLayout: 'fixed',
-                marginBottom: SPACING['XL'],
-                'th, td': {
-                  padding: `${SPACING['XS']} 0`,
-                  textAlign: 'left',
-                  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-                },
-                'td:not(:last-of-type)': {
-                  paddingRight: SPACING['XL'],
-                },
-                th: {
-                  color: COLORS.neutral['300'],
-                },
+                textAlign: 'left',
               }}
             >
-              <caption
-                id="caption"
+              <VisuallyHidden>
+                <Alert>{resultsSummary}</Alert>
+              </VisuallyHidden>
+
+              <p
                 css={{
-                  textAlign: 'left',
+                  ['@media only screen and (min-width: 720px)']: {
+                    display: 'none',
+                  },
                 }}
               >
-                <VisuallyHidden>
-                  <Alert>{resultsSummary}</Alert>
-                </VisuallyHidden>
-
-                <p
-                  css={{
-                    ['@media only screen and (min-width: 720px)']: {
-                      display: 'none',
-                    },
-                  }}
-                >
-                  (Scroll to see more)
-                </p>
-              </caption>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Contact info</th>
-                  <th>Title</th>
-                  <th>Department</th>
-                </tr>
-              </thead>
-              <tbody>
-                {staffInView.map(
-                  ({ uniqname, name, title, email, phone, department }) => (
-                    <tr key={uniqname}>
-                      <td>
-                        <Link to={`staff/` + uniqname}>{name}</Link>
-                      </td>
-                      <td>
-                        <span css={{ display: 'block' }}>
-                          <Link to={`mailto:` + email} kind="subtle">
-                            {email}
+                (Scroll to see more)
+              </p>
+            </caption>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Contact info</th>
+                <th>Title</th>
+                <th>Department</th>
+              </tr>
+            </thead>
+            <tbody>
+              {staffInView.map(
+                ({ uniqname, name, title, email, phone, department }) => (
+                  <tr key={uniqname}>
+                    <td>
+                      <Link to={`staff/` + uniqname}>{name}</Link>
+                    </td>
+                    <td>
+                      <span css={{ display: 'block' }}>
+                        <Link to={`mailto:` + email} kind="subtle">
+                          {email}
+                        </Link>
+                      </span>
+                      {phone && (
+                        <span>
+                          <Link to={`tel:1-` + phone} kind="subtle">
+                            {phone}
                           </Link>
                         </span>
-                        {phone && (
-                          <span>
-                            <Link to={`tel:1-` + phone} kind="subtle">
-                              {phone}
-                            </Link>
-                          </span>
-                        )}
-                      </td>
-                      <td>{title}</td>
-                      <td>
-                        <Link to="#" kind="subtle">
-                          {department}
-                        </Link>
-                      </td>
-                    </tr>
-                  )
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
+                      )}
+                    </td>
+                    <td>{title}</td>
+                    <td>
+                      <Link to="#" kind="subtle">
+                        {department}
+                      </Link>
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-        {showMoreText && (
-          <>
-            <p
-              css={{
-                marginBottom: SPACING['M'],
-              }}
-            >
-              {showMoreText}
-            </p>
-            <Button onClick={showMore}>Show all</Button>
-          </>
-        )}
+      {showMoreText && (
+        <>
+          <p
+            css={{
+              marginBottom: SPACING['M'],
+            }}
+          >
+            {showMoreText}
+          </p>
+          <Button onClick={showMore}>Show all</Button>
+        </>
+      )}
 
-        {!results.length && <NoResults image={image} />}
-      </Margins>
-    </Layout>
+      {!results.length && <NoResults image={image} />}
+    </React.Fragment>
   )
 })
 
@@ -374,7 +335,7 @@ function NoResults({ image }) {
     >
       <Prose>
         <Heading size="L" level={2}>
-          Oh no! We couldn't find anyone.
+          We couldn't find any results
         </Heading>
 
         <Text lede>
@@ -534,3 +495,39 @@ function filterResults({ activeFilters, results }) {
     return i === filterKeys.length
   })
 }
+
+export const query = graphql`
+  query($slug: String!) {
+    page: nodePage(fields: { slug: { eq: $slug } }) {
+      ...pageFragment
+    }
+    allStaff(sort: { order: ASC, fields: uniqname }) {
+      edges {
+        node {
+          uniqname
+          name
+          title
+          email
+          phone
+          department_nid
+          division_nid
+        }
+      }
+    }
+    allNodeDepartment {
+      edges {
+        node {
+          title
+          drupal_internal__nid
+        }
+      }
+    }
+    file(relativePath: { eq: "squirrel.png" }) {
+      childImageSharp {
+        fluid(maxWidth: 920) {
+          ...GatsbyImageSharpFluid_noBase64
+        }
+      }
+    }
+  }
+`
