@@ -20,6 +20,7 @@ import Link from '../components/link'
 import Prose from '../components/prose'
 import Breadcrumb from '../components/breadcrumb'
 import useDebounce from '../hooks/use-debounce'
+import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 
 const lunr = require('lunr')
 
@@ -212,13 +213,15 @@ const StaffDirectory = React.memo(function StaffDirectory({
         <div
           css={{
             display: 'grid',
-            gridTemplateColumns: `3fr 2fr`,
             gridGap: SPACING['S'],
+            [MEDIA_QUERIES['S']]: {
+              gridTemplateColumns: `3fr 2fr`,
+            },
             input: {
               lineHeight: '1.5',
               height: '40px',
             },
-            marginBottom: SPACING['S'],
+            marginBottom: SPACING['M'],
           }}
         >
           <TextInput
@@ -237,69 +240,94 @@ const StaffDirectory = React.memo(function StaffDirectory({
           ))}
         </div>
 
-        <table
+        <div
+          tabindex="0"
           css={{
-            width: '100%',
-            tableLayout: 'fixed',
-            marginBottom: SPACING['XL'],
-            'th, td': {
-              padding: `${SPACING['XS']} 0`,
-              textAlign: 'left',
-              borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-            },
-            'td:not(:last-of-type)': {
-              paddingRight: SPACING['XL'],
-            },
-            th: {
-              color: COLORS.neutral['300'],
-            },
+            overflowX: 'auto',
           }}
+          role="group"
+          aria-labeledby="caption"
         >
-          <caption>
-            <VisuallyHidden>
-              <Alert>{resultsSummary}</Alert>
-            </VisuallyHidden>
-          </caption>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Contact info</th>
-              <th>Title</th>
-              <th>Department</th>
-            </tr>
-          </thead>
-          <tbody>
-            {staffInView.map(
-              ({ uniqname, name, title, email, phone, department }) => (
-                <tr key={uniqname}>
-                  <td>
-                    <Link to={`staff/` + uniqname}>{name}</Link>
-                  </td>
-                  <td>
-                    <span css={{ display: 'block' }}>
-                      <Link to={`mailto:` + email} kind="subtle">
-                        {email}
-                      </Link>
-                    </span>
-                    {phone && (
-                      <span>
-                        <Link to={`tel:1-` + phone} kind="subtle">
-                          {phone}
+          <table
+            css={{
+              width: '100%',
+              minWidth: '720px',
+              tableLayout: 'fixed',
+              marginBottom: SPACING['XL'],
+              'th, td': {
+                padding: `${SPACING['XS']} 0`,
+                textAlign: 'left',
+                borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+              },
+              'td:not(:last-of-type)': {
+                paddingRight: SPACING['XL'],
+              },
+              th: {
+                color: COLORS.neutral['300'],
+              },
+            }}
+          >
+            <caption
+              id="caption"
+              css={{
+                textAlign: 'left',
+              }}
+            >
+              <VisuallyHidden>
+                <Alert>{resultsSummary}</Alert>
+              </VisuallyHidden>
+
+              <p
+                css={{
+                  ['@media only screen and (min-width: 720px)']: {
+                    display: 'none',
+                  },
+                }}
+              >
+                (Scroll to see more)
+              </p>
+            </caption>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Contact info</th>
+                <th>Title</th>
+                <th>Department</th>
+              </tr>
+            </thead>
+            <tbody>
+              {staffInView.map(
+                ({ uniqname, name, title, email, phone, department }) => (
+                  <tr key={uniqname}>
+                    <td>
+                      <Link to={`staff/` + uniqname}>{name}</Link>
+                    </td>
+                    <td>
+                      <span css={{ display: 'block' }}>
+                        <Link to={`mailto:` + email} kind="subtle">
+                          {email}
                         </Link>
                       </span>
-                    )}
-                  </td>
-                  <td>{title}</td>
-                  <td>
-                    <Link to="#" kind="subtle">
-                      {department}
-                    </Link>
-                  </td>
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
+                      {phone && (
+                        <span>
+                          <Link to={`tel:1-` + phone} kind="subtle">
+                            {phone}
+                          </Link>
+                        </span>
+                      )}
+                    </td>
+                    <td>{title}</td>
+                    <td>
+                      <Link to="#" kind="subtle">
+                        {department}
+                      </Link>
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
+        </div>
 
         {showMoreText && (
           <>
