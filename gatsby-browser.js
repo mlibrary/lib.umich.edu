@@ -8,26 +8,6 @@
 import React from 'react'
 import { Chat, LargeScreen, COLORS } from '@umich-lib/core'
 
-export const onClientEntry = () => {
-  // IntersectionObserver polyfill for gatsby-background-image (Safari, IE)
-  if (typeof window.IntersectionObserver === `undefined`) {
-    import(`intersection-observer`)
-  }
-
-  if (process.env.GATSBY_ACCESSIBILITY_MODE === 'true') {
-    let date = new Date()
-    let dayOfWeek = date.getDay()
-
-    if (dayOfWeek === 1) {
-      import('no-mouse-days').then(() => {
-        console.log(
-          'No Mouse Days activated. Credit: https://github.com/marcysutton/no-mouse-days'
-        )
-      })
-    }
-  }
-}
-
 export const wrapPageElement = ({ element, props }) => {
   // props provide same data to Layout as Page element will get
   // including location, data, etc - you don't need to pass it
