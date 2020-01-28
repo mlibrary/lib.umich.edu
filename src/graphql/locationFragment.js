@@ -14,6 +14,7 @@ export const query = graphql`
     field_local_navigation
     body {
       summary
+      processed
     }
     fields {
       slug
