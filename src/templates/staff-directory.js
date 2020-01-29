@@ -113,6 +113,7 @@ export default function StaffDirectoryContainer({ data }) {
       ),
     },
   ]
+  
 
   return (
     <TemplateLayout node={node}>
