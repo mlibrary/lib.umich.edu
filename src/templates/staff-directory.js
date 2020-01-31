@@ -260,7 +260,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
               tableLayout: 'fixed',
               marginBottom: SPACING['XL'],
               'th, td': {
-                padding: `${SPACING['XS']} 0`,
+                padding: `${SPACING['S']} 0`,
                 textAlign: 'left',
                 borderBottom: `solid 1px ${COLORS.neutral['100']}`,
                 verticalAlign: 'top',
@@ -297,7 +297,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
               <tr>
                 <th
                   css={{
-                    paddingLeft: `calc(43px + ${SPACING['S']}) !important`,
+                    paddingLeft: `calc(43px + ${SPACING['L']}) !important`,
                   }}
                 >
                   Name
@@ -330,7 +330,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                           css={{
                             display: 'inline-block',
                             width: '43px',
-                            marginRight: SPACING['S'],
+                            marginRight: SPACING['L'],
                             lineHeight: '0',
                           }}
                         >
@@ -339,13 +339,18 @@ const StaffDirectory = React.memo(function StaffDirectory({
                             staffImages={staffImages}
                           />
                         </span>
-                        <PlainLink css={{
-                          color: COLORS.teal['400'],
-                          textDecoration: 'underline',
-                          ':hover': {
-                            textDecorationThickness: '2px'
-                          }
-                        }} to={`staff/` + uniqname}>{name}</PlainLink>
+                        <PlainLink
+                          css={{
+                            color: COLORS.teal['400'],
+                            textDecoration: 'underline',
+                            ':hover': {
+                              textDecorationThickness: '2px',
+                            },
+                          }}
+                          to={`staff/` + uniqname}
+                        >
+                          {name}
+                        </PlainLink>
                       </div>
                     </td>
                     <td>
