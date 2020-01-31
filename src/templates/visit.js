@@ -47,10 +47,11 @@ export default function VisitTemplate({ data, ...rest }) {
   const isRootPage = field_root_page_ ? true : false
   const { field_visit, field_amenities } = relationships
   const { bodyPanels, fullPanels } = transformNodePanels({ node: page })
+  const description = body && body.summary ? body.summary : null
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO title={title} />
+      <SEO title={title} description={description} />
       <header aria-label="Location description">
         <PageHeader
           breadcrumb={fields.breadcrumb}

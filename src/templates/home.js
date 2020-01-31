@@ -7,11 +7,12 @@ import Panels from '../components/panels'
 import VisuallyHidden from '@reach/visually-hidden'
 
 function BasicTemplate({ data }) {
-  const { drupal_internal__nid, relationships } = data.page
+  const { drupal_internal__nid, relationships, body } = data.page
+  const description = body && body.summary ? body.summary : null
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO />
+      <SEO description={description} />
       <VisuallyHidden>
         <h1>Home page</h1>
       </VisuallyHidden>
