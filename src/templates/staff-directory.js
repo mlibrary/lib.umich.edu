@@ -13,8 +13,10 @@ import {
   Text,
 } from '@umich-lib/core'
 import Img from 'gatsby-image'
+import BackgroundImage from 'gatsby-background-image'
 import VisuallyHidden from '@reach/visually-hidden'
 import Link from '../components/link'
+import PlainLink from '../components/plain-link'
 import Prose from '../components/prose'
 import Breadcrumb from '../components/breadcrumb'
 import useDebounce from '../hooks/use-debounce'
@@ -24,15 +26,10 @@ import HTML from '../components/html'
 
 const lunr = require('lunr')
 
-export default function StaffDirectoryContainer({ data }) {
+export default function StaffDirectoryWrapper({ data }) {
   const node = data.page
-  const { file, allNodeDepartment, allStaff } = data
-  const { body, fields, field_title_context } = node
-  const [query, setQuery] = useState('')
-  const [activeFilters, setActiveFilters] = useState({})
-  const [results, setResults] = useState([])
-  const debouncedQuery = useDebounce(query, 250)
-  const image = file
+  const { noResultsImage, allNodeDepartment, allStaff, allStaffImages } = data
+
   const departments = allNodeDepartment.edges.reduce((acc, { node }) => {
     return {
       ...acc,
@@ -46,6 +43,42 @@ export default function StaffDirectoryContainer({ data }) {
       division: departments[node.division_nid],
     }
   })
+  const staffImages = allStaffImages.edges.reduce((acc, { node }) => {
+    const img = node.relationships.field_media_image
+
+    return {
+      ...acc,
+      [img.drupal_internal__mid]: {
+        alt: img.field_media_image.alt,
+        ...img.relationships.field_media_image.localFile,
+      },
+    }
+  }, {})
+
+  return (
+    <StaffDirectoryQueryContainer
+      node={node}
+      staff={staff}
+      departments={departments}
+      noResultsImage={noResultsImage}
+      staffImages={staffImages}
+    />
+  )
+}
+
+function StaffDirectoryQueryContainer({
+  node,
+  staff,
+  departments,
+  noResultsImage,
+  staffImages,
+}) {
+  const { body, fields, field_title_context } = node
+  const [query, setQuery] = useState('')
+  const [activeFilters, setActiveFilters] = useState({})
+  const [results, setResults] = useState([])
+  const debouncedQuery = useDebounce(query, 250)
+  const image = noResultsImage
 
   useEffect(() => {
     if (!window.__SDI__) {
@@ -147,6 +180,7 @@ export default function StaffDirectoryContainer({ data }) {
           filters={filters}
           results={results}
           image={image}
+          staffImages={staffImages}
         />
       </Margins>
     </TemplateLayout>
@@ -158,6 +192,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
   filters,
   results,
   image,
+  staffImages,
 }) {
   const [show, setShow] = useState(20)
   const staffInView = results.slice(0, show)
@@ -194,7 +229,10 @@ const StaffDirectory = React.memo(function StaffDirectory({
           id="search"
           labelText="Search by name, uniqname, or title"
           name="query"
-          onChange={e => handleChange(e)}
+          onChange={e => {
+            setShow(20)
+            handleChange(e)
+          }}
         />
         {filters.map(({ label, name, options }) => (
           <Select
@@ -208,12 +246,12 @@ const StaffDirectory = React.memo(function StaffDirectory({
 
       {results.length > 0 && (
         <div
-          tabindex="0"
+          tabIndex="0"
           css={{
             overflowX: 'auto',
           }}
           role="group"
-          aria-labeledby="caption"
+          aria-labelledby="caption"
         >
           <table
             css={{
@@ -225,6 +263,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                 padding: `${SPACING['XS']} 0`,
                 textAlign: 'left',
                 borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+                verticalAlign: 'top',
               },
               'td:not(:last-of-type)': {
                 paddingRight: SPACING['XL'],
@@ -246,7 +285,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
 
               <p
                 css={{
-                  ['@media only screen and (min-width: 720px)']: {
+                  '@media only screen and (min-width: 720px)': {
                     display: 'none',
                   },
                 }}
@@ -256,7 +295,13 @@ const StaffDirectory = React.memo(function StaffDirectory({
             </caption>
             <thead>
               <tr>
-                <th>Name</th>
+                <th
+                  css={{
+                    paddingLeft: `calc(43px + ${SPACING['S']}) !important`,
+                  }}
+                >
+                  Name
+                </th>
                 <th>Contact info</th>
                 <th>Title</th>
                 <th>Department</th>
@@ -264,10 +309,37 @@ const StaffDirectory = React.memo(function StaffDirectory({
             </thead>
             <tbody>
               {staffInView.map(
-                ({ uniqname, name, title, email, phone, department }) => (
+                ({
+                  uniqname,
+                  name,
+                  title,
+                  email,
+                  phone,
+                  department,
+                  image_mid,
+                }) => (
                   <tr key={uniqname}>
                     <td>
-                      <Link to={`staff/` + uniqname}>{name}</Link>
+                      <div
+                        css={{
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                        }}
+                      >
+                        <span
+                          css={{
+                            display: 'inline-block',
+                            width: '43px',
+                            marginRight: SPACING['S'],
+                          }}
+                        >
+                          <StaffPhoto
+                            mid={image_mid}
+                            staffImages={staffImages}
+                          />
+                        </span>
+                        <PlainLink to={`staff/` + uniqname}>{name}</PlainLink>
+                      </div>
                     </td>
                     <td>
                       <span css={{ display: 'block' }}>
@@ -277,17 +349,21 @@ const StaffDirectory = React.memo(function StaffDirectory({
                       </span>
                       {phone && (
                         <span>
-                          <Link to={`tel:1-` + phone} kind="subtle">
-                            {phone}
-                          </Link>
+                          {phone && (
+                            <Link to={`tel:1-` + phone} kind="subtle">
+                              {phone}
+                            </Link>
+                          )}
                         </span>
                       )}
                     </td>
                     <td>{title}</td>
                     <td>
-                      <Link to="#" kind="subtle">
-                        {department}
-                      </Link>
+                      {department && (
+                        <Link to="#" kind="subtle">
+                          {department}
+                        </Link>
+                      )}
                     </td>
                   </tr>
                 )
@@ -375,6 +451,7 @@ function NoResults({ image }) {
         fluid={image.childImageSharp.fluid}
         alt=""
         css={{
+          display: 'inline-block',
           maxWidth: '18rem',
           margin: '1rem auto',
           [MEDIA_QUERIES['L']]: {
@@ -440,6 +517,54 @@ function Select({ label, name, options, ...rest }) {
         />
       </div>
     </label>
+  )
+}
+
+function StaffPhoto({ mid, staffImages }) {
+  const img = staffImages[mid]
+
+  if (!img) {
+    return (
+      <svg
+        width="43"
+        height="57"
+        viewBox="0 0 222 293"
+        xmlns="http://www.w3.org/2000/svg"
+        css={{
+          borderRadius: '2px',
+        }}
+      >
+        <mask fill="#fff">
+          <path d="m0 0h220v271h-220z" fill="#fff" fill-rule="evenodd" />
+        </mask>
+        <g fill="none" fill-rule="evenodd">
+          <path d="m.5 0h221v293h-221z" fill="#e5e9ed" />
+          <path
+            d="m229.835666 270.963166-119.330133.036834-119.34122233-.036834c-1.08129908.036834-2.46757997-47.562366 10.34165522-58.474545 12.94786321-11.013473 28.07680841-5.829037 57.34581831-20.277314 5.2401416-2.578405 13.6410037-6.492056 15.8313274-12.919651 2.3751612-6.943277-.1571118-15.728271-1.6173276-18.104088-22.5492445-36.880401-23.9826589-64.8837223-22.9568111-79.0649503 2.4583381-34.0349474 25.9798275-55.1226177 60.3965601-55.1226177 34.406567 0 57.928057 21.0876703 60.386395 55.1226177 1.024923 14.181228-.407567 42.1845493-22.956811 79.0649503-1.460216 2.375817-3.984172 11.160811-1.617328 18.104088 2.189399 6.427595 10.600428 10.341246 15.830403 12.919651 29.269934 14.448277 44.398879 9.263841 57.346743 20.277314 12.808311 10.912179 11.42203 58.511379 10.340731 58.474545"
+            fill="#b2bec9"
+            mask="url(#a)"
+            transform="translate(1 22)"
+          />
+        </g>
+      </svg>
+    )
+  }
+
+  return (
+    <BackgroundImage
+      aria-hidden="true"
+      data-card-image
+      tag="div"
+      fluid={img.childImageSharp.fluid}
+      alt={img.alt}
+      css={{
+        width: '43px',
+        height: '57px',
+        backgroundColor: COLORS.blue['100'],
+        borderRadius: '2px',
+        overflow: 'hidden',
+      }}
+    />
   )
 }
 
@@ -515,6 +640,38 @@ export const query = graphql`
           phone
           department_nid
           division_nid
+          image_mid
+        }
+      }
+    }
+    allStaffImages: allUserUser(
+      filter: {
+        relationships: {
+          field_media_image: { drupal_internal__mid: { ne: null } }
+        }
+      }
+    ) {
+      edges {
+        node {
+          relationships {
+            field_media_image {
+              drupal_internal__mid
+              field_media_image {
+                alt
+              }
+              relationships {
+                field_media_image {
+                  localFile {
+                    childImageSharp {
+                      fluid(maxWidth: 120) {
+                        ...GatsbyImageSharpFluid_noBase64
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -526,7 +683,7 @@ export const query = graphql`
         }
       }
     }
-    file(relativePath: { eq: "squirrel.png" }) {
+    noResultsImage: file(relativePath: { eq: "squirrel.png" }) {
       childImageSharp {
         fluid(maxWidth: 920) {
           ...GatsbyImageSharpFluid_noBase64

@@ -56,6 +56,7 @@ function processRawMetadata(data) {
     field_user_email,
     field_user_phone,
     field_user_department,
+    field_media_image,
   } = data
 
   const [division_nid, department_nid] = field_user_department.split(', ')
@@ -68,6 +69,7 @@ function processRawMetadata(data) {
     phone: field_user_phone === '000-000-0000' ? null : field_user_phone,
     department_nid,
     division_nid,
+    image_mid: field_media_image,
   }
 
   return processedMetadata
