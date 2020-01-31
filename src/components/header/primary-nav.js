@@ -264,6 +264,25 @@ function NavPanelItem({ text, to, description, children, i }) {
     return {}
   }
 
+  // Render as a link if no links to show in panel.
+  if (!children) {
+    return (
+      <li>
+        <Link
+          to={to}
+          css={{
+            display: 'block',
+            padding: `${SPACING['S']} ${SPACING['L']}`,
+            fontWeight: '800',
+            ':hover .text': LINK_STYLES['list-strong'][':hover'],
+          }}
+        >
+          <span className="text">{text}</span>
+        </Link>
+      </li>
+    )
+  }
+
   return (
     <li>
       <button

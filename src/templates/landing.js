@@ -18,10 +18,15 @@ export default function LandingTemplate({ data, ...rest }) {
     relationships,
     drupal_internal__nid,
   } = data.page
+  const description = body && body.summary ? body.summary : null
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO title={title} drupalNid={drupal_internal__nid} />
+      <SEO
+        title={title}
+        drupalNid={drupal_internal__nid}
+        description={description}
+      />
       <PageHeader
         breadcrumb={fields.breadcrumb}
         title={field_title_context}

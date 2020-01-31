@@ -56,10 +56,11 @@ function SectionTemplate({ data, ...rest }) {
     for PageHeader summary and image.
   */
   const summary = isRootPage ? body.summary : parentNode.body.summary
+  const description = body && body.summary ? body.summary : null
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO title={title} />
+      <SEO title={title} description={description} />
 
       {isRootPage ? (
         <PageHeader

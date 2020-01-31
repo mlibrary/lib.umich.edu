@@ -11,8 +11,10 @@ export const query = graphql`
     field_phone_number
     field_email
     field_address_is_different_from_
+    field_local_navigation
     body {
       summary
+      processed
     }
     fields {
       slug

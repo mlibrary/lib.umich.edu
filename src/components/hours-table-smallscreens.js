@@ -63,7 +63,7 @@ export default function HoursTableSmallscreens({
               borderBottom: `solid 2px ${COLORS.neutral['100']}`,
             }}
           >
-            {table[0]}
+            {table[0].text}
           </caption>
           {data.headings.map((heading, i) => (
             <tr>
@@ -84,7 +84,7 @@ export default function HoursTableSmallscreens({
                 </span>
               </th>
               <HoursSlot isToday={i === todayIndex - 1}>
-                {data.rows[t][i + 1]}
+                {data.rows[t][i + 1].text}
               </HoursSlot>
             </tr>
           ))}
