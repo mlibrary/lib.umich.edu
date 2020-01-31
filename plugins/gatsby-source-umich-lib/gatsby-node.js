@@ -208,9 +208,11 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   readInterface.on('line', function(line) {
     if (line) {
       const urls = line.split(' ')
+      /*
       console.log(
         'Creating client-side redirect from ' + urls[0] + ' to ' + urls[1]
       )
+      */
       createRedirect({
         fromPath: urls[0],
         toPath: urls[1],
