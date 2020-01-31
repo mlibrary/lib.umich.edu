@@ -331,6 +331,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                             display: 'inline-block',
                             width: '43px',
                             marginRight: SPACING['S'],
+                            lineHeight: '0',
                           }}
                         >
                           <StaffPhoto
@@ -338,7 +339,13 @@ const StaffDirectory = React.memo(function StaffDirectory({
                             staffImages={staffImages}
                           />
                         </span>
-                        <PlainLink to={`staff/` + uniqname}>{name}</PlainLink>
+                        <PlainLink css={{
+                          color: COLORS.teal['400'],
+                          textDecoration: 'underline',
+                          ':hover': {
+                            textDecorationThickness: '2px'
+                          }
+                        }} to={`staff/` + uniqname}>{name}</PlainLink>
                       </div>
                     </td>
                     <td>
@@ -526,8 +533,6 @@ function StaffPhoto({ mid, staffImages }) {
   if (!img) {
     return (
       <svg
-        width="43"
-        height="57"
         viewBox="0 0 222 293"
         xmlns="http://www.w3.org/2000/svg"
         css={{
