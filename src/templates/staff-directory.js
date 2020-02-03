@@ -137,7 +137,7 @@ function StaffDirectoryQueryContainer({
 
   const filters = [
     {
-      label: 'Department or Division',
+      label: 'Department or division',
       name: 'department',
       options: ['All'].concat(
         Object.keys(departments)
@@ -304,7 +304,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                 </th>
                 <th>Contact info</th>
                 <th>Title</th>
-                <th>Department</th>
+                <th>Department or division</th>
               </tr>
             </thead>
             <tbody>
@@ -316,6 +316,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                   email,
                   phone,
                   department,
+                  division,
                   image_mid,
                 }) => (
                   <tr key={uniqname}>
@@ -374,6 +375,12 @@ const StaffDirectory = React.memo(function StaffDirectory({
                       {department && (
                         <Link to="#" kind="subtle">
                           {department}
+                        </Link>
+                      )}
+
+                      {!department && division && (
+                        <Link to="#" kind="subtle">
+                          {division}
                         </Link>
                       )}
                     </td>
