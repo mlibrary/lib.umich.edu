@@ -1,7 +1,7 @@
 import React from 'react'
 import { graphql } from 'gatsby'
 
-import { Margins, Heading, SPACING, Text } from '@umich-lib/core'
+import { Margins, Heading, SPACING, Text, TYPOGRAPHY } from '@umich-lib/core'
 import { Template, Top, Side, Content } from '../components/page-layout'
 import SEO from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
@@ -18,7 +18,7 @@ function ProfileTemplate({ data }) {
     field_user_pro_about,
     relationships,
   } = data.profile
-  const { field_media_image } = relationships
+  const { field_media_image, field_name_pronunciation } = relationships
   var image
 
   if (field_media_image) {
@@ -68,20 +68,50 @@ function ProfileTemplate({ data }) {
             >
               {field_user_display_name}
             </Heading>
-            {field_user_work_title && (<Text lede>{field_user_work_title}</Text>)}
+            {field_user_work_title && <Text lede>{field_user_work_title}</Text>}
 
-            <Prose
-              css={{
-                marginTop: SPACING['XL'],
-              }}
-            >
-              {field_user_pro_about && (
-                <React.Fragment>
-                  <Heading size="M">About me</Heading>
-                  <HTML html={field_user_pro_about.processed} />
-                </React.Fragment>
-              )}
-            </Prose>
+            {field_name_pronunciation && (
+              <figure
+                css={{
+                  marginTop: SPACING['2XL'],
+                  marginBottom: SPACING['XL'],
+                }}
+              >
+                <figcaption
+                  css={{
+                    ...TYPOGRAPHY['S'],
+                    marginBottom: SPACING['XS'],
+                  }}
+                >
+                  Name pronunciation
+                </figcaption>
+                <audio
+                  css={{
+                    width: '100%',
+                    maxWidth: '24rem',
+                  }}
+                  controls
+                  src={field_name_pronunciation.localFile.publicURL}
+                >
+                  Your browser does not support the
+                  <code>audio</code> element.
+                </audio>
+              </figure>
+            )}
+
+            {field_user_pro_about && (
+              <React.Fragment>
+                <Heading
+                  size="S"
+                  css={{
+                    marginBottom: SPACING['XS'],
+                  }}
+                >
+                  About me
+                </Heading>
+                <HTML html={field_user_pro_about.processed} />
+              </React.Fragment>
+            )}
           </Content>
         </Template>
       </Margins>
@@ -101,6 +131,11 @@ export const query = graphql`
         processed
       }
       relationships {
+        field_name_pronunciation {
+          localFile {
+            publicURL
+          }
+        }
         field_media_image {
           drupal_internal__mid
           field_media_image {
