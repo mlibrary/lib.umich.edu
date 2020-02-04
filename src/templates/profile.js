@@ -68,15 +68,19 @@ function ProfileTemplate({ data }) {
             >
               {field_user_display_name}
             </Heading>
-            <Text lede>{field_user_work_title}</Text>
+            {field_user_work_title && (<Text lede>{field_user_work_title}</Text>)}
 
             <Prose
               css={{
                 marginTop: SPACING['XL'],
               }}
             >
-              <Heading size="M">About me</Heading>
-              <HTML html={field_user_pro_about.processed} />
+              {field_user_pro_about && (
+                <React.Fragment>
+                  <Heading size="M">About me</Heading>
+                  <HTML html={field_user_pro_about.processed} />
+                </React.Fragment>
+              )}
             </Prose>
           </Content>
         </Template>
