@@ -361,11 +361,9 @@ const StaffDirectory = React.memo(function StaffDirectory({
                       </span>
                       {phone && (
                         <span>
-                          {phone && (
-                            <Link to={`tel:1-` + phone} kind="subtle">
-                              {phone}
-                            </Link>
-                          )}
+                          <Link to={`tel:1-` + phone} kind="subtle">
+                            {phone}
+                          </Link>
                         </span>
                       )}
                     </td>

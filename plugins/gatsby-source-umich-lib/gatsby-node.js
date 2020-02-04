@@ -454,6 +454,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                   __typename
                   field_make_profile_public
                   field_user_display_name
+                  field_user_work_title
                   name
                 }
               }
@@ -510,6 +511,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             context: {
               name: node.name,
               title: node.field_user_display_name,
+              summary: node.field_user_work_title, // used for site search
             },
           })
         })
