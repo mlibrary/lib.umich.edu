@@ -6,7 +6,7 @@ import { Template, Top, Side, Content } from '../components/page-layout'
 import SEO from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
 import Layout from '../components/layout'
-import Prose from '../components/prose'
+import Link from '../components/link'
 import HTML from '../components/html'
 import Img from 'gatsby-image'
 
@@ -16,9 +16,23 @@ function ProfileTemplate({ data }) {
     field_user_work_title,
     field_user_display_name,
     field_user_pro_about,
+    field_user_pronoun_object,
+    field_user_pronoun_subject,
+    field_user_pronoun_dependent_pos,
+    field_user_pronoun_independent_p,
+    field_user_email,
+    field_user_phone,
     relationships,
   } = data.profile
   const { field_media_image, field_name_pronunciation } = relationships
+  const pronouns = [
+    field_user_pronoun_object,
+    field_user_pronoun_subject,
+    field_user_pronoun_dependent_pos,
+    field_user_pronoun_independent_p,
+  ].join('/')
+  const phone = field_user_phone !== '000-000-0000' ? field_user_phone : null
+
   var image
 
   if (field_media_image) {
@@ -47,7 +61,13 @@ function ProfileTemplate({ data }) {
           <Top>
             <Breadcrumb data={breadcrumbData} />
           </Top>
-          <Side>
+          <Side
+            css={{
+              '> h2': {
+                marginTop: SPACING['M'],
+              },
+            }}
+          >
             {image && (
               <Img
                 fluid={image.fluid}
@@ -56,6 +76,48 @@ function ProfileTemplate({ data }) {
                   width: '100%',
                 }}
               />
+            )}
+
+            {pronouns && (
+              <React.Fragment>
+                <Heading
+                  level={2}
+                  css={{
+                    fontWeight: '700',
+                  }}
+                >
+                  Pronouns
+                </Heading>
+                <Text>{pronouns}</Text>
+              </React.Fragment>
+            )}
+
+            {field_user_email && (
+              <React.Fragment>
+                <Heading
+                  level={2}
+                  css={{
+                    fontWeight: '700',
+                  }}
+                >
+                  Email
+                </Heading>
+                <Text>{field_user_email}</Text>
+              </React.Fragment>
+            )}
+
+            {phone && (
+              <React.Fragment>
+                <Heading
+                  level={2}
+                  css={{
+                    fontWeight: '700',
+                  }}
+                >
+                  Phone
+                </Heading>
+                <Link to={`tel:1-` + phone}>{phone}</Link>
+              </React.Fragment>
             )}
           </Side>
           <Content>
@@ -130,6 +192,12 @@ export const query = graphql`
       field_user_pro_about {
         processed
       }
+      field_user_pronoun_object
+      field_user_pronoun_subject
+      field_user_pronoun_dependent_pos
+      field_user_pronoun_independent_p
+      field_user_email
+      field_user_phone
       relationships {
         field_name_pronunciation {
           localFile {
