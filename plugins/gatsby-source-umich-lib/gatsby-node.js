@@ -505,7 +505,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           const profileTemplate = path.resolve(`src/templates/profile.js`)
 
           createPage({
-            path: `/staff/${node.name}`,
+            path: `/users/${node.name}`,
             component: profileTemplate,
             context: {
               name: node.name,

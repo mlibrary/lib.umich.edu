@@ -347,7 +347,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                               textDecorationThickness: '2px',
                             },
                           }}
-                          to={`staff/` + uniqname}
+                          to={`/users/` + uniqname}
                         >
                           {name}
                         </PlainLink>
