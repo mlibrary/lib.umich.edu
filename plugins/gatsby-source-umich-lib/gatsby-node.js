@@ -446,12 +446,27 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 }
               }
             }
+            profiles: allUserUser(
+              filter: { field_make_profile_public: { eq: true } }
+            ) {
+              edges {
+                node {
+                  __typename
+                  field_make_profile_public
+                  field_user_display_name
+                  name
+                }
+              }
+            }
           }
         `
       ).then(result => {
         if (result.errors) {
           reject(result.errors)
         }
+        /*
+          Make CMS pages that have configurable templates.
+        */
         const { pages, sections, buildings, rooms, locations } = result.data
         const edges = pages.edges
           .concat(sections.edges)
@@ -479,6 +494,24 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               },
             })
           }
+        })
+
+        /*
+          Make non CMS template pages
+        */
+        const { profiles } = result.data
+
+        profiles.edges.forEach(({ node }) => {
+          const profileTemplate = path.resolve(`src/templates/profile.js`)
+
+          createPage({
+            path: `/staff/${node.name}`,
+            component: profileTemplate,
+            context: {
+              name: node.name,
+              title: node.field_user_display_name,
+            },
+          })
         })
       })
     )
