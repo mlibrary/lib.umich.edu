@@ -11,6 +11,8 @@ import {
   LargeScreen,
   SmallScreen,
   Icon,
+  COLORS,
+  MEDIA_QUERIES,
 } from '@umich-lib/core'
 import { Template, Top, Side, Content } from '../components/page-layout'
 import SEO from '../components/seo'
@@ -94,6 +96,12 @@ function ProfileTemplate({ data }) {
                 marginBottom: SPACING['2XL'],
                 '> h2': {
                   marginTop: SPACING['M'],
+                },
+                background: COLORS.blue['100'],
+                padding: SPACING['M'],
+                margin: `0 -${SPACING['M']}`,
+                [MEDIA_QUERIES.LARGESCREEN]: {
+                  margin: 0,
                 },
               }}
             >
