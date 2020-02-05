@@ -10,6 +10,7 @@ import {
   List,
   LargeScreen,
   SmallScreen,
+  Icon,
 } from '@umich-lib/core'
 import { Template, Top, Side, Content } from '../components/page-layout'
 import SEO from '../components/seo'
@@ -18,6 +19,9 @@ import Layout from '../components/layout'
 import Link from '../components/link'
 import HTML from '../components/html'
 import Img from 'gatsby-image'
+import LANGUAGES from '../utils/languages'
+import LinkCallout from '../components/link-callout'
+import VisuallyHidden from '@reach/visually-hidden'
 
 function ProfileTemplate({ data }) {
   const {
@@ -32,7 +36,10 @@ function ProfileTemplate({ data }) {
     field_user_email,
     field_user_phone,
     field_user_orcid_id,
+    field_mailing_address,
+    field_user_url,
     relationships,
+    field_user_make_an_appointment,
   } = data.profile
   const { field_media_image, field_name_pronunciation } = relationships
   const pronouns = [
@@ -144,6 +151,21 @@ function ProfileTemplate({ data }) {
                   <Link to={`tel:1-` + phone}>{phone}</Link>
                 </React.Fragment>
               )}
+
+              {field_mailing_address && (
+                <React.Fragment>
+                  <Heading
+                    level={2}
+                    css={{
+                      fontWeight: '700',
+                    }}
+                  >
+                    Mailing address
+                  </Heading>
+                  <MailingAddress {...field_mailing_address} />
+                </React.Fragment>
+              )}
+
               {field_user_orcid_id && (
                 <React.Fragment>
                   <Heading
@@ -157,12 +179,32 @@ function ProfileTemplate({ data }) {
                   <Text>{field_user_orcid_id}</Text>
                 </React.Fragment>
               )}
+
+              <SocialLinks {...data.profile} />
             </div>
           </Side>
           <Content>
             <LargeScreen>
               <ProfileHeader {...data.profile} />
             </LargeScreen>
+
+            {field_user_make_an_appointment && (
+              <div
+                css={{
+                  marginTop: SPACING['2XL'],
+                  a: {
+                    display: 'inline-block',
+                  },
+                }}
+              >
+                <LinkCallout
+                  to={field_user_make_an_appointment.uri}
+                  icon="today"
+                >
+                  Make an appointment
+                </LinkCallout>
+              </div>
+            )}
 
             {field_name_pronunciation && (
               <figure
@@ -193,37 +235,57 @@ function ProfileTemplate({ data }) {
               </figure>
             )}
 
-            {field_user_pro_about && (
-              <React.Fragment>
-                <Heading
-                  size="S"
-                  css={{
-                    marginBottom: SPACING['XS'],
-                  }}
-                >
-                  About me
-                </Heading>
-                <HTML html={field_user_pro_about.processed} />
-              </React.Fragment>
-            )}
+            <div
+              css={{
+                '> h2': {
+                  marginTop: SPACING['XL'],
+                  marginBottom: SPACING['XS'],
+                },
+              }}
+            >
+              {field_user_pro_about && (
+                <React.Fragment>
+                  <Heading size="S" level={2}>
+                    About me
+                  </Heading>
+                  <HTML
+                    html={field_user_pro_about.processed}
+                    css={{
+                      marginBottom: SPACING['XL'],
+                    }}
+                  />
+                </React.Fragment>
+              )}
 
-            {field_languages_spoken && (
-              <React.Fragment>
-                <Heading
-                  size="S"
-                  css={{
-                    marginBottom: SPACING['XS'],
-                  }}
-                >
-                  About me
-                </Heading>
-                <List type="bulleted">
-                  {field_languages_spoken.map(lang => (
-                    <li>{lang}</li>
-                  ))}
-                </List>
-              </React.Fragment>
-            )}
+              {field_languages_spoken && (
+                <React.Fragment>
+                  <Heading size="S" level={2}>
+                    Languages spoken
+                  </Heading>
+                  <p>
+                    {field_languages_spoken
+                      .map(lang => LANGUAGES[lang].name)
+                      .join(', ')}
+                  </p>
+                </React.Fragment>
+              )}
+
+              {field_user_url && (
+                <React.Fragment>
+                  <Heading size="S" level={2}>
+                    My links
+                  </Heading>
+
+                  <List type="bulleted">
+                    {field_user_url.map(({ uri, title }) => (
+                      <li>
+                        <Link to={uri}>{title}</Link>
+                      </li>
+                    ))}
+                  </List>
+                </React.Fragment>
+              )}
+            </div>
           </Content>
         </Template>
       </Margins>
@@ -231,7 +293,14 @@ function ProfileTemplate({ data }) {
   )
 }
 
-function ProfileHeader({ field_user_display_name, field_user_work_title }) {
+function ProfileHeader({
+  field_user_display_name,
+  field_user_work_title,
+  relationships,
+}) {
+  const { field_user_department } = relationships
+  const depts = field_user_department.reverse()
+
   return (
     <React.Fragment>
       <Heading
@@ -244,17 +313,56 @@ function ProfileHeader({ field_user_display_name, field_user_work_title }) {
         {field_user_display_name}
       </Heading>
       {field_user_work_title && <Text lede>{field_user_work_title}</Text>}
+      {depts && (
+        <div>
+          {field_user_department[1] && (
+            <Link to={field_user_department[1].path.alias}>
+              {field_user_department[1].field_title_context}
+            </Link>
+          )}
+          {field_user_department.length > 1 ? ' · ' : null}
+          {field_user_department[0] && (
+            <Link to={field_user_department[0].path.alias}>
+              {field_user_department[0].field_title_context}
+            </Link>
+          )}
+        </div>
+      )}
+    </React.Fragment>
+  )
+}
 
-      <div
-        css={{
-          '& > a:not(:last-of-type):first-of-type': {
-            marginRight: '0.75rem',
-          },
-        }}
-      >
-        <Link to="">Design and Discovery</Link>
-        <Link to="">Library Information Technology</Link>
-      </div>
+function SocialLinks({ field_linkedin }) {
+  return (
+    <React.Fragment>
+      {field_linkedin && (
+        <SocialLink to={field_linkedin.uri} icon="linkedin" label="LinkedIn" />
+      )}
+    </React.Fragment>
+  )
+}
+
+function SocialLink({ to, icon, label }) {
+  return (
+    <Link to={to}>
+      <Icon icon={icon} size={24} />
+      <VisuallyHidden>{label}</VisuallyHidden>
+    </Link>
+  )
+}
+
+function MailingAddress({
+  address_line1,
+  locality,
+  administrative_area,
+  postal_code,
+}) {
+  return (
+    <React.Fragment>
+      <Text>{address_line1}</Text>
+      <Text>
+        {locality}, {administrative_area} {postal_code}
+      </Text>
     </React.Fragment>
   )
 }
@@ -278,10 +386,33 @@ export const query = graphql`
       field_user_phone
       field_user_orcid_id
       field_languages_spoken
+      field_mailing_address {
+        address_line1
+        address_line2
+        locality
+        administrative_area
+        postal_code
+      }
+      field_user_make_an_appointment {
+        uri
+      }
+      field_user_url {
+        uri
+        title
+      }
+      field_linkedin {
+        uri
+      }
       relationships {
         field_name_pronunciation {
           localFile {
             publicURL
+          }
+        }
+        field_user_department {
+          field_title_context
+          path {
+            alias
           }
         }
         field_media_image {
