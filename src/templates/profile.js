@@ -1,7 +1,16 @@
 import React from 'react'
 import { graphql } from 'gatsby'
 
-import { Margins, Heading, SPACING, Text, TYPOGRAPHY } from '@umich-lib/core'
+import {
+  Margins,
+  Heading,
+  SPACING,
+  Text,
+  TYPOGRAPHY,
+  List,
+  LargeScreen,
+  SmallScreen,
+} from '@umich-lib/core'
 import { Template, Top, Side, Content } from '../components/page-layout'
 import SEO from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
@@ -11,7 +20,6 @@ import HTML from '../components/html'
 import Img from 'gatsby-image'
 
 function ProfileTemplate({ data }) {
-  console.log('data', data)
   const {
     field_user_work_title,
     field_user_display_name,
@@ -20,8 +28,10 @@ function ProfileTemplate({ data }) {
     field_user_pronoun_subject,
     field_user_pronoun_dependent_pos,
     field_user_pronoun_independent_p,
+    field_languages_spoken,
     field_user_email,
     field_user_phone,
+    field_user_orcid_id,
     relationships,
   } = data.profile
   const { field_media_image, field_name_pronunciation } = relationships
@@ -61,76 +71,98 @@ function ProfileTemplate({ data }) {
           <Top>
             <Breadcrumb data={breadcrumbData} />
           </Top>
-          <Side
-            css={{
-              '> h2': {
-                marginTop: SPACING['M'],
-              },
-            }}
-          >
-            {image && (
-              <Img
-                fluid={image.fluid}
-                alt={image.alt}
+          <Side>
+            <SmallScreen>
+              <div
                 css={{
-                  width: '100%',
+                  marginBottom: SPACING['XL'],
                 }}
-              />
-            )}
+              >
+                <ProfileHeader {...data.profile} />
+              </div>
+            </SmallScreen>
 
-            {pronouns && (
-              <React.Fragment>
-                <Heading
-                  level={2}
-                  css={{
-                    fontWeight: '700',
-                  }}
-                >
-                  Pronouns
-                </Heading>
-                <Text>{pronouns}</Text>
-              </React.Fragment>
-            )}
-
-            {field_user_email && (
-              <React.Fragment>
-                <Heading
-                  level={2}
-                  css={{
-                    fontWeight: '700',
-                  }}
-                >
-                  Email
-                </Heading>
-                <Text>{field_user_email}</Text>
-              </React.Fragment>
-            )}
-
-            {phone && (
-              <React.Fragment>
-                <Heading
-                  level={2}
-                  css={{
-                    fontWeight: '700',
-                  }}
-                >
-                  Phone
-                </Heading>
-                <Link to={`tel:1-` + phone}>{phone}</Link>
-              </React.Fragment>
-            )}
-          </Side>
-          <Content>
-            <Heading
-              size="3XL"
-              level={1}
+            <div
               css={{
-                marginBottom: SPACING['XS'],
+                marginBottom: SPACING['2XL'],
+                '> h2': {
+                  marginTop: SPACING['M'],
+                },
               }}
             >
-              {field_user_display_name}
-            </Heading>
-            {field_user_work_title && <Text lede>{field_user_work_title}</Text>}
+              {image && (
+                <Img
+                  fluid={image.fluid}
+                  alt={image.alt}
+                  css={{
+                    width: '100%',
+                    borderRadius: '2px',
+                  }}
+                />
+              )}
+
+              {pronouns && (
+                <React.Fragment>
+                  <Heading
+                    level={2}
+                    css={{
+                      fontWeight: '700',
+                    }}
+                  >
+                    Pronouns
+                  </Heading>
+                  <Text>{pronouns}</Text>
+                </React.Fragment>
+              )}
+
+              {field_user_email && (
+                <React.Fragment>
+                  <Heading
+                    level={2}
+                    css={{
+                      fontWeight: '700',
+                    }}
+                  >
+                    Email
+                  </Heading>
+                  <Link to={`mailto:` + field_user_email}>
+                    {field_user_email}
+                  </Link>
+                </React.Fragment>
+              )}
+
+              {phone && (
+                <React.Fragment>
+                  <Heading
+                    level={2}
+                    css={{
+                      fontWeight: '700',
+                    }}
+                  >
+                    Phone
+                  </Heading>
+                  <Link to={`tel:1-` + phone}>{phone}</Link>
+                </React.Fragment>
+              )}
+              {field_user_orcid_id && (
+                <React.Fragment>
+                  <Heading
+                    level={2}
+                    css={{
+                      fontWeight: '700',
+                    }}
+                  >
+                    ORCID ID
+                  </Heading>
+                  <Text>{field_user_orcid_id}</Text>
+                </React.Fragment>
+              )}
+            </div>
+          </Side>
+          <Content>
+            <LargeScreen>
+              <ProfileHeader {...data.profile} />
+            </LargeScreen>
 
             {field_name_pronunciation && (
               <figure
@@ -174,10 +206,56 @@ function ProfileTemplate({ data }) {
                 <HTML html={field_user_pro_about.processed} />
               </React.Fragment>
             )}
+
+            {field_languages_spoken && (
+              <React.Fragment>
+                <Heading
+                  size="S"
+                  css={{
+                    marginBottom: SPACING['XS'],
+                  }}
+                >
+                  About me
+                </Heading>
+                <List type="bulleted">
+                  {field_languages_spoken.map(lang => (
+                    <li>{lang}</li>
+                  ))}
+                </List>
+              </React.Fragment>
+            )}
           </Content>
         </Template>
       </Margins>
     </Layout>
+  )
+}
+
+function ProfileHeader({ field_user_display_name, field_user_work_title }) {
+  return (
+    <React.Fragment>
+      <Heading
+        size="3XL"
+        level={1}
+        css={{
+          marginBottom: SPACING['XS'],
+        }}
+      >
+        {field_user_display_name}
+      </Heading>
+      {field_user_work_title && <Text lede>{field_user_work_title}</Text>}
+
+      <div
+        css={{
+          '& > a:not(:last-of-type):first-of-type': {
+            marginRight: '0.75rem',
+          },
+        }}
+      >
+        <Link to="">Design and Discovery</Link>
+        <Link to="">Library Information Technology</Link>
+      </div>
+    </React.Fragment>
   )
 }
 
@@ -198,6 +276,8 @@ export const query = graphql`
       field_user_pronoun_independent_p
       field_user_email
       field_user_phone
+      field_user_orcid_id
+      field_languages_spoken
       relationships {
         field_name_pronunciation {
           localFile {
@@ -213,7 +293,7 @@ export const query = graphql`
             field_media_image {
               localFile {
                 childImageSharp {
-                  fluid(maxWidth: 300) {
+                  fluid(maxWidth: 640) {
                     ...GatsbyImageSharpFluid_noBase64
                   }
                 }
