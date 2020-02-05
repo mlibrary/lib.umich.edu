@@ -503,8 +503,6 @@ function NoResults({ image }) {
 }
 
 function Select({ label, name, options, value, ...rest }) {
-  console.log('value', value)
-
   return (
     <label>
       <span
