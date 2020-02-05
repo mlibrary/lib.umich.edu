@@ -24,14 +24,13 @@ import Img from 'gatsby-image'
 import LANGUAGES from '../utils/languages'
 import LinkCallout from '../components/link-callout'
 import VisuallyHidden from '@reach/visually-hidden'
+const unescape = require('unescape')
 
 function ProfileTemplate({ data }) {
   const {
-    field_user_work_title,
     field_user_display_name,
     field_user_pro_about,
     field_user_pronoun_object,
-    field_user_pronoun_subject,
     field_user_pronoun_dependent_pos,
     field_user_pronoun_independent_p,
     field_languages_spoken,
@@ -42,8 +41,13 @@ function ProfileTemplate({ data }) {
     field_user_url,
     relationships,
     field_user_make_an_appointment,
+    field_physical_address_public_,
   } = data.profile
-  const { field_media_image, field_name_pronunciation } = relationships
+  const {
+    field_media_image,
+    field_name_pronunciation,
+    field_office_location,
+  } = relationships
   const pronouns = [
     field_user_pronoun_object,
     field_user_pronoun_dependent_pos,
@@ -156,6 +160,22 @@ function ProfileTemplate({ data }) {
                     Phone
                   </Heading>
                   <Link to={`tel:1-` + phone}>{phone}</Link>
+                </React.Fragment>
+              )}
+
+              {field_physical_address_public_ && field_office_location && (
+                <React.Fragment>
+                  <Heading
+                    level={2}
+                    css={{
+                      fontWeight: '700',
+                    }}
+                  >
+                    Office
+                  </Heading>
+                  {field_office_location.map(office => (
+                    <Text>{office.title}</Text>
+                  ))}
                 </React.Fragment>
               )}
 
@@ -286,7 +306,7 @@ function ProfileTemplate({ data }) {
                   <List type="bulleted">
                     {field_user_url.map(({ uri, title }) => (
                       <li>
-                        <Link to={uri}>{title}</Link>
+                        <Link to={uri}>{unescape(title)}</Link>
                       </li>
                     ))}
                   </List>
@@ -393,6 +413,7 @@ export const query = graphql`
       field_user_phone
       field_user_orcid_id
       field_languages_spoken
+      field_physical_address_public_
       field_mailing_address {
         address_line1
         address_line2
@@ -403,6 +424,9 @@ export const query = graphql`
       field_user_make_an_appointment {
         uri
       }
+      field_user_office {
+        processed
+      }
       field_user_url {
         uri
         title
@@ -411,6 +435,14 @@ export const query = graphql`
         uri
       }
       relationships {
+        field_office_location {
+          ... on node__building {
+            title
+          }
+          ... on node__location {
+            title
+          }
+        }
         field_name_pronunciation {
           localFile {
             publicURL
