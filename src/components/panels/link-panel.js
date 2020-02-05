@@ -1,10 +1,8 @@
 import React from 'react'
-import { SPACING, Heading, LINK_STYLES, Icon } from '@umich-lib/core'
+import { SPACING, Heading, LINK_STYLES } from '@umich-lib/core'
 import Link from '../link'
 import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id'
-import { COLORS } from '@umich-lib/styles'
 import { PanelTemplate } from './index'
-import PlainLink from '../plain-link'
 import LinkCallout from '../link-callout'
 
 export default function LinkPanel({ data }) {

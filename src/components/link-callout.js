@@ -1,13 +1,6 @@
 import React from 'react'
 import { Link as GatsbyLink } from 'gatsby'
-import {
-  Link as DSLink,
-  LINK_STYLES,
-  SPACING,
-  COLORS,
-  Icon,
-} from '@umich-lib/core'
-import PlainLink from './plain-link'
+import { LINK_STYLES, SPACING, COLORS, Icon } from '@umich-lib/core'
 
 const linkCSS = {
   display: 'block',
@@ -16,32 +9,6 @@ const linkCSS = {
   background: COLORS.teal['100'],
   ':hover [data-link]': LINK_STYLES['description'][':hover'],
   borderRadius: '2px',
-}
-
-function CalloutLink({ to, d, icon, children }) {
-  return (
-    <PlainLink to={to} css={linkCSS}>
-      <span
-        css={{
-          color: COLORS.teal['400'],
-          marginRight: SPACING['XS'],
-        }}
-      >
-        {d && <Icon d={d} size={24} />}
-        {icon && <Icon icon={icon} size={24} />}
-      </span>
-      <span
-        data-link
-        css={{
-          ...LINK_STYLES['description'],
-          fontSize: '1rem',
-          color: COLORS.neutral['400'],
-        }}
-      >
-        {children}
-      </span>
-    </PlainLink>
-  )
 }
 
 function Link({ to, ...other }) {
