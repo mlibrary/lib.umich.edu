@@ -9,7 +9,6 @@ import {
   Icon,
   Button,
   Alert,
-  List,
   Text,
 } from '@umich-lib/core'
 import Img from 'gatsby-image'
@@ -17,9 +16,7 @@ import BackgroundImage from 'gatsby-background-image'
 import VisuallyHidden from '@reach/visually-hidden'
 import Link from '../components/link'
 import PlainLink from '../components/plain-link'
-import Prose from '../components/prose'
 import Breadcrumb from '../components/breadcrumb'
-import useDebounce from '../hooks/use-debounce'
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
@@ -76,8 +73,7 @@ function StaffDirectoryQueryContainer({
   const { body, fields, field_title_context } = node
   const [query, setQuery] = useState('')
   const [activeFilters, setActiveFilters] = useState({})
-  const [results, setResults] = useState([])
-  const debouncedQuery = useDebounce(query, 250)
+  const [results, setResults] = useState(staff)
   const image = noResultsImage
 
   useEffect(() => {
@@ -95,24 +91,35 @@ function StaffDirectoryQueryContainer({
       })
     }
 
-    if (!debouncedQuery) {
-      setResults(filterResults({ activeFilters, results: staff }))
-      return
-    }
-
     // Get the staff directory index
     const index = window.__SDI__
 
     try {
-      const results = index.search(debouncedQuery).map(({ ref }) => {
-        return staff.find(({ uniqname }) => uniqname === ref)
-      })
+      const results = index
+        .query(q => {
+          q.term(lunr.tokenizer(query), {
+            boost: 3,
+          })
+          q.term(lunr.tokenizer(query), {
+            boost: 2,
+            wildcard: lunr.Query.wildcard.TRAILING,
+          })
+          if (query.length > 2) {
+            q.term(lunr.tokenizer(query), {
+              wildcard:
+                lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
+            })
+          }
+        })
+        .map(({ ref }) => {
+          return staff.find(({ uniqname }) => uniqname === ref)
+        })
 
       setResults(filterResults({ activeFilters, results }))
     } catch {
       return
     }
-  }, [debouncedQuery, activeFilters])
+  }, [query, activeFilters])
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -137,7 +144,7 @@ function StaffDirectoryQueryContainer({
 
   const filters = [
     {
-      label: 'Department or Division',
+      label: 'Department or division',
       name: 'department',
       options: ['All'].concat(
         Object.keys(departments)
@@ -146,6 +153,12 @@ function StaffDirectoryQueryContainer({
       ),
     },
   ]
+
+  function handleClear() {
+    setQuery('')
+    setActiveFilters({})
+    setResults(staff)
+  }
 
   return (
     <TemplateLayout node={node}>
@@ -177,10 +190,13 @@ function StaffDirectoryQueryContainer({
 
         <StaffDirectory
           handleChange={handleChange}
+          handleClear={handleClear}
           filters={filters}
+          activeFilters={activeFilters}
           results={results}
           image={image}
           staffImages={staffImages}
+          query={query}
         />
       </Margins>
     </TemplateLayout>
@@ -189,10 +205,13 @@ function StaffDirectoryQueryContainer({
 
 const StaffDirectory = React.memo(function StaffDirectory({
   handleChange,
+  handleClear,
   filters,
   results,
   image,
   staffImages,
+  query,
+  activeFilters,
 }) {
   const [show, setShow] = useState(20)
   const staffInView = results.slice(0, show)
@@ -216,7 +235,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
           display: 'grid',
           gridGap: SPACING['S'],
           [MEDIA_QUERIES['S']]: {
-            gridTemplateColumns: `3fr 2fr`,
+            gridTemplateColumns: `3fr 2fr auto`,
           },
           input: {
             lineHeight: '1.5',
@@ -229,6 +248,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
           id="search"
           labelText="Search by name, uniqname, or title"
           name="query"
+          value={query}
           onChange={e => {
             setShow(20)
             handleChange(e)
@@ -240,8 +260,18 @@ const StaffDirectory = React.memo(function StaffDirectory({
             name={name}
             options={options}
             onChange={e => handleChange(e)}
+            value={activeFilters[name]}
           />
         ))}
+        <Button
+          kind="subtle"
+          onClick={handleClear}
+          css={{
+            alignSelf: 'end',
+          }}
+        >
+          Clear
+        </Button>
       </div>
 
       {results.length > 0 && (
@@ -316,6 +346,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                   email,
                   phone,
                   department,
+                  division,
                   image_mid,
                 }) => (
                   <tr key={uniqname}>
@@ -376,6 +407,12 @@ const StaffDirectory = React.memo(function StaffDirectory({
                           {department}
                         </Link>
                       )}
+
+                      {!department && division && (
+                        <Link to="#" kind="subtle">
+                          {division}
+                        </Link>
+                      )}
                     </td>
                   </tr>
                 )
@@ -419,55 +456,44 @@ function NoResults({ image }) {
       css={{
         [MEDIA_QUERIES['L']]: {
           display: 'grid',
-          gridTemplateColumns: `3fr 2fr`,
-          gridGap: SPACING['4XL'],
+          gridTemplateColumns: `2fr 3fr`,
+          gridGap: SPACING['3XL'],
+          alignItems: 'end',
         },
-        marginBottom: SPACING['2XL'],
+        marginBottom: SPACING['4XL'],
+        marginTop: SPACING['2XL'],
       }}
     >
-      <Prose>
+      <div
+        css={{
+          margin: 'auto 0',
+        }}
+      >
         <Heading size="L" level={2}>
           We couldn't find any results
         </Heading>
-
-        <Text lede>
-          Consider the following search techniques to help you get the results
-          you're looking for.
-        </Text>
-
-        <List
-          type="bulleted"
+        <Text
+          lede
           css={{
-            strong: {
-              fontWeight: '600',
-            },
+            marginTop: SPACING['XS'],
           }}
         >
-          <li>
-            <strong>"Lib*"</strong> to find anything that begins with "Lib" or{' '}
-            <strong>"L*y"</strong> to find anything that begins with "L" and
-            ends with "y" .
-          </li>
-          <li>
-            <strong>"title:librarian"</strong> to find people with "librarian"
-            in their title.
-          </li>
-          <li>
-            <strong>"+map -digital"</strong> if it must contain "map" and not
-            contain "digital".
-          </li>
-        </List>
-      </Prose>
+          Consider searching with different keywords or using the department or
+          division filter to browse.
+        </Text>
+      </div>
 
       <Img
         fluid={image.childImageSharp.fluid}
         alt=""
         css={{
           display: 'inline-block',
-          maxWidth: '18rem',
+          maxWidth: '16rem',
           margin: '1rem auto',
           [MEDIA_QUERIES['L']]: {
             margin: '0',
+            width: '100%',
+            display: 'block',
             marginBottom: SPACING['L'],
           },
         }}
@@ -476,7 +502,7 @@ function NoResults({ image }) {
   )
 }
 
-function Select({ label, name, options, ...rest }) {
+function Select({ label, name, options, value, ...rest }) {
   return (
     <label>
       <span
@@ -511,6 +537,7 @@ function Select({ label, name, options, ...rest }) {
             lineHeight: '1.5',
             height: '40px',
           }}
+          value={value ? value : 'All'}
           {...rest}
         >
           {options.map(opt => (
