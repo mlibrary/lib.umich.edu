@@ -299,12 +299,12 @@ const StaffDirectory = React.memo(function StaffDirectory({
                   css={{
                     paddingLeft: `calc(43px + ${SPACING['L']}) !important`,
                   }}
+                  colSpan="2"
                 >
-                  Name
+                  Name and title
                 </th>
                 <th>Contact info</th>
-                <th>Title</th>
-                <th>Department</th>
+                <th colSpan="2">Department</th>
               </tr>
             </thead>
             <tbody>
@@ -319,7 +319,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                   image_mid,
                 }) => (
                   <tr key={uniqname}>
-                    <td>
+                    <td colSpan="2">
                       <div
                         css={{
                           display: 'flex',
@@ -339,18 +339,21 @@ const StaffDirectory = React.memo(function StaffDirectory({
                             staffImages={staffImages}
                           />
                         </span>
-                        <PlainLink
-                          css={{
-                            color: COLORS.teal['400'],
-                            textDecoration: 'underline',
-                            ':hover': {
-                              textDecorationThickness: '2px',
-                            },
-                          }}
-                          to={`/users/` + uniqname}
-                        >
-                          {name}
-                        </PlainLink>
+                        <span>
+                          <PlainLink
+                            css={{
+                              color: COLORS.teal['400'],
+                              textDecoration: 'underline',
+                              ':hover': {
+                                textDecorationThickness: '2px',
+                              },
+                            }}
+                            to={`/users/` + uniqname}
+                          >
+                            {name}
+                          </PlainLink>
+                          <span css={{ display: 'block' }}>{title}</span>
+                        </span>
                       </div>
                     </td>
                     <td>
@@ -367,8 +370,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                         </span>
                       )}
                     </td>
-                    <td>{title}</td>
-                    <td>
+                    <td colSpan="2">
                       {department && (
                         <Link to="#" kind="subtle">
                           {department}
