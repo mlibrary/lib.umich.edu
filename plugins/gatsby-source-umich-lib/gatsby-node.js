@@ -1,6 +1,7 @@
 const path = require(`path`)
 const { fetch } = require('./fetch')
 const { createBreadcrumb } = require(`./create-breadcrumb`)
+const { createStaffNodes } = require(`./create-staff-nodes`)
 const https = require('https')
 const fs = require('fs')
 const readline = require('readline')
@@ -124,6 +125,13 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
   )
   createNavNode('nav-utlity', 'NavUtility', nav_utility_data[0].children)
 
+  /*
+    Fetch Staff person related data. Used for creating
+    Staff Directory and Specialist pages.
+  */
+  const staffRawData = await fetch(baseUrlWithoutTrailingSlash + '/api/staff')
+  createStaffNodes({ createNode, staffRawData })
+
   // Tell Gatsby we're done.
   return
 }
@@ -200,9 +208,11 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   readInterface.on('line', function(line) {
     if (line) {
       const urls = line.split(' ')
+      /*
       console.log(
         'Creating client-side redirect from ' + urls[0] + ' to ' + urls[1]
       )
+      */
       createRedirect({
         fromPath: urls[0],
         toPath: urls[1],
@@ -228,6 +238,9 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const destinationFullTemplate = path.resolve(
       `src/templates/destination-full.js`
     )
+    const staffDirectoryTemplate = path.resolve(
+      `src/templates/staff-directory.js`
+    )
 
     function getTemplate(node) {
       const { field_machine_name } = node.relationships.field_design_template
@@ -250,6 +263,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return destinationBodyTemplate
         case 'destination_full':
           return destinationFullTemplate
+        case 'staff_directory':
+          return staffDirectoryTemplate
         default:
           return null
       }
@@ -273,6 +288,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                         "homepage"
                         "destination_body"
                         "destination_full"
+                        "staff_directory"
                       ]
                     }
                   }
