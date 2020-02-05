@@ -9,7 +9,6 @@ import {
   Icon,
   Button,
   Alert,
-  List,
   Text,
 } from '@umich-lib/core'
 import Img from 'gatsby-image'
@@ -17,9 +16,7 @@ import BackgroundImage from 'gatsby-background-image'
 import VisuallyHidden from '@reach/visually-hidden'
 import Link from '../components/link'
 import PlainLink from '../components/plain-link'
-import Prose from '../components/prose'
 import Breadcrumb from '../components/breadcrumb'
-import useDebounce from '../hooks/use-debounce'
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
@@ -77,7 +74,6 @@ function StaffDirectoryQueryContainer({
   const [query, setQuery] = useState('')
   const [activeFilters, setActiveFilters] = useState({})
   const [results, setResults] = useState([])
-  const debouncedQuery = useDebounce(query, 250)
   const image = noResultsImage
 
   useEffect(() => {
@@ -93,11 +89,6 @@ function StaffDirectoryQueryContainer({
           this.add(person)
         }, this)
       })
-    }
-
-    if (!debouncedQuery) {
-      setResults(filterResults({ activeFilters, results: staff }))
-      return
     }
 
     // Get the staff directory index
@@ -128,7 +119,7 @@ function StaffDirectoryQueryContainer({
     } catch {
       return
     }
-  }, [debouncedQuery, activeFilters])
+  }, [query, activeFilters])
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -163,6 +154,12 @@ function StaffDirectoryQueryContainer({
     },
   ]
 
+  function handleClear() {
+    setQuery('')
+    setActiveFilters({})
+    setResults([])
+  }
+
   return (
     <TemplateLayout node={node}>
       <Margins
@@ -193,10 +190,13 @@ function StaffDirectoryQueryContainer({
 
         <StaffDirectory
           handleChange={handleChange}
+          handleClear={handleClear}
           filters={filters}
+          activeFilters={activeFilters}
           results={results}
           image={image}
           staffImages={staffImages}
+          query={query}
         />
       </Margins>
     </TemplateLayout>
@@ -205,10 +205,13 @@ function StaffDirectoryQueryContainer({
 
 const StaffDirectory = React.memo(function StaffDirectory({
   handleChange,
+  handleClear,
   filters,
   results,
   image,
   staffImages,
+  query,
+  activeFilters,
 }) {
   const [show, setShow] = useState(20)
   const staffInView = results.slice(0, show)
@@ -232,7 +235,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
           display: 'grid',
           gridGap: SPACING['S'],
           [MEDIA_QUERIES['S']]: {
-            gridTemplateColumns: `3fr 2fr`,
+            gridTemplateColumns: `3fr 2fr auto`,
           },
           input: {
             lineHeight: '1.5',
@@ -245,6 +248,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
           id="search"
           labelText="Search by name, uniqname, or title"
           name="query"
+          value={query}
           onChange={e => {
             setShow(20)
             handleChange(e)
@@ -256,8 +260,18 @@ const StaffDirectory = React.memo(function StaffDirectory({
             name={name}
             options={options}
             onChange={e => handleChange(e)}
+            value={activeFilters[name]}
           />
         ))}
+        <Button
+          kind="subtle"
+          onClick={handleClear}
+          css={{
+            alignSelf: 'end',
+          }}
+        >
+          Clear
+        </Button>
       </div>
 
       {results.length > 0 && (
@@ -444,6 +458,7 @@ function NoResults({ image }) {
           display: 'grid',
           gridTemplateColumns: `2fr 3fr`,
           gridGap: SPACING['3XL'],
+          alignItems: 'end',
         },
         marginBottom: SPACING['4XL'],
         marginTop: SPACING['2XL'],
@@ -487,7 +502,9 @@ function NoResults({ image }) {
   )
 }
 
-function Select({ label, name, options, ...rest }) {
+function Select({ label, name, options, value, ...rest }) {
+  console.log('value', value)
+
   return (
     <label>
       <span
@@ -522,6 +539,7 @@ function Select({ label, name, options, ...rest }) {
             lineHeight: '1.5',
             height: '40px',
           }}
+          value={value ? value : 'All'}
           {...rest}
         >
           {options.map(opt => (
