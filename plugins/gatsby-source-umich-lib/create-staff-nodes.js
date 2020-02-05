@@ -1,4 +1,6 @@
 const crypto = require('crypto')
+const Entities = require('html-entities').AllHtmlEntities
+const entities = new Entities()
 
 /*
   1. Fetch the staff API.
@@ -63,7 +65,7 @@ function processRawMetadata(data) {
 
   const processedMetadata = {
     uniqname: name,
-    name: field_user_display_name,
+    name: entities.decode(field_user_display_name),
     title: field_user_work_title,
     email: field_user_email,
     phone: field_user_phone === '000-000-0000' ? null : field_user_phone,
