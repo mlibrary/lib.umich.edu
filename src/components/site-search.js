@@ -34,9 +34,12 @@ export default function SiteSearch({ label }) {
           boost: 2,
           wildcard: lunr.Query.wildcard.TRAILING,
         })
-        q.term(lunr.tokenizer(query), {
-          wildcard: lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
-        })
+        if (query.length > 2) {
+          q.term(lunr.tokenizer(query), {
+            wildcard:
+              lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
+          })
+        }
       })
 
       setResults(
