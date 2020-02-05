@@ -104,9 +104,25 @@ function StaffDirectoryQueryContainer({
     const index = window.__SDI__
 
     try {
-      const results = index.search(debouncedQuery).map(({ ref }) => {
-        return staff.find(({ uniqname }) => uniqname === ref)
-      })
+      const results = index
+        .query(q => {
+          q.term(lunr.tokenizer(query), {
+            boost: 3,
+          })
+          q.term(lunr.tokenizer(query), {
+            boost: 2,
+            wildcard: lunr.Query.wildcard.TRAILING,
+          })
+          if (query.length > 2) {
+            q.term(lunr.tokenizer(query), {
+              wildcard:
+                lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
+            })
+          }
+        })
+        .map(({ ref }) => {
+          return staff.find(({ uniqname }) => uniqname === ref)
+        })
 
       setResults(filterResults({ activeFilters, results }))
     } catch {
@@ -426,55 +442,43 @@ function NoResults({ image }) {
       css={{
         [MEDIA_QUERIES['L']]: {
           display: 'grid',
-          gridTemplateColumns: `3fr 2fr`,
-          gridGap: SPACING['4XL'],
+          gridTemplateColumns: `2fr 3fr`,
+          gridGap: SPACING['3XL'],
         },
-        marginBottom: SPACING['2XL'],
+        marginBottom: SPACING['4XL'],
+        marginTop: SPACING['2XL'],
       }}
     >
-      <Prose>
+      <div
+        css={{
+          margin: 'auto 0',
+        }}
+      >
         <Heading size="L" level={2}>
           We couldn't find any results
         </Heading>
-
-        <Text lede>
-          Consider the following search techniques to help you get the results
-          you're looking for.
-        </Text>
-
-        <List
-          type="bulleted"
+        <Text
+          lede
           css={{
-            strong: {
-              fontWeight: '600',
-            },
+            marginTop: SPACING['XS'],
           }}
         >
-          <li>
-            <strong>"Lib*"</strong> to find anything that begins with "Lib" or{' '}
-            <strong>"L*y"</strong> to find anything that begins with "L" and
-            ends with "y" .
-          </li>
-          <li>
-            <strong>"title:librarian"</strong> to find people with "librarian"
-            in their title.
-          </li>
-          <li>
-            <strong>"+map -digital"</strong> if it must contain "map" and not
-            contain "digital".
-          </li>
-        </List>
-      </Prose>
+          Consider searching with different keywords or using the department or
+          division filter to browse.
+        </Text>
+      </div>
 
       <Img
         fluid={image.childImageSharp.fluid}
         alt=""
         css={{
           display: 'inline-block',
-          maxWidth: '18rem',
+          maxWidth: '16rem',
           margin: '1rem auto',
           [MEDIA_QUERIES['L']]: {
             margin: '0',
+            width: '100%',
+            display: 'block',
             marginBottom: SPACING['L'],
           },
         }}
