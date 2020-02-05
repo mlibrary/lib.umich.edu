@@ -46,7 +46,6 @@ function ProfileTemplate({ data }) {
   const { field_media_image, field_name_pronunciation } = relationships
   const pronouns = [
     field_user_pronoun_object,
-    field_user_pronoun_subject,
     field_user_pronoun_dependent_pos,
     field_user_pronoun_independent_p,
   ].join('/')
