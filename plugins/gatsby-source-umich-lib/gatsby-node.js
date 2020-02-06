@@ -144,59 +144,76 @@ const drupal_node_types_we_care_about = [
   'room',
 ]
 
+async function createParentChildFields(
+  node,
+  createNodeField,
+  fieldId,
+  name,
+  baseUrlWithoutTrailingSlash
+) {
+  if (node[fieldId]) {
+    const url = baseUrlWithoutTrailingSlash + node[fieldId]
+    const data = await fetch(url)
+    const sanitizedData = sanitizeDrupalView(data)
+    const value = sanitizedData
+      ? sanitizedData.map(({ uuid }) => uuid)
+      : [`no-${name}`]
+
+    createNodeField({
+      node,
+      name,
+      value,
+    })
+  }
+
+  return
+}
+
 // Create a slug for each page and set it as a field on the node.
 exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
-  // Only process nodes that have a template applied.
-  if (node.relationships && node.relationships.field_design_template) {
+  // Check for Drupal node type.
+  // Substring off the "node__" part.
+  // Also make sure it has a design template.
+  if (
+    drupal_node_types_we_care_about.includes(node.internal.type.substring(6)) &&
+    node.relationships.field_design_template !== null
+  ) {
     const { createNodeField } = actions
     const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
 
-    // Check for Drupal node type.
-    // Substring off the "node__" part.
-    if (
-      drupal_node_types_we_care_about.includes(node.internal.type.substring(6))
-    ) {
-      // Handle creating breadcrumb for node.
-      createBreadcrumb({
-        node,
-        createNodeField,
-        baseUrl: baseUrlWithoutTrailingSlash,
-      })
+    // Handle creating breadcrumb for node.
+    createBreadcrumb({
+      node,
+      createNodeField,
+      baseUrl: baseUrlWithoutTrailingSlash,
+    })
 
-      createNodeField({
-        node,
-        name: `slug`,
-        value: node.path.alias,
-      })
+    createNodeField({
+      node,
+      name: `slug`,
+      value: node.path.alias,
+    })
 
-      createNodeField({
-        node,
-        name: `title`,
-        value: node.title,
-      })
-    }
+    createNodeField({
+      node,
+      name: `title`,
+      value: node.title,
+    })
 
-    async function createParentChildFields(fieldId, name) {
-      if (node[fieldId]) {
-        const url = baseUrlWithoutTrailingSlash + node[fieldId]
-        const data = await fetch(url)
-        const sanitizedData = sanitizeDrupalView(data)
-        const value = sanitizedData
-          ? sanitizedData.map(({ uuid }) => uuid)
-          : [`no-${name}`]
-
-        createNodeField({
-          node,
-          name,
-          value,
-        })
-      }
-
-      return
-    }
-
-    await createParentChildFields('field_parent_menu', 'parents')
-    await createParentChildFields('field_child_menu', 'children')
+    await createParentChildFields(
+      node,
+      createNodeField,
+      'field_parent_menu',
+      'parents',
+      baseUrlWithoutTrailingSlash
+    )
+    await createParentChildFields(
+      node,
+      createNodeField,
+      'field_child_menu',
+      'children',
+      baseUrlWithoutTrailingSlash
+    )
   }
 }
 
