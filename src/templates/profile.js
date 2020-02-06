@@ -29,6 +29,7 @@ function ProfileTemplate({ data }) {
   const {
     field_user_display_name,
     field_user_pro_about,
+    field_user_pronoun_subject,
     field_user_pronoun_object,
     field_user_pronoun_dependent_pos,
     field_user_pronoun_independent_p,
@@ -51,7 +52,7 @@ function ProfileTemplate({ data }) {
     field_user_pronoun_subject,
     field_user_pronoun_object,
     field_user_pronoun_dependent_pos,
-    field_user_pronoun_independent_p
+    field_user_pronoun_independent_p,
   ].join('/')
   const phone = field_user_phone !== '000-000-0000' ? field_user_phone : null
 
