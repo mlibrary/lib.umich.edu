@@ -174,9 +174,10 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
   // Check for Drupal node type.
   // Substring off the "node__" part.
   // Also make sure it has a design template.
+
   if (
     drupal_node_types_we_care_about.includes(node.internal.type.substring(6)) &&
-    node.relationships.field_design_template !== null
+    node.relationships.field_design_template
   ) {
     const { createNodeField } = actions
     const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
