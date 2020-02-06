@@ -24,7 +24,6 @@ import Img from 'gatsby-image'
 import LANGUAGES from '../utils/languages'
 import LinkCallout from '../components/link-callout'
 import VisuallyHidden from '@reach/visually-hidden'
-const unescape = require('unescape')
 
 function ProfileTemplate({ data }) {
   const {

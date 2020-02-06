@@ -73,7 +73,7 @@ function StaffDirectoryQueryContainer({
   const { body, fields, field_title_context } = node
   const [query, setQuery] = useState('')
   const [activeFilters, setActiveFilters] = useState({})
-  const [results, setResults] = useState(staff)
+  const [results, setResults] = useState([])
   const image = noResultsImage
 
   useEffect(() => {

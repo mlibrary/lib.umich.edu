@@ -1,5 +1,5 @@
 const crypto = require('crypto')
-
+const entities = require('entities')
 /*
   1. Fetch the staff API.
     https://cms.lib.umich.edu/api/staff
@@ -63,7 +63,7 @@ function processRawMetadata(data) {
 
   const processedMetadata = {
     uniqname: name,
-    name: field_user_display_name,
+    name: entities.decodeHTML(field_user_display_name),
     title: field_user_work_title,
     email: field_user_email,
     phone: field_user_phone === '000-000-0000' ? null : field_user_phone,
