@@ -286,7 +286,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
           <table
             css={{
               width: '100%',
-              minWidth: '720px',
+              minWidth: '840px',
               tableLayout: 'fixed',
               marginBottom: SPACING['XL'],
               'th, td': {
