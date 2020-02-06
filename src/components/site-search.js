@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { navigate, Link } from 'gatsby'
-import { SPACING, Z_SPACE, COLORS, Icon, Alert } from '@umich-lib/core'
+import {
+  SPACING,
+  Z_SPACE,
+  COLORS,
+  Icon,
+  Alert,
+  TYPOGRAPHY,
+  Link as DSLink,
+} from '@umich-lib/core'
 import {
   Combobox,
   ComboboxInput,
@@ -10,6 +18,7 @@ import {
   ComboboxOptionText,
 } from '@reach/combobox'
 import '@reach/dialog/styles.css'
+import HEADER_MEDIA_QUERIES from '../components/header/header-media-queries'
 
 const lunr = require('lunr')
 
@@ -83,6 +92,7 @@ export default function SiteSearch({ label }) {
         <Icon
           icon="search"
           size={20}
+          data-site-search-icon
           css={{
             position: 'absolute',
             left: SPACING['XS'],
@@ -118,17 +128,23 @@ export default function SiteSearch({ label }) {
         <ComboboxPopover>
           {results && (
             <div
+              data-site-search-popover-container
               css={{
                 position: 'absolute',
-                top: '0',
-                left: 0,
+                top: '0.25rem',
+                right: 0,
+                background: 'white',
                 zIndex: '999',
                 width: '100%',
-                background: 'white',
                 ...Z_SPACE['16'],
                 maxHeight: '70vh',
                 overflow: 'hidden',
                 overflowY: 'auto',
+                border: `solid 1px ${COLORS.neutral['100']}`,
+                borderRadius: '2px',
+                [HEADER_MEDIA_QUERIES.LARGESCREEN]: {
+                  width: 'calc(100% + 12rem)',
+                },
               }}
             >
               <div
@@ -142,35 +158,42 @@ export default function SiteSearch({ label }) {
                 ) : results.length === 0 ? (
                   <p
                     css={{
-                      padding: `${SPACING['S']} ${SPACING['M']}`,
+                      padding: SPACING['L'],
                       color: COLORS.neutral['300'],
                     }}
                   >
                     <span
                       css={{
                         display: 'block',
-                        fontWeight: '600',
                         color: COLORS.neutral['400'],
+                        ...TYPOGRAPHY['XS'],
                       }}
                     >
-                      No results for "{query}".
+                      No results found for:{' '}
+                      <span
+                        css={{
+                          fontWeight: '700',
+                        }}
+                      >
+                        {query}
+                      </span>
                     </span>
                     <span
                       css={{
                         display: 'block',
-                        fontSize: '0.875rem',
-                        marginTop: SPACING['2XS'],
                       }}
                     >
-                      Search tips: some terms require exact match. Try typing
-                      the entire term, or use a different word or phrase.
+                      Try{' '}
+                      <DSLink to="https://search.lib.umich.edu/">
+                        Library Search
+                      </DSLink>{' '}
+                      for books, articles, and more.
                     </span>
                   </p>
                 ) : (
                   <p
                     css={{
-                      fontSize: '0.875rem',
-                      padding: `${SPACING['S']} ${SPACING['M']}`,
+                      padding: `${SPACING['S']} ${SPACING['L']}`,
                       color: COLORS.neutral['300'],
                       background: COLORS.blue['100'],
                     }}
@@ -186,7 +209,7 @@ export default function SiteSearch({ label }) {
                   '[aria-selected="true"] a': {
                     background: COLORS.teal['100'],
                     borderLeft: `solid 4px ${COLORS.teal['400']}`,
-                    paddingLeft: `calc(${SPACING['M']} - 4px)`,
+                    paddingLeft: `calc(${SPACING['L']} - 4px)`,
                   },
                   '[data-reach-combobox-option]:not(:last-of-type)': {
                     borderBottom: `solid 1px ${COLORS.neutral['100']}`,
@@ -208,13 +231,18 @@ export default function SiteSearch({ label }) {
                       to={result.slug}
                       css={{
                         display: 'block',
-                        padding: `${SPACING['S']} ${SPACING['M']}`,
-                        ':hover [data-suggested-value]': {
+                        padding: `${SPACING['M']} ${SPACING['L']}`,
+                        ':hover [data-title]': {
                           textDecoration: 'underline',
                         },
                       }}
                     >
-                      <p>
+                      <p
+                        data-title
+                        css={{
+                          ...TYPOGRAPHY['XS'],
+                        }}
+                      >
                         <ComboboxOptionText />
                       </p>
                       {result.summary && (
@@ -226,8 +254,6 @@ export default function SiteSearch({ label }) {
                             textOverflow: 'ellipsis',
                             '-webkit-line-clamp': '2',
                             '-webkit-box-orient': 'vertical',
-                            fontSize: '0.875rem',
-                            marginTop: SPACING['2XS'],
                           }}
                         >
                           {result.summary}
