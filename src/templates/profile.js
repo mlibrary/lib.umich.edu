@@ -454,9 +454,6 @@ export const query = graphql`
       field_user_make_an_appointment {
         uri
       }
-      field_user_office {
-        processed
-      }
       field_user_url {
         __typename
         title

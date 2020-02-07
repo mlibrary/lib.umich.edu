@@ -73,7 +73,6 @@ function processRawMetadata(data) {
     field_room_building,
     field_user_room,
   } = data
-
   const [division_nid, department_nid] = field_user_department.split(', ')
   const office = processOffice([field_user_room, field_room_building])
   const processedMetadata = {
