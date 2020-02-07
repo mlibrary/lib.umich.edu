@@ -41,13 +41,9 @@ function ProfileTemplate({ data }) {
     field_user_url,
     relationships,
     field_user_make_an_appointment,
-    field_physical_address_public_,
   } = data.profile
-  const {
-    field_media_image,
-    field_name_pronunciation,
-    field_office_location,
-  } = relationships
+  const { field_media_image, field_name_pronunciation } = relationships
+  const { office } = data.staff
   const pronouns = [
     field_user_pronoun_subject,
     field_user_pronoun_object,
@@ -166,7 +162,7 @@ function ProfileTemplate({ data }) {
                 </React.Fragment>
               )}
 
-              {field_physical_address_public_ && field_office_location && (
+              {office && (
                 <React.Fragment>
                   <Heading
                     level={2}
@@ -176,9 +172,7 @@ function ProfileTemplate({ data }) {
                   >
                     Office
                   </Heading>
-                  {field_office_location.map(office => (
-                    <Text>{office.title}</Text>
-                  ))}
+                  {office}
                 </React.Fragment>
               )}
 
@@ -362,22 +356,52 @@ function ProfileHeader({
   )
 }
 
-function SocialLinks({ field_linkedin }) {
+function SocialLinks({
+  field_linkedin,
+  field_facebook,
+  field_instagram,
+  field_slideshare,
+  field_twitter,
+}) {
+  const links = [
+    field_linkedin,
+    field_facebook,
+    field_instagram,
+    field_slideshare,
+    field_twitter,
+  ].filter(l => l && l.uri)
+
+  if (links.length === 0) {
+    return null
+  }
+
   return (
-    <React.Fragment>
-      {field_linkedin && (
-        <SocialLink to={field_linkedin.uri} icon="linkedin" label="LinkedIn" />
-      )}
-    </React.Fragment>
+    <div
+      css={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: SPACING['M'],
+      }}
+    >
+      {links.map(sl => {
+        const icon = sl.__typename.substr(16) // user__userField_linkedin -> linkedin
+        return <SocialLink to={sl.uri} icon={icon} label={icon} />
+      })}
+    </div>
   )
 }
 
 function SocialLink({ to, icon, label }) {
   return (
-    <Link to={to}>
+    <a
+      href={to}
+      css={{
+        color: COLORS.neutral['300'],
+      }}
+    >
       <Icon icon={icon} size={24} />
       <VisuallyHidden>{label}</VisuallyHidden>
-    </Link>
+    </a>
   )
 }
 
@@ -401,6 +425,9 @@ export default ProfileTemplate
 
 export const query = graphql`
   query($name: String!) {
+    staff(uniqname: { eq: $name }) {
+      office
+    }
     profile: userUser(name: { eq: $name }) {
       name
       field_user_display_name
@@ -431,10 +458,28 @@ export const query = graphql`
         processed
       }
       field_user_url {
-        uri
+        __typename
         title
+        uri
       }
       field_linkedin {
+        __typename
+        uri
+      }
+      field_facebook {
+        __typename
+        uri
+      }
+      field_instagram {
+        __typename
+        uri
+      }
+      field_slideshare {
+        __typename
+        uri
+      }
+      field_twitter {
+        __typename
         uri
       }
       relationships {
