@@ -7,22 +7,32 @@ import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 
 function SiteSearchModal({ handleDismiss }) {
   return (
-    <Dialog
-      onDismiss={handleDismiss}
-      css={{
-        width: `calc(100% - ${SPACING['M']} * 2)`,
-        padding: `${SPACING['M']} ${SPACING['M']} `,
-        margin: SPACING['M'],
-        ...Z_SPACE['16'],
-        [MEDIA_QUERIES['M']]: {
+    <React.Fragment>
+      <Dialog
+        onDismiss={handleDismiss}
+        css={{
+          width: `calc(100% - ${SPACING['M']} * 2)`,
+          margin: SPACING['M'],
+          padding: '0',
+          ...Z_SPACE['16'],
           borderRadius: '2px',
-          width: '82vw',
-          margin: '7vh auto',
-        },
-      }}
-    >
-      <SiteSearch label="Search this site" />
-    </Dialog>
+          '[data-site-search-icon]': {
+            left: SPACING['L'],
+          },
+          '[data-reach-combobox-input]': {
+            padding: `${SPACING['M']} ${SPACING['L']}`,
+            paddingLeft: `calc(${SPACING['XL']} + ${SPACING['L']})`,
+            border: 'none',
+          },
+          [MEDIA_QUERIES['M']]: {
+            width: '82vw',
+            margin: '7vh auto',
+          },
+        }}
+      >
+        <SiteSearch label="Search this site" />
+      </Dialog>
+    </React.Fragment>
   )
 }
 
