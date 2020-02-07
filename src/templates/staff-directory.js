@@ -73,7 +73,7 @@ function StaffDirectoryQueryContainer({
   const { body, fields, field_title_context } = node
   const [query, setQuery] = useState('')
   const [activeFilters, setActiveFilters] = useState({})
-  const [results, setResults] = useState(staff)
+  const [results, setResults] = useState([])
   const image = noResultsImage
 
   useEffect(() => {
@@ -286,7 +286,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
           <table
             css={{
               width: '100%',
-              minWidth: '720px',
+              minWidth: '840px',
               tableLayout: 'fixed',
               marginBottom: SPACING['XL'],
               'th, td': {
@@ -329,12 +329,12 @@ const StaffDirectory = React.memo(function StaffDirectory({
                   css={{
                     paddingLeft: `calc(43px + ${SPACING['L']}) !important`,
                   }}
+                  colSpan="2"
                 >
-                  Name
+                  Name and title
                 </th>
                 <th>Contact info</th>
-                <th>Title</th>
-                <th>Department or division</th>
+                <th colSpan="2">Department</th>
               </tr>
             </thead>
             <tbody>
@@ -350,7 +350,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                   image_mid,
                 }) => (
                   <tr key={uniqname}>
-                    <td>
+                    <td colSpan="2">
                       <div
                         css={{
                           display: 'flex',
@@ -363,7 +363,6 @@ const StaffDirectory = React.memo(function StaffDirectory({
                             width: '43px',
                             marginRight: SPACING['L'],
                             lineHeight: '0',
-                            flexShrink: '0',
                           }}
                         >
                           <StaffPhoto
@@ -371,18 +370,21 @@ const StaffDirectory = React.memo(function StaffDirectory({
                             staffImages={staffImages}
                           />
                         </span>
-                        <PlainLink
-                          css={{
-                            color: COLORS.teal['400'],
-                            textDecoration: 'underline',
-                            ':hover': {
-                              textDecorationThickness: '2px',
-                            },
-                          }}
-                          to={`staff/` + uniqname}
-                        >
-                          {name}
-                        </PlainLink>
+                        <span>
+                          <PlainLink
+                            css={{
+                              color: COLORS.teal['400'],
+                              textDecoration: 'underline',
+                              ':hover': {
+                                textDecorationThickness: '2px',
+                              },
+                            }}
+                            to={`/users/` + uniqname}
+                          >
+                            {name}
+                          </PlainLink>
+                          <span css={{ display: 'block' }}>{title}</span>
+                        </span>
                       </div>
                     </td>
                     <td>
@@ -393,16 +395,13 @@ const StaffDirectory = React.memo(function StaffDirectory({
                       </span>
                       {phone && (
                         <span>
-                          {phone && (
-                            <Link to={`tel:1-` + phone} kind="subtle">
-                              {phone}
-                            </Link>
-                          )}
+                          <Link to={`tel:1-` + phone} kind="subtle">
+                            {phone}
+                          </Link>
                         </span>
                       )}
                     </td>
-                    <td>{title}</td>
-                    <td>
+                    <td colSpan="2">
                       {department && (
                         <Link to="#" kind="subtle">
                           {department}

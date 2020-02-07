@@ -1,5 +1,5 @@
 const crypto = require('crypto')
-
+const entities = require('entities')
 /*
   1. Fetch the staff API.
     https://cms.lib.umich.edu/api/staff
@@ -23,6 +23,19 @@ const crypto = require('crypto')
     department: { ... department data }
   }
 */
+
+function processOffice(arr) {
+  const processed = processOfficeArray(arr).join(' ')
+  return processed.length > 0 ? processed : null
+}
+
+function processOfficeArray(rawArray) {
+  const arr = rawArray.filter(a => a)
+
+  return arr.filter(a => {
+    return a && a.length > 0
+  })
+}
 
 async function createStaffNodes({ createNode, staffRawData }) {
   staffRawData.forEach(rawMetadata => {
@@ -57,19 +70,21 @@ function processRawMetadata(data) {
     field_user_phone,
     field_user_department,
     field_media_image,
+    field_room_building,
+    field_user_room,
   } = data
-
   const [division_nid, department_nid] = field_user_department.split(', ')
-
+  const office = processOffice([field_user_room, field_room_building])
   const processedMetadata = {
     uniqname: name,
-    name: field_user_display_name,
+    name: entities.decodeHTML(field_user_display_name),
     title: field_user_work_title,
     email: field_user_email,
     phone: field_user_phone === '000-000-0000' ? null : field_user_phone,
     department_nid,
     division_nid,
     image_mid: field_media_image,
+    office: office,
   }
 
   return processedMetadata

@@ -147,7 +147,6 @@ const drupal_node_types_we_care_about = [
 // Create a slug for each page and set it as a field on the node.
 exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
   const { createNodeField } = actions
-
   const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
 
   // Check for Drupal node type.
@@ -446,12 +445,28 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 }
               }
             }
+            profiles: allUserUser(
+              filter: { field_make_profile_public: { eq: true } }
+            ) {
+              edges {
+                node {
+                  __typename
+                  field_make_profile_public
+                  field_user_display_name
+                  field_user_work_title
+                  name
+                }
+              }
+            }
           }
         `
       ).then(result => {
         if (result.errors) {
           reject(result.errors)
         }
+        /*
+          Make CMS pages that have configurable templates.
+        */
         const { pages, sections, buildings, rooms, locations } = result.data
         const edges = pages.edges
           .concat(sections.edges)
@@ -479,6 +494,26 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               },
             })
           }
+        })
+
+        /*
+          Make non CMS template pages
+        */
+        const { profiles } = result.data
+
+        profiles.edges.forEach(({ node }) => {
+          const profileTemplate = path.resolve(`src/templates/profile.js`)
+
+          createPage({
+            path: `/users/${node.name}`,
+            component: profileTemplate,
+            context: {
+              name: node.name,
+              title: node.field_user_display_name,
+              summary: node.field_user_work_title, // used for site search
+              isProfile: true,
+            },
+          })
         })
       })
     )
