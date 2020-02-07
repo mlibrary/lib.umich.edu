@@ -24,6 +24,38 @@ const entities = require('entities')
   }
 */
 
+/*
+  Bunch of transforming to get a display format:
+  - ["", "Hatcher"] => Hatcher
+  - ["1 - First Floor", "Hatcher"] => First Floor, Hatcher
+  - ["Media Library", "Hatcher"] => Media Library, Hatcher
+  - [""] => null
+  - [null, "Hatcher"] => Hatcher
+*/
+function processOffice(arr) {
+  const processed = processOfficeArray(arr).join(', ')
+  return processed.length > 0 ? processed : null
+}
+
+function processOfficeArray(rawArray) {
+  const arr = rawArray.filter(a => a)
+
+  if (arr.length === 2) {
+    const split = arr[0].split(' - ')
+    const newArr = split.length === 2 ? [split[1], arr[1]] : arr
+
+    return filterOffice(newArr)
+  }
+
+  return filterOffice(arr)
+}
+
+function filterOffice(arr) {
+  return arr.filter(a => {
+    return a && a.length > 0
+  })
+}
+
 async function createStaffNodes({ createNode, staffRawData }) {
   staffRawData.forEach(rawMetadata => {
     const metadata = processRawMetadata(rawMetadata)
@@ -48,15 +80,6 @@ async function createStaffNodes({ createNode, staffRawData }) {
   })
 }
 
-function parseFloor(str) {
-  if (str && str.length > 0) {
-    const split = str.split(' - ')
-    return split[split.length - 1]
-  }
-
-  return null
-}
-
 function processRawMetadata(data) {
   const {
     name,
@@ -67,20 +90,11 @@ function processRawMetadata(data) {
     field_user_department,
     field_media_image,
     field_room_building,
-    field_user_room,
+    field_floor,
   } = data
 
   const [division_nid, department_nid] = field_user_department.split(', ')
-
-  // Handle these scenarios:
-  // (a) "", ""
-  // (b) "4 - Fourth Floor", "Hatcher Library North"
-  // -> "Fourth Floor, Hatcher Library North"
-  const office =
-    field_room_building.length > 0
-      ? [parseFloor(field_user_room), field_room_building].join(', ').trim()
-      : null
-
+  const office = processOffice([field_floor, field_room_building])
   const processedMetadata = {
     uniqname: name,
     name: entities.decodeHTML(field_user_display_name),
@@ -90,7 +104,7 @@ function processRawMetadata(data) {
     department_nid,
     division_nid,
     image_mid: field_media_image,
-    office,
+    office: office,
   }
 
   return processedMetadata
