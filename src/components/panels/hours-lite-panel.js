@@ -93,12 +93,12 @@ export default function HoursLitePanel({ data }) {
         <li>
           <Link
             kind="list-strong"
-            to="/locations-and-hours"
+            to="/locations-and-hours/hours-view"
             css={{
               marginLeft: '1.5rem',
             }}
           >
-            View all hours and locations
+            View all hours, locations, and access details
           </Link>
         </li>
       </ol>
