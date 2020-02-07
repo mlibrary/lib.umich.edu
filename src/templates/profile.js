@@ -53,7 +53,9 @@ function ProfileTemplate({ data }) {
     field_user_pronoun_object,
     field_user_pronoun_dependent_pos,
     field_user_pronoun_independent_p,
-  ].join('/')
+  ]
+    .filter((v, i, arr) => arr.indexOf(v) === i) // remove duplicates
+    .join('/')
   const phone = field_user_phone !== '000-000-0000' ? field_user_phone : null
 
   var image
