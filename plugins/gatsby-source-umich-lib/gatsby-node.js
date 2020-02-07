@@ -144,31 +144,6 @@ const drupal_node_types_we_care_about = [
   'room',
 ]
 
-async function createParentChildFields(
-  node,
-  createNodeField,
-  fieldId,
-  name,
-  baseUrlWithoutTrailingSlash
-) {
-  if (node[fieldId]) {
-    const url = baseUrlWithoutTrailingSlash + node[fieldId]
-    const data = await fetch(url)
-    const sanitizedData = sanitizeDrupalView(data)
-    const value = sanitizedData
-      ? sanitizedData.map(({ uuid }) => uuid)
-      : [`no-${name}`]
-
-    createNodeField({
-      node,
-      name,
-      value,
-    })
-  }
-
-  return
-}
-
 // Create a slug for each page and set it as a field on the node.
 exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
   const { createNodeField } = actions
