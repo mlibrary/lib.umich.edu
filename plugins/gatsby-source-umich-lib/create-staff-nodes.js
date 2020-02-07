@@ -24,14 +24,6 @@ const entities = require('entities')
   }
 */
 
-/*
-  Bunch of transforming to get a display format:
-  - ["", "Hatcher"] => Hatcher
-  - ["1 - First Floor", "Hatcher"] => First Floor, Hatcher
-  - ["Media Library", "Hatcher"] => Media Library, Hatcher
-  - [""] => null
-  - [null, "Hatcher"] => Hatcher
-*/
 function processOffice(arr) {
   const processed = processOfficeArray(arr).join(' ')
   return processed.length > 0 ? processed : null
