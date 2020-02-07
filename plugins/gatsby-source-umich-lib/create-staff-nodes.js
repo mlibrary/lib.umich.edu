@@ -33,24 +33,13 @@ const entities = require('entities')
   - [null, "Hatcher"] => Hatcher
 */
 function processOffice(arr) {
-  const processed = processOfficeArray(arr).join(', ')
+  const processed = processOfficeArray(arr).join(' ')
   return processed.length > 0 ? processed : null
 }
 
 function processOfficeArray(rawArray) {
   const arr = rawArray.filter(a => a)
 
-  if (arr.length === 2) {
-    const split = arr[0].split(' - ')
-    const newArr = split.length === 2 ? [split[1], arr[1]] : arr
-
-    return filterOffice(newArr)
-  }
-
-  return filterOffice(arr)
-}
-
-function filterOffice(arr) {
   return arr.filter(a => {
     return a && a.length > 0
   })
@@ -90,11 +79,11 @@ function processRawMetadata(data) {
     field_user_department,
     field_media_image,
     field_room_building,
-    field_floor,
+    field_user_room,
   } = data
 
   const [division_nid, department_nid] = field_user_department.split(', ')
-  const office = processOffice([field_floor, field_room_building])
+  const office = processOffice([field_user_room, field_room_building])
   const processedMetadata = {
     uniqname: name,
     name: entities.decodeHTML(field_user_display_name),
