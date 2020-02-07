@@ -171,17 +171,14 @@ async function createParentChildFields(
 
 // Create a slug for each page and set it as a field on the node.
 exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
+  const { createNodeField } = actions
+  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
+
   // Check for Drupal node type.
   // Substring off the "node__" part.
-  // Also make sure it has a design template.
-
   if (
-    drupal_node_types_we_care_about.includes(node.internal.type.substring(6)) &&
-    node.relationships.field_design_template
+    drupal_node_types_we_care_about.includes(node.internal.type.substring(6))
   ) {
-    const { createNodeField } = actions
-    const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
-
     // Handle creating breadcrumb for node.
     createBreadcrumb({
       node,
@@ -200,22 +197,29 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
       name: `title`,
       value: node.title,
     })
-
-    await createParentChildFields(
-      node,
-      createNodeField,
-      'field_parent_menu',
-      'parents',
-      baseUrlWithoutTrailingSlash
-    )
-    await createParentChildFields(
-      node,
-      createNodeField,
-      'field_child_menu',
-      'children',
-      baseUrlWithoutTrailingSlash
-    )
   }
+
+  async function createParentChildFields(fieldId, name) {
+    if (node[fieldId]) {
+      const url = baseUrlWithoutTrailingSlash + node[fieldId]
+      const data = await fetch(url)
+      const sanitizedData = sanitizeDrupalView(data)
+      const value = sanitizedData
+        ? sanitizedData.map(({ uuid }) => uuid)
+        : [`no-${name}`]
+
+      createNodeField({
+        node,
+        name,
+        value,
+      })
+    }
+
+    return
+  }
+
+  await createParentChildFields('field_parent_menu', 'parents')
+  await createParentChildFields('field_child_menu', 'children')
 }
 
 // Implement the Gatsby API “createPages”. This is called once the
