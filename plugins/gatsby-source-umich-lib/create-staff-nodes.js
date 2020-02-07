@@ -48,6 +48,15 @@ async function createStaffNodes({ createNode, staffRawData }) {
   })
 }
 
+function parseFloor(str) {
+  if (str && str.length > 0) {
+    const split = str.split(' - ')
+    return split[split.length - 1]
+  }
+
+  return null
+}
+
 function processRawMetadata(data) {
   const {
     name,
@@ -57,9 +66,20 @@ function processRawMetadata(data) {
     field_user_phone,
     field_user_department,
     field_media_image,
+    field_room_building,
+    field_user_room,
   } = data
 
   const [division_nid, department_nid] = field_user_department.split(', ')
+
+  // Handle these scenarios:
+  // (a) "", ""
+  // (b) "4 - Fourth Floor", "Hatcher Library North"
+  // -> "Fourth Floor, Hatcher Library North"
+  const office =
+    field_room_building.length > 0
+      ? [parseFloor(field_user_room), field_room_building].join(', ').trim()
+      : null
 
   const processedMetadata = {
     uniqname: name,
@@ -70,6 +90,7 @@ function processRawMetadata(data) {
     department_nid,
     division_nid,
     image_mid: field_media_image,
+    office,
   }
 
   return processedMetadata
