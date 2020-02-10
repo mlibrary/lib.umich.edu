@@ -25,7 +25,7 @@ export default function DestinationLocationInfo({ node }) {
     : field_room_building.title
 
   const phone_number = node.field_phone_number
-  const email = node.field_booking_email
+  const email = node.field_email
   const floor = getFloor({ node })
   const room = node.field_room_number && 'Room ' + node.field_room_number
   const locationSummary = [locationTitle, floor, room]
