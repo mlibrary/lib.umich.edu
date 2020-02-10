@@ -27,7 +27,10 @@ export default function DestinationLocationInfo({ node }) {
   const phone_number = node.field_phone_number
   const email = node.field_booking_email
   const floor = getFloor({ node })
-  const room = 'Room ' + node.field_room_number
+  const room = node.field_room_number && 'Room ' + node.field_room_number
+  const locationSummary = [locationTitle, floor, room]
+    .filter(i => i !== undefined)
+    .join(', ')
 
   return (
     <div
@@ -53,7 +56,7 @@ export default function DestinationLocationInfo({ node }) {
       <p>
         <IconText d={icons['address']}>
           <span>
-            {locationTitle}, {floor}, {room}
+            {locationSummary}
             <span css={{ display: 'block' }}>
               <Link to="#">View floorplan (coming soon)</Link>
             </span>
