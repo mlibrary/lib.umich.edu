@@ -389,7 +389,12 @@ function NavPanelItemLinks({ parentItem, items }) {
           }}
         >
           {items.map(({ text, to }, i) => (
-            <li key={i + text}>
+            <li
+              key={i + text}
+              css={{
+                breakInside: 'avoid',
+              }}
+            >
               <Link
                 to={to}
                 css={{
