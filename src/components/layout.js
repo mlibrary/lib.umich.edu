@@ -1,7 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Global } from '@emotion/core'
-import { UniversalHeader, GlobalStyleSheet, COLORS } from '@umich-lib/core'
+import {
+  GlobalStyleSheet,
+  COLORS,
+  MEDIA_QUERIES,
+  SPACING,
+} from '@umich-lib/core'
 import Header from './header'
 import Footer from './footer'
 import DevelopmentAlert from './development-alert'
@@ -52,7 +57,7 @@ function Layout({ children, drupalNid }) {
         <section>
           <SkipLinks />
           <DevelopmentAlert />
-          <UniversalHeader />
+          <m-universal-header></m-universal-header>
           <Header primary={primary} secondary={secondary} />
         </section>
         <main id="maincontent">{children}</main>
