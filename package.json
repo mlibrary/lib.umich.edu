@@ -8,6 +8,7 @@
     "@reach/dialog": "^0.6.1",
     "@reach/visually-hidden": "^0.6.1",
     "@reach/window-size": "^0.6.1",
+    "@umich-lib/components": "0.0.1-alpha.4",
     "@umich-lib/core": "^2.0.3",
     "gatsby": "^2.19.12",
     "gatsby-background-image": "^0.9.14",

@@ -1,7 +1,7 @@
 const glob = require('glob')
 const fs = require('fs')
 
-exports.onPostBuild = async (_, { hydratePath }) => {
+exports.onPostBuild = async ({}, { hydratePath }) => {
   /*
     Server Side Render Stencil Components
   */
