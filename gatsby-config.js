@@ -101,5 +101,11 @@ module.exports = {
       },
     },
     `gatsby-plugin-client-side-redirect`,
+    {
+      resolve: 'gatsby-plugin-stencil',
+      options: {
+        hydratePath: '@umich-lib/components/hydrate',
+      },
+    },
   ],
 }
