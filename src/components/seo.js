@@ -50,16 +50,7 @@ function SEO({ description, lang, meta, keywords, title }) {
                   : []
               )
               .concat(meta)}
-          >
-            <script
-              type="module"
-              src="https://unpkg.com/@umich-lib/components/dist/umich-lib/umich-lib.esm.js"
-            ></script>
-            <script
-              nomodule
-              src="https://unpkg.com/@umich-lib/components/dist/umich-lib/umich-lib.js"
-            ></script>
-          </Helmet>
+          />
         )
       }}
     />
