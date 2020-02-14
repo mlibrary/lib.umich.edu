@@ -20,12 +20,10 @@ import Breadcrumb from '../components/breadcrumb'
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
-import useUrlState from '../hooks/use-url-state'
 
-var assert = require('assert');
 const lunr = require('lunr')
 
-export default function StaffDirectoryWrapper({ data, location }) {
+export default function StaffDirectoryWrapper({ data }) {
   const node = data.page
   const { noResultsImage, allNodeDepartment, allStaff, allStaffImages } = data
 
@@ -61,7 +59,6 @@ export default function StaffDirectoryWrapper({ data, location }) {
       departments={departments}
       noResultsImage={noResultsImage}
       staffImages={staffImages}
-      location={location}
     />
   )
 }
@@ -72,30 +69,12 @@ function StaffDirectoryQueryContainer({
   departments,
   noResultsImage,
   staffImages,
-  location,
 }) {
-  const [urlState, setUrlState] = useUrlState(location.search)
   const { body, fields, field_title_context } = node
-  const [query, setQuery] = useState(urlState.query ? urlState.query : '')
-  const [activeFilters, setActiveFilters] = useState(urlState.department ? { department: urlState.department } : {})
+  const [query, setQuery] = useState('')
+  const [activeFilters, setActiveFilters] = useState({})
   const [results, setResults] = useState([])
   const image = noResultsImage
-
-  useEffect(() => {
-    const state = {
-      query,
-      ...activeFilters
-    }
-    console.log('state', state)
-    console.log('urlState', urlState)
-
-    if (!assert.equal(state, urlState)) {
-      const query = urlState.query
-
-      
-    }
-
-  }, [query, activeFilters])
 
   useEffect(() => {
     if (!window.__SDI__) {
