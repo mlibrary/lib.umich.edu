@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { navigate, Link } from 'gatsby'
+import { navigate, Link as GatsbyLink } from 'gatsby'
 import {
   SPACING,
   Z_SPACE,
@@ -7,7 +7,6 @@ import {
   Icon,
   Alert,
   TYPOGRAPHY,
-  Link as DSLink,
 } from '@umich-lib/core'
 import {
   Combobox,
@@ -18,6 +17,7 @@ import {
   ComboboxOptionText,
 } from '@reach/combobox'
 import '@reach/dialog/styles.css'
+import Link from '../components/link'
 import HEADER_MEDIA_QUERIES from '../components/header/header-media-queries'
 
 const lunr = require('lunr')
@@ -184,9 +184,9 @@ export default function SiteSearch({ label }) {
                       }}
                     >
                       Try{' '}
-                      <DSLink to="https://search.lib.umich.edu/">
+                      <Link to="https://search.lib.umich.edu/">
                         Library Search
-                      </DSLink>{' '}
+                      </Link>{' '}
                       for books, articles, and more.
                     </span>
                   </p>
@@ -227,7 +227,7 @@ export default function SiteSearch({ label }) {
                       },
                     }}
                   >
-                    <Link
+                    <GatsbyLink
                       to={result.slug}
                       css={{
                         display: 'block',
@@ -259,7 +259,7 @@ export default function SiteSearch({ label }) {
                           {result.summary}
                         </p>
                       )}
-                    </Link>
+                    </GatsbyLink>
                   </ComboboxOption>
                 ))}
               </ComboboxList>
