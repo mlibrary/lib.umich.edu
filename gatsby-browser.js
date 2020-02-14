@@ -6,7 +6,7 @@
 
 // You can delete this file if you're not using itimport React from "react"
 import React from 'react'
-import { Chat, LargeScreen, COLORS } from '@umich-lib/core'
+import { LargeScreen, COLORS } from '@umich-lib/core'
 
 export const wrapPageElement = ({ element, props }) => {
   // props provide same data to Layout as Page element will get
@@ -23,7 +23,7 @@ export const wrapPageElement = ({ element, props }) => {
             },
           }}
         >
-          <Chat fixed />
+          <m-chat></m-chat>
         </span>
       </LargeScreen>
     </React.Fragment>
