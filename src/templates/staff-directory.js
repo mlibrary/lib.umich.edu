@@ -21,7 +21,6 @@ import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
 
-const assert = require('assert')
 const qs = require('qs')
 const lunr = require('lunr')
 
@@ -67,8 +66,16 @@ export default function StaffDirectoryWrapper({ data, location, navigate }) {
   )
 }
 
-function parseUrlSearch(search, keys) {
-  const obj = qs.parse(search, { ignoreQueryPrefix: true })
+function parseState(str) {
+  return qs.parse(str, { ignoreQueryPrefix: true })
+}
+
+function stringifyState(str) {
+  return qs.stringify(str, { encode: false })
+}
+
+function getUrlState(search, keys) {
+  const obj = parseState(search)
   // Build an obj with only the keys we care about
   // from the parsed URL state.
   const state = keys.reduce((memo, k) => {
@@ -89,9 +96,10 @@ function StaffDirectoryQueryContainer({
   noResultsImage,
   staffImages,
   location,
+  navigate,
 }) {
   const [urlState, setUrlState] = useState(
-    parseUrlSearch(location.search, ['query', 'department'])
+    getUrlState(location.search, ['query', 'department'])
   )
   const { body, fields, field_title_context } = node
   const [query, setQuery] = useState(urlState.query ? urlState.query : '')
@@ -103,24 +111,16 @@ function StaffDirectoryQueryContainer({
 
   useEffect(() => {
     const state = {
-      query: query ? query : undefined,
-      department: activeFilters['department']
-        ? activeFilters['department']
-        : undefined,
+      query: query.length > 0 ? query : undefined,
+      department: activeFilters['department'],
     }
-    console.log('state', state)
-    console.log('urlState', urlState)
-    //console.log('equal?', assert.deepEqual(urlState, state))
 
-    /*
-    if (!assert.deepEqual(urlState, state)) {
-      console.log('navigate!')
+    const stateStr = stringifyState(state)
+    const stateUrlStr = stringifyState(urlState)
 
-      //navigate(qs.stringify(stateObj, { format: 'RFC1738' }))
+    if (stateStr !== stateUrlStr) {
+      navigate('?' + stateStr, { replace: true })
     }
-    */
-
-    //navigate()
   }, [query, activeFilters])
 
   useEffect(() => {
