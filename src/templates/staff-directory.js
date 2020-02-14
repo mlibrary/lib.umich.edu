@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { graphql } from 'gatsby'
 import {
   Heading,
@@ -98,7 +98,7 @@ function StaffDirectoryQueryContainer({
   location,
   navigate,
 }) {
-  const [urlState, setUrlState] = useState(
+  const [urlState] = useState(
     getUrlState(location.search, ['query', 'department'])
   )
   const { body, fields, field_title_context } = node
