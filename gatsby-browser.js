@@ -14,18 +14,16 @@ export const wrapPageElement = ({ element, props }) => {
   return (
     <React.Fragment>
       {element}
-      <LargeScreen>
-        <span
-          id="ask-a-librarian-chat"
-          css={{
-            button: {
-              outlineColor: COLORS.maize['400'],
-            },
-          }}
-        >
-          <m-chat></m-chat>
-        </span>
-      </LargeScreen>
+      <span
+        id="ask-a-librarian-chat"
+        css={{
+          button: {
+            outlineColor: COLORS.maize['400'],
+          },
+        }}
+      >
+        <m-chat></m-chat>
+      </span>
     </React.Fragment>
   )
 }
