@@ -20,12 +20,12 @@ import Breadcrumb from '../components/breadcrumb'
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
-import useUrlState from '../hooks/use-url-state'
 
-var assert = require('assert');
+const assert = require('assert')
+const qs = require('qs')
 const lunr = require('lunr')
 
-export default function StaffDirectoryWrapper({ data, location }) {
+export default function StaffDirectoryWrapper({ data, location, navigate }) {
   const node = data.page
   const { noResultsImage, allNodeDepartment, allStaff, allStaffImages } = data
 
@@ -62,8 +62,24 @@ export default function StaffDirectoryWrapper({ data, location }) {
       noResultsImage={noResultsImage}
       staffImages={staffImages}
       location={location}
+      navigate={navigate}
     />
   )
+}
+
+function parseUrlSearch(search, keys) {
+  const obj = qs.parse(search, { ignoreQueryPrefix: true })
+  // Build an obj with only the keys we care about
+  // from the parsed URL state.
+  const state = keys.reduce((memo, k) => {
+    if (obj[k]) {
+      memo = { [k]: obj[k], ...memo }
+    }
+
+    return memo
+  }, {})
+
+  return state
 }
 
 function StaffDirectoryQueryContainer({
@@ -74,27 +90,37 @@ function StaffDirectoryQueryContainer({
   staffImages,
   location,
 }) {
-  const [urlState, setUrlState] = useUrlState(location.search)
+  const [urlState, setUrlState] = useState(
+    parseUrlSearch(location.search, ['query', 'department'])
+  )
   const { body, fields, field_title_context } = node
   const [query, setQuery] = useState(urlState.query ? urlState.query : '')
-  const [activeFilters, setActiveFilters] = useState(urlState.department ? { department: urlState.department } : {})
+  const [activeFilters, setActiveFilters] = useState(
+    urlState.department ? { department: urlState.department } : {}
+  )
   const [results, setResults] = useState([])
   const image = noResultsImage
 
   useEffect(() => {
     const state = {
-      query,
-      ...activeFilters
+      query: query ? query : undefined,
+      department: activeFilters['department']
+        ? activeFilters['department']
+        : undefined,
     }
     console.log('state', state)
     console.log('urlState', urlState)
+    //console.log('equal?', assert.deepEqual(urlState, state))
 
-    if (!assert.equal(state, urlState)) {
-      const query = urlState.query
+    /*
+    if (!assert.deepEqual(urlState, state)) {
+      console.log('navigate!')
 
-      
+      //navigate(qs.stringify(stateObj, { format: 'RFC1738' }))
     }
+    */
 
+    //navigate()
   }, [query, activeFilters])
 
   useEffect(() => {
