@@ -27,10 +27,11 @@
     
 ## Help and troubleshooting
 
-Sometimes when changing git branches for example you might need to run Gatsby clean and rerun `npm start`.
+Sometimes when changing git branches for example you might need to run Gatsby clean before an `npm start`.
 
 ```
 npm run clean
+npm start
 ```
 
 https://www.gatsbyjs.org/docs/gatsby-cli/#clean
