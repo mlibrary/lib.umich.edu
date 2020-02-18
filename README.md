@@ -22,7 +22,7 @@
     Start it up.
 
     ```sh
-    npm run develop
+    npm start
     ```
     
 ## Help and troubleshooting
