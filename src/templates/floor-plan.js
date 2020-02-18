@@ -6,6 +6,8 @@ import {
   SPACING,
   SmallScreen,
   LINK_STYLES,
+  Z_SPACE,
+  COLORS,
 } from '@umich-lib/core'
 
 import { Template, Top, Side, Content } from '../components/page-layout'
@@ -79,16 +81,29 @@ function FloorPlanTemplate({ data }) {
               </a>
             </p>
 
-            <img
-              src={encodeURI(field_svg_image.localFile.publicURL)}
-              alt=""
+            <a
+              href={encodeURI(field_printable_image.localFile.publicURL)}
               css={{
                 display: 'block',
-                width: '100%',
-                maxWidth: '38rem',
                 marginTop: SPACING['2XL'],
+                maxWidth: '38rem',
+                borderRadius: '2px',
+                border: `solid 1px ${COLORS.neutral['100']}`,
+                ':hover': {
+                  cursor: 'pointer',
+                  ...Z_SPACE['8'],
+                },
               }}
-            />
+            >
+              <img
+                src={encodeURI(field_svg_image.localFile.publicURL)}
+                alt={title + ' PDF'}
+                css={{
+                  display: 'block',
+                  width: '100%',
+                }}
+              />
+            </a>
           </Content>
         </Template>
       </Margins>
