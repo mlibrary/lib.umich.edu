@@ -27,7 +27,7 @@
     
 ## Help and troubleshooting
 
-Sometimes when changing git branches for example you might need to run Gatsby clean before `npm start`.
+Sometimes when changing git branches for example you might need to run Gatsby clean.
 
 ```
 npm run clean
