@@ -1,18 +1,32 @@
 import React from 'react'
 import { graphql } from 'gatsby'
-import { Margins, Heading, SPACING, SmallScreen } from '@umich-lib/core'
+import {
+  Margins,
+  Heading,
+  SPACING,
+  SmallScreen,
+  LINK_STYLES,
+} from '@umich-lib/core'
 
 import { Template, Top, Side, Content } from '../components/page-layout'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import SideNavigation from '../components/navigation/side-navigation'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
+import Prose from '../components/prose'
 import TemplateLayout from './template-layout'
 import useNavigationBranch from '../components/navigation/use-navigation-branch'
 
 function FloorPlanTemplate({ data }) {
   const node = data.floorPlan
-  const { field_title_context, body, fields, field_local_navigation } = node
+  const {
+    title,
+    field_title_context,
+    body,
+    fields,
+    field_local_navigation,
+  } = node
+  const { field_svg_image, field_printable_image } = node.relationships
   const navBranch = useNavigationBranch(fields.slug)
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
   const smallScreenItems = smallScreenBranch ? smallScreenBranch.children : null
@@ -50,8 +64,29 @@ function FloorPlanTemplate({ data }) {
             >
               {field_title_context}
             </Heading>
-            {body && <HTML html={body.processed} />}
-            [svg placeholder]
+
+            <Prose>
+              {body && <HTML html={body.processed} />}
+
+              <a
+                href={field_printable_image.localFile.publicURL}
+                css={{
+                  ...LINK_STYLES['default'],
+                }}
+              >
+                {title} PDF
+              </a>
+
+              <img
+                src={field_svg_image.localFile.publicURL}
+                alt=""
+                css={{
+                  display: 'block',
+                  width: '100%',
+                  maxWidth: '38rem',
+                }}
+              />
+            </Prose>
           </Content>
         </Template>
       </Margins>
@@ -63,7 +98,7 @@ export default FloorPlanTemplate
 
 export const query = graphql`
   query($slug: String!) {
-    page: nodeFloorPlan(fields: { slug: { eq: $slug } }) {
+    floorPlan: nodeFloorPlan(fields: { slug: { eq: $slug } }) {
       ...floorPlanFragment
     }
   }

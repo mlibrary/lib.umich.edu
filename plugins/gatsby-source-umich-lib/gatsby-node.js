@@ -142,6 +142,7 @@ const drupal_node_types_we_care_about = [
   'section_page',
   'location',
   'room',
+  'floor_plan',
 ]
 
 // Create a slug for each page and set it as a field on the node.
@@ -474,10 +475,12 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 node {
                   __typename
                   title
-                  body {
-                    summary
-                  }
                   drupal_internal__nid
+                  fields {
+                    slug
+                    title
+                    breadcrumb
+                  }
                   relationships {
                     field_design_template {
                       field_machine_name
