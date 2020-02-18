@@ -69,7 +69,7 @@ function FloorPlanTemplate({ data }) {
               {body && <HTML html={body.processed} />}
 
               <a
-                href={field_printable_image.localFile.publicURL}
+                href={encodeURI(field_printable_image.localFile.publicURL)}
                 css={{
                   ...LINK_STYLES['default'],
                 }}
@@ -78,7 +78,7 @@ function FloorPlanTemplate({ data }) {
               </a>
 
               <img
-                src={field_svg_image.localFile.publicURL}
+                src={encodeURI(field_svg_image.localFile.publicURL)}
                 alt=""
                 css={{
                   display: 'block',
