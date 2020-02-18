@@ -99,7 +99,9 @@ function CardPanel({ data, headingLevel = 2 }) {
   }
 
   const title = data.field_title
-  const cards = data.relationships.field_cards
+  const cards = data.relationships.field_cards.filter(
+    c => c.title !== undefined
+  )
   const noImage = template === 'standard_no_image'
   const useSummary = template !== 'address_and_hours'
 
