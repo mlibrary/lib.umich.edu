@@ -64,29 +64,31 @@ function FloorPlanTemplate({ data }) {
             >
               {field_title_context}
             </Heading>
+            {body && <HTML html={body.processed} />}
 
-            <Prose>
-              {body && <HTML html={body.processed} />}
-
+            <p
+              css={{
+                marginTop: SPACING['L'],
+              }}
+            >
               <a
                 href={encodeURI(field_printable_image.localFile.publicURL)}
-                css={{
-                  ...LINK_STYLES['default'],
-                }}
+                css={LINK_STYLES['default']}
               >
                 {title} PDF
               </a>
+            </p>
 
-              <img
-                src={encodeURI(field_svg_image.localFile.publicURL)}
-                alt=""
-                css={{
-                  display: 'block',
-                  width: '100%',
-                  maxWidth: '38rem',
-                }}
-              />
-            </Prose>
+            <img
+              src={encodeURI(field_svg_image.localFile.publicURL)}
+              alt=""
+              css={{
+                display: 'block',
+                width: '100%',
+                maxWidth: '38rem',
+                marginTop: SPACING['2XL'],
+              }}
+            />
           </Content>
         </Template>
       </Margins>
