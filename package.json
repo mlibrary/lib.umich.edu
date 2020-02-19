@@ -26,6 +26,7 @@
     "intersection-observer": "^0.7.0",
     "moment": "^2.24.0",
     "no-mouse-days": "0.0.2",
+    "patch-package": "^6.2.0",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -47,7 +48,8 @@
     "start": "npm run develop",
     "stage": "gatsby build && now public --name lib-umich --public",
     "format": "prettier --write '**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "patch-package"
   },
   "repository": {
     "type": "git",
