@@ -41,6 +41,7 @@
   ],
   "license": "MIT",
   "scripts": {
+    "postinstall": "patch-package",
     "build": "gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
@@ -48,8 +49,7 @@
     "start": "npm run develop",
     "stage": "gatsby build && now public --name lib-umich --public",
     "format": "prettier --write '**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "patch-package"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
