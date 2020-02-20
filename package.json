@@ -24,6 +24,8 @@
     "gatsby-source-drupal": "^3.3.10",
     "gatsby-transformer-sharp": "^2.3.14",
     "moment": "^2.24.0",
+    "patch-package": "^6.2.0",
+    "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
@@ -37,6 +39,7 @@
   ],
   "license": "MIT",
   "scripts": {
+    "postinstall": "patch-package",
     "build": "gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
