@@ -288,7 +288,7 @@ function ProfileTemplate({ data }) {
               {field_languages_spoken && (
                 <React.Fragment>
                   <Heading size="S" level={2}>
-                    Languages spoken
+                    Languages
                   </Heading>
                   <p>
                     {field_languages_spoken
@@ -298,7 +298,7 @@ function ProfileTemplate({ data }) {
                 </React.Fragment>
               )}
 
-              {field_user_url && (
+              {field_user_url && field_user_url.length > 0 && (
                 <React.Fragment>
                   <Heading size="S" level={2}>
                     My links
@@ -382,9 +382,13 @@ function SocialLinks({
   return (
     <div
       css={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: SPACING['M'],
+        '> a': {
+          display: 'inline-block',
+          marginTop: SPACING['S'],
+          ':not(:last-of-type)': {
+            marginRight: SPACING['S'],
+          },
+        },
       }}
     >
       {links.map(sl => {
