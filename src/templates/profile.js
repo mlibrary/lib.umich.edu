@@ -14,6 +14,7 @@ import {
   COLORS,
   MEDIA_QUERIES,
 } from '@umich-lib/core'
+import VisuallyHidden from '@reach/visually-hidden'
 import { Template, Top, Side, Content } from '../components/page-layout'
 import SEO from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
@@ -23,7 +24,7 @@ import HTML from '../components/html'
 import Img from 'gatsby-image'
 import LANGUAGES from '../utils/languages'
 import LinkCallout from '../components/link-callout'
-import VisuallyHidden from '@reach/visually-hidden'
+import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
 
 function ProfileTemplate({ data }) {
   const {
@@ -108,7 +109,7 @@ function ProfileTemplate({ data }) {
                 },
               }}
             >
-              {image && (
+              {image ? (
                 <Img
                   fluid={image.fluid}
                   alt={image.alt}
@@ -117,6 +118,8 @@ function ProfileTemplate({ data }) {
                     borderRadius: '2px',
                   }}
                 />
+              ) : (
+                <StaffPhotoPlaceholder />
               )}
 
               {pronouns && (
