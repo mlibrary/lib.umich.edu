@@ -21,7 +21,7 @@ import Breadcrumb from '../components/breadcrumb'
 import Layout from '../components/layout'
 import Link from '../components/link'
 import HTML from '../components/html'
-import Img from 'gatsby-image'
+import BackgroundImage from 'gatsby-background-image'
 import LANGUAGES from '../utils/languages'
 import LinkCallout from '../components/link-callout'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
@@ -110,12 +110,13 @@ function ProfileTemplate({ data }) {
               }}
             >
               {image ? (
-                <Img
+                <BackgroundImage
                   fluid={image.fluid}
                   alt={image.alt}
                   css={{
                     width: '100%',
                     borderRadius: '2px',
+                    paddingTop: '150%',
                   }}
                 />
               ) : (
