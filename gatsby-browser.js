@@ -23,7 +23,7 @@ export const wrapPageElement = ({ element, props }) => {
             },
           }}
         >
-          <Chat fixed />
+          <m-chat></m-chat>
         </span>
       </LargeScreen>
     </React.Fragment>
