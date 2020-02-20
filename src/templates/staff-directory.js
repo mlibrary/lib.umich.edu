@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { graphql } from 'gatsby'
 import {
   Heading,
@@ -71,8 +71,8 @@ function parseState(str) {
   return qs.parse(str, { ignoreQueryPrefix: true })
 }
 
-function stringifyState(str) {
-  return qs.stringify(str, { encode: false })
+function stringifyState(obj) {
+  return qs.stringify(obj, { encode: false })
 }
 
 function getUrlState(search, keys) {
@@ -113,21 +113,15 @@ function StaffDirectoryQueryContainer({
       query: query.length > 0 ? query : undefined,
       department: activeFilters['department'],
     }),
-    500
+    100
   )
-
-  console.log('stateString', stateString)
-  console.log('query', query)
 
   const image = noResultsImage
 
   useEffect(() => {
-    const stateUrlStr = stringifyState(urlState)
-
-    if (stateString !== stateUrlStr) {
-      navigate('?' + stateString, { replace: true })
-    }
-  }, [query, activeFilters])
+    navigate('?' + stateString, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stateString])
 
   useEffect(() => {
     if (!window.__SDI__) {
@@ -172,6 +166,8 @@ function StaffDirectoryQueryContainer({
     } catch {
       return
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, activeFilters])
 
   function handleChange(e) {
@@ -593,11 +589,12 @@ function Select({ label, name, options, value, ...rest }) {
           value={value ? value : 'All'}
           {...rest}
         >
-          {options.map(opt => (
-            <option id={name + opt} value={opt}>
+          {options.map((opt, i) => (
+            <option key={opt + i} id={name + opt} value={opt}>
               {opt}
             </option>
           ))}
+          c
         </select>
         <Icon
           icon="expand_more"
@@ -625,9 +622,9 @@ function StaffPhoto({ mid, staffImages }) {
         }}
       >
         <mask fill="#fff">
-          <path d="m0 0h220v271h-220z" fill="#fff" fill-rule="evenodd" />
+          <path d="m0 0h220v271h-220z" fill="#fff" fillRule="evenodd" />
         </mask>
-        <g fill="none" fill-rule="evenodd">
+        <g fill="none" fillRule="evenodd">
           <path d="m.5 0h221v293h-221z" fill="#e5e9ed" />
           <path
             d="m229.835666 270.963166-119.330133.036834-119.34122233-.036834c-1.08129908.036834-2.46757997-47.562366 10.34165522-58.474545 12.94786321-11.013473 28.07680841-5.829037 57.34581831-20.277314 5.2401416-2.578405 13.6410037-6.492056 15.8313274-12.919651 2.3751612-6.943277-.1571118-15.728271-1.6173276-18.104088-22.5492445-36.880401-23.9826589-64.8837223-22.9568111-79.0649503 2.4583381-34.0349474 25.9798275-55.1226177 60.3965601-55.1226177 34.406567 0 57.928057 21.0876703 60.386395 55.1226177 1.024923 14.181228-.407567 42.1845493-22.956811 79.0649503-1.460216 2.375817-3.984172 11.160811-1.617328 18.104088 2.189399 6.427595 10.600428 10.341246 15.830403 12.919651 29.269934 14.448277 44.398879 9.263841 57.346743 20.277314 12.808311 10.912179 11.42203 58.511379 10.340731 58.474545"

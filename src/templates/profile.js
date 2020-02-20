@@ -122,6 +122,7 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
+                    size="2XS"
                     css={{
                       fontWeight: '700',
                     }}
@@ -136,6 +137,7 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
+                    size="2XS"
                     css={{
                       fontWeight: '700',
                     }}
@@ -152,6 +154,7 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
+                    size="2XS"
                     css={{
                       fontWeight: '700',
                     }}
@@ -166,6 +169,7 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
+                    size="2XS"
                     css={{
                       fontWeight: '700',
                     }}
@@ -180,6 +184,7 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
+                    size="2XS"
                     css={{
                       fontWeight: '700',
                     }}
@@ -194,6 +199,7 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
+                    size="2XS"
                     css={{
                       fontWeight: '700',
                     }}
@@ -245,6 +251,7 @@ function ProfileTemplate({ data }) {
                 >
                   Name pronunciation
                 </figcaption>
+                {/* eslint-disable-next-line */}
                 <audio
                   css={{
                     width: '100%',
@@ -302,7 +309,7 @@ function ProfileTemplate({ data }) {
 
                   <List type="bulleted">
                     {field_user_url.map(({ uri, title }) => (
-                      <li>
+                      <li key={uri + title}>
                         <Link to={uri}>{unescape(title)}</Link>
                       </li>
                     ))}
@@ -385,7 +392,7 @@ function SocialLinks({
     >
       {links.map(sl => {
         const icon = sl.__typename.substr(16) // user__userField_linkedin -> linkedin
-        return <SocialLink to={sl.uri} icon={icon} label={icon} />
+        return <SocialLink to={sl.uri} icon={icon} label={icon} key={sl.uri} />
       })}
     </div>
   )

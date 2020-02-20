@@ -6,9 +6,9 @@
 
 // You can delete this file if you're not using itimport React from "react"
 import React from 'react'
-import { Chat, LargeScreen, COLORS } from '@umich-lib/core'
+import { LargeScreen, COLORS } from '@umich-lib/core'
 
-export const wrapPageElement = ({ element, props }) => {
+export const wrapPageElement = ({ element }) => {
   // props provide same data to Layout as Page element will get
   // including location, data, etc - you don't need to pass it
   return (
