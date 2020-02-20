@@ -16,6 +16,7 @@ export const query = graphql`
         ...locationFragment
         ...roomFragment
         ...pageCardFragment
+        ...floorPlanFragment
       }
     }
   }
