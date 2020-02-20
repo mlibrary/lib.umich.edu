@@ -14,6 +14,7 @@ import {
   COLORS,
   MEDIA_QUERIES,
 } from '@umich-lib/core'
+import VisuallyHidden from '@reach/visually-hidden'
 import { Template, Top, Side, Content } from '../components/page-layout'
 import SEO from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
@@ -23,7 +24,7 @@ import HTML from '../components/html'
 import Img from 'gatsby-image'
 import LANGUAGES from '../utils/languages'
 import LinkCallout from '../components/link-callout'
-import VisuallyHidden from '@reach/visually-hidden'
+import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
 
 function ProfileTemplate({ data }) {
   const {
@@ -41,6 +42,7 @@ function ProfileTemplate({ data }) {
     field_user_url,
     relationships,
     field_user_make_an_appointment,
+    field_physical_address_public_,
   } = data.profile
   const { field_media_image, field_name_pronunciation } = relationships
   const { office } = data.staff
@@ -107,7 +109,7 @@ function ProfileTemplate({ data }) {
                 },
               }}
             >
-              {image && (
+              {image ? (
                 <Img
                   fluid={image.fluid}
                   alt={image.alt}
@@ -116,6 +118,8 @@ function ProfileTemplate({ data }) {
                     borderRadius: '2px',
                   }}
                 />
+              ) : (
+                <StaffPhotoPlaceholder />
               )}
 
               {pronouns && (
@@ -162,7 +166,7 @@ function ProfileTemplate({ data }) {
                 </React.Fragment>
               )}
 
-              {office && (
+              {office && field_physical_address_public_ && (
                 <React.Fragment>
                   <Heading
                     level={2}

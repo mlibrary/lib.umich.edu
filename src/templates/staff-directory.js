@@ -20,6 +20,7 @@ import Breadcrumb from '../components/breadcrumb'
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
+import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
 
 const lunr = require('lunr')
 
@@ -563,28 +564,7 @@ function StaffPhoto({ mid, staffImages }) {
   const img = staffImages[mid]
 
   if (!img) {
-    return (
-      <svg
-        viewBox="0 0 222 293"
-        xmlns="http://www.w3.org/2000/svg"
-        css={{
-          borderRadius: '2px',
-        }}
-      >
-        <mask fill="#fff">
-          <path d="m0 0h220v271h-220z" fill="#fff" fill-rule="evenodd" />
-        </mask>
-        <g fill="none" fill-rule="evenodd">
-          <path d="m.5 0h221v293h-221z" fill="#e5e9ed" />
-          <path
-            d="m229.835666 270.963166-119.330133.036834-119.34122233-.036834c-1.08129908.036834-2.46757997-47.562366 10.34165522-58.474545 12.94786321-11.013473 28.07680841-5.829037 57.34581831-20.277314 5.2401416-2.578405 13.6410037-6.492056 15.8313274-12.919651 2.3751612-6.943277-.1571118-15.728271-1.6173276-18.104088-22.5492445-36.880401-23.9826589-64.8837223-22.9568111-79.0649503 2.4583381-34.0349474 25.9798275-55.1226177 60.3965601-55.1226177 34.406567 0 57.928057 21.0876703 60.386395 55.1226177 1.024923 14.181228-.407567 42.1845493-22.956811 79.0649503-1.460216 2.375817-3.984172 11.160811-1.617328 18.104088 2.189399 6.427595 10.600428 10.341246 15.830403 12.919651 29.269934 14.448277 44.398879 9.263841 57.346743 20.277314 12.808311 10.912179 11.42203 58.511379 10.340731 58.474545"
-            fill="#b2bec9"
-            mask="url(#a)"
-            transform="translate(1 22)"
-          />
-        </g>
-      </svg>
-    )
+    return <StaffPhotoPlaceholder />
   }
 
   return (
@@ -667,7 +647,7 @@ export const query = graphql`
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
-    allStaff(sort: { order: ASC, fields: uniqname }) {
+    allStaff(sort: { order: ASC, fields: name }) {
       edges {
         node {
           uniqname
