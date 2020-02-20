@@ -364,6 +364,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
                             width: '43px',
                             marginRight: SPACING['L'],
                             lineHeight: '0',
+                            flexShrink: '0',
                           }}
                         >
                           <StaffPhoto
