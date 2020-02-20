@@ -33,7 +33,8 @@
     "react-responsive": "^8.0.1",
     "rehype-parse": "^6.0.1",
     "rehype-react": "^4.0.1",
-    "unified": "^8.4.2"
+    "unified": "^8.4.2",
+    "use-debounce": "^3.3.0"
   },
   "keywords": [
     "gatsby"

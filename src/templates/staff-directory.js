@@ -12,6 +12,7 @@ import {
   Text,
 } from '@umich-lib/core'
 import Img from 'gatsby-image'
+import { useDebounce } from 'use-debounce'
 import BackgroundImage from 'gatsby-background-image'
 import VisuallyHidden from '@reach/visually-hidden'
 import Link from '../components/link'
@@ -107,19 +108,24 @@ function StaffDirectoryQueryContainer({
     urlState.department ? { department: urlState.department } : {}
   )
   const [results, setResults] = useState([])
+  const [stateString] = useDebounce(
+    stringifyState({
+      query: query.length > 0 ? query : undefined,
+      department: activeFilters['department'],
+    }),
+    500
+  )
+
+  console.log('stateString', stateString)
+  console.log('query', query)
+
   const image = noResultsImage
 
   useEffect(() => {
-    const state = {
-      query: query.length > 0 ? query : undefined,
-      department: activeFilters['department'],
-    }
-
-    const stateStr = stringifyState(state)
     const stateUrlStr = stringifyState(urlState)
 
-    if (stateStr !== stateUrlStr) {
-      navigate('?' + stateStr, { replace: true })
+    if (stateString !== stateUrlStr) {
+      navigate('?' + stateString, { replace: true })
     }
   }, [query, activeFilters])
 
