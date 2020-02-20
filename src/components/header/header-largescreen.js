@@ -45,7 +45,7 @@ export default ({ primary, secondary }) => (
                     css={{
                       display: 'inline-block',
                       ':not(:last-child)': {
-                        marginRight: SPACING['L'],
+                        marginRight: SPACING['M'],
                       },
                     }}
                     key={i + text}

@@ -7,7 +7,7 @@ function Header({ primary, secondary }) {
     <React.Fragment>
       <div
         css={{
-          [`@media only screen and (max-width: 1100px)`]: {
+          [`@media only screen and (max-width: 1129px)`]: {
             display: 'none',
           },
         }}
@@ -16,7 +16,7 @@ function Header({ primary, secondary }) {
       </div>
       <div
         css={{
-          [`@media only screen and (min-width: 1101px)`]: {
+          [`@media only screen and (min-width: 1130px)`]: {
             display: 'none',
           },
         }}

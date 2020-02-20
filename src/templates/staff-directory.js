@@ -720,7 +720,7 @@ export const query = graphql`
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
-    allStaff(sort: { order: ASC, fields: uniqname }) {
+    allStaff(sort: { order: ASC, fields: name }) {
       edges {
         node {
           uniqname

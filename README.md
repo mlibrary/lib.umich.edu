@@ -22,7 +22,7 @@
     Start it up.
 
     ```sh
-    npm run develop
+    npm start
     ```
     
 ## Help and troubleshooting
@@ -31,6 +31,7 @@ Sometimes when changing git branches for example you might need to run Gatsby cl
 
 ```
 npm run clean
+npm start
 ```
 
 https://www.gatsbyjs.org/docs/gatsby-cli/#clean
