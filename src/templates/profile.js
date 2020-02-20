@@ -27,6 +27,7 @@ import LinkCallout from '../components/link-callout'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
 
 function ProfileTemplate({ data }) {
+  console.log('data', data)
   const {
     field_user_display_name,
     field_user_pro_about,
@@ -52,7 +53,7 @@ function ProfileTemplate({ data }) {
     field_user_pronoun_dependent_pos,
     field_user_pronoun_independent_p,
   ]
-    .filter((v, i, arr) => arr.indexOf(v) === i) // remove duplicates
+    .filter((v, i, arr) => v && arr.indexOf(v) === i) // remove duplicates
     .join('/')
   const phone = field_user_phone !== '000-000-0000' ? field_user_phone : null
 
