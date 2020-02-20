@@ -41,6 +41,7 @@ function ProfileTemplate({ data }) {
     field_user_url,
     relationships,
     field_user_make_an_appointment,
+    field_physical_address_public_,
   } = data.profile
   const { field_media_image, field_name_pronunciation } = relationships
   const { office } = data.staff
@@ -162,7 +163,7 @@ function ProfileTemplate({ data }) {
                 </React.Fragment>
               )}
 
-              {office && (
+              {office && field_physical_address_public_ && (
                 <React.Fragment>
                   <Heading
                     level={2}
