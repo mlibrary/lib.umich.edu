@@ -142,7 +142,7 @@ const drupal_node_types_we_care_about = [
   'section_page',
   'location',
   'room',
-  'floor_plan',
+  // 'floor_plan', // Disable floor plans page creatuib until new SVGs are ready - Jon, Feb 25, 2020.
 ]
 
 // Create a slug for each page and set it as a field on the node.
