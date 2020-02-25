@@ -142,7 +142,7 @@ const drupal_node_types_we_care_about = [
   'section_page',
   'location',
   'room',
-  // 'floor_plan', // Disable floor plans page creatuib until new SVGs are ready - Jon, Feb 25, 2020.
+  'floor_plan',
 ]
 
 // Create a slug for each page and set it as a field on the node.
@@ -511,7 +511,9 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           .concat(buildings.edges)
           .concat(rooms.edges)
           .concat(locations.edges)
-          .concat(floorPlans.edges)
+
+        // Disable floor plans page creatuib until new SVGs are ready - Jon, Feb 25, 2020.
+        //.concat(floorPlans.edges)
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
