@@ -1,12 +1,15 @@
-/**
- * Implement Gatsby's Browser APIs in this file.
- *
- * See: https://www.gatsbyjs.org/docs/browser-apis/
- */
-
-// You can delete this file if you're not using itimport React from "react"
 import React from 'react'
-import { LargeScreen, COLORS } from '@umich-lib/core'
+
+export const onClientEntry = () => {
+  const {
+    applyPolyfills,
+    defineCustomElements,
+  } = require('@umich-lib/components/loader')
+
+  applyPolyfills().then(() => {
+    defineCustomElements(window)
+  })
+}
 
 export const wrapPageElement = ({ element }) => {
   // props provide same data to Layout as Page element will get
@@ -14,18 +17,7 @@ export const wrapPageElement = ({ element }) => {
   return (
     <React.Fragment>
       {element}
-      <LargeScreen>
-        <span
-          id="ask-a-librarian-chat"
-          css={{
-            button: {
-              outlineColor: COLORS.maize['400'],
-            },
-          }}
-        >
-          <m-chat></m-chat>
-        </span>
-      </LargeScreen>
+      <m-chat></m-chat>
     </React.Fragment>
   )
 }
@@ -36,7 +28,6 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
   if (oldPath) {
     const dataPageHeading = document.querySelector('[data-page-heading]')
     const h1 = document.querySelector('h1')
-
     const pageHeading = dataPageHeading ? dataPageHeading : h1
 
     if (pageHeading) {

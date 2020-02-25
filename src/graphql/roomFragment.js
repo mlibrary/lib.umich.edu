@@ -33,6 +33,7 @@ export const query = graphql`
     }
     relationships {
       field_room_building {
+        id
         title
         field_building_address {
           locality
@@ -52,6 +53,7 @@ export const query = graphql`
         }
       }
       field_floor {
+        id
         name
       }
       field_media_image {

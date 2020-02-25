@@ -7,23 +7,30 @@ import icons from '../maybe-design-system/icons'
 import Hours from '../components/todays-hours'
 import Link from '../components/link'
 
+import useFloorPlan from '../hooks/use-floor-plan'
+
 import { getFloor } from '../utils'
 
-export default function DestinationLocationInfo({ node }) {
-  const { field_parent_location, field_room_building } = node.relationships
-
-  // Node Page content types do not have destination info.
+export default function DestinationLocationInfoContainer({ node }) {
   if (node.__typename === 'node__page') {
     return null
   }
 
+  return <DestinationLocationInfo node={node} />
+}
+
+function DestinationLocationInfo({ node }) {
+  const { field_parent_location, field_room_building } = node.relationships
+  const bid = field_room_building
+    ? field_room_building.id
+    : node.relationships.field_parent_location.id
+  const fid = node.relationships.field_floor.id
+  const floorPlan = useFloorPlan(bid, fid)
   const shouldDisplayHours =
     node.field_is_location_ && node.field_display_hours_
-
   const locationTitle = field_parent_location
     ? field_parent_location.title
     : field_room_building.title
-
   const phone_number = node.field_phone_number
   const email = node.field_email
   const floor = getFloor({ node })
@@ -58,7 +65,7 @@ export default function DestinationLocationInfo({ node }) {
           <span>
             {locationSummary}
             <span css={{ display: 'block' }}>
-              <Link to="#">View floorplan (coming soon)</Link>
+              <Link to={floorPlan.fields.slug}>View floorplan</Link>
             </span>
           </span>
         </IconText>

@@ -78,6 +78,7 @@ export const query = graphql`
       }
       field_floor {
         name
+        id
       }
     }
   }

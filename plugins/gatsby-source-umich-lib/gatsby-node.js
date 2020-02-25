@@ -142,6 +142,7 @@ const drupal_node_types_we_care_about = [
   'section_page',
   'location',
   'room',
+  'floor_plan',
 ]
 
 // Create a slug for each page and set it as a field on the node.
@@ -231,6 +232,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const sectionTemplate = path.resolve(`src/templates/section.js`)
     const visitTemplate = path.resolve(`src/templates/visit.js`)
     const homeTemplate = path.resolve(`src/templates/home.js`)
+    const floorPlanTemplate = path.resolve(`src/templates/floor-plan.js`)
     const destinationBodyTemplate = path.resolve(
       `src/templates/destination-body.js`
     )
@@ -264,6 +266,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return destinationFullTemplate
         case 'staff_directory':
           return staffDirectoryTemplate
+        case 'floor_plan':
+          return floorPlanTemplate
         default:
           return null
       }
@@ -458,6 +462,33 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 }
               }
             }
+            floorPlans: allNodeFloorPlan(
+              filter: {
+                relationships: {
+                  field_design_template: {
+                    field_machine_name: { eq: "floor_plan" }
+                  }
+                }
+              }
+            ) {
+              edges {
+                node {
+                  __typename
+                  title
+                  drupal_internal__nid
+                  fields {
+                    slug
+                    title
+                    breadcrumb
+                  }
+                  relationships {
+                    field_design_template {
+                      field_machine_name
+                    }
+                  }
+                }
+              }
+            }
           }
         `
       ).then(result => {
@@ -467,12 +498,20 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         /*
           Make CMS pages that have configurable templates.
         */
-        const { pages, sections, buildings, rooms, locations } = result.data
+        const {
+          pages,
+          sections,
+          buildings,
+          rooms,
+          locations,
+          floorPlans,
+        } = result.data
         const edges = pages.edges
           .concat(sections.edges)
           .concat(buildings.edges)
           .concat(rooms.edges)
           .concat(locations.edges)
+          .concat(floorPlans.edges)
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
