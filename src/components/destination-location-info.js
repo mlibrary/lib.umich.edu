@@ -19,7 +19,7 @@ export default function DestinationLocationInfoContainer({ node }) {
   return <DestinationLocationInfo node={node} />
 }
 
-export default function DestinationLocationInfo({ node }) {
+function DestinationLocationInfo({ node }) {
   const { field_parent_location, field_room_building } = node.relationships
   const bid = field_room_building
     ? field_room_building.id
