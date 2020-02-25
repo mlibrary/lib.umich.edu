@@ -12,6 +12,7 @@ import {
   Text,
 } from '@umich-lib/core'
 import Img from 'gatsby-image'
+import { useDebounce } from 'use-debounce'
 import BackgroundImage from 'gatsby-background-image'
 import VisuallyHidden from '@reach/visually-hidden'
 import Link from '../components/link'
@@ -22,9 +23,10 @@ import TemplateLayout from './template-layout'
 import HTML from '../components/html'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
 
+const qs = require('qs')
 const lunr = require('lunr')
 
-export default function StaffDirectoryWrapper({ data }) {
+export default function StaffDirectoryWrapper({ data, location, navigate }) {
   const node = data.page
   const { noResultsImage, allNodeDepartment, allStaff, allStaffImages } = data
 
@@ -60,8 +62,33 @@ export default function StaffDirectoryWrapper({ data }) {
       departments={departments}
       noResultsImage={noResultsImage}
       staffImages={staffImages}
+      location={location}
+      navigate={navigate}
     />
   )
+}
+
+function parseState(str) {
+  return qs.parse(str, { ignoreQueryPrefix: true })
+}
+
+function stringifyState(obj) {
+  return qs.stringify(obj, { encode: false })
+}
+
+function getUrlState(search, keys) {
+  const obj = parseState(search)
+  // Build an obj with only the keys we care about
+  // from the parsed URL state.
+  const state = keys.reduce((memo, k) => {
+    if (obj[k]) {
+      memo = { [k]: obj[k], ...memo }
+    }
+
+    return memo
+  }, {})
+
+  return state
 }
 
 function StaffDirectoryQueryContainer({
@@ -70,12 +97,32 @@ function StaffDirectoryQueryContainer({
   departments,
   noResultsImage,
   staffImages,
+  location,
+  navigate,
 }) {
+  const [urlState] = useState(
+    getUrlState(location.search, ['query', 'department'])
+  )
   const { body, fields, field_title_context } = node
-  const [query, setQuery] = useState('')
-  const [activeFilters, setActiveFilters] = useState({})
+  const [query, setQuery] = useState(urlState.query ? urlState.query : '')
+  const [activeFilters, setActiveFilters] = useState(
+    urlState.department ? { department: urlState.department } : {}
+  )
   const [results, setResults] = useState([])
+  const [stateString] = useDebounce(
+    stringifyState({
+      query: query.length > 0 ? query : undefined,
+      department: activeFilters['department'],
+    }),
+    100
+  )
+
   const image = noResultsImage
+
+  useEffect(() => {
+    navigate('?' + stateString, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stateString])
 
   useEffect(() => {
     if (!window.__SDI__) {
@@ -120,6 +167,8 @@ function StaffDirectoryQueryContainer({
     } catch {
       return
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, activeFilters])
 
   function handleChange(e) {
@@ -542,11 +591,12 @@ function Select({ label, name, options, value, ...rest }) {
           value={value ? value : 'All'}
           {...rest}
         >
-          {options.map(opt => (
-            <option id={name + opt} value={opt}>
+          {options.map((opt, i) => (
+            <option key={opt + i} id={name + opt} value={opt}>
               {opt}
             </option>
           ))}
+          c
         </select>
         <Icon
           icon="expand_more"

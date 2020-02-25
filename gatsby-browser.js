@@ -11,7 +11,7 @@ export const onClientEntry = () => {
   })
 }
 
-export const wrapPageElement = ({ element, props }) => {
+export const wrapPageElement = ({ element }) => {
   // props provide same data to Layout as Page element will get
   // including location, data, etc - you don't need to pass it
   return (
@@ -28,7 +28,6 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
   if (oldPath) {
     const dataPageHeading = document.querySelector('[data-page-heading]')
     const h1 = document.querySelector('h1')
-
     const pageHeading = dataPageHeading ? dataPageHeading : h1
 
     if (pageHeading) {

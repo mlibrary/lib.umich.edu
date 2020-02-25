@@ -3,6 +3,7 @@ import { graphql } from 'gatsby'
 export const query = graphql`
   fragment buildingFragment on node__building {
     __typename
+    id
     title
     field_title_context
     drupal_id

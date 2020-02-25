@@ -5,6 +5,7 @@ import HTML from '../html'
 import CardImage from '../../maybe-design-system/card-image'
 import MEDIA_QUERIES from '../../maybe-design-system/media-queries'
 import Link from '../link'
+import useFloorPlan from '../../hooks/use-floor-plan'
 
 export default function DestinationHorizontalPanel({ data }) {
   const cards = data.relationships.field_cards.map(card => {
@@ -18,6 +19,9 @@ export default function DestinationHorizontalPanel({ data }) {
       subtitle: `${parentTitle}, ${floor}, ${room}`,
       image: imageData.localFile.childImageSharp,
       content: <HTML html={card.body.processed} />,
+      bid: card.relationships.field_room_building.id,
+      rid: card.relationships.field_floor.id,
+      linkDestText: `${parentTitle} ${floor}`,
     }
   })
 
@@ -27,53 +31,57 @@ export default function DestinationHorizontalPanel({ data }) {
         marginTop: SPACING['XL'],
       }}
     >
-      {cards.map((card, i) => {
-        return (
-          <section
-            key={i + card.title}
+      {cards.map((card, i) => (
+        <DestinationCard key={i} card={card} />
+      ))}
+    </div>
+  )
+}
+
+function DestinationCard({ card }) {
+  const floorPlan = useFloorPlan(card.bid, card.rid)
+  const floorPlanLinkText = `View the floor plan for ${card.linkDestText}`
+
+  return (
+    <section
+      css={{
+        marginBottom: SPACING['XL'],
+        [MEDIA_QUERIES['L']]: {
+          display: 'grid',
+          gridTemplateColumns: `18.75rem 1fr `,
+          gridGap: SPACING['M'],
+        },
+      }}
+    >
+      <CardImage image={card.image.fluid} />
+      <div>
+        <Heading
+          size="S"
+          css={{
+            marginBottom: SPACING['2XS'],
+          }}
+        >
+          {card.title}
+          <span
             css={{
-              marginBottom: SPACING['XL'],
-              [MEDIA_QUERIES['L']]: {
-                display: 'grid',
-                gridTemplateColumns: `18.75rem 1fr `,
-                gridGap: SPACING['M'],
-              },
+              marginTop: SPACING['3XS'],
+              display: 'block',
+              color: COLORS.neutral['300'],
+              ...TYPOGRAPHY['3XS'],
             }}
           >
-            <CardImage image={card.image.fluid} />
-            <div>
-              <Heading
-                size="S"
-                css={{
-                  marginBottom: SPACING['2XS'],
-                }}
-              >
-                {card.title}
-                <span
-                  css={{
-                    marginTop: SPACING['3XS'],
-                    display: 'block',
-                    color: COLORS.neutral['300'],
-                    ...TYPOGRAPHY['3XS'],
-                  }}
-                >
-                  {card.subtitle}
-                </span>
-              </Heading>
-              {card.content}
-              <p
-                css={{
-                  marginTop: SPACING['M'],
-                }}
-              >
-                <Link to="#">
-                  View the {card.title} floor plan (coming soon)
-                </Link>
-              </p>
-            </div>
-          </section>
-        )
-      })}
-    </div>
+            {card.subtitle}
+          </span>
+        </Heading>
+        {card.content}
+        <p
+          css={{
+            marginTop: SPACING['M'],
+          }}
+        >
+          <Link to={floorPlan.fields.slug}>{floorPlanLinkText}</Link>
+        </p>
+      </div>
+    </section>
   )
 }
