@@ -72,7 +72,7 @@ function FloorPlanTemplate({ data }) {
               }}
             >
               <a
-                href={encodeURI(field_printable_image.localFile.publicURL)}
+                href={field_printable_image.localFile.publicURL}
                 css={LINK_STYLES['default']}
               >
                 {title} PDF
@@ -80,7 +80,7 @@ function FloorPlanTemplate({ data }) {
             </p>
 
             <img
-              src={encodeURI(field_svg_image.localFile.publicURL)}
+              src={field_svg_image.localFile.publicURL}
               alt=""
               css={{
                 display: 'block',

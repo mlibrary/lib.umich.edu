@@ -21,12 +21,13 @@ import Breadcrumb from '../components/breadcrumb'
 import Layout from '../components/layout'
 import Link from '../components/link'
 import HTML from '../components/html'
-import Img from 'gatsby-image'
+import BackgroundImage from 'gatsby-background-image'
 import LANGUAGES from '../utils/languages'
 import LinkCallout from '../components/link-callout'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
 
 function ProfileTemplate({ data }) {
+  console.log('data', data)
   const {
     field_user_display_name,
     field_user_pro_about,
@@ -52,7 +53,7 @@ function ProfileTemplate({ data }) {
     field_user_pronoun_dependent_pos,
     field_user_pronoun_independent_p,
   ]
-    .filter((v, i, arr) => arr.indexOf(v) === i) // remove duplicates
+    .filter((v, i, arr) => v && arr.indexOf(v) === i) // remove duplicates
     .join('/')
   const phone = field_user_phone !== '000-000-0000' ? field_user_phone : null
 
@@ -110,12 +111,13 @@ function ProfileTemplate({ data }) {
               }}
             >
               {image ? (
-                <Img
+                <BackgroundImage
                   fluid={image.fluid}
                   alt={image.alt}
                   css={{
                     width: '100%',
                     borderRadius: '2px',
+                    paddingTop: '150%',
                   }}
                 />
               ) : (
@@ -295,7 +297,7 @@ function ProfileTemplate({ data }) {
               {field_languages_spoken && (
                 <React.Fragment>
                   <Heading size="S" level={2}>
-                    Languages spoken
+                    Languages
                   </Heading>
                   <p>
                     {field_languages_spoken
@@ -305,7 +307,7 @@ function ProfileTemplate({ data }) {
                 </React.Fragment>
               )}
 
-              {field_user_url && (
+              {field_user_url && field_user_url.length > 0 && (
                 <React.Fragment>
                   <Heading size="S" level={2}>
                     My links
@@ -389,9 +391,13 @@ function SocialLinks({
   return (
     <div
       css={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: SPACING['M'],
+        '> a': {
+          display: 'inline-block',
+          marginTop: SPACING['S'],
+          ':not(:last-of-type)': {
+            marginRight: SPACING['S'],
+          },
+        },
       }}
     >
       {links.map(sl => {
