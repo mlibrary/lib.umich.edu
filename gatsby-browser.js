@@ -28,7 +28,6 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
   if (oldPath) {
     const dataPageHeading = document.querySelector('[data-page-heading]')
     const h1 = document.querySelector('h1')
-
     const pageHeading = dataPageHeading ? dataPageHeading : h1
 
     if (pageHeading) {
