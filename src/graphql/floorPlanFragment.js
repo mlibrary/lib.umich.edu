@@ -15,6 +15,13 @@ export const query = graphql`
     }
     field_local_navigation
     relationships {
+      field_room_building {
+        ...buildingCardFragment
+      }
+      field_floor {
+        id
+        name
+      }
       field_design_template {
         field_machine_name
       }

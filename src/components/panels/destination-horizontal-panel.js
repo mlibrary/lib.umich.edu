@@ -19,6 +19,9 @@ export default function DestinationHorizontalPanel({ data }) {
       subtitle: `${parentTitle}, ${floor}, ${room}`,
       image: imageData.localFile.childImageSharp,
       content: <HTML html={card.body.processed} />,
+      bid: card.relationships.field_room_building.id,
+      rid: card.relationships.field_floor.id,
+      linkDestText: `${parentTitle} ${floor}`,
     }
   })
 
@@ -36,10 +39,8 @@ export default function DestinationHorizontalPanel({ data }) {
 }
 
 function DestinationCard({ card }) {
-  const floorPlan = useFloorPlan(
-    card.relationships.field_room_building.id,
-    card.relationships.field_floor.id
-  )
+  const floorPlan = useFloorPlan(card.bid, card.rid)
+  const floorPlanLinkText = `View the floor plan for ${card.linkDestText}`
 
   return (
     <section
@@ -78,9 +79,7 @@ function DestinationCard({ card }) {
             marginTop: SPACING['M'],
           }}
         >
-          <Link to={floorPlan.fields.slug}>
-            View the {card.title} floor plan (coming soon)
-          </Link>
+          <Link to={floorPlan.fields.slug}>{floorPlanLinkText}</Link>
         </p>
       </div>
     </section>

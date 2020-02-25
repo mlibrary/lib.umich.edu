@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment buildingCardFragment on node__building {
+    id
     __typename
     title
     field_title_context
