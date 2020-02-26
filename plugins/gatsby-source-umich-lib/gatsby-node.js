@@ -511,9 +511,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           .concat(buildings.edges)
           .concat(rooms.edges)
           .concat(locations.edges)
-
-        // Disable floor plans page creatuib until new SVGs are ready - Jon, Feb 25, 2020.
-        //.concat(floorPlans.edges)
+          .concat(floorPlans.edges)
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
