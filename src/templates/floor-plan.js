@@ -13,7 +13,6 @@ import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import SideNavigation from '../components/navigation/side-navigation'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
-import Prose from '../components/prose'
 import TemplateLayout from './template-layout'
 import useNavigationBranch from '../components/navigation/use-navigation-branch'
 
