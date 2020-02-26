@@ -162,7 +162,7 @@ function BackgroundSection({ data, children, ...rest }) {
     smallScreenImage,
     {
       ...largeScreenImage,
-      media: `(min-width: 920px)`,
+      media: `(min-width: 720px)`,
     },
   ]
 
