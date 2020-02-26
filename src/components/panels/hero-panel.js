@@ -23,7 +23,7 @@ const MEDIAQUERIES = {
 
 const heroHeightCSS = {
   minHeight: '16rem',
-  [MEDIAQUERIES['M']]: {
+  [MEDIAQUERIES['L']]: {
     minHeight: '25rem',
   },
 }
