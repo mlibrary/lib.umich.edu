@@ -126,6 +126,7 @@ function Caption({ caption }) {
         right: '0',
         bottom: '0',
         padding: `${SPACING['2XS']} ${SPACING['S']}`,
+        borderRadius: '2px 0 0 0',
         ...frostCSS,
         '*, a, span': {
           borderColor: 'white',
