@@ -56,6 +56,7 @@ function SEO({ description, lang, meta, keywords, title }) {
               rel="stylesheet"
             />
             <script
+              async
               type="text/javascript"
               src="https://umich.edu/apis/umalerts/umalerts.js"
             ></script>
