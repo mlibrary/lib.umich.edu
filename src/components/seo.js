@@ -55,6 +55,11 @@ function SEO({ description, lang, meta, keywords, title }) {
               href="https://fonts.googleapis.com/css?family=Crimson+Text|Muli:400,600,700"
               rel="stylesheet"
             />
+            <script
+              async
+              type="text/javascript"
+              src="https://umich.edu/apis/umalerts/umalerts.js"
+            ></script>
           </Helmet>
         )
       }}
