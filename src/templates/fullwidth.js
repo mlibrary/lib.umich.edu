@@ -8,9 +8,10 @@ import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
 import Panels from '../components/panels'
+import getNode from '../utils/get-node'
 
 export default function FullWidthTemplate({ data, ...rest }) {
-  const node = data.page
+  const node = getNode(data)
   const { field_title_context, body, fields, relationships } = node
   const panels = relationships.field_panels
 
@@ -53,6 +54,9 @@ export const query = graphql`
   query($slug: String!, $parents: [String]) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
+    }
+    location: nodeLocation(fields: { slug: { eq: $slug } }) {
+      ...locationFragment
     }
     parents: allNodePage(filter: { drupal_id: { in: $parents } }) {
       edges {

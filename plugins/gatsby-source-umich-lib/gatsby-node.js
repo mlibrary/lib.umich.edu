@@ -422,7 +422,12 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 relationships: {
                   field_design_template: {
                     field_machine_name: {
-                      in: ["visit", "destination_body", "destination_full"]
+                      in: [
+                        "visit"
+                        "full_width"
+                        "destination_body"
+                        "destination_full"
+                      ]
                     }
                   }
                 }
