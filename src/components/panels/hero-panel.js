@@ -7,7 +7,7 @@ import {
   Margins,
   Button,
   Icon,
-  TextInput,
+  Input,
   MEDIA_QUERIES,
   TYPOGRAPHY,
   COLORS,
@@ -22,14 +22,21 @@ const MEDIAQUERIES = {
 }
 
 const heroHeightCSS = {
-  minHeight: '18rem',
+  minHeight: '16rem',
   [MEDIAQUERIES['L']]: {
     minHeight: '25rem',
   },
 }
 
+const frostCSS = {
+  background: 'rgba(255,255,255,0.8)',
+  backdropFilter: 'blur(2px)',
+}
+
 export default function HeroPanel({ data }) {
   const caption = data.field_caption_text && data.field_caption_text.processed
+  const hasFrost = data.field_background === 'white'
+  const applyFrostCSS = hasFrost ? frostCSS : {}
 
   return (
     <Margins
@@ -67,30 +74,33 @@ export default function HeroPanel({ data }) {
               maxWidth: '28rem',
               margin: '0 auto',
               padding: SPACING['M'],
-              paddingTop: SPACING['XL'],
+              [MEDIA_QUERIES.LARGESCREEN]: {
+                padding: SPACING['L'],
+              },
               [MEDIAQUERIES['M']]: {
                 width: '34rem',
                 maxWidth: '100%',
                 margin: 0,
                 padding: SPACING['XL'],
+                borderRadius: '2px',
+                marginLeft: SPACING['2XL'],
               },
+              ...applyFrostCSS,
             }}
           >
             <h1
               id="help-find"
               css={{
                 margin: '0 auto',
-                marginBottom: SPACING['M'],
-                ...TYPOGRAPHY['L'],
+                marginBottom: SPACING['XS'],
+                ...TYPOGRAPHY['M'],
                 fontWeight: '700',
                 textAlign: 'center',
-                maxWidth: '18rem',
                 [MEDIAQUERIES['M']]: {
                   maxWidth: '100%',
                   padding: '0',
                   ...TYPOGRAPHY['XL'],
                   textAlign: 'left',
-                  marginBottom: SPACING['M'],
                 },
                 [MEDIAQUERIES['L']]: {
                   fontSize: '2.25rem',
@@ -116,19 +126,18 @@ function Caption({ caption }) {
         right: '0',
         bottom: '0',
         padding: `${SPACING['2XS']} ${SPACING['S']}`,
-        background: 'rgba(0,0,0,0.6)',
+        borderRadius: '2px 0 0 0',
+        ...frostCSS,
         '*, a, span': {
-          color: 'white',
           borderColor: 'white',
           boxShadow: 'none',
-          ':hover': {
-            boxShadow: 'none',
-            color: 'white',
-            borderColor: 'white',
-          },
         },
         a: {
           textDecoration: 'underline',
+          color: COLORS.neutral['400'],
+          ':hover': {
+            textDecorationThickness: '2px',
+          },
         },
       }}
     >
@@ -137,39 +146,38 @@ function Caption({ caption }) {
   )
 }
 
+function getImage(images, type) {
+  return images.find(node => node.field_orientation === type).relationships
+    .field_media_image.localFile.childImageSharp.fluid
+}
+
 function BackgroundSection({ data, children, ...rest }) {
   const { field_hero_images } = data.relationships
-  const { width } = useWindowSize()
-
-  function getImageData(type) {
-    return field_hero_images.find(node => node.field_orientation === type)
-      .relationships.field_media_image.localFile.childImageSharp.fluid
-  }
-
-  if (width > 720) {
-    return (
-      <BackgroundImage
-        Tag="section"
-        fluid={getImageData('horizontal')}
-        backgroundColor={COLORS.neutral['100']}
-        css={{
-          backgroundPosition: 'center left 20%',
-          backgroundSize: 'cover',
-        }}
-        {...rest}
-      >
-        {children}
-      </BackgroundImage>
-    )
-  }
+  const smallScreenImage = field_hero_images.find(
+    node => node.field_orientation === 'vertical'
+  ).relationships.field_media_image.localFile.childImageSharp.fluid
+  const largeScreenImage = field_hero_images.find(
+    node => node.field_orientation === 'horizontal'
+  ).relationships.field_media_image.localFile.childImageSharp.fluid
+  const sources = [
+    smallScreenImage,
+    {
+      ...largeScreenImage,
+      media: `(min-width: 720px)`,
+    },
+  ]
 
   return (
     <BackgroundImage
       Tag="section"
-      fluid={getImageData('vertical')}
+      fluid={sources}
       backgroundColor={COLORS.neutral['100']}
       css={{
         backgroundPosition: 'center top 33%',
+        [MEDIAQUERIES['M']]: {
+          backgroundPosition: 'center left 20%',
+          backgroundSize: 'cover',
+        },
       }}
       {...rest}
     >
@@ -184,33 +192,44 @@ function Search({ labelId }) {
       action="https://search.lib.umich.edu/everything"
       method="get"
       css={{
-        display: 'flex',
-        height: '2.5rem',
-        input: {
-          height: '100%',
+        textAlign: 'center',
+        [MEDIAQUERIES['M']]: {
+          textAlign: 'left',
         },
       }}
       role="search"
       aria-labelledby={labelId}
     >
-      <TextInput
-        id="library-search-query"
-        labelText="Query"
-        type="search"
-        hideLabel
-        name="query"
-        placeholder="Search for books, journals, articles, and more"
-      />
-      <Button
-        type="submit"
-        kind="primary"
+      <label
+        for="library-search-query"
         css={{
-          marginLeft: SPACING['XS'],
+          display: 'block',
+          paddingBottom: SPACING['XS'],
         }}
       >
-        <Icon icon="search" size={20} />
-        <VisuallyHidden>Submit</VisuallyHidden>
-      </Button>
+        Search for books, articles, and more
+      </label>
+      <div
+        css={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          input: {
+            height: '40px',
+          },
+        }}
+      >
+        <Input id="library-search-query" type="search" name="query" />
+        <Button
+          type="submit"
+          kind="primary"
+          css={{
+            marginLeft: SPACING['XS'],
+          }}
+        >
+          <Icon icon="search" size={20} />
+          <VisuallyHidden>Submit</VisuallyHidden>
+        </Button>
+      </div>
     </form>
   )
 }

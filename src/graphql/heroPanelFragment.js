@@ -7,6 +7,8 @@ export const query = graphql`
     field_caption_text {
       processed
     }
+    field_background
+    field_placement
     relationships {
       field_hero_images {
         field_orientation
