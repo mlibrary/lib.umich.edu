@@ -69,11 +69,11 @@ export default function StaffDirectoryWrapper({ data, location, navigate }) {
 }
 
 function parseState(str) {
-  return qs.parse(str, { ignoreQueryPrefix: true })
+  return qs.parse(str, { ignoreQueryPrefix: true, format: 'RFC1738' })
 }
 
 function stringifyState(obj) {
-  return qs.stringify(obj, { encode: false })
+  return qs.stringify(obj, { format: 'RFC1738' })
 }
 
 function getUrlState(search, keys) {
