@@ -19,6 +19,9 @@ export const query = graphql`
     }
     relationships {
       field_media_image {
+        field_image_caption {
+          processed
+        }
         relationships {
           field_media_image {
             localFile {
@@ -28,6 +31,13 @@ export const query = graphql`
                 }
               }
             }
+          }
+        }
+      }
+      field_collecting_area {
+        relationships {
+          user__user {
+            ...userFragment
           }
         }
       }

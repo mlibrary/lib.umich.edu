@@ -125,8 +125,9 @@ export default function SiteSearch({ label }) {
             },
           }}
         />
-        <ComboboxPopover>
-          {results && (
+
+        {results && (
+          <ComboboxPopover>
             <div
               data-site-search-popover-container
               css={{
@@ -264,8 +265,8 @@ export default function SiteSearch({ label }) {
                 ))}
               </ComboboxList>
             </div>
-          )}
-        </ComboboxPopover>
+          </ComboboxPopover>
+        )}
       </div>
     </Combobox>
   )
