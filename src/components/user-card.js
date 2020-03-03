@@ -4,11 +4,22 @@ import { Text, SPACING, COLORS } from '@umich-lib/core'
 import Link from './link'
 import StaffPhotoPlaceholder from './staff-photo-placeholder'
 
-function UserPhoto({ image }) {
-  console.log('image', image)
+const photoContainerCSS = {
+  width: '75px',
+  height: '101px',
+  backgroundColor: COLORS.blue['100'],
+  borderRadius: '2px',
+  overflow: 'hidden',
+  flexShrink: '0',
+}
 
+function UserPhoto({ image }) {
   if (!image) {
-    return <StaffPhotoPlaceholder />
+    return (
+      <div css={photoContainerCSS}>
+        <StaffPhotoPlaceholder />
+      </div>
+    )
   }
 
   return (
@@ -18,14 +29,7 @@ function UserPhoto({ image }) {
       tag="div"
       fluid={image.fluid}
       alt={image.alt}
-      css={{
-        width: '75px',
-        height: '101px',
-        backgroundColor: COLORS.blue['100'],
-        borderRadius: '2px',
-        overflow: 'hidden',
-        flexShrink: '0',
-      }}
+      css={photoContainerCSS}
     />
   )
 }
