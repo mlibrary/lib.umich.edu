@@ -242,6 +242,9 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const staffDirectoryTemplate = path.resolve(
       `src/templates/staff-directory.js`
     )
+    const collectingAreaTemplate = path.resolve(
+      `src/templates/collecting-area.js`
+    )
 
     function getTemplate(node) {
       const { field_machine_name } = node.relationships.field_design_template
@@ -268,6 +271,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return staffDirectoryTemplate
         case 'floor_plan':
           return floorPlanTemplate
+        case 'collecting_area':
+          return collectingAreaTemplate
         default:
           return null
       }
@@ -292,6 +297,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                         "destination_body"
                         "destination_full"
                         "staff_directory"
+                        "collecting_area"
                       ]
                     }
                   }
