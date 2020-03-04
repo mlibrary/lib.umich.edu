@@ -50,8 +50,8 @@ function BulletedLinkList({ title, links }) {
       <ul
         css={{
           marginTop: SPACING['S'],
+          paddingLeft: SPACING['M'],
           listStyle: 'disc',
-          listStylePosition: 'inside',
           '> li:not(:last-of-type)': {
             marginBottom: SPACING['XS'],
           },
