@@ -19,6 +19,9 @@ export const query = graphql`
     }
     relationships {
       field_media_image {
+        field_image_caption {
+          processed
+        }
         relationships {
           field_media_image {
             localFile {
@@ -28,6 +31,13 @@ export const query = graphql`
                 }
               }
             }
+          }
+        }
+      }
+      field_collecting_area {
+        relationships {
+          user__user {
+            ...userFragment
           }
         }
       }
@@ -41,27 +51,9 @@ export const query = graphql`
       }
       field_panels {
         __typename
-        ... on paragraph__card_panel {
-          ...CardPanelFragment
-        }
-        ... on paragraph__text_panel {
-          field_title
-          id
-          relationships {
-            field_text_template {
-              field_machine_name
-            }
-            field_text_card {
-              field_title
-              field_link {
-                uri
-              }
-              field_body {
-                processed
-              }
-            }
-          }
-        }
+        ...cardPanelFragment
+        ...textPanelFragment
+        ...linkPanelFragment
         ...heroPanelFragment
         ...groupPanelFragment
       }

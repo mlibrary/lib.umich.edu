@@ -42,25 +42,9 @@ export const query = graphql`
       }
       field_panels {
         __typename
-        ...CardPanelFragment
-        ... on paragraph__text_panel {
-          field_title
-          id
-          relationships {
-            field_text_template {
-              field_machine_name
-            }
-            field_text_card {
-              field_title
-              field_body {
-                processed
-              }
-            }
-          }
-        }
-        ... on paragraph__hours_panel {
-          ...hoursPanelFragment
-        }
+        ...cardPanelFragment
+        ...textPanelFragment
+        ...hoursPanelFragment
       }
     }
   }

@@ -1,7 +1,7 @@
 import { graphql } from 'gatsby'
 
 export const query = graphql`
-  fragment CardPanelFragment on paragraph__card_panel {
+  fragment cardPanelFragment on paragraph__card_panel {
     __typename
     field_title
     drupal_id

@@ -213,6 +213,36 @@ function TextPanel({ data }) {
   const template = data.relationships.field_text_template.field_machine_name
   const cards = data.relationships.field_text_card
 
+  if (template === 'body_width_text') {
+    return (
+      <div
+        css={{
+          marginTop: SPACING['XL'],
+        }}
+      >
+        {cards.map(card => (
+          <section
+            css={{
+              paddingTop: SPACING['XL'],
+              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+            }}
+          >
+            <Heading
+              level={2}
+              size="M"
+              css={{
+                marginBottom: SPACING['XS'],
+              }}
+            >
+              {title}
+            </Heading>
+            <HTML html={card.field_body.processed} />
+          </section>
+        ))}
+      </div>
+    )
+  }
+
   if (template === 'full_width_text_template') {
     const html = data.relationships.field_text_card[0].field_body.processed
 
