@@ -127,7 +127,13 @@ function CollectingAreaTemplate({ data, ...rest }) {
 
           {contacts && (
             <React.Fragment>
-              <Heading level={2} size="M">
+              <Heading
+                level={2}
+                size="M"
+                css={{
+                  marginTop: SPACING['XL'],
+                }}
+              >
                 Contact
               </Heading>
               {contacts.map(contact => (
