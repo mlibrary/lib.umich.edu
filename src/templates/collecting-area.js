@@ -57,6 +57,9 @@ function CollectingAreaTemplate({ data, ...rest }) {
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image
   const imageData = image ? image.localFile.childImageSharp.fluid : null
+  const imageCaption = relationships.field_media_image.field_image_caption
+    ? relationships.field_media_image.field_image_caption.processed
+    : null
   const contacts = processContacts(
     relationships.field_collecting_area.relationships.user__user
   )
@@ -101,22 +104,24 @@ function CollectingAreaTemplate({ data, ...rest }) {
                 }}
                 fluid={imageData}
               />
-              <figcaption
-                css={{
-                  paddingTop: SPACING['S'],
-                  color: COLORS.neutral['300'],
-                  paddingBottom: SPACING['XL'],
-                  marginBottom: SPACING['XL'],
-                  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-                }}
-              >
-                <HTML
-                  html={
-                    relationships.field_media_image.field_image_caption
-                      .processed
-                  }
-                />
-              </figcaption>
+              {imageCaption && (
+                <figcaption
+                  css={{
+                    paddingTop: SPACING['S'],
+                    color: COLORS.neutral['300'],
+                    paddingBottom: SPACING['XL'],
+                    marginBottom: SPACING['XL'],
+                    borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+                  }}
+                >
+                  <HTML
+                    html={
+                      relationships.field_media_image.field_image_caption
+                        .processed
+                    }
+                  />
+                </figcaption>
+              )}
             </figure>
           )}
 
