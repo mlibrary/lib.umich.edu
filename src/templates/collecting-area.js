@@ -82,7 +82,7 @@ function CollectingAreaTemplate({ data, ...rest }) {
             {field_title_context}
           </Heading>
           {body && <HTML html={body.processed} />}
-          {fullPanels && <Panels data={fullPanels} />}
+          {bodyPanels && <Panels data={bodyPanels} />}
         </TemplateContent>
         <TemplateSide
           css={{
@@ -137,12 +137,14 @@ function CollectingAreaTemplate({ data, ...rest }) {
                 Contact
               </Heading>
               {contacts.map(contact => (
-                <UserCard {...contact} />
+                <UserCard key={contact.uniqname} {...contact} />
               ))}
             </React.Fragment>
           )}
         </TemplateSide>
       </Template>
+
+      <Panels data={fullPanels} />
     </TemplateLayout>
   )
 }

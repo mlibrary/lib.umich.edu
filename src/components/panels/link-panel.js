@@ -1,5 +1,5 @@
 import React from 'react'
-import { SPACING, Heading, LINK_STYLES } from '@umich-lib/core'
+import { SPACING, Heading, LINK_STYLES, COLORS } from '@umich-lib/core'
 import Link from '../link'
 import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id'
 import { PanelTemplate } from './index'
@@ -8,8 +8,23 @@ import LinkCallout from '../link-callout'
 export default function LinkPanel({ data }) {
   const { relationships } = data
   const { field_machine_name } = relationships.field_link_template
+  const nids = usePageContextByDrupalNodeID()
 
   switch (field_machine_name) {
+    case 'bulleted_list':
+      const links = data.field_link.map(link => {
+        const nid = getNIDFromURI({ uri: link.uri })
+        const linkObj = nid
+          ? getContextByNID({ nids, nid })
+          : {
+              text: link.title,
+              to: link.uri,
+            }
+
+        return linkObj
+      })
+
+      return <BulletedLinkList title={data.field_title} links={links} />
     case '2_column_db_link_list':
       return <DatabaseLinkList data={data} />
     case 'related_links':
@@ -17,6 +32,39 @@ export default function LinkPanel({ data }) {
     default:
       return null
   }
+}
+
+function BulletedLinkList({ title, links }) {
+  return (
+    <section
+      css={{
+        paddingTop: SPACING['XL'],
+        marginTop: SPACING['XL'],
+        marginBottom: SPACING['XL'],
+        borderTop: `solid 1px ${COLORS.neutral['100']}`,
+      }}
+    >
+      <Heading level={2} size="M">
+        {title}
+      </Heading>
+      <ul
+        css={{
+          marginTop: SPACING['S'],
+          listStyle: 'disc',
+          listStylePosition: 'inside',
+          '> li:not(:last-of-type)': {
+            marginBottom: SPACING['XS'],
+          },
+        }}
+      >
+        {links.map(({ text, to }) => (
+          <li>
+            <Link to={to}>{text}</Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
 }
 
 function DatabaseLinkList({ data }) {
