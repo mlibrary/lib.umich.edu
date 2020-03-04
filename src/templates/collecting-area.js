@@ -61,8 +61,6 @@ function CollectingAreaTemplate({ data, ...rest }) {
     relationships.field_collecting_area.relationships.user__user
   )
 
-  console.log('contacts', contacts)
-
   return (
     <TemplateLayout node={node}>
       <Margins>
