@@ -59,7 +59,7 @@ function SEO({ description, lang, meta, keywords, title }) {
               async
               type="text/javascript"
               innerHTML= 'window.umalerts = {
-                mode    : "dev",
+                mode    : "prod",
                 location: "top"
               };'
             ></script>
