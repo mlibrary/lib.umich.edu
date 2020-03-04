@@ -27,7 +27,6 @@ import LinkCallout from '../components/link-callout'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
 
 function ProfileTemplate({ data }) {
-  console.log('data', data)
   const {
     field_user_display_name,
     field_user_pro_about,
