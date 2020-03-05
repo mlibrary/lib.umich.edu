@@ -7,6 +7,7 @@ export const query = graphql`
     title
     field_title_context
     body {
+      summary
       processed
     }
     fields {
