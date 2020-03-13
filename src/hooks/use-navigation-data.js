@@ -17,6 +17,14 @@ const useNavigationData = () => {
                   children {
                     text
                     to
+                    children {
+                      text
+                      to
+                      children {
+                        text
+                        to
+                      }
+                    }
                   }
                 }
               }
