@@ -46,7 +46,8 @@ const links = [
       },
       {
         text: 'Accessibility',
-        to: '/accessibility',
+        to:
+          '/about-us/about-library/diversity-equity-inclusion-and-accessibility/accessibility',
         icon: 'accessible_forward',
       },
       {
