@@ -1,7 +1,6 @@
 import React from 'react'
 import BackgroundImage from 'gatsby-background-image'
 import VisuallyHidden from '@reach/visually-hidden'
-import { useWindowSize } from '@reach/window-size'
 import {
   SPACING,
   Margins,
@@ -144,11 +143,6 @@ function Caption({ caption }) {
       <HTML html={caption} />
     </div>
   )
-}
-
-function getImage(images, type) {
-  return images.find(node => node.field_orientation === type).relationships
-    .field_media_image.localFile.childImageSharp.fluid
 }
 
 function BackgroundSection({ data, children, ...rest }) {

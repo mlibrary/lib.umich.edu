@@ -5,7 +5,6 @@ import {
   Margins,
   Heading,
   MEDIA_QUERIES,
-  Icon,
 } from '@umich-lib/core'
 
 import fdlp from '../images/fdlp.png'
@@ -20,43 +19,78 @@ const locationURL = createGoogleMapsUrl({
 })
 
 // eslint-disable-next-line
-const items = [
+const links = [
   {
-    text: (
-      <React.Fragment>
-        913 S. University Avenue
-        <br />
-        Ann Arbor, MI 48109
-      </React.Fragment>
-    ),
-    to: locationURL,
-    d: icons['address'],
+    heading: 'University of Michigan Library',
+    links: [
+      {
+        text: (
+          <React.Fragment>
+            913 S. University Avenue
+            <br />
+            Ann Arbor, MI 48109
+          </React.Fragment>
+        ),
+        to: locationURL,
+        d: icons['address'],
+      },
+      {
+        text: '(734) 764-0400',
+        to: 'tel:+1-734-764-0400',
+        d: icons['phone'],
+      },
+      {
+        text: 'Send us an email',
+        to: '/ask-librarian',
+        icon: 'mail_outline',
+      },
+      {
+        text: 'Accessibility',
+        to: '/accessibility',
+        icon: 'accessible_forward',
+      },
+      {
+        text: 'Site map',
+        to: '/site-map',
+        icon: 'map',
+      },
+    ],
   },
   {
-    text: '(734) 764-0400',
-    to: 'tel:+1-734-764-0400',
-    d: icons['phone'],
-  },
-  {
-    text: 'Send us an email',
-    to: '/ask-librarian',
-    icon: 'mail_outline',
-  },
-  {
-    text: 'Giving',
-    to: '/about-us/give-library',
-    icon: 'favorite_border',
-  },
-  {
-    text: 'Accessibility',
-    to: '/accessibility',
-    icon: 'accessible_forward',
-  },
-  ,
-  {
-    text: 'Site map',
-    to: '/site-map',
-    icon: 'map',
+    heading: 'Our community',
+    links: [
+      {
+        text: 'Staff directory',
+        to: '/about-us/staff-directory',
+        icon: 'people_outline',
+      },
+      {
+        text: 'Work for us',
+        to: '/about-us/work-us',
+        icon: 'work',
+      },
+      {
+        text: 'Blogs',
+        to: 'https://apps.lib.umich.edu/blogs',
+        icon: 'blog',
+      },
+      {
+        text: 'Facebook',
+        to:
+          'https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559',
+        icon: 'facebook',
+      },
+      {
+        text: 'Twitter',
+        to: 'https://twitter.com/umichlibrary',
+        icon: 'twitter',
+      },
+      {
+        text: 'YouTube',
+        to: 'http://www.youtube.com/user/umlibrary/videos',
+        icon: 'youtube',
+      },
+    ],
   },
 ]
 
@@ -68,13 +102,16 @@ function Footer() {
     <footer
       css={{
         background: COLORS['blue']['400'],
-        color: 'white',
         '*:focus': {
           outlineColor: 'white',
         },
       }}
     >
-      <Margins>
+      <Margins
+        css={{
+          color: 'white',
+        }}
+      >
         <div
           css={{
             paddingTop: SPACING['2XL'],
@@ -99,93 +136,36 @@ function Footer() {
             },
           }}
         >
-          <section>
-            <Heading level={2} size="3XS">
-              University of Michigan Library
-            </Heading>
-            <ul
-              css={{
-                paddingTop: SPACING['S'],
-              }}
-            >
-              {items.map(({ text, to, d, icon }, y) => {
-                return (
-                  <li key={y + to + text}>
-                    <PlainLink
-                      to={to}
-                      css={{
-                        display: 'inline-block',
-                        padding: `${SPACING['XS']} 0`,
-                      }}
-                    >
-                      <IconText icon={icon} d={d}>
-                        {text}
-                      </IconText>
-                    </PlainLink>
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-          <section>
-            <Heading level={2} size="3XS">
-              Work with us
-            </Heading>
-            <p
-              css={{
-                paddingTop: SPACING['XS'],
-                paddingBottom: SPACING['2XL'],
-              }}
-            >
-              <PlainLink
-                to="/about-us/jobs-library"
+          {links.map(section => (
+            <section>
+              <Heading level={2} size="3XS">
+                {section.heading}
+              </Heading>
+              <ul
                 css={{
-                  display: 'inline-block',
-                  padding: `${SPACING['XS']} 0`,
+                  paddingTop: SPACING['S'],
                 }}
               >
-                <IconText icon="work">Jobs at the library</IconText>
-              </PlainLink>
-            </p>
-
-            <Heading level={2} size="3XS">
-              Connect with us
-            </Heading>
-            <p
-              css={{
-                paddingTop: SPACING['XS'],
-              }}
-            >
-              <PlainLink
-                to="/about-us/staff-directory"
-                css={{
-                  display: 'inline-block',
-                  padding: `${SPACING['XS']} 0`,
-                }}
-              >
-                <IconText icon="person_outline">Staff directory</IconText>
-              </PlainLink>
-            </p>
-            <p
-              css={{
-                margin: `0 -${SPACING['S']}`,
-                '> *': {
-                  display: 'inline-block',
-                  padding: SPACING['S'],
-                },
-              }}
-            >
-              <a href="https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559">
-                <Icon title="Facebook" icon="facebook" size={24} />
-              </a>
-              <a href="https://twitter.com/umichlibrary">
-                <Icon title="Twitter" icon="twitter" size={24} />
-              </a>
-              <a href="http://www.youtube.com/user/umlibrary/videos">
-                <Icon title="YouTube" icon="youtube" size={24} />
-              </a>
-            </p>
-          </section>
+                {section.links.map(({ text, to, d, icon }, y) => {
+                  return (
+                    <li key={y + to + text}>
+                      <PlainLink
+                        to={to}
+                        css={{
+                          display: 'inline-block',
+                          padding: `${SPACING['XS']} 0`,
+                        }}
+                      >
+                        <IconText icon={icon} d={d}>
+                          {text}
+                        </IconText>
+                      </PlainLink>
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          ))}
           <section
             css={{
               a: {
@@ -250,6 +230,7 @@ function Footer() {
         css={{
           background: COLORS['blue']['500'],
           padding: `${SPACING['M']} 0`,
+          color: COLORS.blue['200'],
         }}
       >
         <Margins>
