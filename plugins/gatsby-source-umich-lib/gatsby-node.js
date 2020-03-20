@@ -242,6 +242,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const staffDirectoryTemplate = path.resolve(
       `src/templates/staff-directory.js`
     )
+    const specialistTemplate = path.resolve(`src/templates/specialist.js`)
     const collectingAreaTemplate = path.resolve(
       `src/templates/collecting-area.js`
     )
@@ -273,6 +274,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return floorPlanTemplate
         case 'collecting_area':
           return collectingAreaTemplate
+        case 'specialist':
+          return specialistTemplate
         default:
           return null
       }
@@ -298,6 +301,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                         "destination_full"
                         "staff_directory"
                         "collecting_area"
+                        "specialist"
                       ]
                     }
                   }
