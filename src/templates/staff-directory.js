@@ -22,8 +22,8 @@ import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
+import getUrlState, { stringifyState } from '../utils/get-url-state'
 
-const qs = require('qs')
 const lunr = require('lunr')
 
 export default function StaffDirectoryWrapper({ data, location, navigate }) {
@@ -66,29 +66,6 @@ export default function StaffDirectoryWrapper({ data, location, navigate }) {
       navigate={navigate}
     />
   )
-}
-
-function parseState(str) {
-  return qs.parse(str, { ignoreQueryPrefix: true, format: 'RFC1738' })
-}
-
-function stringifyState(obj) {
-  return qs.stringify(obj, { format: 'RFC1738' })
-}
-
-function getUrlState(search, keys) {
-  const obj = parseState(search)
-  // Build an obj with only the keys we care about
-  // from the parsed URL state.
-  const state = keys.reduce((memo, k) => {
-    if (obj[k]) {
-      memo = { [k]: obj[k], ...memo }
-    }
-
-    return memo
-  }, {})
-
-  return state
 }
 
 function StaffDirectoryQueryContainer({
