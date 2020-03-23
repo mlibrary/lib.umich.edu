@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useReducer,
-  useState,
-  useEffect,
-} from 'react'
+import React, { createContext, useContext, useReducer, useEffect } from 'react'
 import { graphql } from 'gatsby'
 import {
   Heading,
@@ -12,23 +6,18 @@ import {
   Margins,
   TextInput,
   COLORS,
-  Icon,
   Button,
   Alert,
-  Text,
 } from '@umich-lib/core'
-import Img from 'gatsby-image'
 import { useLocation, useNavigate } from '@reach/router'
 import VisuallyHidden from '@reach/visually-hidden'
-import PlainLink from '../components/plain-link'
 import Link from '../components/link'
 import Breadcrumb from '../components/breadcrumb'
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
+import NoResults from '../components/no-results'
 import getUrlState, { stringifyState } from '../utils/get-url-state'
-
-const qs = require('qs')
 const lunr = require('lunr')
 
 const SpecialistsContext = createContext()
@@ -100,6 +89,11 @@ function FindASpecialist() {
             query: action.query.length > 0 ? action.query : undefined,
           }),
         }
+      case 'setResults':
+        return {
+          ...state,
+          results: action.results,
+        }
       case 'clear':
         return initialState
       default:
@@ -110,6 +104,7 @@ function FindASpecialist() {
   return (
     <SpecialistsProvider intialState={initialState} reducer={reducer}>
       <SpecialistsURLState />
+      <SpecialistsSearchIndex />
       <SpecialistsSearch />
       <SpecialistsTableResults />
     </SpecialistsProvider>
@@ -128,6 +123,59 @@ function SpecialistsURLState() {
     const to = stateString.length > 0 ? '?' + stateString : location.pathname
     navigate(to)
   }, [stateString])
+
+  return null
+}
+
+function SpecialistsSearchIndex() {
+  const [{ query, specialists }, dispatch] = useSpecialists()
+
+  useEffect(() => {
+    if (!window.__FSI__) {
+      window.__FSI__ = lunr(function() {
+        this.ref('name')
+        this.field('name')
+
+        specialists.forEach(function(specialist) {
+          this.add(specialist)
+        }, this)
+      })
+    }
+
+    // Get the Find a Specialist Index index (FSI)
+    const index = window.__FSI__
+
+    try {
+      const results = index
+        .query(q => {
+          q.term(lunr.tokenizer(query), {
+            boost: 3,
+          })
+          q.term(lunr.tokenizer(query), {
+            boost: 2,
+            wildcard: lunr.Query.wildcard.TRAILING,
+          })
+          if (query.length > 2) {
+            q.term(lunr.tokenizer(query), {
+              wildcard:
+                lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
+            })
+          }
+        })
+        .map(({ ref }) => {
+          return specialists.find(({ name }) => name === ref)
+        })
+
+      dispatch({
+        type: 'setResults',
+        results: results,
+      })
+    } catch {
+      return
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query])
 
   return null
 }
@@ -179,90 +227,96 @@ function SpecialistsTableResults() {
     : `No results`
 
   return (
-    <div
-      tabIndex="0"
-      css={{
-        overflowX: 'auto',
-      }}
-      role="group"
-      aria-labelledby="caption"
-    >
-      <table
+    <React.Fragment>
+      <div
+        tabIndex="0"
         css={{
-          width: '100%',
-          minWidth: '840px',
-          tableLayout: 'fixed',
-          marginBottom: SPACING['XL'],
-          'th, td': {
-            padding: `${SPACING['S']} 0`,
-            textAlign: 'left',
-            borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-            verticalAlign: 'top',
-            '> * + *': {
-              marginTop: SPACING['S'],
-            },
-          },
-          'td:not(:last-of-type)': {
-            paddingRight: SPACING['XL'],
-          },
-          th: {
-            color: COLORS.neutral['300'],
-          },
+          overflowX: 'auto',
         }}
+        role="group"
+        aria-labelledby="caption"
       >
-        <caption
-          id="caption"
+        <table
           css={{
-            textAlign: 'left',
+            width: '100%',
+            minWidth: '840px',
+            tableLayout: 'fixed',
+            marginBottom: SPACING['XL'],
+            'th, td': {
+              padding: `${SPACING['S']} 0`,
+              textAlign: 'left',
+              borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+              verticalAlign: 'top',
+              '> * + *': {
+                marginTop: SPACING['S'],
+              },
+            },
+            'td:not(:last-of-type)': {
+              paddingRight: SPACING['XL'],
+            },
+            th: {
+              color: COLORS.neutral['300'],
+            },
           }}
         >
-          <VisuallyHidden>
-            <Alert>{resultsSummary}</Alert>
-          </VisuallyHidden>
-
-          <p
+          <caption
+            id="caption"
             css={{
-              '@media only screen and (min-width: 720px)': {
-                display: 'none',
-              },
+              textAlign: 'left',
             }}
           >
-            (Scroll to see more)
-          </p>
-        </caption>
-        <thead>
-          <tr>
-            <th>Subjects and specialties</th>
-            <th colSpan="2">Contact</th>
-            <th>Research guides</th>
-          </tr>
-        </thead>
-        <tbody>
-          {results.map(({ name, users, links }, i) => (
-            <tr key={name + i}>
-              <td>{name}</td>
-              <td colSpan="2">
-                {users.map(({ name, title, to }, y) => (
-                  <div key={to + y}>
-                    <Link to={to}>{name}</Link>
-                    <p>{title}</p>
-                  </div>
-                ))}
-              </td>
-              <td>
-                {links.map(({ label, to }, y) => (
-                  <p key={to + y}>
-                    <Link to={to} kind="subtle">
-                      {label}
-                    </Link>
-                  </p>
-                ))}
-              </td>
+            <VisuallyHidden>
+              <Alert>{resultsSummary}</Alert>
+            </VisuallyHidden>
+
+            <p
+              css={{
+                '@media only screen and (min-width: 720px)': {
+                  display: 'none',
+                },
+              }}
+            >
+              (Scroll to see more)
+            </p>
+          </caption>
+          <thead>
+            <tr>
+              <th>Subjects and specialties</th>
+              <th colSpan="2">Contact</th>
+              <th>Research guides</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {results.map(({ name, users, links }, i) => (
+              <tr key={name + i}>
+                <td>{name}</td>
+                <td colSpan="2">
+                  {users.map(({ name, title, to }, y) => (
+                    <div key={to + y}>
+                      <Link to={to}>{name}</Link>
+                      <p>{title}</p>
+                    </div>
+                  ))}
+                </td>
+                <td>
+                  {links.map(({ label, to }, y) => (
+                    <p key={to + y}>
+                      <Link to={to} kind="subtle">
+                        {label}
+                      </Link>
+                    </p>
+                  ))}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {!results.length && (
+        <NoResults>Consider searching with different keywords.</NoResults>
+      )}
+    </React.Fragment>
   )
 }
 

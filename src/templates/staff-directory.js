@@ -6,21 +6,20 @@ import {
   Margins,
   TextInput,
   COLORS,
-  Icon,
   Button,
   Alert,
-  Text,
+  Icon,
 } from '@umich-lib/core'
-import Img from 'gatsby-image'
 import { useDebounce } from 'use-debounce'
-import BackgroundImage from 'gatsby-background-image'
 import VisuallyHidden from '@reach/visually-hidden'
+import BackgroundImage from 'gatsby-background-image'
 import Link from '../components/link'
 import PlainLink from '../components/plain-link'
 import Breadcrumb from '../components/breadcrumb'
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
+import NoResults from '../components/no-results'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
 import getUrlState, { stringifyState } from '../utils/get-url-state'
 
@@ -28,7 +27,7 @@ const lunr = require('lunr')
 
 export default function StaffDirectoryWrapper({ data, location, navigate }) {
   const node = data.page
-  const { noResultsImage, allNodeDepartment, allStaff, allStaffImages } = data
+  const { allNodeDepartment, allStaff, allStaffImages } = data
 
   const departments = allNodeDepartment.edges.reduce((acc, { node }) => {
     return {
@@ -60,7 +59,6 @@ export default function StaffDirectoryWrapper({ data, location, navigate }) {
       node={node}
       staff={staff}
       departments={departments}
-      noResultsImage={noResultsImage}
       staffImages={staffImages}
       location={location}
       navigate={navigate}
@@ -72,7 +70,6 @@ function StaffDirectoryQueryContainer({
   node,
   staff,
   departments,
-  noResultsImage,
   staffImages,
   location,
   navigate,
@@ -93,8 +90,6 @@ function StaffDirectoryQueryContainer({
     }),
     100
   )
-
-  const image = noResultsImage
 
   useEffect(() => {
     navigate('?' + stateString, { replace: true })
@@ -221,7 +216,6 @@ function StaffDirectoryQueryContainer({
           filters={filters}
           activeFilters={activeFilters}
           results={results}
-          image={image}
           staffImages={staffImages}
           query={query}
         />
@@ -235,7 +229,6 @@ const StaffDirectory = React.memo(function StaffDirectory({
   handleClear,
   filters,
   results,
-  image,
   staffImages,
   query,
   activeFilters,
@@ -463,70 +456,95 @@ const StaffDirectory = React.memo(function StaffDirectory({
         </>
       )}
 
-      {!results.length && <NoResults image={image} />}
+      {!results.length && (
+        <NoResults>
+          Consider searching with different keywords or using the department or
+          division filter to browse.
+        </NoResults>
+      )}
     </React.Fragment>
   )
 })
 
-function NoResults({ image }) {
-  const [hydrated, setHydrated] = useState(false)
+/*
+  // Filter out results that do not
+  // have a key/value that matches
+  // all active filters.
 
-  useEffect(() => {
-    setHydrated(true)
-  }, [hydrated])
+  // Example of a result.
+  {
+    name: "Jon Earley",
+    title: "User Interface Design Engineer",
+    department: "Design and Discovery",
+    division: "Library Information Technology"
+  }
 
-  if (!hydrated) {
-    return null
+  // Example of active filters.
+  {
+    department: "Design and Discovery",
+    division: "Library Information Technology"
+  }
+*/
+function filterResults({ activeFilters, results }) {
+  const filterKeys = Object.keys(activeFilters)
+
+  // If no active filters, then just return all the results.
+  if (filterKeys === 0) {
+    return results
+  }
+
+  // Filter to results that have all active filters.
+  return results.filter(result => {
+    // Track how many filters apply to this result.
+    let i = 0
+
+    filterKeys.forEach(k => {
+      // Oh but department is special.
+      /*
+        An active department filter must be searched for in 
+        a user's "department" AND "division" field, since
+        the those are actually the same from the data,
+        but are displayed seperately and have their own fields
+        on a user.
+      */
+      if (k === 'department') {
+        if (
+          result[k] === activeFilters[k] ||
+          result['division'] === activeFilters[k]
+        ) {
+          i = i + 1
+        }
+      } else if (result[k] === activeFilters[k]) {
+        i = i + 1
+      }
+    })
+
+    return i === filterKeys.length
+  })
+}
+
+function StaffPhoto({ mid, staffImages }) {
+  const img = staffImages[mid]
+
+  if (!img) {
+    return <StaffPhotoPlaceholder />
   }
 
   return (
-    <div
+    <BackgroundImage
+      aria-hidden="true"
+      data-card-image
+      tag="div"
+      fluid={img.childImageSharp.fluid}
+      alt={img.alt}
       css={{
-        [MEDIA_QUERIES['L']]: {
-          display: 'grid',
-          gridTemplateColumns: `2fr 3fr`,
-          gridGap: SPACING['3XL'],
-          alignItems: 'end',
-        },
-        marginBottom: SPACING['4XL'],
-        marginTop: SPACING['2XL'],
+        width: '43px',
+        height: '57px',
+        backgroundColor: COLORS.blue['100'],
+        borderRadius: '2px',
+        overflow: 'hidden',
       }}
-    >
-      <div
-        css={{
-          margin: 'auto 0',
-        }}
-      >
-        <Heading size="L" level={2}>
-          We couldn't find any results
-        </Heading>
-        <Text
-          lede
-          css={{
-            marginTop: SPACING['XS'],
-          }}
-        >
-          Consider searching with different keywords or using the department or
-          division filter to browse.
-        </Text>
-      </div>
-
-      <Img
-        fluid={image.childImageSharp.fluid}
-        alt=""
-        css={{
-          display: 'inline-block',
-          maxWidth: '16rem',
-          margin: '1rem auto',
-          [MEDIA_QUERIES['L']]: {
-            margin: '0',
-            width: '100%',
-            display: 'block',
-            marginBottom: SPACING['L'],
-          },
-        }}
-      />
-    </div>
+    />
   )
 }
 
@@ -588,88 +606,6 @@ function Select({ label, name, options, value, ...rest }) {
   )
 }
 
-function StaffPhoto({ mid, staffImages }) {
-  const img = staffImages[mid]
-
-  if (!img) {
-    return <StaffPhotoPlaceholder />
-  }
-
-  return (
-    <BackgroundImage
-      aria-hidden="true"
-      data-card-image
-      tag="div"
-      fluid={img.childImageSharp.fluid}
-      alt={img.alt}
-      css={{
-        width: '43px',
-        height: '57px',
-        backgroundColor: COLORS.blue['100'],
-        borderRadius: '2px',
-        overflow: 'hidden',
-      }}
-    />
-  )
-}
-
-/*
-  // Filter out results that do not
-  // have a key/value that matches
-  // all active filters.
-
-  // Example of a result.
-  {
-    name: "Jon Earley",
-    title: "User Interface Design Engineer",
-    department: "Design and Discovery",
-    division: "Library Information Technology"
-  }
-
-  // Example of active filters.
-  {
-    department: "Design and Discovery",
-    division: "Library Information Technology"
-  }
-*/
-function filterResults({ activeFilters, results }) {
-  const filterKeys = Object.keys(activeFilters)
-
-  // If no active filters, then just return all the results.
-  if (filterKeys === 0) {
-    return results
-  }
-
-  // Filter to results that have all active filters.
-  return results.filter(result => {
-    // Track how many filters apply to this result.
-    let i = 0
-
-    filterKeys.forEach(k => {
-      // Oh but department is special.
-      /*
-        An active department filter must be searched for in 
-        a user's "department" AND "division" field, since
-        the those are actually the same from the data,
-        but are displayed seperately and have their own fields
-        on a user.
-      */
-      if (k === 'department') {
-        if (
-          result[k] === activeFilters[k] ||
-          result['division'] === activeFilters[k]
-        ) {
-          i = i + 1
-        }
-      } else if (result[k] === activeFilters[k]) {
-        i = i + 1
-      }
-    })
-
-    return i === filterKeys.length
-  })
-}
-
 export const query = graphql`
   query($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
@@ -725,13 +661,6 @@ export const query = graphql`
         node {
           title
           drupal_internal__nid
-        }
-      }
-    }
-    noResultsImage: file(relativePath: { eq: "squirrel.png" }) {
-      childImageSharp {
-        fluid(maxWidth: 920) {
-          ...GatsbyImageSharpFluid_noBase64
         }
       }
     }
