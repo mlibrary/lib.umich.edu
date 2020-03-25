@@ -1,5 +1,5 @@
 import React from 'react'
-import { SPACING, COLORS } from '@umich-lib/core'
+import { SPACING, COLORS, TYPOGRAPHY } from '@umich-lib/core'
 
 export default function Switch({ on, label, children, ...rest }) {
   return (
@@ -29,12 +29,11 @@ export default function Switch({ on, label, children, ...rest }) {
           position: 'relative',
           display: 'inline-block',
           height: '24px',
-          width: '48px',
-          margin: SPACING['2XS'],
+          width: '56px',
           marginRight: SPACING['S'],
-          background: on ? COLORS.teal['400'] : COLORS.neutral['200'],
+          background: on ? COLORS.green['400'] : COLORS.neutral['300'],
           border: `solid 1px`,
-          borderColor: on ? COLORS.teal['400'] : COLORS.neutral['200'],
+          borderColor: on ? COLORS.green['400'] : COLORS.neutral['300'],
           borderRadius: '16px',
           '[data-switch-knob]': {
             position: 'absolute',
@@ -47,8 +46,19 @@ export default function Switch({ on, label, children, ...rest }) {
             borderRadius: '50%',
             background: 'white',
           },
+          '[data-switch-label]': {
+            ...TYPOGRAPHY['3XS'],
+            position: 'absolute',
+            display: 'inline-block',
+            top: '3px',
+            left: !on ? 'auto' : '8px',
+            right: !on ? '4px' : 'auto',
+            fontSize: '0.675rem',
+            color: 'white',
+          },
         }}
       >
+        <span data-switch-label>{on ? 'on' : 'off'}</span>
         <span data-switch-knob />
       </span>
       {children}
