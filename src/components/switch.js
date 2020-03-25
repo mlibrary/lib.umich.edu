@@ -29,8 +29,8 @@ export default function Switch({ on, label, children, ...rest }) {
         css={{
           position: 'relative',
           display: 'inline-block',
-          height: '16px',
-          width: '32px',
+          height: '24px',
+          width: '48px',
           margin: SPACING['2XS'],
           marginRight: SPACING['S'],
           background: on ? COLORS.teal['400'] : COLORS.neutral['200'],
@@ -40,8 +40,8 @@ export default function Switch({ on, label, children, ...rest }) {
           '[data-switch-knob]': {
             position: 'absolute',
             display: 'inline-block',
-            height: '14px',
-            width: '14px',
+            height: '22px',
+            width: '22px',
             top: '0px',
             left: on ? 'auto' : '0px',
             right: on ? '0px' : 'auto',
