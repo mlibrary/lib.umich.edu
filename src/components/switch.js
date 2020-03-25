@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { SPACING, COLORS, Z_SPACE } from '@umich-lib/core'
+import React from 'react'
+import { SPACING, COLORS } from '@umich-lib/core'
 
 export default function Switch({ on, label, children, ...rest }) {
   return (
