@@ -17,8 +17,7 @@ export default function Switch({ on, label, children, ...rest }) {
           boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px ${COLORS.neutral['400']}`,
         },
         ':hover [data-switch-track]': {
-          background: on ? COLORS.teal['500'] : COLORS.neutral['300'],
-          borderColor: on ? COLORS.teal['500'] : COLORS.neutral['300'],
+          boxShadow: `0 0 0 4px ${COLORS.neutral['100']}`,
         },
       }}
       {...rest}
