@@ -131,6 +131,10 @@ const LANGUAGES = {
     name: 'German',
     nativeName: 'Deutsch',
   },
+  'gsw-berne': {
+    name: 'Swiss German',
+    nativeName: 'Deutsch',
+  },
   dv: {
     name: 'Divehi',
     nativeName: 'Dhivehi',
@@ -519,9 +523,13 @@ const LANGUAGES = {
     name: 'Pashto',
     nativeName: 'پښتو',
   },
-  pt: {
+  'pt-pt': {
     name: 'Portuguese',
     nativeName: 'Português',
+  },
+  'pt-br': {
+    name: 'Brazilian Portuguese',
+    nativeName: 'Português do Brasil',
   },
   qu: {
     name: 'Quechua',
@@ -621,6 +629,10 @@ const LANGUAGES = {
   },
   ta: {
     name: 'Tamil',
+    nativeName: 'தமிழ்',
+  },
+  'ta-lk': {
+    name: 'Tamil - Sri Lanka',
     nativeName: 'தமிழ்',
   },
   te: {
@@ -727,8 +739,12 @@ const LANGUAGES = {
     name: 'Zhuang',
     nativeName: 'Saɯ cueŋƅ',
   },
-  zh: {
-    name: 'Chinese',
+  'zh-hans': {
+    name: 'Chinese - Simplified',
+    nativeName: '中文',
+  },
+  'zh-hant': {
+    name: 'Chinese - Traditional',
     nativeName: '中文',
   },
   zu: {
