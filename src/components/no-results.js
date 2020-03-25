@@ -1,4 +1,4 @@
-import React from 'React'
+import React from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
 import Img from 'gatsby-image'
 import { Heading, SPACING, Text } from '@umich-lib/core'
