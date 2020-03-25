@@ -30,7 +30,7 @@ export default function Switch({ on, label, children, ...rest }) {
           display: 'inline-block',
           height: '24px',
           width: '58px',
-          marginRight: SPACING['S'],
+          marginRight: SPACING['XS'],
           background: on ? COLORS.green['400'] : COLORS.neutral['300'],
           border: `solid 1px`,
           borderColor: on ? COLORS.green['400'] : COLORS.neutral['300'],

@@ -19,6 +19,7 @@ import HTML from '../components/html'
 import NoResults from '../components/no-results'
 import getUrlState, { stringifyState } from '../utils/get-url-state'
 import Switch from '../components/switch'
+import Select from '../components/select'
 const lunr = require('lunr')
 
 const SpecialistsContext = createContext()
@@ -102,7 +103,11 @@ function FindASpecialist() {
           healthSciencesOnly: action.healthSciencesOnly,
         }
       case 'clear':
-        return initialState
+        return {
+          ...initialState,
+          query: '',
+          healthSciencesOnly: state.healthSciencesOnly,
+        }
       default:
         return state
     }
@@ -201,6 +206,7 @@ function SpecialistsHealthSciencesOnly() {
       }
       css={{
         alignSelf: 'end',
+        marginLeft: SPACING['XL'],
       }}
     >
       <span>Show health sciences only</span>
@@ -208,8 +214,26 @@ function SpecialistsHealthSciencesOnly() {
   )
 }
 
+function SpecialistsCategorySelect() {
+  const [{ healthSciencesOnly }] = useSpecialists()
+
+  if (!healthSciencesOnly) {
+    return null
+  }
+
+  return (
+    <Select
+      label={'Category'}
+      name={'category'}
+      options={['All', 'hello', 'world']}
+      onChange={e => console.log('SpecialistsCategorySelect', e)}
+      value={'All'}
+    />
+  )
+}
+
 function SpecialistsSearch() {
-  const [{ query }, dispatch] = useSpecialists()
+  const [{ query, healthSciencesOnly }, dispatch] = useSpecialists()
 
   return (
     <div
@@ -217,7 +241,9 @@ function SpecialistsSearch() {
         display: 'grid',
         gridGap: SPACING['S'],
         [MEDIA_QUERIES['S']]: {
-          gridTemplateColumns: `2fr auto auto`,
+          gridTemplateColumns: healthSciencesOnly
+            ? `3fr 1fr auto auto`
+            : `3fr auto auto`,
         },
         input: {
           lineHeight: '1.5',
@@ -235,8 +261,7 @@ function SpecialistsSearch() {
           dispatch({ type: 'setQuery', query: e.target.value })
         }}
       />
-
-      <SpecialistsHealthSciencesOnly />
+      <SpecialistsCategorySelect />
       <Button
         kind="subtle"
         onClick={() => dispatch({ type: 'clear' })}
@@ -246,12 +271,13 @@ function SpecialistsSearch() {
       >
         Clear
       </Button>
+      <SpecialistsHealthSciencesOnly />
     </div>
   )
 }
 
 function SpecialistsTableResults() {
-  const [{ results }] = useSpecialists()
+  const [{ results, healthSciencesOnly }] = useSpecialists()
   const resultsSummary = results.length
     ? `${results.length} results`
     : `No results`
@@ -313,11 +339,12 @@ function SpecialistsTableResults() {
             <tr>
               <th>Subjects and specialties</th>
               <th colSpan="2">Contact</th>
+              {healthSciencesOnly && <th>Category</th>}
               <th>Research guides</th>
             </tr>
           </thead>
           <tbody>
-            {results.map(({ name, users, links }, i) => (
+            {results.map(({ name, users, links, categories }, i) => (
               <tr key={name + i}>
                 <td>{name}</td>
                 <td colSpan="2">
@@ -328,6 +355,13 @@ function SpecialistsTableResults() {
                     </div>
                   ))}
                 </td>
+                {healthSciencesOnly && (
+                  <td>
+                    {categories.map((category, y) => (
+                      <p key={category + y}>{category}</p>
+                    ))}
+                  </td>
+                )}
                 <td>
                   {links.map(({ label, to }, y) => (
                     <p key={to + y}>
@@ -457,6 +491,7 @@ const mockData = [
         to: 'https://guides.lib.umich.edu/news',
       },
     ],
+    categories: ['School'],
   },
   {
     name: 'Aerospace Engineering',
@@ -473,6 +508,7 @@ const mockData = [
         to: 'https://guides.lib.umich.edu/aerospace',
       },
     ],
+    categories: ['Clinical Department'],
   },
   {
     name: 'African Studies',
@@ -498,5 +534,6 @@ const mockData = [
         to: 'https://guides.lib.umich.edu',
       },
     ],
+    categories: ['Center'],
   },
 ]
