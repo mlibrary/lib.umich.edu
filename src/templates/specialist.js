@@ -206,10 +206,12 @@ function SpecialistsHealthSciencesOnly() {
       }
       css={{
         alignSelf: 'end',
-        marginLeft: SPACING['XL'],
+        [MEDIA_QUERIES['M']]: {
+          marginLeft: SPACING['XL'],
+        },
       }}
     >
-      <span>Show health sciences only</span>
+      <span>Show Health Sciences only</span>
     </Switch>
   )
 }

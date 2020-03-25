@@ -52,7 +52,7 @@ export default function Switch({ on, label, children, ...rest }) {
             display: 'inline-block',
             top: '3px',
             left: !on ? 'auto' : '8px',
-            right: !on ? '4px' : 'auto',
+            right: !on ? '5px' : 'auto',
             fontSize: '0.675rem',
             color: 'white',
           },
