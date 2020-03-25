@@ -599,6 +599,7 @@ function Select({ label, name, options, value, ...rest }) {
             position: 'absolute',
             right: SPACING['S'],
             bottom: SPACING['S'],
+            pointerEvents: 'none'
           }}
         />
       </div>
