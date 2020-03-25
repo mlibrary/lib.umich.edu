@@ -18,6 +18,7 @@ import TemplateLayout from './template-layout'
 import HTML from '../components/html'
 import NoResults from '../components/no-results'
 import getUrlState, { stringifyState } from '../utils/get-url-state'
+import Switch from '../components/switch'
 const lunr = require('lunr')
 
 const SpecialistsContext = createContext()
@@ -77,6 +78,7 @@ function FindASpecialist() {
     specialists: mockData,
     results: mockData,
     stateString: stringifyState({ query: urlState.query }),
+    healthSciencesOnly: false,
   }
 
   const reducer = (state, action) => {
@@ -93,6 +95,11 @@ function FindASpecialist() {
         return {
           ...state,
           results: action.results,
+        }
+      case 'setHealthSciencesOnly':
+        return {
+          ...state,
+          healthSciencesOnly: action.healthSciencesOnly,
         }
       case 'clear':
         return initialState
@@ -180,6 +187,27 @@ function SpecialistsSearchIndex() {
   return null
 }
 
+function SpecialistsHealthSciencesOnly() {
+  const [{ healthSciencesOnly }, dispatch] = useSpecialists() // TODO, replace with dispatch
+
+  return (
+    <Switch
+      on={healthSciencesOnly}
+      onClick={() =>
+        dispatch({
+          type: 'setHealthSciencesOnly',
+          healthSciencesOnly: !healthSciencesOnly,
+        })
+      }
+      css={{
+        alignSelf: 'end',
+      }}
+    >
+      <span>Show health sciences only</span>
+    </Switch>
+  )
+}
+
 function SpecialistsSearch() {
   const [{ query }, dispatch] = useSpecialists()
 
@@ -189,7 +217,7 @@ function SpecialistsSearch() {
         display: 'grid',
         gridGap: SPACING['S'],
         [MEDIA_QUERIES['S']]: {
-          gridTemplateColumns: `2fr auto 1fr`,
+          gridTemplateColumns: `2fr auto auto`,
         },
         input: {
           lineHeight: '1.5',
@@ -207,6 +235,8 @@ function SpecialistsSearch() {
           dispatch({ type: 'setQuery', query: e.target.value })
         }}
       />
+
+      <SpecialistsHealthSciencesOnly />
       <Button
         kind="subtle"
         onClick={() => dispatch({ type: 'clear' })}

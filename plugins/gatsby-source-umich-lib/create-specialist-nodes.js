@@ -12,12 +12,21 @@
    4. Library Expertise
 
   Use the synonyms overriding priority above.
+
+  ## Notes
+  - forget the syntax, and outline what the recursive algorithm should look like.
+
+  ## Ideas
+  - Pull users out.
+  - Figure out how to walk between the trees, define what the question is to complete
+    each step thru a node. Consider this recursive.
+  - Keep a list of what to filter out, if it has been absorbed.
 */
 
 export default function createSpecialistNodes({ data }) {
   console.log('createSpecialistNodes, props', data)
 
-  return mockData
+  //return mockData
 
   // The order of these are by prioriry.
   // It decides how they are combined when a synonym exists.
