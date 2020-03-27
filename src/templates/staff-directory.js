@@ -195,7 +195,7 @@ function StaffDirectoryQueryContainer({
           size="3XL"
           level={1}
           css={{
-            marginBottom: SPACING['XL'],
+            marginBottom: SPACING['S'],
           }}
         >
           {field_title_context}
