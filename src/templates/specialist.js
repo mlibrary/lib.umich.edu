@@ -143,6 +143,7 @@ function FindASpecialist({ specialists }) {
           ...initialState,
           query: '',
           healthSciencesOnly: state.healthSciencesOnly,
+          category: undefined,
         }
       default:
         return state
