@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useState,
+} from 'react'
 import { graphql } from 'gatsby'
 import {
   Heading,
@@ -20,8 +26,9 @@ import NoResults from '../components/no-results'
 import getUrlState, { stringifyState } from '../utils/get-url-state'
 import Switch from '../components/switch'
 import Select from '../components/select'
-const lunr = require('lunr')
+import createSpecialistNodes from '../../plugins/gatsby-source-umich-lib/create-specialist-nodes'
 
+const lunr = require('lunr')
 const SpecialistsContext = createContext()
 
 const SpecialistsProvider = ({ reducer, intialState, children }) => (
@@ -35,6 +42,7 @@ const useSpecialists = () => useContext(SpecialistsContext)
 export default function FinaASpecialistTemplate({ data }) {
   const node = data.page
   const { body, fields, field_title_context } = node
+  const specialists = createSpecialistNodes({ data })
 
   return (
     <TemplateLayout node={node}>
@@ -64,20 +72,21 @@ export default function FinaASpecialistTemplate({ data }) {
           </div>
         )}
 
-        <FindASpecialist />
+        <FindASpecialist specialists={specialists} />
       </Margins>
     </TemplateLayout>
   )
 }
 
-function FindASpecialist() {
+function FindASpecialist({ specialists }) {
   const location = useLocation()
   const urlState = getUrlState(location.search, ['query'])
+  const results = specialists
 
   const initialState = {
     query: urlState.query ? urlState.query : '',
-    specialists: mockData,
-    results: mockData,
+    specialists,
+    results,
     stateString: stringifyState({ query: urlState.query }),
     healthSciencesOnly: false,
   }
@@ -242,7 +251,7 @@ function SpecialistsSearch() {
       css={{
         display: 'grid',
         gridGap: SPACING['S'],
-        [MEDIA_QUERIES['S']]: {
+        [MEDIA_QUERIES['M']]: {
           gridTemplateColumns: healthSciencesOnly
             ? `3fr 1fr auto auto`
             : `3fr auto auto`,
@@ -279,10 +288,20 @@ function SpecialistsSearch() {
 }
 
 function SpecialistsTableResults() {
+  const [show, setShow] = useState(20)
   const [{ results, healthSciencesOnly }] = useSpecialists()
+  const resultsShown = results.slice(0, show)
   const resultsSummary = results.length
     ? `${results.length} results`
     : `No results`
+  const showMoreText =
+    show < results.length
+      ? `Showing ${show} of ${results.length} results`
+      : null
+
+  function showMore() {
+    setShow(results.length)
+  }
 
   return (
     <React.Fragment>
@@ -346,38 +365,56 @@ function SpecialistsTableResults() {
             </tr>
           </thead>
           <tbody>
-            {results.map(({ name, users, links, categories }, i) => (
+            {resultsShown.map(({ name, users, links, category }, i) => (
               <tr key={name + i}>
                 <td>{name}</td>
                 <td colSpan="2">
-                  {users.map(({ name, title, to }, y) => (
-                    <div key={to + y}>
-                      <Link to={to}>{name}</Link>
-                      <p>{title}</p>
-                    </div>
-                  ))}
+                  {users ? (
+                    <React.Fragment>
+                      {users.map(({ name, title, uniqname }, y) => (
+                        <div key={uniqname + y}>
+                          <Link to={'/users/' + uniqname}>{name}</Link>
+                          <p>{title}</p>
+                        </div>
+                      ))}
+                    </React.Fragment>
+                  ) : (
+                    <p>No users.</p>
+                  )}
                 </td>
-                {healthSciencesOnly && (
-                  <td>
-                    {categories.map((category, y) => (
-                      <p key={category + y}>{category}</p>
-                    ))}
-                  </td>
-                )}
+                {healthSciencesOnly && <td>{category}</td>}
                 <td>
-                  {links.map(({ label, to }, y) => (
-                    <p key={to + y}>
-                      <Link to={to} kind="subtle">
-                        {label}
-                      </Link>
-                    </p>
-                  ))}
+                  TODO
+                  {links && (
+                    <React.Fragment>
+                      {links.map(({ label, to }, y) => (
+                        <p key={to + y}>
+                          <Link to={to} kind="subtle">
+                            {label}
+                          </Link>
+                        </p>
+                      ))}
+                    </React.Fragment>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {showMoreText && (
+        <>
+          <p
+            css={{
+              marginBottom: SPACING['M'],
+            }}
+          >
+            {showMoreText}
+          </p>
+          <Button onClick={showMore}>Show all</Button>
+        </>
+      )}
 
       {!results.length && (
         <NoResults>Consider searching with different keywords.</NoResults>
@@ -388,6 +425,8 @@ function SpecialistsTableResults() {
 
 export const query = graphql`
   fragment specialistsSynonym on Node {
+    id
+    __typename
     ... on taxonomy_term__academic_discipline {
       name
     }
@@ -409,6 +448,7 @@ export const query = graphql`
     allTaxonomyTermAcademicDiscipline {
       edges {
         node {
+          id
           name
           __typename
           relationships {
@@ -416,7 +456,7 @@ export const query = graphql`
               ...specialistsSynonym
             }
             user__user {
-              id
+              ...userFragment
             }
           }
         }
@@ -425,6 +465,7 @@ export const query = graphql`
     allTaxonomyTermCollectingAreas {
       edges {
         node {
+          id
           name
           __typename
           relationships {
@@ -432,7 +473,7 @@ export const query = graphql`
               ...specialistsSynonym
             }
             user__user {
-              id
+              ...userFragment
             }
           }
         }
@@ -441,6 +482,7 @@ export const query = graphql`
     allTaxonomyTermHealthSciences {
       edges {
         node {
+          id
           name
           __typename
           relationships {
@@ -448,7 +490,7 @@ export const query = graphql`
               ...specialistsSynonym
             }
             user__user {
-              id
+              ...userFragment
             }
           }
         }
@@ -457,6 +499,7 @@ export const query = graphql`
     allTaxonomyTermLibraryExpertise {
       edges {
         node {
+          id
           __typename
           name
           relationships {
@@ -469,73 +512,3 @@ export const query = graphql`
     }
   }
 `
-
-const mockData = [
-  {
-    name: 'Academic and Specialized News',
-    users: [
-      {
-        name: 'Scott L Dennis',
-        to: '/users/sdenn',
-        title:
-          'Librarian for Philosophy, General Reference, and Core Electronic Resources',
-      },
-      {
-        name: 'Shevon Ardeshir Desai',
-        to: '/users/shevonad',
-        title:
-          'Interim Head, Social Science and Clark Library; Librarian for Communication, Media and Information Science',
-      },
-    ],
-    links: [
-      {
-        label: 'News Sources',
-        to: 'https://guides.lib.umich.edu/news',
-      },
-    ],
-    categories: ['School'],
-  },
-  {
-    name: 'Aerospace Engineering',
-    users: [
-      {
-        name: 'Paul F Grochowski',
-        to: '/users/grocho',
-        title: 'Engineering Librarian',
-      },
-    ],
-    links: [
-      {
-        label: 'Aerospace Engineering',
-        to: 'https://guides.lib.umich.edu/aerospace',
-      },
-    ],
-    categories: ['Clinical Department'],
-  },
-  {
-    name: 'African Studies',
-    users: [
-      {
-        name: 'Loyd Gitari Mbabu',
-        to: '/users/lmbabu',
-        title:
-          'Librarian for African Studies, Collection Coordinator for International Studies',
-      },
-    ],
-    links: [
-      {
-        label: 'Lusophone Africa',
-        to: 'https://guides.lib.umich.edu',
-      },
-      {
-        label: 'African and Diaspora Art and Visual Culture',
-        to: 'https://guides.lib.umich.edu',
-      },
-      {
-        label: 'African Studies',
-        to: 'https://guides.lib.umich.edu',
-      },
-    ],
-    categories: ['Center'],
-  },
-]

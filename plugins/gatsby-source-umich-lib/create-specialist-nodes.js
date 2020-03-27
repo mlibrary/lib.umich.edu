@@ -12,16 +12,113 @@
    4. Library Expertise
 
   Use the synonyms overriding priority above.
-
-  ## Notes
-  - forget the syntax, and outline what the recursive algorithm should look like.
-
-  ## Ideas
-  - Pull users out.
-  - Figure out how to walk between the trees, define what the question is to complete
-    each step thru a node. Consider this recursive.
-  - Keep a list of what to filter out, if it has been absorbed.
 */
+
+const exampleData = [
+  {
+    id: 'fb10a9ff-82dc-5ee1-a9cb-bab2453548f5',
+    name: 'Music',
+    __typename: 'taxonomy_term__academic_discipline',
+    relationships: {
+      field_synonym: [
+        {
+          __typename: 'taxonomy_term__collecting_areas',
+          id: '552b5e79-a1a4-5b61-a3a8-4dc01d3edfe5',
+          name: 'Music, Theatre and Dance',
+        },
+      ],
+      user__user: [
+        {
+          id: '11641a42-f150-5d15-a79e-554b0543ab5e',
+          name: 'imbesij',
+          field_user_display_name: 'Jason Imbesi',
+          field_user_work_title: 'Librarian for Music, Theatre and Dance',
+        },
+        {
+          field_user_display_name: 'Jon Earley',
+          field_user_work_title: 'User Interface Design Engineer',
+          name: 'earleyj',
+        },
+      ],
+    },
+  },
+  {
+    id: 'aada48c9-dae1-5221-9824-8407f39e3352',
+    name: 'Theatre and Drama',
+    __typename: 'taxonomy_term__academic_discipline',
+    relationships: {
+      field_synonym: [
+        {
+          __typename: 'taxonomy_term__collecting_areas',
+          id: '552b5e79-a1a4-5b61-a3a8-4dc01d3edfe5',
+          name: 'Music, Theatre and Dance',
+        },
+      ],
+      user__user: [
+        {
+          id: '11641a42-f150-5d15-a79e-554b0543ab5e',
+          name: 'imbesij',
+          field_user_display_name: 'Jason Imbesi',
+          field_user_work_title: 'Librarian for Music, Theatre and Dance',
+        },
+      ],
+    },
+  },
+  {
+    id: '552b5e79-a1a4-5b61-a3a8-4dc01d3edfe5',
+    name: 'Music, Theatre and Dance',
+    __typename: 'taxonomy_term__collecting_areas',
+    relationships: {
+      field_synonym: [
+        {
+          __typename: 'taxonomy_term__academic_discipline',
+          id: 'fb10a9ff-82dc-5ee1-a9cb-bab2453548f5',
+          name: 'Music',
+        },
+        {
+          __typename: 'taxonomy_term__academic_discipline',
+          id: 'aada48c9-dae1-5221-9824-8407f39e3352',
+          name: 'Theatre and Drama',
+        },
+        {
+          __typename: 'taxonomy_term__academic_discipline',
+          id: '99912849-fd48-5c9f-becf-58bfe47be2c4',
+          name: 'Dance',
+        },
+      ],
+      user__user: [
+        {
+          field_user_display_name: 'Jason Imbesi',
+          field_user_work_title: 'Librarian for Music, Theatre and Dance',
+          name: 'imbesij',
+        },
+      ],
+    },
+  },
+  {
+    id: 'd6bd986d-710a-51df-8f31-233f89b0aff6',
+    name: 'Allergy and Clinical Immunology',
+    __typename: 'taxonomy_term__health_sciences',
+    field_hs_category: 'department',
+    relationships: {
+      field_synonym: [
+        {
+          __typename: 'taxonomy_term__academic_discipline',
+          id: '3a8a1cdf-121a-557c-ac74-b417d69c0803',
+          name: 'Allergy and Clinical Immunology',
+        },
+      ],
+      user__user: [
+        {
+          id: 'b32d5de8-cc37-51b4-a5b8-fd4624fef0a6',
+          field_user_display_name: 'Emily Catherine Ginier',
+          field_user_work_title: 'Associate Librarian',
+          name: 'eginier',
+        },
+      ],
+    },
+  },
+]
 
 export default function createSpecialistNodes({ data }) {
   console.log('createSpecialistNodes, props', data)
@@ -30,44 +127,80 @@ export default function createSpecialistNodes({ data }) {
 
   // The order of these are by prioriry.
   // It decides how they are combined when a synonym exists.
-  const specialistTermKeys = [
+  const groups = [
     'allTaxonomyTermHealthSciences',
     'allTaxonomyTermAcademicDiscipline',
-    'allTaxonomyTermCollectingAreas',
-    'allTaxonomyTermLibraryExpertise',
+    //'allTaxonomyTermCollectingAreas',
+    //'allTaxonomyTermLibraryExpertise',
   ]
 
-  // Create a single list ordered by priority with just the data needed.
-  const flattened = specialistTermKeys.reduce((acc, termKey, i) => {
-    const processedTerm = data[termKey].edges.reduce((memo, edge) => {
-      const { name, relationships, __typename } = edge.node
-      const users =
-        relationships.user__user &&
-        relationships.user__user.map(user => user.id)
-      const synonyms = relationships.field_synonym.map(syn => syn.name)
-      const order = i
-      return memo.concat({ type: __typename, name, users, synonyms, order })
-    }, [])
-
-    return acc.concat(processedTerm)
+  const flatten = groups.reduce((acc, group) => {
+    return acc.concat(data[group].edges.map(({ node }) => node))
   }, [])
 
-  console.log('flattened', flattened)
+  let inheritedNodesIds = []
 
-  const synonymsProccessed = flattened.reduce((acc, specialty) => {
-    const { order, users, synonyms } = specialty
-
-    if (order === 0) {
-      return specialty
+  const result = flatten.reduce((acc, node, i) => {
+    if (inheritedNodesIds.includes(node.id)) {
+      return acc
     }
+
+    const children = flatten.slice(i + 1).filter(n => {
+      const isChild = getChildren(n).find(c => node.id === c.id)
+      return isChild
+    })
+    const userNodes = getUsers(node).concat(
+      children.map(n => getUsers(n)).flat()
+    )
+    const uniqueUserNames = Array.from(
+      new Set(userNodes.map(({ name }) => name))
+    )
+    const uniqueUserNodes = uniqueUserNames.map(name => {
+      return userNodes.find(n => n.name === name)
+    })
+    const users = processUserNodes(uniqueUserNodes)
+    inheritedNodesIds = Array.from(
+      new Set(inheritedNodesIds.concat(children.map(child => child.id)))
+    )
+
+    return acc.concat({
+      name: node.name,
+      users: users.length > 0 ? users : null,
+      category: node.field_hs_category ? node.field_hs_category : null,
+    })
   }, [])
 
-  console.log('synonymsProccessed', synonymsProccessed)
+  function processUserNodes(nodes) {
+    return nodes.map(
+      ({ name, field_user_display_name, field_user_work_title }) => {
+        return {
+          uniqname: name,
+          name: field_user_display_name,
+          title: field_user_work_title,
+        }
+      }
+    )
+  }
 
-  return []
+  function getUsers(node) {
+    const { relationships } = node
+    const { user__user } = relationships
+    const users = user__user ? user__user : []
+
+    return users
+  }
+
+  function getChildren(node) {
+    const { relationships } = node
+    const { field_synonym } = relationships
+
+    return field_synonym
+  }
+
+  return result
 }
 
-const mockData = [
+export const mockData = [
   {
     name: 'Academic and Specialized News',
     users: [
