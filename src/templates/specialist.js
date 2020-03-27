@@ -437,7 +437,7 @@ function SpecialistsTableResults() {
                   </td>
                 )}
                 <td>
-                  TODO
+                  [todo]
                   {links && (
                     <React.Fragment>
                       {links.map(({ label, to }, y) => (
