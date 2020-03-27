@@ -80,15 +80,14 @@ export default function FinaASpecialistTemplate({ data }) {
 
 function FindASpecialist({ specialists }) {
   const location = useLocation()
-  const urlState = getUrlState(location.search, ['query'])
+  const urlState = getUrlState(location.search, ['query', 'hs'])
   const results = specialists
-
   const initialState = {
     query: urlState.query ? urlState.query : '',
     specialists,
     results,
-    stateString: stringifyState({ query: urlState.query }),
-    healthSciencesOnly: false,
+    stateString: stringifyState({ query: urlState.query, hs: urlState.hs }),
+    healthSciencesOnly: urlState.hs ? true : false,
   }
 
   const reducer = (state, action) => {
@@ -99,6 +98,7 @@ function FindASpecialist({ specialists }) {
           query: action.query,
           stateString: stringifyState({
             query: action.query.length > 0 ? action.query : undefined,
+            hs: state.healthSciencesOnly ? true : undefined,
           }),
         }
       case 'setResults':
@@ -110,6 +110,10 @@ function FindASpecialist({ specialists }) {
         return {
           ...state,
           healthSciencesOnly: action.healthSciencesOnly,
+          stateString: stringifyState({
+            query: state.query.length > 0 ? state.query : undefined,
+            hs: action.healthSciencesOnly ? true : undefined,
+          }),
         }
       case 'clear':
         return {
@@ -290,13 +294,16 @@ function SpecialistsSearch() {
 function SpecialistsTableResults() {
   const [show, setShow] = useState(20)
   const [{ results, healthSciencesOnly }] = useSpecialists()
-  const resultsShown = results.slice(0, show)
+  const resultsFiltered = healthSciencesOnly
+    ? results.filter(result => result.category !== null)
+    : results
+  const resultsShown = resultsFiltered.slice(0, show)
   const resultsSummary = results.length
-    ? `${results.length} results`
+    ? `${resultsFiltered.length} results`
     : `No results`
   const showMoreText =
-    show < results.length
-      ? `Showing ${show} of ${results.length} results`
+    show < resultsFiltered.length
+      ? `Showing ${show} of ${resultsFiltered.length} results`
       : null
 
   function showMore() {
@@ -382,7 +389,15 @@ function SpecialistsTableResults() {
                     <p>No users.</p>
                   )}
                 </td>
-                {healthSciencesOnly && <td>{category}</td>}
+                {healthSciencesOnly && (
+                  <td
+                    css={{
+                      textTransform: 'capitalize',
+                    }}
+                  >
+                    {category}
+                  </td>
+                )}
                 <td>
                   TODO
                   {links && (
@@ -484,6 +499,7 @@ export const query = graphql`
         node {
           id
           name
+          field_hs_category
           __typename
           relationships {
             field_synonym {

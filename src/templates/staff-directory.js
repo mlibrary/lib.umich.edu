@@ -448,7 +448,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
         <>
           <p
             css={{
-              marginBottom: SPACING['M'],
+              marginBottom: SPACING['L'],
             }}
           >
             {showMoreText}
