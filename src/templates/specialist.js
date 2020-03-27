@@ -469,7 +469,7 @@ function SpecialistsTableResults() {
         </>
       )}
 
-      {!results.length && (
+      {!resultsFiltered.length && (
         <NoResults>Consider searching with different keywords.</NoResults>
       )}
     </React.Fragment>
