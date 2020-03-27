@@ -416,7 +416,14 @@ function SpecialistsTableResults() {
                       ))}
                     </React.Fragment>
                   ) : (
-                    <p>No users.</p>
+                    <div>
+                      <Link to="/ask-librarian">Ask a Librarian</Link>
+                      <p>
+                        We can help you locate library resources, connect with a
+                        specialist, or find support at any stage of your
+                        project.
+                      </p>
+                    </div>
                   )}
                 </td>
                 {healthSciencesOnly && (
