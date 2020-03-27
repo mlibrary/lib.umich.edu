@@ -80,14 +80,20 @@ export default function FinaASpecialistTemplate({ data }) {
 
 function FindASpecialist({ specialists }) {
   const location = useLocation()
-  const urlState = getUrlState(location.search, ['query', 'hs'])
+  const urlState = getUrlState(location.search, ['query', 'hs', 'category'])
   const results = specialists
   const initialState = {
     query: urlState.query ? urlState.query : '',
     specialists,
     results,
-    stateString: stringifyState({ query: urlState.query, hs: urlState.hs }),
+    stateString: stringifyState({
+      query: urlState.query,
+      hs: urlState.hs,
+      category: urlState.category,
+    }),
     healthSciencesOnly: urlState.hs ? true : false,
+    category: urlState.category,
+    categories: getCategories(specialists),
   }
 
   const reducer = (state, action) => {
@@ -99,6 +105,7 @@ function FindASpecialist({ specialists }) {
           stateString: stringifyState({
             query: action.query.length > 0 ? action.query : undefined,
             hs: state.healthSciencesOnly ? true : undefined,
+            category: state.category,
           }),
         }
       case 'setResults':
@@ -110,9 +117,25 @@ function FindASpecialist({ specialists }) {
         return {
           ...state,
           healthSciencesOnly: action.healthSciencesOnly,
+          category: undefined,
           stateString: stringifyState({
             query: state.query.length > 0 ? state.query : undefined,
             hs: action.healthSciencesOnly ? true : undefined,
+            category: action.healthSciencesOnly ? state.category : undefined,
+          }),
+        }
+      case 'setCategory':
+        const category =
+          action.category === 'All categories' ? undefined : action.category
+
+        return {
+          ...state,
+          category: category,
+          healthSciencesOnly: true,
+          stateString: stringifyState({
+            query: state.query.length > 0 ? state.query : undefined,
+            hs: true,
+            category: category,
           }),
         }
       case 'clear':
@@ -230,7 +253,10 @@ function SpecialistsHealthSciencesOnly() {
 }
 
 function SpecialistsCategorySelect() {
-  const [{ healthSciencesOnly }] = useSpecialists()
+  const [
+    { healthSciencesOnly, category, categories },
+    dispatch,
+  ] = useSpecialists()
 
   if (!healthSciencesOnly) {
     return null
@@ -240,9 +266,11 @@ function SpecialistsCategorySelect() {
     <Select
       label={'Category'}
       name={'category'}
-      options={['All', 'hello', 'world']}
-      onChange={e => console.log('SpecialistsCategorySelect', e)}
-      value={'All'}
+      options={['All categories'].concat(categories)}
+      onChange={e =>
+        dispatch({ type: 'setCategory', category: e.target.value })
+      }
+      value={category ? capitalizeString(category) : 'All categories'}
     />
   )
 }
@@ -293,10 +321,12 @@ function SpecialistsSearch() {
 
 function SpecialistsTableResults() {
   const [show, setShow] = useState(20)
-  const [{ results, healthSciencesOnly }] = useSpecialists()
-  const resultsFiltered = healthSciencesOnly
-    ? results.filter(result => result.category !== null)
-    : results
+  const [{ results, category, healthSciencesOnly }] = useSpecialists()
+  const resultsFiltered = filterResults({
+    results,
+    category,
+    healthSciencesOnly,
+  })
   const resultsShown = resultsFiltered.slice(0, show)
   const resultsSummary = results.length
     ? `${resultsFiltered.length} results`
@@ -436,6 +466,38 @@ function SpecialistsTableResults() {
       )}
     </React.Fragment>
   )
+}
+
+function filterResults({ results, healthSciencesOnly, category }) {
+  let filteredResults = results
+
+  if (healthSciencesOnly) {
+    filteredResults = filteredResults.filter(result => result.category !== null)
+  }
+
+  if (category) {
+    filteredResults = filteredResults.filter(
+      result => result.category.toLowerCase() === category.toLowerCase()
+    )
+  }
+
+  return filteredResults
+}
+
+function getCategories(specialists) {
+  return Array.from(
+    new Set(
+      specialists
+        .map(({ category }) => category)
+        .filter(category => category !== null)
+        .sort()
+        .map(str => capitalizeString(str))
+    )
+  )
+}
+
+function capitalizeString(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export const query = graphql`
