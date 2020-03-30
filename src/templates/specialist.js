@@ -26,7 +26,7 @@ import NoResults from '../components/no-results'
 import getUrlState, { stringifyState } from '../utils/get-url-state'
 import Switch from '../components/switch'
 import Select from '../components/select'
-import createSpecialistNodes from '../../plugins/gatsby-source-umich-lib/create-specialist-nodes'
+import processSpecialistData from '../utils/process-specialist-data'
 
 const lunr = require('lunr')
 const SpecialistsContext = createContext()
@@ -40,9 +40,17 @@ const SpecialistsProvider = ({ reducer, intialState, children }) => (
 const useSpecialists = () => useContext(SpecialistsContext)
 
 export default function FinaASpecialistTemplate({ data }) {
+  const [initialized, setInitialized] = useState(false)
+  const [specialists, setSpecialists] = useState()
   const node = data.page
   const { body, fields, field_title_context } = node
-  const specialists = createSpecialistNodes({ data })
+
+  useEffect(() => {
+    if (!initialized) {
+      setInitialized(true)
+      setSpecialists(processSpecialistData({ data }))
+    }
+  }, [initialized])
 
   return (
     <TemplateLayout node={node}>
@@ -72,7 +80,7 @@ export default function FinaASpecialistTemplate({ data }) {
           </div>
         )}
 
-        <FindASpecialist specialists={specialists} />
+        {specialists && <FindASpecialist specialists={specialists} />}
       </Margins>
     </TemplateLayout>
   )
