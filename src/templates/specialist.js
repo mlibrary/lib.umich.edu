@@ -585,9 +585,6 @@ export const query = graphql`
             field_synonym {
               ...specialistsSynonym
             }
-            user__user {
-              ...userFragment
-            }
           }
         }
       }
