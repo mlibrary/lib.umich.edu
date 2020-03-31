@@ -78,6 +78,8 @@ export default function SiteSearch({ label }) {
     navigate(page.slug)
   }
 
+  //return null // Turn off while in dev. Combobox breaks hot reloading.
+
   return (
     <Combobox onSelect={item => handleSelect(item)}>
       <div

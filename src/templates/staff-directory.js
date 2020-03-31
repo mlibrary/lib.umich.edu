@@ -6,29 +6,28 @@ import {
   Margins,
   TextInput,
   COLORS,
-  Icon,
   Button,
   Alert,
-  Text,
 } from '@umich-lib/core'
-import Img from 'gatsby-image'
 import { useDebounce } from 'use-debounce'
-import BackgroundImage from 'gatsby-background-image'
 import VisuallyHidden from '@reach/visually-hidden'
+import BackgroundImage from 'gatsby-background-image'
 import Link from '../components/link'
 import PlainLink from '../components/plain-link'
 import Breadcrumb from '../components/breadcrumb'
 import MEDIA_QUERIES from '../maybe-design-system/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
+import NoResults from '../components/no-results'
+import Select from '../components/select'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
+import getUrlState, { stringifyState } from '../utils/get-url-state'
 
-const qs = require('qs')
 const lunr = require('lunr')
 
 export default function StaffDirectoryWrapper({ data, location, navigate }) {
   const node = data.page
-  const { noResultsImage, allNodeDepartment, allStaff, allStaffImages } = data
+  const { allNodeDepartment, allStaff, allStaffImages } = data
 
   const departments = allNodeDepartment.edges.reduce((acc, { node }) => {
     return {
@@ -60,7 +59,6 @@ export default function StaffDirectoryWrapper({ data, location, navigate }) {
       node={node}
       staff={staff}
       departments={departments}
-      noResultsImage={noResultsImage}
       staffImages={staffImages}
       location={location}
       navigate={navigate}
@@ -68,34 +66,10 @@ export default function StaffDirectoryWrapper({ data, location, navigate }) {
   )
 }
 
-function parseState(str) {
-  return qs.parse(str, { ignoreQueryPrefix: true, format: 'RFC1738' })
-}
-
-function stringifyState(obj) {
-  return qs.stringify(obj, { format: 'RFC1738' })
-}
-
-function getUrlState(search, keys) {
-  const obj = parseState(search)
-  // Build an obj with only the keys we care about
-  // from the parsed URL state.
-  const state = keys.reduce((memo, k) => {
-    if (obj[k]) {
-      memo = { [k]: obj[k], ...memo }
-    }
-
-    return memo
-  }, {})
-
-  return state
-}
-
 function StaffDirectoryQueryContainer({
   node,
   staff,
   departments,
-  noResultsImage,
   staffImages,
   location,
   navigate,
@@ -116,8 +90,6 @@ function StaffDirectoryQueryContainer({
     }),
     100
   )
-
-  const image = noResultsImage
 
   useEffect(() => {
     navigate('?' + stateString, { replace: true })
@@ -222,7 +194,7 @@ function StaffDirectoryQueryContainer({
           size="3XL"
           level={1}
           css={{
-            marginBottom: SPACING['XL'],
+            marginBottom: SPACING['S'],
           }}
         >
           {field_title_context}
@@ -244,7 +216,6 @@ function StaffDirectoryQueryContainer({
           filters={filters}
           activeFilters={activeFilters}
           results={results}
-          image={image}
           staffImages={staffImages}
           query={query}
         />
@@ -258,7 +229,6 @@ const StaffDirectory = React.memo(function StaffDirectory({
   handleClear,
   filters,
   results,
-  image,
   staffImages,
   query,
   activeFilters,
@@ -477,7 +447,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
         <>
           <p
             css={{
-              marginBottom: SPACING['M'],
+              marginBottom: SPACING['L'],
             }}
           >
             {showMoreText}
@@ -486,156 +456,15 @@ const StaffDirectory = React.memo(function StaffDirectory({
         </>
       )}
 
-      {!results.length && <NoResults image={image} />}
+      {!results.length && (
+        <NoResults>
+          Consider searching with different keywords or using the department or
+          division filter to browse.
+        </NoResults>
+      )}
     </React.Fragment>
   )
 })
-
-function NoResults({ image }) {
-  const [hydrated, setHydrated] = useState(false)
-
-  useEffect(() => {
-    setHydrated(true)
-  }, [hydrated])
-
-  if (!hydrated) {
-    return null
-  }
-
-  return (
-    <div
-      css={{
-        [MEDIA_QUERIES['L']]: {
-          display: 'grid',
-          gridTemplateColumns: `2fr 3fr`,
-          gridGap: SPACING['3XL'],
-          alignItems: 'end',
-        },
-        marginBottom: SPACING['4XL'],
-        marginTop: SPACING['2XL'],
-      }}
-    >
-      <div
-        css={{
-          margin: 'auto 0',
-        }}
-      >
-        <Heading size="L" level={2}>
-          We couldn't find any results
-        </Heading>
-        <Text
-          lede
-          css={{
-            marginTop: SPACING['XS'],
-          }}
-        >
-          Consider searching with different keywords or using the department or
-          division filter to browse.
-        </Text>
-      </div>
-
-      <Img
-        fluid={image.childImageSharp.fluid}
-        alt=""
-        css={{
-          display: 'inline-block',
-          maxWidth: '16rem',
-          margin: '1rem auto',
-          [MEDIA_QUERIES['L']]: {
-            margin: '0',
-            width: '100%',
-            display: 'block',
-            marginBottom: SPACING['L'],
-          },
-        }}
-      />
-    </div>
-  )
-}
-
-function Select({ label, name, options, value, ...rest }) {
-  return (
-    <label>
-      <span
-        css={{
-          display: 'block',
-          marginBottom: SPACING['XS'],
-        }}
-      >
-        {label}
-      </span>
-      <div
-        css={{
-          position: 'relative',
-        }}
-      >
-        <select
-          name={name}
-          css={{
-            // reset default <select> styles.
-            display: 'block',
-            width: '100%',
-            appearance: 'none',
-            fontFamily: 'inherit',
-            fontSize: 'inherit',
-            boxShadow: 'none',
-            background: 'transparent',
-            backgroundImage: 'none',
-            padding: `${SPACING['XS']} ${SPACING['XS']}`,
-            paddingRight: `2rem`,
-            border: `solid 1px ${COLORS.neutral['300']}`,
-            borderRadius: '4px',
-            lineHeight: '1.5',
-            height: '40px',
-          }}
-          value={value ? value : 'All'}
-          {...rest}
-        >
-          {options.map((opt, i) => (
-            <option key={opt + i} id={name + opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-          c
-        </select>
-        <Icon
-          icon="expand_more"
-          css={{
-            position: 'absolute',
-            right: SPACING['S'],
-            bottom: SPACING['S'],
-            pointerEvents: 'none'
-          }}
-        />
-      </div>
-    </label>
-  )
-}
-
-function StaffPhoto({ mid, staffImages }) {
-  const img = staffImages[mid]
-
-  if (!img) {
-    return <StaffPhotoPlaceholder />
-  }
-
-  return (
-    <BackgroundImage
-      aria-hidden="true"
-      data-card-image
-      tag="div"
-      fluid={img.childImageSharp.fluid}
-      alt={img.alt}
-      css={{
-        width: '43px',
-        height: '57px',
-        backgroundColor: COLORS.blue['100'],
-        borderRadius: '2px',
-        overflow: 'hidden',
-      }}
-    />
-  )
-}
 
 /*
   // Filter out results that do not
@@ -694,6 +523,31 @@ function filterResults({ activeFilters, results }) {
   })
 }
 
+function StaffPhoto({ mid, staffImages }) {
+  const img = staffImages[mid]
+
+  if (!img) {
+    return <StaffPhotoPlaceholder />
+  }
+
+  return (
+    <BackgroundImage
+      aria-hidden="true"
+      data-card-image
+      tag="div"
+      fluid={img.childImageSharp.fluid}
+      alt={img.alt}
+      css={{
+        width: '43px',
+        height: '57px',
+        backgroundColor: COLORS.blue['100'],
+        borderRadius: '2px',
+        overflow: 'hidden',
+      }}
+    />
+  )
+}
+
 export const query = graphql`
   query($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
@@ -749,13 +603,6 @@ export const query = graphql`
         node {
           title
           drupal_internal__nid
-        }
-      }
-    }
-    noResultsImage: file(relativePath: { eq: "squirrel.png" }) {
-      childImageSharp {
-        fluid(maxWidth: 920) {
-          ...GatsbyImageSharpFluid_noBase64
         }
       }
     }
