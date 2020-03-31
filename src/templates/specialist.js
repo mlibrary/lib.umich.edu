@@ -407,11 +407,10 @@ function SpecialistsTableResults() {
               <th>Subjects and specialties</th>
               <th colSpan="2">Contact</th>
               {healthSciencesOnly && <th>Category</th>}
-              <th>Research guides</th>
             </tr>
           </thead>
           <tbody>
-            {resultsShown.map(({ name, users, links, category }, i) => (
+            {resultsShown.map(({ name, users, category }, i) => (
               <tr key={name + i}>
                 <td>{name}</td>
                 <td colSpan="2">
@@ -444,20 +443,6 @@ function SpecialistsTableResults() {
                     {category}
                   </td>
                 )}
-                <td>
-                  [todo]
-                  {links && (
-                    <React.Fragment>
-                      {links.map(({ label, to }, y) => (
-                        <p key={to + y}>
-                          <Link to={to} kind="subtle">
-                            {label}
-                          </Link>
-                        </p>
-                      ))}
-                    </React.Fragment>
-                  )}
-                </td>
               </tr>
             ))}
           </tbody>

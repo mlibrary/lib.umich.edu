@@ -8,7 +8,6 @@ import {
   COLORS,
   Button,
   Alert,
-  Icon,
 } from '@umich-lib/core'
 import { useDebounce } from 'use-debounce'
 import VisuallyHidden from '@reach/visually-hidden'
