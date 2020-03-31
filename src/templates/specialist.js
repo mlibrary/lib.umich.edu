@@ -252,7 +252,7 @@ function SpecialistsHealthSciencesOnly() {
       css={{
         alignSelf: 'end',
         [MEDIA_QUERIES['L']]: {
-          marginLeft: SPACING['XL'],
+          marginLeft: SPACING['M'],
         },
       }}
     >
