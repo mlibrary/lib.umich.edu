@@ -105,8 +105,10 @@ export default function VisitTemplate({ data, ...rest }) {
                     Amenities
                   </Heading>
                   <List type="bulleted">
-                    {field_amenities.map(({ name }, i) => (
-                      <li key={i + name}>{name}</li>
+                    {field_amenities.map(({ description }, i) => (
+                      <li key={i + description.processed}>
+                        <HTML html={description.processed} />
+                      </li>
                     ))}
                   </List>
                 </React.Fragment>
