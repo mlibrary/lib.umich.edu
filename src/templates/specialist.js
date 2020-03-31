@@ -251,7 +251,7 @@ function SpecialistsHealthSciencesOnly() {
       }
       css={{
         alignSelf: 'end',
-        [MEDIA_QUERIES['M']]: {
+        [MEDIA_QUERIES['L']]: {
           marginLeft: SPACING['XL'],
         },
       }}
@@ -291,11 +291,11 @@ function SpecialistsSearch() {
     <div
       css={{
         display: 'grid',
-        gridGap: SPACING['S'],
-        [MEDIA_QUERIES['M']]: {
+        gridGap: SPACING['M'],
+        [MEDIA_QUERIES['L']]: {
           gridTemplateColumns: healthSciencesOnly
-            ? `3fr 1fr auto auto`
-            : `3fr auto auto`,
+            ? `minmax(200px, 3fr) auto auto auto`
+            : `minmax(200px, 3fr) auto auto`,
         },
         input: {
           lineHeight: '1.5',
