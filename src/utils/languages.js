@@ -751,6 +751,30 @@ const LANGUAGES = {
     name: 'Zulu',
     nativeName: 'isiZulu',
   },
+  'xx-lolspeak': {
+    name: '',
+    nativeName: '',
+  },
+  tyv: {
+    name: 'Tuvan',
+    nativeName: 'Tuvan',
+  },
+  sco: {
+    name: 'Scots',
+    nativeName: 'Scots',
+  },
+  fil: {
+    name: 'Filipino',
+    nativeName: 'Filipino',
+  },
+  'en-x-simple': {
+    name: 'Simple English',
+    nativeName: 'Simple English',
+  },
+  ast: {
+    name: 'Asturian',
+    nativeName: 'Asturian',
+  },
 }
 
 export default LANGUAGES
