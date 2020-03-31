@@ -178,7 +178,7 @@ function SpecialistsURLState() {
     // If there is state to be put in the URL, use that, otherwise,
     // clear the URL with the location pathname.
     const to = stateString.length > 0 ? '?' + stateString : location.pathname
-    navigate(to)
+    navigate(to, { replace: true })
   }, [stateString])
 
   return null
