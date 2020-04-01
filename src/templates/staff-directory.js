@@ -32,7 +32,7 @@ export default function StaffDirectoryWrapper({ data, location, navigate }) {
   const departments = allNodeDepartment.edges.reduce((acc, { node }) => {
     return {
       ...acc,
-      [node.drupal_internal__nid]: node.title,
+      [node.drupal_internal__nid]: node,
     }
   }, {})
   const staff = allStaff.edges.map(({ node }) => {
@@ -170,7 +170,7 @@ function StaffDirectoryQueryContainer({
       name: 'department',
       options: ['All'].concat(
         Object.keys(departments)
-          .map(d => departments[d])
+          .map(d => departments[d].title)
           .sort()
       ),
     },
@@ -424,14 +424,14 @@ const StaffDirectory = React.memo(function StaffDirectory({
                     </td>
                     <td colSpan="2">
                       {department && (
-                        <Link to="#" kind="subtle">
-                          {department}
+                        <Link to={department.fields.slug} kind="subtle">
+                          {department.title}
                         </Link>
                       )}
 
                       {!department && division && (
-                        <Link to="#" kind="subtle">
-                          {division}
+                        <Link to={division.fields.slug} kind="subtle">
+                          {division.title}
                         </Link>
                       )}
                     </td>
@@ -603,6 +603,9 @@ export const query = graphql`
         node {
           title
           drupal_internal__nid
+          fields {
+            slug
+          }
         }
       }
     }
