@@ -16,6 +16,10 @@ import Panels from '../components/panels'
 import UserCard from '../components/user-card'
 
 function processContacts(userData) {
+  if (!userData) {
+    return null
+  }
+
   return userData.reduce((memo, user) => {
     const {
       name,
