@@ -32,7 +32,7 @@ function processContacts(userData) {
     const { field_media_image } = relationships
     var image
 
-    if (field_media_image) {
+    if (field_media_image && field_media_image) {
       image = {
         alt: field_media_image.field_media_image.alt,
         fluid:
@@ -61,9 +61,11 @@ function CollectingAreaTemplate({ data, ...rest }) {
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image
   const imageData = image ? image.localFile.childImageSharp.fluid : null
-  const imageCaption = relationships.field_media_image.field_image_caption
-    ? relationships.field_media_image.field_image_caption.processed
-    : null
+  const imageCaption =
+    relationships.field_media_image &&
+    relationships.field_media_image.field_image_caption
+      ? relationships.field_media_image.field_image_caption.processed
+      : null
   const contacts = processContacts(
     relationships.field_collecting_area.relationships.user__user
   )
