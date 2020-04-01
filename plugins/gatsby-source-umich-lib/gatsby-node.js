@@ -143,6 +143,7 @@ const drupal_node_types_we_care_about = [
   'location',
   'room',
   'floor_plan',
+  'department',
 ]
 
 // Create a slug for each page and set it as a field on the node.
@@ -246,6 +247,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const collectingAreaTemplate = path.resolve(
       `src/templates/collecting-area.js`
     )
+    const departmentTemplate = path.resolve(`src/templates/department.js`)
 
     function getTemplate(node) {
       const { field_machine_name } = node.relationships.field_design_template
@@ -276,6 +278,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return collectingAreaTemplate
         case 'specialist':
           return specialistTemplate
+        case 'department':
+          return departmentTemplate
         default:
           return null
       }
@@ -504,6 +508,33 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 }
               }
             }
+            departments: allNodeDepartment(
+              filter: {
+                relationships: {
+                  field_design_template: {
+                    field_machine_name: { eq: "department" }
+                  }
+                }
+              }
+            ) {
+              edges {
+                node {
+                  __typename
+                  title
+                  drupal_internal__nid
+                  fields {
+                    slug
+                    title
+                    breadcrumb
+                  }
+                  relationships {
+                    field_design_template {
+                      field_machine_name
+                    }
+                  }
+                }
+              }
+            }
           }
         `
       ).then(result => {
@@ -520,6 +551,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           rooms,
           locations,
           floorPlans,
+          departments,
         } = result.data
         const edges = pages.edges
           .concat(sections.edges)
@@ -527,6 +559,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           .concat(rooms.edges)
           .concat(locations.edges)
           .concat(floorPlans.edges)
+          .concat(departments.edges)
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
