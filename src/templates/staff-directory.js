@@ -466,60 +466,21 @@ const StaffDirectory = React.memo(function StaffDirectory({
   )
 })
 
-/*
-  // Filter out results that do not
-  // have a key/value that matches
-  // all active filters.
-
-  // Example of a result.
-  {
-    name: "Jon Earley",
-    title: "User Interface Design Engineer",
-    department: "Design and Discovery",
-    division: "Library Information Technology"
-  }
-
-  // Example of active filters.
-  {
-    department: "Design and Discovery",
-    division: "Library Information Technology"
-  }
-*/
 function filterResults({ activeFilters, results }) {
   const filterKeys = Object.keys(activeFilters)
 
-  // If no active filters, then just return all the results.
-  if (filterKeys === 0) {
+  if (filterKeys.length === 0) {
     return results
   }
 
-  // Filter to results that have all active filters.
   return results.filter(result => {
-    // Track how many filters apply to this result.
-    let i = 0
+    const division = result.division && result.division.title
+    const department = result.department && result.department.title
 
-    filterKeys.forEach(k => {
-      // Oh but department is special.
-      /*
-        An active department filter must be searched for in 
-        a user's "department" AND "division" field, since
-        the those are actually the same from the data,
-        but are displayed seperately and have their own fields
-        on a user.
-      */
-      if (k === 'department') {
-        if (
-          result[k] === activeFilters[k] ||
-          result['division'] === activeFilters[k]
-        ) {
-          i = i + 1
-        }
-      } else if (result[k] === activeFilters[k]) {
-        i = i + 1
-      }
-    })
-
-    return i === filterKeys.length
+    return (
+      activeFilters['department'] === division ||
+      activeFilters['department'] === department
+    )
   })
 }
 
