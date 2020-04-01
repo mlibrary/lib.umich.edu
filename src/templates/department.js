@@ -86,9 +86,9 @@ function DepartmentTemplate({ data }) {
                   },
                 }}
               >
-                {departmentInfo.map(({ icon, content }) => (
+                {departmentInfo.map(({ icon, d, content }) => (
                   <li>
-                    <Icon icon={icon} />
+                    {d ? <Icon d={d} /> : <Icon icon={icon} />}
                     {content}
                   </li>
                 ))}
@@ -165,7 +165,8 @@ function processDepartmentInfo({ node, staffDirectorySlug }) {
 
   const fax = field_fax_number
     ? {
-        icon: 'mail_outline',
+        d:
+          'M 18 3 V 7 H 6 V 3 Z M 21.6 9.52 a 3.16 3.16 0 0 0 -1.11 -1.1 A 2.93 2.93 0 0 0 19 8 H 5 a 2.91 2.91 0 0 0 -1.49 0.41 a 3.08 3.08 0 0 0 -1.11 1.1 A 3 3 0 0 0 2 11 v 6 H 6 v 4 H 18 V 17 h 4 V 11 A 3 3 0 0 0 21.6 9.52 Z M 16 19 H 8 V 14 h 8 Z m 3.74 -7.28 A 1 1 0 0 1 19 12 a 1 1 0 0 1 -0.7 -0.28 A 0.94 0.94 0 0 1 18 11 a 1.07 1.07 0 0 1 0.28 -0.73 A 0.91 0.91 0 0 1 19 10 a 1 1 0 0 1 0.73 0.31 A 1 1 0 0 1 20 11 A 0.92 0.92 0 0 1 19.73 11.71 Z',
         content: <React.Fragment>Fax: {field_fax_number}</React.Fragment>,
       }
     : null
