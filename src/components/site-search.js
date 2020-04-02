@@ -19,6 +19,7 @@ import {
 import '@reach/dialog/styles.css'
 import Link from '../components/link'
 import HEADER_MEDIA_QUERIES from '../components/header/header-media-queries'
+import useGoogleTagManager from '../hooks/use-google-tag-manager'
 
 const lunr = require('lunr')
 
@@ -26,6 +27,11 @@ export default function SiteSearch({ label }) {
   const [query, setQuery] = useState('')
   const [error, setError] = useState(null)
   const [results, setResults] = useState([])
+
+  useGoogleTagManager({
+    eventName: 'siteSearch',
+    value: query,
+  })
 
   useEffect(() => {
     if (!query || !window.__LUNR__) {
@@ -231,7 +237,7 @@ export default function SiteSearch({ label }) {
                     }}
                   >
                     <GatsbyLink
-                      to={result.slug}
+                      to={'/' + result.slug}
                       css={{
                         display: 'block',
                         padding: `${SPACING['M']} ${SPACING['L']}`,

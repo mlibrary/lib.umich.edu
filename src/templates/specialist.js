@@ -27,6 +27,7 @@ import getUrlState, { stringifyState } from '../utils/get-url-state'
 import Switch from '../components/switch'
 import Select from '../components/select'
 import processSpecialistData from '../utils/process-specialist-data'
+import useGoogleTagManager from '../hooks/use-google-tag-manager'
 
 const lunr = require('lunr')
 const SpecialistsContext = createContext()
@@ -162,6 +163,7 @@ function FindASpecialist({ specialists }) {
     <SpecialistsProvider intialState={initialState} reducer={reducer}>
       <SpecialistsURLState />
       <SpecialistsSearchIndex />
+      <SpecialistsGoogleTagManager />
       <SpecialistsSearch />
       <SpecialistsTableResults />
     </SpecialistsProvider>
@@ -282,6 +284,17 @@ function SpecialistsCategorySelect() {
       value={category ? capitalizeString(category) : 'All categories'}
     />
   )
+}
+
+function SpecialistsGoogleTagManager() {
+  const [{ query }] = useSpecialists()
+
+  useGoogleTagManager({
+    eventName: 'findASpecialistSearch',
+    value: query,
+  })
+
+  return null
 }
 
 function SpecialistsSearch() {
