@@ -22,6 +22,7 @@ import NoResults from '../components/no-results'
 import Select from '../components/select'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
 import getUrlState, { stringifyState } from '../utils/get-url-state'
+import useGoogleTagManager from '../hooks/use-google-tag-manager'
 
 const lunr = require('lunr')
 
@@ -90,6 +91,11 @@ function StaffDirectoryQueryContainer({
     }),
     100
   )
+
+  useGoogleTagManager({
+    eventName: 'staffDirectorySearch',
+    value: query,
+  })
 
   useEffect(() => {
     navigate('?' + stateString, { replace: true })
