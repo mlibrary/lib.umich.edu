@@ -248,6 +248,10 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
       `src/templates/collecting-area.js`
     )
     const departmentTemplate = path.resolve(`src/templates/department.js`)
+    /*
+      News templates
+    */
+    const newsLandingTemplate = path.resolve(`src/templates/news-landing.js`)
 
     function getTemplate(node) {
       const { field_machine_name } = node.relationships.field_design_template
@@ -280,6 +284,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return specialistTemplate
         case 'department':
           return departmentTemplate
+        case 'news_landing':
+          return newsLandingTemplate
         default:
           return null
       }
@@ -306,6 +312,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                         "staff_directory"
                         "collecting_area"
                         "specialist"
+                        "news_landing"
                       ]
                     }
                   }
