@@ -27,6 +27,9 @@ export default function Card({
           display: 'grid',
           gridTemplateColumns: `18.75rem 1fr `,
           gridGap: SPACING['M'],
+          '[data-card-image]': {
+            marginBottom: '0',
+          },
         },
       }
     : {}
