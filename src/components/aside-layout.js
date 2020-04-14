@@ -69,7 +69,6 @@ export function TemplateContent({ children, ...rest }) {
     <div
       css={{
         [MEDIA_QUERIES['L']]: {
-          maxWidth: '38rem',
           gridArea: 'content',
           marginRight: SPACING['2XL'],
         },
