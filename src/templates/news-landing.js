@@ -2,6 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 
 import { Margins, Heading, SPACING } from '@umich-lib/core'
+import VisuallyHidden from '@reach/visually-hidden'
 import Layout from '../components/layout'
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
@@ -59,26 +60,31 @@ export default function NewsLandingTemplate({ data }) {
           )}
 
           {newsMain && (
-            <ol>
-              {newsMain.map((item, i) => (
-                <li
-                  key={'news-item-' + i}
-                  css={{
-                    marginBottom: SPACING['L'],
-                  }}
-                >
-                  <Card
-                    href={item.href}
-                    title={item.title}
-                    subtitle={item.subtitle}
-                    image={item.image}
-                    horizontal
+            <React.Fragment>
+              <VisuallyHidden>
+                <Heading level={2}>Main news</Heading>
+              </VisuallyHidden>
+              <ol>
+                {newsMain.map((item, i) => (
+                  <li
+                    key={'news-item-' + i}
+                    css={{
+                      marginBottom: SPACING['L'],
+                    }}
                   >
-                    {item.description}
-                  </Card>
-                </li>
-              ))}
-            </ol>
+                    <Card
+                      href={item.href}
+                      title={item.title}
+                      subtitle={item.subtitle}
+                      image={item.image}
+                      horizontal
+                    >
+                      {item.description}
+                    </Card>
+                  </li>
+                ))}
+              </ol>
+            </React.Fragment>
           )}
         </TemplateContent>
 
