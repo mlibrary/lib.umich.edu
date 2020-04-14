@@ -6,6 +6,7 @@ import {
   Z_SPACE,
   LINK_STYLES,
   TYPOGRAPHY,
+  MEDIA_QUERIES,
 } from '@umich-lib/core'
 import CardImage from './card-image'
 
@@ -17,11 +18,22 @@ export default function Card({
   description,
   renderAnchor,
   children,
+  horizontal,
   ...rest
 }) {
+  const horizontalStyles = horizontal
+    ? {
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          display: 'grid',
+          gridTemplateColumns: `18.75rem 1fr `,
+          gridGap: SPACING['M'],
+        },
+      }
+    : {}
+
   const anchorStyles = {
     display: 'block',
-    maxWidth: '600px',
+    ...horizontalStyles,
     ':hover': {
       '[data-card-image]': {
         ...Z_SPACE[8],
@@ -123,6 +135,11 @@ Card.propTypes = {
    * Provide a url for where this card should route to.
    **/
   href: PropTypes.string,
+
+  /*
+   * Let the Card know if it can go horizontal on large screens.
+   **/
+  horizontal: PropTypes.bool,
 
   /*
    * An optional parameter to allow overriding the anchor rendering.
