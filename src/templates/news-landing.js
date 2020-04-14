@@ -27,7 +27,6 @@ export default function NewsLandingTemplate({ data }) {
     field_title_context,
     body,
     fields,
-    relationships,
     drupal_internal__nid,
   } = node
   const description = body && body.summary ? body.summary : null
@@ -45,7 +44,7 @@ export default function NewsLandingTemplate({ data }) {
           size="3XL"
           level={1}
           css={{
-            marginBottom: SPACING['S'],
+            marginBottom: SPACING['L'],
           }}
         >
           {field_title_context}
@@ -129,8 +128,10 @@ function processNewsData(data) {
     return null
   }
 
+  console.log('data', data)
+
   return data.edges.map(({ node }) => {
-    const { title, created, body, relationships } = node
+    const { title, created, body, relationships, fields } = node
     const image =
       relationships?.field_media_image?.relationships?.field_media_image
         ?.localFile?.childImageSharp?.fluid
@@ -139,7 +140,7 @@ function processNewsData(data) {
       title,
       subtitle: moment(created).format('MMMM Do, YYYY'),
       description: body.summary,
-      href: '/',
+      href: fields.slug,
       image,
     }
   })
@@ -161,6 +162,9 @@ export const query = graphql`
           body {
             summary
           }
+          fields {
+            slug
+          }
           created
           relationships {
             field_media_image {
@@ -179,7 +183,6 @@ export const query = graphql`
           }
         }
       }
-      totalCount
     }
     newsLibraryUpdates: allNodeNews(
       filter: { field_news_type: { eq: "library_updates" } }
@@ -192,10 +195,12 @@ export const query = graphql`
           body {
             summary
           }
+          fields {
+            slug
+          }
           created
         }
       }
-      totalCount
     }
   }
 `

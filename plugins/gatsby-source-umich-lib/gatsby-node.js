@@ -144,6 +144,7 @@ const drupal_node_types_we_care_about = [
   'room',
   'floor_plan',
   'department',
+  'news',
 ]
 
 // Create a slug for each page and set it as a field on the node.
