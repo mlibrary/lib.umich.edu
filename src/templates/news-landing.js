@@ -17,10 +17,17 @@ import {
 } from '../components/aside-layout'
 import * as moment from 'moment'
 
+import {
+  Expandable,
+  ExpandableChildren,
+  ExpandableButton,
+} from '@umich-lib/core'
+
 export default function NewsLandingTemplate({ data }) {
   const node = data.page
   const newsMain = processNewsData(data.newsMain)
   const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates)
+  const newsMainInitialShow = 15
 
   const {
     title,
@@ -63,26 +70,34 @@ export default function NewsLandingTemplate({ data }) {
               <VisuallyHidden>
                 <Heading level={2}>Main news</Heading>
               </VisuallyHidden>
-              <ol>
-                {newsMain.map((item, i) => (
-                  <li
-                    key={'news-item-' + i}
-                    css={{
-                      marginBottom: SPACING['L'],
-                    }}
-                  >
-                    <Card
-                      href={item.href}
-                      title={item.title}
-                      subtitle={item.subtitle}
-                      image={item.image}
-                      horizontal
-                    >
-                      {item.description}
-                    </Card>
-                  </li>
-                ))}
-              </ol>
+              <Expandable>
+                <ol>
+                  <ExpandableChildren show={newsMainInitialShow}>
+                    {newsMain.map((item, i) => (
+                      <li
+                        key={'news-item-' + i}
+                        css={{
+                          marginBottom: SPACING['L'],
+                        }}
+                      >
+                        <Card
+                          href={item.href}
+                          title={item.title}
+                          subtitle={item.subtitle}
+                          image={item.image}
+                          horizontal
+                        >
+                          {item.description}
+                        </Card>
+                      </li>
+                    ))}
+                  </ExpandableChildren>
+                </ol>
+
+                {newsMain.length > newsMainInitialShow && (
+                  <ExpandableButton name="news" />
+                )}
+              </Expandable>
             </React.Fragment>
           )}
         </TemplateContent>
@@ -154,7 +169,6 @@ export const query = graphql`
     newsMain: allNodeNews(
       filter: { field_news_type: { eq: "news_main" } }
       sort: { fields: created, order: DESC }
-      limit: 15
     ) {
       edges {
         node {
@@ -187,7 +201,6 @@ export const query = graphql`
     newsLibraryUpdates: allNodeNews(
       filter: { field_news_type: { eq: "library_updates" } }
       sort: { fields: created, order: DESC }
-      limit: 15
     ) {
       edges {
         node {
