@@ -64,7 +64,7 @@ export default function NewsLandingTemplate({ data }) {
                 <li
                   key={'news-item-' + i}
                   css={{
-                    marginBottom: SPACING['XL'],
+                    marginBottom: SPACING['L'],
                   }}
                 >
                   <Card
@@ -72,6 +72,7 @@ export default function NewsLandingTemplate({ data }) {
                     title={item.title}
                     subtitle={item.subtitle}
                     image={item.image}
+                    horizontal
                   >
                     {item.description}
                   </Card>
