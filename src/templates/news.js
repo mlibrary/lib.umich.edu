@@ -71,9 +71,6 @@ function Share({ url }) {
         level={2}
         size="XS"
         css={{
-          marginTop: SPACING['L'],
-          paddingTop: SPACING['L'],
-          borderTop: `solid 1px ${COLORS.neutral['100']}`,
           fontWeight: '600',
         }}
       >
@@ -154,6 +151,7 @@ export default function NewsTemplate({ data }) {
             <figure
               css={{
                 maxWidth: '38rem',
+                marginBottom: SPACING['XL'],
               }}
             >
               <Img
