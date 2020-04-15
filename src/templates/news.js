@@ -151,7 +151,7 @@ function Share({ url, title }) {
 
   const twitterProps = qs.stringify({
     url,
-    text: `.@UMichLibrary: ${title}`,
+    text: `${title} @UMichLibrary`,
   })
 
   const fbProps = qs.stringify({
