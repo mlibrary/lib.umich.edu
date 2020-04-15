@@ -125,9 +125,7 @@ export default function NewsLandingTemplate({ data }) {
                     href={item.href}
                     title={item.title}
                     subtitle={item.subtitle}
-                  >
-                    {item.description}
-                  </Card>
+                  />
                 </li>
               ))}
             </ol>
