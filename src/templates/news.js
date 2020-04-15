@@ -91,6 +91,9 @@ function Share({ url }) {
                   svg: {
                     color: COLORS.neutral['300'],
                   },
+                  ':hover': {
+                    textDecoration: 'underline',
+                  },
                 }}
               >
                 <IconText icon={icon} d={d}>
