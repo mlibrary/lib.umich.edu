@@ -80,9 +80,6 @@ export default function NewsTemplate({ data }) {
                   css={{
                     paddingTop: SPACING['S'],
                     color: COLORS.neutral['300'],
-                    paddingBottom: SPACING['XL'],
-                    marginBottom: SPACING['XL'],
-                    borderBottom: `solid 1px ${COLORS.neutral['100']}`,
                   }}
                 >
                   <HTML
