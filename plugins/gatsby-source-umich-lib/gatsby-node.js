@@ -253,6 +253,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
       News templates
     */
     const newsLandingTemplate = path.resolve(`src/templates/news-landing.js`)
+    const newsTemplate = path.resolve(`src/templates/news.js`)
 
     function getTemplate(node) {
       const { field_machine_name } = node.relationships.field_design_template
@@ -287,6 +288,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return departmentTemplate
         case 'news_landing':
           return newsLandingTemplate
+        case 'news':
+          return newsTemplate
         default:
           return null
       }
@@ -543,6 +546,31 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 }
               }
             }
+            news: allNodeNews(
+              filter: {
+                relationships: {
+                  field_design_template: { field_machine_name: { eq: "news" } }
+                }
+              }
+            ) {
+              edges {
+                node {
+                  __typename
+                  title
+                  drupal_internal__nid
+                  fields {
+                    slug
+                    title
+                    breadcrumb
+                  }
+                  relationships {
+                    field_design_template {
+                      field_machine_name
+                    }
+                  }
+                }
+              }
+            }
           }
         `
       ).then(result => {
@@ -560,6 +588,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           locations,
           floorPlans,
           departments,
+          news,
         } = result.data
         const edges = pages.edges
           .concat(sections.edges)
@@ -568,6 +597,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           .concat(locations.edges)
           .concat(floorPlans.edges)
           .concat(departments.edges)
+          .concat(news.edges)
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
