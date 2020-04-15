@@ -5,9 +5,7 @@ import { Margins, Heading, SPACING } from '@umich-lib/core'
 import VisuallyHidden from '@reach/visually-hidden'
 import Layout from '../components/layout'
 import SEO from '../components/seo'
-import PageHeader from '../components/page-header'
 import HTML from '../components/html'
-import Panels from '../components/panels'
 import Breadcrumb from '../components/breadcrumb'
 import Card from '../components/card'
 import {
@@ -68,7 +66,9 @@ export default function NewsLandingTemplate({ data }) {
           {newsMain && (
             <React.Fragment>
               <VisuallyHidden>
-                <Heading level={2}>Main news</Heading>
+                <Heading level={2} size="L">
+                  Main news
+                </Heading>
               </VisuallyHidden>
               <Expandable>
                 <ol>
@@ -141,8 +141,6 @@ function processNewsData(data) {
     return null
   }
 
-  console.log('data', data)
-
   return data.edges.map(({ node }) => {
     const { title, created, body, relationships, fields } = node
     const image =
@@ -170,29 +168,7 @@ export const query = graphql`
     ) {
       edges {
         node {
-          title
-          body {
-            summary
-          }
-          fields {
-            slug
-          }
-          created
-          relationships {
-            field_media_image {
-              relationships {
-                field_media_image {
-                  localFile {
-                    childImageSharp {
-                      fluid(maxWidth: 640) {
-                        ...GatsbyImageSharpFluid_noBase64
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+          ...newsFragment
         }
       }
     }
@@ -202,14 +178,7 @@ export const query = graphql`
     ) {
       edges {
         node {
-          title
-          body {
-            summary
-          }
-          fields {
-            slug
-          }
-          created
+          ...newsFragment
         }
       }
     }
