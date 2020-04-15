@@ -73,30 +73,32 @@ export default function Card({
     <React.Fragment>
       {image && <CardImage image={image} />}
 
-      <p role="heading" aria-level="3">
-        {subtitle && (
+      <div>
+        <p role="heading" aria-level="3">
+          {subtitle && (
+            <span
+              css={{
+                display: 'block',
+                color: COLORS.neutral[300],
+                marginBottom: SPACING['2XS'],
+                ...TYPOGRAPHY['3XS'],
+              }}
+            >
+              {subtitle}
+            </span>
+          )}
           <span
             css={{
-              display: 'block',
-              color: COLORS.neutral[300],
-              marginBottom: SPACING['2XS'],
-              ...TYPOGRAPHY['3XS'],
+              ...LINK_STYLES['description'],
             }}
+            data-card-title
           >
-            {subtitle}
+            {title}
           </span>
-        )}
-        <span
-          css={{
-            ...LINK_STYLES['description'],
-          }}
-          data-card-title
-        >
-          {title}
-        </span>
-      </p>
+        </p>
 
-      {renderChildren()}
+        {renderChildren()}
+      </div>
     </React.Fragment>
   )
 
