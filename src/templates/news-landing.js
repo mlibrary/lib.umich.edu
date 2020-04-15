@@ -95,7 +95,7 @@ export default function NewsLandingTemplate({ data }) {
                 </ol>
 
                 {newsMain.length > newsMainInitialShow && (
-                  <ExpandableButton name="news" />
+                  <ExpandableButton name="stories" count={newsMain.length} />
                 )}
               </Expandable>
             </React.Fragment>
