@@ -17,93 +17,7 @@ import PlainLink from '../components/plain-link'
 import IconText from '../components/icon-text'
 import Link from '../components/link'
 
-function StayInTheKnow() {
-  const newsEmailSignUpURL =
-    'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvi7isF9mU_8aHCjw2GQahcr0Lv7Y_AmQ4Rk6XLOHcZXb6ieJPlgd4mmjhTWZtwsIPqu_3PBhHLOFjEqR0fdjI2A%3D'
-
-  return (
-    <React.Fragment>
-      <Heading
-        level={2}
-        size="XS"
-        css={{
-          marginTop: SPACING['L'],
-          paddingTop: SPACING['L'],
-          borderTop: `solid 1px ${COLORS.neutral['100']}`,
-          fontWeight: '600',
-        }}
-      >
-        Stay in the know
-      </Heading>
-      <Text>
-        {' '}
-        <Link
-          to={newsEmailSignUpURL}
-          css={{
-            display: 'inline-block',
-          }}
-        >
-          Sign up
-        </Link>{' '}
-        for email updates from the library.
-      </Text>
-    </React.Fragment>
-  )
-}
-
-function Share({ url }) {
-  const options = [
-    {
-      text: 'Facebook',
-      to: `http://www.facebook.com/sharer/sharer.php?u=${url}`,
-      icon: 'facebook',
-    },
-    {
-      text: 'Twitter',
-      to: `https://twitter.com/share?url=${url}`,
-      icon: 'twitter',
-    },
-  ]
-
-  return (
-    <React.Fragment>
-      <Heading
-        level={2}
-        size="XS"
-        css={{
-          fontWeight: '600',
-        }}
-      >
-        Share
-      </Heading>
-      <ul>
-        {options.map(({ text, to, icon, d }, y) => {
-          return (
-            <li key={y + to + text}>
-              <PlainLink
-                to={to}
-                css={{
-                  display: 'inline-block',
-                  padding: `${SPACING['XS']} 0`,
-                  svg: {
-                    color: COLORS.neutral['300'],
-                  },
-                  ':hover': {
-                    textDecoration: 'underline',
-                  },
-                }}
-              >
-                <IconText icon={icon} d={d}>
-                  {text}
-                </IconText>
-              </PlainLink>
-            </li>
-          )
-        })}
-      </ul>
-    </React.Fragment>
-  )
-}
+const qs = require('qs')
 
 export default function NewsTemplate({ data }) {
   const node = getNode(data)
@@ -182,13 +96,124 @@ export default function NewsTemplate({ data }) {
             </figure>
           )}
 
-          <Share url={'https://lib.umich.edu' + slug} />
+          <Share
+            url={'https://lib.umich.edu' + slug}
+            title={field_title_context}
+          />
           <StayInTheKnow />
         </TemplateSide>
       </Template>
 
       <Panels data={fullPanels} />
     </TemplateLayout>
+  )
+}
+
+function StayInTheKnow() {
+  const newsEmailSignUpURL =
+    'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvi7isF9mU_8aHCjw2GQahcr0Lv7Y_AmQ4Rk6XLOHcZXb6ieJPlgd4mmjhTWZtwsIPqu_3PBhHLOFjEqR0fdjI2A%3D'
+
+  return (
+    <React.Fragment>
+      <Heading
+        level={2}
+        size="XS"
+        css={{
+          marginTop: SPACING['L'],
+          paddingTop: SPACING['L'],
+          borderTop: `solid 1px ${COLORS.neutral['100']}`,
+          fontWeight: '600',
+        }}
+      >
+        Stay in the know
+      </Heading>
+      <Text>
+        {' '}
+        <Link
+          to={newsEmailSignUpURL}
+          css={{
+            display: 'inline-block',
+          }}
+        >
+          Sign up
+        </Link>{' '}
+        for email updates from the library.
+      </Text>
+    </React.Fragment>
+  )
+}
+
+function Share({ url, title }) {
+  const emailProps = qs.stringify({
+    subject: title,
+    body: `Read the latest from the University of Michigan Library: ${url}`,
+  })
+
+  const twitterProps = qs.stringify({
+    url,
+    text: `.@UMichLibrary: ${title}`,
+  })
+
+  const fbProps = qs.stringify({
+    u: url,
+    t: title,
+  })
+
+  const options = [
+    {
+      text: 'Facebook',
+      to: `http://www.facebook.com/sharer/sharer.php?${fbProps}`,
+      icon: 'facebook',
+    },
+    {
+      text: 'Twitter',
+      to: `https://twitter.com/share?${twitterProps}`,
+      icon: 'twitter',
+    },
+    {
+      text: 'Email',
+      to: `mailto:?${emailProps}`,
+      icon: 'email',
+    },
+  ]
+
+  return (
+    <React.Fragment>
+      <Heading
+        level={2}
+        size="XS"
+        css={{
+          fontWeight: '600',
+        }}
+      >
+        Share
+      </Heading>
+      <ul>
+        {options.map(({ text, to, icon, d }, y) => {
+          return (
+            <li key={y + to + text}>
+              <PlainLink
+                to={to}
+                css={{
+                  display: 'inline-block',
+                  padding: `${SPACING['XS']} 0`,
+                  svg: {
+                    color: COLORS.neutral['300'],
+                  },
+                  ':hover': {
+                    textDecoration: 'underline',
+                  },
+                }}
+              >
+                <IconText icon={icon} d={d}>
+                  {text}
+                </IconText>
+              </PlainLink>
+            </li>
+          )
+        })}
+      </ul>
+    </React.Fragment>
   )
 }
 
