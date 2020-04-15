@@ -114,7 +114,7 @@ function StayInTheKnow() {
     <React.Fragment>
       <Heading
         level={2}
-        size="XS"
+        size="2XS"
         css={{
           marginTop: SPACING['L'],
           paddingTop: SPACING['L'],
@@ -178,7 +178,7 @@ function Share({ url, title }) {
     <React.Fragment>
       <Heading
         level={2}
-        size="XS"
+        size="2XS"
         css={{
           fontWeight: '600',
         }}
