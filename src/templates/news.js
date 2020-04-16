@@ -132,9 +132,8 @@ function StayInTheKnow() {
             display: 'inline-block',
           }}
         >
-          Sign up
+          Sign up for email updates
         </Link>{' '}
-        for email updates from the library.
       </Text>
     </React.Fragment>
   )
