@@ -8,6 +8,7 @@ import rehype from 'rehype-parse'
 import Prose from './prose'
 import Link from './link'
 import Callout from '../maybe-design-system/callout'
+import Blockquote from '../maybe-design-system/blockquote'
 
 /**
   Headings
@@ -143,6 +144,7 @@ const renderHast = new rehypeReact({
     div: ({ children }) => children,
     img: Image,
     u: ({ children }) => children,
+    blockquote: props => <Blockquote {...props} />,
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
