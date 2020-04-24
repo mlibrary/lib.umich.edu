@@ -10,7 +10,7 @@ export default function useGoogleTagManager({ eventName, value }) {
   const [valueDebounced] = useDebounce(value, 500)
 
   useEffect(() => {
-    if (initialized) {
+    if (initialized && valueDebounced.length > 0) {
       if (!window.dataLayer) {
         window.dataLayer = []
       }
@@ -21,7 +21,7 @@ export default function useGoogleTagManager({ eventName, value }) {
     } else {
       setInitialized(true)
     }
-  }, [valueDebounced])
+  }, [initialized, valueDebounced, eventName])
 
   return null
 }

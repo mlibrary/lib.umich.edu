@@ -195,7 +195,7 @@ function Search({ labelId }) {
       aria-labelledby={labelId}
     >
       <label
-        for="library-search-query"
+        htmlFor="library-search-query"
         css={{
           display: 'block',
           paddingBottom: SPACING['XS'],

@@ -51,7 +51,7 @@ export default function FinaASpecialistTemplate({ data }) {
       setInitialized(true)
       setSpecialists(processSpecialistData({ data }))
     }
-  }, [initialized])
+  }, [initialized, data])
 
   return (
     <TemplateLayout node={node}>
