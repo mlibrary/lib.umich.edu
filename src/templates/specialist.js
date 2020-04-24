@@ -180,7 +180,7 @@ function SpecialistsURLState() {
     // If there is state to be put in the URL, use that, otherwise,
     // clear the URL with the location pathname.
     const to = stateString.length > 0 ? '?' + stateString : location.pathname
-    navigate(to, { replace: true })
+    navigate(to, { replace: true, state: { preserveScroll: true } })
   }, [stateString])
 
   return null

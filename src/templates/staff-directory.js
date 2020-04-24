@@ -98,7 +98,10 @@ function StaffDirectoryQueryContainer({
   })
 
   useEffect(() => {
-    navigate('?' + stateString, { replace: true })
+    navigate('?' + stateString, {
+      replace: true,
+      state: { preserveScroll: true },
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stateString])
 
