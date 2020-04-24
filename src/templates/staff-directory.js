@@ -305,7 +305,6 @@ const StaffDirectory = React.memo(function StaffDirectory({
 
       {results.length > 0 && (
         <div
-          tabIndex="0"
           css={{
             overflowX: 'auto',
           }}

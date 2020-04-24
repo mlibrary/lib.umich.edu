@@ -181,6 +181,8 @@ function SpecialistsURLState() {
     // clear the URL with the location pathname.
     const to = stateString.length > 0 ? '?' + stateString : location.pathname
     navigate(to, { replace: true, state: { preserveScroll: true } })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stateString])
 
   return null
@@ -365,7 +367,6 @@ function SpecialistsTableResults() {
   return (
     <React.Fragment>
       <div
-        tabIndex="0"
         css={{
           overflowX: 'auto',
         }}
