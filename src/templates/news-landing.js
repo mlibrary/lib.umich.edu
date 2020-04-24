@@ -164,7 +164,7 @@ export const query = graphql`
     }
     newsMain: allNodeNews(
       filter: { field_news_type: { eq: "news_main" } }
-      sort: { fields: created, order: DESC }
+      sort: { fields: [field_featured_news_item, created], order: DESC }
     ) {
       edges {
         node {
