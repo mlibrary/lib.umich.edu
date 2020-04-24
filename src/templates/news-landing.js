@@ -23,7 +23,9 @@ import {
 
 export default function NewsLandingTemplate({ data }) {
   const node = data.page
-  const newsMain = processNewsData(data.newsMain)
+  const news = processNewsData(data.featuredNews).concat(
+    processNewsData(data.restNews)
+  )
   const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates)
   const newsMainInitialShow = 15
 
@@ -63,7 +65,7 @@ export default function NewsLandingTemplate({ data }) {
             </div>
           )}
 
-          {newsMain && (
+          {news && (
             <React.Fragment>
               <VisuallyHidden>
                 <Heading level={2} size="L">
@@ -73,7 +75,7 @@ export default function NewsLandingTemplate({ data }) {
               <Expandable>
                 <ol>
                   <ExpandableChildren show={newsMainInitialShow}>
-                    {newsMain.map((item, i) => (
+                    {news.map((item, i) => (
                       <li
                         key={'news-item-' + i}
                         css={{
@@ -94,8 +96,8 @@ export default function NewsLandingTemplate({ data }) {
                   </ExpandableChildren>
                 </ol>
 
-                {newsMain.length > newsMainInitialShow && (
-                  <ExpandableButton name="stories" count={newsMain.length} />
+                {news.length > newsMainInitialShow && (
+                  <ExpandableButton name="stories" count={news.length} />
                 )}
               </Expandable>
             </React.Fragment>
@@ -138,7 +140,7 @@ export default function NewsLandingTemplate({ data }) {
 
 function processNewsData(data) {
   if (!data) {
-    return null
+    return []
   }
 
   return data.edges.map(({ node }) => {
@@ -162,9 +164,25 @@ export const query = graphql`
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
-    newsMain: allNodeNews(
-      filter: { field_news_type: { eq: "news_main" } }
-      sort: { fields: [field_featured_news_item, created], order: DESC }
+    featuredNews: allNodeNews(
+      filter: {
+        field_news_type: { eq: "news_main" }
+        field_featured_news_item: { eq: true }
+      }
+      sort: { fields: created, order: DESC }
+    ) {
+      edges {
+        node {
+          ...newsFragment
+        }
+      }
+    }
+    restNews: allNodeNews(
+      filter: {
+        field_news_type: { eq: "news_main" }
+        field_featured_news_item: { eq: false }
+      }
+      sort: { fields: created, order: DESC }
     ) {
       edges {
         node {
