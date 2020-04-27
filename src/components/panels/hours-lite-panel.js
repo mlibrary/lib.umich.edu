@@ -142,7 +142,13 @@ function processHoursData(data, initialized) {
   }
 
   const result = data.map(node => {
-    const { text, label } = hours(node)
+    const hoursData = hours(node)
+    const { text, label } = hoursData
+      ? hoursData
+      : {
+          text: 'n/a',
+          label: 'n/a',
+        }
 
     return {
       text: node.title,
