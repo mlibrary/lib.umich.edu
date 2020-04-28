@@ -15,6 +15,7 @@ export const query = graphql`
       slug
       breadcrumb
     }
+    field_priority_for_homepage
     relationships {
       field_media_image {
         field_image_caption {

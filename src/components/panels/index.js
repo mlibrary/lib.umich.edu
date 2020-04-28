@@ -21,6 +21,7 @@ import HoursLitePanel from './hours-lite-panel'
 import LinkPanel from './link-panel'
 import DestinationHorizontalPanel from './destination-horizontal-panel'
 import getParentTitle from '../../utils/get-parent-title'
+import CustomPanel from './custom-panel'
 
 import { StateProvider } from '../use-state'
 
@@ -351,8 +352,11 @@ export default function Panels({ data }) {
               return <HoursPanel data={panel} key={id} />
             case 'paragraph__hero_panel':
               return <HeroPanel data={panel} key={id} />
+            case 'paragraph__custom_panel':
+              return <CustomPanel data={panel} key={id} />
             default:
-              throw new Error('Unknown panel type', type)
+              console.warn('Unknown panel type', type)
+              return null
           }
         })}
       </HideNotFirstHoursNextPreviousButtons>
