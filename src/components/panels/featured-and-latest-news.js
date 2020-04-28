@@ -1,5 +1,5 @@
 import React from 'react'
-import { useStaticQuery } from 'gatsby'
+import { useStaticQuery, graphql } from 'gatsby'
 import styled from '@emotion/styled'
 import * as moment from 'moment'
 import { SPACING, MEDIA_QUERIES, COLORS, Heading } from '@umich-lib/core'
