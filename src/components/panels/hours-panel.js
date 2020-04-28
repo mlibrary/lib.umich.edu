@@ -28,8 +28,8 @@ export function HoursPanelNextPrev() {
   const hoursRange = {
     text: `${from_date.format('MMM D')} - ${to_date.format('MMM D')}`,
     label: `Showing hours from ${from_date.format(
-      'dddd, MMMM Do, YYYY'
-    )} to ${to_date.format('dddd, MMMM Do, YYYY')}`,
+      'dddd, MMMM D, YYYY'
+    )} to ${to_date.format('dddd, MMMM D, YYYY')}`,
   }
 
   return (
@@ -235,7 +235,7 @@ function transformTableData({ node, now }) {
     headings = headings.concat({
       text: now.day(i).format('ddd'),
       subtext: now.day(i).format('MMM D'),
-      label: now.day(i).format('dddd, MMMM Do'),
+      label: now.day(i).format('dddd, MMMM D'),
     })
   }
 

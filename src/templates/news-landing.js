@@ -151,7 +151,7 @@ function processNewsData(data) {
 
     return {
       title,
-      subtitle: moment(created).format('MMMM Do, YYYY'),
+      subtitle: moment(created).format('MMMM D, YYYY'),
       description: body.summary,
       href: fields.slug,
       image,

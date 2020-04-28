@@ -15,7 +15,7 @@ function processNewsNodeForCard({ newsNode }) {
 
   return {
     title: newsNode.title,
-    subtitle: moment(newsNode.created).format('MMMM Do, YYYY'),
+    subtitle: moment(newsNode.created).format('MMMM D, YYYY'),
     href: newsNode.fields.slug,
     image: newsImage,
     children,

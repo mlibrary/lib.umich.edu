@@ -1,7 +1,15 @@
 import React from 'react'
 import { graphql } from 'gatsby'
 import Img from 'gatsby-image'
-import { Margins, Heading, SPACING, COLORS, Text } from '@umich-lib/core'
+import * as moment from 'moment'
+import {
+  Margins,
+  Heading,
+  SPACING,
+  COLORS,
+  Text,
+  TYPOGRAPHY,
+} from '@umich-lib/core'
 import {
   Template,
   TemplateSide,
@@ -22,7 +30,7 @@ const qs = require('qs')
 export default function NewsTemplate({ data }) {
   const node = getNode(data)
   const { bodyPanels, fullPanels } = transformNodePanels({ node })
-  const { field_title_context, body, fields, relationships } = node
+  const { field_title_context, body, fields, relationships, created } = node
   const { slug } = fields
   const image =
     relationships.field_media_image &&
@@ -46,10 +54,22 @@ export default function NewsTemplate({ data }) {
             size="3XL"
             css={{
               marginTop: SPACING['S'],
-              marginBottom: SPACING['L'],
+              marginBottom: SPACING['XL'],
             }}
           >
             {field_title_context}
+            {created && (
+              <p
+                css={{
+                  ...TYPOGRAPHY['2XS'],
+                  color: COLORS.neutral['300'],
+                  fontFamily: 'Muli',
+                  paddingTop: SPACING['M'],
+                }}
+              >
+                {moment(created).format('MMMM D, YYYY')}
+              </p>
+            )}
           </Heading>
           {body && <HTML html={body.processed} />}
           {bodyPanels && <Panels data={bodyPanels} />}
