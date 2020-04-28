@@ -1,6 +1,6 @@
 import React from 'react'
 import rehypeReact from 'rehype-react'
-import { Heading, Text, List, COLORS } from '@umich-lib/core'
+import { Heading, Text, List, COLORS, SPACING } from '@umich-lib/core'
 import unified from 'unified'
 import rehype from 'rehype-parse'
 import Prose from './prose'
@@ -82,6 +82,15 @@ const renderHast = new rehypeReact({
     'drupal-entity': props => <DrupalEntity {...props} />,
     iframe: () => null,
     article: () => null,
+    figure: props => <figure {...props} css={{ maxWidth: '38rem' }} />,
+    figcaption: props => (
+      <figcaption
+        {...props}
+        css={{
+          color: COLORS.neutral['300'],
+        }}
+      />
+    ),
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
