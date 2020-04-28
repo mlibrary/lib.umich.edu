@@ -89,7 +89,7 @@ const renderHast = new rehypeReact({
         css={{
           color: COLORS.neutral['300'],
         }}
-      ></figcaption>
+      />
     ),
   },
 
