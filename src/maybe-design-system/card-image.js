@@ -13,7 +13,7 @@ export default function CardImage({ image }) {
         backgroundColor: COLORS.blue['100'],
         paddingTop: '66.67%',
         marginBottom: SPACING['S'],
-        borderRadius: '2px',
+        borderRadius: '4px',
         overflow: 'hidden',
       }}
     />

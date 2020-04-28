@@ -51,7 +51,7 @@ export default function FinaASpecialistTemplate({ data }) {
       setInitialized(true)
       setSpecialists(processSpecialistData({ data }))
     }
-  }, [initialized])
+  }, [initialized, data])
 
   return (
     <TemplateLayout node={node}>
@@ -180,7 +180,9 @@ function SpecialistsURLState() {
     // If there is state to be put in the URL, use that, otherwise,
     // clear the URL with the location pathname.
     const to = stateString.length > 0 ? '?' + stateString : location.pathname
-    navigate(to, { replace: true })
+    navigate(to, { replace: true, state: { preserveScroll: true } })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stateString])
 
   return null
@@ -365,7 +367,6 @@ function SpecialistsTableResults() {
   return (
     <React.Fragment>
       <div
-        tabIndex="0"
         css={{
           overflowX: 'auto',
         }}

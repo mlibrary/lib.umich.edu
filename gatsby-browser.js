@@ -37,3 +37,11 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
     }
   }
 }
+
+export const shouldUpdateScroll = ({ routerProps: { location } }) => {
+  if (location?.state?.preserveScroll) {
+    return false
+  }
+
+  return true
+}

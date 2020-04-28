@@ -1,13 +1,13 @@
 import React from 'react'
-import { useStaticQuery, graphql } from 'gatsby'
-import Img from 'gatsby-image'
 import rehypeReact from 'rehype-react'
-import { Heading, Text, List, COLORS, Alert } from '@umich-lib/core'
+import { Heading, Text, List, COLORS } from '@umich-lib/core'
 import unified from 'unified'
 import rehype from 'rehype-parse'
 import Prose from './prose'
 import Link from './link'
+import DrupalEntity from './drupal-entity'
 import Callout from '../maybe-design-system/callout'
+import Blockquote from '../maybe-design-system/blockquote'
 
 /**
   Headings
@@ -43,69 +43,6 @@ const Heading6 = ({ children, ...other }) => (
   </Heading>
 )
 
-function Image({ children, ...props }) {
-  /*
-    Get all Drupal images so that we can later replace the generated
-    html img tag with the Gatsby Image component.
-  */
-  const allMediaImageNodes = useStaticQuery(
-    graphql`
-      query {
-        allMediaImage {
-          edges {
-            node {
-              drupal_id
-              relationships {
-                field_media_image {
-                  localFile {
-                    childImageSharp {
-                      fluid(maxWidth: 920) {
-                        ...GatsbyImageSharpFluid_noBase64
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    `
-  )
-
-  if (props['data-entity-uuid']) {
-    try {
-      const matchedImage = allMediaImageNodes.allMediaImage.edges.filter(
-        edge => edge.node.drupal_id === props['data-entity-uuid']
-      )[0]
-
-      return (
-        <Img
-          fluid={
-            matchedImage.node.relationships.field_media_image.localFile
-              .childImageSharp.fluid
-          }
-          alt={matchedImage.node.field_media_image.alt}
-        />
-      )
-    } catch (error) {
-      console.warn(
-        error,
-        'Unable to render image with Drupal entity uuid',
-        props['data-entity-uuid']
-      )
-    }
-
-    return (
-      <Alert intent="warning">
-        Something went wrong when rendering media images.
-      </Alert>
-    )
-  }
-
-  return children
-}
-
 const renderHast = new rehypeReact({
   components: {
     h2: Heading2,
@@ -140,13 +77,19 @@ const renderHast = new rehypeReact({
         {children}
       </Text>
     ),
-    div: ({ children }) => children,
-    img: Image,
     u: ({ children }) => children,
+    blockquote: props => <Blockquote {...props} />,
+    'drupal-entity': props => <DrupalEntity {...props} />,
+    iframe: () => null,
+    article: () => null,
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
   createElement: (component, props = {}, children = []) => {
+    if (props['data-entity-uuid']) {
+      return <DrupalEntity {...props} />
+    }
+
     if (component === 'div') {
       return <React.Fragment {...props}>{children}</React.Fragment>
     }

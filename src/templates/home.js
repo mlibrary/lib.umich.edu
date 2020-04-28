@@ -6,7 +6,7 @@ import SEO from '../components/seo'
 import Panels from '../components/panels'
 import VisuallyHidden from '@reach/visually-hidden'
 
-function BasicTemplate({ data }) {
+function HomePageTemplate({ data }) {
   const { drupal_internal__nid, relationships, body } = data.page
   const description = body && body.summary ? body.summary : null
 
@@ -21,7 +21,7 @@ function BasicTemplate({ data }) {
   )
 }
 
-export default BasicTemplate
+export default HomePageTemplate
 
 export const query = graphql`
   query($slug: String!) {

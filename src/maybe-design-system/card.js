@@ -6,6 +6,7 @@ import {
   Z_SPACE,
   LINK_STYLES,
   TYPOGRAPHY,
+  MEDIA_QUERIES,
 } from '@umich-lib/core'
 import CardImage from './card-image'
 
@@ -17,11 +18,25 @@ export default function Card({
   description,
   renderAnchor,
   children,
+  horizontal,
   ...rest
 }) {
+  const horizontalStyles = horizontal
+    ? {
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          display: 'grid',
+          gridTemplateColumns: `18.75rem 1fr `,
+          gridGap: SPACING['M'],
+          '[data-card-image]': {
+            marginBottom: '0',
+          },
+        },
+      }
+    : {}
+
   const anchorStyles = {
     display: 'block',
-    maxWidth: '600px',
+    ...horizontalStyles,
     ':hover': {
       '[data-card-image]': {
         ...Z_SPACE[8],
@@ -58,30 +73,32 @@ export default function Card({
     <React.Fragment>
       {image && <CardImage image={image} />}
 
-      <p role="heading" aria-level="3">
-        {subtitle && (
+      <div>
+        <p role="heading" aria-level="3">
+          {subtitle && (
+            <span
+              css={{
+                display: 'block',
+                color: COLORS.neutral[300],
+                marginBottom: SPACING['2XS'],
+                ...TYPOGRAPHY['3XS'],
+              }}
+            >
+              {subtitle}
+            </span>
+          )}
           <span
             css={{
-              display: 'block',
-              color: COLORS.neutral[300],
-              marginBottom: SPACING['2XS'],
-              ...TYPOGRAPHY['3XS'],
+              ...LINK_STYLES['description'],
             }}
+            data-card-title
           >
-            {subtitle}
+            {title}
           </span>
-        )}
-        <span
-          css={{
-            ...LINK_STYLES['description'],
-          }}
-          data-card-title
-        >
-          {title}
-        </span>
-      </p>
+        </p>
 
-      {renderChildren()}
+        {renderChildren()}
+      </div>
     </React.Fragment>
   )
 
@@ -123,6 +140,11 @@ Card.propTypes = {
    * Provide a url for where this card should route to.
    **/
   href: PropTypes.string,
+
+  /*
+   * Let the Card know if it can go horizontal on large screens.
+   **/
+  horizontal: PropTypes.bool,
 
   /*
    * An optional parameter to allow overriding the anchor rendering.

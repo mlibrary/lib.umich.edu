@@ -56,6 +56,7 @@ export const query = graphql`
         ...linkPanelFragment
         ...heroPanelFragment
         ...groupPanelFragment
+        ...customPanelFragment
       }
     }
   }

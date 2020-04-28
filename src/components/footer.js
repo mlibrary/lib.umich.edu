@@ -138,7 +138,7 @@ function Footer() {
           }}
         >
           {links.map(section => (
-            <section>
+            <section key={section.heading}>
               <Heading level={2} size="3XS">
                 {section.heading}
               </Heading>

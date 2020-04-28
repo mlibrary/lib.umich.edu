@@ -98,7 +98,10 @@ function StaffDirectoryQueryContainer({
   })
 
   useEffect(() => {
-    navigate('?' + stateString, { replace: true })
+    navigate('?' + stateString, {
+      replace: true,
+      state: { preserveScroll: true },
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stateString])
 
@@ -302,7 +305,6 @@ const StaffDirectory = React.memo(function StaffDirectory({
 
       {results.length > 0 && (
         <div
-          tabIndex="0"
           css={{
             overflowX: 'auto',
           }}
