@@ -101,7 +101,7 @@ export default function FeaturedAndLatestNews() {
           level={2}
           size="XL"
           css={{
-            marginBottom: SPACING['XL'],
+            marginBottom: SPACING['L'],
           }}
         >
           Feature
@@ -138,7 +138,7 @@ export default function FeaturedAndLatestNews() {
           size="XL"
           css={{
             marginTop: SPACING['XL'],
-            marginBottom: SPACING['XL'],
+            marginBottom: SPACING['L'],
             [MEDIA_QUERIES.LARGESCREEN]: {
               marginTop: 0,
             },
