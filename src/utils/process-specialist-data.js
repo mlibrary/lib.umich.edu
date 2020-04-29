@@ -50,9 +50,17 @@ export default function processSpecialistData({ data }) {
       inheritedNodesIds = Array.from(
         new Set(inheritedNodesIds.concat(children.map(child => child.id)))
       )
+      const groupEmail = processGroupEmail({
+        node,
+      })
+      const contacts = processContacts({
+        groupEmail,
+        users,
+      })
+
       return acc.concat({
         name: node.name,
-        users: users.length > 0 ? users : null,
+        contacts,
         category: node.relationships?.field_health_sciences_category?.name,
       })
     }, [])
@@ -62,12 +70,51 @@ export default function processSpecialistData({ data }) {
     return nodes.map(
       ({ name, field_user_display_name, field_user_work_title }) => {
         return {
-          uniqname: name,
-          name: field_user_display_name,
-          title: field_user_work_title,
+          link: {
+            to: '/users/' + name,
+            label: field_user_display_name,
+          },
+          description: field_user_work_title,
         }
       }
     )
+  }
+
+  function processGroupEmail({ node }) {
+    const { field_group_email, field_brief_group_description } = node
+
+    if (!field_group_email) {
+      return []
+    }
+
+    return [
+      {
+        link: {
+          to: 'mailto:' + field_group_email,
+          label: field_group_email,
+        },
+        description: field_brief_group_description,
+      },
+    ]
+  }
+
+  function processContacts({ users, groupEmail }) {
+    const joined = users.concat(groupEmail)
+
+    if (joined.length > 0) {
+      return joined
+    }
+
+    return [
+      {
+        link: {
+          to: '/ask-librarian',
+          label: 'Ask a Librarian',
+        },
+        description:
+          'We can help you locate library resources, connect with a specialist, or find support at any stage of your project.',
+      },
+    ]
   }
 
   function getUsers(node) {

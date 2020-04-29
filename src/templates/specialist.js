@@ -424,39 +424,18 @@ function SpecialistsTableResults() {
             </tr>
           </thead>
           <tbody>
-            {resultsShown.map(({ name, users, category }, i) => (
+            {resultsShown.map(({ name, contacts, category }, i) => (
               <tr key={name + i}>
                 <td>{name}</td>
                 <td colSpan="2">
-                  {users ? (
-                    <React.Fragment>
-                      {users.map(({ name, title, uniqname }, y) => (
-                        <div key={uniqname + y}>
-                          <Link to={'/users/' + uniqname}>{name}</Link>
-                          <p>{title}</p>
-                        </div>
-                      ))}
-                    </React.Fragment>
-                  ) : (
-                    <div>
-                      <Link to="/ask-librarian">Ask a Librarian</Link>
-                      <p>
-                        We can help you locate library resources, connect with a
-                        specialist, or find support at any stage of your
-                        project.
-                      </p>
+                  {contacts.map(({ link, description }, y) => (
+                    <div key={link.to + y}>
+                      <Link to={link.to}>{link.label}</Link>
+                      <p>{description}</p>
                     </div>
-                  )}
+                  ))}
                 </td>
-                {healthSciencesOnly && (
-                  <td
-                    css={{
-                      textTransform: 'capitalize',
-                    }}
-                  >
-                    {category}
-                  </td>
-                )}
+                {healthSciencesOnly && <td>{category}</td>}
               </tr>
             ))}
           </tbody>
@@ -487,7 +466,9 @@ function filterResults({ results, healthSciencesOnly, category }) {
   let filteredResults = results
 
   if (healthSciencesOnly) {
-    filteredResults = filteredResults.filter(result => result.category !== null)
+    filteredResults = filteredResults.filter(
+      result => result.category !== undefined
+    )
   }
 
   if (category) {
@@ -555,6 +536,8 @@ export const query = graphql`
           id
           name
           __typename
+          field_group_email
+          field_brief_group_description
           relationships {
             field_synonym {
               ...specialistsSynonym
@@ -572,6 +555,8 @@ export const query = graphql`
           id
           name
           __typename
+          field_group_email
+          field_brief_group_description
           relationships {
             field_health_sciences_category {
               name
