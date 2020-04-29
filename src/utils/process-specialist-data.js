@@ -53,7 +53,7 @@ export default function processSpecialistData({ data }) {
       return acc.concat({
         name: node.name,
         users: users.length > 0 ? users : null,
-        category: node.field_hs_category ? node.field_hs_category : null,
+        category: node.relationships?.field_health_sciences_category?.name,
       })
     }, [])
     .sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase())

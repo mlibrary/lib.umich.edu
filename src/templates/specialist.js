@@ -283,7 +283,7 @@ function SpecialistsCategorySelect() {
       onChange={e =>
         dispatch({ type: 'setCategory', category: e.target.value })
       }
-      value={category ? capitalizeString(category) : 'All categories'}
+      value={category ? category : 'All categories'}
     />
   )
 }
@@ -492,7 +492,7 @@ function filterResults({ results, healthSciencesOnly, category }) {
 
   if (category) {
     filteredResults = filteredResults.filter(
-      result => result.category.toLowerCase() === category.toLowerCase()
+      result => result.category === category
     )
   }
 
@@ -504,15 +504,10 @@ function getCategories(specialists) {
     new Set(
       specialists
         .map(({ category }) => category)
-        .filter(category => category !== null)
+        .filter(category => category !== undefined)
         .sort()
-        .map(str => capitalizeString(str))
     )
   )
-}
-
-function capitalizeString(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export const query = graphql`
@@ -576,9 +571,11 @@ export const query = graphql`
         node {
           id
           name
-          field_hs_category
           __typename
           relationships {
+            field_health_sciences_category {
+              name
+            }
             field_synonym {
               ...specialistsSynonym
             }
