@@ -1,6 +1,6 @@
 import React from 'react'
 import rehypeReact from 'rehype-react'
-import { Heading, Text, List, COLORS, SPACING } from '@umich-lib/core'
+import { Heading, Text, List, COLORS } from '@umich-lib/core'
 import unified from 'unified'
 import rehype from 'rehype-parse'
 import Prose from './prose'
