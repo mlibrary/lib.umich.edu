@@ -9,8 +9,8 @@ export default function Callout({ children, ...rest }) {
         margin: `${SPACING['XL']} 0`,
         padding: SPACING['L'],
         border: `solid 1px ${COLORS.neutral['100']}`,
-        borderLeft: `solid 4px ${COLORS.maize['400']}`,
-        borderRadius: '2px',
+        borderLeft: `solid 4px ${COLORS.teal['400']}`,
+        borderRadius: '4px',
         maxWidth: '38rem',
       }}
       data-umich-lib-callout
