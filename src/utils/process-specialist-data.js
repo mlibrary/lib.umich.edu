@@ -98,11 +98,18 @@ export default function processSpecialistData({ data }) {
     ]
   }
 
+  /*
+    If there is a groupEmail, use that.
+    Otherwise use users, and if there are no users,
+    use the Ask a Librarian contact.
+  */
   function processContacts({ users, groupEmail }) {
-    const joined = users.concat(groupEmail)
+    if (groupEmail.length > 0) {
+      return groupEmail
+    }
 
-    if (joined.length > 0) {
-      return joined
+    if (users.length > 0) {
+      return users
     }
 
     return [
