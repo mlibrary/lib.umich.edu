@@ -15,7 +15,13 @@ export default function DrupalEntity(props) {
             }
           }
         }
-        allMediaImage {
+        allMediaImage(
+          filter: {
+            relationships: {
+              field_media_image: { localFile: { extension: { eq: "jpg" } } }
+            }
+          }
+        ) {
           edges {
             node {
               drupal_id
