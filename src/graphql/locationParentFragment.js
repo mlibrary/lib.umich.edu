@@ -1,7 +1,7 @@
 import { graphql } from 'gatsby'
 
 export const query = graphql`
-  fragment locationFragment on node__location {
+  fragment locationParentFragment on node__location {
     __typename
     title
     field_title_context
@@ -45,19 +45,6 @@ export const query = graphql`
               }
             }
           }
-        }
-      }
-      field_panels {
-        ...linkPanelFragment
-        ...cardPanelFragment
-      }
-      field_parent_location {
-        __typename
-        ... on node__location {
-          ...locationCardFragment
-        }
-        ... on node__building {
-          ...buildingCardFragment
         }
       }
       field_parent_page {

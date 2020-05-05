@@ -1,8 +1,9 @@
 import { graphql } from 'gatsby'
 
 export const query = graphql`
-  fragment locationFragment on node__location {
+  fragment buildingParentFragment on node__building {
     __typename
+    id
     title
     field_title_context
     drupal_id
@@ -10,11 +11,8 @@ export const query = graphql`
     field_root_page_
     field_phone_number
     field_email
-    field_address_is_different_from_
-    field_local_navigation
     body {
       summary
-      processed
     }
     fields {
       slug
@@ -29,10 +27,6 @@ export const query = graphql`
     field_access {
       processed
     }
-    field_url {
-      uri
-    }
-    field_address_is_different_from_
     relationships {
       field_media_image {
         relationships {
@@ -47,24 +41,11 @@ export const query = graphql`
           }
         }
       }
-      field_panels {
-        ...linkPanelFragment
-        ...cardPanelFragment
-      }
-      field_parent_location {
-        __typename
-        ... on node__location {
-          ...locationCardFragment
-        }
-        ... on node__building {
-          ...buildingCardFragment
-        }
+      field_hours_open {
+        ...hoursFragment
       }
       field_parent_page {
-        __typename
-        ... on node__section_page {
-          ...sectionCardFragment
-        }
+        ...sectionCardFragment
       }
       field_visit {
         description {
@@ -75,13 +56,6 @@ export const query = graphql`
         description {
           processed
         }
-      }
-      field_hours_open {
-        ...hoursFragment
-      }
-      field_floor {
-        name
-        id
       }
     }
   }

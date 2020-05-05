@@ -1,7 +1,7 @@
 import { graphql } from 'gatsby'
 
 export const query = graphql`
-  fragment locationFragment on node__location {
+  fragment roomCardFragment on node__room {
     __typename
     title
     field_title_context
@@ -10,8 +10,10 @@ export const query = graphql`
     field_root_page_
     field_phone_number
     field_email
-    field_address_is_different_from_
+    field_hours_different_from_build
     field_local_navigation
+    field_is_location_
+    field_display_hours_
     body {
       summary
       processed
@@ -20,20 +22,40 @@ export const query = graphql`
       slug
       breadcrumb
     }
-    field_building_address {
-      locality
-      address_line1
-      postal_code
-      administrative_area
-    }
     field_access {
       processed
     }
+    field_room_number
+    field_phone_number
+    field_booking_email
     field_url {
       uri
     }
-    field_address_is_different_from_
     relationships {
+      field_room_building {
+        id
+        title
+        field_building_address {
+          locality
+          address_line1
+          postal_code
+          administrative_area
+        }
+        relationships {
+          field_hours_open {
+            ...hoursFragment
+          }
+        }
+      }
+      field_parent_location {
+        ... on node__location {
+          title
+        }
+      }
+      field_floor {
+        id
+        name
+      }
       field_media_image {
         relationships {
           field_media_image {
@@ -47,21 +69,10 @@ export const query = graphql`
           }
         }
       }
-      field_panels {
-        ...linkPanelFragment
-        ...cardPanelFragment
-      }
-      field_parent_location {
-        __typename
-        ... on node__location {
-          ...locationCardFragment
-        }
-        ... on node__building {
-          ...buildingCardFragment
-        }
+      field_hours_open {
+        ...hoursFragment
       }
       field_parent_page {
-        __typename
         ... on node__section_page {
           ...sectionCardFragment
         }
@@ -75,13 +86,6 @@ export const query = graphql`
         description {
           processed
         }
-      }
-      field_hours_open {
-        ...hoursFragment
-      }
-      field_floor {
-        name
-        id
       }
     }
   }
