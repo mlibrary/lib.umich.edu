@@ -94,7 +94,7 @@ const renderHast = new rehypeReact({
                     color: COLORS.maize['500'],
                   }}
                 />
-                {children}
+                <div>{children}</div>
               </div>
             </Alert>
           </div>
