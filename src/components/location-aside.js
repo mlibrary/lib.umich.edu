@@ -101,7 +101,9 @@ export default function LocationAside({ node }) {
           <Text>
             <Hours node={node} />
           </Text>
-          <Link to="/locations-and-hours/hours-view">View all hours</Link>
+          <Link to="/locations-and-hours/hours-view">
+            View hours for all locations
+          </Link>
         </LayoutWithIcon>
       </section>
       <address

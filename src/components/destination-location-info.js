@@ -54,7 +54,9 @@ function DestinationLocationInfo({ node }) {
             <span>
               Today: <Hours node={node} />
               <span css={{ display: 'block' }}>
-                <Link to="/locations-and-hours/hours-view">View all hours</Link>
+                <Link to="/locations-and-hours/hours-view">
+                  View hours for all locations
+                </Link>
               </span>
             </span>
           </IconText>
