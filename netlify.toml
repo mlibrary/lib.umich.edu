@@ -1,0 +1,5 @@
+[[redirects]]
+ from = "/database/*"
+ to = "https://apps.lib.umich.edu/database/:splat"
+ status = 200
+ force = true
