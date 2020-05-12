@@ -31,10 +31,7 @@ export default function Callout({ title, children, intent, alert, ...rest }) {
             size={24}
             css={{
               marginTop: SPACING['2XS'],
-              color:
-                intent === 'warning'
-                  ? COLORS.maize['400']
-                  : COLORS.neutral['300'],
+              color: COLORS.maize['500'],
             }}
           />
         )}
