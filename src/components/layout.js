@@ -7,6 +7,7 @@ import Footer from './footer'
 import DevelopmentAlert from './development-alert'
 import SkipLinks from './skip-links'
 import useNavigationData from '../hooks/use-navigation-data'
+import LibraryAlerts from '../maybe-design-system/library-alerts'
 
 function Layout({ children, drupalNid }) {
   const { primary, secondary } = useNavigationData()
@@ -53,6 +54,7 @@ function Layout({ children, drupalNid }) {
           <SkipLinks />
           <DevelopmentAlert />
           <UniversalHeader />
+          <LibraryAlerts domain="lib.umich.edu" />
           <Header primary={primary} secondary={secondary} />
         </section>
         <main id="maincontent">{children}</main>
