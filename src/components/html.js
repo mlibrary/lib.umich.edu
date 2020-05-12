@@ -72,32 +72,9 @@ const renderHast = new rehypeReact({
 
       if (className === 'umich-lib-alert') {
         return (
-          <div
-            css={{
-              maxWidth: '38rem',
-            }}
-          >
-            <Alert intent="warning">
-              <div
-                css={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr auto',
-                  gridGap: SPACING['XS'],
-                  padding: `${SPACING['XS']} 0`,
-                }}
-              >
-                <Icon
-                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
-                  size={24}
-                  css={{
-                    margin: SPACING['XS'],
-                    color: COLORS.maize['500'],
-                  }}
-                />
-                <div>{children}</div>
-              </div>
-            </Alert>
-          </div>
+          <Callout intent="warning" alert={true}>
+            {children}
+          </Callout>
         )
       }
 

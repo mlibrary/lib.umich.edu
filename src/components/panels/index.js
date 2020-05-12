@@ -22,6 +22,7 @@ import LinkPanel from './link-panel'
 import DestinationHorizontalPanel from './destination-horizontal-panel'
 import getParentTitle from '../../utils/get-parent-title'
 import CustomPanel from './custom-panel'
+import Callout from '../../maybe-design-system/callout'
 
 import { StateProvider } from '../use-state'
 
@@ -213,6 +214,26 @@ function TextPanel({ data }) {
   const title = data.field_title
   const template = data.relationships.field_text_template.field_machine_name
   const cards = data.relationships.field_text_card
+
+  if (template === 'callout') {
+    return (
+      <Margins>
+        <Callout intent="warning">
+          <Heading
+            level={2}
+            size="M"
+            css={{
+              marginBottom: SPACING['XS'],
+            }}
+          >
+            {title}
+          </Heading>
+
+          <HTML html={cards[0].field_body.processed} />
+        </Callout>
+      </Margins>
+    )
+  }
 
   if (template === 'body_width_text') {
     return (
