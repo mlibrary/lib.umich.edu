@@ -1,5 +1,9 @@
 import React from 'react'
 
+import { UniversalHeader } from '@umich-lib/core'
+import SkipLinks from './src/components/skip-links'
+import LibraryAlerts from './src/maybe-design-system/library-alerts'
+
 export const onClientEntry = () => {
   const {
     applyPolyfills,
@@ -16,7 +20,21 @@ export const wrapPageElement = ({ element }) => {
   // including location, data, etc - you don't need to pass it
   return (
     <React.Fragment>
-      {element}
+      <div
+        css={{
+          minHeight: '100%',
+          display: 'grid',
+          gridTemplateRows: 'auto auto 1fr',
+          gridTemplateColumns: '100%',
+        }}
+      >
+        <div>
+          <SkipLinks />
+          <UniversalHeader />
+          <LibraryAlerts domain="lib.umich.edu" />
+        </div>
+        {element}
+      </div>
       <m-chat></m-chat>
     </React.Fragment>
   )
