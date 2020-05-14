@@ -1,4 +1,6 @@
 import React from 'react'
+import SkipLinks from './src/components/skip-links'
+import LibraryAlerts from './src/maybe-design-system/library-alerts'
 
 export const onClientEntry = () => {
   const {
@@ -16,13 +18,27 @@ export const wrapPageElement = ({ element }) => {
   // including location, data, etc - you don't need to pass it
   return (
     <React.Fragment>
-      {element}
+      <div
+        css={{
+          minHeight: '100%',
+          display: 'grid',
+          gridTemplateRows: 'auto auto 1fr',
+          gridTemplateColumns: '100%',
+        }}
+      >
+        <div>
+          <SkipLinks />
+          <m-universal-header></m-universal-header>
+          <LibraryAlerts domain="lib.umich.edu" />
+        </div>
+        {element}
+      </div>
       <m-chat></m-chat>
     </React.Fragment>
   )
 }
 
-export const onRouteUpdate = ({ location, prevLocation }) => {
+export const onRouteUpdate = ({ prevLocation }) => {
   const oldPath = prevLocation ? prevLocation.pathname : null
 
   if (oldPath) {

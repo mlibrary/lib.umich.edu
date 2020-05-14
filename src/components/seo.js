@@ -58,11 +58,6 @@ function SEO({ description, lang, meta, keywords, title }) {
             <script
               async
               type="text/javascript"
-              src="https://cms.lib.umich.edu/alerts/libumalerts.js"
-            ></script>
-            <script
-              async
-              type="text/javascript"
               src="https://umich.edu/apis/umalerts/umalerts.js"
             ></script>
           </Helmet>

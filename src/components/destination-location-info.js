@@ -52,7 +52,7 @@ function DestinationLocationInfo({ node }) {
         <p>
           <IconText icon="access_time">
             <span>
-              Today: <Hours node={node} />
+              <Hours node={node} />
               <span css={{ display: 'block' }}>
                 <Link to="/locations-and-hours/hours-view">
                   View hours for all locations
