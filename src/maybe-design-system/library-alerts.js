@@ -6,36 +6,36 @@ export default function LibraryAlerts({ domain }) {
   const [status, setStatus] = useState('loading')
   const [alerts, setAlerts] = useState(null)
 
-  async function fetchAlerts() {
-    try {
-      const response = await fetch('https://staff.lib.umich.edu/api/alerts')
-
-      if (response.status === 200) {
-        const result = await response.json()
-        const filtered = result.reduce((memo, alert) => {
-          const domains = alert.domains.split(', ')
-
-          if (domains.includes(domain)) {
-            memo = memo.concat(alert)
-          }
-
-          return memo
-        }, [])
-
-        setAlerts(filtered)
-        setStatus('success')
-      }
-    } catch {
-      console.warn('Unable to fetch U-M Library Website Alerts.')
-      setStatus('error')
-    }
-  }
-
   useEffect(() => {
+    async function fetchAlerts() {
+      try {
+        const response = await fetch('https://staff.lib.umich.edu/api/alerts')
+
+        if (response.status === 200) {
+          const result = await response.json()
+          const filtered = result.reduce((memo, alert) => {
+            const domains = alert.domains.split(', ')
+
+            if (domains.includes(domain)) {
+              memo = memo.concat(alert)
+            }
+
+            return memo
+          }, [])
+
+          setAlerts(filtered)
+          setStatus('success')
+        }
+      } catch (error) {
+        console.warn('Unable to fetch U-M Library Website Alerts.', error)
+        setStatus('error')
+      }
+    }
+
     if (status === 'loading') {
       fetchAlerts()
     }
-  }, [status])
+  }, [status, domain])
 
   if (status === 'success') {
     return (
