@@ -72,7 +72,7 @@ export default function LibraryAlerts({ domain }) {
                       marginTop: SPACING['S'],
                     },
                   }}
-                  dangerouslySetInnerHTML={{ __html: alert.description }}
+                  dangerouslySetInnerHTML={{ __html: alert.html }}
                 />
               </div>
             </Margins>
