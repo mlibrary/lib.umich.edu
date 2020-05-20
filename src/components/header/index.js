@@ -1,30 +1,17 @@
 import React from 'react'
+import { useWindowSize } from '@reach/window-size'
+
 import HeaderLargeScreen from './header-largescreen'
 import HeaderSmallScreen from './header-smallscreen'
 
 function Header({ primary, secondary }) {
-  return (
-    <React.Fragment>
-      <div
-        css={{
-          [`@media only screen and (max-width: 1129px)`]: {
-            display: 'none',
-          },
-        }}
-      >
-        <HeaderLargeScreen primary={primary} secondary={secondary} />
-      </div>
-      <div
-        css={{
-          [`@media only screen and (min-width: 1130px)`]: {
-            display: 'none',
-          },
-        }}
-      >
-        <HeaderSmallScreen primary={primary} secondary={secondary} />
-      </div>
-    </React.Fragment>
-  )
+  const { width } = useWindowSize()
+
+  if (width > 1129) {
+    return <HeaderLargeScreen primary={primary} secondary={secondary} />
+  }
+
+  return <HeaderSmallScreen primary={primary} secondary={secondary} />
 }
 
 export default Header

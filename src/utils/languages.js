@@ -775,6 +775,14 @@ const LANGUAGES = {
     name: 'Asturian',
     nativeName: 'Asturian',
   },
+  lad: {
+    name: 'Ladino',
+    nativeName: 'Ladino',
+  },
+  yi: {
+    name: 'Yiddish',
+    nativeName: 'Yiddish',
+  },
 }
 
 export default LANGUAGES
