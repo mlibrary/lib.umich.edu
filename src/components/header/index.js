@@ -1,5 +1,5 @@
 import React from 'react'
-import WindowSize, { useWindowSize } from '@reach/window-size'
+import { useWindowSize } from '@reach/window-size'
 
 import HeaderLargeScreen from './header-largescreen'
 import HeaderSmallScreen from './header-smallscreen'
