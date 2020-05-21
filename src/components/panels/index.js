@@ -243,7 +243,14 @@ function TextPanel({ data }) {
             {title}
           </Heading>
 
-          <HTML html={cards[0].field_body.processed} />
+          <HTML
+            html={cards[0].field_body.processed}
+            css={{
+              '> *': {
+                maxWidth: placement === 'body' ? '38rem' : '100%',
+              },
+            }}
+          />
         </Callout>
       </MarginsWrapper>
     )
