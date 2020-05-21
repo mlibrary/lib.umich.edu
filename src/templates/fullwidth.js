@@ -13,7 +13,7 @@ import transformNodePanels from '../utils/transform-node-panels'
 
 export default function FullWidthTemplate({ data, ...rest }) {
   const node = getNode(data)
-  const { field_title_context, body, fields, relationships } = node
+  const { field_title_context, body, fields } = node
   const { bodyPanels, fullPanels } = transformNodePanels({ node })
 
   return (
