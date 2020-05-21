@@ -779,10 +779,6 @@ const LANGUAGES = {
     name: 'Ladino',
     nativeName: 'Ladino',
   },
-  yi: {
-    name: 'Yiddish',
-    nativeName: 'Yiddish',
-  },
 }
 
 export default LANGUAGES
