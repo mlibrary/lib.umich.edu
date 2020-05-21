@@ -22,6 +22,7 @@ import LinkPanel from './link-panel'
 import DestinationHorizontalPanel from './destination-horizontal-panel'
 import getParentTitle from '../../utils/get-parent-title'
 import CustomPanel from './custom-panel'
+import Callout from '../../maybe-design-system/callout'
 
 import { StateProvider } from '../use-state'
 
@@ -209,10 +210,51 @@ function CardPanel({ data, headingLevel = 2 }) {
   )
 }
 
+function MarginsWrapper({ useMargins = false, children }) {
+  if (useMargins) {
+    return <Margins>{children}</Margins>
+  }
+
+  return children
+}
+
 function TextPanel({ data }) {
   const title = data.field_title
+  const placement = data.field_placement
   const template = data.relationships.field_text_template.field_machine_name
   const cards = data.relationships.field_text_card
+
+  if (template === 'callout') {
+    return (
+      <MarginsWrapper useMargins={placement !== 'body'}>
+        <Callout
+          intent="warning"
+          css={{
+            maxWidth: placement === 'body' ? '38rem' : '100%',
+          }}
+        >
+          <Heading
+            level={2}
+            size="M"
+            css={{
+              marginBottom: SPACING['XS'],
+            }}
+          >
+            {title}
+          </Heading>
+
+          <HTML
+            html={cards[0].field_body.processed}
+            css={{
+              '> *': {
+                maxWidth: placement === 'body' ? '38rem' : '100%',
+              },
+            }}
+          />
+        </Callout>
+      </MarginsWrapper>
+    )
+  }
 
   if (template === 'body_width_text') {
     return (
