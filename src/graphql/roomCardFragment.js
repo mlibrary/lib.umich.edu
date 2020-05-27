@@ -14,6 +14,7 @@ export const query = graphql`
     field_local_navigation
     field_is_location_
     field_display_hours_
+    field_hours_different_from_build
     body {
       summary
       processed
@@ -41,6 +42,7 @@ export const query = graphql`
           postal_code
           administrative_area
         }
+        field_display_hours_
         relationships {
           field_hours_open {
             ...hoursFragment

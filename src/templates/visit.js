@@ -20,18 +20,10 @@ import HTML from '../components/html'
 import LocationAside from '../components/location-aside'
 import Panels from '../components/panels'
 import transformNodePanels from '../utils/transform-node-panels'
+import getNode from '../utils/get-node'
 
 export default function VisitTemplate({ data, ...rest }) {
-  /*
-    Is the data a room, building, or location?
-  */
-  const page = data.building
-    ? data.building
-    : data.location
-    ? data.location
-    : data.room
-    ? data.room
-    : null
+  const node = getNode(data)
 
   const {
     title,
@@ -42,11 +34,11 @@ export default function VisitTemplate({ data, ...rest }) {
     body,
     field_root_page_,
     field_access,
-  } = page
+  } = node
   const parentNode = relationships.field_parent_page[0]
   const isRootPage = field_root_page_ ? true : false
   const { field_visit, field_amenities } = relationships
-  const { bodyPanels, fullPanels } = transformNodePanels({ node: page })
+  const { bodyPanels, fullPanels } = transformNodePanels({ node })
   const description = body && body.summary ? body.summary : null
 
   return (
@@ -66,7 +58,7 @@ export default function VisitTemplate({ data, ...rest }) {
         items={processHorizontalNavigationData({
           parentNodeOrderByDrupalId: rest.pageContext.parents,
           parentNodes: data.parents.edges,
-          currentNode: page,
+          currentNode: node,
           childrenNodeOrderByDrupalId: rest.pageContext.children,
           childrenNodes: data.children.edges,
           isRootPage,
@@ -76,7 +68,7 @@ export default function VisitTemplate({ data, ...rest }) {
       <section aria-label="Hours, parking, and amenities">
         <Template>
           <TemplateSide>
-            <LocationAside node={page} />
+            <LocationAside node={node} />
           </TemplateSide>
           <TemplateContent>
             <Prose>

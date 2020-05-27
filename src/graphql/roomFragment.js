@@ -41,6 +41,7 @@ export const query = graphql`
           postal_code
           administrative_area
         }
+        field_display_hours_
         relationships {
           field_hours_open {
             ...hoursFragment

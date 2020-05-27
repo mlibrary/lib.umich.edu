@@ -6,16 +6,44 @@ import * as moment from 'moment'
   on some fields.
 */
 export function getHoursFromNode({ node }) {
-  const { field_hours_different_from_build } = node
-  const { field_hours_open, field_room_building } = node.relationships
+  console.log('getHoursFromNode', node)
 
-  if (!field_hours_different_from_build && field_room_building) {
-    return prioritizeHours({
-      hours: field_room_building.relationships.field_hours_open,
-    })
+  const { field_display_hours_ } = node
+
+  // Only check for hours if the node says to display hours.
+  if (!field_display_hours_) {
+    return null
   }
 
-  return prioritizeHours({ hours: field_hours_open })
+  const { field_hours_different_from_build } = node
+
+  // Hours come directly from this node.
+  if (field_hours_different_from_build) {
+    const { field_hours_open } = node.relationships
+
+    return prioritizeHours({
+      hours: field_hours_open,
+    })
+
+    // Hours are inherited from building and
+    // if not available, then parent location.
+  } else {
+    const { field_room_building, field_room_location } = node.relationships
+
+    if (!field_room_building && field_room_location) {
+      return prioritizeHours({
+        hours: field_room_location.relationships.field_hours_open,
+      })
+    }
+
+    if (field_room_building && !field_room_building.field_display_hours_) {
+      return prioritizeHours({
+        hours: field_room_building.relationships.field_room_location,
+      })
+    }
+  }
+
+  return null
 }
 
 /*
@@ -24,6 +52,10 @@ export function getHoursFromNode({ node }) {
 */
 export function findHoursSetByNodeForNow({ node, now }) {
   const allHours = getHoursFromNode({ node })
+
+  if (!allHours) {
+    return null
+  }
 
   const nowHour = allHours.find(set => {
     if (!set.field_date_range) {
