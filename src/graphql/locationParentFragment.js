@@ -10,8 +10,8 @@ export const query = graphql`
     field_root_page_
     field_phone_number
     field_email
-    field_address_is_different_from_
     field_local_navigation
+    field_address_is_different_from_
     body {
       summary
       processed
@@ -32,7 +32,8 @@ export const query = graphql`
     field_url {
       uri
     }
-    field_address_is_different_from_
+    field_display_hours_
+    field_hours_different_from_build
     relationships {
       field_media_image {
         relationships {
