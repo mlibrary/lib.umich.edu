@@ -59,6 +59,12 @@ export const query = graphql`
           processed
         }
       }
+      field_parent_location {
+        __typename
+        ... on node__location {
+          ...locationParentFragment
+        }
+      }
     }
   }
 `
