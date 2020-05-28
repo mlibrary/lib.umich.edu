@@ -36,10 +36,16 @@ export function getHoursFromNode({ node }) {
       })
     }
 
-    if (field_room_building && !field_room_building.field_display_hours_) {
-      return prioritizeHours({
-        hours: field_room_building.relationships.field_parent_location,
-      })
+    if (field_room_building) {
+      if (field_room_building.field_display_hours_) {
+        return prioritizeHours({
+          hours: field_room_building.relationships.field_hours_open,
+        })
+      } else {
+        return prioritizeHours({
+          hours: field_room_building.relationships.field_parent_location,
+        })
+      }
     }
   }
 
