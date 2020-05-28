@@ -28,17 +28,17 @@ export function getHoursFromNode({ node }) {
     // Hours are inherited from building and
     // if not available, then parent location.
   } else {
-    const { field_room_building, field_room_location } = node.relationships
+    const { field_room_building, field_parent_location } = node.relationships
 
-    if (!field_room_building && field_room_location) {
+    if (!field_room_building && field_parent_location) {
       return prioritizeHours({
-        hours: field_room_location.relationships.field_hours_open,
+        hours: field_parent_location.relationships.field_hours_open,
       })
     }
 
     if (field_room_building && !field_room_building.field_display_hours_) {
       return prioritizeHours({
-        hours: field_room_building.relationships.field_room_location,
+        hours: field_room_building.relationships.field_parent_location,
       })
     }
   }
