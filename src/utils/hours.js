@@ -6,8 +6,6 @@ import * as moment from 'moment'
   on some fields.
 */
 export function getHoursFromNode({ node }) {
-  console.log('getHoursFromNode', node)
-
   const { field_display_hours_ } = node
 
   // Only check for hours if the node says to display hours.
