@@ -26,8 +26,7 @@ function DestinationLocationInfo({ node }) {
     : node.relationships.field_parent_location.id
   const fid = node.relationships.field_floor.id
   const floorPlan = useFloorPlan(bid, fid)
-  const shouldDisplayHours =
-    node.field_is_location_ && node.field_display_hours_
+  const shouldDisplayHours = node.field_display_hours_
   const locationTitle = field_parent_location
     ? field_parent_location.title
     : field_room_building.title

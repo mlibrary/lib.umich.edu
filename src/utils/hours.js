@@ -56,6 +56,20 @@ export function getHoursFromNode({ node }) {
             .field_hours_open,
       })
     }
+
+    if (
+      field_parent_location &&
+      !field_parent_location.field_display_hours_ &&
+      field_parent_location.relationships.field_parent_location &&
+      field_parent_location.relationships.field_parent_location
+        .field_display_hours_
+    ) {
+      return prioritizeHours({
+        hours:
+          field_parent_location.relationships.field_parent_location
+            .relationships.field_hours_open,
+      })
+    }
   }
 
   return null
