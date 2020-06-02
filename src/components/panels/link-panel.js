@@ -23,8 +23,15 @@ export default function LinkPanel({ data }) {
 
         return linkObj
       })
+      const hasTopBorder = data.field_border
 
-      return <BulletedLinkList title={data.field_title} links={links} />
+      return (
+        <BulletedLinkList
+          title={data.field_title}
+          links={links}
+          hasTopBorder={hasTopBorder}
+        />
+      )
     case '2_column_db_link_list':
       return <DatabaseLinkList data={data} />
     case 'related_links':
@@ -34,14 +41,14 @@ export default function LinkPanel({ data }) {
   }
 }
 
-function BulletedLinkList({ title, links }) {
+function BulletedLinkList({ title, links, hasTopBorder = false }) {
   return (
     <section
       css={{
-        paddingTop: SPACING['XL'],
+        paddingTop: hasTopBorder ? SPACING['XL'] : 0,
         marginTop: SPACING['XL'],
         marginBottom: SPACING['XL'],
-        borderTop: `solid 1px ${COLORS.neutral['100']}`,
+        borderTop: hasTopBorder ? `solid 1px ${COLORS.neutral['100']}` : 'none',
       }}
     >
       <Heading level={2} size="M">

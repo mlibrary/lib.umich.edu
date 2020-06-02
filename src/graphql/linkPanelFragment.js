@@ -13,6 +13,7 @@ export const query = graphql`
       uri
       title
     }
+    field_border
     field_placement
     relationships {
       field_link_template {

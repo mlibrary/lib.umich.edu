@@ -257,6 +257,8 @@ function TextPanel({ data }) {
   }
 
   if (template === 'body_width_text') {
+    const hasTopBorder = data.field_border ? true : false
+
     return (
       <div
         css={{
@@ -266,8 +268,10 @@ function TextPanel({ data }) {
         {cards.map(card => (
           <section
             css={{
-              paddingTop: SPACING['XL'],
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              paddingTop: hasTopBorder ? SPACING['XL'] : 0,
+              borderTop: hasTopBorder
+                ? `solid 1px ${COLORS.neutral['100']}`
+                : 'none',
             }}
           >
             <Heading
