@@ -68,7 +68,7 @@ function BulletedLinkList({ title, links }) {
 }
 
 function DatabaseLinkList({ data }) {
-  const { field_title, field_link } = data
+  const { field_title, field_link, field_view_all } = data
 
   return (
     <section>
@@ -105,11 +105,8 @@ function DatabaseLinkList({ data }) {
         ))}
       </ol>
 
-      <Link
-        kind="list-strong"
-        to="https://search.lib.umich.edu/databases/browse"
-      >
-        View all databases
+      <Link kind="list-strong" to={field_view_all.uri}>
+        {field_view_all.title}
       </Link>
     </section>
   )
