@@ -319,7 +319,7 @@ function TextPanel({ data }) {
           >
             <Heading
               level={2}
-              size="L"
+              size="M"
               css={{
                 marginBottom: SPACING['M'],
               }}
