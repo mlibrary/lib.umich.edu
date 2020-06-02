@@ -99,7 +99,7 @@ export default function FeaturedAndLatestNews() {
       >
         <Heading
           level={2}
-          size="XL"
+          size="L"
           css={{
             marginBottom: SPACING['L'],
           }}
@@ -135,7 +135,7 @@ export default function FeaturedAndLatestNews() {
       >
         <Heading
           level={2}
-          size="XL"
+          size="L"
           css={{
             marginTop: SPACING['XL'],
             marginBottom: SPACING['L'],
