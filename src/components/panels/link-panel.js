@@ -1,5 +1,5 @@
 import React from 'react'
-import { SPACING, Heading, LINK_STYLES, COLORS } from '@umich-lib/core'
+import { SPACING, Heading, LINK_STYLES, COLORS, List } from '@umich-lib/core'
 import Link from '../link'
 import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id'
 import { PanelTemplate } from './index'
@@ -54,14 +54,10 @@ function BulletedLinkList({ title, links, hasTopBorder = false }) {
       <Heading level={2} size="M">
         {title}
       </Heading>
-      <ul
+      <List
+        type="bulleted"
         css={{
-          marginTop: SPACING['S'],
-          paddingLeft: SPACING['M'],
-          listStyle: 'disc',
-          '> li:not(:last-of-type)': {
-            marginBottom: SPACING['XS'],
-          },
+          marginTop: SPACING['M'],
         }}
       >
         {links.map(({ text, to }) => (
@@ -69,7 +65,7 @@ function BulletedLinkList({ title, links, hasTopBorder = false }) {
             <Link to={to}>{text}</Link>
           </li>
         ))}
-      </ul>
+      </List>
     </section>
   )
 }
