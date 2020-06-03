@@ -31,7 +31,7 @@ export const wrapPageElement = ({ element }) => {
         </div>
         {element}
       </div>
-      <m-chat></m-chat>
+      <m-chat id="chat"></m-chat>
     </React.Fragment>
   )
 }
