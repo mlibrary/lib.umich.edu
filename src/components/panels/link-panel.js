@@ -23,12 +23,19 @@ export default function LinkPanel({ data }) {
 
         return linkObj
       })
-      const hasTopBorder = data.field_border
+      const moreLink = data.field_view_all
+        ? {
+            text: data.field_view_all.title,
+            to: data.field_view_all.uri,
+          }
+        : null
+      const hasTopBorder = data.field_border === 'yes'
 
       return (
         <BulletedLinkList
           title={data.field_title}
           links={links}
+          moreLink={moreLink}
           hasTopBorder={hasTopBorder}
         />
       )
@@ -41,7 +48,7 @@ export default function LinkPanel({ data }) {
   }
 }
 
-function BulletedLinkList({ title, links, hasTopBorder = false }) {
+function BulletedLinkList({ title, links, moreLink, hasTopBorder = false }) {
   return (
     <section
       css={{
@@ -66,6 +73,16 @@ function BulletedLinkList({ title, links, hasTopBorder = false }) {
           </li>
         ))}
       </List>
+
+      {moreLink && (
+        <p
+          css={{
+            marginTop: SPACING['M'],
+          }}
+        >
+          <Link to={moreLink.to}>{moreLink.text}</Link>
+        </p>
+      )}
     </section>
   )
 }
