@@ -257,7 +257,7 @@ function TextPanel({ data }) {
   }
 
   if (template === 'body_width_text') {
-    const hasTopBorder = data.field_border ? true : false
+    const hasTopBorder = data.field_border === 'yes'
 
     return (
       <div
