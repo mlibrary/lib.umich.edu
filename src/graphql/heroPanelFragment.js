@@ -10,6 +10,9 @@ export const query = graphql`
     field_background
     field_placement
     relationships {
+      field_hero_template {
+        field_machine_name
+      }
       field_hero_images {
         field_orientation
         relationships {
