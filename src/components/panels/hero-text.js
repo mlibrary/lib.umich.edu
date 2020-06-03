@@ -8,7 +8,9 @@ import {
   Margins,
   MEDIA_QUERIES,
 } from '@umich-lib/core'
+import Link from '../link'
 import HTML from '../html'
+import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id'
 
 const MEDIAQUERIES = {
   XL: '@media only screen and (min-width: 1200px)',
@@ -17,7 +19,37 @@ const MEDIAQUERIES = {
   S: MEDIA_QUERIES.LARGESCREEN,
 }
 
+function getNIDFromURI({ uri }) {
+  if (uri.includes('entity:node/')) {
+    return uri.split('/')[1]
+  }
+
+  return null
+}
+
+function getLinkByNID({ nids, nid }) {
+  const obj = nids[nid]
+
+  if (!obj) {
+    return null
+  }
+
+  return {
+    text: obj.title,
+    to: obj.slug,
+  }
+}
+
 export default function HeroText({ data }) {
+  console.log('data', data)
+
+  /*
+    Consider finding a better way to do this.
+  */
+  const nids = usePageContextByDrupalNodeID()
+  const nid = getNIDFromURI({ uri: data.field_link && data.field_link[0].uri })
+  const link = getLinkByNID({ nids, nid })
+
   return (
     <Margins
       css={{
@@ -33,55 +65,61 @@ export default function HeroText({ data }) {
         },
       }}
     >
-      <section
-        css={{
-          color: 'white',
-          a: {
-            color: 'white',
-            boxShadow: 'none',
-            textDecoration: 'underline',
-            ':hover': {
-              boxShadow: 'none',
-              textDecorationThickness: '2px',
+      <BackgroundSection data={data}>
+        <div
+          css={{
+            padding: `${SPACING['2XL']} ${SPACING['M']}`,
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              padding: `${SPACING['4XL']} ${SPACING['S']}`,
             },
-          },
-        }}
-      >
-        <BackgroundSection data={data}>
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
           <div
             css={{
-              padding: `${SPACING['2XL']} ${SPACING['M']}`,
-              [MEDIA_QUERIES.LARGESCREEN]: {
-                padding: `${SPACING['4XL']} ${SPACING['S']}`,
+              textAlign: 'center',
+              color: 'white',
+              a: {
+                color: 'white',
+                boxShadow: 'none',
+                textDecoration: 'underline',
+                ':hover': {
+                  boxShadow: 'none',
+                  textDecorationThickness: '2px',
+                },
               },
-              display: 'flex',
-              justifyContent: 'center',
             }}
           >
-            <div
+            <Heading
+              size="3XL"
+              level={2}
               css={{
-                textAlign: 'center',
+                marginBottom: SPACING['M'],
               }}
             >
-              <Heading
-                size="3XL"
-                level={2}
+              {data.field_title}
+            </Heading>
+            <HTML
+              html={data.field_caption_text.processed}
+              css={{
+                fontSize: '1.25rem',
+              }}
+            />
+            {link && (
+              <span
                 css={{
-                  marginBottom: SPACING['M'],
-                }}
-              >
-                {data.field_title}
-              </Heading>
-              <HTML
-                html={data.field_caption_text.processed}
-                css={{
+                  display: 'inline-block',
+                  marginTop: SPACING['M'],
                   fontSize: '1.25rem',
                 }}
-              />
-            </div>
+              >
+                <Link to={link.to}>{link.text}</Link>
+              </span>
+            )}
           </div>
-        </BackgroundSection>
-      </section>
+        </div>
+      </BackgroundSection>
     </Margins>
   )
 }

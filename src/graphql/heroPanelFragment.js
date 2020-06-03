@@ -10,6 +10,10 @@ export const query = graphql`
     field_background
     field_placement
     field_title
+    field_link {
+      title
+      uri
+    }
     relationships {
       field_hero_template {
         field_machine_name
