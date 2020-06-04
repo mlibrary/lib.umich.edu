@@ -112,6 +112,13 @@ export default function HeroText({ data }) {
                   display: 'inline-block',
                   marginTop: SPACING['M'],
                   fontSize: '1.25rem',
+                  a: {
+                    textDecorationThickness: '2px',
+                    textDecorationColor: COLORS.maize['400'],
+                    ':focus, :hover': {
+                      textDecorationThickness: '4px',
+                    },
+                  },
                 }}
               >
                 <Link to={link.to}>{link.text}</Link>
