@@ -108,6 +108,7 @@ export default function SiteSearch({ label }) {
           }}
         />
         <ComboboxInput
+          id="site-search-input"
           aria-label={label}
           onChange={handleChange}
           placeholder={label}

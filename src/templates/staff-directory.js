@@ -274,7 +274,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
         }}
       >
         <TextInput
-          id="search"
+          id="staff-directory-search-input"
           labelText="Search by name, uniqname, or title"
           name="query"
           value={query}

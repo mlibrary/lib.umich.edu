@@ -320,7 +320,7 @@ function SpecialistsSearch() {
       }}
     >
       <TextInput
-        id="search"
+        id="find-specialist-search-input"
         labelText="Search by subject or specialty"
         name="query"
         value={query}
