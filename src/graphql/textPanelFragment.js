@@ -5,6 +5,7 @@ export const query = graphql`
     field_title
     id
     field_placement
+    field_border
     relationships {
       field_text_template {
         field_machine_name
