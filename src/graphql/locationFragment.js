@@ -23,6 +23,7 @@ export const query = graphql`
     field_building_address {
       locality
       address_line1
+      address_line2
       postal_code
       administrative_area
     }

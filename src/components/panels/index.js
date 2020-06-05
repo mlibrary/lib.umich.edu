@@ -149,7 +149,7 @@ function CardPanel({ data, headingLevel = 2 }) {
             >
               <Icon d={icons['address']} />
             </span>
-            <Address data={data} />
+            <Address node={data} />
           </div>
           <div
             css={{
