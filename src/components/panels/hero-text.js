@@ -41,8 +41,6 @@ function getLinkByNID({ nids, nid }) {
 }
 
 export default function HeroText({ data }) {
-  console.log('data', data)
-
   /*
     Consider finding a better way to do this.
   */
