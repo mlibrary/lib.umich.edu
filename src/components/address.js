@@ -64,7 +64,7 @@ export default function Address({
 
   otherwise `null`
 */
-function getAddress({ node, kind }) {
+function getAddress({ node }) {
   const { field_building_address } = node
   const { field_parent_location, field_room_building } = node.relationships
 
