@@ -101,9 +101,19 @@ function getAddress({ node }) {
 }
 
 function transformAddressDataToArray({ data }) {
-  const { address_line1, locality, administrative_area, postal_code } = data
+  const {
+    address_line1,
+    address_line2,
+    locality,
+    administrative_area,
+    postal_code,
+  } = data
 
-  return [address_line1, `${locality}, ${administrative_area} ${postal_code}`]
+  return [
+    address_line1,
+    address_line2,
+    `${locality}, ${administrative_area} ${postal_code}`,
+  ].filter(line => line !== null && line.length > 0)
 }
 
 /*
