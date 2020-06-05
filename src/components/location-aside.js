@@ -7,6 +7,7 @@ import icons from '../maybe-design-system/icons'
 import createGoogleMapsURL from './utilities/create-google-maps-url'
 
 import { getFloor } from '../utils'
+import getAddress from '../utils/get-address'
 
 function LayoutWithIcon({ d, palette, children }) {
   return (
@@ -40,23 +41,6 @@ function LayoutWithIcon({ d, palette, children }) {
   )
 }
 
-function getAddressData(node) {
-  const { field_address_is_different_from_, field_building_address } = node
-  const { field_parent_location, field_room_building } = node.relationships
-
-  if (field_address_is_different_from_ === false) {
-    return field_parent_location.field_building_address
-  }
-
-  return field_building_address
-    ? field_building_address
-    : field_room_building
-    ? field_room_building.field_building_address
-    : field_parent_location
-    ? field_parent_location.field_building_address
-    : {}
-}
-
 function getName({ node }) {
   const { field_parent_location, field_room_building } = node.relationships
 
@@ -69,12 +53,7 @@ function getName({ node }) {
 
 export default function LocationAside({ node }) {
   const { title, field_phone_number, field_email } = node
-  const {
-    address_line1,
-    locality,
-    administrative_area,
-    postal_code,
-  } = getAddressData(node)
+  const address = getAddress({ node })
   const floor = getFloor({ node })
   const name = getName({ node })
 
@@ -127,18 +106,21 @@ export default function LocationAside({ node }) {
           </Heading>
           {floor && <Text>{floor}</Text>}
           {name && <Text>{name}</Text>}
-          <Text>{address_line1}</Text>
-          <Text>
-            {locality}, {administrative_area} {postal_code}
-          </Text>
-          <Link
-            to={createGoogleMapsURL({
-              query: `${title} ${address_line1} ${locality}`,
-              place_id: null,
-            })}
-          >
-            View directions
-          </Link>
+          {address && (
+            <React.Fragment>
+              {address.map(line => (
+                <Text>{line}</Text>
+              ))}
+              <Link
+                to={createGoogleMapsURL({
+                  query: address.join(' '),
+                  place_id: null,
+                })}
+              >
+                View directions
+              </Link>
+            </React.Fragment>
+          )}
         </LayoutWithIcon>
 
         <LayoutWithIcon d={icons['phone']} palette="maize">
