@@ -64,7 +64,7 @@ export default function Address({
 
   otherwise `null`
 */
-function getAddress({ node }) {
+function getAddress({ node, kind }) {
   const { field_building_address } = node
   const { field_parent_location, field_room_building } = node.relationships
 
@@ -72,7 +72,7 @@ function getAddress({ node }) {
   // Drupal sends empty strings for "null" data somtimes...
   // eg AAEL or Hatcher Library
   if (field_building_address && field_building_address.address_line1.length) {
-    return transformAddressDataToArray({ data: field_building_address })
+    return transformAddressDataToArray({ data: field_building_address, kind })
   }
 
   // If no building data, then lookup room building.
@@ -83,6 +83,7 @@ function getAddress({ node }) {
   ) {
     let result = transformAddressDataToArray({
       data: field_room_building.field_building_address,
+      kind,
     })
 
     return result
@@ -94,13 +95,37 @@ function getAddress({ node }) {
   if (field_parent_location) {
     return transformAddressDataToArray({
       data: field_parent_location.field_building_address,
+      kind,
     })
   }
 
   return null
 }
 
-function transformAddressDataToArray({ data }) {
+/*
+  Take raw Drupal address data and build and
+  array of the strings we can about.
+
+  Example returns
+
+  ```
+    [
+      "913 S. University Ave",
+      "Ann Arbor, MI 48109-1190"
+    ]
+  ```
+
+  or
+
+  ```
+    [
+      "2800 Plymouth Road",
+      "Building 18, Room G018",
+      "Ann Arbor, MI 48109"
+    ]
+  ```
+*/
+function transformAddressDataToArray({ data, kind }) {
   const {
     address_line1,
     address_line2,
@@ -109,9 +134,13 @@ function transformAddressDataToArray({ data }) {
     postal_code,
   } = data
 
+  // This is a special one...
+  // eg MLibrary@NCRC describes building and room with line2.
+  const line2 = kind === 'brief' ? null : address_line2
+
   return [
     address_line1,
-    address_line2,
+    line2,
     `${locality}, ${administrative_area} ${postal_code}`,
   ].filter(line => line !== null && line.length > 0)
 }
