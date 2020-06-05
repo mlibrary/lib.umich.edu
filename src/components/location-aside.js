@@ -4,10 +4,7 @@ import { Heading, Icon, Text, COLORS, SPACING } from '@umich-lib/core'
 import Link from './link'
 import Hours from './todays-hours'
 import icons from '../maybe-design-system/icons'
-import createGoogleMapsURL from './utilities/create-google-maps-url'
-
-import { getFloor } from '../utils'
-import getAddress from '../utils/get-address'
+import Address from './address'
 
 function LayoutWithIcon({ d, palette, children }) {
   return (
@@ -41,21 +38,8 @@ function LayoutWithIcon({ d, palette, children }) {
   )
 }
 
-function getName({ node }) {
-  const { field_parent_location, field_room_building } = node.relationships
-
-  return field_parent_location
-    ? field_parent_location.title
-    : field_room_building
-    ? field_room_building.title
-    : null
-}
-
 export default function LocationAside({ node }) {
   const { title, field_phone_number, field_email } = node
-  const address = getAddress({ node })
-  const floor = getFloor({ node })
-  const name = getName({ node })
 
   return (
     <React.Fragment>
@@ -104,23 +88,7 @@ export default function LocationAside({ node }) {
           >
             Address
           </Heading>
-          {floor && <Text>{floor}</Text>}
-          {name && <Text>{name}</Text>}
-          {address && (
-            <React.Fragment>
-              {address.map(line => (
-                <Text>{line}</Text>
-              ))}
-              <Link
-                to={createGoogleMapsURL({
-                  query: address.join(' '),
-                  place_id: null,
-                })}
-              >
-                View directions
-              </Link>
-            </React.Fragment>
-          )}
+          <Address node={node} directions={true} kind="full" />
         </LayoutWithIcon>
 
         <LayoutWithIcon d={icons['phone']} palette="maize">
