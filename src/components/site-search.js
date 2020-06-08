@@ -81,7 +81,8 @@ export default function SiteSearch({ label }) {
 
   function handleSelect(term) {
     const page = results.find(r => r.title === term)
-    navigate(page.slug)
+
+    navigate('/' + page.slug)
   }
 
   //return null // Turn off while in dev. Combobox breaks hot reloading.
