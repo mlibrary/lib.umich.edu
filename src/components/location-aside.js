@@ -39,7 +39,7 @@ function LayoutWithIcon({ d, palette, children }) {
 }
 
 export default function LocationAside({ node }) {
-  const { title, field_phone_number, field_email } = node
+  const { field_phone_number, field_email } = node
 
   return (
     <React.Fragment>
