@@ -40,6 +40,7 @@ module.exports = {
         defaultQuality: 75,
       },
     },
+    /*
     {
       resolve: 'gatsby-source-libguides',
       options: {
@@ -53,6 +54,7 @@ module.exports = {
         },
       },
     },
+    */
     {
       resolve: 'gatsby-source-drupal',
       options: {
