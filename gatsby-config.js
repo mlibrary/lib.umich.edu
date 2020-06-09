@@ -41,6 +41,19 @@ module.exports = {
       },
     },
     {
+      resolve: 'gatsby-source-libguides',
+      options: {
+        api: {
+          url: process.env.LIBGUIDES_API_URL,
+        },
+        client: {
+          url: process.env.LIBGUIDES_CLIENT_URL,
+          id: process.env.LIBGUIDES_CLIENT_ID,
+          secret: process.env.LIBGUIDES_CLIENT_SECRET,
+        },
+      },
+    },
+    {
       resolve: 'gatsby-source-drupal',
       options: {
         baseUrl: DRUPAL_URL,
