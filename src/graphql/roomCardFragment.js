@@ -58,11 +58,6 @@ export const query = graphql`
           }
         }
       }
-      field_parent_location {
-        ... on node__location {
-          title
-        }
-      }
       field_floor {
         id
         name
