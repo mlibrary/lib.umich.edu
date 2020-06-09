@@ -227,7 +227,7 @@ export default function SiteSearch({ label }) {
                   },
                 }}
               >
-                {results.slice(0, 10).map((result, index) => (
+                {results.slice(0, 100).map((result, index) => (
                   <ComboboxOption
                     key={index}
                     value={result.title}
