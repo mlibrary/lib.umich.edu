@@ -57,9 +57,6 @@ export const query = graphql`
       }
       field_parent_location {
         __typename
-        ... on node__location {
-          ...locationParentFragment
-        }
         ... on node__building {
           ...buildingParentFragment
         }
