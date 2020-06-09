@@ -6,7 +6,10 @@ exports.sourceNodes = async (
 ) => {
   reporter.info(`[gatsby-source-libguides] Started ...`)
   if (!api.url || !client.url || !client.id || !client.secret) {
-    reporter.info(`[gatsby-source-libguides] Not configured. Exiting.`)
+    reporter.error(
+      `[gatsby-source-libguides]`,
+      new Error('Not configured. Exiting ...')
+    )
 
     return // Tell Gatsby we're done.
   }
@@ -34,7 +37,10 @@ exports.sourceNodes = async (
         return data
       })
       .catch(function() {
-        reporter.error(`[gatsby-source-libguides] Unable to authenticate.`)
+        reporter.error(
+          `[gatsby-source-libguides]`,
+          new Error('Unable to authenticate.')
+        )
       })
   }
 
@@ -56,7 +62,10 @@ exports.sourceNodes = async (
         return data
       })
       .catch(function() {
-        reporter.error(`[gatsby-source-libguides] Unable to fetch from API.`)
+        reporter.error(
+          `[gatsby-source-libguides]`,
+          new Error('Unable to fetch from API.')
+        )
       })
   }
 
