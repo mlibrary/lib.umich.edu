@@ -134,8 +134,6 @@ function transformAddressDataToArray({ data, kind }) {
     postal_code,
   } = data
 
-  console.log('transformAddressDataToArray', data, kind)
-
   // This is a special one...
   // eg MLibrary@NCRC describes building and room with line2.
   const line2 = kind === 'brief' ? null : address_line2
