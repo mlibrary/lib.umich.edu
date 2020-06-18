@@ -577,6 +577,8 @@ export const query = graphql`
           id
           __typename
           name
+          field_group_email
+          field_brief_group_description
           relationships {
             field_synonym {
               ...specialistsSynonym
