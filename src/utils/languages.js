@@ -779,6 +779,10 @@ const LANGUAGES = {
     name: 'Ladino',
     nativeName: 'Ladino',
   },
+  ota: {
+    name: 'Turkish, Ottoman (1500-1928)',
+    nativeName: 'Turkish, Ottoman (1500-1928)',
+  },
 }
 
 export default LANGUAGES
