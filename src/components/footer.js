@@ -237,7 +237,7 @@ function Footer() {
         <Margins>
           <span
             css={{
-              marginRight: SPACING['2XL'],
+              marginRight: SPACING['XL'],
               display: 'block',
               paddingBottom: SPACING['XS'],
               [MEDIA_QUERIES.LARGESCREEN]: {
@@ -249,7 +249,11 @@ function Footer() {
             © {year}, Regents of the University of Michigan
           </span>
 
-          <span>
+          <span
+            css={{
+              marginRight: SPACING['XL'],
+            }}
+          >
             Built with the{' '}
             <a
               href="https://design-system.lib.umich.edu/"
@@ -257,6 +261,15 @@ function Footer() {
             >
               U-M Library Design System
             </a>
+          </span>
+
+          <span>
+            <PlainLink
+              css={{ textDecoration: 'underline' }}
+              to="/release-notes"
+            >
+              Release notes
+            </PlainLink>
           </span>
         </Margins>
       </div>
