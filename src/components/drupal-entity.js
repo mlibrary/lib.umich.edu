@@ -2,6 +2,7 @@ import React from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
 import MediaPlayer from './media-player'
 import Image from './image'
+import Link from './link'
 
 export default function DrupalEntity(props) {
   const data = useStaticQuery(
@@ -12,6 +13,22 @@ export default function DrupalEntity(props) {
             node {
               drupal_id
               field_media_oembed_video
+            }
+          }
+        }
+        allMediaFile {
+          edges {
+            node {
+              drupal_id
+              name
+              relationships {
+                field_media_file {
+                  filemime
+                  localFile {
+                    publicURL
+                  }
+                }
+              }
             }
           }
         }
@@ -59,6 +76,22 @@ export default function DrupalEntity(props) {
       ?.childImageSharp?.fluid
   if (mediaImage) {
     return <Image image={mediaImage} />
+  }
+
+  const fileNode = data.allMediaFile.edges.find(
+    edge => edge.node.drupal_id === props['data-entity-uuid']
+  )
+  if (fileNode) {
+    const file = fileNode?.node?.relationships?.field_media_file
+    const to = file.localFile?.publicURL
+    const fileType = file?.filemime === 'application/pdf' ? ' (PDF)' : ''
+    const label = fileNode?.node?.name + fileType
+
+    if (!to || !label) {
+      return null
+    }
+
+    return <Link to={to}>{label}</Link>
   }
 
   return null
