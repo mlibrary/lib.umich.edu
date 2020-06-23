@@ -8,6 +8,7 @@ import Link from './link'
 import DrupalEntity from './drupal-entity'
 import Callout from '../maybe-design-system/callout'
 import Blockquote from '../maybe-design-system/blockquote'
+import Table from './table'
 
 /**
   Headings
@@ -99,6 +100,7 @@ const renderHast = new rehypeReact({
         }}
       />
     ),
+    table: Table,
   },
 
   // A workaround to replace the container div created by rehype-react with a React fragment.
