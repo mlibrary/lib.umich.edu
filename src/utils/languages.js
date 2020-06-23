@@ -780,8 +780,8 @@ const LANGUAGES = {
     nativeName: 'Ladino',
   },
   ota: {
-    name: 'Turkish, Ottoman (1500-1928)',
-    nativeName: 'Turkish, Ottoman (1500-1928)',
+    name: 'Ottoman Turkish',
+    nativeName: 'Ottoman Turkish',
   },
 }
 
