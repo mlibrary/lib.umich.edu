@@ -88,6 +88,7 @@ export const query = graphql`
         }
       }
       field_amenities {
+        name
         description {
           processed
         }
