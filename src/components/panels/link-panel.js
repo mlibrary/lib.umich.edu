@@ -125,9 +125,11 @@ function DatabaseLinkList({ data }) {
         ))}
       </ol>
 
-      <Link kind="list-strong" to={field_view_all.uri}>
-        {field_view_all.title}
-      </Link>
+      {field_view_all && (
+        <Link kind="list-strong" to={field_view_all.uri}>
+          {field_view_all.title}
+        </Link>
+      )}
     </section>
   )
 }
