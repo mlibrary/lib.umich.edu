@@ -45,6 +45,7 @@ export const query = graphql`
       }
       field_panels {
         __typename
+        ...textPanelFragment
         ...cardPanelFragment
         ...linkPanelFragment
       }
@@ -60,6 +61,7 @@ export const query = graphql`
         }
       }
       field_amenities {
+        name
         description {
           processed
         }
