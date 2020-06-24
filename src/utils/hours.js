@@ -160,8 +160,8 @@ function prioritizeHours({ hours }) {
     'paragraph__hours_exceptions',
     'paragraph__fall_and_winter_semester_hours',
   ]
-  const exceptions = hours.find(set => set.__typename === types[0])
-  const fallAndWinter = hours.find(set => set.__typename === types[1])
+  const exceptions = hours.filter(set => set.__typename === types[0])
+  const fallAndWinter = hours.filter(set => set.__typename === types[1])
   const everythingElse = hours.filter(set => !types.includes(set.__typename))
 
   const prioritized = []
