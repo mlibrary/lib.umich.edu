@@ -52,6 +52,7 @@ export const query = graphql`
       field_panels {
         ...linkPanelFragment
         ...cardPanelFragment
+        ...textPanelFragment
       }
       field_parent_location {
         __typename
