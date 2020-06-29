@@ -52,7 +52,35 @@ function processContacts(userData) {
     })
   }, [])
 
-  const userListSorted = userList.sort((a, b) => a.name > b.name)
+  function sortByTitle(a, b) {
+    const titleA = a.title.toUpperCase()
+    const titleB = b.title.toUpperCase()
+
+    if (titleA < titleB) {
+      return -1
+    }
+
+    if (titleA > titleB) {
+      return 1
+    }
+
+    return 0
+  }
+
+  const userListSorted = userList.sort(function(a, b) {
+    const nameA = a.name.toUpperCase()
+    const nameB = b.name.toUpperCase()
+
+    if (nameA < nameB) {
+      return -1
+    }
+
+    if (nameA > nameB) {
+      return 1
+    }
+
+    return 0
+  })
 
   return userListSorted
 }
