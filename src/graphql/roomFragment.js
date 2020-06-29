@@ -82,6 +82,7 @@ export const query = graphql`
         }
       }
       field_visit {
+        weight
         description {
           processed
         }

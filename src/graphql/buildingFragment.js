@@ -56,6 +56,7 @@ export const query = graphql`
         ...sectionCardFragment
       }
       field_visit {
+        weight
         description {
           processed
         }

@@ -130,9 +130,24 @@ export default function VisitTemplate({ data, ...rest }) {
 }
 
 function HTMLList({ data }) {
+  const sorted = data.sort((a, b) => {
+    const weightA = a.weight
+    const weightB = b.weight
+
+    if (weightA < weightB) {
+      return -1
+    }
+
+    if (weightA > weightB) {
+      return 1
+    }
+
+    return 0
+  })
+
   return (
     <List type="bulleted">
-      {data.map(({ description }, i) => (
+      {sorted.map(({ description }, i) => (
         <li key={i + description.processed}>
           <HTML html={description.processed} />
         </li>
