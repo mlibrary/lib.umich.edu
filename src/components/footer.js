@@ -41,7 +41,7 @@ const links = [
       },
       {
         text: 'Send us an email',
-        to: '/ask-librarian',
+        to: 'https://umich.qualtrics.com/jfe/form/SV_2bpfeZMnAK2ozhr',
         icon: 'mail_outline',
       },
       {
