@@ -116,7 +116,7 @@ function Footer() {
         <div
           css={{
             paddingTop: SPACING['2XL'],
-            paddingBottom: SPACING['2XL'],
+            paddingBottom: SPACING['L'],
             [MEDIA_QUERIES.LARGESCREEN]: {
               paddingTop: SPACING['3XL'],
               columns: '3',
@@ -226,6 +226,23 @@ function Footer() {
             </p>
           </section>
         </div>
+
+        <p
+          css={{
+            marginBottom: SPACING['2XL'],
+          }}
+        >
+          Have a question about this website?{' '}
+          <a
+            href="https://umich.qualtrics.com/jfe/form/SV_87ZJbL09VT6wZvL"
+            css={{
+              textDecoration: 'underline',
+            }}
+          >
+            Contact the website team
+          </a>
+          .
+        </p>
       </Margins>
       <div
         css={{
