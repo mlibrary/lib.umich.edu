@@ -34,7 +34,7 @@ module.exports = {
             process.env.GATSBY_ENV === 'production' ||
             NETLIFY_CONTEXT === 'production'
           const ROBOTS_ENV = isProduction ? 'production' : 'development'
-          console.log(`[gatsby-plugin-robots-txt] env: "${ROBOTS_ENV}"`)
+          console.log(`[gatsby-plugin-robots-txt] is in "${ROBOTS_ENV}" mode.`)
 
           return ROBOTS_ENV
         },
@@ -56,21 +56,6 @@ module.exports = {
         defaultQuality: 75,
       },
     },
-    /*
-    {
-      resolve: 'gatsby-source-libguides',
-      options: {
-        api: {
-          url: process.env.LIBGUIDES_API_URL,
-        },
-        client: {
-          url: process.env.LIBGUIDES_CLIENT_URL,
-          id: process.env.LIBGUIDES_CLIENT_ID,
-          secret: process.env.LIBGUIDES_CLIENT_SECRET,
-        },
-      },
-    },
-    */
     {
       resolve: 'gatsby-source-drupal',
       options: {
