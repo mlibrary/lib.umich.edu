@@ -29,7 +29,7 @@ When building for production with **Netlify**, we use [Netlify's built-in CONTEX
 
 Either `GATSBY_ENV` or `CONTEXT` (by Netlify) can signal a production build. We use both in-case we need to build for production without Netlify.
 
-If you'd like to build or develop with a **non-production Drupal CMS**, then use `DRUPAL_ENV`:
+If you'd like to build or develop with a **non-production Drupal CMS**, then use `DRUPAL_URL`:
 
 ```
 DRUPAL_URL=https://cms.staging.lib.umich.edu/
