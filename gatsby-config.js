@@ -30,7 +30,7 @@ module.exports = {
             NETLIFY_CONTEXT === 'production'
           const ROBOTS_ENV = isProduction ? 'production' : 'development'
           console.log(
-            `[gatsby-plugin-robots-txt] Using GATSBY_ENV: "${ROBOTS_ENV}"`
+            `[gatsby-plugin-robots-txt] Using ROBOTS_ENV: "${ROBOTS_ENV}"`
           )
 
           return ROBOTS_ENV
