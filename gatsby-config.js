@@ -5,7 +5,7 @@ console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
 module.exports = {
   siteMetadata: {
     title: 'University of Michigan Library',
-    siteUrl: 'https://lib.umich.edu/',
+    siteUrl: 'https://lib.umich.edu',
   },
   plugins: [
     `gatsby-plugin-remove-trailing-slashes`,
@@ -17,9 +17,12 @@ module.exports = {
         path: `${__dirname}/src/images/`,
       },
     },
+    `gatsby-plugin-sitemap`,
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
+        host: siteMetadata.siteUrl,
+        sitemap: siteMetadata.siteUrl + '/sitemap.xml',
         resolveEnv: () => {
           /*
             Assume development env for robots.txt unless explicity set to production.
