@@ -17,7 +17,7 @@ npm install
 
 3.  **Configuration**
 
-If you're building for **production**, you'll want to set these **environment variables** when **not** using Netlify.
+If you're building for **production**, you'll want to set these **environment variables** when **not** using Netlify. This env variable is important and will tell `robots.txt` files to not crawl the site for development builds, for example.
 
 ```
 GATSBY_ENV=production
@@ -25,7 +25,7 @@ GATSBY_ENV=production
 
 When building for production with **Netlify**, we use [Netlify's built-in CONTEXT](https://docs.netlify.com/configure-builds/environment-variables/#build-metadata) to decide if it is a build for production or a branch or PR preview deploy.
 
-Either `GATSBY_ENV` or `CONTEXT` can signal a production build.
+Either `GATSBY_ENV` or `CONTEXT` (by Netlify) can signal a production build. We use both in-case we need to build for production without Netlify.
 
 4.  **Start developing.**
 
