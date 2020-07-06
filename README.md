@@ -23,9 +23,19 @@ If you're building for **production**, you'll want to set these **environment va
 GATSBY_ENV=production
 ```
 
+`GATSBY_ENV` defaults to `development`.
+
 When building for production with **Netlify**, we use [Netlify's built-in CONTEXT](https://docs.netlify.com/configure-builds/environment-variables/#build-metadata) to decide if it is a build for production or a branch or PR preview deploy.
 
 Either `GATSBY_ENV` or `CONTEXT` (by Netlify) can signal a production build. We use both in-case we need to build for production without Netlify.
+
+If you'd like to build or develop with a **non-production Drupal CMS**, then use `DRUPAL_ENV`:
+
+```
+DRUPAL_URL=https://cms.staging.lib.umich.edu/
+```
+
+`DRUPAL_URL` defaults to `https://cms.lib.umich.edu/`.
 
 4.  **Start developing.**
 
