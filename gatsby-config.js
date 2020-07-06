@@ -1,20 +1,14 @@
 const COLORS = require('@umich-lib/core').COLORS
-
-let activeEnv =
-  process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV || 'development'
-console.log(`Using environment config: '${activeEnv}'`)
-require('dotenv').config({
-  path: `.env.${activeEnv}`,
-})
-
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
 
+const siteMetadata = {
+  title: 'University of Michigan Library',
+  siteUrl: 'https://lib.umich.edu',
+}
+
 module.exports = {
-  siteMetadata: {
-    title: 'University of Michigan Library',
-    siteUrl: 'https://preview.lib.umich.edu/',
-  },
+  siteMetadata,
   plugins: [
     `gatsby-plugin-remove-trailing-slashes`,
     'gatsby-plugin-netlify',
@@ -25,11 +19,33 @@ module.exports = {
         path: `${__dirname}/src/images/`,
       },
     },
+    `gatsby-plugin-sitemap`,
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
-        policy: [{ userAgent: '*', disallow: '/' }],
-        sitemap: null,
+        host: siteMetadata.siteUrl,
+        sitemap: siteMetadata.siteUrl + '/sitemap.xml',
+        resolveEnv: () => {
+          /*
+            Assume development env for robots.txt unless explicity set to production.
+          */
+          const NETLIFY_CONTEXT = process.env.CONTEXT // More: https://docs.netlify.com/site-deploys/overview/#deploy-contexts
+          const isProduction =
+            process.env.GATSBY_ENV === 'production' ||
+            NETLIFY_CONTEXT === 'production'
+          const ROBOTS_ENV = isProduction ? 'production' : 'development'
+          console.log(`[gatsby-plugin-robots-txt] is in "${ROBOTS_ENV}" mode.`)
+
+          return ROBOTS_ENV
+        },
+        env: {
+          production: {
+            policy: [{ userAgent: '*' }],
+          },
+          development: {
+            policy: [{ userAgent: '*', disallow: '/' }],
+          },
+        },
       },
     },
     'gatsby-transformer-sharp',
@@ -40,21 +56,6 @@ module.exports = {
         defaultQuality: 75,
       },
     },
-    /*
-    {
-      resolve: 'gatsby-source-libguides',
-      options: {
-        api: {
-          url: process.env.LIBGUIDES_API_URL,
-        },
-        client: {
-          url: process.env.LIBGUIDES_CLIENT_URL,
-          id: process.env.LIBGUIDES_CLIENT_ID,
-          secret: process.env.LIBGUIDES_CLIENT_SECRET,
-        },
-      },
-    },
-    */
     {
       resolve: 'gatsby-source-drupal',
       options: {
