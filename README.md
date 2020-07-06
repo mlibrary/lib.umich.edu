@@ -2,42 +2,38 @@
 
 1.  **Clone `lib.umich.edu`.**
 
-    ```sh
-    git clone https://github.com/mlibrary/lib.umich.edu.git
-    ```
+```sh
+git clone https://github.com/mlibrary/lib.umich.edu.git
+```
 
 2.  **Install dependencies.**
 
-    Navigate into your site’s directory and install dependencies with NPM.
+Navigate into your site’s directory and install dependencies with NPM.
 
-    ```sh
-    cd lib.umich.edu/
-    npm install
-    ```
+```sh
+cd lib.umich.edu/
+npm install
+```
 
 3.  **Configuration**
 
-Create an `.env.development` file at your project root.
+If you're building for **production**, you'll want to set these **environment variables** when **not** using Netlify.
 
 ```
-LIBGUIDES_API_URL=https://lgapi-us.libapps.com/1.2/az
-LIBGUIDES_CLIENT_URL=https://lgapi-us.libapps.com/1.2/oauth/token
-LIBGUIDES_CLIENT_ID=
-LIBGUIDES_CLIENT_SECRET=
+GATSBY_ENV=production
 ```
 
-And set a value for `LIBGUIDES_CLIENT_ID` and `LIBGUIDES_CLIENT_SECRET`.
+When building for production with **Netlify**, we use [Netlify's built-in CONTEXT](https://docs.netlify.com/configure-builds/environment-variables/#build-metadata) to decide if it is a build for production or a branch or PR preview deploy.
 
-- https://www.gatsbyjs.org/docs/environment-variables/#example-of-using-an-environment-variable
-- https://umich.libapps.com/libguides/
+Either `GATSBY_ENV` or `CONTEXT` can signal a production build.
 
 4.  **Start developing.**
 
-    Start it up.
+Start it up.
 
-    ```sh
-    npm start
-    ```
+```sh
+npm start
+```
 
 ## Help and troubleshooting
 
@@ -49,14 +45,6 @@ npm start
 ```
 
 https://www.gatsbyjs.org/docs/gatsby-cli/#clean
-
-## 💫 Stage
-
-Use the now.sh to stage the site and get a url to share.
-
-```sh
-npm run stage
-```
 
 ## 🧐 What's inside?
 

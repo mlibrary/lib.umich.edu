@@ -1,19 +1,13 @@
 const COLORS = require('@umich-lib/core').COLORS
-
-let activeEnv =
-  process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV || 'development'
-console.log(`Using environment config: '${activeEnv}'`)
-require('dotenv').config({
-  path: `.env.${activeEnv}`,
-})
-
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
+
+const NETLIFY_CONTEXT = process.env.CONTEXT
 
 module.exports = {
   siteMetadata: {
     title: 'University of Michigan Library',
-    siteUrl: 'https://preview.lib.umich.edu/',
+    siteUrl: 'https://lib.umich.edu/',
   },
   plugins: [
     `gatsby-plugin-remove-trailing-slashes`,
@@ -28,8 +22,28 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
-        policy: [{ userAgent: '*', disallow: '/' }],
-        sitemap: null,
+        resolveEnv: () => {
+          /*
+            Assume development env for robots.txt unless explicity set to production.
+          */
+          const isProduction =
+            process.env.GATSBY_ENV === 'production' ||
+            NETLIFY_CONTEXT === 'production'
+          const ROBOTS_ENV = isProduction ? 'production' : 'development'
+          console.log(
+            `[gatsby-plugin-robots-txt] Using GATSBY_ENV: "${ROBOTS_ENV}"`
+          )
+
+          return ROBOTS_ENV
+        },
+        env: {
+          production: {
+            policy: [{ userAgent: '*' }],
+          },
+          development: {
+            policy: [{ userAgent: '*', disallow: '/' }],
+          },
+        },
       },
     },
     'gatsby-transformer-sharp',
