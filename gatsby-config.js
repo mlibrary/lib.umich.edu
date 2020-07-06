@@ -2,11 +2,13 @@ const COLORS = require('@umich-lib/core').COLORS
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
 
+const siteMetadata = {
+  title: 'University of Michigan Library',
+  siteUrl: 'https://lib.umich.edu',
+}
+
 module.exports = {
-  siteMetadata: {
-    title: 'University of Michigan Library',
-    siteUrl: 'https://lib.umich.edu',
-  },
+  siteMetadata,
   plugins: [
     `gatsby-plugin-remove-trailing-slashes`,
     'gatsby-plugin-netlify',
