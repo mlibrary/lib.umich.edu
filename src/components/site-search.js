@@ -178,6 +178,8 @@ function ResultsContainer({ results, query, error, openResults }) {
   const searching = query.length > 0
   const noResults = searching && results.length === 0
 
+  // Do not render results, if user just hit ESC.
+  // This is reset when the query changes.
   if (!openResults) {
     return null
   }
