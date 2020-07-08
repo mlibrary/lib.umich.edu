@@ -21,6 +21,7 @@ export default function SiteSearch({ label }) {
   const [query, setQuery] = useState('')
   const [error, setError] = useState(null)
   const [results, setResults] = useState([])
+  const [openResults, setOpenResults] = useState([])
 
   useGoogleTagManager({
     eventName: 'siteSearch',
@@ -28,6 +29,11 @@ export default function SiteSearch({ label }) {
   })
 
   useEffect(() => {
+    // If the query changes, let results open again.
+    if (!openResults) {
+      setOpenResults(true)
+    }
+
     if (!query || !window.__LUNR__) {
       setResults([])
       return
@@ -70,6 +76,21 @@ export default function SiteSearch({ label }) {
       }
     }
   }, [query])
+
+  function handleKeydown(e) {
+    if (e.keyCode === 27) {
+      // ESC key
+      setOpenResults(false)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeydown)
+
+    return () => {
+      document.addEventListener('keydown', handleKeydown)
+    }
+  })
 
   const handleChange = e => setQuery(e.target.value)
   return (
@@ -129,7 +150,12 @@ export default function SiteSearch({ label }) {
         />
       </label>
 
-      <ResultsContainer results={results} query={query} error={error} />
+      <ResultsContainer
+        results={results}
+        query={query}
+        error={error}
+        openResults={openResults}
+      />
     </div>
   )
 }
@@ -148,9 +174,13 @@ function ResultsSummary({ searching, noResults, resultCount }) {
   )
 }
 
-function ResultsContainer({ results, query, error }) {
+function ResultsContainer({ results, query, error, openResults }) {
   const searching = query.length > 0
   const noResults = searching && results.length === 0
+
+  if (!openResults) {
+    return null
+  }
 
   return (
     <React.Fragment>
