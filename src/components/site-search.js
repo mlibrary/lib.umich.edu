@@ -208,7 +208,7 @@ function ResultsList({ searching, noResults, results, query, error }) {
         <KeyboardControlIntructions />
       </p>
       <ol>
-        {results.slice(0, 10).map((result, index) => (
+        {results.slice(0, 100).map((result, index) => (
           <li
             key={index}
             value={result.title}
