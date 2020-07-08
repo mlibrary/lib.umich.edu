@@ -94,11 +94,15 @@ export default function SiteSearch({ label }) {
 
   const handleChange = e => setQuery(e.target.value)
   return (
-    <div
+    <form
       css={{
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
+      }}
+      onSubmit={e => {
+        e.preventDefault()
+        setOpenResults(true)
       }}
     >
       <Icon
@@ -156,7 +160,7 @@ export default function SiteSearch({ label }) {
         error={error}
         openResults={openResults}
       />
-    </div>
+    </form>
   )
 }
 
