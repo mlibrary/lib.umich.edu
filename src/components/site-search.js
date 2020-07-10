@@ -250,10 +250,6 @@ function ResultsList({ searching, noResults, results, query, error }) {
             key={index}
             value={result.title}
             css={{
-              mark: {
-                fontWeight: '700',
-                background: COLORS.maize['200'],
-              },
               ':not(:last-child)': {
                 borderBottom: `solid 1px ${COLORS.neutral['100']}`,
               },
@@ -280,6 +276,10 @@ function ResultsList({ searching, noResults, results, query, error }) {
                 data-title
                 css={{
                   ...TYPOGRAPHY['XS'],
+                  mark: {
+                    background: COLORS.maize['200'] + '!important',
+                    fontWeight: '700',
+                  },
                 }}
                 aria-label={result.title + '.'}
               >
@@ -294,6 +294,10 @@ function ResultsList({ searching, noResults, results, query, error }) {
                     textOverflow: 'ellipsis',
                     '-webkit-line-clamp': '2',
                     '-webkit-box-orient': 'vertical',
+                    mark: {
+                      background: 'none',
+                      fontWeight: '600',
+                    },
                   }}
                   aria-label={result.summary}
                 >
