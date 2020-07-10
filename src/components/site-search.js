@@ -272,38 +272,11 @@ function ResultsList({ searching, noResults, results, query, error }) {
                 },
               }}
             >
-              <p
-                data-title
-                css={{
-                  ...TYPOGRAPHY['XS'],
-                  mark: {
-                    background: COLORS.maize['200'] + '!important',
-                    fontWeight: '700',
-                  },
-                }}
-                aria-label={result.title + '.'}
-              >
-                <HighlightText query={query} text={result.title} />
-              </p>
-              {result.summary && (
-                <p
-                  css={{
-                    display: '-webkit-box',
-                    color: COLORS.neutral['300'],
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    '-webkit-line-clamp': '2',
-                    '-webkit-box-orient': 'vertical',
-                    mark: {
-                      background: 'none',
-                      fontWeight: '600',
-                    },
-                  }}
-                  aria-label={result.summary}
-                >
-                  <HighlightText query={query} text={result.summary} />
-                </p>
-              )}
+              <ResultVisualContent query={query} result={result} />
+              <VisuallyHidden>
+                <p>{result.title}.</p>
+                {result.summary && <p>{result.summary}</p>}
+              </VisuallyHidden>
             </GatsbyLink>
           </li>
         ))}
@@ -317,6 +290,51 @@ function KeyboardControlIntructions() {
     <React.Fragment>
       <kbd>tab</kbd> to navigate, <kbd>enter</kbd> to select, <kbd>esc</kbd> to
       dismiss
+    </React.Fragment>
+  )
+}
+
+/**
+ * Display the content visually, with highlighting markup and all.
+ * This is great for sighted users, but it is problematic for users
+ * of screen readers since the phrase is broken up when read by
+ * some screen readers.
+ */
+function ResultVisualContent({ query, result }) {
+  return (
+    <React.Fragment>
+      <p
+        data-title
+        css={{
+          ...TYPOGRAPHY['XS'],
+          mark: {
+            background: COLORS.maize['200'] + '!important',
+            fontWeight: '700',
+          },
+        }}
+        aria-hidden="true"
+      >
+        <HighlightText query={query} text={result.title} />
+      </p>
+      {result.summary && (
+        <p
+          css={{
+            display: '-webkit-box',
+            color: COLORS.neutral['300'],
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            '-webkit-line-clamp': '2',
+            '-webkit-box-orient': 'vertical',
+            mark: {
+              background: 'none',
+              fontWeight: '600',
+            },
+          }}
+          aria-hidden="true"
+        >
+          <HighlightText query={query} text={result.summary} />
+        </p>
+      )}
     </React.Fragment>
   )
 }
