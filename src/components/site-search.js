@@ -265,18 +265,13 @@ function ResultsList({ searching, noResults, results, query, error }) {
                   background: COLORS.teal['100'],
                   borderLeft: `solid 4px ${COLORS.teal['400']}`,
                   paddingLeft: `calc(${SPACING['L']} - 4px)`,
-
                   '[data-title]': {
                     textDecoration: 'underline',
                   },
                 },
               }}
             >
-              <ResultVisualContent query={query} result={result} />
-              <VisuallyHidden>
-                <p>{result.title}.</p>
-                {result.summary && <p>{result.summary}</p>}
-              </VisuallyHidden>
+              <ResultContent query={query} result={result} />
             </GatsbyLink>
           </li>
         ))}
@@ -294,13 +289,7 @@ function KeyboardControlIntructions() {
   )
 }
 
-/**
- * Display the content visually, with highlighting markup and all.
- * This is great for sighted users, but it is problematic for users
- * of screen readers since the phrase is broken up when read by
- * some screen readers.
- */
-function ResultVisualContent({ query, result }) {
+function ResultContent({ query, result }) {
   return (
     <React.Fragment>
       <p
@@ -312,7 +301,6 @@ function ResultVisualContent({ query, result }) {
             fontWeight: '700',
           },
         }}
-        aria-hidden="true"
       >
         <HighlightText query={query} text={result.title} />
       </p>
@@ -330,7 +318,6 @@ function ResultVisualContent({ query, result }) {
               fontWeight: '600',
             },
           }}
-          aria-hidden="true"
         >
           <HighlightText query={query} text={result.summary} />
         </p>
@@ -344,8 +331,13 @@ function ResultVisualContent({ query, result }) {
  * matching and non-matching segments of text.
  */
 function HighlightText({ query, text }) {
+  // Escape regexp special characters in `str`
+  function escapeRegexp(str) {
+    return String(str).replace(/([.*+?=^!:${}()|[\]/\\])/g, '\\$1')
+  }
+
   const chunks = findAll({
-    searchWords: query.split(/\s+/),
+    searchWords: escapeRegexp(query || '').split(/\s+/),
     textToHighlight: text,
   })
 
