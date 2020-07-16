@@ -364,6 +364,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                     children
                   }
                   drupal_internal__nid
+                  field_seo_keywords
                   body {
                     summary
                   }
