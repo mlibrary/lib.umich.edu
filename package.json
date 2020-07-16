@@ -25,6 +25,7 @@
     "gatsby-plugin-sitemap": "^2.4.10",
     "gatsby-source-drupal": "^3.3.10",
     "gatsby-transformer-sharp": "^2.4.6",
+    "highlight-words-core": "^1.2.2",
     "moment": "^2.24.0",
     "patch-package": "^6.2.0",
     "prettier": "^1.19.1",
