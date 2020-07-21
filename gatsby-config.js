@@ -40,7 +40,7 @@ module.exports = {
         },
         env: {
           production: {
-            policy: [{ userAgent: '*' }],
+            policy: [{ userAgent: '*', allow: '/' }],
           },
           development: {
             policy: [{ userAgent: '*', disallow: '/' }],
