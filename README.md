@@ -20,7 +20,7 @@ npm install
 If you're building for **production**, you'll want to set these **environment variables** when **not** using Netlify. This env variable is important and will tell `robots.txt` files to not crawl the site for development builds, for example.
 
 ```
-GATSBY_ENV=production
+ROBOTSTXT_MODE=production
 ```
 
 `GATSBY_ENV` defaults to `development`.

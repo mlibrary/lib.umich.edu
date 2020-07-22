@@ -26,17 +26,27 @@ module.exports = {
         host: siteMetadata.siteUrl,
         sitemap: siteMetadata.siteUrl + '/sitemap.xml',
         resolveEnv: () => {
-          /*
-            Assume development env for robots.txt unless explicity set to production.
-          */
-          const NETLIFY_CONTEXT = process.env.CONTEXT // More: https://docs.netlify.com/site-deploys/overview/#deploy-contexts
-          const isProduction =
-            process.env.GATSBY_ENV === 'production' ||
-            NETLIFY_CONTEXT === 'production'
-          const ROBOTS_ENV = isProduction ? 'production' : 'development'
-          console.log(`[gatsby-plugin-robots-txt] is in "${ROBOTS_ENV}" mode.`)
+          /**
+           *
+           * Assume development env for robots.txt unless explicity
+           * set to production with ROBOTSTXT_MODE env var.
+           */
+          let mode = 'development'
 
-          return ROBOTS_ENV
+          /**
+           * Only is the mode in production when Netlify is deploying from
+           * the sites production branch and ROBOTSTXT_MODE is set to production.
+           */
+          if (
+            process.env.ROBOTSTXT_MODE === 'production' &&
+            process.env.CONTEXT === 'production'
+          ) {
+            mode = 'production'
+          }
+
+          console.log(`[gatsby-plugin-robots-txt] is in ${mode} mode.`)
+
+          return mode
         },
         env: {
           production: {
