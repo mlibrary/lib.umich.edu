@@ -10,6 +10,10 @@ export default ({ primary, secondary }) => (
   <header
     css={{
       borderBottom: `solid 2px ${COLORS.neutral[100]}`,
+      display: 'block',
+      '@media only screen and (max-width: 1128px)': {
+        display: 'none',
+      },
     }}
   >
     <Margins>
