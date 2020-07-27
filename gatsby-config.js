@@ -62,6 +62,8 @@ module.exports = {
               {
                 userAgent: '*',
                 disallow: ['/'],
+                host: null,
+                sitemap: null,
               },
             ],
           },
