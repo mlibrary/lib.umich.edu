@@ -23,6 +23,7 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
+        host: siteMetadata.siteUrl,
         sitemap: siteMetadata.siteUrl + '/sitemap.xml',
         resolveEnv: () => {
           /**
@@ -49,10 +50,20 @@ module.exports = {
         },
         env: {
           production: {
-            policy: [{ userAgent: '*', allow: '/' }],
+            policy: [
+              {
+                userAgent: '*',
+                allow: '/',
+              },
+            ],
           },
           development: {
-            policy: [{ userAgent: '*', disallow: '/' }],
+            policy: [
+              {
+                userAgent: '*',
+                disallow: ['/'],
+              },
+            ],
           },
         },
       },
