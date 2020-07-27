@@ -17,25 +17,22 @@ npm install
 
 3.  **Configuration**
 
-If you're building for **production**, you'll want to set these **environment variables** when **not** using Netlify. This env variable is important and will tell `robots.txt` files to not crawl the site for development builds, for example.
-
 ```
 ROBOTSTXT_MODE=production
 ```
 
-`GATSBY_ENV` defaults to `development`.
+If `ROBOTSTXT_MODE` is set to `production`, this tells the build to make a `robots.txt` that allows search engines to crawl the site. If your build is not for production, then don't set this variable or set it to `development` if needed.
 
-When building for production with **Netlify**, we use [Netlify's built-in CONTEXT](https://docs.netlify.com/configure-builds/environment-variables/#build-metadata) to decide if it is a build for production or a branch or PR preview deploy.
-
-Either `GATSBY_ENV` or `CONTEXT` (by Netlify) can signal a production build. We use both in-case we need to build for production without Netlify.
-
-If you'd like to build or develop with a **non-production Drupal CMS**, then use `DRUPAL_URL`:
+```
+CONTEXT=production
+```
+This env var is automatically available when building on Netlify, but if you're building the site **not** with Netlify set `CONTEXT` as `production`, otherwise `ROBOTSTXT_MODE` will not work as expected.
 
 ```
 DRUPAL_URL=https://cms.staging.lib.umich.edu/
 ```
 
-`DRUPAL_URL` defaults to `https://cms.lib.umich.edu/`.
+The site by default will build and pull data from `https://cms.lib.umich.edu/`, but you can change that with setting `DRUPAL_URL`.
 
 4.  **Start developing.**
 
@@ -43,6 +40,12 @@ Start it up.
 
 ```sh
 npm start
+```
+
+## Builds
+
+```sh
+npm run build
 ```
 
 ## Help and troubleshooting
