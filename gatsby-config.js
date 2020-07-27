@@ -23,7 +23,6 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
-        host: siteMetadata.siteUrl,
         sitemap: siteMetadata.siteUrl + '/sitemap.xml',
         resolveEnv: () => {
           /**
@@ -56,6 +55,12 @@ module.exports = {
             policy: [{ userAgent: '*', disallow: '/' }],
           },
         },
+      },
+    },
+    {
+      resolve: `gatsby-plugin-react-helmet-canonical-urls`,
+      options: {
+        siteUrl: siteMetadata.siteUrl,
       },
     },
     'gatsby-transformer-sharp',
