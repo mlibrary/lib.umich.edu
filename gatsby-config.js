@@ -4,7 +4,7 @@ console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
 
 const siteMetadata = {
   title: 'University of Michigan Library',
-  siteUrl: 'https://lib.umich.edu',
+  siteUrl: 'https://www.lib.umich.edu',
 }
 
 module.exports = {

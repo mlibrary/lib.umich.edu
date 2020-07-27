@@ -114,7 +114,7 @@ export default function NewsTemplate({ data }) {
           )}
 
           <Share
-            url={'https://lib.umich.edu' + slug}
+            url={'https://www.lib.umich.edu' + slug}
             title={field_title_context}
           />
           <StayInTheKnow />
