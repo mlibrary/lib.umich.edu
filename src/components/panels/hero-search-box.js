@@ -56,6 +56,17 @@ export default function HeroSearchBox({ data }) {
         [MEDIAQUERIES['L']]: {
           padding: `0 ${SPACING['2XL']}`,
         },
+        'a, span': {
+          borderColor: 'white',
+          boxShadow: 'none',
+        },
+        a: {
+          textDecoration: 'underline',
+          color: COLORS.neutral['400'],
+          ':hover': {
+            textDecorationThickness: '2px',
+          },
+        },
       }}
     >
       <BackgroundSection
@@ -133,17 +144,6 @@ function Caption({ caption }) {
         padding: `${SPACING['2XS']} ${SPACING['S']}`,
         borderRadius: '2px 0 0 0',
         ...frostCSS,
-        '*, a, span': {
-          borderColor: 'white',
-          boxShadow: 'none',
-        },
-        a: {
-          textDecoration: 'underline',
-          color: COLORS.neutral['400'],
-          ':hover': {
-            textDecorationThickness: '2px',
-          },
-        },
       }}
     >
       <HTML html={caption} />
@@ -207,7 +207,8 @@ function Search({ labelId }) {
           paddingBottom: SPACING['XS'],
         }}
       >
-        Search for books, articles, and more
+        Search our <a href="https://search.lib.umich.edu/catalog">catalog</a>,{' '}
+        <a href="https://search.lib.umich.edu/articles">articles</a>, and more
       </label>
       <div
         css={{
