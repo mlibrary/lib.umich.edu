@@ -4,7 +4,7 @@ console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
 
 const siteMetadata = {
   title: 'University of Michigan Library',
-  siteUrl: 'https://lib.umich.edu',
+  siteUrl: 'https://www.lib.umich.edu',
 }
 
 module.exports = {
@@ -50,12 +50,30 @@ module.exports = {
         },
         env: {
           production: {
-            policy: [{ userAgent: '*', allow: '/' }],
+            policy: [
+              {
+                userAgent: '*',
+                allow: '/',
+              },
+            ],
           },
           development: {
-            policy: [{ userAgent: '*', disallow: '/' }],
+            policy: [
+              {
+                userAgent: '*',
+                disallow: ['/'],
+                host: null,
+                sitemap: null,
+              },
+            ],
           },
         },
+      },
+    },
+    {
+      resolve: `gatsby-plugin-react-helmet-canonical-urls`,
+      options: {
+        siteUrl: siteMetadata.siteUrl,
       },
     },
     'gatsby-transformer-sharp',
