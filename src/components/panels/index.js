@@ -260,33 +260,35 @@ function TextPanel({ data }) {
     const hasTopBorder = data.field_border === 'yes'
 
     return (
-      <div
-        css={{
-          marginTop: SPACING['XL'],
-        }}
-      >
-        {cards.map(card => (
-          <section
-            css={{
-              paddingTop: hasTopBorder ? SPACING['XL'] : 0,
-              borderTop: hasTopBorder
-                ? `solid 1px ${COLORS.neutral['100']}`
-                : 'none',
-            }}
-          >
-            <Heading
-              level={2}
-              size="M"
+      <MarginsWrapper useMargins={placement !== 'body'}>
+        <div
+          css={{
+            marginTop: SPACING['XL'],
+          }}
+        >
+          {cards.map(card => (
+            <section
               css={{
-                marginBottom: SPACING['XS'],
+                paddingTop: hasTopBorder ? SPACING['XL'] : 0,
+                borderTop: hasTopBorder
+                  ? `solid 1px ${COLORS.neutral['100']}`
+                  : 'none',
               }}
             >
-              {title}
-            </Heading>
-            <HTML html={card.field_body.processed} />
-          </section>
-        ))}
-      </div>
+              <Heading
+                level={2}
+                size="M"
+                css={{
+                  marginBottom: SPACING['XS'],
+                }}
+              >
+                {title}
+              </Heading>
+              <HTML html={card.field_body.processed} />
+            </section>
+          ))}
+        </div>
+      </MarginsWrapper>
     )
   }
 
