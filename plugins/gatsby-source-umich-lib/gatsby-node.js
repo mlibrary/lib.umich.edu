@@ -206,12 +206,6 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
 exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   const { createPage } = actions
 
-  /**
-   * This is a useful backup if the server-side redirects ever fail.
-   * Redirects are very important!
-   */
-  createClientSideRedirects({ createRedirect: actions.createRedirect })
-
   return new Promise((resolve, reject) => {
     const basicTemplate = path.resolve(`src/templates/basic.js`)
     const fullWidthTemplate = path.resolve(`src/templates/fullwidth.js`)

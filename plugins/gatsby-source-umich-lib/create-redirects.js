@@ -70,34 +70,3 @@ async function createNetlifyRedirectsFile({ baseUrl }) {
 }
 
 exports.createNetlifyRedirectsFile = createNetlifyRedirectsFile
-
-function createClientSideRedirects({ createRedirect }) {
-  if (!createRedirect) {
-    throw 'createClientSideRedirects requires createRedirect arg'
-  }
-
-  const readInterface = readline.createInterface({
-    input: fs.createReadStream('public/_redirects'),
-  })
-
-  readInterface.on('line', function(line) {
-    if (line) {
-      const lineCopy = line.slice()
-      const urls = lineCopy.split(' ')
-      /**
-       * Creating client-side redirect from ' + urls[0] + ' to ' + urls[1]
-       */
-      createRedirect({
-        fromPath: urls[0],
-        toPath: urls[1],
-        isPermanent: true,
-        redirectInBrowser: true,
-        force: true,
-      })
-    }
-  })
-
-  console.log('Created back-up client-side redirects.')
-}
-
-exports.createClientSideRedirects = createClientSideRedirects
