@@ -1,7 +1,16 @@
 const request = require('request')
 const fs = require('fs')
+const readline = require('readline')
 
-async function createRedirectsFile({ baseUrl }) {
+/**
+ * Redirects are managed in Drupal. This function downloads it
+ * from the appropriate CMS server and makes it available in
+ * the public directory, so that Netlify can use it.
+ *
+ * Production _redirects file: https://cms.lib.umich.edu/_redirects
+ * Netlify redirect docs: https://docs.netlify.com/routing/redirects/
+ */
+async function createNetlifyRedirectsFile({ baseUrl }) {
   const dir = 'public'
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
@@ -43,4 +52,32 @@ async function createRedirectsFile({ baseUrl }) {
   })
 }
 
-exports.createRedirectsFile = createRedirectsFile
+exports.createNetlifyRedirectsFile = createNetlifyRedirectsFile
+
+function createClientSideRedirects({ createRedirect }) {
+  if (!createRedirect) {
+    throw 'createClientSideRedirects requires createRedirect arg'
+  }
+
+  const readInterface = readline.createInterface({
+    input: fs.createReadStream('public/_redirects'),
+  })
+
+  readInterface.on('line', function(line) {
+    if (line) {
+      const urls = line.split(' ')
+      /**
+       * Creating client-side redirect from ' + urls[0] + ' to ' + urls[1]
+       */
+      createRedirect({
+        fromPath: urls[0],
+        toPath: urls[1],
+        isPermanent: true,
+        redirectInBrowser: true,
+        force: true,
+      })
+    }
+  })
+}
+
+exports.createClientSideRedirects = createClientSideRedirects

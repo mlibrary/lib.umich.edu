@@ -2,7 +2,10 @@ const path = require(`path`)
 const { fetch } = require('./fetch')
 const { createBreadcrumb } = require(`./create-breadcrumb`)
 const { createStaffNodes } = require(`./create-staff-nodes`)
-const { createRedirectsFile } = require('./create-redirects-file')
+const {
+  createNetlifyRedirectsFile,
+  createClientSideRedirects,
+} = require('./create-redirects')
 
 /**
  * Implement Gatsby's Node APIs in this file.
@@ -202,6 +205,12 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
 // data layer is bootstrapped to let plugins create pages from data.
 exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   const { createPage } = actions
+
+  /**
+   * This is a useful backup if the server-side redirects ever fail.
+   * Redirects are very important!
+   */
+  createClientSideRedirects({ createRedirect: actions.createRedirect })
 
   return new Promise((resolve, reject) => {
     const basicTemplate = path.resolve(`src/templates/basic.js`)
@@ -623,5 +632,5 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
 }
 
 exports.onPreBootstrap = async ({}, { baseUrl }) => {
-  createRedirectsFile({ baseUrl: removeTrailingSlash(baseUrl) })
+  createNetlifyRedirectsFile({ baseUrl: removeTrailingSlash(baseUrl) })
 }
