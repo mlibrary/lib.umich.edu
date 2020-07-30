@@ -78,6 +78,8 @@ function createClientSideRedirects({ createRedirect }) {
       })
     }
   })
+
+  console.log('Created back-up client-side redirects.')
 }
 
 exports.createClientSideRedirects = createClientSideRedirects
