@@ -631,6 +631,6 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   })
 }
 
-exports.onPreBootstrap = async ({}, { baseUrl }) => {
+exports.onPreBuild = async ({}, { baseUrl }) => {
   createNetlifyRedirectsFile({ baseUrl: removeTrailingSlash(baseUrl) })
 }
