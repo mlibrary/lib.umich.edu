@@ -210,8 +210,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
    * This is a useful backup if the server-side redirects ever fail.
    * Redirects are very important!
    */
-  // TODO: fix line process to handle wildcard and #s, or validate URL for client-side.
-  //createClientSideRedirects({ createRedirect: actions.createRedirect })
+  createClientSideRedirects({ createRedirect: actions.createRedirect })
 
   return new Promise((resolve, reject) => {
     const basicTemplate = path.resolve(`src/templates/basic.js`)

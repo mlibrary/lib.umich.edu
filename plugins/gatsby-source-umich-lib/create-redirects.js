@@ -82,7 +82,8 @@ function createClientSideRedirects({ createRedirect }) {
 
   readInterface.on('line', function(line) {
     if (line) {
-      const urls = line.split(' ')
+      const lineCopy = line.slice()
+      const urls = lineCopy.split(' ')
       /**
        * Creating client-side redirect from ' + urls[0] + ' to ' + urls[1]
        */
