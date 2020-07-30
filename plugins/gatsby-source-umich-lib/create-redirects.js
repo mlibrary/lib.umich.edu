@@ -19,6 +19,23 @@ async function createNetlifyRedirectsFile({ baseUrl }) {
   const firstRedirectLine =
     'https://umich-lib.netlify.app/* https://lib.umich.edu/:splat 301!'
   const filePath = dir + '/_redirects'
+
+  /**
+   * Make sure we always create a new _redirects file.
+   * So, lets remove the cached one.
+   */
+  fs.unlink(filePath, err => {
+    if (err) {
+      // We expect 'ENOENT' because the file doesn't exist.
+      if (!err.code === 'ENOENT') {
+        throw err
+      }
+      console.log('[_redirects] cached _redirects file does not exist.')
+    } else {
+      console.log('[_redirects] cached _redirects file deleted.')
+    }
+  })
+
   let redirectsFile = fs.createWriteStream(filePath)
 
   await new Promise((resolve, reject) => {
