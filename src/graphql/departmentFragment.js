@@ -31,6 +31,7 @@ export const query = graphql`
       field_panels {
         __typename
         ...linkPanelFragment
+        ...textPanelFragment
       }
       field_media_file {
         relationships {
