@@ -3,6 +3,15 @@ const fs = require('fs')
 const readline = require('readline')
 
 /**
+ * TODO
+ *
+ * Status: This work is in-progress and not used.
+ *
+ * Gloal: The goal is to deploy consistent redirect rule numbers to Netlify,
+ * which causes warnings.
+ */
+
+/**
  * Redirects are managed in Drupal. This function downloads it
  * from the appropriate CMS server and makes it available in
  * the public directory, so that Netlify can use it.
