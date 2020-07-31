@@ -128,7 +128,7 @@ export default function NewsTemplate({ data }) {
 
 function StayInTheKnow() {
   const newsEmailSignUpURL =
-    'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvi7isF9mU_8aHCjw2GQahcr0Lv7Y_AmQ4Rk6XLOHcZXb6ieJPlgd4mmjhTWZtwsIPqu_3PBhHLOFjEqR0fdjI2A%3D'
+    'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D'
 
   return (
     <React.Fragment>
