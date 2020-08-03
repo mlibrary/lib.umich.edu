@@ -461,6 +461,7 @@ function StaffDirectoryResults({
         results={results}
         resultsSummary={resultsSummary}
         staffInView={staffInView}
+        staffImages={staffImages}
       />
     )
   }
@@ -612,9 +613,9 @@ function StaffDirectoryResults({
 }
 
 function StaffDirectorySmallScreenResults({
-  results,
   resultsSummary,
   staffInView,
+  staffImages,
 }) {
   return (
     <React.Fragment>
@@ -623,51 +624,77 @@ function StaffDirectorySmallScreenResults({
       </VisuallyHidden>
 
       <ol>
-        {staffInView.map(({ uniqname, name, title, email, phone }) => (
-          <li
-            key={uniqname}
-            css={{
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
-              paddingTop: SPACING['L'],
-              paddingBottom: SPACING['L'],
-              '> *:not(:last-child)': {
-                marginBottom: SPACING['S'],
-              },
-            }}
-          >
-            <PlainLink
+        {staffInView.map(
+          ({ uniqname, name, title, email, phone, image_mid }) => (
+            <li
+              key={uniqname}
               css={{
-                color: COLORS.teal['400'],
-                textDecoration: 'underline',
-                ':hover': {
-                  textDecorationThickness: '2px',
-                },
-                display: 'inline-block',
+                borderTop: `solid 1px ${COLORS.neutral['100']}`,
+                paddingTop: SPACING['M'],
+                paddingBottom: SPACING['M'],
               }}
-              to={`/users/` + uniqname}
             >
-              {name}
-            </PlainLink>
-            <p>
-              <span>
-                <Link to={`mailto:` + email} kind="subtle">
-                  {email}
-                </Link>
-              </span>
-              {phone && (
-                <span>
-                  <span css={{ padding: `0 ${SPACING['XS']}` }}>·</span>
-                  <Link to={`tel:1-` + phone} kind="subtle">
-                    {phone}
-                  </Link>
+              <div
+                css={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                }}
+              >
+                <span
+                  css={{
+                    display: 'inline-block',
+                    width: '43px',
+                    marginRight: SPACING['L'],
+                    lineHeight: '0',
+                    flexShrink: '0',
+                  }}
+                >
+                  <StaffPhoto mid={image_mid} staffImages={staffImages} />
                 </span>
-              )}
-            </p>
-            <p css={{ display: 'block', color: COLORS.neutral['300'] }}>
-              {title}
-            </p>
-          </li>
-        ))}
+                <div>
+                  <PlainLink
+                    css={{
+                      color: COLORS.teal['400'],
+                      textDecoration: 'underline',
+                      ':hover': {
+                        textDecorationThickness: '2px',
+                      },
+                      display: 'block',
+                    }}
+                    to={`/users/` + uniqname}
+                  >
+                    {name}
+                  </PlainLink>
+
+                  <p css={{ display: 'block', marginBottom: SPACING['XS'] }}>
+                    {title}
+                  </p>
+                  <p>
+                    <Link to={`mailto:` + email} kind="subtle">
+                      {email}
+                    </Link>
+                    {phone && (
+                      <React.Fragment>
+                        <span
+                          css={{
+                            display: 'inline-block',
+                            padding: `0 ${SPACING['XS']}`,
+                          }}
+                          aria-hidden="true"
+                        >
+                          ·
+                        </span>
+                        <Link to={`tel:1-` + phone} kind="subtle">
+                          {phone}
+                        </Link>
+                      </React.Fragment>
+                    )}
+                  </p>
+                </div>
+              </div>
+            </li>
+          )
+        )}
       </ol>
     </React.Fragment>
   )
