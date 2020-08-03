@@ -461,7 +461,6 @@ function StaffDirectoryResults({
         results={results}
         resultsSummary={resultsSummary}
         staffInView={staffInView}
-        staffImages={staffImages}
       />
     )
   }
@@ -612,11 +611,7 @@ function StaffDirectoryResults({
   )
 }
 
-function StaffDirectorySmallScreenResults({
-  resultsSummary,
-  staffInView,
-  staffImages,
-}) {
+function StaffDirectorySmallScreenResults({ resultsSummary, staffInView }) {
   return (
     <React.Fragment>
       <VisuallyHidden>
@@ -624,57 +619,55 @@ function StaffDirectorySmallScreenResults({
       </VisuallyHidden>
 
       <ol>
-        {staffInView.map(
-          ({ uniqname, name, title, email, phone, image_mid }) => (
-            <li
-              key={uniqname}
+        {staffInView.map(({ uniqname, name, title, email, phone }) => (
+          <li
+            key={uniqname}
+            css={{
+              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              paddingTop: SPACING['M'],
+              paddingBottom: SPACING['M'],
+            }}
+          >
+            <PlainLink
               css={{
-                borderTop: `solid 1px ${COLORS.neutral['100']}`,
-                paddingTop: SPACING['M'],
-                paddingBottom: SPACING['M'],
+                color: COLORS.teal['400'],
+                textDecoration: 'underline',
+                ':hover': {
+                  textDecorationThickness: '2px',
+                },
+                display: 'block',
               }}
+              to={`/users/` + uniqname}
             >
-              <PlainLink
-                css={{
-                  color: COLORS.teal['400'],
-                  textDecoration: 'underline',
-                  ':hover': {
-                    textDecorationThickness: '2px',
-                  },
-                  display: 'block',
-                }}
-                to={`/users/` + uniqname}
-              >
-                {name}
-              </PlainLink>
+              {name}
+            </PlainLink>
 
-              <p css={{ display: 'block', marginBottom: SPACING['XS'] }}>
-                {title}
-              </p>
-              <p>
-                <Link to={`mailto:` + email} kind="subtle">
-                  {email}
-                </Link>
-                {phone && (
-                  <React.Fragment>
-                    <span
-                      css={{
-                        display: 'inline-block',
-                        padding: `0 ${SPACING['XS']}`,
-                      }}
-                      aria-hidden="true"
-                    >
-                      ·
-                    </span>
-                    <Link to={`tel:1-` + phone} kind="subtle">
-                      {phone}
-                    </Link>
-                  </React.Fragment>
-                )}
-              </p>
-            </li>
-          )
-        )}
+            <p css={{ display: 'block', marginBottom: SPACING['XS'] }}>
+              {title}
+            </p>
+            <p>
+              <Link to={`mailto:` + email} kind="subtle">
+                {email}
+              </Link>
+              {phone && (
+                <React.Fragment>
+                  <span
+                    css={{
+                      display: 'inline-block',
+                      padding: `0 ${SPACING['XS']}`,
+                    }}
+                    aria-hidden="true"
+                  >
+                    ·
+                  </span>
+                  <Link to={`tel:1-` + phone} kind="subtle">
+                    {phone}
+                  </Link>
+                </React.Fragment>
+              )}
+            </p>
+          </li>
+        ))}
       </ol>
     </React.Fragment>
   )
