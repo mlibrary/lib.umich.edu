@@ -634,64 +634,44 @@ function StaffDirectorySmallScreenResults({
                 paddingBottom: SPACING['M'],
               }}
             >
-              <div
+              <PlainLink
                 css={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
+                  color: COLORS.teal['400'],
+                  textDecoration: 'underline',
+                  ':hover': {
+                    textDecorationThickness: '2px',
+                  },
+                  display: 'block',
                 }}
+                to={`/users/` + uniqname}
               >
-                <span
-                  css={{
-                    display: 'inline-block',
-                    width: '43px',
-                    marginRight: SPACING['L'],
-                    lineHeight: '0',
-                    flexShrink: '0',
-                  }}
-                >
-                  <StaffPhoto mid={image_mid} staffImages={staffImages} />
-                </span>
-                <div>
-                  <PlainLink
-                    css={{
-                      color: COLORS.teal['400'],
-                      textDecoration: 'underline',
-                      ':hover': {
-                        textDecorationThickness: '2px',
-                      },
-                      display: 'block',
-                    }}
-                    to={`/users/` + uniqname}
-                  >
-                    {name}
-                  </PlainLink>
+                {name}
+              </PlainLink>
 
-                  <p css={{ display: 'block', marginBottom: SPACING['XS'] }}>
-                    {title}
-                  </p>
-                  <p>
-                    <Link to={`mailto:` + email} kind="subtle">
-                      {email}
+              <p css={{ display: 'block', marginBottom: SPACING['XS'] }}>
+                {title}
+              </p>
+              <p>
+                <Link to={`mailto:` + email} kind="subtle">
+                  {email}
+                </Link>
+                {phone && (
+                  <React.Fragment>
+                    <span
+                      css={{
+                        display: 'inline-block',
+                        padding: `0 ${SPACING['XS']}`,
+                      }}
+                      aria-hidden="true"
+                    >
+                      ·
+                    </span>
+                    <Link to={`tel:1-` + phone} kind="subtle">
+                      {phone}
                     </Link>
-                    {phone && (
-                      <React.Fragment>
-                        <span
-                          css={{
-                            display: 'inline-block',
-                            padding: `0 ${SPACING['XS']}`,
-                          }}
-                          aria-hidden="true"
-                        >
-                          ·
-                        </span>
-                        <Link to={`tel:1-` + phone} kind="subtle">
-                          {phone}
-                        </Link>
-                      </React.Fragment>
-                    )}
-                  </p>
-                </div>
-              </div>
+                  </React.Fragment>
+                )}
+              </p>
             </li>
           )
         )}
