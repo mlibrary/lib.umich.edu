@@ -85,11 +85,15 @@ export default function VisitTemplate({ data, ...rest }) {
               </Heading>
               <HTMLList data={field_visit} />
 
-              <Heading level={2} size="M">
-                Getting here
-              </Heading>
+              {field_access && (
+                <React.Fragment>
+                  <Heading level={2} size="M">
+                    Getting here
+                  </Heading>
 
-              <HTML html={field_access.processed} />
+                  <HTML html={field_access.processed} />
+                </React.Fragment>
+              )}
 
               {field_amenities?.length > 0 && (
                 <React.Fragment>
