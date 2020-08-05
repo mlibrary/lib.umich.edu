@@ -2,10 +2,7 @@ const path = require(`path`)
 const { fetch } = require('./fetch')
 const { createBreadcrumb } = require(`./create-breadcrumb`)
 const { createStaffNodes } = require(`./create-staff-nodes`)
-const {
-  createNetlifyRedirectsFile,
-  createClientSideRedirects,
-} = require('./create-redirects')
+const { createNetlifyRedirectsFile } = require('./create-redirects')
 
 /**
  * Implement Gatsby's Node APIs in this file.
@@ -625,6 +622,6 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   })
 }
 
-exports.onPreBuild = async ({}, { baseUrl }) => {
+exports.onPreBootstrap = async ({}, { baseUrl }) => {
   createNetlifyRedirectsFile({ baseUrl: removeTrailingSlash(baseUrl) })
 }
