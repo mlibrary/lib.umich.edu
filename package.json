@@ -10,7 +10,7 @@
     "@reach/window-size": "^0.10.5",
     "@umich-lib/components": "^1.0.4",
     "@umich-lib/core": "^2.0.6",
-    "gatsby": "^2.23.1",
+    "gatsby": "^2.24.33",
     "gatsby-background-image": "^0.10.1",
     "gatsby-image": "^2.2.41",
     "gatsby-plugin-emotion": "^4.3.3",
