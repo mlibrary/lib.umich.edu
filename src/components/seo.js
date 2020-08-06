@@ -60,14 +60,6 @@ function SEO({ description, lang, meta, keywords, title }) {
               type="text/javascript"
               src="https://umich.edu/apis/umalerts/umalerts.js"
             ></script>
-            <script
-              type="module"
-              src="https://unpkg.com/@umich-lib/components@v1/dist/umich-lib/umich-lib.esm.js"
-            ></script>
-            <script
-              nomodule
-              src="https://unpkg.com/@umich-lib/components@v1/dist/umich-lib/umich-lib.js"
-            ></script>
           </Helmet>
         )
       }}
