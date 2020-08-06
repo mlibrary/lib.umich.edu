@@ -52,7 +52,7 @@ function SEO({ description, lang, meta, keywords, title }) {
               .concat(meta)}
           >
             <link
-              href="https://fonts.googleapis.com/css?family=Crimson+Text|Muli:400,600,700"
+              href="https://unpkg.com/@umich-lib/css@v1/dist/umich-lib.css"
               rel="stylesheet"
             />
             <script

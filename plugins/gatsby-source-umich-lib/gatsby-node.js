@@ -2,7 +2,10 @@ const path = require(`path`)
 const { fetch } = require('./fetch')
 const { createBreadcrumb } = require(`./create-breadcrumb`)
 const { createStaffNodes } = require(`./create-staff-nodes`)
-const { createNetlifyRedirectsFile } = require('./create-redirects')
+const {
+  createNetlifyRedirectsFile,
+  createLocalRedirects,
+} = require('./create-redirects')
 
 /**
  * Implement Gatsby's Node APIs in this file.
@@ -201,7 +204,9 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
 // Implement the Gatsby API “createPages”. This is called once the
 // data layer is bootstrapped to let plugins create pages from data.
 exports.createPages = ({ actions, graphql }, { baseUrl }) => {
-  const { createPage } = actions
+  const { createPage, createRedirect } = actions
+
+  createLocalRedirects({ createRedirect })
 
   return new Promise((resolve, reject) => {
     const basicTemplate = path.resolve(`src/templates/basic.js`)

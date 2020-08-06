@@ -11,7 +11,7 @@ module.exports = {
   siteMetadata,
   plugins: [
     `gatsby-plugin-remove-trailing-slashes`,
-    'gatsby-plugin-netlify',
+    `gatsby-plugin-meta-redirect`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -144,6 +144,5 @@ module.exports = {
         },
       },
     },
-    `gatsby-plugin-client-side-redirect`,
   ],
 }
