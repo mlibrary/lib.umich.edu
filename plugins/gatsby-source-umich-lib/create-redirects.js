@@ -3,15 +3,6 @@ const fs = require('fs')
 const readline = require('readline')
 
 /**
- * TODO
- *
- * Status: This work is in-progress and not used.
- *
- * Gloal: The goal is to deploy consistent redirect rule numbers to Netlify,
- * which causes warnings.
- */
-
-/**
  * Redirects are managed in Drupal. This function downloads it
  * from the appropriate CMS server and makes it available in
  * the public directory, so that Netlify can use it.
@@ -28,22 +19,6 @@ async function createNetlifyRedirectsFile({ baseUrl }) {
   const firstRedirectLine =
     'https://umich-lib.netlify.app/* https://lib.umich.edu/:splat 301!'
   const filePath = dir + '/_redirects'
-
-  /**
-   * Make sure we always create a new _redirects file.
-   * So, lets remove the cached one.
-   */
-  fs.unlink(filePath, err => {
-    if (err) {
-      // We expect 'ENOENT' because the file doesn't exist.
-      if (!err.code === 'ENOENT') {
-        throw err
-      }
-      console.log('[_redirects] cached _redirects file does not exist.')
-    } else {
-      console.log('[_redirects] cached _redirects file deleted.')
-    }
-  })
 
   let redirectsFile = fs.createWriteStream(filePath)
 
