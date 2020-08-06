@@ -52,13 +52,21 @@ function SEO({ description, lang, meta, keywords, title }) {
               .concat(meta)}
           >
             <link
-              href="https://fonts.googleapis.com/css?family=Crimson+Text|Muli:400,600,700"
+              href="https://unpkg.com/@umich-lib/css@v1/dist/umich-lib.css"
               rel="stylesheet"
             />
             <script
               async
               type="text/javascript"
               src="https://umich.edu/apis/umalerts/umalerts.js"
+            ></script>
+            <script
+              type="module"
+              src="https://unpkg.com/@umich-lib/components@v1/dist/umich-lib/umich-lib.esm.js"
+            ></script>
+            <script
+              nomodule
+              src="https://unpkg.com/@umich-lib/components@v1/dist/umich-lib/umich-lib.js"
             ></script>
           </Helmet>
         )

@@ -36,21 +36,62 @@ async function createNetlifyRedirectsFile({ baseUrl }) {
         const isValid = data.startsWith(firstRedirectLine)
 
         if (isValid) {
-          console.log('[_redirects] _redirects file was successfully created.')
+          console.log('[redirects] _redirects file was successfully created.')
           resolve()
         } else {
-          const msg = `[_redirects] Error: Expected the first redirect line to be: ${firstRedirectLine}`
+          const msg = `[redirects] Error: Expected the first redirect line to be: ${firstRedirectLine}`
           throw msg
         }
       })
       .on('error', error => {
-        console.log('[_redirects] had an error creating the file.')
+        console.log('[redirects] had an error creating the file.')
         reject(error)
       })
   }).catch(error => {
-    const msg = `[_redirects] Error: ${error}`
+    const msg = `[redirects] Error: ${error}`
     throw msg
   })
 }
 
 exports.createNetlifyRedirectsFile = createNetlifyRedirectsFile
+
+/*
+  https://www.gatsbyjs.org/packages/gatsby-plugin-client-side-redirect/
+*/
+function createLocalRedirects({ createRedirect }) {
+  console.log('[redirects] Creating local redirects.')
+
+  const readInterface = readline.createInterface({
+    input: fs.createReadStream('public/_redirects'),
+  })
+
+  readInterface.on('line', function(line) {
+    if (line) {
+      const urls = line.split(' ')
+      /**
+       * Is a local redirect and not
+       * a wildcard redirect.
+       */
+      if (urls[0].startsWith('/') && !urls[0].endsWith('/*')) {
+        /*
+        console.log('[redirect] URL:')
+        console.log(' - from: ' + urls[0])
+        console.log(' - to: ' + urls[1])
+        */
+
+        /**
+         * Creates at `fromPath` a page with:
+         * <meta http-equiv="refresh" content="0; URL='/new-url/'" />
+         */
+        createRedirect({
+          fromPath: urls[0],
+          toPath: urls[1],
+          isPermanent: true,
+          redirectInBrowser: true,
+        })
+      }
+    }
+  })
+}
+
+exports.createLocalRedirects = createLocalRedirects
