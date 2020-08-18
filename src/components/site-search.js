@@ -92,7 +92,7 @@ export default function SiteSearch({ label }) {
     }
   })
 
-  const handleChange = e => setQuery(e.target.value)
+  const handleChange = e => setQuery(cleanQueryStringForLunr(e.target.value))
   return (
     <form
       css={{
@@ -423,4 +423,16 @@ function Popover({ children, error }) {
       </div>
     </div>
   )
+}
+
+function cleanQueryStringForLunr(str) {
+  let query = str
+
+  // Ignore quotation marks so they don't throw results -- LIBWEB-649
+  // `""` => ``
+  query = query.replace(/['"]+/g, '')
+
+  console.log('cleanQueryStringForLunr', query)
+
+  return query
 }
