@@ -256,14 +256,16 @@ function TextPanel({ data }) {
     )
   }
 
-  if (template === 'body_width_text') {
+  if (template === 'body_width_text' || template === 'text_group') {
     const hasTopBorder = data.field_border === 'yes'
+    const hasMarginTop = template === 'body_width_text'
+    const useMargins = placement !== 'body' && template === 'body_width_text'
 
     return (
-      <MarginsWrapper useMargins={placement !== 'body'}>
+      <MarginsWrapper useMargins={useMargins}>
         <div
           css={{
-            marginTop: SPACING['XL'],
+            marginTop: hasMarginTop ? SPACING['XL'] : 0,
           }}
         >
           {cards.map(card => (
@@ -279,12 +281,20 @@ function TextPanel({ data }) {
                 level={2}
                 size="M"
                 css={{
-                  marginBottom: SPACING['XS'],
+                  marginBottom: SPACING['L'],
                 }}
               >
                 {title}
               </Heading>
               <HTML html={card.field_body.processed} />
+
+              {template === 'text_group' && (
+                <p css={{ marginTop: SPACING['S'] }}>
+                  <Link to="/locations-and-hours/onsite-services-during-covid-19">
+                    See what's available by location
+                  </Link>
+                </p>
+              )}
             </section>
           ))}
         </div>
