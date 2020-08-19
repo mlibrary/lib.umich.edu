@@ -287,14 +287,6 @@ function TextPanel({ data }) {
                 {title}
               </Heading>
               <HTML html={card.field_body.processed} />
-
-              {template === 'text_group' && (
-                <p css={{ marginTop: SPACING['S'] }}>
-                  <Link to="/locations-and-hours/onsite-services-during-covid-19">
-                    See what's available by location
-                  </Link>
-                </p>
-              )}
             </section>
           ))}
         </div>
