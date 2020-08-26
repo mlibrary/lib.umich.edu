@@ -26,6 +26,7 @@ If `ROBOTSTXT_MODE` is set to `production`, this tells the build to make a `robo
 ```
 CONTEXT=production
 ```
+
 This env var is automatically available when building on Netlify, but if you're building the site **not** with Netlify set `CONTEXT` as `production`, otherwise `ROBOTSTXT_MODE` will not work as expected.
 
 ```
@@ -40,6 +41,12 @@ Start it up.
 
 ```sh
 npm start
+```
+
+If you wish to pull data from the staging CMS rather than the production CMS, then use this command:
+
+```sh
+npm run start:staging
 ```
 
 ## Builds
