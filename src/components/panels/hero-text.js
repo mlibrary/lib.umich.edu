@@ -101,13 +101,14 @@ export default function HeroText({ data }) {
             <HTML
               html={data.field_caption_text.processed}
               css={{
+                display: 'inline-block',
                 fontSize: '1.25rem',
+                width: 'auto',
               }}
             />
             {link && (
-              <span
+              <div
                 css={{
-                  display: 'inline-block',
                   marginTop: SPACING['M'],
                   fontSize: '1.25rem',
                   a: {
@@ -120,7 +121,7 @@ export default function HeroText({ data }) {
                 }}
               >
                 <Link to={link.to}>{link.text}</Link>
-              </span>
+              </div>
             )}
           </div>
         </div>
