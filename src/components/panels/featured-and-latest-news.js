@@ -57,8 +57,25 @@ export default function FeaturedAndLatestNews() {
           }
         }
       }
+      priorityNews: allNodeNews(
+        filter: {
+          field_priority_for_homepage: { eq: true }
+          field_featured_news_item: { eq: false }
+        }
+        sort: { fields: created, order: DESC }
+        limit: 5
+      ) {
+        edges {
+          node {
+            ...newsFragment
+          }
+        }
+      }
       recentNews: allNodeNews(
-        filter: { field_featured_news_item: { eq: false } }
+        filter: {
+          field_priority_for_homepage: { eq: false }
+          field_featured_news_item: { eq: false }
+        }
         sort: { fields: created, order: DESC }
         limit: 5
       ) {
@@ -82,7 +99,8 @@ export default function FeaturedAndLatestNews() {
 
   const featureNode = data.featuredNews.edges[0].node
   const featureCardProps = processNewsNodeForCard({ newsNode: featureNode })
-  const recentNewsCardProps = data.recentNews.edges.map(({ node }) => {
+  const recentNews = sortNews({ data })
+  const recentNewsCardProps = recentNews.map(({ node }) => {
     return processNewsNodeForCard({ newsNode: node })
   })
   const viewAllNewsHref = data.newsLandingPage.fields.slug
@@ -159,13 +177,11 @@ export default function FeaturedAndLatestNews() {
               },
             }}
           >
-            {recentNewsCardProps.map(
-              ({ title, subtitle, href, children }, i) => (
-                <li key={i + href}>
-                  <Card title={title} subtitle={subtitle} href={href} />
-                </li>
-              )
-            )}
+            {recentNewsCardProps.map(({ title, subtitle, href }, i) => (
+              <li key={i + href}>
+                <Card title={title} subtitle={subtitle} href={href} />
+              </li>
+            ))}
           </ol>
 
           <Link to={viewAllNewsHref}>View all news and stories</Link>
@@ -173,4 +189,33 @@ export default function FeaturedAndLatestNews() {
       </Layout>
     </Margins>
   )
+}
+
+function sortNews({ data }) {
+  const priorityNewsCount = data.priorityNews.edges.length
+
+  // If there is no priority news, just send back recent news.
+  if (priorityNewsCount === 0) {
+    return data.recentNews
+  }
+
+  // Otherwise, merge the two, sort by date.
+  const recentNewsSliced = data.recentNews.edges.slice(0, 5 - priorityNewsCount)
+  const allNews = data.priorityNews.edges.concat(recentNewsSliced)
+
+  function compareCreatedDate(a, b) {
+    if (moment(a.node.created).isBefore(b.node.created)) {
+      return 1
+    }
+
+    if (moment(a.node.created).isAfter(b.node.created)) {
+      return -1
+    }
+
+    return 0
+  }
+
+  const sorted = [...allNews].sort(compareCreatedDate)
+
+  return sorted
 }
