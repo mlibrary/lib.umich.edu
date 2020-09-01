@@ -58,7 +58,10 @@ export default function FeaturedAndLatestNews() {
         }
       }
       priorityNews: allNodeNews(
-        filter: { field_priority_for_homepage: { eq: true } }
+        filter: {
+          field_priority_for_homepage: { eq: true }
+          field_featured_news_item: { eq: false }
+        }
         sort: { fields: created, order: DESC }
         limit: 5
       ) {
@@ -69,7 +72,10 @@ export default function FeaturedAndLatestNews() {
         }
       }
       recentNews: allNodeNews(
-        filter: { field_featured_news_item: { eq: false } }
+        filter: {
+          field_priority_for_homepage: { eq: false }
+          field_featured_news_item: { eq: false }
+        }
         sort: { fields: created, order: DESC }
         limit: 5
       ) {
@@ -195,13 +201,21 @@ function sortNews({ data }) {
 
   // Otherwise, merge the two, sort by date.
   const recentNewsSliced = data.recentNews.edges.slice(0, 5 - priorityNewsCount)
+  const allNews = data.priorityNews.edges.concat(recentNewsSliced)
 
-  // Make a immutable array and sort it by date.
-  return [...data.priorityNews.edges.concat(recentNewsSliced)].sort((a, b) =>
-    a.node.created < b.node.created
-      ? 1
-      : b.node.created > a.node.created
-      ? -1
-      : 0
-  )
+  function compareCreatedDate(a, b) {
+    if (moment(a.node.created).isBefore(b.node.created)) {
+      return 1
+    }
+
+    if (moment(a.node.created).isAfter(b.node.created)) {
+      return -1
+    }
+
+    return 0
+  }
+
+  const sorted = [...allNews].sort(compareCreatedDate)
+
+  return sorted
 }
