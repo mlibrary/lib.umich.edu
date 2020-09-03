@@ -2,14 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import Img from 'gatsby-image'
 import * as moment from 'moment'
-import {
-  Margins,
-  Heading,
-  SPACING,
-  COLORS,
-  Text,
-  TYPOGRAPHY,
-} from '@umich-lib/core'
+import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '@umich-lib/core'
 import {
   Template,
   TemplateSide,
@@ -18,6 +11,8 @@ import {
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
+import Link from '../components/link'
+import Share from '../components/share'
 
 /*
   TODO:
@@ -32,6 +27,7 @@ import Breadcrumb from '../components/breadcrumb'
 export default function EventTemplate({ data }) {
   const node = data.event
   const { field_title_context, body, fields, relationships } = node
+  const { slug } = fields
   const image =
     relationships?.field_media_image?.relationships.field_media_image
   const imageData = image ? image.localFile.childImageSharp.fluid : null
@@ -91,6 +87,24 @@ export default function EventTemplate({ data }) {
               )}
             </figure>
           )}
+
+          <Share
+            url={'https://www.lib.umich.edu' + slug}
+            title={field_title_context}
+          />
+
+          <p
+            css={{
+              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              marginTop: SPACING['L'],
+              paddingTop: SPACING['L'],
+            }}
+          >
+            Library events are free and open to the public, and we are committed
+            to making them accessible to attendees. If you anticipate needing
+            accommodations to participate, please notify the listed contact with
+            as much notice as possible.
+          </p>
         </TemplateSide>
       </Template>
     </TemplateLayout>
@@ -105,10 +119,17 @@ export default function EventTemplate({ data }) {
   - Event type.
 */
 function EventMetadata({ data }) {
-  console.log('EventMetadata', data)
-
   const dates = data.field_event_date_s_
   const eventType = data.relationships.field_event_type.name
+  const registrationLink =
+    data.field_registration_required &&
+    data.field_registration_link &&
+    data.field_registration_link.uri
+      ? {
+          label: 'Register to attend',
+          to: data.field_registration_link.uri,
+        }
+      : null
 
   /**
    * WHEN
@@ -166,6 +187,14 @@ function EventMetadata({ data }) {
         <th scope="row">Where</th>
         <td>TODO</td>
       </tr>
+      {registrationLink && (
+        <tr>
+          <th scope="row">Register</th>
+          <td>
+            <Link to={registrationLink.to}>{registrationLink.label}</Link>
+          </td>
+        </tr>
+      )}
       <tr>
         <th scope="row">Event type</th>
         <td>{eventType}</td>
