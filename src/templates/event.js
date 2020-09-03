@@ -189,7 +189,7 @@ function EventMetadata({ data }) {
       </tr>
       {registrationLink && (
         <tr>
-          <th scope="row">Register</th>
+          <th scope="row">Registration</th>
           <td>
             <Link to={registrationLink.to}>{registrationLink.label}</Link>
           </td>
