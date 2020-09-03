@@ -20,27 +20,43 @@ import createGoogleMapsURL from './utilities/create-google-maps-url'
   Ann Arbor, MI 48109-1190
   [View directions]
   ```
+
+  addressData is an override to avoid the address data look up on
+  the node. eg, non-library location for news. 
 */
 export default function Address({
   node,
+  addressData,
   directions = false,
   kind = 'brief',
   ...rest
 }) {
   const description = kind === 'full' ? getDescription({ node }) : []
-  const address = getAddress({ node, kind })
-  const lines = description ? description.concat(address) : address
+
+  let lines
+  let address
+
+  if (addressData) {
+    lines = transformAddressDataToArray({
+      data: addressData,
+      kind,
+    })
+    address = lines.join(' ')
+  } else {
+    address = getAddress({ node, kind }).join(' ')
+    lines = description ? description.concat(address) : address
+  }
 
   return (
     <address {...rest}>
       {lines.map((line, i) => (
-        <p key={node.id + line + i}>{line}</p>
+        <p key={line + i}>{line}</p>
       ))}
 
       {directions && (
         <Link
           to={createGoogleMapsURL({
-            query: address.join(' '),
+            query: address,
             place_id: null,
           })}
         >
@@ -127,6 +143,7 @@ function getAddress({ node, kind }) {
 */
 function transformAddressDataToArray({ data, kind }) {
   const {
+    organization,
     address_line1,
     address_line2,
     locality,
@@ -139,6 +156,7 @@ function transformAddressDataToArray({ data, kind }) {
   const line2 = kind === 'brief' ? null : address_line2
 
   return [
+    organization,
     address_line1,
     line2,
     `${locality}, ${administrative_area} ${postal_code}`,

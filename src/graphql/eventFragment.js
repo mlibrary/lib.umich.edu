@@ -20,8 +20,19 @@ export const query = graphql`
     field_registration_link {
       uri
     }
-    field_registration_required
+    field_event_in_non_library_locat
+    field_non_library_location_addre {
+      organization
+      locality
+      address_line1
+      address_line2
+      postal_code
+      administrative_area
+    }
     relationships {
+      field_event_building {
+        ...buildingFragment
+      }
       field_event_type {
         name
       }

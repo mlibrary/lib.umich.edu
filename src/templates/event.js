@@ -13,6 +13,7 @@ import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
 import Share from '../components/share'
+import Address from '../components/address'
 
 /*
   TODO:
@@ -122,15 +123,16 @@ function EventMetadata({ data }) {
   const dates = data.field_event_date_s_
   const eventType = data.relationships.field_event_type.name
   const registrationLink =
-    data.field_registration_required &&
-    data.field_registration_link &&
-    data.field_registration_link.uri
+    data.field_registration_link && data.field_registration_link.uri
       ? {
           label: 'Register to attend',
           to: data.field_registration_link.uri,
         }
       : null
-
+  const addressNode = data.relationships.field_event_building
+  const nonLibraryAddressData =
+    data.field_event_in_non_library_locat &&
+    data.field_non_library_location_addre
   /**
    * WHEN
    * One of potentially many:
@@ -183,10 +185,22 @@ function EventMetadata({ data }) {
           ))}
         </td>
       </tr>
-      <tr>
-        <th scope="row">Where</th>
-        <td>TODO</td>
-      </tr>
+      {addressNode && (
+        <tr>
+          <th scope="row">Where</th>
+          <td>
+            <Address node={addressNode} directions={true} kind="full" />
+          </td>
+        </tr>
+      )}
+      {nonLibraryAddressData && (
+        <tr>
+          <th scope="row">Where</th>
+          <td>
+            <Address addressData={nonLibraryAddressData} directions={true} />
+          </td>
+        </tr>
+      )}
       {registrationLink && (
         <tr>
           <th scope="row">Registration</th>
