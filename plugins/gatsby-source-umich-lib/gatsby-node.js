@@ -137,6 +137,13 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
   return
 }
 
+/*
+  This is important for setting up breadcrumbs, slug, and
+  page title for nodes that become pages.
+
+  Take the the graphql node __typename and trim "node__" from it.
+  so "node__events_and_exhibits" => "events_and_exhibits".
+*/
 const drupal_node_types_we_care_about = [
   'page',
   'building',
@@ -146,6 +153,7 @@ const drupal_node_types_we_care_about = [
   'floor_plan',
   'department',
   'news',
+  'events_and_exhibits',
 ]
 
 // Create a slug for each page and set it as a field on the node.
@@ -236,6 +244,11 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     const newsLandingTemplate = path.resolve(`src/templates/news-landing.js`)
     const newsTemplate = path.resolve(`src/templates/news.js`)
 
+    /*
+      Events and Exhibits templates.
+    */
+    const eventTemplate = path.resolve(`src/templates/event.js`)
+
     function getTemplate(node) {
       const { field_machine_name } = node.relationships.field_design_template
 
@@ -271,6 +284,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           return newsLandingTemplate
         case 'news':
           return newsTemplate
+        case 'event_exhibit':
+          return eventTemplate
         default:
           return null
       }
@@ -553,6 +568,33 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 }
               }
             }
+            events: allNodeEventsAndExhibits(
+              filter: {
+                relationships: {
+                  field_design_template: {
+                    field_machine_name: { eq: "event_exhibit" }
+                  }
+                }
+              }
+            ) {
+              edges {
+                node {
+                  __typename
+                  title
+                  drupal_internal__nid
+                  fields {
+                    slug
+                    title
+                    breadcrumb
+                  }
+                  relationships {
+                    field_design_template {
+                      field_machine_name
+                    }
+                  }
+                }
+              }
+            }
           }
         `
       ).then(result => {
@@ -571,6 +613,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           floorPlans,
           departments,
           news,
+          events,
         } = result.data
         const edges = pages.edges
           .concat(sections.edges)
@@ -580,6 +623,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           .concat(floorPlans.edges)
           .concat(departments.edges)
           .concat(news.edges)
+          .concat(events.edges)
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node)
