@@ -18,7 +18,6 @@ import {
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
-import getNode from '../utils/get-node'
 
 /*
   TODO:
@@ -56,6 +55,7 @@ export default function EventTemplate({ data }) {
           >
             {field_title_context}
           </Heading>
+          <EventMetadata data={node} />
           {body && <HTML html={body.processed} />}
         </TemplateContent>
         <TemplateSide
@@ -94,6 +94,83 @@ export default function EventTemplate({ data }) {
         </TemplateSide>
       </Template>
     </TemplateLayout>
+  )
+}
+
+/*
+  Details the events:
+  - Dates and times
+  - Location and directions
+  - Registration link
+  - Event type.
+*/
+function EventMetadata({ data }) {
+  console.log('EventMetadata', data)
+
+  const dates = data.field_event_date_s_
+  const eventType = data.relationships.field_event_type.name
+
+  /**
+   * WHEN
+   * One of potentially many:
+   * ['Friday, July 19, 2020 from 9am - 4pm']
+   */
+  const when = dates.map(date => {
+    const start = moment(date.value)
+    const end = moment(date.end_value)
+    // Is the start and end on the same day?
+    if (start.isSame(end, 'day')) {
+      return (
+        start.format('dddd, MMMM D, YYYY [from] h:mma [-] ') +
+        end.format('h:mma')
+      )
+    }
+
+    // Other use caes...
+    // eg, logic to handle an event going from say Friday 10pm to Saturday at 2am.
+    return 'n/a'
+  })
+
+  return (
+    <table
+      css={{
+        textAlign: 'left',
+        marginBottom: SPACING['XL'],
+        th: {
+          paddingTop: SPACING['S'],
+          paddingRight: SPACING['M'],
+          fontWeight: '600',
+          ...TYPOGRAPHY['3XS'],
+        },
+        'tr:first-of-type > th': {
+          paddingTop: '0',
+        },
+        width: '100%',
+        'th, td': {
+          padding: SPACING['M'],
+          paddingLeft: '0',
+          borderBottom: `solid 1px ${COLORS.neutral[100]}`,
+        },
+      }}
+    >
+      <caption class="visually-hidden">Event details</caption>
+      <tr>
+        <th scope="row">When</th>
+        <td>
+          {when.map(str => (
+            <p>{str}</p>
+          ))}
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Where</th>
+        <td>TODO</td>
+      </tr>
+      <tr>
+        <th scope="row">Event type</th>
+        <td>{eventType}</td>
+      </tr>
+    </table>
   )
 }
 

@@ -13,6 +13,14 @@ export const query = graphql`
       summary
       processed
     }
+    field_event_date_s_ {
+      value
+      end_value
+    }
+    field_registration_link {
+      uri
+    }
+    field_registration_required
     relationships {
       field_event_type {
         name
