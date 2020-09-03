@@ -160,6 +160,7 @@ function EventMetadata({ data }) {
         textAlign: 'left',
         marginBottom: SPACING['XL'],
         th: {
+          width: '20%',
           paddingTop: SPACING['S'],
           paddingRight: SPACING['M'],
           fontWeight: '600',
@@ -169,6 +170,7 @@ function EventMetadata({ data }) {
           paddingTop: '0',
         },
         width: '100%',
+        maxWidth: '38rem',
         'th, td': {
           padding: SPACING['M'],
           paddingLeft: '0',

@@ -41,9 +41,9 @@ export default function Address({
       data: addressData,
       kind,
     })
-    address = lines.join(' ')
+    address = lines
   } else {
-    address = getAddress({ node, kind }).join(' ')
+    address = getAddress({ node, kind })
     lines = description ? description.concat(address) : address
   }
 
@@ -56,7 +56,7 @@ export default function Address({
       {directions && (
         <Link
           to={createGoogleMapsURL({
-            query: address,
+            query: address.join(' '),
             place_id: null,
           })}
         >

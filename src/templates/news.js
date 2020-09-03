@@ -23,7 +23,6 @@ import getNode from '../utils/get-node'
 import transformNodePanels from '../utils/transform-node-panels'
 import Link from '../components/link'
 import Share from '../components/share'
-import address from '../components/address'
 
 export default function NewsTemplate({ data }) {
   const node = getNode(data)
