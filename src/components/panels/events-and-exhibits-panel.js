@@ -5,6 +5,13 @@ import CardImage from '../../maybe-design-system/card-image'
 import MEDIA_QUERIES from '../../maybe-design-system/media-queries'
 import * as moment from 'moment'
 import Link from '../link'
+import {
+  Template,
+  TemplateSide,
+  TemplateContent,
+} from '../../components/aside-layout'
+
+const exhibitTypes = ['Exhibit', 'Exhibition']
 
 export default function EventsAndExhibitsPanel() {
   /*
@@ -51,6 +58,12 @@ export default function EventsAndExhibitsPanel() {
       // Get Today's events.
       const todaysEvents = events.filter(event => {
         const start = event.field_event_date_s_[0].value
+        const type = event.relationships.field_event_type.name
+
+        // We don't want exhibits in the events area.
+        if (exhibitTypes.includes(type)) {
+          return false
+        }
 
         return now.isSame(start, 'day') // all today.
       })
@@ -63,42 +76,90 @@ export default function EventsAndExhibitsPanel() {
       const now = moment()
 
       // Get upcoming events.
+      // This is repetative... but :shrug:
       const upcomingEvents = events.filter(event => {
         const start = event.field_event_date_s_[0].value
+        const type = event.relationships.field_event_type.name
+
+        // We don't want exhibits in the events area.
+        if (exhibitTypes.includes(type)) {
+          return false
+        }
 
         return now.isBefore(start, 'day') // all after today.
       })
 
       setUpcomingEvents(upcomingEvents)
     }
+
+    if (events && exhibits === null) {
+      const exhibits = events.filter(event => {
+        const type = event.relationships.field_event_type.name
+
+        // We don't want exhibits in the events area.
+        return exhibitTypes.includes(type)
+      })
+
+      setExhibits(exhibits)
+    }
   }, [events])
 
   return (
-    <Margins>
-      <Heading
-        level="2"
-        size="L"
+    <Template>
+      <TemplateContent>
+        <Heading
+          level="2"
+          size="L"
+          css={{
+            marginBottom: SPACING['M'],
+          }}
+        >
+          Today's Events
+        </Heading>
+
+        <TodaysEvents events={todaysEvents} />
+
+        <Heading
+          level="2"
+          size="L"
+          css={{
+            marginBottom: SPACING['M'],
+          }}
+        >
+          Upcoming Events
+        </Heading>
+
+        <UpcomingEvents events={upcomingEvents} />
+      </TemplateContent>
+
+      <TemplateSide
         css={{
-          marginBottom: SPACING['M'],
+          '> *:first-child': {
+            border: 'none',
+          },
         }}
       >
-        Today's Events
-      </Heading>
+        <div
+          css={{
+            background: COLORS.blue['100'],
+            borderRadius: '4px',
+            padding: SPACING['M'],
+          }}
+        >
+          <Heading
+            level="2"
+            size="L"
+            css={{
+              marginBottom: SPACING['M'],
+            }}
+          >
+            Exhibits
+          </Heading>
 
-      <TodaysEvents events={todaysEvents} />
-
-      <Heading
-        level="2"
-        size="L"
-        css={{
-          marginBottom: SPACING['M'],
-        }}
-      >
-        Upcoming Events
-      </Heading>
-
-      <UpcomingEvents events={upcomingEvents} />
-    </Margins>
+          <ExhibitEvents events={exhibits} />
+        </div>
+      </TemplateSide>
+    </Template>
   )
 }
 
@@ -146,7 +207,30 @@ function UpcomingEvents({ events }) {
   return null
 }
 
+function ExhibitEvents({ events }) {
+  if (Array.isArray(events)) {
+    if (events.length === 0) {
+      return (
+        <p
+          css={{
+            marginBottom: SPACING['2XL'],
+          }}
+        >
+          There are no upcoming exhibits.
+        </p>
+      )
+    }
+
+    if (events.length > 0) {
+      return events.map(event => <EventCard {...event} displayImage={false} />)
+    }
+  }
+
+  return null
+}
+
 function EventCard({
+  displayImage = true,
   title,
   relationships,
   body,
@@ -160,6 +244,7 @@ function EventCard({
   const start = field_event_date_s_[0].value
   const when = moment(start).format('dddd, MMMM D [·] h:mma')
   const to = fields.slug
+  const type = relationships.field_event_type.name
 
   return (
     <section
@@ -168,13 +253,13 @@ function EventCard({
         marginTop: SPACING['XL'],
         [MEDIA_QUERIES['L']]: {
           display: 'grid',
-          gridTemplateColumns: `18.75rem 1fr `,
+          gridTemplateColumns: `16rem 1fr `,
           gridGap: SPACING['M'],
         },
         borderBottom: `solid 1px ${COLORS.neutral['100']}`,
       }}
     >
-      <CardImage image={imageData} />
+      {displayImage && <CardImage image={imageData} />}
       <div>
         <Heading
           size="S"
@@ -209,6 +294,7 @@ function EventCard({
         >
           {body.summary}
         </p>
+        <p>{type}</p>
       </div>
     </section>
   )
