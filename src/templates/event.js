@@ -133,6 +133,7 @@ function EventMetadata({ data }) {
   const nonLibraryAddressData =
     data.field_event_in_non_library_locat &&
     data.field_non_library_location_addre
+
   /**
    * WHEN
    * One of potentially many:
@@ -141,16 +142,26 @@ function EventMetadata({ data }) {
   const when = dates.map(date => {
     const start = moment(date.value)
     const end = moment(date.end_value)
+
     // Is the start and end on the same day?
     if (start.isSame(end, 'day')) {
       return (
-        start.format('dddd, MMMM D, YYYY [from] h:mma [-] ') +
+        start.format('dddd, MMMM D, YYYY [from] h:mma to ') +
         end.format('h:mma')
       )
     }
 
-    // Other use caes...
-    // eg, logic to handle an event going from say Friday 10pm to Saturday at 2am.
+    // Does is span multiple days?
+    if (start.isBefore(end)) {
+      const endYearFormat = start.isSame(end, 'year') ? '' : 'YYYY,'
+
+      return (
+        start.format(`dddd, MMMM D, YYYY, h:mma to `) +
+        end.format(`dddd, MMMM D, ${endYearFormat} h:mma`)
+      )
+    }
+
+    // Other use caes...? :punt:
     return 'n/a'
   })
 
@@ -181,7 +192,13 @@ function EventMetadata({ data }) {
       <caption class="visually-hidden">Event details</caption>
       <tr>
         <th scope="row">When</th>
-        <td>
+        <td
+          css={{
+            'p + p': {
+              marginTop: SPACING['XS'],
+            },
+          }}
+        >
           {when.map(str => (
             <p>{str}</p>
           ))}
