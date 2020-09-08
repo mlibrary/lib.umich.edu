@@ -25,7 +25,7 @@ import Address from '../components/address'
   - [ ] There is that date, directions, and type thing at the top.
 */
 
-import { EXHIBIT_TYPES, eventFormatWhen } from '../utils/events'
+import { eventFormatWhen } from '../utils/events'
 
 export default function EventTemplate({ data }) {
   const node = data.event
