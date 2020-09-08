@@ -25,6 +25,8 @@ import Address from '../components/address'
   - [ ] There is that date, directions, and type thing at the top.
 */
 
+import { exhibitTypes } from '../components/panels/events-and-exhibits-panel'
+
 export default function EventTemplate({ data }) {
   const node = data.event
   const { field_title_context, body, fields, relationships } = node
@@ -133,6 +135,7 @@ function EventMetadata({ data }) {
   const nonLibraryAddressData =
     data.field_event_in_non_library_locat &&
     data.field_non_library_location_addre
+  const isAnExhibit = exhibitTypes.includes(eventType)
 
   /**
    * WHEN
@@ -153,7 +156,16 @@ function EventMetadata({ data }) {
 
     // Does is span multiple days?
     if (start.isBefore(end)) {
-      const endYearFormat = start.isSame(end, 'year') ? '' : 'YYYY,'
+      const sameYear = start.isSame(end, 'year')
+      const endYearFormat = sameYear ? '' : ', YYYY'
+
+      if (isAnExhibit) {
+        if (sameYear) {
+          return start.format(`MMMM D to `) + end.format(`MMMM D, YYYY`)
+        }
+
+        return start.format(`MMMM D, YYYY to `) + end.format(`MMMM D, YYYY`)
+      }
 
       return (
         start.format(`dddd, MMMM D, YYYY, h:mma to `) +

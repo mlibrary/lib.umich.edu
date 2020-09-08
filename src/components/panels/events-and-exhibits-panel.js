@@ -11,8 +11,6 @@ import {
   TemplateContent,
 } from '../../components/aside-layout'
 
-const exhibitTypes = ['Exhibit', 'Exhibition']
-
 export default function EventsAndExhibitsPanel() {
   /*
     Potential states for today, upcoming, and exhibits:
@@ -242,21 +240,25 @@ function EventCard({
     relationships.field_media_image.relationships.field_media_image
   const imageData = image ? image.localFile.childImageSharp.fluid : null
   const start = field_event_date_s_[0].value
-  const when = moment(start).format('dddd, MMMM D [·] h:mma')
-  const to = fields.slug
+  const end = field_event_date_s_[0].end_value
   const type = relationships.field_event_type.name
+  const isAnExhibit = exhibitTypes.includes(type)
+  const when = isAnExhibit
+    ? moment(start).format('MMMM D') + moment(end).format(' [-] MMMM D')
+    : moment(start).format('dddd, MMMM D [·] h:mma')
+  const to = fields.slug
 
   return (
     <section
       css={{
-        paddingBottom: SPACING['XL'],
-        marginTop: SPACING['XL'],
+        paddingBottom: SPACING['L'],
+        marginTop: SPACING['L'],
         [MEDIA_QUERIES['L']]: {
           display: 'grid',
           gridTemplateColumns: `16rem 1fr `,
           gridGap: SPACING['M'],
         },
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+        borderBottom: isAnExhibit ? '' : `solid 1px ${COLORS.neutral['100']}`,
       }}
     >
       {displayImage && <CardImage image={imageData} />}
@@ -289,12 +291,22 @@ function EventCard({
         </Heading>
         <p
           css={{
+            marginTop: SPACING['2XS'],
             color: COLORS.neutral['300'],
           }}
         >
           {body.summary}
         </p>
-        <p>{type}</p>
+        {!isAnExhibit && (
+          <p
+            css={{
+              color: COLORS.neutral['300'],
+              marginTop: SPACING['2XS'],
+            }}
+          >
+            {type}
+          </p>
+        )}
       </div>
     </section>
   )
