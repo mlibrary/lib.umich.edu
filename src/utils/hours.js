@@ -132,13 +132,13 @@ export function displayHours({ node, now }) {
   }
 
   const text =
-    moment(start, 'HHmm').format('h a') +
+    moment(start, 'HHmm').format('ha') +
     ' - ' +
-    moment(end, 'HHmm').format('h a')
+    moment(end, 'HHmm').format('ha')
   const label =
-    moment(start, 'HHmm').format('h a') +
+    moment(start, 'HHmm').format('ha') +
     ' to ' +
-    moment(end, 'HHmm').format('h a')
+    moment(end, 'HHmm').format('ha')
 
   return {
     text,

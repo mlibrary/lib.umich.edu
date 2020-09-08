@@ -234,14 +234,15 @@ function ExhibitEvents({ events }) {
   return null
 }
 
-function EventCard({
-  displayImage = true,
-  title,
-  relationships,
-  body,
-  fields,
-  field_event_date_s_,
-}) {
+function EventCard(node) {
+  const {
+    displayImage = true,
+    title,
+    relationships,
+    body,
+    fields,
+    field_event_date_s_,
+  } = node
   const image =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image
@@ -257,7 +258,7 @@ function EventCard({
     type,
   })
   const where = eventFormatWhere({
-    data: {}, // TODO
+    node,
     kind: 'brief',
   })
   const to = fields.slug

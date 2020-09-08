@@ -25,7 +25,7 @@ import Address from '../components/address'
   - [ ] There is that date, directions, and type thing at the top.
 */
 
-import { eventFormatWhen } from '../utils/events'
+import { eventFormatWhen, eventFormatWhere } from '../utils/events'
 
 export default function EventTemplate({ data }) {
   const node = data.event
@@ -131,16 +131,7 @@ function EventMetadata({ data }) {
           to: data.field_registration_link.uri,
         }
       : null
-  const addressNode = data.relationships.field_event_building
-  const nonLibraryAddressData =
-    data.field_event_in_non_library_locat &&
-    data.field_non_library_location_addre
 
-  /**
-   * WHEN
-   * One of potentially many:
-   * ['Friday, July 19, 2020 from 9am - 4pm']
-   */
   const when = dates.map(date => {
     const start = moment(date.value)
     const end = moment(date.end_value)
@@ -151,6 +142,11 @@ function EventMetadata({ data }) {
       kind: 'full',
       type: eventType,
     })
+  })
+
+  const where = eventFormatWhere({
+    node: data,
+    kind: 'full',
   })
 
   return (
@@ -192,20 +188,10 @@ function EventMetadata({ data }) {
           ))}
         </td>
       </tr>
-      {addressNode && (
+      {where && (
         <tr>
           <th scope="row">Where</th>
-          <td>
-            <Address node={addressNode} directions={true} kind="full" />
-          </td>
-        </tr>
-      )}
-      {nonLibraryAddressData && (
-        <tr>
-          <th scope="row">Where</th>
-          <td>
-            <Address addressData={nonLibraryAddressData} directions={true} />
-          </td>
+          <td>{where}</td>
         </tr>
       )}
       {registrationLink && (
