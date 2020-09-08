@@ -11,7 +11,7 @@ import {
   TemplateContent,
 } from '../../components/aside-layout'
 
-export const exhibitTypes = ['Exhibit', 'Exhibition']
+import { EXHIBIT_TYPES, eventFormatWhen } from '../../utils/events'
 
 export default function EventsAndExhibitsPanel() {
   /*
@@ -61,7 +61,7 @@ export default function EventsAndExhibitsPanel() {
         const type = event.relationships.field_event_type.name
 
         // We don't want exhibits in the events area.
-        if (exhibitTypes.includes(type)) {
+        if (EXHIBIT_TYPES.includes(type)) {
           return false
         }
 
@@ -82,7 +82,7 @@ export default function EventsAndExhibitsPanel() {
         const type = event.relationships.field_event_type.name
 
         // We don't want exhibits in the events area.
-        if (exhibitTypes.includes(type)) {
+        if (EXHIBIT_TYPES.includes(type)) {
           return false
         }
 
@@ -97,7 +97,7 @@ export default function EventsAndExhibitsPanel() {
         const type = event.relationships.field_event_type.name
 
         // We don't want exhibits in the events area.
-        return exhibitTypes.includes(type)
+        return EXHIBIT_TYPES.includes(type)
       })
 
       setExhibits(exhibits)
@@ -244,10 +244,13 @@ function EventCard({
   const start = field_event_date_s_[0].value
   const end = field_event_date_s_[0].end_value
   const type = relationships.field_event_type.name
-  const isAnExhibit = exhibitTypes.includes(type)
-  const when = isAnExhibit
-    ? moment(start).format('MMMM D') + moment(end).format(' [-] MMMM D')
-    : moment(start).format('dddd, MMMM D [·] h:mma')
+  const isAnExhibit = EXHIBIT_TYPES.includes(type)
+  const when = eventFormatWhen({
+    start,
+    end,
+    kind: 'brief',
+    type,
+  })
   const to = fields.slug
 
   return (

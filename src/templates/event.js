@@ -25,7 +25,7 @@ import Address from '../components/address'
   - [ ] There is that date, directions, and type thing at the top.
 */
 
-import { exhibitTypes } from '../components/panels/events-and-exhibits-panel'
+import { EXHIBIT_TYPES, eventFormatWhen } from '../utils/events'
 
 export default function EventTemplate({ data }) {
   const node = data.event
@@ -135,7 +135,6 @@ function EventMetadata({ data }) {
   const nonLibraryAddressData =
     data.field_event_in_non_library_locat &&
     data.field_non_library_location_addre
-  const isAnExhibit = exhibitTypes.includes(eventType)
 
   /**
    * WHEN
@@ -146,35 +145,12 @@ function EventMetadata({ data }) {
     const start = moment(date.value)
     const end = moment(date.end_value)
 
-    // Is the start and end on the same day?
-    if (start.isSame(end, 'day')) {
-      return (
-        start.format('dddd, MMMM D, YYYY [from] h:mma to ') +
-        end.format('h:mma')
-      )
-    }
-
-    // Does is span multiple days?
-    if (start.isBefore(end)) {
-      const sameYear = start.isSame(end, 'year')
-      const endYearFormat = sameYear ? '' : ', YYYY'
-
-      if (isAnExhibit) {
-        if (sameYear) {
-          return start.format(`MMMM D to `) + end.format(`MMMM D, YYYY`)
-        }
-
-        return start.format(`MMMM D, YYYY to `) + end.format(`MMMM D, YYYY`)
-      }
-
-      return (
-        start.format(`dddd, MMMM D, YYYY, h:mma to `) +
-        end.format(`dddd, MMMM D, ${endYearFormat} h:mma`)
-      )
-    }
-
-    // Other use caes...? :punt:
-    return 'n/a'
+    return eventFormatWhen({
+      start,
+      end,
+      kind: 'full',
+      type: eventType,
+    })
   })
 
   return (
