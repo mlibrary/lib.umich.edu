@@ -259,7 +259,7 @@ function EventCard({
         paddingBottom: SPACING['L'],
         marginTop: SPACING['L'],
         [MEDIA_QUERIES['L']]: {
-          display: 'grid',
+          display: displayImage ? 'grid' : 'block',
           gridTemplateColumns: `16rem 1fr `,
           gridGap: SPACING['M'],
         },
