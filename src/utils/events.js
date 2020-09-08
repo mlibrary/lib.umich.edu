@@ -12,24 +12,26 @@ const EXHIBIT_TYPES = ['Exhibit', 'Exhibition']
   (A) The event is an exhibit and it needs just
   the Month, Day range.
 
-    Brief and full:
-      => September 2 to October 30, 2020
+    Brief and Full
+      => September 2 - October 30
+      => December 10, 2020 - January 21, 2021
 
   (B) The event is not an exhibit and needs
   to display the full start and end. It all
   happens same day.
 
     Brief:
-      => Tuesday, September 15 · 3:00pm
+      => Tuesday, September 15 · 3:00pm - 3:50pm
 
     Full:
-      => Tuesday, September 15, 2020 from 3:00pm to 3:50pm
+      => Tuesday, September 15, 2020 from 3:00pm - 3:50pm
 
 
   (C) A multi-day event. Show full range.
 
     Brief:
-      => December 15 at 3:00pm to January 8, 2021 at 3:50pm
+      => July 10 · 2:00pm to July 26 · 10:30am
+      => December 15 · 3:00pm to January 8, 2021 · 3:50pm
 
     Full:
       => Wednesday, December 15, 2020 from 3:00pm to Friday, January 8, 2021 at 3:50pm
