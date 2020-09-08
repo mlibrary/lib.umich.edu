@@ -11,6 +11,8 @@ import {
   TemplateContent,
 } from '../../components/aside-layout'
 
+export const exhibitTypes = ['Exhibit', 'Exhibition']
+
 export default function EventsAndExhibitsPanel() {
   /*
     Potential states for today, upcoming, and exhibits:
