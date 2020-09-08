@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
-import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '@umich-lib/core'
+import { Heading, SPACING, COLORS, TYPOGRAPHY } from '@umich-lib/core'
 import CardImage from '../../maybe-design-system/card-image'
 import MEDIA_QUERIES from '../../maybe-design-system/media-queries'
 import * as moment from 'moment'
@@ -102,7 +102,7 @@ export default function EventsAndExhibitsPanel() {
 
       setExhibits(exhibits)
     }
-  }, [events])
+  }, [events]) // eslint-disable-line
 
   return (
     <Template>
