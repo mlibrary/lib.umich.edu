@@ -11,7 +11,12 @@ import {
   TemplateContent,
 } from '../../components/aside-layout'
 
-import { EXHIBIT_TYPES, eventFormatWhen } from '../../utils/events'
+import {
+  EXHIBIT_TYPES,
+  eventFormatWhen,
+  eventFormatWhere,
+} from '../../utils/events'
+import icons from '../../maybe-design-system/icons'
 
 export default function EventsAndExhibitsPanel() {
   /*
@@ -251,6 +256,10 @@ function EventCard({
     kind: 'brief',
     type,
   })
+  const where = eventFormatWhere({
+    data: {}, // TODO
+    kind: 'brief',
+  })
   const to = fields.slug
 
   return (
@@ -302,24 +311,46 @@ function EventCard({
         >
           {body.summary}
         </p>
-        {!isAnExhibit && (
-          <p
+
+        <p
+          css={{
+            marginTop: SPACING['2XS'],
+          }}
+        >
+          <span
             css={{
               color: COLORS.neutral['300'],
-              marginTop: SPACING['2XS'],
+              marginRight: SPACING['L'],
             }}
           >
-            <Icon d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
+            <Icon d={icons['address']} />
             <span
               css={{
                 marginLeft: SPACING['XS'],
               }}
             >
-              <span className="visually-hidden">Event type: </span>
-              {type}
+              <span className="visually-hidden">Where: </span>
+              {where}
             </span>
-          </p>
-        )}
+          </span>
+          {!isAnExhibit && (
+            <span
+              css={{
+                color: COLORS.neutral['300'],
+              }}
+            >
+              <Icon d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
+              <span
+                css={{
+                  marginLeft: SPACING['XS'],
+                }}
+              >
+                <span className="visually-hidden">Event type: </span>
+                {type}
+              </span>
+            </span>
+          )}
+        </p>
       </div>
     </section>
   )

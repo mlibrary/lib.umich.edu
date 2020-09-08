@@ -1,6 +1,6 @@
 import * as moment from 'moment'
 
-const EXHIBIT_TYPES = ['Exhibit', 'Exhibition']
+export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition']
 
 /*
   Rules for how to handle parsing an event
@@ -36,7 +36,7 @@ const EXHIBIT_TYPES = ['Exhibit', 'Exhibition']
     Full:
       => Wednesday, December 15, 2020 from 3:00pm to Friday, January 8, 2021 at 3:50pm
 */
-function eventFormatWhen({ start, end, kind, type }) {
+export function eventFormatWhen({ start, end, kind, type }) {
   const isBrief = kind === 'brief'
   const isExhibit = EXHIBIT_TYPES.includes(type)
   const S = moment(start)
@@ -87,4 +87,6 @@ function eventFormatWhen({ start, end, kind, type }) {
   )
 }
 
-export { EXHIBIT_TYPES, eventFormatWhen }
+export function eventFormatWhere() {
+  return 'not available'
+}
