@@ -137,6 +137,7 @@ export default function EventsAndExhibitsPanel() {
           level="2"
           size="L"
           css={{
+            marginTop: SPACING['M'],
             marginBottom: SPACING['M'],
           }}
         >
