@@ -137,7 +137,7 @@ function EventMetadata({ data }) {
         label: data.field_online_event_link.title,
       }
     : null
-
+  const series = data.relationships.field_event_series?.name
   const when = dates.map(date => {
     const start = moment(date.value)
     const end = moment(date.end_value)
@@ -225,6 +225,13 @@ function EventMetadata({ data }) {
         <th scope="row">Event type</th>
         <td>{eventType}</td>
       </tr>
+
+      {series && (
+        <tr>
+          <th scope="row">Series</th>
+          <td>{series}</td>
+        </tr>
+      )}
     </table>
   )
 }

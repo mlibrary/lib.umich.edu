@@ -35,6 +35,9 @@ export const query = graphql`
       administrative_area
     }
     relationships {
+      field_event_series {
+        name
+      }
       field_event_building {
         ...buildingFragment
       }
