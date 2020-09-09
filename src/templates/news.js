@@ -29,6 +29,7 @@ export default function NewsTemplate({ data }) {
   const { bodyPanels, fullPanels } = transformNodePanels({ node })
   const { field_title_context, body, fields, relationships, created } = node
   const { slug } = fields
+
   const image =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image

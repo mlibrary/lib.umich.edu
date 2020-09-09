@@ -21,6 +21,10 @@ export const query = graphql`
       uri
     }
     field_event_online
+    field_online_event_link {
+      uri
+      title
+    }
     field_event_in_non_library_locat
     field_non_library_location_addre {
       organization

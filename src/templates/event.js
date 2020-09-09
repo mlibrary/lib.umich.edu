@@ -131,6 +131,12 @@ function EventMetadata({ data }) {
           to: data.field_registration_link.uri,
         }
       : null
+  const onlineLink = data.field_online_event_link
+    ? {
+        to: data.field_online_event_link.uri,
+        label: data.field_online_event_link.title,
+      }
+    : null
 
   const when = dates.map(date => {
     const start = moment(date.value)
@@ -191,7 +197,14 @@ function EventMetadata({ data }) {
       {where && (
         <tr>
           <th scope="row">Where</th>
-          <td>{where}</td>
+          <td>
+            {where}{' '}
+            {onlineLink && (
+              <p>
+                <Link to={onlineLink.to}>{onlineLink.label}</Link>
+              </p>
+            )}
+          </td>
         </tr>
       )}
       {registrationLink && (
