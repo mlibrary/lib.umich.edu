@@ -38,9 +38,6 @@ export const query = graphql`
       field_event_series {
         name
       }
-      field_event_building {
-        ...buildingFragment
-      }
       field_event_type {
         name
       }
