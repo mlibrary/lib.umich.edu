@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
-import { Heading, SPACING, COLORS, TYPOGRAPHY, Icon } from '@umich-lib/core'
+import {
+  Heading,
+  SPACING,
+  COLORS,
+  TYPOGRAPHY,
+  Icon,
+  Expandable,
+  ExpandableButton,
+  ExpandableChildren,
+} from '@umich-lib/core'
 import CardImage from '../../maybe-design-system/card-image'
 import MEDIA_QUERIES from '../../maybe-design-system/media-queries'
 import * as moment from 'moment'
@@ -231,7 +240,22 @@ function UpcomingEvents({ events }) {
     }
 
     if (events.length > 0) {
-      return events.map(event => <EventCard {...event} />)
+      return (
+        <Expandable>
+          <ExpandableChildren show={10}>
+            {events.map(event => (
+              <EventCard {...event} />
+            ))}
+          </ExpandableChildren>
+          <div
+            css={{
+              marginTop: SPACING['L'],
+            }}
+          >
+            <ExpandableButton name="events" count={events.length} />
+          </div>
+        </Expandable>
+      )
     }
   }
 

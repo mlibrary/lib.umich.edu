@@ -1,7 +1,4 @@
-import React from 'react'
 import * as moment from 'moment'
-
-import Address from '../components/address'
 
 export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition']
 
@@ -91,8 +88,6 @@ export function eventFormatWhen({ start, end, kind, type }) {
 }
 
 export function eventFormatWhere({ node, kind }) {
-  console.log('node', node)
-
   const isOnline = node.field_event_online
 
   if (isOnline) {
@@ -101,10 +96,8 @@ export function eventFormatWhere({ node, kind }) {
 
   const addressNode = node.relationships.field_event_building
 
-  console.log('addressNode', addressNode)
-
   if (addressNode) {
-    return 'TODO: address'
+    return addressNode.title
   }
 
   return 'not available'
