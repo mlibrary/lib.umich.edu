@@ -197,8 +197,14 @@ function EventMetadata({ data }) {
       {where && (
         <tr>
           <th scope="row">Where</th>
-          <td>
-            {where}{' '}
+          <td
+            css={{
+              'p + p': {
+                marginTop: SPACING['XS'],
+              },
+            }}
+          >
+            <p>{where}</p>
             {onlineLink && (
               <p>
                 <Link to={onlineLink.to}>{onlineLink.label}</Link>

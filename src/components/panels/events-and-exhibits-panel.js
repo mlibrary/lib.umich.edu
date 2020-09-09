@@ -163,6 +163,32 @@ export default function EventsAndExhibitsPanel() {
 
           <ExhibitEvents events={exhibits} />
         </div>
+
+        <h2
+          css={{
+            fontWeight: '700',
+            paddingTop: SPACING['XL'],
+          }}
+        >
+          See past events
+        </h2>
+        <Link to="https://events.umich.edu/month?filter=sponsors:1186,">
+          Use the U-M events calendar
+        </Link>
+
+        <h2
+          css={{
+            fontWeight: '700',
+            paddingTop: SPACING['M'],
+            marginTop: SPACING['L'],
+            borderTop: `solid 1px ${COLORS.neutral['100']}`,
+          }}
+        >
+          Stay in the know
+        </h2>
+        <Link to="https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D">
+          Sign up for email updates
+        </Link>
       </TemplateSide>
     </Template>
   )
