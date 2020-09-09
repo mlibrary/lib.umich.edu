@@ -13,7 +13,6 @@ import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
 import Share from '../components/share'
-import Address from '../components/address'
 
 /*
   TODO:
