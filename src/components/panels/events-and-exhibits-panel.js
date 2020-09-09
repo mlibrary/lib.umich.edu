@@ -218,7 +218,7 @@ function TodaysEvents({ events }) {
     }
 
     if (events.length > 0) {
-      return <p>Events!</p>
+      return events.map(event => <EventCard {...event} />)
     }
   }
 
