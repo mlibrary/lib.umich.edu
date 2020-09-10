@@ -75,6 +75,7 @@ export default function SiteSearch({ label }) {
         console.log('Site search error', e)
       }
     }
+    // eslint-disable-next-line
   }, [query])
 
   function handleKeydown(e) {
