@@ -36,6 +36,7 @@ export default function EventTemplate({ data }) {
   const imageCaptionHTML =
     relationships?.field_media_image?.field_image_caption?.processed
   const contact = relationships?.field_library_contact
+  const contactEmail = contact ? `${contact.name}@umich.edu` : null
 
   return (
     <TemplateLayout node={node}>
@@ -114,6 +115,15 @@ export default function EventTemplate({ data }) {
                 <Link to={'/users/' + contact.name}>
                   {contact.field_user_display_name}
                 </Link>
+                {' · '}
+                <a
+                  href={`mailto:${contactEmail}`}
+                  css={{
+                    textDecoration: 'underline',
+                  }}
+                >
+                  {contactEmail}
+                </a>
               </p>
             </React.Fragment>
           )}
