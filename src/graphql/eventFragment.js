@@ -37,7 +37,17 @@ export const query = graphql`
     relationships {
       field_library_contact {
         field_user_display_name
+        field_user_email
         name
+      }
+      field_non_library_event_contact {
+        field_first_name
+        field_last_name
+        field_email
+      }
+      field_library_contact {
+        field_user_display_name
+        field_user_email
       }
       field_event_series {
         name

@@ -36,7 +36,7 @@ export default function EventTemplate({ data }) {
   const imageCaptionHTML =
     relationships?.field_media_image?.field_image_caption?.processed
   const contact = relationships?.field_library_contact
-  const contactEmail = contact ? `${contact.name}@umich.edu` : null
+  const eventContacts = relationships?.field_non_library_event_contact
 
   return (
     <TemplateLayout node={node}>
@@ -117,14 +117,43 @@ export default function EventTemplate({ data }) {
                 </Link>
                 {' · '}
                 <a
-                  href={`mailto:${contactEmail}`}
+                  href={`mailto:${contact.field_user_email}`}
                   css={{
                     textDecoration: 'underline',
                   }}
                 >
-                  {contactEmail}
+                  {contact.field_user_email}
                 </a>
               </p>
+            </React.Fragment>
+          )}
+
+          {eventContacts && eventContacts.length > 0 && (
+            <React.Fragment>
+              <h2
+                css={{
+                  fontWeight: '600',
+                  fontSize: '1rem',
+                  marginBottom: SPACING['2XS'],
+                  paddingTop: SPACING['L'],
+                }}
+              >
+                Event contact
+              </h2>
+              {eventContacts.map(eventContact => (
+                <p>
+                  {`${eventContact.field_first_name} ${eventContact.field_last_name}`}
+                  {' · '}
+                  <a
+                    href={`mailto:${eventContact.field_email}`}
+                    css={{
+                      textDecoration: 'underline',
+                    }}
+                  >
+                    {eventContact.field_email}
+                  </a>
+                </p>
+              ))}
             </React.Fragment>
           )}
 
