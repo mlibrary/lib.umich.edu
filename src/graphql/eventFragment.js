@@ -35,6 +35,10 @@ export const query = graphql`
       administrative_area
     }
     relationships {
+      field_library_contact {
+        field_user_display_name
+        name
+      }
       field_event_series {
         name
       }

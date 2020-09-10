@@ -35,6 +35,7 @@ export default function EventTemplate({ data }) {
   const imageData = image ? image.localFile.childImageSharp.fluid : null
   const imageCaptionHTML =
     relationships?.field_media_image?.field_image_caption?.processed
+  const contact = relationships?.field_library_contact
 
   return (
     <TemplateLayout node={node}>
@@ -94,6 +95,28 @@ export default function EventTemplate({ data }) {
             url={'https://www.lib.umich.edu' + slug}
             title={field_title_context}
           />
+
+          {contact && (
+            <React.Fragment>
+              <h2
+                css={{
+                  fontWeight: '600',
+                  fontSize: '1rem',
+                  marginBottom: SPACING['2XS'],
+                  borderTop: `solid 1px ${COLORS.neutral['100']}`,
+                  marginTop: SPACING['L'],
+                  paddingTop: SPACING['L'],
+                }}
+              >
+                Library contact
+              </h2>
+              <p>
+                <Link to={'/users/' + contact.name}>
+                  {contact.field_user_display_name}
+                </Link>
+              </p>
+            </React.Fragment>
+          )}
 
           <p
             css={{
