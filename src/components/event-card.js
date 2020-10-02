@@ -28,7 +28,7 @@ export default function EventCard(node) {
   const end = field_event_date_s_[0].end_value
   const type = relationships.field_event_type.name
   const isAnExhibit = EXHIBIT_TYPES.includes(type)
-  const useBorder = isAnExhibit && hasBorder
+  const useBorder = hasBorder
   const when = eventFormatWhen({
     start,
     end,

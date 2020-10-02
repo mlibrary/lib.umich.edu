@@ -167,7 +167,7 @@ export default function EventsAndExhibitsPanel() {
               Exhibits
             </Heading>
 
-            <ExhibitEvents events={exhibits} />
+            <ExhibitEvents events={exhibits} hasBorder={false} />
           </div>
 
           <h2
@@ -260,7 +260,7 @@ function UpcomingEvents({ events }) {
   return null
 }
 
-function ExhibitEvents({ events }) {
+function ExhibitEvents({ events, hasBorder = false }) {
   if (Array.isArray(events)) {
     if (events.length === 0) {
       return (
@@ -275,7 +275,9 @@ function ExhibitEvents({ events }) {
     }
 
     if (events.length > 0) {
-      return events.map(event => <EventCard {...event} displayImage={false} />)
+      return events.map(event => (
+        <EventCard {...event} displayImage={false} hasBorder={hasBorder} />
+      ))
     }
   }
 
