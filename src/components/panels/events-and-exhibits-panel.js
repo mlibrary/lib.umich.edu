@@ -110,48 +110,13 @@ export default function EventsAndExhibitsPanel() {
   }, [events]) // eslint-disable-line
 
   return (
-    <Template>
-      <TemplateContent>
-        <Heading
-          level="2"
-          size="L"
-          css={{
-            marginBottom: SPACING['M'],
-          }}
-        >
-          Today's Events
-        </Heading>
-
-        <TodaysEvents events={todaysEvents} />
-
-        <Heading
-          level="2"
-          size="L"
-          css={{
-            marginTop: SPACING['M'],
-            marginBottom: SPACING['M'],
-          }}
-        >
-          Upcoming Events
-        </Heading>
-
-        <UpcomingEvents events={upcomingEvents} />
-      </TemplateContent>
-
-      <TemplateSide
-        css={{
-          '> *:first-child': {
-            border: 'none',
-          },
-        }}
-      >
-        <div
-          css={{
-            background: COLORS.blue['100'],
-            borderRadius: '4px',
-            padding: SPACING['M'],
-          }}
-        >
+    <div
+      css={{
+        marginTop: SPACING['2XL'],
+      }}
+    >
+      <Template>
+        <TemplateContent>
           <Heading
             level="2"
             size="L"
@@ -159,39 +124,80 @@ export default function EventsAndExhibitsPanel() {
               marginBottom: SPACING['M'],
             }}
           >
-            Exhibits
+            Today's Events
           </Heading>
 
-          <ExhibitEvents events={exhibits} />
-        </div>
+          <TodaysEvents events={todaysEvents} />
 
-        <h2
+          <Heading
+            level="2"
+            size="L"
+            css={{
+              marginTop: SPACING['M'],
+              marginBottom: SPACING['M'],
+            }}
+          >
+            Upcoming Events
+          </Heading>
+
+          <UpcomingEvents events={upcomingEvents} />
+        </TemplateContent>
+
+        <TemplateSide
           css={{
-            fontWeight: '700',
-            paddingTop: SPACING['XL'],
+            '> *:first-child': {
+              border: 'none',
+            },
           }}
         >
-          See past events
-        </h2>
-        <Link to="https://events.umich.edu/month?filter=sponsors:1186,">
-          Use the U-M events calendar
-        </Link>
+          <div
+            css={{
+              background: COLORS.blue['100'],
+              borderRadius: '4px',
+              padding: SPACING['M'],
+            }}
+          >
+            <Heading
+              level="2"
+              size="L"
+              css={{
+                marginBottom: SPACING['M'],
+              }}
+            >
+              Exhibits
+            </Heading>
 
-        <h2
-          css={{
-            fontWeight: '700',
-            paddingTop: SPACING['M'],
-            marginTop: SPACING['L'],
-            borderTop: `solid 1px ${COLORS.neutral['100']}`,
-          }}
-        >
-          Stay in the know
-        </h2>
-        <Link to="https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D">
-          Sign up for email updates
-        </Link>
-      </TemplateSide>
-    </Template>
+            <ExhibitEvents events={exhibits} />
+          </div>
+
+          <h2
+            css={{
+              fontWeight: '700',
+              paddingTop: SPACING['XL'],
+            }}
+          >
+            See past events
+          </h2>
+          <Link to="https://events.umich.edu/month?filter=sponsors:1186,">
+            Use the U-M events calendar
+          </Link>
+
+          <h2
+            css={{
+              fontWeight: '700',
+              paddingTop: SPACING['M'],
+              marginTop: SPACING['L'],
+              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+            }}
+          >
+            Stay in the know
+          </h2>
+          <Link to="https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D">
+            Sign up for email updates
+          </Link>
+        </TemplateSide>
+      </Template>
+    </div>
   )
 }
 
