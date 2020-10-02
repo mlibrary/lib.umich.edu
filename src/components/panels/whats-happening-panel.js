@@ -1,64 +1,48 @@
 import { useStaticQuery, graphql } from 'gatsby'
-import React, { useState, useEffect } from 'react'
-import {
-  SPACING,
-  MEDIA_QUERIES,
-  COLORS,
-  Heading,
-  Margins,
-} from '@umich-lib/core'
+import React from 'react'
+import { SPACING, MEDIA_QUERIES, Heading, Margins } from '@umich-lib/core'
 import Link from '../link'
-import Card from '../card'
+import EventCard from '../event-card'
 
 /*
   Featured and latest news and exhibits.
   
   "What's happening?"
+
+  look at all kinds of events that are prioritized,
+  use those, then if we need more add in some
+  non prioritized events (except don't use Exhibits).
+  Make sure we use up to 3, but no more.
+  Sort all of em by date.
 */
 export default function WhatsHappening() {
   const data = useStaticQuery(graphql`
     query {
-      events: allNodeEventsAndExhibits {
-        edges {
-          node {
-            ...eventFragment
-          }
+      priorityEvents: allNodeEventsAndExhibits(
+        filter: { field_priority_for_homepage: { eq: true } }
+        sort: { fields: created, order: DESC }
+      ) {
+        nodes {
+          ...eventFragment
         }
       }
-      newsLandingPage: nodePage(
-        relationships: {
-          field_design_template: { field_machine_name: { eq: "news_landing" } }
+      otherEvents: allNodeEventsAndExhibits(
+        filter: {
+          relationships: { field_event_type: { name: { ne: "Exhibit" } } }
         }
+        sort: { fields: created, order: DESC }
       ) {
-        fields {
-          slug
+        nodes {
+          ...eventFragment
         }
       }
     }
   `)
 
-  const viewAllNewsHref = data.newsLandingPage.fields.slug
+  console.log('data', data)
 
-  const news = [
-    {
-      title: 'Title',
-      subtitle: 'Sub title',
-      href: '/',
-      children: <p>Children!</p>,
-    },
-    {
-      title: 'Title 2',
-      subtitle: 'Sub title',
-      href: '/',
-      children: <p>Children!</p>,
-    },
-    {
-      title: 'Title 3',
-      subtitle: 'Sub title',
-      href: '/',
-      children: <p>Children!</p>,
-    },
-  ]
+  // Join exhibits with events, but only keep 3.
+  const events = data.priorityEvents.nodes
 
   return (
     <div
@@ -83,12 +67,14 @@ export default function WhatsHappening() {
             },
           }}
         >
-          {news.map(newsItemMeta => (
-            <Card {...newsItemMeta} />
+          {events.map(event => (
+            <EventCard {...event} displayImage={false} hasBorder={false} />
           ))}
         </div>
 
-        <Link to={viewAllNewsHref}>View all events</Link>
+        <Link to="/visit-and-study/events-and-exhibits/today-and-upcoming">
+          View all events
+        </Link>
       </Margins>
     </div>
   )
