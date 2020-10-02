@@ -3,6 +3,7 @@ import React from 'react'
 import { SPACING, MEDIA_QUERIES, Heading, Margins } from '@umich-lib/core'
 import Link from '../link'
 import EventCard from '../event-card'
+import { sortEventsByStartDate } from '../../utils/events'
 
 /*
   Featured and latest news and exhibits.
@@ -19,8 +20,14 @@ export default function WhatsHappening() {
   const data = useStaticQuery(graphql`
     query {
       priorityEvents: allNodeEventsAndExhibits(
-        filter: { field_priority_for_homepage: { eq: true } }
-        sort: { fields: created, order: DESC }
+        filter: {
+          field_priority_for_homepage: { eq: true }
+          relationships: {
+            field_design_template: {
+              field_machine_name: { eq: "event_exhibit" }
+            }
+          }
+        }
       ) {
         nodes {
           ...eventFragment
@@ -28,9 +35,13 @@ export default function WhatsHappening() {
       }
       otherEvents: allNodeEventsAndExhibits(
         filter: {
-          relationships: { field_event_type: { name: { ne: "Exhibit" } } }
+          relationships: {
+            field_design_template: {
+              field_machine_name: { eq: "event_exhibit" }
+            }
+            field_event_type: { name: { ne: "Exhibit" } }
+          }
         }
-        sort: { fields: created, order: DESC }
       ) {
         nodes {
           ...eventFragment
@@ -42,7 +53,13 @@ export default function WhatsHappening() {
   console.log('data', data)
 
   // Join exhibits with events, but only keep 3.
-  const events = data.priorityEvents.nodes
+  const events = sortEventsByStartDate({
+    events: data.priorityEvents.nodes,
+  })
+    .concat(sortEventsByStartDate({ events: data.otherEvents.nodes }))
+    .slice(0, 3)
+
+  console.log('events', events)
 
   return (
     <div
@@ -58,8 +75,6 @@ export default function WhatsHappening() {
 
         <div
           css={{
-            marginTop: SPACING['L'],
-            marginBottom: SPACING['L'],
             [MEDIA_QUERIES.LARGESCREEN]: {
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',

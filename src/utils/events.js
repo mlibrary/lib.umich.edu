@@ -102,3 +102,24 @@ export function eventFormatWhere({ node, kind }) {
 
   return 'not available'
 }
+
+export function sortEventsByStartDate({ events }) {
+  function compareStartDate(a, b) {
+    const startA = a.field_event_date_s_[0].value
+    const startB = b.field_event_date_s_[0].value
+
+    if (moment(startA).isBefore(startB)) {
+      return -1
+    }
+
+    if (moment(startA).isAfter(startB)) {
+      return 1
+    }
+
+    return 0
+  }
+
+  // Spread the array to make a new one, to
+  // avoid mutating og.
+  return [...events].sort(compareStartDate)
+}
