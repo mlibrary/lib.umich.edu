@@ -103,7 +103,7 @@ export function eventFormatWhere({ node, kind }) {
   return 'not available'
 }
 
-export function sortEventsByStartDate({ events }) {
+export function sortEventsByStartDate({ events, onlyAfterToday = false }) {
   function compareStartDate(a, b) {
     const startA = a.field_event_date_s_[0].value
     const startB = b.field_event_date_s_[0].value
@@ -117,6 +117,16 @@ export function sortEventsByStartDate({ events }) {
     }
 
     return 0
+  }
+
+  if (onlyAfterToday) {
+    function afterToday(event) {
+      // TODO:
+      // Is this event happeing today or after?
+      // https://momentjs.com/docs/#/query/is-same-or-after/
+    }
+
+    return [...events.filter(afterToday)].sort(compareStartDate)
   }
 
   // Spread the array to make a new one, to

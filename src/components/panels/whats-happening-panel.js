@@ -50,16 +50,22 @@ export default function WhatsHappening() {
     }
   `)
 
-  console.log('data', data)
-
   // Join exhibits with events, but only keep 3.
-  const events = sortEventsByStartDate({
+  const joinedEvents = sortEventsByStartDate({
     events: data.priorityEvents.nodes,
+    onlyAfterToday: true,
   })
-    .concat(sortEventsByStartDate({ events: data.otherEvents.nodes }))
+    .concat(
+      sortEventsByStartDate({
+        events: data.otherEvents.nodes,
+        onlyAfterToday: true,
+      })
+    )
     .slice(0, 3)
 
-  console.log('events', events)
+  const events = sortEventsByStartDate({
+    events: joinedEvents,
+  })
 
   return (
     <div
