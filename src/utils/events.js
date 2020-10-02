@@ -121,6 +121,13 @@ export function sortEventsByStartDate({ events, onlyAfterToday = false }) {
 
   if (onlyAfterToday) {
     function afterToday(event) {
+      const date = event.field_event_date_s_[0]
+      const start = date.value
+      const end = date.end_value
+
+      // Is the event end date the same or before today?
+      return !moment().isSameOrAfter(end, 'day')
+
       // TODO:
       // Is this event happeing today or after?
       // https://momentjs.com/docs/#/query/is-same-or-after/
