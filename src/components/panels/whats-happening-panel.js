@@ -50,22 +50,33 @@ export default function WhatsHappening() {
     }
   `)
 
-  // Join exhibits with events, but only keep 3.
-  const joinedEvents = sortEventsByStartDate({
-    events: data.priorityEvents.nodes,
-    onlyAfterToday: true,
-  })
-    .concat(
-      sortEventsByStartDate({
-        events: data.otherEvents.nodes,
-        onlyAfterToday: true,
-      })
-    )
-    .slice(0, 3)
+  let events = []
 
-  const events = sortEventsByStartDate({
-    events: joinedEvents,
-  })
+  try {
+    // Join exhibits with events, but only keep 3.
+    const joinedEvents = sortEventsByStartDate({
+      events: data.priorityEvents.nodes,
+      onlyAfterToday: true,
+    })
+      .concat(
+        sortEventsByStartDate({
+          events: data.otherEvents.nodes,
+          onlyAfterToday: true,
+        })
+      )
+      .slice(0, 3)
+
+    events = sortEventsByStartDate({
+      events: joinedEvents,
+    })
+  } catch (error) {
+    console.warn('ee_featured events error:', error)
+  }
+
+  // Make sure there are events to render.
+  if (!events || events.length === 0) {
+    return null
+  }
 
   return (
     <div
