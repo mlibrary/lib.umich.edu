@@ -8,6 +8,7 @@ import {
   Icon,
   LargeScreen,
 } from '@umich-lib/core'
+import VisuallyHidden from '@reach/visually-hidden'
 
 export default function SideNavigation({ to, branch }) {
   if (!branch) {
@@ -85,13 +86,13 @@ function SideNavLink({ path, item, children, ...rest }) {
         {children}
         {hasChildren && (
           <span
-            aria-hidden="true"
             css={{
               paddingLeft: SPACING['XS'],
               lineHeight: '1',
               color: COLORS.neutral['400'],
             }}
           >
+            <VisuallyHidden>(has sub-pages)</VisuallyHidden>
             <Icon icon="expand_more" />
           </span>
         )}
