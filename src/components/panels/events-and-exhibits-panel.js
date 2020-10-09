@@ -33,7 +33,15 @@ export default function EventsAndExhibitsPanel() {
 
   const data = useStaticQuery(graphql`
     query {
-      events: allNodeEventsAndExhibits {
+      events: allNodeEventsAndExhibits(
+        filter: {
+          relationships: {
+            field_design_template: {
+              field_machine_name: { eq: "event_exhibit" }
+            }
+          }
+        }
+      ) {
         edges {
           node {
             ...eventFragment
