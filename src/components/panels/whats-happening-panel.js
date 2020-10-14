@@ -1,9 +1,10 @@
 import { useStaticQuery, graphql } from 'gatsby'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { SPACING, MEDIA_QUERIES, Heading, Margins } from '@umich-lib/core'
 import Link from '../link'
 import EventCard from '../event-card'
 import { sortEventsByStartDate } from '../../utils/events'
+import * as moment from 'moment'
 
 /*
   Featured and latest news and exhibits.
@@ -14,9 +15,11 @@ import { sortEventsByStartDate } from '../../utils/events'
   use those, then if we need more add in some
   non prioritized events (except don't use Exhibits).
   Make sure we use up to 3, but no more.
-  Sort all of em by date.
+  Sort all of them by date.
 */
 export default function WhatsHappening() {
+  const [events, setEvents] = useState(null)
+
   const data = useStaticQuery(graphql`
     query {
       priorityEvents: allNodeEventsAndExhibits(
@@ -50,28 +53,26 @@ export default function WhatsHappening() {
     }
   `)
 
-  let events = []
-
-  try {
-    // Join exhibits with events, but only keep 3.
-    const joinedEvents = sortEventsByStartDate({
-      events: data.priorityEvents.nodes,
-      onlyAfterToday: true,
-    })
-      .concat(
+  useEffect(() => {
+    if (events === null) {
+      // Join exhibits with events, but only keep 3.
+      const joinedEvents = sortEventsByStartDate({
+        events: data.priorityEvents.nodes,
+        onlyTodayOrAfter: true,
+      }).concat(
         sortEventsByStartDate({
           events: data.otherEvents.nodes,
-          onlyAfterToday: true,
+          onlyTodayOrAfter: true,
         })
       )
-      .slice(0, 3)
 
-    events = sortEventsByStartDate({
-      events: joinedEvents,
-    })
-  } catch (error) {
-    console.warn('ee_featured events error:', error)
-  }
+      const sortedEvents = sortEventsByStartDate({
+        events: joinedEvents,
+      })
+
+      setEvents(sortedEvents.slice(0, 3)) // only keep 3
+    }
+  }, [events])
 
   // Make sure there are events to render.
   if (!events || events.length === 0) {
