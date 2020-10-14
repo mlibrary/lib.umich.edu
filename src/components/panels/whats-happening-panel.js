@@ -4,7 +4,6 @@ import { SPACING, MEDIA_QUERIES, Heading, Margins } from '@umich-lib/core'
 import Link from '../link'
 import EventCard from '../event-card'
 import { sortEventsByStartDate } from '../../utils/events'
-import * as moment from 'moment'
 
 /*
   Featured and latest news and exhibits.
@@ -72,7 +71,7 @@ export default function WhatsHappening() {
 
       setEvents(sortedEvents.slice(0, 3)) // only keep 3
     }
-  }, [events])
+  }, [events]) // eslint-disable-line
 
   // Make sure there are events to render.
   if (!events || events.length === 0) {
