@@ -4,6 +4,7 @@ import { SPACING, MEDIA_QUERIES, Heading, Margins } from '@umich-lib/core'
 import Link from '../link'
 import EventCard from '../event-card'
 import { sortEventsByStartDate } from '../../utils/events'
+import * as moment from 'moment'
 
 /*
   Featured and latest news and exhibits.
@@ -14,7 +15,7 @@ import { sortEventsByStartDate } from '../../utils/events'
   use those, then if we need more add in some
   non prioritized events (except don't use Exhibits).
   Make sure we use up to 3, but no more.
-  Sort all of em by date.
+  Sort all of them by date.
 */
 export default function WhatsHappening() {
   const [events, setEvents] = useState(null)
