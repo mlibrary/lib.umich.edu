@@ -28,6 +28,7 @@ export default function NewsLandingTemplate({ data }) {
   )
   const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates)
   const newsMainInitialShow = 10
+  const newsLibraryUpdatesInitialShow = 20
 
   const {
     title,
@@ -115,22 +116,33 @@ export default function NewsLandingTemplate({ data }) {
             Library Updates
           </Heading>
           {newsLibraryUpdates && (
-            <ol>
-              {newsLibraryUpdates.map((item, i) => (
-                <li
-                  key={'news-item-' + i}
-                  css={{
-                    marginBottom: SPACING['XL'],
-                  }}
-                >
-                  <Card
-                    href={item.href}
-                    title={item.title}
-                    subtitle={item.subtitle}
-                  />
-                </li>
-              ))}
-            </ol>
+            <Expandable>
+              <ol>
+                <ExpandableChildren show={newsLibraryUpdatesInitialShow}>
+                  {newsLibraryUpdates.map((item, i) => (
+                    <li
+                      key={'news-item-' + i}
+                      css={{
+                        marginBottom: SPACING['XL'],
+                      }}
+                    >
+                      <Card
+                        href={item.href}
+                        title={item.title}
+                        subtitle={item.subtitle}
+                      />
+                    </li>
+                  ))}
+                </ExpandableChildren>
+              </ol>
+
+              {newsLibraryUpdates.length > newsLibraryUpdatesInitialShow && (
+                <ExpandableButton
+                  name="updates"
+                  count={newsLibraryUpdates.length}
+                />
+              )}
+            </Expandable>
           )}
         </TemplateSide>
       </Template>
