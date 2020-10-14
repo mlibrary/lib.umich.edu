@@ -27,7 +27,7 @@ export default function NewsLandingTemplate({ data }) {
     processNewsData(data.restNews)
   )
   const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates)
-  const newsMainInitialShow = 15
+  const newsMainInitialShow = 10
 
   const {
     title,
