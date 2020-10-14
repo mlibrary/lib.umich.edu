@@ -103,7 +103,7 @@ export function eventFormatWhere({ node, kind }) {
   return 'not available'
 }
 
-export function sortEventsByStartDate({ events, onlyAfterToday = false }) {
+export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
   function compareStartDate(a, b) {
     const startA = a.field_event_date_s_[0].value
     const startB = b.field_event_date_s_[0].value
@@ -119,16 +119,15 @@ export function sortEventsByStartDate({ events, onlyAfterToday = false }) {
     return 0
   }
 
-  if (onlyAfterToday) {
-    function afterToday(event) {
+  if (onlyTodayOrAfter) {
+    function beforeToday(event) {
       const date = event.field_event_date_s_[0]
       const end = date.end_value
 
-      // Is the event end date the same or before today?
-      return !moment().isSameOrAfter(end, 'day')
+      return moment().isBefore(end, 'day')
     }
 
-    return [...events.filter(afterToday)].sort(compareStartDate)
+    return [...[...events].filter(beforeToday)].sort(compareStartDate)
   }
 
   // Spread the array to make a new one, to
