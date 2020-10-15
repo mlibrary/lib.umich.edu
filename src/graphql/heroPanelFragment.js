@@ -20,6 +20,9 @@ export const query = graphql`
       }
       field_hero_images {
         field_orientation
+        field_media_image {
+          alt
+        }
         relationships {
           field_media_image {
             localFile {
