@@ -37,7 +37,6 @@ const frostCSS = {
 
   1. One that puts provides access to Library Search, "lib_search_box"
   2. A heading and HTML content on an image, "text"
-  3. Alt text for the image is wrapped with a figure,
 */
 export default function HeroSearchBox({ data }) {
   const hasFrost = data.field_background === 'white'
