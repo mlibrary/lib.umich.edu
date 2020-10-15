@@ -37,6 +37,7 @@ const frostCSS = {
 
   1. One that puts provides access to Library Search, "lib_search_box"
   2. A heading and HTML content on an image, "text"
+  3. Alt text for the image is wrapped with a figure,
 */
 export default function HeroSearchBox({ data }) {
   const hasFrost = data.field_background === 'white'
@@ -138,7 +139,7 @@ function Caption({ data }) {
   const altText = data.relationships.field_hero_images[0].field_media_image.alt
 
   return (
-    <figure
+    <div
       css={{
         position: 'absolute',
         right: '0',
@@ -150,15 +151,11 @@ function Caption({ data }) {
     >
       {altText && (
         <VisuallyHidden>
-          <img alt={altText} />
+          <div role="img" aria-label={altText} />
         </VisuallyHidden>
       )}
-      {caption && (
-        <figcaption>
-          <HTML html={caption} />
-        </figcaption>
-      )}
-    </figure>
+      {caption && <HTML html={caption} />}
+    </div>
   )
 }
 
