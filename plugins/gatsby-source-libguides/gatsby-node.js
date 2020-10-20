@@ -1,4 +1,7 @@
-const fetch = require('fetch-retry')
+require('es6-promise').polyfill()
+
+const originalFetch = require('isomorphic-fetch')
+const fetch = require('fetch-retry')(originalFetch)
 
 exports.sourceNodes = async (
   { actions, createNodeId, createContentDigest, reporter },
