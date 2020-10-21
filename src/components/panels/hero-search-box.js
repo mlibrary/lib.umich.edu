@@ -207,8 +207,15 @@ function Search({ labelId }) {
           paddingBottom: SPACING['XS'],
         }}
       >
-        Search our <a href="https://search.lib.umich.edu/catalog">catalog</a>,{' '}
-        <a href="https://search.lib.umich.edu/articles">articles</a>, and more
+        Search our{' '}
+        <a href="https://search.lib.umich.edu/catalog?utm_source=lib-home">
+          catalog
+        </a>
+        ,{' '}
+        <a href="https://search.lib.umich.edu/articles?utm_source=lib-home">
+          articles
+        </a>
+        , and more
       </label>
       <div
         css={{
@@ -220,6 +227,7 @@ function Search({ labelId }) {
         }}
       >
         <Input id="library-search-query" type="search" name="query" />
+        <input type="hidden" name="utm_source" value="lib-home" />
         <Button
           type="submit"
           kind="primary"
