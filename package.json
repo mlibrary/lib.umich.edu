@@ -36,7 +36,10 @@
     "rehype-parse": "^6.0.1",
     "rehype-react": "^4.0.1",
     "unified": "^8.4.2",
-    "use-debounce": "^3.3.0"
+    "use-debounce": "^3.3.0",
+    "es6-promise": "^4.2.8",
+    "fetch-retry": "^4.0.1",
+    "isomorphic-fetch": "^3.0.0"
   },
   "keywords": [
     "gatsby"
@@ -61,11 +64,8 @@
   "devDependencies": {
     "bottleneck": "^2.19.5",
     "entities": "^2.0.0",
-    "es6-promise": "^4.2.8",
-    "fetch-retry": "^4.0.1",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
     "gatsby-plugin-remove-trailing-slashes": "^2.1.17",
-    "isomorphic-fetch": "^3.0.0",
     "prettier": "^1.19.1"
   }
 }
