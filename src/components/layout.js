@@ -49,6 +49,7 @@ function Layout({ children, drupalNid }) {
           data-drupal-nid={drupalNid}
         />
       )}
+      <m-chat id="chat"></m-chat>
     </React.Fragment>
   )
 }
