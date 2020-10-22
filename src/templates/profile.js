@@ -46,15 +46,54 @@ function ProfileTemplate({ data }) {
   } = data.profile
   const { field_media_image, field_name_pronunciation } = relationships
   const { office } = data.staff
-  const pronouns = [
+  const pronouns_data = [
     field_user_pronoun_subject,
     field_user_pronoun_object,
     field_user_pronoun_dependent_pos,
     field_user_pronoun_independent_p,
   ]
-    .filter((v, i, arr) => v && arr.indexOf(v) === i) // remove duplicates
-    .join('/')
+
   const phone = field_user_phone !== '000-000-0000' ? field_user_phone : null
+
+  /**
+   * Take pronouns and create sets.
+   *
+   * Responsibilities:
+   * - Make sets by '/' delimiter.
+   * - Remove duplicates in a set.
+   *
+   * Input:
+   *
+   * [
+   *   "She/They",
+   *   "Her/Them",
+   *   "Her/Their",
+   *   "Hers/Theirs"
+   * ]
+   *
+   * Result:
+   *
+   * [
+   *   "She/Her/Hers",
+   *   "They/Them/Their/Theirs"
+   * ]
+   */
+  function processPronouns(pronouns) {
+    const cleaned = pronouns.filter(pronoun => typeof pronoun === 'string')
+    const matrix = cleaned.map(pronoun => pronoun.split('/'))
+    const transposed = matrix[0].map((_, colIndex) =>
+      matrix.map(row => row[colIndex])
+    )
+    const formatted = transposed.map(set =>
+      set
+        .filter((v, i, arr) => v && arr.indexOf(v) === i) // remove duplicates
+        .join('/')
+    )
+
+    return formatted
+  }
+
+  const pronouns = processPronouns(pronouns_data)
 
   var image
 
@@ -134,7 +173,9 @@ function ProfileTemplate({ data }) {
                   >
                     Pronouns
                   </Heading>
-                  <Text>{pronouns}</Text>
+                  {pronouns.map((set, i) => (
+                    <Text key={`pronouns` + i}>{set}</Text>
+                  ))}
                 </React.Fragment>
               )}
 
