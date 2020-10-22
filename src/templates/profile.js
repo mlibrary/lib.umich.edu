@@ -80,9 +80,16 @@ function ProfileTemplate({ data }) {
    */
   function processPronouns(pronouns) {
     const cleaned = pronouns.filter(pronoun => typeof pronoun === 'string')
+
+    // They don't have any.
+    if (cleaned.length === 0) {
+      return null
+    }
+
     const matrix = cleaned.map(pronoun => pronoun.split('/'))
-    const transposed = matrix[0].map((_, colIndex) =>
-      matrix.map(row => row[colIndex])
+    const transposed = matrix.reduce(
+      (prev, next) => next.map((item, i) => (prev[i] || []).concat(next[i])),
+      []
     )
     const formatted = transposed.map(set =>
       set
