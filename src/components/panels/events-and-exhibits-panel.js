@@ -126,8 +126,8 @@ export default function EventsAndExhibitsPanel() {
       <Template>
         <TemplateContent>
           <Heading
-            level="2"
-            size="L"
+            level={2}
+            size="M"
             css={{
               marginBottom: SPACING['M'],
             }}
@@ -138,8 +138,8 @@ export default function EventsAndExhibitsPanel() {
           <TodaysEvents events={todaysEvents} />
 
           <Heading
-            level="2"
-            size="L"
+            level={2}
+            size="M"
             css={{
               marginTop: SPACING['M'],
               marginBottom: SPACING['M'],
@@ -166,8 +166,8 @@ export default function EventsAndExhibitsPanel() {
             }}
           >
             <Heading
-              level="2"
-              size="L"
+              level={2}
+              size="M"
               css={{
                 marginBottom: SPACING['M'],
               }}
