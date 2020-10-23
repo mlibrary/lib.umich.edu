@@ -39,7 +39,6 @@ const frostCSS = {
   2. A heading and HTML content on an image, "text"
 */
 export default function HeroSearchBox({ data }) {
-  const caption = data.field_caption_text && data.field_caption_text.processed
   const hasFrost = data.field_background === 'white'
   const applyFrostCSS = hasFrost ? frostCSS : {}
 
@@ -128,13 +127,31 @@ export default function HeroSearchBox({ data }) {
             <Search labelId={'help-find'} />
           </div>
         </div>
-        {caption && <Caption caption={caption} />}
+        <Caption data={data} />
       </BackgroundSection>
     </Margins>
   )
 }
 
-function Caption({ caption }) {
+/**
+ * The background image to the hero is decorative, as it is
+ * a background CSS style.
+ *
+ * But! We want to provide as much of an equitable experience
+ * for everyone, so with a11y in mind, we will render
+ * a visually hidden image in a figure with the
+ * figcaption that is displayed. This will provide context
+ * to the caption link that is not available from
+ * the background image.
+ */
+function Caption({ data }) {
+  const caption = data.field_caption_text && data.field_caption_text.processed
+  const altText = data.relationships.field_hero_images[0].field_media_image.alt
+
+  if (!caption) {
+    return null
+  }
+
   return (
     <div
       css={{
@@ -146,7 +163,18 @@ function Caption({ caption }) {
         ...frostCSS,
       }}
     >
-      <HTML html={caption} />
+      <figure aria-hidden={altText ? 'false' : 'true'}>
+        {altText && (
+          <VisuallyHidden>
+            <img alt={altText} />
+          </VisuallyHidden>
+        )}
+        {caption && (
+          <figcaption>
+            <HTML html={caption} />
+          </figcaption>
+        )}
+      </figure>
     </div>
   )
 }
