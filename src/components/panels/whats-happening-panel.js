@@ -37,6 +37,7 @@ export default function WhatsHappening() {
       }
       otherEvents: allNodeEventsAndExhibits(
         filter: {
+          field_priority_for_homepage: { eq: false }
           relationships: {
             field_design_template: {
               field_machine_name: { eq: "event_exhibit" }
