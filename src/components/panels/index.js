@@ -23,6 +23,7 @@ import DestinationHorizontalPanel from './destination-horizontal-panel'
 import getParentTitle from '../../utils/get-parent-title'
 import CustomPanel from './custom-panel'
 import Callout from '../../maybe-design-system/callout'
+import Image from '../image'
 
 import { StateProvider } from '../use-state'
 
@@ -368,6 +369,44 @@ function TextPanel({ data }) {
             </li>
           ))}
         </PanelList>
+      </PanelTemplate>
+    )
+  }
+
+  if (template === 'image_text_body') {
+    const items = cards.map(card => {
+      return {
+        html: card.field_body.processed,
+        image:
+          card.relationships.field_text_image.relationships.field_media_image
+            .localFile.childImageSharp.fluid,
+      }
+    })
+
+    return (
+      <PanelTemplate title={title}>
+        {items.map(({ html, image }, i) => (
+          <section
+            key={i + html}
+            css={{
+              display: 'flex',
+              marginBottom: SPACING['L'],
+              paddingBottom: SPACING['M'],
+              borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+            }}
+          >
+            <div
+              css={{
+                width: '8rem',
+                marginRight: SPACING['L'],
+                flexShrink: '0',
+              }}
+            >
+              <Image image={image} />
+            </div>
+            <HTML html={html} />
+          </section>
+        ))}
       </PanelTemplate>
     )
   }
