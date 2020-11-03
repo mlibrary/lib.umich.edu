@@ -72,7 +72,7 @@ export default function SiteSearch({ label }) {
         setError({ query: query, error: e })
         return
       } else {
-        console.log('Site search error', e)
+        console.warn('Site search error', e)
       }
     }
     // eslint-disable-next-line
@@ -432,8 +432,6 @@ function cleanQueryStringForLunr(str) {
   // Ignore quotation marks so they don't throw results -- LIBWEB-649
   // `""` => ``
   query = query.replace(/['"]+/g, '')
-
-  console.log('cleanQueryStringForLunr', query)
 
   return query
 }
