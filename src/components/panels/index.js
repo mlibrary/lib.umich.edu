@@ -376,6 +376,7 @@ function TextPanel({ data }) {
   if (template === 'image_text_body') {
     const items = cards.map(card => {
       return {
+        heading: card.field_title,
         html: card.field_body.processed,
         image:
           card.relationships.field_text_image.relationships.field_media_image
@@ -385,7 +386,7 @@ function TextPanel({ data }) {
 
     return (
       <PanelTemplate title={title}>
-        {items.map(({ html, image }, i) => (
+        {items.map(({ heading, html, image }, i) => (
           <section
             key={i + html}
             css={{
@@ -404,7 +405,22 @@ function TextPanel({ data }) {
             >
               <Image image={image} />
             </div>
-            <HTML html={html} />
+            <div>
+              {heading && (
+                <Heading
+                  level={title ? 2 : 2} // Use heading level 3 if has (h2) panel title.
+                  size="S"
+                  css={{
+                    marginTop: `0 !important`,
+                    marginBottom: SPACING['XS'],
+                  }}
+                >
+                  {heading}
+                </Heading>
+              )}
+
+              <HTML html={html} />
+            </div>
           </section>
         ))}
       </PanelTemplate>
