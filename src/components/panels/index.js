@@ -381,12 +381,15 @@ function TextPanel({ data }) {
         image:
           card.relationships.field_text_image.relationships.field_media_image
             .localFile.childImageSharp.fluid,
+        imageAlt:
+          card.relationships.field_text_image.relationships.field_media_image
+            .relationships?.media__image[0]?.field_media_image.alt,
       }
     })
 
     return (
       <PanelTemplate title={title}>
-        {items.map(({ heading, html, image }, i) => (
+        {items.map(({ heading, html, image, imageAlt }, i) => (
           <section
             key={i + html}
             css={{
@@ -403,7 +406,7 @@ function TextPanel({ data }) {
                 flexShrink: '0',
               }}
             >
-              <Image image={image} />
+              <Image image={image} alt={imageAlt} />
             </div>
             <div>
               {heading && (

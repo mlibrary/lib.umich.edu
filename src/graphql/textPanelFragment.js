@@ -29,6 +29,13 @@ export const query = graphql`
                     }
                   }
                 }
+                relationships {
+                  media__image {
+                    field_media_image {
+                      alt
+                    }
+                  }
+                }
               }
             }
           }
