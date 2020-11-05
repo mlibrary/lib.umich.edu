@@ -203,7 +203,12 @@ export const query = graphql`
       }
     }
     newsLibraryUpdates: allNodeNews(
-      filter: { field_news_type: { eq: "library_updates" } }
+      filter: {
+        field_news_type: { eq: "library_updates" }
+        relationships: {
+          field_design_template: { field_machine_name: { eq: "news" } }
+        }
+      }
       sort: { fields: created, order: DESC }
     ) {
       edges {
