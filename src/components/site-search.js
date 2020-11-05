@@ -385,8 +385,11 @@ function NoResults({ query }) {
           display: 'block',
         }}
       >
-        Try <Link to="https://search.lib.umich.edu/">Library Search</Link> for
-        books, articles, and more.
+        Try{' '}
+        <Link to="https://search.lib.umich.edu/everything?utm_source=lib-site-search">
+          Library Search
+        </Link>{' '}
+        for books, articles, and more.
       </span>
     </p>
   )
