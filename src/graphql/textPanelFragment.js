@@ -18,6 +18,28 @@ export const query = graphql`
         field_body {
           processed
         }
+        relationships {
+          field_text_image {
+            relationships {
+              field_media_image {
+                localFile {
+                  childImageSharp {
+                    fluid(maxWidth: 620) {
+                      ...GatsbyImageSharpFluid_noBase64
+                    }
+                  }
+                }
+                relationships {
+                  media__image {
+                    field_media_image {
+                      alt
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

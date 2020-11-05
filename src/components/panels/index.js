@@ -23,6 +23,7 @@ import DestinationHorizontalPanel from './destination-horizontal-panel'
 import getParentTitle from '../../utils/get-parent-title'
 import CustomPanel from './custom-panel'
 import Callout from '../../maybe-design-system/callout'
+import Image from '../image'
 
 import { StateProvider } from '../use-state'
 
@@ -368,6 +369,63 @@ function TextPanel({ data }) {
             </li>
           ))}
         </PanelList>
+      </PanelTemplate>
+    )
+  }
+
+  if (template === 'image_text_body') {
+    const items = cards.map(card => {
+      return {
+        heading: card.field_title,
+        html: card.field_body.processed,
+        image:
+          card.relationships.field_text_image.relationships.field_media_image
+            .localFile.childImageSharp.fluid,
+        imageAlt:
+          card.relationships.field_text_image.relationships.field_media_image
+            .relationships?.media__image[0]?.field_media_image.alt,
+      }
+    })
+
+    return (
+      <PanelTemplate title={title}>
+        {items.map(({ heading, html, image, imageAlt }, i) => (
+          <section
+            key={i + html}
+            css={{
+              display: 'flex',
+              marginBottom: SPACING['L'],
+              paddingBottom: SPACING['M'],
+              borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+            }}
+          >
+            <div
+              css={{
+                width: '8rem',
+                marginRight: SPACING['L'],
+                flexShrink: '0',
+              }}
+            >
+              <Image image={image} alt={imageAlt} />
+            </div>
+            <div>
+              {heading && (
+                <Heading
+                  level={title ? 2 : 2} // Use heading level 3 if has (h2) panel title.
+                  size="S"
+                  css={{
+                    marginTop: `0 !important`,
+                    marginBottom: SPACING['XS'],
+                  }}
+                >
+                  {heading}
+                </Heading>
+              )}
+
+              <HTML html={html} />
+            </div>
+          </section>
+        ))}
       </PanelTemplate>
     )
   }
