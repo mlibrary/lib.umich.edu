@@ -75,7 +75,11 @@ export default function DrupalEntity(props) {
     mediaImageNode?.node?.relationships?.field_media_image?.localFile
       ?.childImageSharp?.fluid
   if (mediaImage) {
-    return <Image image={mediaImage} />
+    return (
+      <div css={{ maxWidth: '38rem' }}>
+        <Image image={mediaImage} />
+      </div>
+    )
   }
 
   const fileNode = data.allMediaFile.edges.find(
