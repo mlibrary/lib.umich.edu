@@ -37,6 +37,9 @@ function Layout({ children, drupalNid }) {
             zIndex: '999',
             background: 'hsla(0, 0%, 0%, 0.6)',
           },
+          'm-universal-header': {
+            minHeight: '58px',
+          },
         }}
       />
       <Header primary={primary} secondary={secondary} />

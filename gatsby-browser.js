@@ -1,5 +1,5 @@
 import React from 'react'
-import SkipLinks from './src/components/skip-links'
+import PageWrap from './src/components/page-wrap'
 
 export const onClientEntry = () => {
   const {
@@ -13,27 +13,7 @@ export const onClientEntry = () => {
 }
 
 export const wrapPageElement = ({ element }) => {
-  // props provide same data to Layout as Page element will get
-  // including location, data, etc - you don't need to pass it
-  return (
-    <React.Fragment>
-      <div
-        css={{
-          minHeight: '100%',
-          display: 'grid',
-          gridTemplateRows: 'auto auto 1fr',
-          gridTemplateColumns: '100%',
-        }}
-      >
-        <div>
-          <SkipLinks />
-          <m-universal-header></m-universal-header>
-        </div>
-        {element}
-      </div>
-      <m-chat id="chat"></m-chat>
-    </React.Fragment>
-  )
+  return <PageWrap element={element} />
 }
 
 export const onRouteUpdate = ({ prevLocation }) => {
