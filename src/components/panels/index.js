@@ -68,6 +68,7 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
 function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
   const panelListGridStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
+      marginBottom: SPACING['XL'],
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
       gridGap: `${SPACING['XL']} ${SPACING['M']}`,
