@@ -3,6 +3,7 @@ import { graphql } from 'gatsby'
 export const query = graphql`
   fragment eventFragment on node__events_and_exhibits {
     __typename
+    id
     title
     field_title_context
     fields {

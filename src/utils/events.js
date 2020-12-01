@@ -104,7 +104,10 @@ export function eventFormatWhere({ node, kind }) {
 }
 
 export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
-  const sortedEvents = [...events].sort(compareStartDate)
+  const uniqueEvents = [...events].filter(
+    (v, i, a) => a.findIndex(t => t.id === v.id) === i
+  )
+  const sortedEvents = [...uniqueEvents].sort(compareStartDate)
 
   function compareStartDate(a, b) {
     const startA = a.field_event_date_s_[0].value
