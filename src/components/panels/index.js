@@ -87,7 +87,6 @@ function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
 
   return (
     <ol
-      data-panel-list
       css={twoColumns ? panelListColumnStyles : panelListGridStyles}
       {...rest}
     >
