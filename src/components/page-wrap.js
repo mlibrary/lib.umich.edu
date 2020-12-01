@@ -10,12 +10,13 @@ export default function PageWrap({ element }) {
           display: 'grid',
           gridTemplateRows: 'auto auto 1fr',
           gridTemplateColumns: '100%',
-          'm-universal-header': {
-            minHeight: '58px',
-          },
         }}
       >
-        <div>
+        <div
+          css={{
+            minHeight: '58px',
+          }}
+        >
           <SkipLinks />
           <m-universal-header></m-universal-header>
         </div>
