@@ -350,7 +350,7 @@ function LibrarySearchScopeOption({ query }) {
           padding: `0 ${SPACING['2XS']}`,
         }}
       >
-        in Library Search
+        Find materials
       </span>
     </a>
   )
