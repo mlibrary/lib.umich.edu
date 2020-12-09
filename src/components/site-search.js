@@ -296,7 +296,7 @@ function KeyboardControlIntructions() {
 function LibrarySearchScopeOption({ query }) {
   return (
     <a
-      href={`https://search.lib.umich.edu/everything?query=${query}`}
+      href={`https://search.lib.umich.edu/everything?query=${query}&utm_source=lib-site-search`}
       css={{
         display: 'grid',
         gridGap: SPACING['S'],
