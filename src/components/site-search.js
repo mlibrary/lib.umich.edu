@@ -246,6 +246,9 @@ function ResultsList({ searching, noResults, results, query, error }) {
         <KeyboardControlIntructions />
       </p>
       <ol>
+        <li>
+          <LibrarySearchScopeOption query={query} />
+        </li>
         {results.slice(0, 100).map((result, index) => (
           <li
             key={index}
@@ -287,6 +290,69 @@ function KeyboardControlIntructions() {
       <kbd>tab</kbd> to navigate, <kbd>enter</kbd> to select, <kbd>esc</kbd> to
       dismiss
     </React.Fragment>
+  )
+}
+
+function LibrarySearchScopeOption({ query }) {
+  return (
+    <a
+      href={`https://search.lib.umich.edu/everything?query=${query}`}
+      css={{
+        display: 'grid',
+        gridGap: SPACING['S'],
+        gridTemplateColumns: 'auto 1fr auto',
+        alignItems: 'center',
+        padding: `${SPACING['M']} ${SPACING['L']}`,
+        ':hover, :focus': {
+          outline: 'none',
+          background: COLORS.teal['100'],
+          borderLeft: `solid 4px ${COLORS.teal['400']}`,
+          paddingLeft: `calc(${SPACING['L']} - 4px)`,
+          '[data-title]': {
+            textDecoration: 'underline',
+          },
+        },
+        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+      }}
+    >
+      <Icon
+        icon="search"
+        size={24}
+        data-site-search-icon
+        css={{
+          left: SPACING['XS'],
+          color: COLORS.neutral['300'],
+        }}
+      />
+      <p
+        data-title
+        css={{
+          ...TYPOGRAPHY['XS'],
+          mark: {
+            background: COLORS.maize['200'] + '!important',
+            fontWeight: '700',
+          },
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        <VisuallyHidden>Search: </VisuallyHidden>
+        {query}
+      </p>
+      <span
+        css={{
+          display: 'inline-block',
+          ...TYPOGRAPHY['3XS'],
+          background: COLORS.blue['100'],
+          border: `solid 1px ${COLORS.neutral['100']}`,
+          borderRadius: '4px',
+          padding: `0 ${SPACING['2XS']}`,
+        }}
+      >
+        Find materials
+      </span>
+    </a>
   )
 }
 
