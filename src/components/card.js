@@ -1,5 +1,5 @@
 import React from 'react'
-import CoreCard from '../maybe-design-system/card'
+import CoreCard from '../reusable/card'
 import { Link } from 'gatsby'
 
 export default function Card({ href, ...rest }) {

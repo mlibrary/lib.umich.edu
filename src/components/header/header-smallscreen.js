@@ -15,7 +15,7 @@ import {
   Icon,
   Margins,
   LINK_STYLES,
-} from '@umich-lib/core'
+} from '@reusable'
 
 import Logo from './logo'
 import SiteSearchModal from '../site-search-modal'

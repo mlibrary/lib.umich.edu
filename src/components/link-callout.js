@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link as GatsbyLink } from 'gatsby'
-import { LINK_STYLES, SPACING, COLORS, Icon } from '@umich-lib/core'
+import { LINK_STYLES, SPACING, COLORS, Icon } from '@reusable'
 
 const linkCSS = {
   display: 'block',

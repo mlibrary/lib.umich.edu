@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link as GatsbyLink } from 'gatsby'
-import {
-  SPACING,
-  Z_SPACE,
-  COLORS,
-  Icon,
-  Alert,
-  TYPOGRAPHY,
-} from '@umich-lib/core'
+import { SPACING, Z_SPACE, COLORS, Icon, Alert, TYPOGRAPHY } from '@reusable'
 import { findAll } from 'highlight-words-core'
 import VisuallyHidden from '@reach/visually-hidden'
 import ReachAlert from '@reach/alert'

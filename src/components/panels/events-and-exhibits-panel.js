@@ -7,7 +7,7 @@ import {
   Expandable,
   ExpandableButton,
   ExpandableChildren,
-} from '@umich-lib/core'
+} from '@reusable'
 import * as moment from 'moment'
 import Link from '../link'
 import {

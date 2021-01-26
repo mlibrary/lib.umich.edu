@@ -1,5 +1,5 @@
 import React from 'react'
-import { SPACING, Margins, MEDIA_QUERIES, COLORS } from '@umich-lib/core'
+import { SPACING, Margins, MEDIA_QUERIES, COLORS } from '@reusable'
 
 import Panels from './index'
 

@@ -1,12 +1,6 @@
 import React from 'react'
 import { graphql } from 'gatsby'
-import {
-  Margins,
-  Heading,
-  SPACING,
-  SmallScreen,
-  LINK_STYLES,
-} from '@umich-lib/core'
+import { Margins, Heading, SPACING, SmallScreen, LINK_STYLES } from '@reusable'
 
 import { Template, Top, Side, Content } from '../components/page-layout'
 import HTML from '../components/html'

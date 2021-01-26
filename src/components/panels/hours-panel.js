@@ -8,7 +8,7 @@ import {
   Button,
   Icon,
   MEDIA_QUERIES,
-} from '@umich-lib/core'
+} from '@reusable'
 
 import HTML from '../html'
 import HoursTable from '../hours-table'

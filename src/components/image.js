@@ -1,7 +1,7 @@
 import React from 'react'
 import Img from 'gatsby-image'
 
-import { SPACING } from '@umich-lib/core'
+import { SPACING } from '@reusable'
 
 export default function Image({ image, caption, alt = '' }) {
   return (

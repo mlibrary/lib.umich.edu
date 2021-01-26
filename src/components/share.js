@@ -1,5 +1,5 @@
 import React from 'react'
-import { Heading, SPACING, COLORS } from '@umich-lib/core'
+import { Heading, SPACING, COLORS } from '@reusable'
 import PlainLink from './plain-link'
 import IconText from './icon-text'
 

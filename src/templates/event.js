@@ -2,7 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import Img from 'gatsby-image'
 import * as moment from 'moment'
-import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '@umich-lib/core'
+import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '@reusable'
 import {
   Template,
   TemplateSide,

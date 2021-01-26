@@ -10,7 +10,7 @@ import {
   MEDIA_QUERIES,
   TYPOGRAPHY,
   COLORS,
-} from '@umich-lib/core'
+} from '@reusable'
 import HTML from '../html'
 
 const MEDIAQUERIES = {

@@ -1,13 +1,13 @@
 import React from 'react'
 import rehypeReact from 'rehype-react'
-import { Heading, Text, List, COLORS } from '@umich-lib/core'
+import { Heading, Text, List, COLORS } from '@reusable'
 import unified from 'unified'
 import rehype from 'rehype-parse'
 import Prose from './prose'
 import Link from './link'
 import DrupalEntity from './drupal-entity'
-import Callout from '../maybe-design-system/callout'
-import Blockquote from '../maybe-design-system/blockquote'
+import Callout from '../reusable/callout'
+import Blockquote from '../reusable/blockquote'
 import Table from './table'
 
 /**

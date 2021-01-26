@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { SPACING, COLORS, Margins } from '@umich-lib/core'
+import { SPACING, COLORS, Margins } from '@reusable'
 
-import MEDIA_QUERIES from '../maybe-design-system/media-queries'
+import MEDIA_QUERIES from '../reusable/media-queries'
 
 export function Template({ children, asideWidth, ...rest }) {
   const asWidth = asideWidth ? asideWidth : '21rem'

@@ -1,6 +1,6 @@
 import React from 'react'
 import BackgroundImage from 'gatsby-background-image'
-import { COLORS, SPACING } from '@umich-lib/core'
+import { COLORS, SPACING } from '@reusable'
 
 export default function CardImage({ image }) {
   return (

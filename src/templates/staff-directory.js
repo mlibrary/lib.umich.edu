@@ -8,14 +8,14 @@ import {
   COLORS,
   Button,
   Alert,
-} from '@umich-lib/core'
+} from '@reusable'
 import { useDebounce } from 'use-debounce'
 import VisuallyHidden from '@reach/visually-hidden'
 import BackgroundImage from 'gatsby-background-image'
 import Link from '../components/link'
 import PlainLink from '../components/plain-link'
 import Breadcrumb from '../components/breadcrumb'
-import MEDIA_QUERIES from '../maybe-design-system/media-queries'
+import MEDIA_QUERIES from '../reusable/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
 import NoResults from '../components/no-results'

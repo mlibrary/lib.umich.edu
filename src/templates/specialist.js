@@ -14,12 +14,12 @@ import {
   COLORS,
   Button,
   Alert,
-} from '@umich-lib/core'
+} from '@reusable'
 import { useLocation, useNavigate } from '@reach/router'
 import VisuallyHidden from '@reach/visually-hidden'
 import Link from '../components/link'
 import Breadcrumb from '../components/breadcrumb'
-import MEDIA_QUERIES from '../maybe-design-system/media-queries'
+import MEDIA_QUERIES from '../reusable/media-queries'
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'
 import NoResults from '../components/no-results'

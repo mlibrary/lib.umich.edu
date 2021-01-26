@@ -1,5 +1,5 @@
 import React from 'react'
-import { Margins, COLORS, SPACING, LINK_STYLES, Icon } from '@umich-lib/core'
+import { Margins, COLORS, SPACING, LINK_STYLES, Icon } from '@reusable'
 
 import PlainLink from '../plain-link'
 import Nav from './primary-nav'

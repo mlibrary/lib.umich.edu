@@ -1,25 +1,15 @@
-import React from "react";
-import {
-  Heading,
-  SPACING,
-  COLORS,
-  Margins,
-  MEDIA_QUERIES
-} from "@umich-lib/core";
+import React from 'react'
+import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable'
 
 import Breadcrumb from './breadcrumb'
 
-export default function PageHeaderMini({
-  breadcrumb,
-  title,
-  ...rest
-}) {
+export default function PageHeaderMini({ breadcrumb, title, ...rest }) {
   return (
     <header
       css={{
         [MEDIA_QUERIES.LARGESCREEN]: {
           background: COLORS.blue['100'],
-        }
+        },
       }}
       {...rest}
     >
@@ -27,11 +17,11 @@ export default function PageHeaderMini({
         <div
           css={{
             [MEDIA_QUERIES.LARGESCREEN]: {
-              flex: "1 1 0",
+              flex: '1 1 0',
             },
             paddingTop: '0',
             paddingRight: SPACING['2XL'],
-            paddingLeft: "0"
+            paddingLeft: '0',
           }}
         >
           <Breadcrumb
@@ -39,8 +29,8 @@ export default function PageHeaderMini({
             css={{
               [MEDIA_QUERIES.LARGESCREEN]: {
                 paddingTop: SPACING['L'],
-                paddingBottom: SPACING['L']
-              }
+                paddingBottom: SPACING['L'],
+              },
             }}
           />
           <Heading
@@ -50,8 +40,8 @@ export default function PageHeaderMini({
               paddingBottom: SPACING['L'],
               [MEDIA_QUERIES.LARGESCREEN]: {
                 padding: '0',
-                marginTop: SPACING["S"]
-              }
+                marginTop: SPACING['S'],
+              },
             }}
           >
             {title}
@@ -59,5 +49,5 @@ export default function PageHeaderMini({
         </div>
       </Margins>
     </header>
-  );
+  )
 }

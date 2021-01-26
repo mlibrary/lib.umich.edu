@@ -8,7 +8,7 @@ import {
   Margins,
   MEDIA_QUERIES,
   COLORS,
-} from '@umich-lib/core'
+} from '@reusable'
 
 import Breadcrumb from './breadcrumb'
 

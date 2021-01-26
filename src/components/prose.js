@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { SPACING } from '@umich-lib/core'
+import { SPACING } from '@reusable'
 
 const Prose = styled('div')({
   '> *:not(:last-child)': {

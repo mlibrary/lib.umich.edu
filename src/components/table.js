@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 
-import { COLORS, TYPOGRAPHY, SPACING } from '@umich-lib/core'
+import { COLORS, TYPOGRAPHY, SPACING } from '@reusable'
 
 const Table = styled('table')({
   width: '100%',

@@ -2,7 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import Img from 'gatsby-image'
 
-import { Heading, SPACING, Margins, Text, SmallScreen } from '@umich-lib/core'
+import { Heading, SPACING, Margins, Text, SmallScreen } from '@reusable'
 
 import { Template, Top, Side, Content } from '../components/page-layout'
 import Breadcrumb from '../components/breadcrumb'
