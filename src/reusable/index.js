@@ -23,6 +23,7 @@ import Text from './text'
 import TextInput from './text-input'
 import Input from './input'
 import Link from './link'
+import Card from './card'
 import Icon, { icons } from './icon'
 
 import {
@@ -30,7 +31,7 @@ import {
   ExpandableButton,
   ExpandableChildren,
   ExpandableProvider,
-} from './expandable'
+} from './expandable/index'
 
 export {
   COLORS,
@@ -51,6 +52,7 @@ export {
   BreadcrumbItem,
   Heading,
   Button,
+  Card,
   List,
   Icon,
   icons,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { ExpandableContext } from './expandable'
 
 /*
@@ -6,10 +6,6 @@ import { ExpandableContext } from './expandable'
 */
 export default props => (
   <ExpandableContext.Consumer>
-    {context => (
-      <React.Fragment>
-        {props.children(context)}
-      </React.Fragment>
-    )}
+    {context => <React.Fragment>{props.children(context)}</React.Fragment>}
   </ExpandableContext.Consumer>
 )
