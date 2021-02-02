@@ -107,7 +107,31 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
   const uniqueEvents = [...events].filter(
     (v, i, a) => a.findIndex(t => t.id === v.id) === i
   )
-  const sortedEvents = [...uniqueEvents].sort(compareStartDate)
+
+  // Duplicate events that have many occurances by
+  // checking if it has many datetimes.
+  let occurances = []
+  uniqueEvents.forEach(event => {
+    const hasOccurances = event.field_event_date_s_.length > 1
+
+    if (hasOccurances) {
+      const dates = event.field_event_date_s_
+
+      // Make an event in the array for each date.
+      dates.forEach((date, i) => {
+        occurances = occurances.concat([
+          {
+            ...event,
+            field_event_date_s_: [date], // The one occurance
+          },
+        ])
+      })
+    } else {
+      occurances = occurances.concat([event])
+    }
+  })
+
+  const sortedEvents = [...occurances].sort(compareStartDate)
 
   function compareStartDate(a, b) {
     const startA = a.field_event_date_s_[0].value
