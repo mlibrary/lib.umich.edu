@@ -1,9 +1,9 @@
 import React from 'react'
-import { Heading, SPACING, TYPOGRAPHY, COLORS } from '@umich-lib/core'
+import { Heading, SPACING, TYPOGRAPHY, COLORS } from '@reusable'
 import { getFloor, getParentTitle, getImage, getRoom } from '../../utils'
 import HTML from '../html'
-import CardImage from '../../maybe-design-system/card-image'
-import MEDIA_QUERIES from '../../maybe-design-system/media-queries'
+import CardImage from '../../reusable/card-image'
+import MEDIA_QUERIES from '../../reusable/media-queries'
 import Link from '../link'
 import useFloorPlan from '../../hooks/use-floor-plan'
 

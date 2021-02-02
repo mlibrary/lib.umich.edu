@@ -15,7 +15,7 @@ import {
   Icon,
   Alert,
   LINK_STYLES,
-} from '@umich-lib/core'
+} from '@reusable'
 import VisuallyHidden from '@reach/visually-hidden'
 
 const StateContext = createContext()

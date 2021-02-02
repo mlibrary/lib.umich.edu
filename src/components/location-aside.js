@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Heading, Icon, Text, COLORS, SPACING } from '@umich-lib/core'
+import { Heading, Icon, Text, COLORS, SPACING } from '@reusable'
 import Link from './link'
 import Hours from './todays-hours'
-import icons from '../maybe-design-system/icons'
+import icons from '../reusable/icons'
 import Address from './address'
 
 function LayoutWithIcon({ d, palette, children }) {

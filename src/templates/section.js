@@ -3,7 +3,7 @@ import { graphql } from 'gatsby'
 
 import VisuallyHidden from '@reach/visually-hidden'
 
-import { Heading, Margins, MEDIA_QUERIES } from '@umich-lib/core'
+import { Heading, Margins, MEDIA_QUERIES } from '@reusable'
 
 import {
   Template,

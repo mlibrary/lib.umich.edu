@@ -2,7 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import VisuallyHidden from '@reach/visually-hidden'
 
-import { Heading, List, COLORS } from '@umich-lib/core'
+import { Heading, List, COLORS } from '@reusable'
 
 import {
   Template,

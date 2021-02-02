@@ -1,6 +1,6 @@
 import React from 'react'
 import BackgroundImage from 'gatsby-background-image'
-import { Text, SPACING, COLORS } from '@umich-lib/core'
+import { Text, SPACING, COLORS } from '@reusable'
 import Link from './link'
 import StaffPhotoPlaceholder from './staff-photo-placeholder'
 

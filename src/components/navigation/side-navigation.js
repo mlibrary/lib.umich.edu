@@ -7,7 +7,7 @@ import {
   MEDIA_QUERIES,
   Icon,
   LargeScreen,
-} from '@umich-lib/core'
+} from '@reusable'
 import VisuallyHidden from '@reach/visually-hidden'
 
 export default function SideNavigation({ to, branch }) {

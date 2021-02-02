@@ -1,9 +1,9 @@
 import React from 'react'
 import { Dialog } from '@reach/dialog'
-import { SPACING, Z_SPACE } from '@umich-lib/core'
+import { SPACING, Z_SPACE } from '@reusable'
 
 import SiteSearch from './site-search'
-import MEDIA_QUERIES from '../maybe-design-system/media-queries'
+import MEDIA_QUERIES from '../reusable/media-queries'
 
 import '@reach/dialog/styles.css'
 

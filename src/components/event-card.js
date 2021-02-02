@@ -4,10 +4,10 @@ import {
   eventFormatWhen,
   eventFormatWhere,
 } from '../utils/events'
-import { Heading, SPACING, COLORS, TYPOGRAPHY, Icon } from '@umich-lib/core'
-import CardImage from '../maybe-design-system/card-image'
-import MEDIA_QUERIES from '../maybe-design-system/media-queries'
-import icons from '../maybe-design-system/icons'
+import { Heading, SPACING, COLORS, TYPOGRAPHY, Icon } from '@reusable'
+import CardImage from '../reusable/card-image'
+import MEDIA_QUERIES from '../reusable/media-queries'
+import icons from '../reusable/icons'
 import Link from './link'
 
 export default function EventCard(node) {

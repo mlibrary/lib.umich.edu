@@ -1,7 +1,7 @@
 import React from 'react'
 import { graphql } from 'gatsby'
 
-import { Margins, Heading, SPACING } from '@umich-lib/core'
+import { Margins, Heading, SPACING } from '@reusable'
 
 import TemplateLayout from './template-layout'
 import HTML from '../components/html'

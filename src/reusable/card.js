@@ -7,7 +7,7 @@ import {
   LINK_STYLES,
   TYPOGRAPHY,
   MEDIA_QUERIES,
-} from '@umich-lib/core'
+} from '@reusable'
 import CardImage from './card-image'
 
 export default function Card({

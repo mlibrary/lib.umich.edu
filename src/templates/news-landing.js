@@ -1,7 +1,7 @@
 import React from 'react'
 import { graphql } from 'gatsby'
 
-import { Margins, Heading, SPACING } from '@umich-lib/core'
+import { Margins, Heading, SPACING } from '@reusable'
 import VisuallyHidden from '@reach/visually-hidden'
 import Layout from '../components/layout'
 import SEO from '../components/seo'
@@ -15,11 +15,7 @@ import {
 } from '../components/aside-layout'
 import * as moment from 'moment'
 
-import {
-  Expandable,
-  ExpandableChildren,
-  ExpandableButton,
-} from '@umich-lib/core'
+import { Expandable, ExpandableChildren, ExpandableButton } from '@reusable'
 
 export default function NewsLandingTemplate({ data }) {
   const node = data.page

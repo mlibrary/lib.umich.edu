@@ -13,7 +13,7 @@ import {
   Icon,
   COLORS,
   MEDIA_QUERIES,
-} from '@umich-lib/core'
+} from '@reusable'
 import VisuallyHidden from '@reach/visually-hidden'
 import { Template, Top, Side, Content } from '../components/page-layout'
 import SEO from '../components/seo'

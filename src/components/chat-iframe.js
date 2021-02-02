@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { COLORS, Heading, SPACING, Z_SPACE } from '@umich-lib/core'
+import { COLORS, Heading, SPACING, Z_SPACE } from '@reusable'
 
 export default function ChatIframe() {
   return (

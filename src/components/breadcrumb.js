@@ -1,5 +1,5 @@
 import React from 'react'
-import { Breadcrumb, BreadcrumbItem } from '@umich-lib/core'
+import { Breadcrumb, BreadcrumbItem } from '@reusable'
 import Link from './link'
 
 export default function BreadcrumbContainer({ data, ...rest }) {

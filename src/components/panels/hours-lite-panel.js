@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '@umich-lib/core'
+import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '@reusable'
 import * as moment from 'moment'
 import { Link as GatsbyLink } from 'gatsby'
 
 import Link from '../link'
-import icons from '../../maybe-design-system/icons'
-import MEDIA_QUERIES from '../../maybe-design-system/media-queries.js'
+import icons from '../../reusable/icons'
+import MEDIA_QUERIES from '../../reusable/media-queries.js'
 import { displayHours } from '../../utils/hours'
 
 export default function HoursLitePanel({ data }) {

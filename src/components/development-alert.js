@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Alert, Margins, SPACING } from '@umich-lib/core'
+import { Alert, Margins, SPACING } from '@reusable'
 
 import Link from './link'
 
@@ -32,8 +32,11 @@ export default function DevelopmentAlert() {
       <Alert intent="warning">
         <Margins>
           <p>
-            This is an in progress development site (<Link to="/release-notes">release notes</Link>). Use our <Link to="https://umlib.us/wr-qc">contact form</Link> to send questions and comments. You can visit our current website
-            at <Link to="https://www.lib.umich.edu">lib.umich.edu</Link>.
+            This is an in progress development site (
+            <Link to="/release-notes">release notes</Link>). Use our{' '}
+            <Link to="https://umlib.us/wr-qc">contact form</Link> to send
+            questions and comments. You can visit our current website at{' '}
+            <Link to="https://www.lib.umich.edu">lib.umich.edu</Link>.
           </p>
           {noMouseDay && <A11yMessage />}
         </Margins>

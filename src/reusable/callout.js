@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Alert from '@reach/alert'
-import { SPACING, COLORS, Heading, Icon } from '@umich-lib/core'
+import { SPACING, COLORS, Heading, Icon } from '@reusable'
 
 export default function Callout({ title, children, intent, alert, ...rest }) {
   return (

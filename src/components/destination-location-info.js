@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { SPACING } from '@umich-lib/core'
+import { SPACING } from '@reusable'
 
 import IconText from '../components/icon-text'
-import icons from '../maybe-design-system/icons'
+import icons from '../reusable/icons'
 import Hours from '../components/todays-hours'
 import Link from '../components/link'
 

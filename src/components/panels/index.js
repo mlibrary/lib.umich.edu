@@ -6,14 +6,14 @@ import {
   Margins,
   Icon,
   MEDIA_QUERIES,
-} from '@umich-lib/core'
+} from '@reusable'
 
 import Card from '../card'
 import Link from '../link'
 import HTML from '../html'
 import Address from '../address'
 import Hours from '../todays-hours'
-import icons from '../../maybe-design-system/icons'
+import icons from '../../reusable/icons'
 import HoursPanel from './hours-panel'
 import HeroPanel from './hero-panel'
 import GroupPanel from './group-panel'
@@ -22,7 +22,7 @@ import LinkPanel from './link-panel'
 import DestinationHorizontalPanel from './destination-horizontal-panel'
 import getParentTitle from '../../utils/get-parent-title'
 import CustomPanel from './custom-panel'
-import Callout from '../../maybe-design-system/callout'
+import Callout from '../../reusable/callout'
 import Image from '../image'
 
 import { StateProvider } from '../use-state'

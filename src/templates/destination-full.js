@@ -2,7 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 import Img from 'gatsby-image'
 
-import { Heading, SPACING, Margins, Text } from '@umich-lib/core'
+import { Heading, SPACING, Margins, Text } from '@reusable'
 
 import {
   Template,

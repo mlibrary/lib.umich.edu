@@ -1,4 +1,3 @@
-const COLORS = require('@umich-lib/core').COLORS
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
 
@@ -17,6 +16,14 @@ module.exports = {
       options: {
         name: `images`,
         path: `${__dirname}/src/images/`,
+      },
+    },
+    {
+      resolve: `gatsby-alias-imports`,
+      options: {
+        aliases: {
+          '@reusable': 'src/reusable/',
+        },
       },
     },
     `gatsby-plugin-sitemap`,
@@ -109,8 +116,8 @@ module.exports = {
         name: 'University of Michigan Library',
         short_name: 'U-M Library',
         start_url: '/',
-        background_color: COLORS.blue['400'],
-        theme_color: COLORS.maize['400'],
+        background_color: '#00274C',
+        theme_color: '#FFCB05',
         display: 'minimal-ui',
         icon: 'src/images/icon.png', // This path is relative to the root of the site.
       },

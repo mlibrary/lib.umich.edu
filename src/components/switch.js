@@ -1,5 +1,5 @@
 import React from 'react'
-import { SPACING, COLORS, TYPOGRAPHY } from '@umich-lib/core'
+import { SPACING, COLORS, TYPOGRAPHY } from '@reusable'
 
 export default function Switch({ on, label, children, ...rest }) {
   return (
