@@ -35,6 +35,26 @@ DRUPAL_URL=https://cms.staging.lib.umich.edu/
 
 The site by default will build and pull data from `https://cms.lib.umich.edu/`, but you can change that with setting `DRUPAL_URL`.
 
+```
+DRUPAL_CONCURRENT_FILE_REQUESTS
+```
+
+You can _optionally_ set `DRUPAL_CONCURRENT_FILE_REQUESTS` to adjust the [`gatsby-source-drupal` `concurrentFileRequests` option](https://www.gatsbyjs.com/plugins/gatsby-source-drupal/#concurrent-file-requests) (defaults to `20`) to change how many simultaneous file requests are made to the server/service. This benefits build speed, however too many concurrent file request could cause memory exhaustion depending on the machines memory size so change with caution.
+
+For example, run:
+
+```
+DRUPAL_CONCURRENT_FILE_REQUESTS=60 npm start
+```
+
+or
+
+```
+DRUPAL_CONCURRENT_FILE_REQUESTS=5 npm start
+```
+
+And see what works best for your network connection, memory, and general situation.
+
 4.  **Start developing.**
 
 Start it up.

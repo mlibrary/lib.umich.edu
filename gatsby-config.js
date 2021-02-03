@@ -1,5 +1,12 @@
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
-console.log(`Using DRUPAL_URL: '${DRUPAL_URL}'`)
+const DRUPAL_CONCURRENT_FILE_REQUESTS =
+  parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 20
+
+console.log('[gatsby-config] ENV VARs')
+console.log(`DRUPAL_URL='${DRUPAL_URL}'`)
+console.log(
+  `DRUPAL_CONCURRENT_FILE_REQUESTS=${DRUPAL_CONCURRENT_FILE_REQUESTS}`
+)
 
 const siteMetadata = {
   title: 'University of Michigan Library',
@@ -99,6 +106,7 @@ module.exports = {
         filters: {
           page: 'filter[field_redirect_node]=0',
         },
+        concurrentFileRequests: DRUPAL_CONCURRENT_FILE_REQUESTS,
       },
     },
     {
