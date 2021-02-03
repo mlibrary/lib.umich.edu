@@ -36,10 +36,19 @@ export const wrapPageElement = ({ element }) => {
   )
 }
 
-export const onRouteUpdate = ({ prevLocation }) => {
+export const onRouteUpdate = ({ location, prevLocation }) => {
+  const newPath = location.pathname
   const oldPath = prevLocation ? prevLocation.pathname : null
 
-  if (oldPath) {
+  /**
+   * We shouldn't handle paths that are only
+   * query params. eg, Staff Directory or
+   * Find a Specialist searches. Otherwise the
+   * focus would change on every key stroke.
+   *
+   * Is there a new path?
+   */
+  if (newPath !== oldPath) {
     const dataPageHeading = document.querySelector('[data-page-heading]')
     const h1 = document.querySelector('h1')
     const pageHeading = dataPageHeading ? dataPageHeading : h1
