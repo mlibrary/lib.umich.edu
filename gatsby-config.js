@@ -136,14 +136,19 @@ module.exports = {
         languages: [{ name: 'en' }],
         fields: [
           {
+            name: 'uniqname',
+            store: true,
+            attributes: { boost: 3 },
+          },
+          {
             name: 'title',
             store: true,
-            attributes: { boost: 9 },
+            attributes: { boost: 3 },
           },
           {
             name: 'summary',
             store: true,
-            attributes: { boost: 3 },
+            attributes: { boost: 2 },
           },
           {
             name: 'keywords',
@@ -152,6 +157,7 @@ module.exports = {
         ],
         resolvers: {
           SitePage: {
+            uniqname: node => (node.context ? node.context.uniqname : null),
             title: node => (node.context ? node.context.title : null),
             summary: node => (node.context ? node.context.summary : null),
             keywords: node => (node.context ? node.context.keywords : null),
