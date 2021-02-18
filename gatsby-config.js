@@ -136,19 +136,19 @@ module.exports = {
         languages: [{ name: 'en' }],
         fields: [
           {
-            name: 'uniqname',
-            store: true,
-            attributes: { boost: 3 },
-          },
-          {
             name: 'title',
             store: true,
-            attributes: { boost: 3 },
+            attributes: { boost: 9 },
+          },
+          {
+            name: 'uniqname',
+            store: true,
+            attributes: { boost: 6 },
           },
           {
             name: 'summary',
             store: true,
-            attributes: { boost: 2 },
+            attributes: { boost: 3 },
           },
           {
             name: 'keywords',
