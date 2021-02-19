@@ -149,9 +149,14 @@ module.exports = {
             name: 'keywords',
             store: true,
           },
+          {
+            name: 'uniqname',
+            store: true,
+          },
         ],
         resolvers: {
           SitePage: {
+            uniqname: node => (node.context ? node.context.uniqname : null),
             title: node => (node.context ? node.context.title : null),
             summary: node => (node.context ? node.context.summary : null),
             keywords: node => (node.context ? node.context.keywords : null),

@@ -662,7 +662,8 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               name: node.name,
               title: node.field_user_display_name,
               summary: node.field_user_work_title, // used for site search
-              isProfile: true,
+              uniqname: node.name,
+              kind: 'user',
             },
           })
         })
