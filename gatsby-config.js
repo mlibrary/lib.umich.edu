@@ -141,17 +141,16 @@ module.exports = {
             attributes: { boost: 9 },
           },
           {
-            name: 'uniqname',
-            store: true,
-            attributes: { boost: 6 },
-          },
-          {
             name: 'summary',
             store: true,
             attributes: { boost: 3 },
           },
           {
             name: 'keywords',
+            store: true,
+          },
+          {
+            name: 'uniqname',
             store: true,
           },
         ],
