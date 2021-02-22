@@ -13,6 +13,23 @@ const siteMetadata = {
   siteUrl: 'https://www.lib.umich.edu',
 }
 
+const siteSearchLunrTunePlugin = lunr => builder => {
+  /*
+    Can we improve Site Search by tuning these numbers?
+
+    defaults:
+      b  0.75
+      k1 1.20
+
+    Attempts:
+     1. b: 0.50, k1: 1.00
+     ...
+  */
+
+  builder.b(0.5)
+  builder.k1(1.0)
+}
+
 module.exports = {
   siteMetadata,
   plugins: [
@@ -162,6 +179,7 @@ module.exports = {
             keywords: node => (node.context ? node.context.keywords : null),
           },
         },
+        plugins: [siteSearchLunrTunePlugin],
       },
     },
   ],
