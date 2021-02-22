@@ -23,11 +23,12 @@ const siteSearchLunrTunePlugin = lunr => builder => {
 
     Attempts:
      1. b: 0.50, k1: 1.00
+     2. b: 0.37, k1: 1.37
      ...
   */
 
-  builder.b(0.5)
-  builder.k1(1.0)
+  builder.b(0.37)
+  builder.k1(1.37)
 }
 
 module.exports = {
