@@ -78,7 +78,7 @@ function DepartmentTemplate({ data }) {
             </Heading>
             <Prose>
               <Heading size="M" level={2}>
-                Department information
+                Who we are
               </Heading>
 
               <List
