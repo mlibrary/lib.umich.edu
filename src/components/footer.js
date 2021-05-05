@@ -22,7 +22,7 @@ const links = [
           <React.Fragment>
             913 S. University Avenue
             <br />
-            Ann Arbor, MI 48109
+            Ann Arbor, MI 48109-1190
           </React.Fragment>
         ),
         to: locationURL,
