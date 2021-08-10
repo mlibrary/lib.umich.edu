@@ -94,19 +94,18 @@ export function eventFormatWhere({ node, kind }) {
     return 'Online'
   }
 
-  var where
   const building = node.relationships.field_event_building
   const room = node.relationships.field_event_room
 
-  if (building) {
-    where = building.title
-
-    if (room) {
-      where = room.title + ', ' + where
-    }
+  if (building && !room) {
+    return building.title
   }
 
-  return where
+  if (building && room) {
+    return room.title + ', ' + building.title
+  }
+
+  return ''
 }
 
 export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
