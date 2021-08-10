@@ -75,6 +75,12 @@ export const query = graphql`
           }
         }
       }
+      field_event_room {
+        ...roomFragment
+      }
+      field_event_building {
+        ...buildingFragment
+      }
     }
   }
 `

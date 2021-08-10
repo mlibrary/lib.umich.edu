@@ -13,17 +13,6 @@ import HTML from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
 import Share from '../components/share'
-
-/*
-  TODO:
-  - [ ] Add events to build as a template.
-  - [ ] Figure out how to reuse the share stuff with the news template.
-  - [ ] Figure out Add to calendar button.
-  - [ ] Figure out contact... that's probably somewhere else also.
-  - [ ] Add event statement.
-  - [ ] There is that date, directions, and type thing at the top.
-*/
-
 import { eventFormatWhen, eventFormatWhere } from '../utils/events'
 
 export default function EventTemplate({ data }) {
