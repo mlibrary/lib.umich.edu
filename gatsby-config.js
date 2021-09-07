@@ -103,9 +103,6 @@ module.exports = {
       options: {
         baseUrl: DRUPAL_URL,
         apiBase: `jsonapi`,
-        filters: {
-          page: 'filter[field_redirect_node]=0',
-        },
         concurrentFileRequests: DRUPAL_CONCURRENT_FILE_REQUESTS,
       },
     },
