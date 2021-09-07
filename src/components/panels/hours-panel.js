@@ -143,18 +143,9 @@ function PreviousNextWeekButton({ type, children, ...rest }) {
 }
 
 export default function HoursPanelContainer({ data }) {
-  const [initialized, setInitialized] = useState(false)
   const [{ weekOffset }] = useStateValue()
 
-  useEffect(() => {
-    setInitialized(true)
-  }, [initialized])
-
-  if (!initialized) {
-    return null
-  }
-
-  const { relationships, field_body, id } = data
+  const { relationships, field_body } = data
 
   if (relationships.field_parent_card.length === 0) {
     return null
