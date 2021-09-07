@@ -156,15 +156,16 @@ export default function HoursPanelContainer({ data }) {
 
   const { relationships, field_body, id } = data
 
-  // Simple slugifier
-  // remove alphanumerics & replace with '-', collapse dashes
-  const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
-
   if (relationships.field_parent_card.length === 0) {
     return null
   }
 
   const { title } = relationships.field_parent_card[0]
+
+  // Simple slugifier
+  // remove alphanumerics & replace with '-', collapse dashes
+  const titleSlugged = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+
   const transitionCSS = getTransitionCSS()
   return (
     <section data-hours-panel css={transitionCSS}>
@@ -172,7 +173,7 @@ export default function HoursPanelContainer({ data }) {
       <Margins>
         <HoursPanel
           title={title}
-          id={slug}
+          id={titleSlugged}
           isCurrentWeek={weekOffset === 0}
           tableData={transformTableData({
             node: data,
