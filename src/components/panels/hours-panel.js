@@ -164,12 +164,12 @@ export default function HoursPanelContainer({ data }) {
       <Margins>
         <HoursPanel
           title={title}
-          id={titleSlugged}
           isCurrentWeek={weekOffset === 0}
           tableData={transformTableData({
             node: data,
             now: moment().add(weekOffset, 'weeks'),
           })}
+          id={titleSlugged}
         >
           {field_body && <HTML html={field_body.processed} />}
         </HoursPanel>
