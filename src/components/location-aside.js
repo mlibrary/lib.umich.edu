@@ -5,6 +5,7 @@ import Link from './link'
 import Hours from './todays-hours'
 import icons from '../reusable/icons'
 import Address from './address'
+import LocationAnchoredLink from './location-anchored-link'
 
 function LayoutWithIcon({ d, palette, children }) {
   return (
@@ -64,9 +65,7 @@ export default function LocationAside({ node }) {
           <Text>
             <Hours node={node} />
           </Text>
-          <Link to="/locations-and-hours/hours-view">
-            View hours for all locations
-          </Link>
+          <LocationAnchoredLink node={node} />
         </LayoutWithIcon>
       </section>
       <address

@@ -6,6 +6,7 @@ import IconText from '../components/icon-text'
 import icons from '../reusable/icons'
 import Hours from '../components/todays-hours'
 import Link from '../components/link'
+import LocationAnchoredLink from '../components/location-anchored-link'
 
 import useFloorPlan from '../hooks/use-floor-plan'
 
@@ -38,6 +39,10 @@ function DestinationLocationInfo({ node }) {
     .filter(i => typeof i === 'string')
     .join(', ')
 
+  const locationNode = field_parent_location.title
+    ? field_parent_location
+    : field_room_building
+
   return (
     <div
       css={{
@@ -53,9 +58,7 @@ function DestinationLocationInfo({ node }) {
             <span>
               <Hours node={node} />
               <span css={{ display: 'block' }}>
-                <Link to="/locations-and-hours/hours-view">
-                  View hours for all locations
-                </Link>
+                <LocationAnchoredLink node={locationNode} />
               </span>
             </span>
           </IconText>

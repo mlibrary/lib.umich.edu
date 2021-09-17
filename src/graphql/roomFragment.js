@@ -47,6 +47,7 @@ export const query = graphql`
             ...hoursFragment
           }
           field_parent_location {
+            title
             field_display_hours_
             relationships {
               field_hours_open {
