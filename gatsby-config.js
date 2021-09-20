@@ -8,6 +8,9 @@ console.log(`DRUPAL_URL='${DRUPAL_URL}'`)
 console.log(
   `DRUPAL_CONCURRENT_FILE_REQUESTS=${DRUPAL_CONCURRENT_FILE_REQUESTS}`
 )
+console.log(
+  `DRUPAL_REQUEST_TIMEOUT=${DRUPAL_REQUEST_TIMEOUT}`
+)
 
 const siteMetadata = {
   title: 'University of Michigan Library',
