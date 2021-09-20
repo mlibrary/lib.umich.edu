@@ -1,0 +1,80 @@
+diff --git a/node_modules/gatsby-source-drupal/.DS_Store b/node_modules/gatsby-source-drupal/.DS_Store
+new file mode 100644
+index 0000000..5008ddf
+Binary files /dev/null and b/node_modules/gatsby-source-drupal/.DS_Store differ
+diff --git a/node_modules/gatsby-source-drupal/CHANGELOG.md b/node_modules/gatsby-source-drupal/CHANGELOG.md
+index 6c4236d..3ec97b4 100644
+--- a/node_modules/gatsby-source-drupal/CHANGELOG.md
++++ b/node_modules/gatsby-source-drupal/CHANGELOG.md
+@@ -3,7 +3,15 @@
+ All notable changes to this project will be documented in this file.
+ See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+ 
+-# [3.12.0](https://github.com/gatsbyjs/gatsby/compare/gatsby-source-drupal@3.12.0-next.1...gatsby-source-drupal@3.12.0) (2021-01-19)
++## [3.13.1](https://github.com/gatsbyjs/gatsby/compare/gatsby-source-drupal@3.13.0...gatsby-source-drupal@3.13.1) (2021-02-24)
++
++**Note:** Version bump only for package gatsby-source-drupal
++
++# [3.13.0](https://github.com/gatsbyjs/gatsby/compare/gatsby-source-drupal@3.13.0-next.0...gatsby-source-drupal@3.13.0) (2021-02-02)
++
++**Note:** Version bump only for package gatsby-source-drupal
++
++# [3.13.0-next.0](https://github.com/gatsbyjs/gatsby/compare/gatsby-source-drupal@3.12.0-next.1...gatsby-source-drupal@3.13.0-next.0) (2021-01-18)
+ 
+ ### Bug Fixes
+ 
+diff --git a/node_modules/gatsby-source-drupal/gatsby-node.js b/node_modules/gatsby-source-drupal/gatsby-node.js
+index f1b2379..fc2091c 100644
+--- a/node_modules/gatsby-source-drupal/gatsby-node.js
++++ b/node_modules/gatsby-source-drupal/gatsby-node.js
+@@ -57,7 +57,8 @@ exports.sourceNodes = async ({
+     concurrentFileRequests,
+     disallowedLinkTypes,
+     skipFileDownloads,
+-    fastBuilds
++    fastBuilds,
++    requestConfig
+   } = pluginOptions;
+   const {
+     createNode,
+@@ -65,6 +66,10 @@ exports.sourceNodes = async ({
+     touchNode
+   } = actions;
+ 
++  if (requestConfig === undefined) {
++    requestConfig = {}
++  }
++
+   if (webhookBody && Object.keys(webhookBody).length) {
+     const changesActivity = reporter.activityTimer(`loading Drupal content changes`, {
+       parentSpan
+@@ -137,7 +142,8 @@ exports.sourceNodes = async ({
+       const data = await axios.get(`${baseUrl}/gatsby-fastbuilds/sync/${lastFetched}`, {
+         auth: basicAuth,
+         headers,
+-        params
++        params,
++        ...requestConfig
+       });
+ 
+       if (data.data.status === -1) {
+@@ -223,7 +229,8 @@ exports.sourceNodes = async ({
+     const data = await axios.get(`${baseUrl}/${apiBase}`, {
+       auth: basicAuth,
+       headers,
+-      params
++      params,
++      ...requestConfig
+     });
+     allData = await Promise.all(_.map(data.data.links, async (url, type) => {
+       if (disallowedLinkTypes.includes(type)) return;
+@@ -250,7 +257,8 @@ exports.sourceNodes = async ({
+           d = await axios.get(url, {
+             auth: basicAuth,
+             headers,
+-            params
++            params,
++            ...requestConfig
+           });
+         } catch (error) {
+           if (error.response && error.response.status == 405) {

@@ -1,11 +1,15 @@
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 const DRUPAL_CONCURRENT_FILE_REQUESTS =
   parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 20
+const DRUPAL_REQUEST_TIMEOUT = parseInt(process.env.DRUPAL_REQUEST_TIMEOUT) || 16000
 
 console.log('[gatsby-config] ENV VARs')
 console.log(`DRUPAL_URL='${DRUPAL_URL}'`)
 console.log(
   `DRUPAL_CONCURRENT_FILE_REQUESTS=${DRUPAL_CONCURRENT_FILE_REQUESTS}`
+)
+console.log(
+  `DRUPAL_REQUEST_TIMEOUT=${DRUPAL_REQUEST_TIMEOUT}`
 )
 
 const siteMetadata = {
@@ -103,10 +107,10 @@ module.exports = {
       options: {
         baseUrl: DRUPAL_URL,
         apiBase: `jsonapi`,
-        filters: {
-          page: 'filter[field_redirect_node]=0',
-        },
         concurrentFileRequests: DRUPAL_CONCURRENT_FILE_REQUESTS,
+        requestConfig: {
+          timeout: DRUPAL_REQUEST_TIMEOUT
+        }
       },
     },
     {
