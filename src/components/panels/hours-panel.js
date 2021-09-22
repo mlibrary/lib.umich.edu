@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import * as moment from 'moment'
 import VisuallyHidden from '@reach/visually-hidden'
 import {
