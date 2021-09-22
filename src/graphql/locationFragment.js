@@ -56,6 +56,7 @@ export const query = graphql`
       }
       field_parent_location {
         __typename
+        title
         ... on node__building {
           ...buildingCardFragment
         }
@@ -64,6 +65,9 @@ export const query = graphql`
         __typename
         ... on node__section_page {
           ...sectionCardFragment
+        }
+        ... on node__location {
+          title
         }
       }
       field_visit {

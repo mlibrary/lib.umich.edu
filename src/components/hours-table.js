@@ -8,11 +8,11 @@ export default function HoursTableContainer(props) {
     query: '(min-width: 1100px)',
   })
 
-  if (isLargeScreen) {
-    return <HoursTable {...props} />
+  if (!isLargeScreen) {
+    return <HoursTableSmallscreens {...props} />
   }
 
-  return <HoursTableSmallscreens {...props} />
+  return <HoursTable {...props} />
 }
 
 function HoursTable({ data, headingId, dayOfWeek = false }) {

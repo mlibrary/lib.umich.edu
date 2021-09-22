@@ -19,11 +19,6 @@ export default function HorizontalNavigation({ items, ...rest }) {
     <nav
       css={{
         marginBottom: SPACING['XL'],
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          position: 'sticky',
-          top: '0',
-          marginBottom: SPACING['3XL'],
-        },
         borderBottom: `solid 1px ${COLORS.neutral['100']}`,
         background: COLORS.blue['100'],
         zIndex: '1',

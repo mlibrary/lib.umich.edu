@@ -5,6 +5,7 @@ import Link from './link'
 import Hours from './todays-hours'
 import icons from '../reusable/icons'
 import Address from './address'
+import LocationAnchoredLink from './location-anchored-link'
 
 function LayoutWithIcon({ d, palette, children }) {
   return (
@@ -39,7 +40,11 @@ function LayoutWithIcon({ d, palette, children }) {
 }
 
 export default function LocationAside({ node }) {
-  const { field_phone_number, field_email } = node
+  const { field_phone_number, field_email, relationships } = node
+  const buildingNode = relationships?.field_room_building
+  const parentLocationNode = relationships?.field_parent_location?.relationships?.field_parent_location
+  const locationNode = buildingNode
+    ? buildingNode : parentLocationNode ? parentLocationNode : node
 
   return (
     <React.Fragment>
@@ -64,9 +69,7 @@ export default function LocationAside({ node }) {
           <Text>
             <Hours node={node} />
           </Text>
-          <Link to="/locations-and-hours/hours-view">
-            View hours for all locations
-          </Link>
+          <LocationAnchoredLink node={locationNode} />
         </LayoutWithIcon>
       </section>
       <address

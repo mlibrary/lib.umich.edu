@@ -59,6 +59,22 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
       pageHeading.focus()
     }
   }
+
+  /**
+   * Will scroll to the position of the hash
+   * if it exists on an element on the page.
+   */
+  if (location && location.hash) {
+    const element = document.querySelector(`${location.hash}`);
+    const padding = 64;
+
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - padding,
+        behavior: 'smooth'
+      });
+    }
+  }
 }
 
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {

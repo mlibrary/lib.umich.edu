@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import * as moment from 'moment'
 import VisuallyHidden from '@reach/visually-hidden'
 import {
@@ -143,24 +143,20 @@ function PreviousNextWeekButton({ type, children, ...rest }) {
 }
 
 export default function HoursPanelContainer({ data }) {
-  const [initialized, setInitialized] = useState(false)
   const [{ weekOffset }] = useStateValue()
 
-  useEffect(() => {
-    setInitialized(true)
-  }, [initialized])
-
-  if (!initialized) {
-    return null
-  }
-
-  const { relationships, field_body, id } = data
+  const { relationships, field_body } = data
 
   if (relationships.field_parent_card.length === 0) {
     return null
   }
 
   const { title } = relationships.field_parent_card[0]
+
+  // Simple slugifier
+  // remove alphanumerics & replace with '-', collapse dashes
+  const titleSlugged = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+
   const transitionCSS = getTransitionCSS()
   return (
     <section data-hours-panel css={transitionCSS}>
@@ -168,12 +164,12 @@ export default function HoursPanelContainer({ data }) {
       <Margins>
         <HoursPanel
           title={title}
-          id={id}
           isCurrentWeek={weekOffset === 0}
           tableData={transformTableData({
             node: data,
             now: moment().add(weekOffset, 'weeks'),
           })}
+          id={titleSlugged}
         >
           {field_body && <HTML html={field_body.processed} />}
         </HoursPanel>
