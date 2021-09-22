@@ -20,6 +20,17 @@ export default function DestinationLocationInfoContainer({ node }) {
   return <DestinationLocationInfo node={node} />
 }
 
+function resolveLocationFromNode(node) {
+  const { relationships } = node
+
+  const buildingNode = relationships?.field_room_building
+  const parentLocationNode = relationships?.field_parent_location?.relationships?.field_parent_location
+  const locationNode = buildingNode
+    ? buildingNode : parentLocationNode ? parentLocationNode : node
+
+  return locationNode
+}
+
 function DestinationLocationInfo({ node }) {
   const { field_parent_location, field_room_building } = node.relationships
   const bid = field_room_building
@@ -39,9 +50,7 @@ function DestinationLocationInfo({ node }) {
     .filter(i => typeof i === 'string')
     .join(', ')
 
-  const locationNode = field_parent_location.title
-    ? field_parent_location
-    : field_room_building
+  const locationNode = resolveLocationFromNode(node)
 
   return (
     <div
