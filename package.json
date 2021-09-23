@@ -14,7 +14,7 @@
     "gatsby-alias-imports": "^1.0.6",
     "gatsby-background-image": "^0.10.1",
     "gatsby-image": "^2.2.41",
-    "gatsby-plugin-emotion": "^4.3.3",
+    "gatsby-plugin-emotion": "^6.14.0",
     "gatsby-plugin-lunr": "^1.5.2",
     "gatsby-plugin-manifest": "^2.3.6",
     "gatsby-plugin-meta-redirect": "^1.1.1",
