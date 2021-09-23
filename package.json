@@ -2,8 +2,8 @@
   "name": "lib.umich.edu",
   "version": "1.0.0",
   "dependencies": {
-    "@emotion/core": "^10.0.28",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.0.0",
     "@reach/alert": "^0.13.0",
     "@reach/combobox": "^0.8.5",
     "@reach/dialog": "^0.8.5",
