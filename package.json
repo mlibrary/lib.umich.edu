@@ -23,7 +23,7 @@
     "gatsby-plugin-robots-txt": "^1.5.1",
     "gatsby-plugin-sharp": "^2.6.43",
     "gatsby-plugin-sitemap": "^4.10.0",
-    "gatsby-source-drupal": "^3.12.0",
+    "gatsby-source-drupal": "^4.14.0",
     "gatsby-source-filesystem": "^3.14.0",
     "gatsby-transformer-sharp": "^2.4.6",
     "highlight-words-core": "^1.2.2",
@@ -54,7 +54,8 @@
     "develop:staging": "DRUPAL_URL=https://cms.staging.lib.umich.edu/ npm run develop",
     "stage": "gatsby build && now public --name lib-umich --public",
     "format": "prettier --write '**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "patch": "patch-package gatsby-source-drupal"
   },
   "repository": {
     "type": "git",
