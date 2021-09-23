@@ -31,14 +31,13 @@ function PanelGroup50Container({ children }) {
     <Margins>
       <div
         css={{
-          '> div': {
-            marginTop: SPACING['XL'],
+          display: 'grid',
             [MEDIAQUERIES['L']]: {
-              display: 'grid',
               gridTemplateColumns: '1fr 1fr',
               gridGap: SPACING['3XL'],
-              marginTop: SPACING['3XL'],
             },
+            marginTop: SPACING['3XL'],
+            marginTop: SPACING['XL'],
             '> *': {
               marginBottom: SPACING['XL'],
               paddingBottom: SPACING['XL'],
@@ -54,7 +53,6 @@ function PanelGroup50Container({ children }) {
                 paddingRight: SPACING['3XL'],
                 borderRight: `solid 1px ${COLORS.neutral[100]}`,
               },
-            },
           },
         }}
       >
