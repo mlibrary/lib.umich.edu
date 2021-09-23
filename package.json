@@ -23,7 +23,7 @@
     "gatsby-plugin-robots-txt": "^1.5.1",
     "gatsby-plugin-sharp": "^2.6.43",
     "gatsby-plugin-sitemap": "^2.4.10",
-    "gatsby-source-drupal": "^3.12.0",
+    "gatsby-source-drupal": "3.13.1",
     "gatsby-transformer-sharp": "^2.4.6",
     "highlight-words-core": "^1.2.2",
     "moment": "^2.24.0",

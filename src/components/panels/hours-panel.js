@@ -41,6 +41,8 @@ export function HoursPanelNextPrev() {
           alignItems: 'baseline',
           marginTop: SPACING['L'],
           marginBottom: SPACING['L'],
+          position: 'sticky',
+          top: 0
         }}
       >
         <PreviousNextWeekButton
