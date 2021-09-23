@@ -18,11 +18,11 @@ module.exports = {
   plugins: [
     `gatsby-plugin-remove-trailing-slashes`,
     `gatsby-plugin-meta-redirect`,
-    `gatsby-plugin-remove-fingerprints`, // Why? Read: https://github.com/gatsbyjs/gatsby/issues/11961
+    `gatsby-plugin-remove-fingerprints`, // Why? Read why Netlify recommends: https://github.com/gatsbyjs/gatsby/issues/11961#issuecomment-492893594
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `images`,
+        name: `images`, 
         path: `${__dirname}/src/images/`,
       },
     },
