@@ -11,4 +11,4 @@
  - [x] gatsby-plugin-emotion \  It requires gatsby@^2.0.0
  - [x] gatsby-plugin-manifest \  It requires gatsby@^2.25.0
  - [ ] gatsby-transformer-sharp \  It requires gatsby@^2.12.1
- - [ ] gatsby-source-drupal \  It requires gatsby@^2.0.15
+ - [x] gatsby-source-drupal \  It requires gatsby@^2.0.15
