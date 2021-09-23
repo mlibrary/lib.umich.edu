@@ -18,6 +18,7 @@ module.exports = {
   plugins: [
     `gatsby-plugin-remove-trailing-slashes`,
     `gatsby-plugin-meta-redirect`,
+    `gatsby-plugin-remove-fingerprints`, // Why? Read: https://github.com/gatsbyjs/gatsby/issues/11961
     {
       resolve: `gatsby-source-filesystem`,
       options: {
