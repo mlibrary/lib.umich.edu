@@ -1,4 +1,4 @@
-import { keyframes } from '@emotion/react'
+import { keyframes } from '@emotion/core'
 
 const fadeIn = keyframes`
   0% {

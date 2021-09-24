@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Global } from '@emotion/react'
+import { Global } from '@emotion/core'
 import { GlobalStyleSheet, COLORS } from '@reusable'
 import Header from './header'
 import Footer from './footer'
