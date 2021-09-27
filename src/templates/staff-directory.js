@@ -9,6 +9,7 @@ import {
   Button,
   Alert,
 } from '@reusable'
+import { navigate } from '@reach/router'
 import { useDebounce } from 'use-debounce'
 import VisuallyHidden from '@reach/visually-hidden'
 import BackgroundImage from 'gatsby-background-image'
@@ -27,7 +28,7 @@ import { useWindowSize } from '@reach/window-size'
 
 const lunr = require('lunr')
 
-export default function StaffDirectoryWrapper({ data, location, navigate }) {
+export default function StaffDirectoryWrapper({ data, location }) {
   const node = data.page
   const { allNodeDepartment, allStaff, allStaffImages } = data
 
