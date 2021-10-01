@@ -41,11 +41,7 @@ function sanitizeDrupalView(data) {
   return null
 }
 
-/*
-  sourceNodes is only called once per plugin by Gatsby.
-*/
-exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
-  const { createTypes, createNode } = actions
+exports.createSchemaCustomization = ({ actions }) => {
   const typeDefs = `
     type HTML {
       processed: String
@@ -56,7 +52,15 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
     }
   `
 
-  createTypes(typeDefs)
+  actions.createTypes(typeDefs)
+}
+
+/*
+  sourceNodes is only called once per plugin by Gatsby.
+*/
+exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
+  const { createNode } = actions
+  
 
   /*
       Transform Drupal data and make a list of this shape:
