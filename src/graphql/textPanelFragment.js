@@ -2,6 +2,7 @@ import { graphql } from 'gatsby'
 
 export const query = graphql`
   fragment textPanelFragment on paragraph__text_panel {
+    __typename
     field_title
     id
     field_placement
