@@ -49,6 +49,7 @@
     "postinstall": "patch-package",
     "build": "gatsby build",
     "start": "npm run develop",
+    "start-and-log": "npm run start 2>&1| tee start-log.txt",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "develop": "gatsby develop",

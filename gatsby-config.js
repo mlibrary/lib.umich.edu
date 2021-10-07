@@ -1,6 +1,6 @@
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 const DRUPAL_CONCURRENT_FILE_REQUESTS =
-  parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 2
+  parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 3
 
 console.log('[gatsby-config] ENV VARs')
 console.log(`DRUPAL_URL='${DRUPAL_URL}'`)
