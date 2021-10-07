@@ -18,25 +18,26 @@ index 1f12e22..e3623e4 100644
    });
    httpSpan.setTag(SemanticAttributes.HTTP_STATUS_CODE, response.statusCode);
 diff --git a/node_modules/gatsby-source-drupal/normalize.js b/node_modules/gatsby-source-drupal/normalize.js
-index 3c99a24..9a6c553 100644
+index 3c99a24..97eb617 100644
 --- a/node_modules/gatsby-source-drupal/normalize.js
 +++ b/node_modules/gatsby-source-drupal/normalize.js
-@@ -96,6 +96,9 @@ exports.downloadFile = async ({
+@@ -4,6 +4,8 @@ const {
+   URL
+ } = require(`url`);
+ 
++const OBNOXIOUS = process.env.OBNOXIOUS ? true : false
++
+ const {
+   createRemoteFileNode
+ } = require(`gatsby-source-filesystem`);
+@@ -96,6 +98,10 @@ exports.downloadFile = async ({
  }) => {
    // handle file downloads
    if (isFileNode(node)) {
-+
-+    console.log(`download file node`, node)
++    if (OBNOXIOUS) {
++      console.log(`download file node`, node)
++    }
 +
      let fileType;
      let fileUrl = node.url;
  
-@@ -128,6 +131,8 @@ exports.downloadFile = async ({
-       reporter
-     });
- 
-+    console.log('created remote file node', fileNode)
-+
-     if (fileNode) {
-       node.localFile___NODE = fileNode.id;
-     }
