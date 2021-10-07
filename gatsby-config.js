@@ -1,6 +1,6 @@
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 const DRUPAL_CONCURRENT_FILE_REQUESTS =
-  parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 3
+  parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 2
 
 console.log('[gatsby-config] ENV VARs')
 console.log(`DRUPAL_URL='${DRUPAL_URL}'`)
@@ -105,6 +105,14 @@ module.exports = {
         baseUrl: DRUPAL_URL,
         apiBase: `jsonapi`,
         concurrentFileRequests: DRUPAL_CONCURRENT_FILE_REQUESTS,
+        filters: {
+          /*
+            Filter out temporary files. This will help to avoid Gatsby
+            throwing an error when a 404 is returned from a file
+            that does not exist.
+          */
+          "file--file": "filter[status][value]=1",
+        },
       },
     },
     {
