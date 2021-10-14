@@ -2,6 +2,7 @@ import React from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { COLORS, SPACING } from '@reusable'
 import HoursTableSmallscreens from './hours-table-smallscreens'
+import Link from './link'
 
 export default function HoursTableContainer(props) {
   const isLargeScreen = useMediaQuery({
@@ -109,7 +110,7 @@ function HoursTable({ data, headingId, dayOfWeek = false }) {
                 <React.Fragment key={row + col.label + y + i}>
                   {i === 0 ? (
                     <th scope="row" colSpan="2" aria-label={col.label}>
-                      {col.text}
+                     <Link to={col.to} kind="list-medium">{col.text}</Link>
                     </th>
                   ) : (
                     <td aria-label={col.label}>{col.text}</td>
