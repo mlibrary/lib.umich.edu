@@ -1,0 +1,12 @@
+diff --git a/node_modules/gatsby-source-drupal/gatsby-node.js b/node_modules/gatsby-source-drupal/gatsby-node.js
+index 1f12e22..b1e786a 100644
+--- a/node_modules/gatsby-source-drupal/gatsby-node.js
++++ b/node_modules/gatsby-source-drupal/gatsby-node.js
+@@ -81,6 +81,7 @@ async function worker([url, options]) {
+     cache: false,
+     // request: http2wrapper.auto,
+     // http2: true,
++    timeout: 60000,
+     ...options
+   });
+   httpSpan.setTag(SemanticAttributes.HTTP_STATUS_CODE, response.statusCode);

@@ -1,15 +1,11 @@
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
 const DRUPAL_CONCURRENT_FILE_REQUESTS =
-  parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 10
-const DRUPAL_REQUEST_TIMEOUT = parseInt(process.env.DRUPAL_REQUEST_TIMEOUT) || 60000
+  parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 3
 
 console.log('[gatsby-config] ENV VARs')
 console.log(`DRUPAL_URL='${DRUPAL_URL}'`)
 console.log(
   `DRUPAL_CONCURRENT_FILE_REQUESTS=${DRUPAL_CONCURRENT_FILE_REQUESTS}`
-)
-console.log(
-  `DRUPAL_REQUEST_TIMEOUT=${DRUPAL_REQUEST_TIMEOUT}`
 )
 
 const siteMetadata = {
@@ -22,10 +18,11 @@ module.exports = {
   plugins: [
     `gatsby-plugin-remove-trailing-slashes`,
     `gatsby-plugin-meta-redirect`,
+    `gatsby-plugin-remove-fingerprints`, // Why? Read why Netlify recommends: https://github.com/gatsbyjs/gatsby/issues/11961#issuecomment-492893594
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `images`,
+        name: `images`, 
         path: `${__dirname}/src/images/`,
       },
     },
@@ -108,9 +105,6 @@ module.exports = {
         baseUrl: DRUPAL_URL,
         apiBase: `jsonapi`,
         concurrentFileRequests: DRUPAL_CONCURRENT_FILE_REQUESTS,
-        requestConfig: {
-          timeout: DRUPAL_REQUEST_TIMEOUT
-        }
       },
     },
     {

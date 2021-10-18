@@ -290,7 +290,7 @@ function getRow(node, nowWithWeekOffset, isParent) {
   let hours = []
   const notAvailableRow = { text: 'n/a', label: 'Not available' }
   const rowHeadingText = [isParent ? 'Main hours' : node.title]
-  const mainHoursRow = { text: rowHeadingText, label: rowHeadingText }
+  const mainHoursRow = { text: rowHeadingText, label: rowHeadingText, to: node.fields.slug }
 
   for (let i = 0; i < 7; i++) {
     const now = moment(nowWithWeekOffset).day(i)

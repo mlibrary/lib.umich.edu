@@ -1,0 +1,14 @@
+ Migration from v2 to v3 guide:
+ https://v4.gatsbyjs.com/docs/reference/release-notes/migrating-from-v2-to-v3/
+ 
+ Upgrades to review:
+
+ - [x] Upgrade gatsby from v2.31.1 to v3.14.0
+ - [x] gatsby-plugin-remove-trailing-slashes \  It requires gatsby@^2.0.0
+ - [x] gatsby-source-filesystem \  It requires gatsby@^2.2.0
+ - [x] gatsby-plugin-sitemap \  It requires gatsby@^2.0.0
+ - [x] gatsby-plugin-react-helmet \  It requires gatsby@^2.0.0
+ - [x] gatsby-plugin-emotion \  It requires gatsby@^2.0.0
+ - [x] gatsby-plugin-manifest \  It requires gatsby@^2.25.0
+ - [x] gatsby-transformer-sharp \  It requires gatsby@^2.12.1
+ - [x] gatsby-source-drupal \  It requires gatsby@^2.0.15

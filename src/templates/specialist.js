@@ -15,7 +15,7 @@ import {
   Button,
   Alert,
 } from '@reusable'
-import { useLocation, useNavigate } from '@reach/router'
+import { useLocation, navigate } from '@reach/router'
 import VisuallyHidden from '@reach/visually-hidden'
 import Link from '../components/link'
 import Breadcrumb from '../components/breadcrumb'
@@ -173,7 +173,6 @@ function FindASpecialist({ specialists }) {
 
 function SpecialistsURLState() {
   const location = useLocation()
-  const navigate = useNavigate()
   const [{ stateString }] = useSpecialists()
 
   // When changes to state string represenation, set it to browser URL.
