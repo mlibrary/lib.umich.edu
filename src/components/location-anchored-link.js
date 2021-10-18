@@ -9,7 +9,7 @@ export default function LocationAnchoredLinks ({ node }) {
 
   return (
     <Link to={`/locations-and-hours/hours-view#${titleSlugged}`}>
-      Views more hours
+      View more hours
     </Link>
   )
 }

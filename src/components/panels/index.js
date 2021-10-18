@@ -441,34 +441,32 @@ export default function Panels({ data }) {
 
   return (
     <PanelStateWrapper>
-      <HideNotFirstHoursNextPreviousButtons>
-        {data.map((panel, i) => {
-          const type = panel.__typename
-          const id = panel.id
+      {data.map((panel, i) => {
+        const type = panel.__typename
+        const id = panel.id
 
-          switch (type) {
-            case 'paragraph__hours_panel_lite':
-              return <HoursLitePanel data={panel} key={id} />
-            case 'paragraph__link_panel':
-              return <LinkPanel data={panel} key={id} />
-            case 'paragraph__group_panel':
-              return <GroupPanel data={panel} key={id} />
-            case 'paragraph__card_panel':
-              return <CardPanel data={panel} key={id} />
-            case 'paragraph__text_panel':
-              return <TextPanel data={panel} key={id} />
-            case 'paragraph__hours_panel':
-              return <HoursPanel data={panel} key={id} />
-            case 'paragraph__hero_panel':
-              return <HeroPanel data={panel} key={id} />
-            case 'paragraph__custom_panel':
-              return <CustomPanel data={panel} key={id} />
-            default:
-              console.warn('Unknown panel type', type)
-              return null
-          }
-        })}
-      </HideNotFirstHoursNextPreviousButtons>
+        switch (type) {
+          case 'paragraph__hours_panel_lite':
+            return <HoursLitePanel data={panel} key={id} />
+          case 'paragraph__link_panel':
+            return <LinkPanel data={panel} key={id} />
+          case 'paragraph__group_panel':
+            return <GroupPanel data={panel} key={id} />
+          case 'paragraph__card_panel':
+            return <CardPanel data={panel} key={id} />
+          case 'paragraph__text_panel':
+            return <TextPanel data={panel} key={id} />
+          case 'paragraph__hours_panel':
+            return <HoursPanel data={panel} key={id} />
+          case 'paragraph__hero_panel':
+            return <HeroPanel data={panel} key={id} />
+          case 'paragraph__custom_panel':
+            return <CustomPanel data={panel} key={id} />
+          default:
+            console.warn('Unknown panel type', type)
+            return null
+        }
+      })}
     </PanelStateWrapper>
   )
 }
