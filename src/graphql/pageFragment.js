@@ -22,6 +22,9 @@ export const query = graphql`
         field_image_caption {
           processed
         }
+        field_media_image {
+          alt
+        }
         relationships {
           field_media_image {
             localFile {
