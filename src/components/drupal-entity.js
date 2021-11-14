@@ -42,6 +42,9 @@ export default function DrupalEntity(props) {
           edges {
             node {
               drupal_id
+              field_media_image {
+                alt
+              }
               relationships {
                 field_media_image {
                   localFile {
@@ -71,13 +74,14 @@ export default function DrupalEntity(props) {
   const mediaImageNode = data.allMediaImage.edges.find(
     edge => edge.node.drupal_id === props['data-entity-uuid']
   )
+  const alt = mediaImageNode?.node?.field_media_image?.alt
   const mediaImage =
     mediaImageNode?.node?.relationships?.field_media_image?.localFile
       ?.childImageSharp?.fluid
   if (mediaImage) {
     return (
       <div css={{ maxWidth: '38rem' }}>
-        <Image image={mediaImage} />
+        <Image image={mediaImage} alt={alt} />
       </div>
     )
   }

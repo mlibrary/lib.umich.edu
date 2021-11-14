@@ -77,6 +77,7 @@ function CollectingAreaTemplate({ data, ...rest }) {
   const image =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image
+  const imageAlt = relationships.field_media_image?.field_media_image?.alt
   const imageData = image ? image.localFile.childImageSharp.fluid : null
   const imageCaption =
     relationships.field_media_image &&
@@ -125,6 +126,7 @@ function CollectingAreaTemplate({ data, ...rest }) {
                   width: '100%',
                   borderRadius: '2px',
                 }}
+                alt={imageAlt}
                 fluid={imageData}
               />
               {imageCaption && (

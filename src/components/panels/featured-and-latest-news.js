@@ -91,6 +91,15 @@ export default function FeaturedAndLatestNews() {
     }
   `)
 
+  if (data.featuredNews.edges.length === 0) {
+    throw `
+      Unexpected data!
+
+      The homepage requires at least one news node
+      that is featured for the homepage.
+    `
+  }
+
   const featureNode = data.featuredNews.edges[0].node
   const featureCardProps = processNewsNodeForCard({ newsNode: featureNode })
   const recentNews = sortNews({ data })
