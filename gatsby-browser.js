@@ -5,7 +5,7 @@ export const onClientEntry = () => {
   const {
     applyPolyfills,
     defineCustomElements,
-  } = require('@umich-lib/components/loader')
+  } = require('@umich-lib/web/loader')
 
   applyPolyfills().then(() => {
     defineCustomElements(window)

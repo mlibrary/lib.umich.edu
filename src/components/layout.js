@@ -36,7 +36,7 @@ function Layout({ children, drupalNid }) {
           '[data-reach-dialog-overlay]': {
             zIndex: '999',
             background: 'hsla(0, 0%, 0%, 0.6)',
-          },
+          }
         }}
       />
       <Header primary={primary} secondary={secondary} />
