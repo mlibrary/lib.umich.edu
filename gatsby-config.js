@@ -105,6 +105,14 @@ module.exports = {
         baseUrl: DRUPAL_URL,
         apiBase: `jsonapi`,
         concurrentFileRequests: DRUPAL_CONCURRENT_FILE_REQUESTS,
+        filters: {
+          /*
+            Filter out temporary files. This will help to avoid Gatsby
+            throwing an error when a 404 is returned from a file
+            that does not exist.
+          */
+          "file--file": "filter[status][value]=1",
+        },
       },
     },
     {
