@@ -181,12 +181,6 @@ function EventMetadata({ data }) {
           to: data.field_registration_link.uri,
         }
       : null
-  const onlineLink = data.field_online_event_link
-    ? {
-        to: data.field_online_event_link.uri,
-        label: data.field_online_event_link.title,
-      }
-    : null
   const series = data.relationships.field_event_series?.name
   const when = dates.map(date => {
     const start = moment(date.value)
@@ -229,7 +223,7 @@ function EventMetadata({ data }) {
         },
       }}
     >
-      <caption class="visually-hidden">Event details</caption>
+      <caption className="visually-hidden">Event details</caption>
       <tr>
         <th scope="row">When</th>
         <td
@@ -244,7 +238,7 @@ function EventMetadata({ data }) {
           ))}
         </td>
       </tr>
-      {where && (
+      {where && where.length > 0 && (
         <tr>
           <th scope="row">Where</th>
           <td
@@ -254,12 +248,15 @@ function EventMetadata({ data }) {
               },
             }}
           >
-            <p>{where}</p>
-            {onlineLink && (
-              <p>
-                <Link to={onlineLink.to}>{onlineLink.label}</Link>
-              </p>
-            )}
+            {where.map(({ label, href }) => {
+              if (href) {
+                return (
+                  <p><Link to={href}>{label}</Link></p>
+                )
+              }
+
+              return <p>{label}</p>
+            })}
           </td>
         </tr>
       )}
