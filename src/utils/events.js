@@ -88,24 +88,31 @@ export function eventFormatWhen({ start, end, kind, type }) {
 }
 
 export function eventFormatWhere({ node, kind }) {
-  const isOnline = node.field_event_online
+  let where = []
 
-  if (isOnline) {
-    return 'Online'
+  if (node.field_event_online) {
+   where.push({
+     label: 'Online'
+   })
   }
 
-  const building = node.relationships.field_event_building
-  const room = node.relationships.field_event_room
-
-  if (building && !room) {
-    return building.title
+  if (node.field_online_event_link) {
+    where.push({
+      label: node.field_online_event_link.title,
+      href: node.field_online_event_link.uri
+    })
   }
 
-  if (building && room) {
-    return room.title + ', ' + building.title
+  const building = node.relationships.field_event_building?.title
+  const room = node.relationships.field_event_room?.title
+
+  if (building) {
+    where.push({
+      label: [room, building].join(', ')
+    }) 
   }
 
-  return ''
+  return where
 }
 
 export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {

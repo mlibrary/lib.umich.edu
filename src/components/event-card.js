@@ -109,7 +109,7 @@ export default function EventCard(node) {
               }}
             >
               <span className="visually-hidden">Where: </span>
-              {where}
+              {where.map(item => item.label)}
             </span>
           </span>
           {!isAnExhibit && (
