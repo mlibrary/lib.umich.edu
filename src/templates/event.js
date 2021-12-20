@@ -197,7 +197,7 @@ function EventMetadata({ data }) {
   const where = eventFormatWhere({
     node: data,
     kind: 'full',
-  })
+  }, true)
 
   return (
     <table
