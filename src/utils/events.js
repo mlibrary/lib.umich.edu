@@ -87,7 +87,7 @@ export function eventFormatWhen({ start, end, kind, type }) {
   )
 }
 
-export function eventFormatWhere({ node, kind }) {
+export function eventFormatWhere({ node, kind }, includeLink = false) {
   let where = []
 
   if (node.field_event_online) {
@@ -96,7 +96,7 @@ export function eventFormatWhere({ node, kind }) {
    })
   }
 
-  if (node.field_online_event_link) {
+  if (includeLink && node.field_online_event_link) {
     where.push({
       label: node.field_online_event_link.title,
       href: node.field_online_event_link.uri
