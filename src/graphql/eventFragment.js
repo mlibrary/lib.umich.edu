@@ -76,6 +76,7 @@ export const query = graphql`
         }
       }
       field_event_room {
+        ...locationFragment
         ...roomFragment
       }
       field_event_building {
