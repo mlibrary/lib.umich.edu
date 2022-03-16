@@ -1,4 +1,5 @@
-const fetch = require('fetch-retry')
+const originalFetch = require('isomorphic-fetch');
+const fetch = require('fetch-retry')(originalFetch);
 const Bottleneck = require('bottleneck/es5')
 
 function fetchWithRetry(url) {
