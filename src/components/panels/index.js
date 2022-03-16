@@ -471,25 +471,6 @@ export default function Panels({ data }) {
   )
 }
 
-function HideNotFirstHoursNextPreviousButtons({ children }) {
-  return (
-    <div
-      css={{
-        '[data-hours-panel-next-previous]': {
-          display: 'none',
-        },
-        '> [data-hours-panel]:first-of-type': {
-          '[data-hours-panel-next-previous]': {
-            display: 'block',
-          },
-        },
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
 function PanelStateWrapper({ children }) {
   const initialState = {
     weekOffset: 0,
