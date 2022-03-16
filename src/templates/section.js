@@ -12,7 +12,7 @@ import {
 } from '../components/aside-layout'
 import Prose from '../components/prose'
 import Layout from '../components/layout'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import PageHeader from '../components/page-header'
 import PageHeaderMini from '../components/page-header-mini'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
@@ -62,7 +62,7 @@ function SectionTemplate({ data, ...rest }) {
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO title={title} description={description} />
+      <SearchEngineOptimization title={title} description={description} />
 
       {isRootPage ? (
         <PageHeader

@@ -2,7 +2,7 @@ import React from 'react'
 import { graphql } from 'gatsby'
 
 import Layout from '../components/layout'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import Panels from '../components/panels'
 import VisuallyHidden from '@reach/visually-hidden'
 
@@ -12,7 +12,7 @@ function HomePageTemplate({ data }) {
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO description={description} />
+      <SearchEngineOptimization description={description} />
       <VisuallyHidden>
         <h1>Home page</h1>
       </VisuallyHidden>

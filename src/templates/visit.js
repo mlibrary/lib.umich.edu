@@ -11,7 +11,7 @@ import {
 } from '../components/aside-layout'
 
 import Layout from '../components/layout'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import PageHeader from '../components/page-header'
 import Prose from '../components/prose'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
@@ -43,7 +43,7 @@ export default function VisitTemplate({ data, ...rest }) {
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO title={title} description={description} />
+      <SearchEngineOptimization title={title} description={description} />
       <header aria-label="Location description">
         <PageHeader
           breadcrumb={fields.breadcrumb}

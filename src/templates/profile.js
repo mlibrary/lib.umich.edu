@@ -16,7 +16,7 @@ import {
 } from '@reusable'
 import VisuallyHidden from '@reach/visually-hidden'
 import { Template, Top, Side, Content } from '../components/page-layout'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
 import Layout from '../components/layout'
 import Link from '../components/link'
@@ -124,7 +124,7 @@ function ProfileTemplate({ data }) {
   ])
   return (
     <Layout>
-      <SEO title={field_user_display_name} />
+      <SearchEngineOptimization title={field_user_display_name} />
       <Margins>
         <Template>
           <Top>

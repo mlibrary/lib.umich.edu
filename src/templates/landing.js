@@ -4,7 +4,7 @@ import { graphql } from 'gatsby'
 import { Margins } from '@reusable'
 
 import Layout from '../components/layout'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import PageHeader from '../components/page-header'
 import Html from '../components/html'
 import Panels from '../components/panels'
@@ -25,7 +25,7 @@ export default function LandingTemplate({ data, ...rest }) {
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO
+      <SearchEngineOptimization
         title={title}
         drupalNid={drupal_internal__nid}
         description={description}

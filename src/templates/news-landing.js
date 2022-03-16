@@ -4,7 +4,7 @@ import { graphql } from 'gatsby'
 import { Margins, Heading, SPACING } from '@reusable'
 import VisuallyHidden from '@reach/visually-hidden'
 import Layout from '../components/layout'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import Card from '../components/card'
@@ -37,7 +37,7 @@ export default function NewsLandingTemplate({ data }) {
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO
+      <SearchEngineOptimization
         title={title}
         drupalNid={drupal_internal__nid}
         description={description}
