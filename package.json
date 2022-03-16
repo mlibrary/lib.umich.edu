@@ -37,7 +37,7 @@
     "react-player": "^1.15.3",
     "react-responsive": "^8.2.0",
     "rehype-parse": "^8.0.4",
-    "rehype-react": "^4.0.1",
+    "rehype-react": "^7.0.4",
     "unified": "^10.1.2",
     "use-debounce": "^7.0.1",
     "whatwg-url": "^11.0.0"
