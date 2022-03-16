@@ -8,7 +8,7 @@ import {
   TemplateContent,
 } from '../components/aside-layout'
 import TemplateLayout from './template-layout'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import transformNodePanels from '../utils/transform-node-panels'
 import getNode from '../utils/get-node'
@@ -105,7 +105,7 @@ function CollectingAreaTemplate({ data, ...rest }) {
           >
             {field_title_context}
           </Heading>
-          {body && <HTML html={body.processed} />}
+          {body && <Html html={body.processed} />}
           {bodyPanels && <Panels data={bodyPanels} />}
         </TemplateContent>
         <TemplateSide
@@ -139,7 +139,7 @@ function CollectingAreaTemplate({ data, ...rest }) {
                     borderBottom: `solid 1px ${COLORS.neutral['100']}`,
                   }}
                 >
-                  <HTML
+                  <Html
                     html={
                       relationships.field_media_image.field_image_caption
                         .processed

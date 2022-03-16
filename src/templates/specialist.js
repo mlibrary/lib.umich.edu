@@ -21,7 +21,7 @@ import Link from '../components/link'
 import Breadcrumb from '../components/breadcrumb'
 import MEDIA_QUERIES from '../reusable/media-queries'
 import TemplateLayout from './template-layout'
-import HTML from '../components/html'
+import Html from '../components/html'
 import NoResults from '../components/no-results'
 import getUrlState, { stringifyState } from '../utils/get-url-state'
 import Switch from '../components/switch'
@@ -78,7 +78,7 @@ export default function FinaASpecialistTemplate({ data }) {
               marginBottom: SPACING['XL'],
             }}
           >
-            <HTML html={body.processed} />{' '}
+            <Html html={body.processed} />{' '}
           </div>
         )}
 

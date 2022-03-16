@@ -5,7 +5,7 @@ import { Margins, Heading, SPACING } from '@reusable'
 import VisuallyHidden from '@reach/visually-hidden'
 import Layout from '../components/layout'
 import SEO from '../components/seo'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import Card from '../components/card'
 import {
@@ -58,7 +58,7 @@ export default function NewsLandingTemplate({ data }) {
         <TemplateContent>
           {body && (
             <div css={{ marginBottom: SPACING['XL'] }}>
-              <HTML html={body.processed} />
+              <Html html={body.processed} />
             </div>
           )}
 

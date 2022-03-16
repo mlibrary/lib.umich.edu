@@ -11,7 +11,7 @@ import {
   Link as DSLink,
 } from '@reusable'
 import { Template, Top, Side, Content } from '../components/page-layout'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import SideNavigation from '../components/navigation/side-navigation'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
@@ -116,7 +116,7 @@ function DepartmentTemplate({ data }) {
                   <Heading level={2} size="M">
                     What we do
                   </Heading>
-                  <HTML html={body.processed} />
+                  <Html html={body.processed} />
                 </React.Fragment>
               )}
 
@@ -125,7 +125,7 @@ function DepartmentTemplate({ data }) {
                   <Heading level={2} size="M">
                     What we're working on
                   </Heading>
-                  <HTML html={field_what_were_working_on.processed} />
+                  <Html html={field_what_were_working_on.processed} />
                 </React.Fragment>
               )}
             </Prose>

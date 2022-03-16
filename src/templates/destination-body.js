@@ -12,7 +12,7 @@ import SideNavigation from '../components/navigation/side-navigation'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
 import useNavigationBranch from '../components/navigation/use-navigation-branch'
 import Panels from '../components/panels'
-import HTML from '../components/html'
+import Html from '../components/html'
 import DestinationLocationInfo from '../components/destination-location-info'
 
 function DestinationTemplate({ data, ...rest }) {
@@ -93,7 +93,7 @@ function DestinationTemplate({ data, ...rest }) {
               />
             </div>
 
-            {body && <HTML html={body.processed} />}
+            {body && <Html html={body.processed} />}
 
             <Panels data={relationships.field_panels} />
           </Content>

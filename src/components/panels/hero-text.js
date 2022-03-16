@@ -3,7 +3,7 @@ import React from 'react'
 import BackgroundImage from 'gatsby-background-image'
 import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable'
 import Link from '../link'
-import HTML from '../html'
+import Html from '../html'
 import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id'
 
 const MEDIAQUERIES = {
@@ -92,7 +92,7 @@ export default function HeroText({ data }) {
             >
               {data.field_title}
             </Heading>
-            <HTML
+            <Html
               html={data.field_caption_text.processed}
               css={{
                 display: 'inline-block',

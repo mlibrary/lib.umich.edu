@@ -6,7 +6,7 @@ import { Margins } from '@reusable'
 import Layout from '../components/layout'
 import SEO from '../components/seo'
 import PageHeader from '../components/page-header'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Panels from '../components/panels'
 import transformNodePanels from '../utils/transform-node-panels'
 
@@ -40,7 +40,7 @@ export default function LandingTemplate({ data, ...rest }) {
         }
       />
       <Margins>
-        {body && <HTML html={body.processed} />} <Panels data={bodyPanels} />
+        {body && <Html html={body.processed} />} <Panels data={bodyPanels} />
       </Margins>
       <Panels data={fullPanels} />
     </Layout>

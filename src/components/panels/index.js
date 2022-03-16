@@ -10,7 +10,7 @@ import {
 
 import Card from '../card'
 import Link from '../link'
-import HTML from '../html'
+import Html from '../html'
 import Address from '../address'
 import Hours from '../todays-hours'
 import icons from '../../reusable/icons'
@@ -245,7 +245,7 @@ function TextPanel({ data }) {
             {title}
           </Heading>
 
-          <HTML
+          <Html
             html={cards[0].field_body.processed}
             css={{
               '> *': {
@@ -288,7 +288,7 @@ function TextPanel({ data }) {
               >
                 {title}
               </Heading>
-              <HTML html={card.field_body.processed} />
+              <Html html={card.field_body.processed} />
             </section>
           ))}
         </div>
@@ -333,7 +333,7 @@ function TextPanel({ data }) {
               {title}
             </Heading>
             <div css={{ color: COLORS.neutral['300'] }}>
-              <HTML html={html} />
+              <Html html={html} />
             </div>
           </div>
         </div>
@@ -365,7 +365,7 @@ function TextPanel({ data }) {
                 </Link>
               </div>
               <div css={{ color: COLORS.neutral['300'] }}>
-                <HTML html={field_body.processed} />
+                <Html html={field_body.processed} />
               </div>
             </li>
           ))}
@@ -423,7 +423,7 @@ function TextPanel({ data }) {
                 </Heading>
               )}
 
-              <HTML html={html} />
+              <Html html={html} />
             </div>
           </section>
         ))}

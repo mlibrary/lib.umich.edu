@@ -117,10 +117,12 @@ const renderHast = new rehypeReact({
   },
 }).Compiler
 
-export default ({ html, ...rest }) => {
+function Html({ html, ...rest }) {
   const tree = unified()
     .use(rehype, { fragment: true })
     .parse(html)
 
   return <Prose {...rest}>{renderHast(tree)}</Prose>
 }
+
+export default Html

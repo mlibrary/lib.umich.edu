@@ -9,7 +9,7 @@ import {
   TemplateContent,
 } from '../components/aside-layout'
 import TemplateLayout from './template-layout'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
 import Share from '../components/share'
@@ -45,7 +45,7 @@ export default function EventTemplate({ data }) {
             {field_title_context}
           </Heading>
           <EventMetadata data={node} />
-          {body && <HTML html={body.processed} />}
+          {body && <Html html={body.processed} />}
         </TemplateContent>
         <TemplateSide
           css={{
@@ -75,7 +75,7 @@ export default function EventTemplate({ data }) {
                     color: COLORS.neutral['300'],
                   }}
                 >
-                  <HTML html={imageCaptionHTML} />
+                  <Html html={imageCaptionHTML} />
                 </figcaption>
               )}
             </figure>

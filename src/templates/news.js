@@ -10,7 +10,7 @@ import {
 } from '../components/aside-layout'
 import TemplateLayout from './template-layout'
 import Panels from '../components/panels'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import getNode from '../utils/get-node'
 import transformNodePanels from '../utils/transform-node-panels'
@@ -62,7 +62,7 @@ export default function NewsTemplate({ data }) {
               </p>
             )}
           </Heading>
-          {body && <HTML html={body.processed} />}
+          {body && <Html html={body.processed} />}
           {bodyPanels && <Panels data={bodyPanels} />}
         </TemplateContent>
         <TemplateSide
@@ -93,7 +93,7 @@ export default function NewsTemplate({ data }) {
                     color: COLORS.neutral['300'],
                   }}
                 >
-                  <HTML
+                  <Html
                     html={
                       relationships.field_media_image.field_image_caption
                         .processed

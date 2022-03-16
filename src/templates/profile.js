@@ -20,7 +20,7 @@ import SEO from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
 import Layout from '../components/layout'
 import Link from '../components/link'
-import HTML from '../components/html'
+import Html from '../components/html'
 import BackgroundImage from 'gatsby-background-image'
 import LANGUAGES from '../utils/languages'
 import LinkCallout from '../components/link-callout'
@@ -332,7 +332,7 @@ function ProfileTemplate({ data }) {
                   <Heading size="S" level={2}>
                     About me
                   </Heading>
-                  <HTML
+                  <Html
                     html={field_user_pro_about.processed}
                     css={{
                       marginBottom: SPACING['XL'],

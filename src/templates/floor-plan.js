@@ -3,7 +3,7 @@ import { graphql } from 'gatsby'
 import { Margins, Heading, SPACING, SmallScreen, LINK_STYLES } from '@reusable'
 
 import { Template, Top, Side, Content } from '../components/page-layout'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import SideNavigation from '../components/navigation/side-navigation'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
@@ -57,7 +57,7 @@ function FloorPlanTemplate({ data }) {
             >
               {field_title_context}
             </Heading>
-            {body && <HTML html={body.processed} />}
+            {body && <Html html={body.processed} />}
 
             <p
               css={{

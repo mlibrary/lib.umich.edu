@@ -16,7 +16,7 @@ import PageHeader from '../components/page-header'
 import Prose from '../components/prose'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
-import HTML from '../components/html'
+import Html from '../components/html'
 import LocationAside from '../components/location-aside'
 import Panels from '../components/panels'
 import transformNodePanels from '../utils/transform-node-panels'
@@ -91,7 +91,7 @@ export default function VisitTemplate({ data, ...rest }) {
                     Getting here
                   </Heading>
 
-                  <HTML html={field_access.processed} />
+                  <Html html={field_access.processed} />
                 </React.Fragment>
               )}
 
@@ -104,7 +104,7 @@ export default function VisitTemplate({ data, ...rest }) {
                     {field_amenities.map(({ name, description }, i) => (
                       <li key={i + name}>
                         {description ? (
-                          <HTML html={description.processed} />
+                          <Html html={description.processed} />
                         ) : (
                           <React.Fragment>{name}</React.Fragment>
                         )}
@@ -153,7 +153,7 @@ function HTMLList({ data }) {
     <List type="bulleted">
       {sorted.map(({ description }, i) => (
         <li key={i + description.processed}>
-          <HTML html={description.processed} />
+          <Html html={description.processed} />
         </li>
       ))}
     </List>
