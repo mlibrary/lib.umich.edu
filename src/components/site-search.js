@@ -126,7 +126,6 @@ export default function SiteSearch({ label }) {
           placeholder={label}
           type="search"
           autoComplete="off"
-          autocomplete={false}
           css={{
             fontSize: '1rem',
             appearance: 'textfield',
