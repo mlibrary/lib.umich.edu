@@ -21,6 +21,10 @@ const StyledInput = styled('input')(
   })
 )
 
-export default ({ className, ...other }) => (
-  <StyledInput className={className} {...other} />
-)
+function Input({ className, ...other }) {
+  return (
+    <StyledInput className={className} {...other} />
+  )
+}
+
+export default Input;
