@@ -1,7 +1,7 @@
 import React from 'react'
 import rehypeReact from 'rehype-react'
 import { Heading, Text, List, COLORS } from '@reusable'
-import unified from 'unified'
+import { unified } from 'unified'
 import rehype from 'rehype-parse'
 import Prose from './prose'
 import Link from './link'

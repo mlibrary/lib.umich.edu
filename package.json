@@ -37,7 +37,7 @@
     "react-responsive": "^8.2.0",
     "rehype-parse": "^6.0.1",
     "rehype-react": "^4.0.1",
-    "unified": "^8.4.2",
+    "unified": "^10.1.2",
     "use-debounce": "^7.0.1",
     "whatwg-url": "^11.0.0"
   },
