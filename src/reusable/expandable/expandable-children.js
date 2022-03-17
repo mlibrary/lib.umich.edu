@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { ExpandableContext } from './expandable'
 
-class ExpandableChildren extends Component {
+class ExpandableChildrenComponent extends Component {
   componentDidMount() {
     const { context, children, show } = this.props
 
@@ -22,16 +22,20 @@ class ExpandableChildren extends Component {
   }
 }
 
-ExpandableChildren.propTypes = {
+ExpandableChildrenComponent.propTypes = {
   show: PropTypes.number,
 }
 
-ExpandableChildren.defaultProps = {
+ExpandableChildrenComponent.defaultProps = {
   show: 3,
 }
 
-export default props => (
-  <ExpandableContext.Consumer>
-    {context => <ExpandableChildren {...props} context={context} />}
-  </ExpandableContext.Consumer>
-)
+function ExpandableChildren(props) {
+  return (
+    <ExpandableContext.Consumer>
+      {context => <ExpandableChildrenComponent {...props} context={context} />}
+    </ExpandableContext.Consumer>
+  )
+}
+
+export default ExpandableChildren;

@@ -12,12 +12,12 @@ import {
 } from '../components/aside-layout'
 import Prose from '../components/prose'
 import Layout from '../components/layout'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import PageHeader from '../components/page-header'
 import PageHeaderMini from '../components/page-header-mini'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
 import Panels from '../components/panels'
-import HTML from '../components/html'
+import Html from '../components/html'
 import LocationAside from '../components/location-aside'
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
 import transformNodePanels from '../utils/transform-node-panels'
@@ -62,7 +62,7 @@ function SectionTemplate({ data, ...rest }) {
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO title={title} description={description} />
+      <SearchEngineOptimization title={title} description={description} />
 
       {isRootPage ? (
         <PageHeader
@@ -96,7 +96,7 @@ function SectionTemplate({ data, ...rest }) {
                 <span aria-hidden="true">{field_title_context}</span>
               </Heading>
 
-              {body && <HTML html={body.processed} />}
+              {body && <Html html={body.processed} />}
             </Prose>
 
             <Panels data={bodyPanels} />

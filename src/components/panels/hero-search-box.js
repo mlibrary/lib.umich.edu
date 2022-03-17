@@ -11,7 +11,7 @@ import {
   TYPOGRAPHY,
   COLORS,
 } from '@reusable'
-import HTML from '../html'
+import Html from '../html'
 
 const MEDIAQUERIES = {
   XL: '@media only screen and (min-width: 1200px)',
@@ -171,7 +171,7 @@ function Caption({ data }) {
         )}
         {caption && (
           <figcaption>
-            <HTML html={caption} />
+            <Html html={caption} />
           </figcaption>
         )}
       </figure>

@@ -9,7 +9,7 @@ import {
   TemplateContent,
 } from '../components/aside-layout'
 import TemplateLayout from './template-layout'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
 import Share from '../components/share'
@@ -45,7 +45,7 @@ export default function EventTemplate({ data }) {
             {field_title_context}
           </Heading>
           <EventMetadata data={node} />
-          {body && <HTML html={body.processed} />}
+          {body && <Html html={body.processed} />}
         </TemplateContent>
         <TemplateSide
           css={{
@@ -75,7 +75,7 @@ export default function EventTemplate({ data }) {
                     color: COLORS.neutral['300'],
                   }}
                 >
-                  <HTML html={imageCaptionHTML} />
+                  <Html html={imageCaptionHTML} />
                 </figcaption>
               )}
             </figure>
@@ -129,8 +129,8 @@ export default function EventTemplate({ data }) {
               >
                 Event contact
               </h2>
-              {eventContacts.map(eventContact => (
-                <p>
+              {eventContacts.map((eventContact, index) => (
+                <p key={index}>
                   {`${eventContact.field_first_name} ${eventContact.field_last_name}`}
                   {' · '}
                   <a
@@ -224,23 +224,9 @@ function EventMetadata({ data }) {
       }}
     >
       <caption className="visually-hidden">Event details</caption>
-      <tr>
-        <th scope="row">When</th>
-        <td
-          css={{
-            'p + p': {
-              marginTop: SPACING['XS'],
-            },
-          }}
-        >
-          {when.map(str => (
-            <p>{str}</p>
-          ))}
-        </td>
-      </tr>
-      {where && where.length > 0 && (
+      <tbody>
         <tr>
-          <th scope="row">Where</th>
+          <th scope="row">When</th>
           <td
             css={{
               'p + p': {
@@ -248,37 +234,53 @@ function EventMetadata({ data }) {
               },
             }}
           >
-            {where.map(({ label, href }) => {
-              if (href) {
-                return (
-                  <p><Link to={href}>{label}</Link></p>
-                )
-              }
-
-              return <p>{label}</p>
-            })}
+            {when.map((str, index) => (
+              <p key={index}>{str}</p>
+            ))}
           </td>
         </tr>
-      )}
-      {registrationLink && (
-        <tr>
-          <th scope="row">Registration</th>
-          <td>
-            <Link to={registrationLink.to}>{registrationLink.label}</Link>
-          </td>
-        </tr>
-      )}
-      <tr>
-        <th scope="row">Event type</th>
-        <td>{eventType}</td>
-      </tr>
+        {where && where.length > 0 && (
+          <tr>
+            <th scope="row">Where</th>
+            <td
+              css={{
+                'p + p': {
+                  marginTop: SPACING['XS'],
+                },
+              }}
+            >
+              {where.map(({ label, href }, index) => {
+                if (href) {
+                  return (
+                    <p key={index}><Link to={href}>{label}</Link></p>
+                  )
+                }
 
-      {series && (
+                return <p key={index}>{label}</p>
+              })}
+            </td>
+          </tr>
+        )}
+        {registrationLink && (
+          <tr>
+            <th scope="row">Registration</th>
+            <td>
+              <Link to={registrationLink.to}>{registrationLink.label}</Link>
+            </td>
+          </tr>
+        )}
         <tr>
-          <th scope="row">Series</th>
-          <td>{series}</td>
+          <th scope="row">Event type</th>
+          <td>{eventType}</td>
         </tr>
-      )}
+
+        {series && (
+          <tr>
+            <th scope="row">Series</th>
+            <td>{series}</td>
+          </tr>
+        )}
+      </tbody>
     </table>
   )
 }

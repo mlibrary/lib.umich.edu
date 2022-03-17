@@ -9,7 +9,7 @@ const cleanList = list => {
     .trim()
 }
 
-class ExpandableButton extends Component {
+class ExpandableButtonComponent extends Component {
   render() {
     const { context } = this.props
 
@@ -27,8 +27,12 @@ class ExpandableButton extends Component {
   }
 }
 
-export default props => (
-  <ExpandableContext.Consumer>
-    {context => <ExpandableButton {...props} context={context} />}
-  </ExpandableContext.Consumer>
-)
+function ExpandableButton(props) {
+  return (
+    <ExpandableContext.Consumer>
+      {context => <ExpandableButtonComponent {...props} context={context} />}
+    </ExpandableContext.Consumer>
+  )
+}
+
+export default ExpandableButton;

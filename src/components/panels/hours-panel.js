@@ -10,7 +10,7 @@ import {
   MEDIA_QUERIES,
 } from '@reusable'
 
-import HTML from '../html'
+import Html from '../html'
 import HoursTable from '../hours-table'
 import { useStateValue } from '../use-state'
 import getTransitionCSS from '../../utils/transition'
@@ -173,7 +173,7 @@ export default function HoursPanelContainer({ data }) {
           })}
           id={titleSlugged}
         >
-          {field_body && <HTML html={field_body.processed} />}
+          {field_body && <Html html={field_body.processed} />}
         </HoursPanel>
       </Margins>
     </section>

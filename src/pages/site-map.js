@@ -2,7 +2,7 @@ import React from 'react'
 import Layout from '../components/layout'
 
 import { Heading, SPACING, Margins } from '@reusable'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
 import Link from '../components/link'
 import useNavigationData from '../hooks/use-navigation-data'
@@ -23,7 +23,7 @@ export default function SiteMap() {
 
   return (
     <Layout>
-      <SEO title="Site map" />
+      <SearchEngineOptimization title="Site map" />
       <Margins
         css={{
           marginBottom: SPACING['4XL'],

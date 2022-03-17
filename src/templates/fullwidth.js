@@ -4,7 +4,7 @@ import { graphql } from 'gatsby'
 import { Margins, Heading, SPACING } from '@reusable'
 
 import TemplateLayout from './template-layout'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
 import Panels from '../components/panels'
@@ -42,7 +42,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
             marginBottom: fullPanels.length ? '0' : SPACING['5XL'],
           }}
         >
-          <HTML html={body.processed} />
+          <Html html={body.processed} />
 
           <Panels data={bodyPanels} />
         </Margins>

@@ -92,12 +92,12 @@ export default function FeaturedAndLatestNews() {
   `)
 
   if (data.featuredNews.edges.length === 0) {
-    throw `
+    throw new Error(`
       Unexpected data!
 
       The homepage requires at least one news node
       that is featured for the homepage.
-    `
+    `);
   }
 
   const featureNode = data.featuredNews.edges[0].node

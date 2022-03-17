@@ -306,6 +306,8 @@ export function GlobalStyleSheet() {
           This could be setup as part of the build step in styles/package.json
   */
   const stylesheet = `
+    @import url('https://fonts.googleapis.com/css?family=Crimson+Text|Muli:400,600,700');  
+      
     /* 
     CSS Reset
     
@@ -382,8 +384,6 @@ export function GlobalStyleSheet() {
       are not being requests as another file to fetch, it's OK to import the
       font family because it's not as slow as tranditional setups.
     */
-    @import url('https://fonts.googleapis.com/css?family=Crimson+Text|Muli:400,600,700');  
-    
     body,
     html {
       padding: 0;

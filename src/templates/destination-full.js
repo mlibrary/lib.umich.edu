@@ -13,7 +13,7 @@ import Breadcrumb from '../components/breadcrumb'
 import TemplateLayout from './template-layout'
 import getNode from '../utils/get-node'
 import Panels from '../components/panels'
-import HTML from '../components/html'
+import Html from '../components/html'
 import DestinationLocationInfo from '../components/destination-location-info'
 import ChatIframe from '../components/chat-iframe'
 
@@ -61,7 +61,7 @@ function DestinationTemplate({ data, ...rest }) {
             <DestinationLocationInfo node={node} />
           </div>
 
-          {body && <HTML html={body.processed} />}
+          {body && <Html html={body.processed} />}
 
           <Panels data={relationships.field_panels} />
         </TemplateContent>

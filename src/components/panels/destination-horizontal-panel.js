@@ -1,7 +1,7 @@
 import React from 'react'
 import { Heading, SPACING, TYPOGRAPHY, COLORS } from '@reusable'
 import { getFloor, getParentTitle, getImage, getRoom } from '../../utils'
-import HTML from '../html'
+import Html from '../html'
 import CardImage from '../../reusable/card-image'
 import MEDIA_QUERIES from '../../reusable/media-queries'
 import Link from '../link'
@@ -18,7 +18,7 @@ export default function DestinationHorizontalPanel({ data }) {
       title: card.title,
       subtitle: `${parentTitle}, ${floor}, ${room}`,
       image: imageData.localFile.childImageSharp,
-      content: <HTML html={card.body.processed} />,
+      content: <Html html={card.body.processed} />,
       bid: card.relationships.field_room_building.id,
       rid: card.relationships.field_floor.id,
       linkDestText: `${parentTitle} ${floor}`,
@@ -32,7 +32,7 @@ export default function DestinationHorizontalPanel({ data }) {
       }}
     >
       {cards.map((card, i) => (
-        <DestinationCard key={i} card={card} />
+        <DestinationCard key={`destination-${i}`} card={card} />
       ))}
     </div>
   )

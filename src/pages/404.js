@@ -3,7 +3,7 @@ import { useStaticQuery, graphql } from 'gatsby'
 
 import { Heading, Text, SPACING, Margins, COLORS, List } from '@reusable'
 import Img from 'gatsby-image'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import Link from '../components/link'
 import Prose from '../components/prose'
 import Layout from '../components/layout'
@@ -13,7 +13,7 @@ import MEDIA_QUERIES from '../reusable/media-queries'
 const NotFoundPage = () => {
   return (
     <Layout>
-      <SEO title="404 - Page not found" />
+      <SearchEngineOptimization title="404 - Page not found" />
       <Margins
         css={{
           marginTop: SPACING['XL'],

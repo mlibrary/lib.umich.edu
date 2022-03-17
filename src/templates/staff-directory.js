@@ -18,7 +18,7 @@ import PlainLink from '../components/plain-link'
 import Breadcrumb from '../components/breadcrumb'
 import MEDIA_QUERIES from '../reusable/media-queries'
 import TemplateLayout from './template-layout'
-import HTML from '../components/html'
+import Html from '../components/html'
 import NoResults from '../components/no-results'
 import Select from '../components/select'
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
@@ -217,7 +217,7 @@ function StaffDirectoryQueryContainer({
               marginBottom: SPACING['XL'],
             }}
           >
-            <HTML html={body.processed} />{' '}
+            <Html html={body.processed} />{' '}
           </div>
         )}
 
@@ -292,6 +292,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
             options={options}
             onChange={e => handleChange(e)}
             value={activeFilters[name]}
+            key={name}
           />
         ))}
         <Button

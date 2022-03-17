@@ -16,11 +16,11 @@ import {
 } from '@reusable'
 import VisuallyHidden from '@reach/visually-hidden'
 import { Template, Top, Side, Content } from '../components/page-layout'
-import SEO from '../components/seo'
+import SearchEngineOptimization from '../components/seo'
 import Breadcrumb from '../components/breadcrumb'
 import Layout from '../components/layout'
 import Link from '../components/link'
-import HTML from '../components/html'
+import Html from '../components/html'
 import BackgroundImage from 'gatsby-background-image'
 import LANGUAGES from '../utils/languages'
 import LinkCallout from '../components/link-callout'
@@ -124,7 +124,7 @@ function ProfileTemplate({ data }) {
   ])
   return (
     <Layout>
-      <SEO title={field_user_display_name} />
+      <SearchEngineOptimization title={field_user_display_name} />
       <Margins>
         <Template>
           <Top>
@@ -332,7 +332,7 @@ function ProfileTemplate({ data }) {
                   <Heading size="S" level={2}>
                     About me
                   </Heading>
-                  <HTML
+                  <Html
                     html={field_user_pro_about.processed}
                     css={{
                       marginBottom: SPACING['XL'],

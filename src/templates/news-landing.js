@@ -4,8 +4,8 @@ import { graphql } from 'gatsby'
 import { Margins, Heading, SPACING } from '@reusable'
 import VisuallyHidden from '@reach/visually-hidden'
 import Layout from '../components/layout'
-import SEO from '../components/seo'
-import HTML from '../components/html'
+import SearchEngineOptimization from '../components/seo'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import Card from '../components/card'
 import {
@@ -37,7 +37,7 @@ export default function NewsLandingTemplate({ data }) {
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SEO
+      <SearchEngineOptimization
         title={title}
         drupalNid={drupal_internal__nid}
         description={description}
@@ -58,7 +58,7 @@ export default function NewsLandingTemplate({ data }) {
         <TemplateContent>
           {body && (
             <div css={{ marginBottom: SPACING['XL'] }}>
-              <HTML html={body.processed} />
+              <Html html={body.processed} />
             </div>
           )}
 

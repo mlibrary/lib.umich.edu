@@ -36,7 +36,6 @@ function PanelGroup50Container({ children }) {
               gridTemplateColumns: '1fr 1fr',
               gridGap: SPACING['3XL'],
             },
-            marginTop: SPACING['3XL'],
             marginTop: SPACING['XL'],
             '> *': {
               marginBottom: SPACING['XL'],

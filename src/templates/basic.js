@@ -3,7 +3,7 @@ import { graphql } from 'gatsby'
 
 import { Margins, Heading, SPACING, SmallScreen } from '@reusable'
 import { Template, Top, Side, Content } from '../components/page-layout'
-import HTML from '../components/html'
+import Html from '../components/html'
 import Breadcrumb from '../components/breadcrumb'
 import SideNavigation from '../components/navigation/side-navigation'
 import HorizontalNavigation from '../components/navigation/horizontal-navigation'
@@ -53,7 +53,7 @@ function BasicTemplate({ data, ...rest }) {
             >
               {field_title_context}
             </Heading>
-            {body && <HTML html={body.processed} />}
+            {body && <Html html={body.processed} />}
             <Panels data={bodyPanels} />
           </Content>
         </Template>

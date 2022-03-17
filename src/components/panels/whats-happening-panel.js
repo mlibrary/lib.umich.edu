@@ -100,8 +100,8 @@ export default function WhatsHappening() {
             },
           }}
         >
-          {events.map(event => (
-            <EventCard {...event} displayImage={false} hasBorder={false} />
+          {events.map((event, index) => (
+            <EventCard {...event} displayImage={false} hasBorder={false} key={index} />
           ))}
         </div>
 

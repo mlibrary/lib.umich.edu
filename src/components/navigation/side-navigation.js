@@ -103,8 +103,8 @@ function SideNavLink({ path, item, children, ...rest }) {
             paddingBottom: SPACING['XS'],
           }}
         >
-          {item.children.map(child => (
-            <li>
+          {item.children.map((child, index) => (
+            <li key={`child-${index}`}>
               <SideNavLink
                 key={path + child.text}
                 path={path}
