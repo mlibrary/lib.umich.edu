@@ -66,29 +66,31 @@ export default function HoursTableSmallscreens({
           >
             {table[0].text}
           </caption>
-          {data.headings.map((heading, i) => (
-            <tr key={`day-${i}`}>
-              <th scope="row" aria-current={i === todayIndex - 1}>
-                <span
-                  css={{
-                    ...TYPOGRAPHY['3XS'],
-                  }}
-                >
-                  {heading.text}
-                </span>{' '}
-                <span
-                  css={{
-                    color: COLORS.neutral['300'],
-                  }}
-                >
-                  {heading.subtext}
-                </span>
-              </th>
-              <HoursSlot isToday={i === todayIndex - 1}>
-                {data.rows[t][i + 1].text}
-              </HoursSlot>
-            </tr>
-          ))}
+          <tbody>
+            {data.headings.map((heading, i) => (
+              <tr key={`day-${i}`}>
+                <th scope="row" aria-current={i === todayIndex - 1}>
+                  <span
+                    css={{
+                      ...TYPOGRAPHY['3XS'],
+                    }}
+                  >
+                    {heading.text}
+                  </span>{' '}
+                  <span
+                    css={{
+                      color: COLORS.neutral['300'],
+                    }}
+                  >
+                    {heading.subtext}
+                  </span>
+                </th>
+                <HoursSlot isToday={i === todayIndex - 1}>
+                  {data.rows[t][i + 1].text}
+                </HoursSlot>
+              </tr>
+            ))}
+          </tbody>
         </table>
       ))}
 

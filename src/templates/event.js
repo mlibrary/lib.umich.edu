@@ -224,23 +224,9 @@ function EventMetadata({ data }) {
       }}
     >
       <caption className="visually-hidden">Event details</caption>
-      <tr>
-        <th scope="row">When</th>
-        <td
-          css={{
-            'p + p': {
-              marginTop: SPACING['XS'],
-            },
-          }}
-        >
-          {when.map((str, index) => (
-            <p key={index}>{str}</p>
-          ))}
-        </td>
-      </tr>
-      {where && where.length > 0 && (
+      <tbody>
         <tr>
-          <th scope="row">Where</th>
+          <th scope="row">When</th>
           <td
             css={{
               'p + p': {
@@ -248,37 +234,53 @@ function EventMetadata({ data }) {
               },
             }}
           >
-            {where.map(({ label, href }, index) => {
-              if (href) {
-                return (
-                  <p key={index}><Link to={href}>{label}</Link></p>
-                )
-              }
-
-              return <p>{label}</p>
-            })}
+            {when.map((str, index) => (
+              <p key={index}>{str}</p>
+            ))}
           </td>
         </tr>
-      )}
-      {registrationLink && (
-        <tr>
-          <th scope="row">Registration</th>
-          <td>
-            <Link to={registrationLink.to}>{registrationLink.label}</Link>
-          </td>
-        </tr>
-      )}
-      <tr>
-        <th scope="row">Event type</th>
-        <td>{eventType}</td>
-      </tr>
+        {where && where.length > 0 && (
+          <tr>
+            <th scope="row">Where</th>
+            <td
+              css={{
+                'p + p': {
+                  marginTop: SPACING['XS'],
+                },
+              }}
+            >
+              {where.map(({ label, href }, index) => {
+                if (href) {
+                  return (
+                    <p key={index}><Link to={href}>{label}</Link></p>
+                  )
+                }
 
-      {series && (
+                return <p key={index}>{label}</p>
+              })}
+            </td>
+          </tr>
+        )}
+        {registrationLink && (
+          <tr>
+            <th scope="row">Registration</th>
+            <td>
+              <Link to={registrationLink.to}>{registrationLink.label}</Link>
+            </td>
+          </tr>
+        )}
         <tr>
-          <th scope="row">Series</th>
-          <td>{series}</td>
+          <th scope="row">Event type</th>
+          <td>{eventType}</td>
         </tr>
-      )}
+
+        {series && (
+          <tr>
+            <th scope="row">Series</th>
+            <td>{series}</td>
+          </tr>
+        )}
+      </tbody>
     </table>
   )
 }
