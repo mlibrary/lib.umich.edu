@@ -6,5 +6,5 @@
   that content editors set in the CMS.
 */
 export default function OrderNodes(order, nodes) {
-  return order.map(id => nodes.find(({ node }) => node.drupal_id === id))
+  return order.map((id) => nodes.find(({ node }) => node.drupal_id === id));
 }

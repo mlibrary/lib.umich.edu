@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-import { SPACING, COLORS, TYPOGRAPHY } from '@reusable'
+import { SPACING, COLORS, TYPOGRAPHY } from '@reusable';
 
 export default function Blockquote({ children, ...rest }) {
   return (
@@ -16,5 +16,5 @@ export default function Blockquote({ children, ...rest }) {
     >
       {children}
     </blockquote>
-  )
+  );
 }

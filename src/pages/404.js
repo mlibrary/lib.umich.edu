@@ -1,14 +1,14 @@
-import React from 'react'
-import { useStaticQuery, graphql } from 'gatsby'
+import React from 'react';
+import { useStaticQuery, graphql } from 'gatsby';
 
-import { Heading, Text, SPACING, Margins, COLORS, List } from '@reusable'
-import Img from 'gatsby-image'
-import SearchEngineOptimization from '../components/seo'
-import Link from '../components/link'
-import Prose from '../components/prose'
-import Layout from '../components/layout'
+import { Heading, Text, SPACING, Margins, COLORS, List } from '@reusable';
+import Img from 'gatsby-image';
+import SearchEngineOptimization from '../components/seo';
+import Link from '../components/link';
+import Prose from '../components/prose';
+import Layout from '../components/layout';
 
-import MEDIA_QUERIES from '../reusable/media-queries'
+import MEDIA_QUERIES from '../reusable/media-queries';
 
 const NotFoundPage = () => {
   return (
@@ -65,8 +65,8 @@ const NotFoundPage = () => {
         </Prose>
       </Margins>
     </Layout>
-  )
-}
+  );
+};
 
 function Image() {
   const imageData = useStaticQuery(graphql`
@@ -79,7 +79,7 @@ function Image() {
         }
       }
     }
-  `)
+  `);
 
   return (
     <div
@@ -103,7 +103,7 @@ function Image() {
     >
       <Img fluid={imageData.file.childImageSharp.fluid} alt="" />
     </div>
-  )
+  );
 }
 
-export default NotFoundPage
+export default NotFoundPage;

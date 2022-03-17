@@ -1,10 +1,10 @@
-import React from 'react'
-import { Margins, COLORS, SPACING, LINK_STYLES, Icon } from '@reusable'
+import React from 'react';
+import { Margins, COLORS, SPACING, LINK_STYLES, Icon } from '@reusable';
 
-import PlainLink from '../plain-link'
-import Nav from './primary-nav'
-import Logo from './logo'
-import SiteSearch from '../site-search'
+import PlainLink from '../plain-link';
+import Nav from './primary-nav';
+import Logo from './logo';
+import SiteSearch from '../site-search';
 
 function HeaderLargeScreen({ primary, secondary }) {
   return (
@@ -95,7 +95,7 @@ function HeaderLargeScreen({ primary, secondary }) {
         </div>
       </Margins>
     </header>
-  )
+  );
 }
 
-export default HeaderLargeScreen
+export default HeaderLargeScreen;

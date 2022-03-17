@@ -1,4 +1,4 @@
-import { graphql } from 'gatsby'
+import { graphql } from 'gatsby';
 
 export const query = graphql`
   fragment buildingParentFragment on node__building {
@@ -68,4 +68,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

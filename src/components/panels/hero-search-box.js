@@ -1,6 +1,6 @@
-import React from 'react'
-import BackgroundImage from 'gatsby-background-image'
-import VisuallyHidden from '@reach/visually-hidden'
+import React from 'react';
+import BackgroundImage from 'gatsby-background-image';
+import VisuallyHidden from '@reach/visually-hidden';
 import {
   SPACING,
   Margins,
@@ -10,27 +10,27 @@ import {
   MEDIA_QUERIES,
   TYPOGRAPHY,
   COLORS,
-} from '@reusable'
-import Html from '../html'
+} from '@reusable';
+import Html from '../html';
 
 const MEDIAQUERIES = {
   XL: '@media only screen and (min-width: 1200px)',
   L: '@media only screen and (min-width:920px)',
   M: '@media only screen and (min-width: 720px)',
   S: MEDIA_QUERIES.LARGESCREEN,
-}
+};
 
 const heroHeightCSS = {
   minHeight: '16rem',
   [MEDIAQUERIES['L']]: {
     minHeight: '25rem',
   },
-}
+};
 
 const frostCSS = {
   background: 'rgba(255,255,255,0.8)',
   backdropFilter: 'blur(2px)',
-}
+};
 
 /*
   We have two types of heros.
@@ -39,8 +39,8 @@ const frostCSS = {
   2. A heading and HTML content on an image, "text"
 */
 export default function HeroSearchBox({ data }) {
-  const hasFrost = data.field_background === 'white'
-  const applyFrostCSS = hasFrost ? frostCSS : {}
+  const hasFrost = data.field_background === 'white';
+  const applyFrostCSS = hasFrost ? frostCSS : {};
 
   return (
     <Margins
@@ -130,7 +130,7 @@ export default function HeroSearchBox({ data }) {
         <Caption data={data} />
       </BackgroundSection>
     </Margins>
-  )
+  );
 }
 
 /**
@@ -145,11 +145,11 @@ export default function HeroSearchBox({ data }) {
  * the background image.
  */
 function Caption({ data }) {
-  const caption = data.field_caption_text && data.field_caption_text.processed
-  const altText = data.relationships.field_hero_images[0].field_media_image.alt
+  const caption = data.field_caption_text && data.field_caption_text.processed;
+  const altText = data.relationships.field_hero_images[0].field_media_image.alt;
 
   if (!caption) {
-    return null
+    return null;
   }
 
   return (
@@ -176,24 +176,24 @@ function Caption({ data }) {
         )}
       </figure>
     </div>
-  )
+  );
 }
 
 function BackgroundSection({ data, children, ...rest }) {
-  const { field_hero_images } = data.relationships
+  const { field_hero_images } = data.relationships;
   const smallScreenImage = field_hero_images.find(
-    node => node.field_orientation === 'vertical'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid
+    (node) => node.field_orientation === 'vertical'
+  ).relationships.field_media_image.localFile.childImageSharp.fluid;
   const largeScreenImage = field_hero_images.find(
-    node => node.field_orientation === 'horizontal'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid
+    (node) => node.field_orientation === 'horizontal'
+  ).relationships.field_media_image.localFile.childImageSharp.fluid;
   const sources = [
     smallScreenImage,
     {
       ...largeScreenImage,
       media: `(min-width: 720px)`,
     },
-  ]
+  ];
 
   return (
     <BackgroundImage
@@ -211,7 +211,7 @@ function BackgroundSection({ data, children, ...rest }) {
     >
       {children}
     </BackgroundImage>
-  )
+  );
 }
 
 function Search({ labelId }) {
@@ -268,5 +268,5 @@ function Search({ labelId }) {
         </Button>
       </div>
     </form>
-  )
+  );
 }

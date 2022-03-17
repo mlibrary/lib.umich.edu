@@ -1,8 +1,8 @@
-import React from 'react'
-import { useStaticQuery, graphql } from 'gatsby'
-import Img from 'gatsby-image'
-import { Heading, SPACING, Text } from '@reusable'
-import MEDIA_QUERIES from '../reusable/media-queries'
+import React from 'react';
+import { useStaticQuery, graphql } from 'gatsby';
+import Img from 'gatsby-image';
+import { Heading, SPACING, Text } from '@reusable';
+import MEDIA_QUERIES from '../reusable/media-queries';
 
 export default function NoResults({ children }) {
   const { image } = useStaticQuery(graphql`
@@ -15,7 +15,7 @@ export default function NoResults({ children }) {
         }
       }
     }
-  `)
+  `);
 
   return (
     <div
@@ -64,5 +64,5 @@ export default function NoResults({ children }) {
         }}
       />
     </div>
-  )
+  );
 }

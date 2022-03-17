@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { graphql } from 'gatsby'
+import React, { useState, useEffect } from 'react';
+import { graphql } from 'gatsby';
 import {
   Heading,
   SPACING,
@@ -8,45 +8,45 @@ import {
   COLORS,
   Button,
   Alert,
-} from '@reusable'
-import { navigate } from '@reach/router'
-import { useDebounce } from 'use-debounce'
-import VisuallyHidden from '@reach/visually-hidden'
-import BackgroundImage from 'gatsby-background-image'
-import Link from '../components/link'
-import PlainLink from '../components/plain-link'
-import Breadcrumb from '../components/breadcrumb'
-import MEDIA_QUERIES from '../reusable/media-queries'
-import TemplateLayout from './template-layout'
-import Html from '../components/html'
-import NoResults from '../components/no-results'
-import Select from '../components/select'
-import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
-import getUrlState, { stringifyState } from '../utils/get-url-state'
-import useGoogleTagManager from '../hooks/use-google-tag-manager'
-import { useWindowSize } from '@reach/window-size'
+} from '@reusable';
+import { navigate } from '@reach/router';
+import { useDebounce } from 'use-debounce';
+import VisuallyHidden from '@reach/visually-hidden';
+import BackgroundImage from 'gatsby-background-image';
+import Link from '../components/link';
+import PlainLink from '../components/plain-link';
+import Breadcrumb from '../components/breadcrumb';
+import MEDIA_QUERIES from '../reusable/media-queries';
+import TemplateLayout from './template-layout';
+import Html from '../components/html';
+import NoResults from '../components/no-results';
+import Select from '../components/select';
+import StaffPhotoPlaceholder from '../components/staff-photo-placeholder';
+import getUrlState, { stringifyState } from '../utils/get-url-state';
+import useGoogleTagManager from '../hooks/use-google-tag-manager';
+import { useWindowSize } from '@reach/window-size';
 
-const lunr = require('lunr')
+const lunr = require('lunr');
 
 export default function StaffDirectoryWrapper({ data, location }) {
-  const node = data.page
-  const { allNodeDepartment, allStaff, allStaffImages } = data
+  const node = data.page;
+  const { allNodeDepartment, allStaff, allStaffImages } = data;
 
   const departments = allNodeDepartment.edges.reduce((acc, { node }) => {
     return {
       ...acc,
       [node.drupal_internal__nid]: node,
-    }
-  }, {})
+    };
+  }, {});
   const staff = allStaff.edges.map(({ node }) => {
     return {
       ...node,
       department: departments[node.department_nid],
       division: departments[node.division_nid],
-    }
-  })
+    };
+  });
   const staffImages = allStaffImages.edges.reduce((acc, { node }) => {
-    const img = node.relationships.field_media_image
+    const img = node.relationships.field_media_image;
 
     return {
       ...acc,
@@ -54,8 +54,8 @@ export default function StaffDirectoryWrapper({ data, location }) {
         alt: img.field_media_image.alt,
         ...img.relationships.field_media_image.localFile,
       },
-    }
-  }, {})
+    };
+  }, {});
 
   return (
     <StaffDirectoryQueryContainer
@@ -66,7 +66,7 @@ export default function StaffDirectoryWrapper({ data, location }) {
       location={location}
       navigate={navigate}
     />
-  )
+  );
 }
 
 function StaffDirectoryQueryContainer({
@@ -79,100 +79,100 @@ function StaffDirectoryQueryContainer({
 }) {
   const [urlState] = useState(
     getUrlState(location.search, ['query', 'department'])
-  )
-  const { body, fields, field_title_context } = node
-  const [query, setQuery] = useState(urlState.query ? urlState.query : '')
+  );
+  const { body, fields, field_title_context } = node;
+  const [query, setQuery] = useState(urlState.query ? urlState.query : '');
   const [activeFilters, setActiveFilters] = useState(
     urlState.department ? { department: urlState.department } : {}
-  )
-  const [results, setResults] = useState([])
+  );
+  const [results, setResults] = useState([]);
   const [stateString] = useDebounce(
     stringifyState({
       query: query.length > 0 ? query : undefined,
       department: activeFilters['department'],
     }),
     100
-  )
+  );
 
   useGoogleTagManager({
     eventName: 'staffDirectorySearch',
     value: query,
-  })
+  });
 
   useEffect(() => {
     navigate('?' + stateString, {
       replace: true,
       state: { preserveScroll: true },
-    })
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stateString])
+  }, [stateString]);
 
   useEffect(() => {
     if (!window.__SDI__) {
       // create staff directory index if it does not exist
-      window.__SDI__ = lunr(function() {
-        this.ref('uniqname')
-        this.field('name')
-        this.field('uniqname')
-        this.field('title')
+      window.__SDI__ = lunr(function () {
+        this.ref('uniqname');
+        this.field('name');
+        this.field('uniqname');
+        this.field('title');
 
-        staff.forEach(function(person) {
-          this.add(person)
-        }, this)
-      })
+        staff.forEach(function (person) {
+          this.add(person);
+        }, this);
+      });
     }
 
     // Get the staff directory index
-    const index = window.__SDI__
+    const index = window.__SDI__;
 
     try {
       const results = index
-        .query(q => {
+        .query((q) => {
           q.term(lunr.tokenizer(query), {
             boost: 3,
-          })
+          });
           q.term(lunr.tokenizer(query), {
             boost: 2,
             wildcard: lunr.Query.wildcard.TRAILING,
-          })
+          });
           if (query.length > 2) {
             q.term(lunr.tokenizer(query), {
               wildcard:
                 lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
-            })
+            });
           }
         })
         .map(({ ref }) => {
-          return staff.find(({ uniqname }) => uniqname === ref)
-        })
+          return staff.find(({ uniqname }) => uniqname === ref);
+        });
 
-      setResults(filterResults({ activeFilters, results }))
+      setResults(filterResults({ activeFilters, results }));
     } catch {
-      return
+      return;
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, activeFilters])
+  }, [query, activeFilters]);
 
   function handleChange(e) {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     if (name === 'query') {
-      setQuery(value)
-      return
+      setQuery(value);
+      return;
     }
 
-    let activeFiltersCopy = { ...activeFilters }
+    let activeFiltersCopy = { ...activeFilters };
 
     if (value.startsWith('All')) {
-      delete activeFiltersCopy[name]
+      delete activeFiltersCopy[name];
     } else {
       activeFiltersCopy = {
         ...activeFiltersCopy,
         [name]: value,
-      }
+      };
     }
 
-    setActiveFilters(activeFiltersCopy)
+    setActiveFilters(activeFiltersCopy);
   }
 
   const filters = [
@@ -181,16 +181,16 @@ function StaffDirectoryQueryContainer({
       name: 'department',
       options: ['All'].concat(
         Object.keys(departments)
-          .map(d => departments[d].title)
+          .map((d) => departments[d].title)
           .sort()
       ),
     },
-  ]
+  ];
 
   function handleClear() {
-    setQuery('')
-    setActiveFilters({})
-    setResults(staff)
+    setQuery('');
+    setActiveFilters({});
+    setResults(staff);
   }
 
   return (
@@ -232,7 +232,7 @@ function StaffDirectoryQueryContainer({
         />
       </Margins>
     </TemplateLayout>
-  )
+  );
 }
 
 const StaffDirectory = React.memo(function StaffDirectory({
@@ -244,19 +244,19 @@ const StaffDirectory = React.memo(function StaffDirectory({
   query,
   activeFilters,
 }) {
-  const [show, setShow] = useState(20)
-  const staffInView = results.slice(0, show)
+  const [show, setShow] = useState(20);
+  const staffInView = results.slice(0, show);
   const resultsSummary = results.length
     ? `${results.length} results`
-    : `No results`
+    : `No results`;
 
   const showMoreText =
     show < results.length
       ? `Showing ${show} of ${results.length} results`
-      : null
+      : null;
 
   function showMore() {
-    setShow(results.length)
+    setShow(results.length);
   }
 
   return (
@@ -280,9 +280,9 @@ const StaffDirectory = React.memo(function StaffDirectory({
           labelText="Search by name, uniqname, or title"
           name="query"
           value={query}
-          onChange={e => {
-            setShow(20)
-            handleChange(e)
+          onChange={(e) => {
+            setShow(20);
+            handleChange(e);
           }}
         />
         {filters.map(({ label, name, options }) => (
@@ -290,7 +290,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
             label={label}
             name={name}
             options={options}
-            onChange={e => handleChange(e)}
+            onChange={(e) => handleChange(e)}
             value={activeFilters[name]}
             key={name}
           />
@@ -333,32 +333,32 @@ const StaffDirectory = React.memo(function StaffDirectory({
         </NoResults>
       )}
     </React.Fragment>
-  )
-})
+  );
+});
 
 function filterResults({ activeFilters, results }) {
-  const filterKeys = Object.keys(activeFilters)
+  const filterKeys = Object.keys(activeFilters);
 
   if (filterKeys.length === 0) {
-    return results
+    return results;
   }
 
-  return results.filter(result => {
-    const division = result.division && result.division.title
-    const department = result.department && result.department.title
+  return results.filter((result) => {
+    const division = result.division && result.division.title;
+    const department = result.department && result.department.title;
 
     return (
       activeFilters['department'] === division ||
       activeFilters['department'] === department
-    )
-  })
+    );
+  });
 }
 
 function StaffPhoto({ mid, staffImages }) {
-  const img = staffImages[mid]
+  const img = staffImages[mid];
 
   if (!img) {
-    return <StaffPhotoPlaceholder />
+    return <StaffPhotoPlaceholder />;
   }
 
   return (
@@ -376,11 +376,11 @@ function StaffPhoto({ mid, staffImages }) {
         overflow: 'hidden',
       }}
     />
-  )
+  );
 }
 
 export const query = graphql`
-  query($slug: String!) {
+  query ($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
@@ -441,7 +441,7 @@ export const query = graphql`
       }
     }
   }
-`
+`;
 
 function StaffDirectoryResults({
   results,
@@ -449,11 +449,11 @@ function StaffDirectoryResults({
   resultsSummary,
   staffInView,
 }) {
-  const breakpoint = 820
-  const { width } = useWindowSize()
+  const breakpoint = 820;
+  const { width } = useWindowSize();
 
   if (results.length < 1) {
-    return null
+    return null;
   }
 
   if (width < breakpoint) {
@@ -464,7 +464,7 @@ function StaffDirectoryResults({
         resultsSummary={resultsSummary}
         staffInView={staffInView}
       />
-    )
+    );
   }
 
   return (
@@ -610,7 +610,7 @@ function StaffDirectoryResults({
         </tbody>
       </table>
     </div>
-  )
+  );
 }
 
 function StaffDirectorySmallScreenResults({ resultsSummary, staffInView }) {
@@ -672,5 +672,5 @@ function StaffDirectorySmallScreenResults({ resultsSummary, staffInView }) {
         ))}
       </ol>
     </React.Fragment>
-  )
+  );
 }

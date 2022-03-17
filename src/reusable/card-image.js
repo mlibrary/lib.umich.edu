@@ -1,6 +1,6 @@
-import React from 'react'
-import BackgroundImage from 'gatsby-background-image'
-import { COLORS, SPACING } from '@reusable'
+import React from 'react';
+import BackgroundImage from 'gatsby-background-image';
+import { COLORS, SPACING } from '@reusable';
 
 export default function CardImage({ image }) {
   return (
@@ -17,5 +17,5 @@ export default function CardImage({ image }) {
         overflow: 'hidden',
       }}
     />
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Icon } from '@reusable'
+import React from 'react';
+import { Icon } from '@reusable';
 
 export default function IconText({ d, icon, children, ...rest }) {
   return (
@@ -15,5 +15,5 @@ export default function IconText({ d, icon, children, ...rest }) {
       </span>
       {children}
     </span>
-  )
+  );
 }

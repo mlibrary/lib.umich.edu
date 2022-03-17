@@ -1,16 +1,16 @@
-import React from 'react'
-import { Breadcrumb, BreadcrumbItem } from '@reusable'
-import Link from './link'
+import React from 'react';
+import { Breadcrumb, BreadcrumbItem } from '@reusable';
+import Link from './link';
 
 export default function BreadcrumbContainer({ data, ...rest }) {
   /*
     Breadcrumb data is provided as encoded JSON.
     We need to decode it and check if it's valid.
   */
-  const parsed_data = JSON.parse(data)
+  const parsed_data = JSON.parse(data);
 
   if (!parsed_data) {
-    return null
+    return null;
   }
 
   return (
@@ -25,5 +25,5 @@ export default function BreadcrumbContainer({ data, ...rest }) {
         </BreadcrumbItem>
       ))}
     </Breadcrumb>
-  )
+  );
 }

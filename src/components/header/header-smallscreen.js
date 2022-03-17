@@ -5,9 +5,9 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react'
-import { Link } from 'gatsby'
-import VisuallyHidden from '@reach/visually-hidden'
+} from 'react';
+import { Link } from 'gatsby';
+import VisuallyHidden from '@reach/visually-hidden';
 import {
   SPACING,
   TYPOGRAPHY,
@@ -15,20 +15,20 @@ import {
   Icon,
   Margins,
   LINK_STYLES,
-} from '@reusable'
+} from '@reusable';
 
-import Logo from './logo'
-import SiteSearchModal from '../site-search-modal'
+import Logo from './logo';
+import SiteSearchModal from '../site-search-modal';
 
-const StateContext = createContext()
+const StateContext = createContext();
 
 const StateProvider = ({ reducer, initialState, children }) => (
   <StateContext.Provider value={useReducer(reducer, initialState)}>
     {children}
   </StateContext.Provider>
-)
+);
 
-const useStateValue = () => useContext(StateContext)
+const useStateValue = () => useContext(StateContext);
 
 function SmallScreenHeader({ primary, secondary }) {
   const reducer = (state, action) => {
@@ -37,23 +37,23 @@ function SmallScreenHeader({ primary, secondary }) {
         return {
           ...state,
           openNav: action.openNav,
-        }
+        };
       case 'setOpen':
         return {
           ...state,
           open: action.open,
-        }
+        };
       case 'setPanelOpen':
         return {
           ...state,
           panelOpen: action.panelOpen,
-        }
+        };
       case 'reset':
-        return {}
+        return {};
       default:
-        return state
+        return state;
     }
-  }
+  };
 
   return (
     <StateProvider initialState={{}} reducer={reducer}>
@@ -84,14 +84,14 @@ function SmallScreenHeader({ primary, secondary }) {
         </Margins>
       </header>
     </StateProvider>
-  )
+  );
 }
 
 function Nav({ primary, secondary }) {
-  const [isSearching, setSearching] = useState(false)
-  const [{ openNav, open }, dispatch] = useStateValue()
-  const isOpen = openNav === true
-  const toggleNavNode = useRef()
+  const [isSearching, setSearching] = useState(false);
+  const [{ openNav, open }, dispatch] = useStateValue();
+  const isOpen = openNav === true;
+  const toggleNavNode = useRef();
 
   return (
     <nav
@@ -145,12 +145,12 @@ function Nav({ primary, secondary }) {
         </NavDropdown>
       )}
     </nav>
-  )
+  );
 }
 
 function NavDropdown({ children, toggleNavNode }) {
-  const [, dispatch] = useStateValue()
-  const dropdownNode = useRef()
+  const [, dispatch] = useStateValue();
+  const dropdownNode = useRef();
 
   /*
     Reset Nav state on unmount / close.
@@ -159,15 +159,15 @@ function NavDropdown({ children, toggleNavNode }) {
     return () => {
       dispatch({
         type: 'reset',
-      })
-    }
-  }, [dispatch])
+      });
+    };
+  }, [dispatch]);
 
   function closeDropdown() {
     dispatch({
       type: 'setOpenNav',
       open: null,
-    })
+    });
   }
 
   function handleClick(e) {
@@ -182,7 +182,7 @@ function NavDropdown({ children, toggleNavNode }) {
         from here.
       */
       if (toggleNavNode.current.contains(e.target)) {
-        return
+        return;
       }
 
       /*
@@ -193,7 +193,7 @@ function NavDropdown({ children, toggleNavNode }) {
         but this case is caught above.
       */
       if (!dropdownNode.current.contains(e.target)) {
-        closeDropdown()
+        closeDropdown();
       }
     }
   }
@@ -201,19 +201,19 @@ function NavDropdown({ children, toggleNavNode }) {
   function handleKeydown(e) {
     if (e.keyCode === 27) {
       // ESC key
-      closeDropdown()
+      closeDropdown();
     }
   }
 
   useEffect(() => {
-    document.addEventListener('mouseup', handleClick)
-    document.addEventListener('keydown', handleKeydown)
+    document.addEventListener('mouseup', handleClick);
+    document.addEventListener('keydown', handleKeydown);
 
     return () => {
-      document.removeEventListener('mouseup', handleClick)
-      document.addEventListener('keydown', handleKeydown)
-    }
-  })
+      document.removeEventListener('mouseup', handleClick);
+      document.addEventListener('keydown', handleKeydown);
+    };
+  });
 
   return (
     <div
@@ -231,7 +231,7 @@ function NavDropdown({ children, toggleNavNode }) {
     >
       {children}
     </div>
-  )
+  );
 }
 
 function NavSecondary({ items }) {
@@ -262,15 +262,15 @@ function NavSecondary({ items }) {
         </li>
       ))}
     </ul>
-  )
+  );
 }
 
 function NavPrimary({ items }) {
-  const [{ open }] = useStateValue()
+  const [{ open }] = useStateValue();
 
   // Is an primary nav item open.
   if (Number.isInteger(open)) {
-    return <NavPanelSecondary {...items[open]} />
+    return <NavPanelSecondary {...items[open]} />;
   }
 
   return (
@@ -279,12 +279,12 @@ function NavPrimary({ items }) {
         <NavPrimaryItem {...item} i={i} key={i + item.text} />
       ))}
     </ul>
-  )
+  );
 }
 
 function NavPrimaryItem({ to, text, children, i }) {
-  const [{ open }, dispatch] = useStateValue()
-  const isOpen = open === i
+  const [{ open }, dispatch] = useStateValue();
+  const isOpen = open === i;
 
   return (
     <li>
@@ -304,7 +304,7 @@ function NavPrimaryItem({ to, text, children, i }) {
         {text} <NextIcon />
       </button>
     </li>
-  )
+  );
 }
 
 function BeforeIcon() {
@@ -317,7 +317,7 @@ function BeforeIcon() {
     >
       <Icon icon="navigate_before" size={24} />
     </span>
-  )
+  );
 }
 
 function NextIcon() {
@@ -330,7 +330,7 @@ function NextIcon() {
     >
       <Icon icon="navigate_next" size={24} />
     </span>
-  )
+  );
 }
 
 const nav_item_styles = {
@@ -343,20 +343,20 @@ const nav_item_styles = {
   textDecoration: 'none',
   color: COLORS.neutral['400'],
   cursor: 'pointer',
-}
+};
 
 function NavPanelSecondary({ text, to, children }) {
-  const [{ panelOpen }, dispatch] = useStateValue()
-  const beforeNode = useRef(null)
+  const [{ panelOpen }, dispatch] = useStateValue();
+  const beforeNode = useRef(null);
 
   useEffect(() => {
     if (beforeNode.current) {
-      beforeNode.current.focus()
+      beforeNode.current.focus();
     }
-  }, [panelOpen])
+  }, [panelOpen]);
 
   if (Number.isInteger(panelOpen)) {
-    return <NavPanelTertiary {...children[panelOpen]} />
+    return <NavPanelTertiary {...children[panelOpen]} />;
   }
 
   return (
@@ -407,16 +407,16 @@ function NavPanelSecondary({ text, to, children }) {
         ))}
       </ul>
     </div>
-  )
+  );
 }
 
 function NavPanelTertiary({ text, to, children }) {
-  const [, dispatch] = useStateValue()
-  const beforeNode = useRef()
+  const [, dispatch] = useStateValue();
+  const beforeNode = useRef();
 
   useEffect(() => {
-    beforeNode.current.focus()
-  }, [])
+    beforeNode.current.focus();
+  }, []);
 
   return (
     <div>
@@ -467,7 +467,7 @@ function NavPanelTertiary({ text, to, children }) {
         </li>
       </ul>
     </div>
-  )
+  );
 }
 
-export default SmallScreenHeader
+export default SmallScreenHeader;

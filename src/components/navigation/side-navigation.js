@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'gatsby'
+import React from 'react';
+import { Link } from 'gatsby';
 import {
   Heading,
   SPACING,
@@ -7,19 +7,19 @@ import {
   MEDIA_QUERIES,
   Icon,
   LargeScreen,
-} from '@reusable'
-import VisuallyHidden from '@reach/visually-hidden'
+} from '@reusable';
+import VisuallyHidden from '@reach/visually-hidden';
 
 export default function SideNavigation({ to, branch }) {
   if (!branch) {
-    return null
+    return null;
   }
 
-  const title = branch.text
-  const items = branch.children
+  const title = branch.text;
+  const items = branch.children;
 
   if (!items) {
-    return null
+    return null;
   }
 
   return (
@@ -45,7 +45,7 @@ export default function SideNavigation({ to, branch }) {
             },
           }}
         >
-          {items.map(item => (
+          {items.map((item) => (
             <li key={item.to + item.text}>
               <SideNavLink path={to} item={item}>
                 {item.text}
@@ -55,13 +55,13 @@ export default function SideNavigation({ to, branch }) {
         </ol>
       </nav>
     </LargeScreen>
-  )
+  );
 }
 
 function SideNavLink({ path, item, children, ...rest }) {
-  const hasChildren = item.children ? true : false
-  const renderChildren = hasChildren && path.includes(item.to)
-  const isActive = path === item.to
+  const hasChildren = item.children ? true : false;
+  const renderChildren = hasChildren && path.includes(item.to);
+  const isActive = path === item.to;
 
   return (
     <React.Fragment>
@@ -121,5 +121,5 @@ function SideNavLink({ path, item, children, ...rest }) {
         </ol>
       )}
     </React.Fragment>
-  )
+  );
 }

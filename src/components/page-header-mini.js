@@ -1,7 +1,7 @@
-import React from 'react'
-import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable'
+import React from 'react';
+import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable';
 
-import Breadcrumb from './breadcrumb'
+import Breadcrumb from './breadcrumb';
 
 export default function PageHeaderMini({ breadcrumb, title, ...rest }) {
   return (
@@ -49,5 +49,5 @@ export default function PageHeaderMini({ breadcrumb, title, ...rest }) {
         </div>
       </Margins>
     </header>
-  )
+  );
 }

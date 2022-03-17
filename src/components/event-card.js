@@ -1,14 +1,14 @@
-import React from 'react'
+import React from 'react';
 import {
   EXHIBIT_TYPES,
   eventFormatWhen,
   eventFormatWhere,
-} from '../utils/events'
-import { Heading, SPACING, COLORS, TYPOGRAPHY, Icon } from '@reusable'
-import CardImage from '../reusable/card-image'
-import MEDIA_QUERIES from '../reusable/media-queries'
-import icons from '../reusable/icons'
-import Link from './link'
+} from '../utils/events';
+import { Heading, SPACING, COLORS, TYPOGRAPHY, Icon } from '@reusable';
+import CardImage from '../reusable/card-image';
+import MEDIA_QUERIES from '../reusable/media-queries';
+import icons from '../reusable/icons';
+import Link from './link';
 
 export default function EventCard(node) {
   const {
@@ -19,27 +19,27 @@ export default function EventCard(node) {
     fields,
     field_event_date_s_,
     hasBorder = true,
-  } = node
+  } = node;
   const image =
     relationships.field_media_image &&
-    relationships.field_media_image.relationships.field_media_image
-  const imageData = image ? image.localFile.childImageSharp.fluid : null
-  const start = field_event_date_s_[0].value
-  const end = field_event_date_s_[0].end_value
-  const type = relationships.field_event_type.name
-  const isAnExhibit = EXHIBIT_TYPES.includes(type)
-  const useBorder = hasBorder
+    relationships.field_media_image.relationships.field_media_image;
+  const imageData = image ? image.localFile.childImageSharp.fluid : null;
+  const start = field_event_date_s_[0].value;
+  const end = field_event_date_s_[0].end_value;
+  const type = relationships.field_event_type.name;
+  const isAnExhibit = EXHIBIT_TYPES.includes(type);
+  const useBorder = hasBorder;
   const when = eventFormatWhen({
     start,
     end,
     kind: 'brief',
     type,
-  })
+  });
   const where = eventFormatWhere({
     node,
     kind: 'brief',
-  })
-  const to = fields.slug
+  });
+  const to = fields.slug;
 
   return (
     <section
@@ -109,7 +109,7 @@ export default function EventCard(node) {
               }}
             >
               <span className="visually-hidden">Where: </span>
-              {where.map(item => item.label).join("; ")}
+              {where.map((item) => item.label).join('; ')}
             </span>
           </span>
           {!isAnExhibit && (
@@ -132,5 +132,5 @@ export default function EventCard(node) {
         </p>
       </div>
     </section>
-  )
+  );
 }

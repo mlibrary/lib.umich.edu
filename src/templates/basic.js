@@ -1,24 +1,26 @@
-import React from 'react'
-import { graphql } from 'gatsby'
+import React from 'react';
+import { graphql } from 'gatsby';
 
-import { Margins, Heading, SPACING, SmallScreen } from '@reusable'
-import { Template, Top, Side, Content } from '../components/page-layout'
-import Html from '../components/html'
-import Breadcrumb from '../components/breadcrumb'
-import SideNavigation from '../components/navigation/side-navigation'
-import HorizontalNavigation from '../components/navigation/horizontal-navigation'
-import Panels from '../components/panels'
-import TemplateLayout from './template-layout'
-import useNavigationBranch from '../components/navigation/use-navigation-branch'
-import transformNodePanels from '../utils/transform-node-panels'
+import { Margins, Heading, SPACING, SmallScreen } from '@reusable';
+import { Template, Top, Side, Content } from '../components/page-layout';
+import Html from '../components/html';
+import Breadcrumb from '../components/breadcrumb';
+import SideNavigation from '../components/navigation/side-navigation';
+import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import Panels from '../components/panels';
+import TemplateLayout from './template-layout';
+import useNavigationBranch from '../components/navigation/use-navigation-branch';
+import transformNodePanels from '../utils/transform-node-panels';
 
 function BasicTemplate({ data, ...rest }) {
-  const node = data.page ? data.page : data.room ? data.room : null
-  const { field_title_context, body, fields, field_local_navigation } = node
-  const { bodyPanels, fullPanels } = transformNodePanels({ node })
-  const navBranch = useNavigationBranch(fields.slug)
-  const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
-  const smallScreenItems = smallScreenBranch ? smallScreenBranch.children : null
+  const node = data.page ? data.page : data.room ? data.room : null;
+  const { field_title_context, body, fields, field_local_navigation } = node;
+  const { bodyPanels, fullPanels } = transformNodePanels({ node });
+  const navBranch = useNavigationBranch(fields.slug);
+  const smallScreenBranch = useNavigationBranch(fields.slug, 'small');
+  const smallScreenItems = smallScreenBranch
+    ? smallScreenBranch.children
+    : null;
 
   return (
     <TemplateLayout node={node}>
@@ -60,13 +62,13 @@ function BasicTemplate({ data, ...rest }) {
       </Margins>
       <Panels data={fullPanels} />
     </TemplateLayout>
-  )
+  );
 }
 
-export default BasicTemplate
+export default BasicTemplate;
 
 export const query = graphql`
-  query($slug: String!) {
+  query ($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
@@ -74,4 +76,4 @@ export const query = graphql`
       ...roomFragment
     }
   }
-`
+`;

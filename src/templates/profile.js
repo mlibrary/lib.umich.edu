@@ -1,5 +1,5 @@
-import React from 'react'
-import { graphql } from 'gatsby'
+import React from 'react';
+import { graphql } from 'gatsby';
 
 import {
   Margins,
@@ -13,18 +13,18 @@ import {
   Icon,
   COLORS,
   MEDIA_QUERIES,
-} from '@reusable'
-import VisuallyHidden from '@reach/visually-hidden'
-import { Template, Top, Side, Content } from '../components/page-layout'
-import SearchEngineOptimization from '../components/seo'
-import Breadcrumb from '../components/breadcrumb'
-import Layout from '../components/layout'
-import Link from '../components/link'
-import Html from '../components/html'
-import BackgroundImage from 'gatsby-background-image'
-import LANGUAGES from '../utils/languages'
-import LinkCallout from '../components/link-callout'
-import StaffPhotoPlaceholder from '../components/staff-photo-placeholder'
+} from '@reusable';
+import VisuallyHidden from '@reach/visually-hidden';
+import { Template, Top, Side, Content } from '../components/page-layout';
+import SearchEngineOptimization from '../components/seo';
+import Breadcrumb from '../components/breadcrumb';
+import Layout from '../components/layout';
+import Link from '../components/link';
+import Html from '../components/html';
+import BackgroundImage from 'gatsby-background-image';
+import LANGUAGES from '../utils/languages';
+import LinkCallout from '../components/link-callout';
+import StaffPhotoPlaceholder from '../components/staff-photo-placeholder';
 
 function ProfileTemplate({ data }) {
   const {
@@ -43,17 +43,17 @@ function ProfileTemplate({ data }) {
     relationships,
     field_user_make_an_appointment,
     field_physical_address_public_,
-  } = data.profile
-  const { field_media_image, field_name_pronunciation } = relationships
-  const { office } = data.staff
+  } = data.profile;
+  const { field_media_image, field_name_pronunciation } = relationships;
+  const { office } = data.staff;
   const pronouns_data = [
     field_user_pronoun_subject,
     field_user_pronoun_object,
     field_user_pronoun_dependent_pos,
     field_user_pronoun_independent_p,
-  ]
+  ];
 
-  const phone = field_user_phone !== '000-000-0000' ? field_user_phone : null
+  const phone = field_user_phone !== '000-000-0000' ? field_user_phone : null;
 
   /**
    * Take pronouns and create sets.
@@ -79,30 +79,30 @@ function ProfileTemplate({ data }) {
    * ]
    */
   function processPronouns(pronouns) {
-    const cleaned = pronouns.filter(pronoun => typeof pronoun === 'string')
+    const cleaned = pronouns.filter((pronoun) => typeof pronoun === 'string');
 
     // They don't have any.
     if (cleaned.length === 0) {
-      return null
+      return null;
     }
 
-    const matrix = cleaned.map(pronoun => pronoun.split('/'))
+    const matrix = cleaned.map((pronoun) => pronoun.split('/'));
     const transposed = matrix.reduce(
       (prev, next) => next.map((item, i) => (prev[i] || []).concat(next[i])),
       []
-    )
-    const formatted = transposed.map(set =>
+    );
+    const formatted = transposed.map((set) =>
       set
         .filter((v, i, arr) => v && arr.indexOf(v) === i) // remove duplicates
         .join('/')
-    )
+    );
 
-    return formatted
+    return formatted;
   }
 
-  const pronouns = processPronouns(pronouns_data)
+  const pronouns = processPronouns(pronouns_data);
 
-  var image
+  var image;
 
   if (field_media_image) {
     image = {
@@ -110,7 +110,7 @@ function ProfileTemplate({ data }) {
       fluid:
         field_media_image.relationships.field_media_image.localFile
           .childImageSharp.fluid,
-    }
+    };
   }
 
   const breadcrumbData = JSON.stringify([
@@ -121,7 +121,7 @@ function ProfileTemplate({ data }) {
     {
       text: field_user_display_name,
     },
-  ])
+  ]);
   return (
     <Layout>
       <SearchEngineOptimization title={field_user_display_name} />
@@ -348,7 +348,7 @@ function ProfileTemplate({ data }) {
                   </Heading>
                   <p>
                     {field_languages_spoken
-                      .map(lang => LANGUAGES[lang].name)
+                      .map((lang) => LANGUAGES[lang].name)
                       .join(', ')}
                   </p>
                 </React.Fragment>
@@ -374,7 +374,7 @@ function ProfileTemplate({ data }) {
         </Template>
       </Margins>
     </Layout>
-  )
+  );
 }
 
 function ProfileHeader({
@@ -382,8 +382,8 @@ function ProfileHeader({
   field_user_work_title,
   relationships,
 }) {
-  const { field_user_department } = relationships
-  const depts = field_user_department.reverse()
+  const { field_user_department } = relationships;
+  const depts = field_user_department.reverse();
 
   return (
     <React.Fragment>
@@ -413,7 +413,7 @@ function ProfileHeader({
         </div>
       )}
     </React.Fragment>
-  )
+  );
 }
 
 function SocialLinks({
@@ -429,10 +429,10 @@ function SocialLinks({
     field_instagram,
     field_slideshare,
     field_twitter,
-  ].filter(l => l && l.uri)
+  ].filter((l) => l && l.uri);
 
   if (links.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -447,12 +447,12 @@ function SocialLinks({
         },
       }}
     >
-      {links.map(sl => {
-        const icon = sl.__typename.substr(16) // user__userField_linkedin -> linkedin
-        return <SocialLink to={sl.uri} icon={icon} label={icon} key={sl.uri} />
+      {links.map((sl) => {
+        const icon = sl.__typename.substr(16); // user__userField_linkedin -> linkedin
+        return <SocialLink to={sl.uri} icon={icon} label={icon} key={sl.uri} />;
       })}
     </div>
-  )
+  );
 }
 
 function SocialLink({ to, icon, label }) {
@@ -466,7 +466,7 @@ function SocialLink({ to, icon, label }) {
       <Icon icon={icon} size={24} />
       <VisuallyHidden>{label}</VisuallyHidden>
     </a>
-  )
+  );
 }
 
 function MailingAddress({
@@ -482,13 +482,13 @@ function MailingAddress({
         {locality}, {administrative_area} {postal_code}
       </Text>
     </React.Fragment>
-  )
+  );
 }
 
-export default ProfileTemplate
+export default ProfileTemplate;
 
 export const query = graphql`
-  query($name: String!) {
+  query ($name: String!) {
     staff(uniqname: { eq: $name }) {
       office
     }
@@ -496,4 +496,4 @@ export const query = graphql`
       ...userFragment
     }
   }
-`
+`;

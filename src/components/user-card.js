@@ -1,8 +1,8 @@
-import React from 'react'
-import BackgroundImage from 'gatsby-background-image'
-import { Text, SPACING, COLORS } from '@reusable'
-import Link from './link'
-import StaffPhotoPlaceholder from './staff-photo-placeholder'
+import React from 'react';
+import BackgroundImage from 'gatsby-background-image';
+import { Text, SPACING, COLORS } from '@reusable';
+import Link from './link';
+import StaffPhotoPlaceholder from './staff-photo-placeholder';
 
 const photoContainerCSS = {
   width: '75px',
@@ -11,7 +11,7 @@ const photoContainerCSS = {
   borderRadius: '2px',
   overflow: 'hidden',
   flexShrink: '0',
-}
+};
 
 function UserPhoto({ image }) {
   if (!image) {
@@ -19,7 +19,7 @@ function UserPhoto({ image }) {
       <div css={photoContainerCSS}>
         <StaffPhotoPlaceholder />
       </div>
-    )
+    );
   }
 
   return (
@@ -31,7 +31,7 @@ function UserPhoto({ image }) {
       alt={image.alt}
       css={photoContainerCSS}
     />
-  )
+  );
 }
 
 export default function UserCard({ name, to, image, title, phone, email }) {
@@ -64,5 +64,5 @@ export default function UserCard({ name, to, image, title, phone, email }) {
         )}
       </div>
     </section>
-  )
+  );
 }

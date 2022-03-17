@@ -1,5 +1,5 @@
-import React from 'react'
-import { SPACING, MEDIA_QUERIES } from '@reusable'
+import React from 'react';
+import { SPACING, MEDIA_QUERIES } from '@reusable';
 
 export function Template({ children, ...rest }) {
   return (
@@ -27,7 +27,7 @@ export function Template({ children, ...rest }) {
     >
       {children}
     </div>
-  )
+  );
 }
 
 export function Top({ children, ...rest }) {
@@ -35,7 +35,7 @@ export function Top({ children, ...rest }) {
     <div css={{ gridArea: 'top' }} {...rest}>
       {children}
     </div>
-  )
+  );
 }
 
 export function Side({ children, ...rest }) {
@@ -51,7 +51,7 @@ export function Side({ children, ...rest }) {
     >
       {children}
     </section>
-  )
+  );
 }
 
 export function Content({ children, ...rest }) {
@@ -65,5 +65,5 @@ export function Content({ children, ...rest }) {
     >
       {children}
     </div>
-  )
+  );
 }

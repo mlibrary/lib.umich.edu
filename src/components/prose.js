@@ -1,5 +1,5 @@
-import styled from '@emotion/styled'
-import { SPACING } from '@reusable'
+import styled from '@emotion/styled';
+import { SPACING } from '@reusable';
 
 const Prose = styled('div')({
   '> *:not(:last-child)': {
@@ -26,6 +26,6 @@ const Prose = styled('div')({
   '[data-umich-lib-callout] + [data-umich-lib-callout]': {
     marginTop: SPACING['L'],
   },
-})
+});
 
-export default Prose
+export default Prose;

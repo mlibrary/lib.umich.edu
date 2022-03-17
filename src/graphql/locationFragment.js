@@ -1,4 +1,4 @@
-import { graphql } from 'gatsby'
+import { graphql } from 'gatsby';
 
 export const query = graphql`
   fragment locationFragment on node__location {
@@ -91,4 +91,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

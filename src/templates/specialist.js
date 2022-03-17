@@ -4,8 +4,8 @@ import React, {
   useReducer,
   useEffect,
   useState,
-} from 'react'
-import { graphql } from 'gatsby'
+} from 'react';
+import { graphql } from 'gatsby';
 import {
   Heading,
   SPACING,
@@ -14,45 +14,45 @@ import {
   COLORS,
   Button,
   Alert,
-} from '@reusable'
-import { useLocation, navigate } from '@reach/router'
-import VisuallyHidden from '@reach/visually-hidden'
-import Link from '../components/link'
-import Breadcrumb from '../components/breadcrumb'
-import MEDIA_QUERIES from '../reusable/media-queries'
-import TemplateLayout from './template-layout'
-import Html from '../components/html'
-import NoResults from '../components/no-results'
-import getUrlState, { stringifyState } from '../utils/get-url-state'
-import Switch from '../components/switch'
-import Select from '../components/select'
-import processSpecialistData from '../utils/process-specialist-data'
-import useGoogleTagManager from '../hooks/use-google-tag-manager'
-import { useWindowSize } from '@reach/window-size'
+} from '@reusable';
+import { useLocation, navigate } from '@reach/router';
+import VisuallyHidden from '@reach/visually-hidden';
+import Link from '../components/link';
+import Breadcrumb from '../components/breadcrumb';
+import MEDIA_QUERIES from '../reusable/media-queries';
+import TemplateLayout from './template-layout';
+import Html from '../components/html';
+import NoResults from '../components/no-results';
+import getUrlState, { stringifyState } from '../utils/get-url-state';
+import Switch from '../components/switch';
+import Select from '../components/select';
+import processSpecialistData from '../utils/process-specialist-data';
+import useGoogleTagManager from '../hooks/use-google-tag-manager';
+import { useWindowSize } from '@reach/window-size';
 
-const lunr = require('lunr')
-const SpecialistsContext = createContext()
+const lunr = require('lunr');
+const SpecialistsContext = createContext();
 
 const SpecialistsProvider = ({ reducer, intialState, children }) => (
   <SpecialistsContext.Provider value={useReducer(reducer, intialState)}>
     {children}
   </SpecialistsContext.Provider>
-)
+);
 
-const useSpecialists = () => useContext(SpecialistsContext)
+const useSpecialists = () => useContext(SpecialistsContext);
 
 export default function FinaASpecialistTemplate({ data }) {
-  const [initialized, setInitialized] = useState(false)
-  const [specialists, setSpecialists] = useState()
-  const node = data.page
-  const { body, fields, field_title_context } = node
+  const [initialized, setInitialized] = useState(false);
+  const [specialists, setSpecialists] = useState();
+  const node = data.page;
+  const { body, fields, field_title_context } = node;
 
   useEffect(() => {
     if (!initialized) {
-      setInitialized(true)
-      setSpecialists(processSpecialistData({ data }))
+      setInitialized(true);
+      setSpecialists(processSpecialistData({ data }));
     }
-  }, [initialized, data])
+  }, [initialized, data]);
 
   return (
     <TemplateLayout node={node}>
@@ -85,13 +85,13 @@ export default function FinaASpecialistTemplate({ data }) {
         {specialists && <FindASpecialist specialists={specialists} />}
       </Margins>
     </TemplateLayout>
-  )
+  );
 }
 
 function FindASpecialist({ specialists }) {
-  const location = useLocation()
-  const urlState = getUrlState(location.search, ['query', 'hs', 'category'])
-  const results = specialists
+  const location = useLocation();
+  const urlState = getUrlState(location.search, ['query', 'hs', 'category']);
+  const results = specialists;
   const initialState = {
     query: urlState.query ? urlState.query : '',
     specialists,
@@ -104,7 +104,7 @@ function FindASpecialist({ specialists }) {
     healthSciencesOnly: urlState.hs ? true : false,
     category: urlState.category,
     categories: getCategories(specialists),
-  }
+  };
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -117,12 +117,12 @@ function FindASpecialist({ specialists }) {
             hs: state.healthSciencesOnly ? true : undefined,
             category: state.category,
           }),
-        }
+        };
       case 'setResults':
         return {
           ...state,
           results: action.results,
-        }
+        };
       case 'setHealthSciencesOnly':
         return {
           ...state,
@@ -133,10 +133,10 @@ function FindASpecialist({ specialists }) {
             hs: action.healthSciencesOnly ? true : undefined,
             category: action.healthSciencesOnly ? state.category : undefined,
           }),
-        }
+        };
       case 'setCategory':
         const category =
-          action.category === 'All categories' ? undefined : action.category
+          action.category === 'All categories' ? undefined : action.category;
 
         return {
           ...state,
@@ -147,18 +147,18 @@ function FindASpecialist({ specialists }) {
             hs: true,
             category: category,
           }),
-        }
+        };
       case 'clear':
         return {
           ...initialState,
           query: '',
           healthSciencesOnly: state.healthSciencesOnly,
           category: undefined,
-        }
+        };
       default:
-        return state
+        return state;
     }
-  }
+  };
 
   return (
     <SpecialistsProvider intialState={initialState} reducer={reducer}>
@@ -168,81 +168,81 @@ function FindASpecialist({ specialists }) {
       <SpecialistsSearch />
       <SpecialistsResults />
     </SpecialistsProvider>
-  )
+  );
 }
 
 function SpecialistsURLState() {
-  const location = useLocation()
-  const [{ stateString }] = useSpecialists()
+  const location = useLocation();
+  const [{ stateString }] = useSpecialists();
 
   // When changes to state string represenation, set it to browser URL.
   useEffect(() => {
     // If there is state to be put in the URL, use that, otherwise,
     // clear the URL with the location pathname.
-    const to = stateString.length > 0 ? '?' + stateString : location.pathname
-    navigate(to, { replace: true, state: { preserveScroll: true } })
+    const to = stateString.length > 0 ? '?' + stateString : location.pathname;
+    navigate(to, { replace: true, state: { preserveScroll: true } });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stateString])
+  }, [stateString]);
 
-  return null
+  return null;
 }
 
 function SpecialistsSearchIndex() {
-  const [{ query, specialists }, dispatch] = useSpecialists()
+  const [{ query, specialists }, dispatch] = useSpecialists();
 
   useEffect(() => {
     if (!window.__FSI__) {
-      window.__FSI__ = lunr(function() {
-        this.ref('name')
-        this.field('name')
+      window.__FSI__ = lunr(function () {
+        this.ref('name');
+        this.field('name');
 
-        specialists.forEach(function(specialist) {
-          this.add(specialist)
-        }, this)
-      })
+        specialists.forEach(function (specialist) {
+          this.add(specialist);
+        }, this);
+      });
     }
 
     // Get the Find a Specialist Index index (FSI)
-    const index = window.__FSI__
+    const index = window.__FSI__;
 
     try {
       const results = index
-        .query(q => {
+        .query((q) => {
           q.term(lunr.tokenizer(query), {
             boost: 3,
-          })
+          });
           q.term(lunr.tokenizer(query), {
             boost: 2,
             wildcard: lunr.Query.wildcard.TRAILING,
-          })
+          });
           if (query.length > 2) {
             q.term(lunr.tokenizer(query), {
               wildcard:
                 lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
-            })
+            });
           }
         })
         .map(({ ref }) => {
-          return specialists.find(({ name }) => name === ref)
-        })
+          return specialists.find(({ name }) => name === ref);
+        });
 
       dispatch({
         type: 'setResults',
         results: results,
-      })
+      });
     } catch {
-      return
+      return;
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query])
+  }, [query]);
 
-  return null
+  return null;
 }
 
 function SpecialistsHealthSciencesOnly() {
-  const [{ healthSciencesOnly }, dispatch] = useSpecialists() // TODO, replace with dispatch
+  const [{ healthSciencesOnly }, dispatch] = useSpecialists(); // TODO, replace with dispatch
 
   return (
     <Switch
@@ -262,17 +262,15 @@ function SpecialistsHealthSciencesOnly() {
     >
       <span>Show Health Sciences only</span>
     </Switch>
-  )
+  );
 }
 
 function SpecialistsCategorySelect() {
-  const [
-    { healthSciencesOnly, category, categories },
-    dispatch,
-  ] = useSpecialists()
+  const [{ healthSciencesOnly, category, categories }, dispatch] =
+    useSpecialists();
 
   if (!healthSciencesOnly) {
-    return null
+    return null;
   }
 
   return (
@@ -280,27 +278,27 @@ function SpecialistsCategorySelect() {
       label={'Category'}
       name={'category'}
       options={['All categories'].concat(categories)}
-      onChange={e =>
+      onChange={(e) =>
         dispatch({ type: 'setCategory', category: e.target.value })
       }
       value={category ? category : 'All categories'}
     />
-  )
+  );
 }
 
 function SpecialistsGoogleTagManager() {
-  const [{ query }] = useSpecialists()
+  const [{ query }] = useSpecialists();
 
   useGoogleTagManager({
     eventName: 'findASpecialistSearch',
     value: query,
-  })
+  });
 
-  return null
+  return null;
 }
 
 function SpecialistsSearch() {
-  const [{ query, healthSciencesOnly }, dispatch] = useSpecialists()
+  const [{ query, healthSciencesOnly }, dispatch] = useSpecialists();
 
   return (
     <div
@@ -324,8 +322,8 @@ function SpecialistsSearch() {
         labelText="Search by subject or specialty"
         name="query"
         value={query}
-        onChange={e => {
-          dispatch({ type: 'setQuery', query: e.target.value })
+        onChange={(e) => {
+          dispatch({ type: 'setQuery', query: e.target.value });
         }}
       />
       <SpecialistsCategorySelect />
@@ -340,29 +338,29 @@ function SpecialistsSearch() {
       </Button>
       <SpecialistsHealthSciencesOnly />
     </div>
-  )
+  );
 }
 
 function SpecialistsResults() {
-  const breakpoint = 720
-  const { width } = useWindowSize()
-  const [show, setShow] = useState(20)
-  const [{ results, category, healthSciencesOnly }] = useSpecialists()
+  const breakpoint = 720;
+  const { width } = useWindowSize();
+  const [show, setShow] = useState(20);
+  const [{ results, category, healthSciencesOnly }] = useSpecialists();
   const resultsFiltered = filterResults({
     results,
     category,
     healthSciencesOnly,
-  })
-  const resultsShown = resultsFiltered.slice(0, show)
+  });
+  const resultsShown = resultsFiltered.slice(0, show);
   const resultsSummary = results.length
     ? `${resultsFiltered.length} results`
-    : `No results`
+    : `No results`;
   const showMoreText =
     show < resultsFiltered.length
       ? `Showing ${show} of ${resultsFiltered.length} results`
-      : null
+      : null;
   function showMore() {
-    setShow(results.length)
+    setShow(results.length);
   }
 
   return (
@@ -467,7 +465,7 @@ function SpecialistsResults() {
         <NoResults>Consider searching with different keywords.</NoResults>
       )}
     </React.Fragment>
-  )
+  );
 }
 
 function SpecialistsResultsSmallScreenResults({ results, healthSciencesOnly }) {
@@ -508,25 +506,25 @@ function SpecialistsResultsSmallScreenResults({ results, healthSciencesOnly }) {
         </li>
       ))}
     </ol>
-  )
+  );
 }
 
 function filterResults({ results, healthSciencesOnly, category }) {
-  let filteredResults = results
+  let filteredResults = results;
 
   if (healthSciencesOnly) {
     filteredResults = filteredResults.filter(
-      result => result.category !== undefined
-    )
+      (result) => result.category !== undefined
+    );
   }
 
   if (category) {
     filteredResults = filteredResults.filter(
-      result => result.category === category
-    )
+      (result) => result.category === category
+    );
   }
 
-  return filteredResults
+  return filteredResults;
 }
 
 function getCategories(specialists) {
@@ -534,10 +532,10 @@ function getCategories(specialists) {
     new Set(
       specialists
         .map(({ category }) => category)
-        .filter(category => category !== undefined)
+        .filter((category) => category !== undefined)
         .sort()
     )
-  )
+  );
 }
 
 export const query = graphql`
@@ -558,7 +556,7 @@ export const query = graphql`
     }
   }
 
-  query($slug: String!) {
+  query ($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
@@ -640,4 +638,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

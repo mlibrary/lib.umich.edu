@@ -1,46 +1,46 @@
-import React from 'react'
+import React from 'react';
 
-import BackgroundImage from 'gatsby-background-image'
-import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable'
-import Link from '../link'
-import Html from '../html'
-import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id'
+import BackgroundImage from 'gatsby-background-image';
+import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable';
+import Link from '../link';
+import Html from '../html';
+import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id';
 
 const MEDIAQUERIES = {
   XL: '@media only screen and (min-width: 1200px)',
   L: '@media only screen and (min-width:920px)',
   M: '@media only screen and (min-width: 720px)',
   S: MEDIA_QUERIES.LARGESCREEN,
-}
+};
 
 function getNIDFromURI({ uri }) {
   if (uri.includes('entity:node/')) {
-    return uri.split('/')[1]
+    return uri.split('/')[1];
   }
 
-  return null
+  return null;
 }
 
 function getLinkByNID({ nids, nid }) {
-  const obj = nids[nid]
+  const obj = nids[nid];
 
   if (!obj) {
-    return null
+    return null;
   }
 
   return {
     text: obj.title,
     to: obj.slug,
-  }
+  };
 }
 
 export default function HeroText({ data }) {
   /*
     Consider finding a better way to do this.
   */
-  const nids = usePageContextByDrupalNodeID()
-  const nid = getNIDFromURI({ uri: data.field_link && data.field_link[0].uri })
-  const link = getLinkByNID({ nids, nid })
+  const nids = usePageContextByDrupalNodeID();
+  const nid = getNIDFromURI({ uri: data.field_link && data.field_link[0].uri });
+  const link = getLinkByNID({ nids, nid });
 
   return (
     <Margins
@@ -121,24 +121,24 @@ export default function HeroText({ data }) {
         </div>
       </BackgroundSection>
     </Margins>
-  )
+  );
 }
 
 function BackgroundSection({ data, children, ...rest }) {
-  const { field_hero_images } = data.relationships
+  const { field_hero_images } = data.relationships;
   const smallScreenImage = field_hero_images.find(
-    node => node.field_orientation === 'vertical'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid
+    (node) => node.field_orientation === 'vertical'
+  ).relationships.field_media_image.localFile.childImageSharp.fluid;
   const largeScreenImage = field_hero_images.find(
-    node => node.field_orientation === 'horizontal'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid
+    (node) => node.field_orientation === 'horizontal'
+  ).relationships.field_media_image.localFile.childImageSharp.fluid;
   const sources = [
     smallScreenImage,
     {
       ...largeScreenImage,
       media: `(min-width: 720px)`,
     },
-  ]
+  ];
 
   return (
     <BackgroundImage
@@ -156,5 +156,5 @@ function BackgroundSection({ data, children, ...rest }) {
     >
       {children}
     </BackgroundImage>
-  )
+  );
 }

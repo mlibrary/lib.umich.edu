@@ -1,23 +1,23 @@
-import React from 'react'
-import { useMediaQuery } from 'react-responsive'
-import { COLORS, SPACING } from '@reusable'
-import HoursTableSmallscreens from './hours-table-smallscreens'
-import Link from './link'
+import React from 'react';
+import { useMediaQuery } from 'react-responsive';
+import { COLORS, SPACING } from '@reusable';
+import HoursTableSmallscreens from './hours-table-smallscreens';
+import Link from './link';
 
 export default function HoursTableContainer(props) {
   const isLargeScreen = useMediaQuery({
     query: '(min-width: 1100px)',
-  })
+  });
 
   if (!isLargeScreen) {
-    return <HoursTableSmallscreens {...props} />
+    return <HoursTableSmallscreens {...props} />;
   }
 
-  return <HoursTable {...props} />
+  return <HoursTable {...props} />;
 }
 
 function HoursTable({ data, headingId, dayOfWeek = false }) {
-  const todayIndex = dayOfWeek !== false ? dayOfWeek + 1 : -1
+  const todayIndex = dayOfWeek !== false ? dayOfWeek + 1 : -1;
 
   return (
     <div role="group" aria-labelledby={headingId}>
@@ -39,11 +39,11 @@ function HoursTable({ data, headingId, dayOfWeek = false }) {
           'tbody th': {
             fontWeight: '700',
           },
-          [`th:nth-of-type(${todayIndex +
-            1}), td:nth-of-type(${todayIndex})`]: {
-            borderRight: 'solid 2px #FFCB05',
-            borderLeft: 'solid 2px #FFCB05',
-          },
+          [`th:nth-of-type(${todayIndex + 1}), td:nth-of-type(${todayIndex})`]:
+            {
+              borderRight: 'solid 2px #FFCB05',
+              borderLeft: 'solid 2px #FFCB05',
+            },
           [`thead th:nth-of-type(${todayIndex + 1})`]: {
             borderTop: 'solid 2px #FFCB05',
           },
@@ -110,7 +110,9 @@ function HoursTable({ data, headingId, dayOfWeek = false }) {
                 <React.Fragment key={row + col.label + y + i}>
                   {i === 0 ? (
                     <th scope="row" colSpan="2" aria-label={col.label}>
-                     <Link to={col.to} kind="list-medium">{col.text}</Link>
+                      <Link to={col.to} kind="list-medium">
+                        {col.text}
+                      </Link>
                     </th>
                   ) : (
                     <td aria-label={col.label}>{col.text}</td>
@@ -122,5 +124,5 @@ function HoursTable({ data, headingId, dayOfWeek = false }) {
         </tbody>
       </table>
     </div>
-  )
+  );
 }

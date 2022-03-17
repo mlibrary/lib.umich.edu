@@ -1,8 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import ReachAlert from '@reach/alert'
-import { COLORS } from '@reusable'
-import styled from '@emotion/styled'
+import React from 'react';
+import PropTypes from 'prop-types';
+import ReachAlert from '@reach/alert';
+import { COLORS } from '@reusable';
+import styled from '@emotion/styled';
 
 const alertIntentStyles = {
   informational: {
@@ -21,7 +21,7 @@ const alertIntentStyles = {
     background: COLORS.orange[100],
     borderColor: COLORS.orange[500],
   },
-}
+};
 
 const StyledAlert = styled(ReachAlert)(
   {
@@ -29,28 +29,28 @@ const StyledAlert = styled(ReachAlert)(
     padding: '0.5rem 0',
     borderBottom: `solid 1px transparent`,
   },
-  props => ({
+  (props) => ({
     ...alertIntentStyles[props.intent],
   })
-)
+);
 
 const StyledAlertInner = styled('div')({
   margin: '0 auto',
   padding: '0 1rem',
-})
+});
 
 /**
   Use Alerts to notify users of important information. 
 */
 class Alert extends React.Component {
   render() {
-    const { intent, children, className, ...other } = this.props
+    const { intent, children, className, ...other } = this.props;
 
     return (
       <StyledAlert intent={intent} {...other}>
         <StyledAlertInner data-inner-container>{children}</StyledAlertInner>
       </StyledAlert>
-    )
+    );
   }
 }
 
@@ -58,10 +58,10 @@ Alert.propTypes = {
   intent: PropTypes.oneOf(['informational', 'error', 'warning', 'success']),
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
-}
+};
 
 Alert.defaultProps = {
   intent: 'informational',
-}
+};
 
-export default Alert
+export default Alert;

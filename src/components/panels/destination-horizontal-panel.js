@@ -1,18 +1,18 @@
-import React from 'react'
-import { Heading, SPACING, TYPOGRAPHY, COLORS } from '@reusable'
-import { getFloor, getParentTitle, getImage, getRoom } from '../../utils'
-import Html from '../html'
-import CardImage from '../../reusable/card-image'
-import MEDIA_QUERIES from '../../reusable/media-queries'
-import Link from '../link'
-import useFloorPlan from '../../hooks/use-floor-plan'
+import React from 'react';
+import { Heading, SPACING, TYPOGRAPHY, COLORS } from '@reusable';
+import { getFloor, getParentTitle, getImage, getRoom } from '../../utils';
+import Html from '../html';
+import CardImage from '../../reusable/card-image';
+import MEDIA_QUERIES from '../../reusable/media-queries';
+import Link from '../link';
+import useFloorPlan from '../../hooks/use-floor-plan';
 
 export default function DestinationHorizontalPanel({ data }) {
-  const cards = data.relationships.field_cards.map(card => {
-    const parentTitle = getParentTitle({ node: card })
-    const floor = getFloor({ node: card })
-    const imageData = getImage({ node: card })
-    const room = getRoom({ node: card })
+  const cards = data.relationships.field_cards.map((card) => {
+    const parentTitle = getParentTitle({ node: card });
+    const floor = getFloor({ node: card });
+    const imageData = getImage({ node: card });
+    const room = getRoom({ node: card });
 
     return {
       title: card.title,
@@ -22,8 +22,8 @@ export default function DestinationHorizontalPanel({ data }) {
       bid: card.relationships.field_room_building.id,
       rid: card.relationships.field_floor.id,
       linkDestText: `${parentTitle} ${floor}`,
-    }
-  })
+    };
+  });
 
   return (
     <div
@@ -35,12 +35,12 @@ export default function DestinationHorizontalPanel({ data }) {
         <DestinationCard key={`destination-${i}`} card={card} />
       ))}
     </div>
-  )
+  );
 }
 
 function DestinationCard({ card }) {
-  const floorPlan = useFloorPlan(card.bid, card.rid)
-  const floorPlanLinkText = `View the floor plan for ${card.linkDestText}`
+  const floorPlan = useFloorPlan(card.bid, card.rid);
+  const floorPlanLinkText = `View the floor plan for ${card.linkDestText}`;
 
   return (
     <section
@@ -84,5 +84,5 @@ function DestinationCard({ card }) {
         </p>
       </div>
     </section>
-  )
+  );
 }

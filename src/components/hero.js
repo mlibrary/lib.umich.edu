@@ -1,7 +1,7 @@
-import React from 'react'
-import styled from '@emotion/styled'
-import { MEDIA_QUERIES, COLORS } from '@reusable'
-import Image from 'gatsby-image'
+import React from 'react';
+import styled from '@emotion/styled';
+import { MEDIA_QUERIES, COLORS } from '@reusable';
+import Image from 'gatsby-image';
 
 const StyledHeroContainer = styled('div')({
   position: 'relative',
@@ -9,14 +9,14 @@ const StyledHeroContainer = styled('div')({
   [MEDIA_QUERIES.LARGESCREEN]: {
     height: '33vh',
   },
-})
+});
 
 const StyledHeroInnerContainer = styled('div')({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   height: '100%',
-})
+});
 
 const StyledTint = styled('div')({
   position: 'absolute',
@@ -26,7 +26,7 @@ const StyledTint = styled('div')({
   left: '0',
   background: COLORS.blue[400],
   opacity: '0.1',
-})
+});
 
 const Hero = ({ image, children }) => (
   <StyledHeroContainer>
@@ -45,6 +45,6 @@ const Hero = ({ image, children }) => (
       {children}
     </StyledHeroInnerContainer>
   </StyledHeroContainer>
-)
+);
 
-export default Hero
+export default Hero;

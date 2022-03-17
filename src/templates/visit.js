@@ -1,29 +1,29 @@
-import React from 'react'
-import { graphql } from 'gatsby'
-import VisuallyHidden from '@reach/visually-hidden'
+import React from 'react';
+import { graphql } from 'gatsby';
+import VisuallyHidden from '@reach/visually-hidden';
 
-import { Heading, List, COLORS } from '@reusable'
+import { Heading, List, COLORS } from '@reusable';
 
 import {
   Template,
   TemplateSide,
   TemplateContent,
-} from '../components/aside-layout'
+} from '../components/aside-layout';
 
-import Layout from '../components/layout'
-import SearchEngineOptimization from '../components/seo'
-import PageHeader from '../components/page-header'
-import Prose from '../components/prose'
-import HorizontalNavigation from '../components/navigation/horizontal-navigation'
-import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
-import Html from '../components/html'
-import LocationAside from '../components/location-aside'
-import Panels from '../components/panels'
-import transformNodePanels from '../utils/transform-node-panels'
-import getNode from '../utils/get-node'
+import Layout from '../components/layout';
+import SearchEngineOptimization from '../components/seo';
+import PageHeader from '../components/page-header';
+import Prose from '../components/prose';
+import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data';
+import Html from '../components/html';
+import LocationAside from '../components/location-aside';
+import Panels from '../components/panels';
+import transformNodePanels from '../utils/transform-node-panels';
+import getNode from '../utils/get-node';
 
 export default function VisitTemplate({ data, ...rest }) {
-  const node = getNode(data)
+  const node = getNode(data);
 
   const {
     title,
@@ -34,12 +34,12 @@ export default function VisitTemplate({ data, ...rest }) {
     body,
     field_root_page_,
     field_access,
-  } = node
-  const parentNode = relationships.field_parent_page[0]
-  const isRootPage = field_root_page_ ? true : false
-  const { field_visit, field_amenities } = relationships
-  const { bodyPanels, fullPanels } = transformNodePanels({ node })
-  const description = body && body.summary ? body.summary : null
+  } = node;
+  const parentNode = relationships.field_parent_page[0];
+  const isRootPage = field_root_page_ ? true : false;
+  const { field_visit, field_amenities } = relationships;
+  const { bodyPanels, fullPanels } = transformNodePanels({ node });
+  const description = body && body.summary ? body.summary : null;
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -130,24 +130,24 @@ export default function VisitTemplate({ data, ...rest }) {
         <Panels data={fullPanels} />
       </div>
     </Layout>
-  )
+  );
 }
 
 function HTMLList({ data }) {
   const sorted = data.sort((a, b) => {
-    const weightA = a.weight
-    const weightB = b.weight
+    const weightA = a.weight;
+    const weightB = b.weight;
 
     if (weightA < weightB) {
-      return -1
+      return -1;
     }
 
     if (weightA > weightB) {
-      return 1
+      return 1;
     }
 
-    return 0
-  })
+    return 0;
+  });
 
   return (
     <List type="bulleted">
@@ -157,11 +157,11 @@ function HTMLList({ data }) {
         </li>
       ))}
     </List>
-  )
+  );
 }
 
 export const query = graphql`
-  query($slug: String!, $parents: [String], $children: [String]) {
+  query ($slug: String!, $parents: [String], $children: [String]) {
     building: nodeBuilding(fields: { slug: { eq: $slug } }) {
       ...buildingFragment
     }
@@ -186,4 +186,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

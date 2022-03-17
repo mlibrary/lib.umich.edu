@@ -1,9 +1,9 @@
-import React from 'react'
-import ReactPlayer from 'react-player'
+import React from 'react';
+import ReactPlayer from 'react-player';
 
 export default function MediaPlayer({ url }) {
   if (!url) {
-    return null
+    return null;
   }
 
   return (
@@ -25,5 +25,5 @@ export default function MediaPlayer({ url }) {
         }}
       />
     </div>
-  )
+  );
 }

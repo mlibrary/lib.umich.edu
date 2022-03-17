@@ -1,4 +1,4 @@
-import { useStaticQuery, graphql } from 'gatsby'
+import { useStaticQuery, graphql } from 'gatsby';
 
 export default function usePageContextByDrupalNodeID() {
   const data = useStaticQuery(
@@ -17,22 +17,22 @@ export default function usePageContextByDrupalNodeID() {
         }
       }
     `
-  )
+  );
 
   return data.allSitePage.edges.reduce((memo, edge) => {
-    const { context } = edge.node
+    const { context } = edge.node;
 
     if (context) {
-      const { drupal_nid } = context
+      const { drupal_nid } = context;
 
       if (drupal_nid) {
         memo = {
           ...memo,
           [drupal_nid]: context,
-        }
+        };
       }
     }
 
-    return memo
-  }, {})
+    return memo;
+  }, {});
 }

@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-import { COLORS, SPACING, Margins } from '@reusable'
-import { Link as GatsbyLink } from 'gatsby'
+import { COLORS, SPACING, Margins } from '@reusable';
+import { Link as GatsbyLink } from 'gatsby';
 
 export default function SkipLinks() {
   return (
@@ -51,5 +51,5 @@ export default function SkipLinks() {
         </ul>
       </Margins>
     </section>
-  )
+  );
 }

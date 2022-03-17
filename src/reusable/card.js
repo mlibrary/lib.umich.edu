@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   COLORS,
   SPACING,
@@ -7,8 +7,8 @@ import {
   LINK_STYLES,
   TYPOGRAPHY,
   MEDIA_QUERIES,
-} from '@reusable'
-import CardImage from './card-image'
+} from '@reusable';
+import CardImage from './card-image';
 
 export default function Card({
   title,
@@ -32,7 +32,7 @@ export default function Card({
           },
         },
       }
-    : {}
+    : {};
 
   const anchorStyles = {
     display: 'block',
@@ -45,28 +45,28 @@ export default function Card({
         ...LINK_STYLES['description'][':hover'],
       },
     },
-  }
+  };
 
   const anchorProps = {
     href,
     ...rest,
-  }
+  };
 
   function renderChildren() {
     if (!children) {
-      return null
+      return null;
     }
 
     const styles = {
       color: COLORS.neutral[300],
       marginTop: SPACING['XS'],
-    }
+    };
 
     if (typeof children === 'string') {
-      return <p css={styles}>{children}</p>
+      return <p css={styles}>{children}</p>;
     }
 
-    return <div css={styles}>{children}</div>
+    return <div css={styles}>{children}</div>;
   }
 
   const content = (
@@ -100,17 +100,17 @@ export default function Card({
         {renderChildren()}
       </div>
     </React.Fragment>
-  )
+  );
 
   if (renderAnchor) {
     return renderAnchor({
       ...anchorProps,
       anchorStyles: anchorStyles,
       children: content,
-    })
+    });
   }
 
-  return <a {...anchorProps} css={anchorStyles} children={content} />
+  return <a {...anchorProps} css={anchorStyles} children={content} />;
 }
 
 Card.propTypes = {
@@ -152,4 +152,4 @@ Card.propTypes = {
    * side router libraries.
    **/
   renderAnchor: PropTypes.func,
-}
+};

@@ -1,20 +1,20 @@
-import React from 'react'
-import { graphql } from 'gatsby'
+import React from 'react';
+import { graphql } from 'gatsby';
 
-import { Margins, Heading, SPACING } from '@reusable'
+import { Margins, Heading, SPACING } from '@reusable';
 
-import TemplateLayout from './template-layout'
-import Html from '../components/html'
-import Breadcrumb from '../components/breadcrumb'
-import HorizontalNavigation from '../components/navigation/horizontal-navigation'
-import Panels from '../components/panels'
-import getNode from '../utils/get-node'
-import transformNodePanels from '../utils/transform-node-panels'
+import TemplateLayout from './template-layout';
+import Html from '../components/html';
+import Breadcrumb from '../components/breadcrumb';
+import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import Panels from '../components/panels';
+import getNode from '../utils/get-node';
+import transformNodePanels from '../utils/transform-node-panels';
 
 export default function FullWidthTemplate({ data, ...rest }) {
-  const node = getNode(data)
-  const { field_title_context, body, fields } = node
-  const { bodyPanels, fullPanels } = transformNodePanels({ node })
+  const node = getNode(data);
+  const { field_title_context, body, fields } = node;
+  const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
   return (
     <TemplateLayout node={node}>
@@ -50,11 +50,11 @@ export default function FullWidthTemplate({ data, ...rest }) {
 
       <Panels data={fullPanels} />
     </TemplateLayout>
-  )
+  );
 }
 
 export const query = graphql`
-  query($slug: String!, $parents: [String]) {
+  query ($slug: String!, $parents: [String]) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
@@ -73,4 +73,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

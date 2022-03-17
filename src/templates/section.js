@@ -1,39 +1,39 @@
-import React from 'react'
-import { graphql } from 'gatsby'
+import React from 'react';
+import { graphql } from 'gatsby';
 
-import VisuallyHidden from '@reach/visually-hidden'
+import VisuallyHidden from '@reach/visually-hidden';
 
-import { Heading, Margins, MEDIA_QUERIES } from '@reusable'
+import { Heading, Margins, MEDIA_QUERIES } from '@reusable';
 
 import {
   Template,
   TemplateSide,
   TemplateContent,
-} from '../components/aside-layout'
-import Prose from '../components/prose'
-import Layout from '../components/layout'
-import SearchEngineOptimization from '../components/seo'
-import PageHeader from '../components/page-header'
-import PageHeaderMini from '../components/page-header-mini'
-import HorizontalNavigation from '../components/navigation/horizontal-navigation'
-import Panels from '../components/panels'
-import Html from '../components/html'
-import LocationAside from '../components/location-aside'
-import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data'
-import transformNodePanels from '../utils/transform-node-panels'
+} from '../components/aside-layout';
+import Prose from '../components/prose';
+import Layout from '../components/layout';
+import SearchEngineOptimization from '../components/seo';
+import PageHeader from '../components/page-header';
+import PageHeaderMini from '../components/page-header-mini';
+import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import Panels from '../components/panels';
+import Html from '../components/html';
+import LocationAside from '../components/location-aside';
+import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data';
+import transformNodePanels from '../utils/transform-node-panels';
 
 function renderHorziontalNavigationCSS(isRootPage) {
   if (!isRootPage) {
     return {
       borderTop: 'none',
-    }
+    };
   }
 
-  return {}
+  return {};
 }
 
 function SectionTemplate({ data, ...rest }) {
-  const node = data.page
+  const node = data.page;
   const {
     title,
     field_title_context,
@@ -43,22 +43,22 @@ function SectionTemplate({ data, ...rest }) {
     fields,
     relationships,
     drupal_internal__nid,
-  } = node
+  } = node;
 
-  const parentNode = relationships.field_parent_page[0]
-  const breadcrumb = fields.breadcrumb
-  const isRootPage = field_root_page_ ? true : false
+  const parentNode = relationships.field_parent_page[0];
+  const breadcrumb = fields.breadcrumb;
+  const isRootPage = field_root_page_ ? true : false;
   const pageHeaderImage =
     relationships.field_media_image &&
-    relationships.field_media_image.relationships.field_media_image
-  const hasBody = body && body.processed && body.processed.length
+    relationships.field_media_image.relationships.field_media_image;
+  const hasBody = body && body.processed && body.processed.length;
   /*
     Use the parent page if not the root
     for PageHeader summary and image.
   */
-  const summary = isRootPage ? body.summary : parentNode.body.summary
-  const description = body && body.summary ? body.summary : null
-  const { bodyPanels, fullPanels } = transformNodePanels({ node })
+  const summary = isRootPage ? body.summary : parentNode.body.summary;
+  const description = body && body.summary ? body.summary : null;
+  const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -127,13 +127,13 @@ function SectionTemplate({ data, ...rest }) {
 
       <Panels data={fullPanels} />
     </Layout>
-  )
+  );
 }
 
-export default SectionTemplate
+export default SectionTemplate;
 
 export const query = graphql`
-  query($slug: String!, $parents: [String], $children: [String]) {
+  query ($slug: String!, $parents: [String], $children: [String]) {
     page: nodeSectionPage(fields: { slug: { eq: $slug } }) {
       ...sectionFragment
     }
@@ -152,4 +152,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

@@ -1,14 +1,14 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { MEDIA_QUERIES, SPACING, Link, Icon } from '@reusable'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { MEDIA_QUERIES, SPACING, Link, Icon } from '@reusable';
 
 const Breadcrumb = ({ children, ...rest }) => {
-  const numberOfBreadcrumbs = React.Children.count(children)
+  const numberOfBreadcrumbs = React.Children.count(children);
   const parentBreadcrumbIndex =
-    numberOfBreadcrumbs > 1 ? numberOfBreadcrumbs - 2 : 0
+    numberOfBreadcrumbs > 1 ? numberOfBreadcrumbs - 2 : 0;
 
   function isParent(i) {
-    return parentBreadcrumbIndex === i
+    return parentBreadcrumbIndex === i;
   }
 
   return (
@@ -76,37 +76,37 @@ const Breadcrumb = ({ children, ...rest }) => {
         ))}
       </ol>
     </nav>
-  )
-}
+  );
+};
 
 Breadcrumb.propTypes = {
   /**
    * Pass in the BreadcrumbItem's for your Breadcrumb
    */
   children: PropTypes.node,
-}
+};
 
 const BreadcrumbItem = ({ children, href, isCurrent, ...rest }) => {
   const currentProps = isCurrent
     ? {
         'aria-current': 'page',
       }
-    : {}
+    : {};
 
   if (typeof children === 'string' && href) {
     return (
       <Link href={href} {...rest}>
         {children}
       </Link>
-    )
+    );
   }
 
   if (React.isValidElement(children)) {
-    return React.cloneElement(children, currentProps)
+    return React.cloneElement(children, currentProps);
   }
 
-  return children
-}
+  return children;
+};
 
 BreadcrumbItem.propTypes = {
   /**
@@ -118,6 +118,6 @@ BreadcrumbItem.propTypes = {
    * Optional string representing the link location for the BreadcrumbItem
    */
   href: PropTypes.string,
-}
+};
 
-export { Breadcrumb, BreadcrumbItem }
+export { Breadcrumb, BreadcrumbItem };

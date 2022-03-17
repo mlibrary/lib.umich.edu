@@ -1,35 +1,35 @@
-import React from 'react'
-import { SPACING, Heading, LINK_STYLES, COLORS, List } from '@reusable'
-import Link from '../link'
-import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id'
-import { PanelTemplate } from './index'
-import LinkCallout from '../link-callout'
+import React from 'react';
+import { SPACING, Heading, LINK_STYLES, COLORS, List } from '@reusable';
+import Link from '../link';
+import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id';
+import { PanelTemplate } from './index';
+import LinkCallout from '../link-callout';
 
 export default function LinkPanel({ data }) {
-  const { relationships } = data
-  const { field_machine_name } = relationships.field_link_template
-  const nids = usePageContextByDrupalNodeID()
+  const { relationships } = data;
+  const { field_machine_name } = relationships.field_link_template;
+  const nids = usePageContextByDrupalNodeID();
 
   switch (field_machine_name) {
     case 'bulleted_list':
-      const links = data.field_link.map(link => {
-        const nid = getNIDFromURI({ uri: link.uri })
+      const links = data.field_link.map((link) => {
+        const nid = getNIDFromURI({ uri: link.uri });
         const linkObj = nid
           ? getContextByNID({ nids, nid })
           : {
               text: link.title,
               to: link.uri,
-            }
+            };
 
-        return linkObj
-      })
+        return linkObj;
+      });
       const moreLink = data.field_view_all
         ? {
             text: data.field_view_all.title,
             to: data.field_view_all.uri,
           }
-        : null
-      const hasTopBorder = data.field_border === 'yes'
+        : null;
+      const hasTopBorder = data.field_border === 'yes';
 
       return (
         <BulletedLinkList
@@ -38,13 +38,13 @@ export default function LinkPanel({ data }) {
           moreLink={moreLink}
           hasTopBorder={hasTopBorder}
         />
-      )
+      );
     case '2_column_db_link_list':
-      return <DatabaseLinkList data={data} />
+      return <DatabaseLinkList data={data} />;
     case 'related_links':
-      return <RelatedLinks data={data} />
+      return <RelatedLinks data={data} />;
     default:
-      return null
+      return null;
   }
 }
 
@@ -84,11 +84,11 @@ function BulletedLinkList({ title, links, moreLink, hasTopBorder = false }) {
         </p>
       )}
     </section>
-  )
+  );
 }
 
 function DatabaseLinkList({ data }) {
-  const { field_title, field_link, field_view_all } = data
+  const { field_title, field_link, field_view_all } = data;
 
   return (
     <section>
@@ -129,11 +129,11 @@ function DatabaseLinkList({ data }) {
         <Link to={field_view_all.uri}>{field_view_all.title}</Link>
       )}
     </section>
-  )
+  );
 }
 
 function RelatedLinks({ data }) {
-  const { field_title, field_link } = data
+  const { field_title, field_link } = data;
   return (
     <PanelTemplate title={field_title}>
       <ol
@@ -155,18 +155,18 @@ function RelatedLinks({ data }) {
         ))}
       </ol>
     </PanelTemplate>
-  )
+  );
 }
 
 function FancyLink({ link }) {
-  const nids = usePageContextByDrupalNodeID()
-  const nid = getNIDFromURI({ uri: link.uri })
+  const nids = usePageContextByDrupalNodeID();
+  const nid = getNIDFromURI({ uri: link.uri });
   const { text, to } = nid
     ? getContextByNID({ nids, nid })
     : {
         text: link.title,
         to: link.uri,
-      }
+      };
 
   return (
     <LinkCallout
@@ -175,22 +175,22 @@ function FancyLink({ link }) {
     >
       {text}
     </LinkCallout>
-  )
+  );
 }
 
 function getNIDFromURI({ uri }) {
   if (uri.includes('entity:node/')) {
-    return uri.split('/')[1]
+    return uri.split('/')[1];
   }
 
-  return null
+  return null;
 }
 
 function getContextByNID({ nids, nid }) {
-  const obj = nids[nid]
+  const obj = nids[nid];
 
   return {
     text: obj.title,
     to: obj.slug,
-  }
+  };
 }

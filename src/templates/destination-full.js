@@ -1,29 +1,29 @@
-import React from 'react'
-import { graphql } from 'gatsby'
-import Img from 'gatsby-image'
+import React from 'react';
+import { graphql } from 'gatsby';
+import Img from 'gatsby-image';
 
-import { Heading, SPACING, Margins, Text } from '@reusable'
+import { Heading, SPACING, Margins, Text } from '@reusable';
 
 import {
   Template,
   TemplateSide,
   TemplateContent,
-} from '../components/aside-layout'
-import Breadcrumb from '../components/breadcrumb'
-import TemplateLayout from './template-layout'
-import getNode from '../utils/get-node'
-import Panels from '../components/panels'
-import Html from '../components/html'
-import DestinationLocationInfo from '../components/destination-location-info'
-import ChatIframe from '../components/chat-iframe'
+} from '../components/aside-layout';
+import Breadcrumb from '../components/breadcrumb';
+import TemplateLayout from './template-layout';
+import getNode from '../utils/get-node';
+import Panels from '../components/panels';
+import Html from '../components/html';
+import DestinationLocationInfo from '../components/destination-location-info';
+import ChatIframe from '../components/chat-iframe';
 
 function DestinationTemplate({ data, ...rest }) {
-  const node = getNode(data)
-  const { field_title_context, fields, body, relationships } = node
-  const showChatIframe = fields?.slug === '/ask-librarian'
+  const node = getNode(data);
+  const { field_title_context, fields, body, relationships } = node;
+  const showChatIframe = fields?.slug === '/ask-librarian';
   const imageData =
     relationships?.field_media_image?.relationships?.field_media_image
-      ?.localFile?.childImageSharp?.fluid
+      ?.localFile?.childImageSharp?.fluid;
 
   return (
     <TemplateLayout node={node}>
@@ -88,13 +88,13 @@ function DestinationTemplate({ data, ...rest }) {
         </TemplateSide>
       </Template>
     </TemplateLayout>
-  )
+  );
 }
 
-export default DestinationTemplate
+export default DestinationTemplate;
 
 export const query = graphql`
-  query($slug: String!) {
+  query ($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
@@ -105,4 +105,4 @@ export const query = graphql`
       ...locationFragment
     }
   }
-`
+`;

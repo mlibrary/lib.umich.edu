@@ -1,11 +1,11 @@
-const path = require(`path`)
-const { fetch } = require('./fetch')
-const { createBreadcrumb } = require(`./create-breadcrumb`)
-const { createStaffNodes } = require(`./create-staff-nodes`)
+const path = require(`path`);
+const { fetch } = require('./fetch');
+const { createBreadcrumb } = require(`./create-breadcrumb`);
+const { createStaffNodes } = require(`./create-staff-nodes`);
 const {
   createNetlifyRedirectsFile,
   createLocalRedirects,
-} = require('./create-redirects')
+} = require('./create-redirects');
 
 /**
  * Implement Gatsby's Node APIs in this file.
@@ -14,7 +14,7 @@ const {
  */
 
 function removeTrailingSlash(s) {
-  return s.replace(/\/$/, '')
+  return s.replace(/\/$/, '');
 }
 
 /*
@@ -34,11 +34,11 @@ function sanitizeDrupalView(data) {
     // We're looking for objects {}. If it's not an array
     // Let's assume it's an object with values.
     if (data[0] && !Array.isArray(data[0])) {
-      return data
+      return data;
     }
   }
 
-  return null
+  return null;
 }
 
 exports.createSchemaCustomization = ({ actions }) => {
@@ -50,17 +50,16 @@ exports.createSchemaCustomization = ({ actions }) => {
     type paragraph__hero_panel implements Node {
       field_caption_text: HTML
     }
-  `
+  `;
 
-  actions.createTypes(typeDefs)
-}
+  actions.createTypes(typeDefs);
+};
 
 /*
   sourceNodes is only called once per plugin by Gatsby.
 */
 exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
-  const { createNode } = actions
-  
+  const { createNode } = actions;
 
   /*
       Transform Drupal data and make a list of this shape:
@@ -72,33 +71,33 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
       }
     */
   function processDrupalNavData(data) {
-    return data.map(item => {
+    return data.map((item) => {
       let navItem = {
         text: item.text,
         to: item.to,
-      }
+      };
 
       if (item.description && item.description.length) {
-        navItem.description = item.description
+        navItem.description = item.description;
       }
 
       if (item.children && item.children.length) {
-        navItem.children = processDrupalNavData(item.children)
+        navItem.children = processDrupalNavData(item.children);
       }
 
       if (item.field_icon) {
-        navItem.icon = item.field_icon
+        navItem.icon = item.field_icon;
       }
 
-      return navItem
-    })
+      return navItem;
+    });
   }
 
   /*
     Create navigation nodes.
   */
   function createNavNode(id, type, data) {
-    const processedData = processDrupalNavData(data)
+    const processedData = processDrupalNavData(data);
 
     const nodeMeta = {
       id,
@@ -110,11 +109,11 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
         contentDigest: createContentDigest(processedData),
       },
       nav: processedData,
-    }
-    createNode(nodeMeta)
+    };
+    createNode(nodeMeta);
   }
 
-  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
+  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
   /*
     Fetch data from Drupal for primary and utlity,
@@ -122,24 +121,24 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
   */
   const nav_primary_data = await fetch(
     baseUrlWithoutTrailingSlash + '/api/nav/primary'
-  )
-  createNavNode('nav-primary', 'NavPrimary', nav_primary_data[0].children)
+  );
+  createNavNode('nav-primary', 'NavPrimary', nav_primary_data[0].children);
 
   const nav_utility_data = await fetch(
     baseUrlWithoutTrailingSlash + '/api/nav/utility'
-  )
-  createNavNode('nav-utlity', 'NavUtility', nav_utility_data[0].children)
+  );
+  createNavNode('nav-utlity', 'NavUtility', nav_utility_data[0].children);
 
   /*
     Fetch Staff person related data. Used for creating
     Staff Directory and Specialist pages.
   */
-  const staffRawData = await fetch(baseUrlWithoutTrailingSlash + '/api/staff')
-  createStaffNodes({ createNode, staffRawData })
+  const staffRawData = await fetch(baseUrlWithoutTrailingSlash + '/api/staff');
+  createStaffNodes({ createNode, staffRawData });
 
   // Tell Gatsby we're done.
-  return
-}
+  return;
+};
 
 /*
   This is important for setting up breadcrumbs, slug, and
@@ -158,12 +157,12 @@ const drupal_node_types_we_care_about = [
   'department',
   'news',
   'events_and_exhibits',
-]
+];
 
 // Create a slug for each page and set it as a field on the node.
 exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
-  const { createNodeField } = actions
-  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl)
+  const { createNodeField } = actions;
+  const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
   // Check for Drupal node type.
   // Substring off the "node__" part.
@@ -175,123 +174,123 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
       node,
       createNodeField,
       baseUrl: baseUrlWithoutTrailingSlash,
-    })
+    });
 
     createNodeField({
       node,
       name: `slug`,
       value: node.path.alias,
-    })
+    });
 
     createNodeField({
       node,
       name: `title`,
       value: node.title,
-    })
+    });
   }
 
   async function createParentChildFields(fieldId, name) {
     if (node[fieldId]) {
-      const url = baseUrlWithoutTrailingSlash + node[fieldId]
-      const data = await fetch(url)
-      const sanitizedData = sanitizeDrupalView(data)
+      const url = baseUrlWithoutTrailingSlash + node[fieldId];
+      const data = await fetch(url);
+      const sanitizedData = sanitizeDrupalView(data);
       const value = sanitizedData
         ? sanitizedData.map(({ uuid }) => uuid)
-        : [`no-${name}`]
+        : [`no-${name}`];
 
       createNodeField({
         node,
         name,
         value,
-      })
+      });
     }
 
-    return
+    return;
   }
 
-  await createParentChildFields('field_parent_menu', 'parents')
-  await createParentChildFields('field_child_menu', 'children')
-}
+  await createParentChildFields('field_parent_menu', 'parents');
+  await createParentChildFields('field_child_menu', 'children');
+};
 
 // Implement the Gatsby API “createPages”. This is called once the
 // data layer is bootstrapped to let plugins create pages from data.
 exports.createPages = ({ actions, graphql }, { baseUrl }) => {
-  const { createPage, createRedirect } = actions
+  const { createPage, createRedirect } = actions;
 
-  createLocalRedirects({ createRedirect })
+  createLocalRedirects({ createRedirect });
 
   return new Promise((resolve, reject) => {
-    const basicTemplate = path.resolve(`src/templates/basic.js`)
-    const fullWidthTemplate = path.resolve(`src/templates/fullwidth.js`)
-    const landingTemplate = path.resolve(`src/templates/landing.js`)
-    const sectionTemplate = path.resolve(`src/templates/section.js`)
-    const visitTemplate = path.resolve(`src/templates/visit.js`)
-    const homeTemplate = path.resolve(`src/templates/home.js`)
-    const floorPlanTemplate = path.resolve(`src/templates/floor-plan.js`)
+    const basicTemplate = path.resolve(`src/templates/basic.js`);
+    const fullWidthTemplate = path.resolve(`src/templates/fullwidth.js`);
+    const landingTemplate = path.resolve(`src/templates/landing.js`);
+    const sectionTemplate = path.resolve(`src/templates/section.js`);
+    const visitTemplate = path.resolve(`src/templates/visit.js`);
+    const homeTemplate = path.resolve(`src/templates/home.js`);
+    const floorPlanTemplate = path.resolve(`src/templates/floor-plan.js`);
     const destinationBodyTemplate = path.resolve(
       `src/templates/destination-body.js`
-    )
+    );
     const destinationFullTemplate = path.resolve(
       `src/templates/destination-full.js`
-    )
+    );
     const staffDirectoryTemplate = path.resolve(
       `src/templates/staff-directory.js`
-    )
-    const specialistTemplate = path.resolve(`src/templates/specialist.js`)
+    );
+    const specialistTemplate = path.resolve(`src/templates/specialist.js`);
     const collectingAreaTemplate = path.resolve(
       `src/templates/collecting-area.js`
-    )
-    const departmentTemplate = path.resolve(`src/templates/department.js`)
+    );
+    const departmentTemplate = path.resolve(`src/templates/department.js`);
     /*
       News templates
     */
-    const newsLandingTemplate = path.resolve(`src/templates/news-landing.js`)
-    const newsTemplate = path.resolve(`src/templates/news.js`)
+    const newsLandingTemplate = path.resolve(`src/templates/news-landing.js`);
+    const newsTemplate = path.resolve(`src/templates/news.js`);
 
     /*
       Events and Exhibits templates.
     */
-    const eventTemplate = path.resolve(`src/templates/event.js`)
+    const eventTemplate = path.resolve(`src/templates/event.js`);
 
     function getTemplate(node) {
-      const { field_machine_name } = node.relationships.field_design_template
+      const { field_machine_name } = node.relationships.field_design_template;
 
       switch (field_machine_name) {
         case 'basic':
-          return basicTemplate
+          return basicTemplate;
         case 'homepage':
-          return homeTemplate
+          return homeTemplate;
         case 'full_width':
-          return fullWidthTemplate
+          return fullWidthTemplate;
         case 'landing_page':
-          return landingTemplate
+          return landingTemplate;
         case 'section':
         case 'section_locaside':
-          return sectionTemplate
+          return sectionTemplate;
         case 'visit':
-          return visitTemplate
+          return visitTemplate;
         case 'destination_body':
-          return destinationBodyTemplate
+          return destinationBodyTemplate;
         case 'destination_full':
-          return destinationFullTemplate
+          return destinationFullTemplate;
         case 'staff_directory':
-          return staffDirectoryTemplate
+          return staffDirectoryTemplate;
         case 'floor_plan':
-          return floorPlanTemplate
+          return floorPlanTemplate;
         case 'collecting_area':
-          return collectingAreaTemplate
+          return collectingAreaTemplate;
         case 'specialist':
-          return specialistTemplate
+          return specialistTemplate;
         case 'department':
-          return departmentTemplate
+          return departmentTemplate;
         case 'news_landing':
-          return newsLandingTemplate
+          return newsLandingTemplate;
         case 'news':
-          return newsTemplate
+          return newsTemplate;
         case 'event_exhibit':
-          return eventTemplate
+          return eventTemplate;
         default:
-          return null
+          return null;
       }
     }
 
@@ -601,9 +600,9 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
             }
           }
         `
-      ).then(result => {
+      ).then((result) => {
         if (result.errors) {
-          reject(result.errors)
+          reject(result.errors);
         }
         /*
           Make CMS pages that have configurable templates.
@@ -618,7 +617,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           departments,
           news,
           events,
-        } = result.data
+        } = result.data;
         const edges = pages.edges
           .concat(sections.edges)
           .concat(buildings.edges)
@@ -627,14 +626,14 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           .concat(floorPlans.edges)
           .concat(departments.edges)
           .concat(news.edges)
-          .concat(events.edges)
+          .concat(events.edges);
 
         edges.forEach(({ node }) => {
-          const template = getTemplate(node)
-          const summary = node.body ? node.body.summary : null
+          const template = getTemplate(node);
+          const summary = node.body ? node.body.summary : null;
           const keywords = node.field_seo_keywords
             ? node.field_seo_keywords
-            : ''
+            : '';
 
           if (template) {
             createPage({
@@ -647,17 +646,17 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
                 summary,
                 keywords: keywords,
               },
-            })
+            });
           }
-        })
+        });
 
         /*
           Make non CMS template pages
         */
-        const { profiles } = result.data
+        const { profiles } = result.data;
 
         profiles.edges.forEach(({ node }) => {
-          const profileTemplate = path.resolve(`src/templates/profile.js`)
+          const profileTemplate = path.resolve(`src/templates/profile.js`);
 
           createPage({
             path: `/users/${node.name}`,
@@ -669,13 +668,13 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
               uniqname: node.name,
               kind: 'user',
             },
-          })
-        })
+          });
+        });
       })
-    )
-  })
-}
+    );
+  });
+};
 
 exports.onPreBootstrap = async ({}, { baseUrl }) => {
-  createNetlifyRedirectsFile({ baseUrl: removeTrailingSlash(baseUrl) })
-}
+  createNetlifyRedirectsFile({ baseUrl: removeTrailingSlash(baseUrl) });
+};

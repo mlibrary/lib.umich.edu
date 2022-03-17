@@ -1,6 +1,6 @@
-import React from 'react'
-import BackgroundImage from 'gatsby-background-image'
-import Img from 'gatsby-image'
+import React from 'react';
+import BackgroundImage from 'gatsby-background-image';
+import Img from 'gatsby-image';
 import {
   Heading,
   SPACING,
@@ -8,9 +8,9 @@ import {
   Margins,
   MEDIA_QUERIES,
   COLORS,
-} from '@reusable'
+} from '@reusable';
 
-import Breadcrumb from './breadcrumb'
+import Breadcrumb from './breadcrumb';
 
 export default function PageHeader({
   breadcrumb,
@@ -19,7 +19,7 @@ export default function PageHeader({
   image,
   ...rest
 }) {
-  const imageData = image ? image.localFile.childImageSharp.fluid : null
+  const imageData = image ? image.localFile.childImageSharp.fluid : null;
 
   return (
     <div
@@ -92,5 +92,5 @@ export default function PageHeader({
         </header>
       </Margins>
     </div>
-  )
+  );
 }
