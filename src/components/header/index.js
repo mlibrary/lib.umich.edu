@@ -1,6 +1,6 @@
-import React from 'react'
-import HeaderLargeScreen from './header-largescreen'
-import HeaderSmallScreen from './header-smallscreen'
+import React from 'react';
+import HeaderLargeScreen from './header-largescreen';
+import HeaderSmallScreen from './header-smallscreen';
 
 function Header({ primary, secondary }) {
   return (
@@ -8,7 +8,7 @@ function Header({ primary, secondary }) {
       <HeaderSmallScreen primary={primary} secondary={secondary} />
       <HeaderLargeScreen primary={primary} secondary={secondary} />
     </React.Fragment>
-  )
+  );
 }
 
-export default Header
+export default Header;

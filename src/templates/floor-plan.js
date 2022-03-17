@@ -1,28 +1,25 @@
-import React from 'react'
-import { graphql } from 'gatsby'
-import { Margins, Heading, SPACING, SmallScreen, LINK_STYLES } from '@reusable'
+import React from 'react';
+import { graphql } from 'gatsby';
+import { Margins, Heading, SPACING, SmallScreen, LINK_STYLES } from '@reusable';
 
-import { Template, Top, Side, Content } from '../components/page-layout'
-import Html from '../components/html'
-import Breadcrumb from '../components/breadcrumb'
-import SideNavigation from '../components/navigation/side-navigation'
-import HorizontalNavigation from '../components/navigation/horizontal-navigation'
-import TemplateLayout from './template-layout'
-import useNavigationBranch from '../components/navigation/use-navigation-branch'
+import { Template, Top, Side, Content } from '../components/page-layout';
+import Html from '../components/html';
+import Breadcrumb from '../components/breadcrumb';
+import SideNavigation from '../components/navigation/side-navigation';
+import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import TemplateLayout from './template-layout';
+import useNavigationBranch from '../components/navigation/use-navigation-branch';
 
 function FloorPlanTemplate({ data }) {
-  const node = data.floorPlan
-  const {
-    title,
-    field_title_context,
-    body,
-    fields,
-    field_local_navigation,
-  } = node
-  const { field_svg_image, field_printable_image } = node.relationships
-  const navBranch = useNavigationBranch(fields.slug)
-  const smallScreenBranch = useNavigationBranch(fields.slug, 'small')
-  const smallScreenItems = smallScreenBranch ? smallScreenBranch.children : null
+  const node = data.floorPlan;
+  const { title, field_title_context, body, fields, field_local_navigation } =
+    node;
+  const { field_svg_image, field_printable_image } = node.relationships;
+  const navBranch = useNavigationBranch(fields.slug);
+  const smallScreenBranch = useNavigationBranch(fields.slug, 'small');
+  const smallScreenItems = smallScreenBranch
+    ? smallScreenBranch.children
+    : null;
 
   return (
     <TemplateLayout node={node}>
@@ -86,15 +83,15 @@ function FloorPlanTemplate({ data }) {
         </Template>
       </Margins>
     </TemplateLayout>
-  )
+  );
 }
 
-export default FloorPlanTemplate
+export default FloorPlanTemplate;
 
 export const query = graphql`
-  query($slug: String!) {
+  query ($slug: String!) {
     floorPlan: nodeFloorPlan(fields: { slug: { eq: $slug } }) {
       ...floorPlanFragment
     }
   }
-`
+`;

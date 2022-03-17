@@ -1,39 +1,34 @@
-import React from 'react'
-import { graphql } from 'gatsby'
+import React from 'react';
+import { graphql } from 'gatsby';
 
-import { Margins, Heading, SPACING } from '@reusable'
-import VisuallyHidden from '@reach/visually-hidden'
-import Layout from '../components/layout'
-import SearchEngineOptimization from '../components/seo'
-import Html from '../components/html'
-import Breadcrumb from '../components/breadcrumb'
-import Card from '../components/card'
+import { Margins, Heading, SPACING } from '@reusable';
+import VisuallyHidden from '@reach/visually-hidden';
+import Layout from '../components/layout';
+import SearchEngineOptimization from '../components/seo';
+import Html from '../components/html';
+import Breadcrumb from '../components/breadcrumb';
+import Card from '../components/card';
 import {
   Template,
   TemplateSide,
   TemplateContent,
-} from '../components/aside-layout'
-import * as moment from 'moment'
+} from '../components/aside-layout';
+import * as moment from 'moment';
 
-import { Expandable, ExpandableChildren, ExpandableButton } from '@reusable'
+import { Expandable, ExpandableChildren, ExpandableButton } from '@reusable';
 
 export default function NewsLandingTemplate({ data }) {
-  const node = data.page
+  const node = data.page;
   const news = processNewsData(data.featuredNews).concat(
     processNewsData(data.restNews)
-  )
-  const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates)
-  const newsMainInitialShow = 10
-  const newsLibraryUpdatesInitialShow = 20
+  );
+  const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates);
+  const newsMainInitialShow = 10;
+  const newsLibraryUpdatesInitialShow = 20;
 
-  const {
-    title,
-    field_title_context,
-    body,
-    fields,
-    drupal_internal__nid,
-  } = node
-  const description = body && body.summary ? body.summary : null
+  const { title, field_title_context, body, fields, drupal_internal__nid } =
+    node;
+  const description = body && body.summary ? body.summary : null;
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -143,19 +138,19 @@ export default function NewsLandingTemplate({ data }) {
         </TemplateSide>
       </Template>
     </Layout>
-  )
+  );
 }
 
 function processNewsData(data) {
   if (!data) {
-    return []
+    return [];
   }
 
   return data.edges.map(({ node }) => {
-    const { title, created, body, relationships, fields } = node
+    const { title, created, body, relationships, fields } = node;
     const image =
       relationships?.field_media_image?.relationships?.field_media_image
-        ?.localFile?.childImageSharp?.fluid
+        ?.localFile?.childImageSharp?.fluid;
 
     return {
       title,
@@ -163,12 +158,12 @@ function processNewsData(data) {
       description: body?.summary,
       href: fields.slug,
       image,
-    }
-  })
+    };
+  });
 }
 
 export const query = graphql`
-  query($slug: String!) {
+  query ($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
@@ -214,4 +209,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

@@ -1,6 +1,6 @@
-import React from 'react'
-import * as moment from 'moment'
-import VisuallyHidden from '@reach/visually-hidden'
+import React from 'react';
+import * as moment from 'moment';
+import VisuallyHidden from '@reach/visually-hidden';
 import {
   Margins,
   Heading,
@@ -8,29 +8,25 @@ import {
   Button,
   Icon,
   MEDIA_QUERIES,
-} from '@reusable'
+} from '@reusable';
 
-import Html from '../html'
-import HoursTable from '../hours-table'
-import { useStateValue } from '../use-state'
-import getTransitionCSS from '../../utils/transition'
-import { displayHours } from '../../utils/hours'
+import Html from '../html';
+import HoursTable from '../hours-table';
+import { useStateValue } from '../use-state';
+import getTransitionCSS from '../../utils/transition';
+import { displayHours } from '../../utils/hours';
 
 export function HoursPanelNextPrev() {
-  const [{ weekOffset }, dispatch] = useStateValue()
-  const from_date = moment()
-    .add(weekOffset, 'weeks')
-    .startOf('week')
-  const to_date = moment()
-    .add(weekOffset, 'weeks')
-    .endOf('week')
+  const [{ weekOffset }, dispatch] = useStateValue();
+  const from_date = moment().add(weekOffset, 'weeks').startOf('week');
+  const to_date = moment().add(weekOffset, 'weeks').endOf('week');
 
   const hoursRange = {
     text: `${from_date.format('MMM D')} - ${to_date.format('MMM D')}`,
     label: `Showing hours from ${from_date.format(
       'dddd, MMMM D, YYYY'
     )} to ${to_date.format('dddd, MMMM D, YYYY')}`,
-  }
+  };
 
   return (
     <Margins data-hours-panel-next-previous>
@@ -42,7 +38,7 @@ export function HoursPanelNextPrev() {
           marginTop: SPACING['L'],
           marginBottom: SPACING['L'],
           position: 'sticky',
-          top: 0
+          top: 0,
         }}
       >
         <PreviousNextWeekButton
@@ -78,7 +74,7 @@ export function HoursPanelNextPrev() {
         </PreviousNextWeekButton>
       </div>
     </Margins>
-  )
+  );
 }
 
 function IconWrapper(props) {
@@ -90,7 +86,7 @@ function IconWrapper(props) {
       }}
       {...props}
     />
-  )
+  );
 }
 
 function PreviousNextWeekButton({ type, children, ...rest }) {
@@ -141,25 +137,28 @@ function PreviousNextWeekButton({ type, children, ...rest }) {
         <VisuallyHidden>{children}</VisuallyHidden>
       </Button>
     </React.Fragment>
-  )
+  );
 }
 
 export default function HoursPanelContainer({ data }) {
-  const [{ weekOffset }] = useStateValue()
+  const [{ weekOffset }] = useStateValue();
 
-  const { relationships, field_body } = data
+  const { relationships, field_body } = data;
 
   if (relationships.field_parent_card.length === 0) {
-    return null
+    return null;
   }
 
-  const { title } = relationships.field_parent_card[0]
+  const { title } = relationships.field_parent_card[0];
 
   // Simple slugifier
   // remove alphanumerics & replace with '-', collapse dashes
-  const titleSlugged = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+  const titleSlugged = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-');
 
-  const transitionCSS = getTransitionCSS()
+  const transitionCSS = getTransitionCSS();
   return (
     <section data-hours-panel css={transitionCSS}>
       <HoursPanelNextPrev />
@@ -177,7 +176,7 @@ export default function HoursPanelContainer({ data }) {
         </HoursPanel>
       </Margins>
     </section>
-  )
+  );
 }
 
 function HoursPanel({ title, id, tableData = {}, isCurrentWeek, children }) {
@@ -206,11 +205,11 @@ function HoursPanel({ title, id, tableData = {}, isCurrentWeek, children }) {
         dayOfWeek={isCurrentWeek ? moment().day() : false}
       />
     </section>
-  )
+  );
 }
 
 function transformTableData({ node, now }) {
-  const { field_cards, field_parent_card } = node.relationships
+  const { field_cards, field_parent_card } = node.relationships;
 
   /*
     [
@@ -227,14 +226,14 @@ function transformTableData({ node, now }) {
       },
     ]
   */
-  let headings = []
+  let headings = [];
 
   for (let i = 0; i < 7; i++) {
     headings = headings.concat({
       text: now.day(i).format('ddd'),
       subtext: now.day(i).format('MMM D'),
       label: now.day(i).format('dddd, MMMM D'),
-    })
+    });
   }
 
   /*
@@ -252,29 +251,29 @@ function transformTableData({ node, now }) {
   */
 
   function sortByTitle(a, b) {
-    const titleA = a.title.toUpperCase()
-    const titleB = b.title.toUpperCase()
+    const titleA = a.title.toUpperCase();
+    const titleB = b.title.toUpperCase();
 
     if (titleA < titleB) {
-      return -1
+      return -1;
     }
 
     if (titleA > titleB) {
-      return 1
+      return 1;
     }
 
-    return 0
+    return 0;
   }
 
   const rows = [
     getRow(field_parent_card[0], now, true),
-    ...field_cards.sort(sortByTitle).map(n => getRow(n, now)),
-  ]
+    ...field_cards.sort(sortByTitle).map((n) => getRow(n, now)),
+  ];
 
   return {
     headings,
     rows,
-  }
+  };
 }
 
 /*
@@ -287,20 +286,24 @@ function transformTableData({ node, now }) {
   ]
 */
 function getRow(node, nowWithWeekOffset, isParent) {
-  let hours = []
-  const notAvailableRow = { text: 'n/a', label: 'Not available' }
-  const rowHeadingText = [isParent ? 'Main hours' : node.title]
-  const mainHoursRow = { text: rowHeadingText, label: rowHeadingText, to: node.fields.slug }
+  let hours = [];
+  const notAvailableRow = { text: 'n/a', label: 'Not available' };
+  const rowHeadingText = [isParent ? 'Main hours' : node.title];
+  const mainHoursRow = {
+    text: rowHeadingText,
+    label: rowHeadingText,
+    to: node.fields.slug,
+  };
 
   for (let i = 0; i < 7; i++) {
-    const now = moment(nowWithWeekOffset).day(i)
+    const now = moment(nowWithWeekOffset).day(i);
     const display = displayHours({
       node,
       now,
-    })
+    });
 
-    hours = hours.concat(display ? display : notAvailableRow)
+    hours = hours.concat(display ? display : notAvailableRow);
   }
 
-  return [mainHoursRow].concat(hours)
+  return [mainHoursRow].concat(hours);
 }

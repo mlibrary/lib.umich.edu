@@ -1,4 +1,4 @@
-import { graphql } from 'gatsby'
+import { graphql } from 'gatsby';
 
 export const query = graphql`
   fragment hoursPanelFragment on paragraph__hours_panel {
@@ -24,4 +24,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

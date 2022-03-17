@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '@reusable'
-import * as moment from 'moment'
-import { Link as GatsbyLink } from 'gatsby'
+import React, { useState, useEffect } from 'react';
+import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '@reusable';
+import * as moment from 'moment';
+import { Link as GatsbyLink } from 'gatsby';
 
-import Link from '../link'
-import icons from '../../reusable/icons'
-import MEDIA_QUERIES from '../../reusable/media-queries.js'
-import { displayHours } from '../../utils/hours'
+import Link from '../link';
+import icons from '../../reusable/icons';
+import MEDIA_QUERIES from '../../reusable/media-queries.js';
+import { displayHours } from '../../utils/hours';
 
 export default function HoursLitePanel({ data }) {
-  const [initialized, setInitialized] = useState(false)
-  const { field_title } = data
-  const hours = processHoursData(data.relationships.field_cards, initialized)
+  const [initialized, setInitialized] = useState(false);
+  const { field_title } = data;
+  const hours = processHoursData(data.relationships.field_cards, initialized);
 
   useEffect(() => {
-    setInitialized(true)
-  }, [])
+    setInitialized(true);
+  }, []);
 
   return (
     <section>
@@ -102,7 +102,7 @@ export default function HoursLitePanel({ data }) {
         </li>
       </ol>
     </section>
-  )
+  );
 }
 
 /*
@@ -133,29 +133,29 @@ const hoursDataExample = [
 function processHoursData(data, initialized) {
   function hours(node) {
     if (initialized) {
-      const now = moment()
-      return displayHours({ node, now })
+      const now = moment();
+      return displayHours({ node, now });
     }
 
-    return { text: '...', label: 'Loading hours... ' }
+    return { text: '...', label: 'Loading hours... ' };
   }
 
-  const result = data.map(node => {
-    const hoursData = hours(node)
+  const result = data.map((node) => {
+    const hoursData = hours(node);
     const { text, label } = hoursData
       ? hoursData
       : {
           text: 'n/a',
           label: 'n/a',
-        }
+        };
 
     return {
       text: node.title,
       subText: 'TODAY: ' + text,
       subLabel: 'TODAY: ' + label,
       to: node.fields.slug,
-    }
-  })
+    };
+  });
 
-  return result
+  return result;
 }

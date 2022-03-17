@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-import Link from './link'
-import createGoogleMapsURL from './utilities/create-google-maps-url'
+import Link from './link';
+import createGoogleMapsURL from './utilities/create-google-maps-url';
 
 /*
   Render address lines, eg
@@ -31,20 +31,20 @@ export default function Address({
   kind = 'brief',
   ...rest
 }) {
-  const description = kind === 'full' ? getDescription({ node }) : []
+  const description = kind === 'full' ? getDescription({ node }) : [];
 
-  let lines
-  let address
+  let lines;
+  let address;
 
   if (addressData) {
     lines = transformAddressDataToArray({
       data: addressData,
       kind,
-    })
-    address = lines
+    });
+    address = lines;
   } else {
-    address = getAddress({ node, kind })
-    lines = description ? description.concat(address) : address
+    address = getAddress({ node, kind });
+    lines = description ? description.concat(address) : address;
   }
 
   return (
@@ -64,7 +64,7 @@ export default function Address({
         </Link>
       )}
     </address>
-  )
+  );
 }
 
 /*
@@ -81,14 +81,14 @@ export default function Address({
   otherwise `null`
 */
 function getAddress({ node, kind }) {
-  const { field_building_address } = node
-  const { field_parent_location, field_room_building } = node.relationships
+  const { field_building_address } = node;
+  const { field_parent_location, field_room_building } = node.relationships;
 
   // Use building if it has data that is more than an empty string.
   // Drupal sends empty strings for "null" data somtimes...
   // eg AAEL or Hatcher Library
   if (field_building_address && field_building_address.address_line1.length) {
-    return transformAddressDataToArray({ data: field_building_address, kind })
+    return transformAddressDataToArray({ data: field_building_address, kind });
   }
 
   // If no building data, then lookup room building.
@@ -100,9 +100,9 @@ function getAddress({ node, kind }) {
     let result = transformAddressDataToArray({
       data: field_room_building.field_building_address,
       kind,
-    })
+    });
 
-    return result
+    return result;
   }
 
   // If neither building or room_building have data,
@@ -112,10 +112,10 @@ function getAddress({ node, kind }) {
     return transformAddressDataToArray({
       data: field_parent_location.field_building_address,
       kind,
-    })
+    });
   }
 
-  return null
+  return null;
 }
 
 /*
@@ -149,18 +149,18 @@ function transformAddressDataToArray({ data, kind }) {
     locality,
     administrative_area,
     postal_code,
-  } = data
+  } = data;
 
   // This is a special one...
   // eg MLibrary@NCRC describes building and room with line2.
-  const line2 = kind === 'brief' ? null : address_line2
+  const line2 = kind === 'brief' ? null : address_line2;
 
   return [
     organization,
     address_line1,
     line2,
     `${locality}, ${administrative_area} ${postal_code}`,
-  ].filter(line => typeof line === 'string' && line.length > 0)
+  ].filter((line) => typeof line === 'string' && line.length > 0);
 }
 
 /*
@@ -175,45 +175,45 @@ function transformAddressDataToArray({ data, kind }) {
   ```
 */
 function getDescription({ node }) {
-  const { field_room_number } = node
-  const name = getName({ node })
-  const floor = getFloor({ node })
-  const room = field_room_number ? 'Room ' + field_room_number : null
+  const { field_room_number } = node;
+  const name = getName({ node });
+  const floor = getFloor({ node });
+  const room = field_room_number ? 'Room ' + field_room_number : null;
 
   // Remove null values
-  const line1 = [floor, room].filter(item => item !== null)
-  const line2 = [name].filter(item => item !== null)
+  const line1 = [floor, room].filter((item) => item !== null);
+  const line2 = [name].filter((item) => item !== null);
 
   if (line1.length > 0 || line2.lenght > 0) {
-    return [line1.join(', '), line2]
+    return [line1.join(', '), line2];
   }
 
-  return null
+  return null;
 }
 
 function getName({ node }) {
-  const { field_room_building, field_parent_location } = node.relationships
+  const { field_room_building, field_parent_location } = node.relationships;
 
   if (field_room_building) {
-    return field_room_building.title
+    return field_room_building.title;
   }
 
   if (field_parent_location) {
-    return field_parent_location.title
+    return field_parent_location.title;
   }
 
-  return null
+  return null;
 }
 
 function getFloor({ node }) {
-  const { field_floor } = node.relationships
+  const { field_floor } = node.relationships;
 
   if (field_floor) {
-    const floor_split = field_floor.name.split(' - ')
-    const floor = floor_split[floor_split.length - 1]
+    const floor_split = field_floor.name.split(' - ');
+    const floor = floor_split[floor_split.length - 1];
 
-    return floor
+    return floor;
   }
 
-  return null
+  return null;
 }

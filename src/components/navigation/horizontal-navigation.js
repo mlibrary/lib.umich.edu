@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-import { Link } from 'gatsby'
+import { Link } from 'gatsby';
 import {
   SPACING,
   COLORS,
@@ -8,11 +8,11 @@ import {
   MEDIA_QUERIES,
   LargeScreen,
   SmallScreen,
-} from '@reusable'
+} from '@reusable';
 
 export default function HorizontalNavigation({ items, ...rest }) {
   if (!items) {
-    return null
+    return null;
   }
 
   return (
@@ -87,5 +87,5 @@ export default function HorizontalNavigation({ items, ...rest }) {
         </ol>
       </Margins>
     </nav>
-  )
+  );
 }

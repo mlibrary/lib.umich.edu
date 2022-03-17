@@ -1,6 +1,6 @@
-import React from 'react'
-import { Global, css } from '@emotion/react'
-import styled from '@emotion/styled'
+import React from 'react';
+import { Global, css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 export const SPACING = {
   '3XS': '0.125rem',
@@ -14,23 +14,23 @@ export const SPACING = {
   '3XL': '3rem',
   '4XL': '4rem',
   '5XL': '6rem',
-}
+};
 
 export const BREAKPOINTS = {
   SMALLSCREEN: 320,
   LARGESCREEN: 641,
-}
+};
 
 export const MEDIA_QUERIES = {
   LARGESCREEN: `@media only screen and (min-width: ${BREAKPOINTS.LARGESCREEN}px)`,
   PRINT: '@media print',
-}
+};
 
 const TYPE_2XL = {
   fontSize: '2.25rem',
   fontFamily: 'Crimson Text',
   lineHeight: '1.25',
-}
+};
 
 export const Z_SPACE = {
   8: {
@@ -39,7 +39,7 @@ export const Z_SPACE = {
   16: {
     boxShadow: `0 4px 16px 0 rgba(0,0,0,0.12)`,
   },
-}
+};
 
 export const TYPOGRAPHY = {
   '3XL': {
@@ -82,7 +82,7 @@ export const TYPOGRAPHY = {
     letterSpacing: '1.25px',
     textTransform: 'uppercase',
   },
-}
+};
 
 /*
   Inspired by GitHub color system
@@ -90,69 +90,69 @@ export const TYPOGRAPHY = {
 */
 export const COLORS = {
   maize: {
-    '100': '#FFF9E6',
-    '200': '#FFEA9B',
-    '300': '#FFDA50',
-    '400': '#FFCB05',
-    '500': '#EABA02',
+    100: '#FFF9E6',
+    200: '#FFEA9B',
+    300: '#FFDA50',
+    400: '#FFCB05',
+    500: '#EABA02',
   },
   blue: {
-    '100': '#F7F8F9',
-    '200': '#B2BEC9',
-    '300': '#4C6781',
-    '400': '#00274C',
-    '500': '#001324',
+    100: '#F7F8F9',
+    200: '#B2BEC9',
+    300: '#4C6781',
+    400: '#00274C',
+    500: '#001324',
   },
   neutral: {
-    '100': '#E5E9ED',
-    '200': '#8A96A1',
-    '300': '#637381',
-    '400': '#212B36',
-    '500': '#06080A',
+    100: '#E5E9ED',
+    200: '#8A96A1',
+    300: '#637381',
+    400: '#212B36',
+    500: '#06080A',
   },
   teal: {
-    '100': '#E9F2F5',
-    '200': '#A7CDDB',
-    '300': '#65A8BF',
-    '400': '#1D7491',
-    '500': '#106684',
+    100: '#E9F2F5',
+    200: '#A7CDDB',
+    300: '#65A8BF',
+    400: '#1D7491',
+    500: '#106684',
   },
   orange: {
-    '100': '#FFF1EB',
-    '200': '#FFB899',
-    '300': '#FF8A58',
-    '400': '#F25F1F',
-    '500': '#C74E1A',
+    100: '#FFF1EB',
+    200: '#FFB899',
+    300: '#FF8A58',
+    400: '#F25F1F',
+    500: '#C74E1A',
   },
   pink: {
-    '100': '#FCEBEB',
-    '200': '#F29D9D',
-    '300': '#EC6969',
-    '400': '#D93838',
-    '500': '#BF3232',
+    100: '#FCEBEB',
+    200: '#F29D9D',
+    300: '#EC6969',
+    400: '#D93838',
+    500: '#BF3232',
   },
   indigo: {
-    '100': '#EEF1F9',
-    '200': '#AAB9E3',
-    '300': '#7C93D4',
-    '400': '#506FC5',
-    '500': '#274391',
+    100: '#EEF1F9',
+    200: '#AAB9E3',
+    300: '#7C93D4',
+    400: '#506FC5',
+    500: '#274391',
   },
   green: {
-    '100': '#EAF8EE',
-    '200': '#96DBAA',
-    '300': '#57BC75',
-    '400': '#20A848',
-    '500': '#198539',
+    100: '#EAF8EE',
+    200: '#96DBAA',
+    300: '#57BC75',
+    400: '#20A848',
+    500: '#198539',
   },
-}
+};
 
 export const INTENT_COLORS = {
   informational: COLORS.blue[400],
   success: COLORS.teal[400],
   warning: COLORS.maize[400],
   error: COLORS.orange[400],
-}
+};
 
 export const Margins = styled('div')({
   width: '100%',
@@ -162,14 +162,14 @@ export const Margins = styled('div')({
   [MEDIA_QUERIES.LARGESCREEN]: {
     padding: `0 ${SPACING['2XL']}`,
   },
-})
+});
 
 export const LargeScreen = styled('div')({
   display: 'none',
   [MEDIA_QUERIES.LARGESCREEN]: {
     display: 'block',
   },
-})
+});
 
 /*
   "default",
@@ -188,7 +188,7 @@ const DEFAULT_LINK_STYLE = {
   ':hover': {
     boxShadow: `inset 0 -2px ${COLORS.teal[400]}`,
   },
-}
+};
 
 export const LINK_STYLES = {
   default: DEFAULT_LINK_STYLE,
@@ -248,46 +248,46 @@ export const LINK_STYLES = {
     link kinds to the default link style.
   */
   'special-subtle': DEFAULT_LINK_STYLE,
-}
+};
 
 export const SmallScreen = styled('div')({
   display: 'block',
   [MEDIA_QUERIES.LARGESCREEN]: {
     display: 'none',
   },
-})
+});
 
 export function lightOrDark(color) {
   // Variables for red, green, blue values
-  var r, g, b, hsp
+  var r, g, b, hsp;
 
   // Check the format of the color, HEX or RGB?
   if (color.match(/^rgb/)) {
     // If HEX --> store the red, green, blue values in separate variables
     color = color.match(
       /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/
-    )
+    );
 
-    r = color[1]
-    g = color[2]
-    b = color[3]
+    r = color[1];
+    g = color[2];
+    b = color[3];
   } else {
     // If RGB --> Convert it to HEX: http://gist.github.com/983661
-    color = +('0x' + color.slice(1).replace(color.length < 5 && /./g, '$&$&'))
+    color = +('0x' + color.slice(1).replace(color.length < 5 && /./g, '$&$&'));
 
-    r = color >> 16
-    g = (color >> 8) & 255
-    b = color & 255
+    r = color >> 16;
+    g = (color >> 8) & 255;
+    b = color & 255;
   }
 
   // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-  hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b))
+  hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
 
   // Using the HSP value, determine whether the color is light or dark
   if (hsp > 127.5) {
-    return 'light'
+    return 'light';
   } else {
-    return 'dark'
+    return 'dark';
   }
 }
 
@@ -431,7 +431,7 @@ export function GlobalStyleSheet() {
       height: 1px; width: 1px;
       overflow: hidden;
     }
-  `
+  `;
 
   return (
     <Global
@@ -439,5 +439,5 @@ export function GlobalStyleSheet() {
         ${stylesheet}
       `}
     />
-  )
+  );
 }

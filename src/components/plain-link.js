@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'gatsby'
+import React from 'react';
+import { Link } from 'gatsby';
 
 function PlainLink({ to, children, external, ...other }) {
   /*
@@ -10,7 +10,7 @@ function PlainLink({ to, children, external, ...other }) {
       <Link to={to} {...other}>
         {children}
       </Link>
-    )
+    );
   }
 
   // A regular anchor link. Probably an external link.
@@ -18,7 +18,7 @@ function PlainLink({ to, children, external, ...other }) {
     <a href={to} {...other}>
       {children}
     </a>
-  )
+  );
 }
 
-export default PlainLink
+export default PlainLink;

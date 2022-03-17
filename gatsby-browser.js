@@ -1,16 +1,16 @@
-import React from 'react'
-import SkipLinks from './src/components/skip-links'
+import React from 'react';
+import SkipLinks from './src/components/skip-links';
 
 export const onClientEntry = () => {
   const {
     applyPolyfills,
     defineCustomElements,
-  } = require('@umich-lib/web/loader')
+  } = require('@umich-lib/web/loader');
 
   applyPolyfills().then(() => {
-    defineCustomElements(window)
-  })
-}
+    defineCustomElements(window);
+  });
+};
 
 export const wrapPageElement = ({ element }) => {
   // props provide same data to Layout as Page element will get
@@ -33,12 +33,12 @@ export const wrapPageElement = ({ element }) => {
       </div>
       <m-chat id="chat"></m-chat>
     </React.Fragment>
-  )
-}
+  );
+};
 
 export const onRouteUpdate = ({ location, prevLocation }) => {
-  const newPath = location.pathname
-  const oldPath = prevLocation ? prevLocation.pathname : null
+  const newPath = location.pathname;
+  const oldPath = prevLocation ? prevLocation.pathname : null;
 
   /**
    * We shouldn't handle paths that are only
@@ -49,14 +49,14 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
    * Is there a new path?
    */
   if (newPath !== oldPath) {
-    const dataPageHeading = document.querySelector('[data-page-heading]')
-    const h1 = document.querySelector('h1')
-    const pageHeading = dataPageHeading ? dataPageHeading : h1
+    const dataPageHeading = document.querySelector('[data-page-heading]');
+    const h1 = document.querySelector('h1');
+    const pageHeading = dataPageHeading ? dataPageHeading : h1;
 
     if (pageHeading) {
-      pageHeading.setAttribute('tabindex', '-1')
-      pageHeading.classList.add('focus')
-      pageHeading.focus()
+      pageHeading.setAttribute('tabindex', '-1');
+      pageHeading.classList.add('focus');
+      pageHeading.focus();
     }
   }
 
@@ -71,16 +71,16 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
     if (element) {
       window.scrollTo({
         top: element.offsetTop - padding,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   }
-}
+};
 
 export const shouldUpdateScroll = ({ routerProps: { location } }) => {
   if (location?.state?.preserveScroll) {
-    return false
+    return false;
   }
 
-  return true
-}
+  return true;
+};

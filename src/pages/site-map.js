@@ -1,12 +1,12 @@
-import React from 'react'
-import Layout from '../components/layout'
+import React from 'react';
+import Layout from '../components/layout';
 
-import { Heading, SPACING, Margins } from '@reusable'
-import SearchEngineOptimization from '../components/seo'
-import Breadcrumb from '../components/breadcrumb'
-import Link from '../components/link'
-import useNavigationData from '../hooks/use-navigation-data'
-import MEDIA_QUERIES from '../reusable/media-queries'
+import { Heading, SPACING, Margins } from '@reusable';
+import SearchEngineOptimization from '../components/seo';
+import Breadcrumb from '../components/breadcrumb';
+import Link from '../components/link';
+import useNavigationData from '../hooks/use-navigation-data';
+import MEDIA_QUERIES from '../reusable/media-queries';
 
 const breadcrumbData = [
   {
@@ -16,10 +16,10 @@ const breadcrumbData = [
   {
     text: 'Site map',
   },
-]
+];
 
 export default function SiteMap() {
-  const { primary, secondary } = useNavigationData()
+  const { primary, secondary } = useNavigationData();
 
   return (
     <Layout>
@@ -89,7 +89,7 @@ export default function SiteMap() {
         </div>
       </Margins>
     </Layout>
-  )
+  );
 }
 
 function NestLinkedList({ data }) {
@@ -116,5 +116,5 @@ function NestLinkedList({ data }) {
         </li>
       ))}
     </ol>
-  )
+  );
 }

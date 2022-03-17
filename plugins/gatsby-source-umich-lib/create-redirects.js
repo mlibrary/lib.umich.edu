@@ -1,33 +1,37 @@
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
 const fs = require('fs');
 const readline = require('readline');
 
-const redirectsPath = 'public/_redirects'
+const redirectsPath = 'public/_redirects';
 
-const downloadRedirectsFile = (async (url, path) => {
+const downloadRedirectsFile = async (url, path) => {
   const res = await fetch(url);
   const fileStream = fs.createWriteStream(path);
-  
-  await new Promise((resolve, reject) => {
-      res.body.pipe(fileStream);
-      res.body.on("error", reject);
-      fileStream.on('finish', () => {
-        const data = fs.readFileSync(redirectsPath, 'utf8')
-        /**
-         * Just to be sure as a basic check, check if the
-         * file contains the first redirect.
-         */
-        const hasFirstRedirect = data.startsWith('https://umich-lib.netlify.app/* https://lib.umich.edu/:splat 301!')
 
-        if (hasFirstRedirect) {
-          console.log('[redirects] _redirects file was **successfully** created.')
-          resolve()
-        } else {
-          throw `[redirects] Error! Unable to verify first redirect rule.`
-        }
-      })
+  await new Promise((resolve, reject) => {
+    res.body.pipe(fileStream);
+    res.body.on('error', reject);
+    fileStream.on('finish', () => {
+      const data = fs.readFileSync(redirectsPath, 'utf8');
+      /**
+       * Just to be sure as a basic check, check if the
+       * file contains the first redirect.
+       */
+      const hasFirstRedirect = data.startsWith(
+        'https://umich-lib.netlify.app/* https://lib.umich.edu/:splat 301!'
+      );
+
+      if (hasFirstRedirect) {
+        console.log(
+          '[redirects] _redirects file was **successfully** created.'
+        );
+        resolve();
+      } else {
+        throw `[redirects] Error! Unable to verify first redirect rule.`;
+      }
     });
-});
+  });
+};
 
 /**
  * Redirects are managed in Drupal. This function downloads it
@@ -38,32 +42,29 @@ const downloadRedirectsFile = (async (url, path) => {
  * Netlify redirect docs: https://docs.netlify.com/routing/redirects/
  */
 async function createNetlifyRedirectsFile({ baseUrl }) {
-  const dir = 'public'
+  const dir = 'public';
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir)
+    fs.mkdirSync(dir);
   }
-  
-  downloadRedirectsFile(
-    baseUrl + '/_redirects',
-    redirectsPath
-  )
+
+  downloadRedirectsFile(baseUrl + '/_redirects', redirectsPath);
 }
 
-exports.createNetlifyRedirectsFile = createNetlifyRedirectsFile
+exports.createNetlifyRedirectsFile = createNetlifyRedirectsFile;
 
 /*
   https://www.gatsbyjs.org/packages/gatsby-plugin-client-side-redirect/
 */
 function createLocalRedirects({ createRedirect }) {
-  console.log('[redirects] Creating local redirects.')
+  console.log('[redirects] Creating local redirects.');
 
   const readInterface = readline.createInterface({
     input: fs.createReadStream('public/_redirects'),
-  })
+  });
 
-  readInterface.on('line', function(line) {
+  readInterface.on('line', function (line) {
     if (line) {
-      const urls = line.split(' ')
+      const urls = line.split(' ');
       /**
        * Is a local redirect and not
        * a wildcard redirect.
@@ -84,10 +85,10 @@ function createLocalRedirects({ createRedirect }) {
           toPath: urls[1],
           isPermanent: true,
           redirectInBrowser: true,
-        })
+        });
       }
     }
-  })
+  });
 }
 
-exports.createLocalRedirects = createLocalRedirects
+exports.createLocalRedirects = createLocalRedirects;

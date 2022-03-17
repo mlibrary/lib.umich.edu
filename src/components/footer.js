@@ -1,16 +1,16 @@
-import React from 'react'
-import { COLORS, SPACING, Margins, Heading, MEDIA_QUERIES } from '@reusable'
+import React from 'react';
+import { COLORS, SPACING, Margins, Heading, MEDIA_QUERIES } from '@reusable';
 
-import fdlp from '../images/fdlp.png'
-import icons from '../reusable/icons'
-import PlainLink from './plain-link'
-import IconText from './icon-text'
-import createGoogleMapsUrl from './utilities/create-google-maps-url'
+import fdlp from '../images/fdlp.png';
+import icons from '../reusable/icons';
+import PlainLink from './plain-link';
+import IconText from './icon-text';
+import createGoogleMapsUrl from './utilities/create-google-maps-url';
 
 const locationURL = createGoogleMapsUrl({
   query:
     'University of Michigan Library, 913 S. University Avenue, Ann Arbor, MI 48109',
-})
+});
 
 // eslint-disable-next-line
 const links = [
@@ -40,8 +40,7 @@ const links = [
       },
       {
         text: 'Accessibility',
-        to:
-          '/about-us/about-library/diversity-equity-inclusion-and-accessibility/accessibility',
+        to: '/about-us/about-library/diversity-equity-inclusion-and-accessibility/accessibility',
         icon: 'accessible_forward',
       },
       {
@@ -71,8 +70,7 @@ const links = [
       },
       {
         text: 'Facebook',
-        to:
-          'https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559',
+        to: 'https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559',
         icon: 'facebook',
       },
       {
@@ -87,11 +85,11 @@ const links = [
       },
     ],
   },
-]
+];
 
 function Footer() {
-  const now = new Date()
-  const year = now.getFullYear()
+  const now = new Date();
+  const year = now.getFullYear();
 
   return (
     <footer
@@ -131,7 +129,7 @@ function Footer() {
             },
           }}
         >
-          {links.map(section => (
+          {links.map((section) => (
             <section key={section.heading}>
               <Heading level={2} size="3XS">
                 {section.heading}
@@ -156,7 +154,7 @@ function Footer() {
                         </IconText>
                       </PlainLink>
                     </li>
-                  )
+                  );
                 })}
               </ul>
             </section>
@@ -285,7 +283,7 @@ function Footer() {
         </Margins>
       </div>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;

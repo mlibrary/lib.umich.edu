@@ -1,8 +1,8 @@
-import React from 'react'
-import styled from '@emotion/styled'
-import PropTypes from 'prop-types'
+import React from 'react';
+import styled from '@emotion/styled';
+import PropTypes from 'prop-types';
 
-import { TYPOGRAPHY } from '@reusable'
+import { TYPOGRAPHY } from '@reusable';
 
 const StyledText = styled('p')(
   {
@@ -16,23 +16,23 @@ const StyledText = styled('p')(
   }),
   ({ lede }) => {
     if (lede) {
-      return TYPOGRAPHY['XS']
+      return TYPOGRAPHY['XS'];
     }
   }
-)
+);
 
 const Text = ({ inline, lede, ...other }) => (
   <StyledText inline={inline} lede={lede} {...other} />
-)
+);
 
 Text.propTypes = {
   inline: PropTypes.bool,
   lede: PropTypes.bool,
   children: PropTypes.node.isRequired,
-}
+};
 
 Text.defaultProps = {
   inline: false,
-}
+};
 
-export default Text
+export default Text;

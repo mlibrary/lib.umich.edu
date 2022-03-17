@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
-import { TYPOGRAPHY, COLORS, SPACING, Button, Icon } from '@reusable'
+import React, { useState } from 'react';
+import { TYPOGRAPHY, COLORS, SPACING, Button, Icon } from '@reusable';
 
 export default function HoursTableSmallscreens({
   data,
   headingId,
   dayOfWeek = false,
 }) {
-  const [show, setShow] = useState(false)
-  const todayIndex = dayOfWeek !== false ? dayOfWeek + 1 : -1
+  const [show, setShow] = useState(false);
+  const todayIndex = dayOfWeek !== false ? dayOfWeek + 1 : -1;
   /*
     For small screens, we render each row
     as a table. Only show 1-n if user
     requests detailed hours.
   */
-  const tables = show ? data.rows : [data.rows[0]]
+  const tables = show ? data.rows : [data.rows[0]];
 
   return (
     <>
@@ -114,7 +114,7 @@ export default function HoursTableSmallscreens({
         </Button>
       ) : null}
     </>
-  )
+  );
 }
 
 function HoursSlot({ children, isToday }) {
@@ -135,8 +135,8 @@ function HoursSlot({ children, isToday }) {
           Today
         </td>
       </>
-    )
+    );
   }
 
-  return <td colSpan="2">{children}</td>
+  return <td colSpan="2">{children}</td>;
 }

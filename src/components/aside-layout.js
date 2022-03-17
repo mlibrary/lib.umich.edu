@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-import { SPACING, COLORS, Margins } from '@reusable'
+import { SPACING, COLORS, Margins } from '@reusable';
 
-import MEDIA_QUERIES from '../reusable/media-queries'
+import MEDIA_QUERIES from '../reusable/media-queries';
 
 export function Template({ children, asideWidth, ...rest }) {
-  const asWidth = asideWidth ? asideWidth : '21rem'
+  const asWidth = asideWidth ? asideWidth : '21rem';
 
   return (
     <Margins>
@@ -32,7 +32,7 @@ export function Template({ children, asideWidth, ...rest }) {
         {children}
       </div>
     </Margins>
-  )
+  );
 }
 
 export function TemplateSide({ children, ...rest }) {
@@ -61,7 +61,7 @@ export function TemplateSide({ children, ...rest }) {
         {children}
       </div>
     </section>
-  )
+  );
 }
 
 export function TemplateContent({ children, ...rest }) {
@@ -78,5 +78,5 @@ export function TemplateContent({ children, ...rest }) {
     >
       {children}
     </div>
-  )
+  );
 }

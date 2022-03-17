@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 
-import { Alert, Margins, SPACING } from '@reusable'
+import { Alert, Margins, SPACING } from '@reusable';
 
-import Link from './link'
+import Link from './link';
 
-const ACCESSIBILITY_MODE = process.env.GATSBY_ACCESSIBILITY_MODE === 'true'
+const ACCESSIBILITY_MODE = process.env.GATSBY_ACCESSIBILITY_MODE === 'true';
 
 export default function DevelopmentAlert() {
-  const [noMouseDay, setNoMouseDay] = useState(false)
+  const [noMouseDay, setNoMouseDay] = useState(false);
 
   useEffect(() => {
     if (ACCESSIBILITY_MODE) {
-      let date = new Date()
-      let dayOfWeek = date.getDay()
+      let date = new Date();
+      let dayOfWeek = date.getDay();
 
       if (dayOfWeek === 1) {
-        setNoMouseDay(true)
+        setNoMouseDay(true);
       }
     }
-  }, [])
+  }, []);
 
   return (
     <div
@@ -42,7 +42,7 @@ export default function DevelopmentAlert() {
         </Margins>
       </Alert>
     </div>
-  )
+  );
 }
 
 function A11yMessage() {
@@ -55,5 +55,5 @@ function A11yMessage() {
       <strong css={{ fontWeight: '700' }}>Monday is accessibility day.</strong>{' '}
       Your visible cursor has been disabled to encourage keyboard only use.
     </p>
-  )
+  );
 }

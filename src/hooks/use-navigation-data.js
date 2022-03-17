@@ -1,4 +1,4 @@
-import { useStaticQuery, graphql } from 'gatsby'
+import { useStaticQuery, graphql } from 'gatsby';
 
 const useNavigationData = () => {
   const data = useStaticQuery(
@@ -56,12 +56,12 @@ const useNavigationData = () => {
         }
       }
     `
-  )
+  );
 
   return {
     primary: data.allNavPrimary.edges[0].node.nav,
     secondary: data.allNavUtility.edges[0].node.nav,
-  }
-}
+  };
+};
 
-export default useNavigationData
+export default useNavigationData;

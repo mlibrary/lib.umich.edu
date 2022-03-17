@@ -1,5 +1,5 @@
-import React from 'react'
-import { COLORS, SPACING, Icon } from '@reusable'
+import React from 'react';
+import { COLORS, SPACING, Icon } from '@reusable';
 
 export default function Select({ label, name, options, value, ...rest }) {
   return (
@@ -57,5 +57,5 @@ export default function Select({ label, name, options, value, ...rest }) {
         />
       </div>
     </label>
-  )
+  );
 }

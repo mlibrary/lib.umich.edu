@@ -783,6 +783,6 @@ const LANGUAGES = {
     name: 'Ottoman Turkish',
     nativeName: 'Ottoman Turkish',
   },
-}
+};
 
-export default LANGUAGES
+export default LANGUAGES;

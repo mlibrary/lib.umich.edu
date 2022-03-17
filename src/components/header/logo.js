@@ -1,6 +1,6 @@
-import React from 'react'
-import { Link } from 'gatsby'
-import { COLORS } from '@reusable'
+import React from 'react';
+import { Link } from 'gatsby';
+import { COLORS } from '@reusable';
 
 const UMichBlockM = ({ size, color }) => (
   <svg
@@ -20,7 +20,7 @@ const UMichBlockM = ({ size, color }) => (
       </g>
     </g>
   </svg>
-)
+);
 
 const UMichLibrary = ({ size, color }) => (
   <svg
@@ -43,10 +43,10 @@ const UMichLibrary = ({ size, color }) => (
       </g>
     </g>
   </svg>
-)
+);
 
 function Logo({ size, kind }) {
-  const color = kind === 'light' ? 'white' : COLORS.blue['400']
+  const color = kind === 'light' ? 'white' : COLORS.blue['400'];
 
   return (
     <div
@@ -59,7 +59,7 @@ function Logo({ size, kind }) {
         <UMichLibrary size={size} color={color} />
       </Link>
     </div>
-  )
+  );
 }
 
-export default Logo
+export default Logo;

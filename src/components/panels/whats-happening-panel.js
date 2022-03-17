@@ -1,9 +1,9 @@
-import { useStaticQuery, graphql } from 'gatsby'
-import React, { useState, useEffect } from 'react'
-import { SPACING, MEDIA_QUERIES, Heading, Margins } from '@reusable'
-import Link from '../link'
-import EventCard from '../event-card'
-import { sortEventsByStartDate } from '../../utils/events'
+import { useStaticQuery, graphql } from 'gatsby';
+import React, { useState, useEffect } from 'react';
+import { SPACING, MEDIA_QUERIES, Heading, Margins } from '@reusable';
+import Link from '../link';
+import EventCard from '../event-card';
+import { sortEventsByStartDate } from '../../utils/events';
 
 /*
   Featured and latest news and exhibits.
@@ -17,7 +17,7 @@ import { sortEventsByStartDate } from '../../utils/events'
   Sort all of them by date.
 */
 export default function WhatsHappening() {
-  const [events, setEvents] = useState(null)
+  const [events, setEvents] = useState(null);
 
   const data = useStaticQuery(graphql`
     query {
@@ -51,7 +51,7 @@ export default function WhatsHappening() {
         }
       }
     }
-  `)
+  `);
 
   useEffect(() => {
     if (events === null) {
@@ -64,19 +64,19 @@ export default function WhatsHappening() {
           events: data.otherEvents.nodes,
           onlyTodayOrAfter: true,
         })
-      )
+      );
 
       const sortedEvents = sortEventsByStartDate({
         events: joinedEvents,
-      })
+      });
 
-      setEvents(sortedEvents.slice(0, 3)) // only keep 3
+      setEvents(sortedEvents.slice(0, 3)); // only keep 3
     }
-  }, [events]) // eslint-disable-line
+  }, [events]); // eslint-disable-line
 
   // Make sure there are events to render.
   if (!events || events.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -101,7 +101,12 @@ export default function WhatsHappening() {
           }}
         >
           {events.map((event, index) => (
-            <EventCard {...event} displayImage={false} hasBorder={false} key={index} />
+            <EventCard
+              {...event}
+              displayImage={false}
+              hasBorder={false}
+              key={index}
+            />
           ))}
         </div>
 
@@ -110,5 +115,5 @@ export default function WhatsHappening() {
         </Link>
       </Margins>
     </div>
-  )
+  );
 }

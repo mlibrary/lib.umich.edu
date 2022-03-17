@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Heading,
   SPACING,
@@ -6,26 +6,26 @@ import {
   Margins,
   Icon,
   MEDIA_QUERIES,
-} from '@reusable'
+} from '@reusable';
 
-import Card from '../card'
-import Link from '../link'
-import Html from '../html'
-import Address from '../address'
-import Hours from '../todays-hours'
-import icons from '../../reusable/icons'
-import HoursPanel from './hours-panel'
-import HeroPanel from './hero-panel'
-import GroupPanel from './group-panel'
-import HoursLitePanel from './hours-lite-panel'
-import LinkPanel from './link-panel'
-import DestinationHorizontalPanel from './destination-horizontal-panel'
-import getParentTitle from '../../utils/get-parent-title'
-import CustomPanel from './custom-panel'
-import Callout from '../../reusable/callout'
-import Image from '../image'
+import Card from '../card';
+import Link from '../link';
+import Html from '../html';
+import Address from '../address';
+import Hours from '../todays-hours';
+import icons from '../../reusable/icons';
+import HoursPanel from './hours-panel';
+import HeroPanel from './hero-panel';
+import GroupPanel from './group-panel';
+import HoursLitePanel from './hours-lite-panel';
+import LinkPanel from './link-panel';
+import DestinationHorizontalPanel from './destination-horizontal-panel';
+import getParentTitle from '../../utils/get-parent-title';
+import CustomPanel from './custom-panel';
+import Callout from '../../reusable/callout';
+import Image from '../image';
 
-import { StateProvider } from '../use-state'
+import { StateProvider } from '../use-state';
 
 function PanelTemplate({ title, children, shaded, ...rest }) {
   return (
@@ -62,7 +62,7 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
         {children}
       </Margins>
     </section>
-  )
+  );
 }
 
 function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
@@ -73,7 +73,7 @@ function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
       gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
       gridGap: `${SPACING['XL']} ${SPACING['M']}`,
     },
-  }
+  };
   const panelListColumnStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
       columns: '2',
@@ -83,7 +83,7 @@ function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
         marginBottom: SPACING['XL'],
       },
     },
-  }
+  };
 
   return (
     <ol
@@ -92,45 +92,45 @@ function PanelList({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
     >
       {children}
     </ol>
-  )
+  );
 }
 
 function CardPanel({ data, headingLevel = 2 }) {
-  const template = data.relationships.field_card_template.field_machine_name
+  const template = data.relationships.field_card_template.field_machine_name;
 
   if (template === 'destination_hor_card_template') {
-    return <DestinationHorizontalPanel data={data} />
+    return <DestinationHorizontalPanel data={data} />;
   }
 
-  const title = data.field_title
-  const cards = data.relationships.field_cards
-  const noImage = template === 'standard_no_image'
-  const useSummary = template !== 'address_and_hours'
+  const title = data.field_title;
+  const cards = data.relationships.field_cards;
+  const noImage = template === 'standard_no_image';
+  const useSummary = template !== 'address_and_hours';
 
   function getCardSubtitle(card) {
     if (template === 'destination_card_template') {
-      return getParentTitle({ node: card })
+      return getParentTitle({ node: card });
     }
 
-    return null
+    return null;
   }
 
   function getImage(image) {
     return !image || noImage
       ? null
-      : image.relationships.field_media_image.localFile.childImageSharp.fluid
+      : image.relationships.field_media_image.localFile.childImageSharp.fluid;
   }
 
   function getCardHref(card) {
     if (card.field_url) {
-      return card.field_url.uri
+      return card.field_url.uri;
     }
 
-    return card.fields.slug
+    return card.fields.slug;
   }
 
   function getSummary(body) {
-    return body ? body.summary : null
+    return body ? body.summary : null;
   }
 
   function renderCardChildren(data) {
@@ -170,10 +170,10 @@ function CardPanel({ data, headingLevel = 2 }) {
             <Hours node={data} />
           </div>
         </React.Fragment>
-      )
+      );
     }
 
-    return null
+    return null;
   }
 
   return (
@@ -209,22 +209,22 @@ function CardPanel({ data, headingLevel = 2 }) {
         ))}
       </PanelList>
     </PanelTemplate>
-  )
+  );
 }
 
 function MarginsWrapper({ useMargins = false, children }) {
   if (useMargins) {
-    return <Margins>{children}</Margins>
+    return <Margins>{children}</Margins>;
   }
 
-  return children
+  return children;
 }
 
 function TextPanel({ data }) {
-  const title = data.field_title
-  const placement = data.field_placement
-  const template = data.relationships.field_text_template.field_machine_name
-  const cards = data.relationships.field_text_card
+  const title = data.field_title;
+  const placement = data.field_placement;
+  const template = data.relationships.field_text_template.field_machine_name;
+  const cards = data.relationships.field_text_card;
 
   if (template === 'callout') {
     return (
@@ -255,13 +255,13 @@ function TextPanel({ data }) {
           />
         </Callout>
       </MarginsWrapper>
-    )
+    );
   }
 
   if (template === 'body_width_text' || template === 'text_group') {
-    const hasTopBorder = data.field_border === 'yes'
-    const hasMarginTop = template === 'body_width_text'
-    const useMargins = placement !== 'body' && template === 'body_width_text'
+    const hasTopBorder = data.field_border === 'yes';
+    const hasMarginTop = template === 'body_width_text';
+    const useMargins = placement !== 'body' && template === 'body_width_text';
 
     return (
       <MarginsWrapper useMargins={useMargins}>
@@ -294,11 +294,11 @@ function TextPanel({ data }) {
           ))}
         </div>
       </MarginsWrapper>
-    )
+    );
   }
 
   if (template === 'full_width_text_template') {
-    const html = data.relationships.field_text_card[0].field_body.processed
+    const html = data.relationships.field_text_card[0].field_body.processed;
 
     return (
       <PanelTemplate
@@ -339,7 +339,7 @@ function TextPanel({ data }) {
           </div>
         </div>
       </PanelTemplate>
-    )
+    );
   }
 
   if (template === 'grid_text_template_with_linked_title') {
@@ -372,11 +372,11 @@ function TextPanel({ data }) {
           ))}
         </PanelList>
       </PanelTemplate>
-    )
+    );
   }
 
   if (template === 'image_text_body') {
-    const items = cards.map(card => {
+    const items = cards.map((card) => {
       return {
         heading: card.field_title,
         html: card.field_body.processed,
@@ -386,8 +386,8 @@ function TextPanel({ data }) {
         imageAlt:
           card.relationships.field_text_image.relationships.field_media_image
             .relationships?.media__image[0]?.field_media_image.alt,
-      }
-    })
+      };
+    });
 
     return (
       <PanelTemplate title={title}>
@@ -429,53 +429,53 @@ function TextPanel({ data }) {
           </section>
         ))}
       </PanelTemplate>
-    )
+    );
   }
 
-  return null
+  return null;
 }
 
 export default function Panels({ data }) {
   if (!data) {
-    return null
+    return null;
   }
 
   return (
     <PanelStateWrapper>
       {data.map((panel, i) => {
-        const type = panel.__typename
-        const id = panel.id
+        const type = panel.__typename;
+        const id = panel.id;
 
         switch (type) {
           case 'paragraph__hours_panel_lite':
-            return <HoursLitePanel data={panel} key={id} />
+            return <HoursLitePanel data={panel} key={id} />;
           case 'paragraph__link_panel':
-            return <LinkPanel data={panel} key={id} />
+            return <LinkPanel data={panel} key={id} />;
           case 'paragraph__group_panel':
-            return <GroupPanel data={panel} key={id} />
+            return <GroupPanel data={panel} key={id} />;
           case 'paragraph__card_panel':
-            return <CardPanel data={panel} key={id} />
+            return <CardPanel data={panel} key={id} />;
           case 'paragraph__text_panel':
-            return <TextPanel data={panel} key={id} />
+            return <TextPanel data={panel} key={id} />;
           case 'paragraph__hours_panel':
-            return <HoursPanel data={panel} key={id} />
+            return <HoursPanel data={panel} key={id} />;
           case 'paragraph__hero_panel':
-            return <HeroPanel data={panel} key={id} />
+            return <HeroPanel data={panel} key={id} />;
           case 'paragraph__custom_panel':
-            return <CustomPanel data={panel} key={id} />
+            return <CustomPanel data={panel} key={id} />;
           default:
-            console.warn('Unknown panel type', type)
-            return null
+            console.warn('Unknown panel type', type);
+            return null;
         }
       })}
     </PanelStateWrapper>
-  )
+  );
 }
 
 function PanelStateWrapper({ children }) {
   const initialState = {
     weekOffset: 0,
-  }
+  };
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -483,17 +483,17 @@ function PanelStateWrapper({ children }) {
         return {
           ...state,
           weekOffset: action.weekOffset,
-        }
+        };
       default:
-        return state
+        return state;
     }
-  }
+  };
 
   return (
     <StateProvider initialState={initialState} reducer={reducer}>
       {children}
     </StateProvider>
-  )
+  );
 }
 
-export { PanelTemplate, PanelList }
+export { PanelTemplate, PanelList };

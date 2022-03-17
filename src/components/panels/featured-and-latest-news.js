@@ -1,17 +1,17 @@
-import React from 'react'
-import { useStaticQuery, graphql } from 'gatsby'
-import styled from '@emotion/styled'
-import * as moment from 'moment'
-import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '@reusable'
-import Card from '../card'
-import Link from '../link'
+import React from 'react';
+import { useStaticQuery, graphql } from 'gatsby';
+import styled from '@emotion/styled';
+import * as moment from 'moment';
+import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '@reusable';
+import Card from '../card';
+import Link from '../link';
 
 function processNewsNodeForCard({ newsNode }) {
   const newsImage =
     newsNode.relationships?.field_media_image?.relationships?.field_media_image
-      ?.localFile?.childImageSharp?.fluid
+      ?.localFile?.childImageSharp?.fluid;
 
-  const children = newsNode.body?.summary
+  const children = newsNode.body?.summary;
 
   return {
     title: newsNode.title,
@@ -19,7 +19,7 @@ function processNewsNodeForCard({ newsNode }) {
     href: newsNode.fields.slug,
     image: newsImage,
     children,
-  }
+  };
 }
 
 /*
@@ -35,7 +35,7 @@ const Layout = styled.div({
   [MEDIA_QUERIES.LARGESCREEN]: {
     gridGap: SPACING['L'],
   },
-})
+});
 
 export default function FeaturedAndLatestNews() {
   const data = useStaticQuery(graphql`
@@ -89,7 +89,7 @@ export default function FeaturedAndLatestNews() {
         }
       }
     }
-  `)
+  `);
 
   if (data.featuredNews.edges.length === 0) {
     throw new Error(`
@@ -100,13 +100,13 @@ export default function FeaturedAndLatestNews() {
     `);
   }
 
-  const featureNode = data.featuredNews.edges[0].node
-  const featureCardProps = processNewsNodeForCard({ newsNode: featureNode })
-  const recentNews = sortNews({ data })
+  const featureNode = data.featuredNews.edges[0].node;
+  const featureCardProps = processNewsNodeForCard({ newsNode: featureNode });
+  const recentNews = sortNews({ data });
   const recentNewsCardProps = recentNews.map(({ node }) => {
-    return processNewsNodeForCard({ newsNode: node })
-  })
-  const viewAllNewsHref = data.newsLandingPage.fields.slug
+    return processNewsNodeForCard({ newsNode: node });
+  });
+  const viewAllNewsHref = data.newsLandingPage.fields.slug;
 
   return (
     <Margins>
@@ -191,34 +191,37 @@ export default function FeaturedAndLatestNews() {
         </div>
       </Layout>
     </Margins>
-  )
+  );
 }
 
 function sortNews({ data }) {
-  const priorityNewsCount = data.priorityNews.edges.length
+  const priorityNewsCount = data.priorityNews.edges.length;
 
   // If there is no priority news, just send back recent news.
   if (priorityNewsCount === 0) {
-    return data.recentNews
+    return data.recentNews;
   }
 
   // Otherwise, merge the two, sort by date.
-  const recentNewsSliced = data.recentNews.edges.slice(0, 5 - priorityNewsCount)
-  const allNews = data.priorityNews.edges.concat(recentNewsSliced)
+  const recentNewsSliced = data.recentNews.edges.slice(
+    0,
+    5 - priorityNewsCount
+  );
+  const allNews = data.priorityNews.edges.concat(recentNewsSliced);
 
   function compareCreatedDate(a, b) {
     if (moment(a.node.created).isBefore(b.node.created)) {
-      return 1
+      return 1;
     }
 
     if (moment(a.node.created).isAfter(b.node.created)) {
-      return -1
+      return -1;
     }
 
-    return 0
+    return 0;
   }
 
-  const sorted = [...allNews].sort(compareCreatedDate)
+  const sorted = [...allNews].sort(compareCreatedDate);
 
-  return sorted
+  return sorted;
 }

@@ -12,26 +12,26 @@ import {
   INTENT_COLORS,
   lightOrDark,
   GlobalStyleSheet,
-} from './utils'
+} from './utils';
 
-import { Breadcrumb, BreadcrumbItem } from './breadcrumb'
-import Heading from './heading'
-import Alert from './alert'
-import Button from './button'
-import List from './list'
-import Text from './text'
-import TextInput from './text-input'
-import Input from './input'
-import Link from './link'
-import Card from './card'
-import Icon, { icons } from './icon'
+import { Breadcrumb, BreadcrumbItem } from './breadcrumb';
+import Heading from './heading';
+import Alert from './alert';
+import Button from './button';
+import List from './list';
+import Text from './text';
+import TextInput from './text-input';
+import Input from './input';
+import Link from './link';
+import Card from './card';
+import Icon, { icons } from './icon';
 
 import {
   Expandable,
   ExpandableButton,
   ExpandableChildren,
   ExpandableProvider,
-} from './expandable/index'
+} from './expandable/index';
 
 export {
   COLORS,
@@ -64,4 +64,4 @@ export {
   ExpandableButton,
   ExpandableChildren,
   ExpandableProvider,
-}
+};

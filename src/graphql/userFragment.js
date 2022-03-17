@@ -1,4 +1,4 @@
-import { graphql } from 'gatsby'
+import { graphql } from 'gatsby';
 
 export const query = graphql`
   fragment userFragment on user__user {
@@ -91,4 +91,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

@@ -1,6 +1,6 @@
-import styled from '@emotion/styled'
+import styled from '@emotion/styled';
 
-import { COLORS, TYPOGRAPHY, SPACING } from '@reusable'
+import { COLORS, TYPOGRAPHY, SPACING } from '@reusable';
 
 const Table = styled('table')({
   width: '100%',
@@ -16,6 +16,6 @@ const Table = styled('table')({
   td: {
     borderBottom: `solid 1px ${COLORS.neutral[100]}`,
   },
-})
+});
 
-export default Table
+export default Table;

@@ -1,29 +1,29 @@
-import React from 'react'
-import { Link } from 'gatsby'
-import styled from '@emotion/styled'
-import { Heading } from '@reusable'
+import React from 'react';
+import { Link } from 'gatsby';
+import styled from '@emotion/styled';
+import { Heading } from '@reusable';
 
-const getPages = data => {
-  return data.map(page => {
-    const pages = page.relationships && page.relationships.node__page
+const getPages = (data) => {
+  return data.map((page) => {
+    const pages = page.relationships && page.relationships.node__page;
 
     return {
       text: page.title,
       to: page.path.alias,
       pages: pages ? getPages(pages) : null,
-    }
-  })
-}
+    };
+  });
+};
 
 const StyledNav = styled('nav')({
   marginTop: '1rem',
-})
+});
 
 const StyledNavList = styled('nav')({
   listStyle: 'none',
   padding: '0',
   margin: '0',
-})
+});
 
 const StyledLink = styled(Link)({
   display: 'block',
@@ -31,13 +31,13 @@ const StyledLink = styled(Link)({
   ':hover': {
     textDecoration: 'underline',
   },
-})
+});
 
 const Navigation = ({ data }) => {
   if (!data) {
-    return null
+    return null;
   }
-  const navData = getPages(data)
+  const navData = getPages(data);
 
   return (
     <StyledNav>
@@ -58,7 +58,7 @@ const Navigation = ({ data }) => {
         ))}
       </StyledNavList>
     </StyledNav>
-  )
-}
+  );
+};
 
-export default Navigation
+export default Navigation;

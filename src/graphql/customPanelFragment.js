@@ -1,4 +1,4 @@
-import { graphql } from 'gatsby'
+import { graphql } from 'gatsby';
 
 export const query = graphql`
   fragment customPanelFragment on paragraph__custom_panel {
@@ -6,4 +6,4 @@ export const query = graphql`
     id
     field_machine_name
   }
-`
+`;

@@ -1,14 +1,14 @@
-import React from 'react'
-import rehypeReact from 'rehype-react'
-import { Heading, Text, List, COLORS } from '@reusable'
-import { unified } from 'unified'
-import rehype from 'rehype-parse'
-import Prose from './prose'
-import Link from './link'
-import DrupalEntity from './drupal-entity'
-import Callout from '../reusable/callout'
-import Blockquote from '../reusable/blockquote'
-import Table from './table'
+import React from 'react';
+import rehypeReact from 'rehype-react';
+import { Heading, Text, List, COLORS } from '@reusable';
+import { unified } from 'unified';
+import rehype from 'rehype-parse';
+import Prose from './prose';
+import Link from './link';
+import DrupalEntity from './drupal-entity';
+import Callout from '../reusable/callout';
+import Blockquote from '../reusable/blockquote';
+import Table from './table';
 
 /**
   Headings
@@ -17,12 +17,12 @@ const Heading2 = ({ children, ...other }) => (
   <Heading level={2} size="M" {...other}>
     {children}
   </Heading>
-)
+);
 const Heading3 = ({ children, ...other }) => (
   <Heading level={3} size="S" {...other}>
     {children}
   </Heading>
-)
+);
 const Heading4 = ({ children, ...other }) => (
   <Heading
     level={4}
@@ -32,17 +32,17 @@ const Heading4 = ({ children, ...other }) => (
   >
     {children}
   </Heading>
-)
+);
 const Heading5 = ({ children, ...other }) => (
   <Heading level={5} size="3XS" {...other}>
     {children}
   </Heading>
-)
+);
 const Heading6 = ({ children, ...other }) => (
   <Heading level={6} size="3XS" {...other}>
     {children}
   </Heading>
-)
+);
 
 const renderHast = new rehypeReact({
   components: {
@@ -54,13 +54,13 @@ const renderHast = new rehypeReact({
     a: ({ children, href, ...other }) => {
       if (!children || !href) {
         // Don't render links without a label or href
-        return null
+        return null;
       }
-      return <Link to={href}>{children}</Link>
+      return <Link to={href}>{children}</Link>;
     },
     p: ({ children, className }) => {
       if (className === 'umich-lib-callout') {
-        return <Callout>{children}</Callout>
+        return <Callout>{children}</Callout>;
       }
 
       if (className === 'umich-lib-alert') {
@@ -68,10 +68,10 @@ const renderHast = new rehypeReact({
           <Callout intent="warning" alert={true}>
             {children}
           </Callout>
-        )
+        );
       }
 
-      return <Text>{children}</Text>
+      return <Text>{children}</Text>;
     },
     strong: ({ children }) => (
       <strong css={{ fontWeight: '800' }}>{children}</strong>
@@ -79,7 +79,7 @@ const renderHast = new rehypeReact({
     ul: ({ children }) => <List type="bulleted">{children}</List>,
     ol: ({ children }) => <List type="numbered">{children}</List>,
     br: () => <br />,
-    em: props => <em {...props} css={{ fontStyle: 'italic' }} />,
+    em: (props) => <em {...props} css={{ fontStyle: 'italic' }} />,
     text: Text,
     lede: ({ children, ...other }) => (
       <Text lede {...other}>
@@ -87,12 +87,12 @@ const renderHast = new rehypeReact({
       </Text>
     ),
     u: ({ children }) => children,
-    blockquote: props => <Blockquote {...props} />,
-    'drupal-entity': props => <DrupalEntity {...props} />,
+    blockquote: (props) => <Blockquote {...props} />,
+    'drupal-entity': (props) => <DrupalEntity {...props} />,
     iframe: () => null,
     article: () => null,
-    figure: props => <figure {...props} css={{ maxWidth: '38rem' }} />,
-    figcaption: props => (
+    figure: (props) => <figure {...props} css={{ maxWidth: '38rem' }} />,
+    figcaption: (props) => (
       <figcaption
         {...props}
         css={{
@@ -106,23 +106,21 @@ const renderHast = new rehypeReact({
   // A workaround to replace the container div created by rehype-react with a React fragment.
   createElement: (component, props = {}, children = []) => {
     if (props['data-entity-uuid']) {
-      return <DrupalEntity {...props} />
+      return <DrupalEntity {...props} />;
     }
 
     if (component === 'div') {
-      return <React.Fragment {...props}>{children}</React.Fragment>
+      return <React.Fragment {...props}>{children}</React.Fragment>;
     }
 
-    return React.createElement(component, props, children)
+    return React.createElement(component, props, children);
   },
-}).Compiler
+}).Compiler;
 
 function Html({ html, ...rest }) {
-  const tree = unified()
-    .use(rehype, { fragment: true })
-    .parse(html)
+  const tree = unified().use(rehype, { fragment: true }).parse(html);
 
-  return <Prose {...rest}>{renderHast(tree)}</Prose>
+  return <Prose {...rest}>{renderHast(tree)}</Prose>;
 }
 
-export default Html
+export default Html;

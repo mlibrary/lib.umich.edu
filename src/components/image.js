@@ -1,7 +1,7 @@
-import React from 'react'
-import Img from 'gatsby-image'
+import React from 'react';
+import Img from 'gatsby-image';
 
-import { SPACING } from '@reusable'
+import { SPACING } from '@reusable';
 
 export default function Image({ image, caption, alt = '' }) {
   return (
@@ -14,5 +14,5 @@ export default function Image({ image, caption, alt = '' }) {
       fluid={image}
       alt={alt}
     />
-  )
+  );
 }

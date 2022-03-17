@@ -1,11 +1,11 @@
-import React from 'react'
-import { Dialog } from '@reach/dialog'
-import { SPACING, Z_SPACE } from '@reusable'
+import React from 'react';
+import { Dialog } from '@reach/dialog';
+import { SPACING, Z_SPACE } from '@reusable';
 
-import SiteSearch from './site-search'
-import MEDIA_QUERIES from '../reusable/media-queries'
+import SiteSearch from './site-search';
+import MEDIA_QUERIES from '../reusable/media-queries';
 
-import '@reach/dialog/styles.css'
+import '@reach/dialog/styles.css';
 
 function SiteSearchModal({ handleDismiss }) {
   return (
@@ -40,7 +40,7 @@ function SiteSearchModal({ handleDismiss }) {
         <SiteSearch label="Search this site" />
       </Dialog>
     </React.Fragment>
-  )
+  );
 }
 
-export default SiteSearchModal
+export default SiteSearchModal;

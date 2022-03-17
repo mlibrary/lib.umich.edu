@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import { ExpandableContext } from './expandable'
-import { Button } from '@reusable'
+import React, { Component } from 'react';
+import { ExpandableContext } from './expandable';
+import { Button } from '@reusable';
 
-const cleanList = list => {
+const cleanList = (list) => {
   return list
-    .filter(x => (x ? true : false))
+    .filter((x) => (x ? true : false))
     .join(' ')
-    .trim()
-}
+    .trim();
+};
 
 class ExpandableButtonComponent extends Component {
   render() {
-    const { context } = this.props
+    const { context } = this.props;
 
     if (context.disabled) {
-      return null
+      return null;
     }
 
     return (
@@ -23,16 +23,16 @@ class ExpandableButtonComponent extends Component {
           ? cleanList(['Show fewer', this.props.name])
           : cleanList(['Show all', this.props.count, this.props.name])}
       </Button>
-    )
+    );
   }
 }
 
 function ExpandableButton(props) {
   return (
     <ExpandableContext.Consumer>
-      {context => <ExpandableButtonComponent {...props} context={context} />}
+      {(context) => <ExpandableButtonComponent {...props} context={context} />}
     </ExpandableContext.Consumer>
-  )
+  );
 }
 
 export default ExpandableButton;

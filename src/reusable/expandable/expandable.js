@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-const ExpandableContext = React.createContext()
+const ExpandableContext = React.createContext();
 
 /**
   Use Expandable to show only the first few items.
@@ -13,33 +13,33 @@ class Expandable extends Component {
     toggleExpanded: () => {
       this.setState({
         expanded: !this.state.expanded,
-      })
+      });
     },
     disabled: false,
     disable: () => {
       this.setState({
         disabled: true,
-      })
+      });
     },
-  }
+  };
 
   render() {
     return (
       <ExpandableContext.Provider value={this.state}>
         {this.props.children}
       </ExpandableContext.Provider>
-    )
+    );
   }
 }
 
 Expandable.propTypes = {
   expanded: PropTypes.bool,
   disabled: PropTypes.bool,
-}
+};
 
 Expandable.defaultProps = {
   expanded: false,
-}
+};
 
-export default Expandable
-export { ExpandableContext }
+export default Expandable;
+export { ExpandableContext };

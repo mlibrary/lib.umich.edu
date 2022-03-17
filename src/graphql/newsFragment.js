@@ -1,4 +1,4 @@
-import { graphql } from 'gatsby'
+import { graphql } from 'gatsby';
 
 export const query = graphql`
   fragment newsFragment on node__news {
@@ -38,4 +38,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

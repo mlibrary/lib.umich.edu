@@ -1,15 +1,21 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Helmet from 'react-helmet'
-import { StaticQuery, graphql } from 'gatsby'
+import React from 'react';
+import PropTypes from 'prop-types';
+import Helmet from 'react-helmet';
+import { StaticQuery, graphql } from 'gatsby';
 
-function SearchEngineOptimization({ description, lang, meta, keywords, title }) {
+function SearchEngineOptimization({
+  description,
+  lang,
+  meta,
+  keywords,
+  title,
+}) {
   return (
     <StaticQuery
       query={detailsQuery}
-      render={data => {
+      render={(data) => {
         const metaDescription =
-          description || data.site.siteMetadata.description
+          description || data.site.siteMetadata.description;
 
         return (
           <Helmet
@@ -61,17 +67,17 @@ function SearchEngineOptimization({ description, lang, meta, keywords, title }) 
               src="https://umich.edu/apis/umalerts/umalerts.js"
             ></script>
           </Helmet>
-        )
+        );
       }}
     />
-  )
+  );
 }
 
 SearchEngineOptimization.defaultProps = {
   lang: 'en',
   meta: [],
   keywords: [],
-}
+};
 
 SearchEngineOptimization.propTypes = {
   description: PropTypes.string,
@@ -79,9 +85,9 @@ SearchEngineOptimization.propTypes = {
   meta: PropTypes.array,
   keywords: PropTypes.arrayOf(PropTypes.string),
   title: PropTypes.string,
-}
+};
 
-export default SearchEngineOptimization
+export default SearchEngineOptimization;
 
 const detailsQuery = graphql`
   query {
@@ -91,4 +97,4 @@ const detailsQuery = graphql`
       }
     }
   }
-`
+`;

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useStaticQuery, graphql } from 'gatsby'
+import React, { useState, useEffect } from 'react';
+import { useStaticQuery, graphql } from 'gatsby';
 import {
   Heading,
   SPACING,
@@ -7,16 +7,16 @@ import {
   Expandable,
   ExpandableButton,
   ExpandableChildren,
-} from '@reusable'
-import * as moment from 'moment'
-import Link from '../link'
+} from '@reusable';
+import * as moment from 'moment';
+import Link from '../link';
 import {
   Template,
   TemplateSide,
   TemplateContent,
-} from '../../components/aside-layout'
-import EventCard from '../../components/event-card'
-import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events'
+} from '../../components/aside-layout';
+import EventCard from '../../components/event-card';
+import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
 
 export default function EventsAndExhibitsPanel() {
   /*
@@ -26,10 +26,10 @@ export default function EventsAndExhibitsPanel() {
     - []: An empty array will mean no events.
     - [{...}, {...}, ...]: An array of events, means we have some! 
   */
-  const [events, setEvents] = useState(null)
-  const [todaysEvents, setTodaysEvents] = useState(null)
-  const [upcomingEvents, setUpcomingEvents] = useState(null)
-  const [exhibits, setExhibits] = useState(null)
+  const [events, setEvents] = useState(null);
+  const [todaysEvents, setTodaysEvents] = useState(null);
+  const [upcomingEvents, setUpcomingEvents] = useState(null);
+  const [exhibits, setExhibits] = useState(null);
 
   const data = useStaticQuery(graphql`
     query {
@@ -49,7 +49,7 @@ export default function EventsAndExhibitsPanel() {
         }
       }
     }
-  `)
+  `);
 
   useEffect(() => {
     /*
@@ -58,64 +58,64 @@ export default function EventsAndExhibitsPanel() {
     */
     if (events === null) {
       // Flatten things a bit.
-      const events = data.events.edges.map(({ node }) => node)
+      const events = data.events.edges.map(({ node }) => node);
 
-      setEvents(sortEventsByStartDate({ events }))
+      setEvents(sortEventsByStartDate({ events }));
     }
 
     // Only process todaysEvents if it hasn't been done already.
     if (events && todaysEvents === null) {
       // useEffects are only client side, so we can use now here.
-      const now = moment()
+      const now = moment();
 
       // Get Today's events.
-      const todaysEvents = events.filter(event => {
-        const start = event.field_event_date_s_[0].value
-        const type = event.relationships.field_event_type.name
+      const todaysEvents = events.filter((event) => {
+        const start = event.field_event_date_s_[0].value;
+        const type = event.relationships.field_event_type.name;
 
         // We don't want exhibits in the events area.
         if (EXHIBIT_TYPES.includes(type)) {
-          return false
+          return false;
         }
 
-        return now.isSame(start, 'day') // all today.
-      })
+        return now.isSame(start, 'day'); // all today.
+      });
 
-      setTodaysEvents(todaysEvents)
+      setTodaysEvents(todaysEvents);
     }
 
     if (events && upcomingEvents === null) {
       // useEffects are only client side, so we can use now here.
-      const now = moment()
+      const now = moment();
 
       // Get upcoming events.
       // This is repetative... but :shrug:
-      const upcomingEvents = events.filter(event => {
-        const start = event.field_event_date_s_[0].value
-        const type = event.relationships.field_event_type.name
+      const upcomingEvents = events.filter((event) => {
+        const start = event.field_event_date_s_[0].value;
+        const type = event.relationships.field_event_type.name;
 
         // We don't want exhibits in the events area.
         if (EXHIBIT_TYPES.includes(type)) {
-          return false
+          return false;
         }
 
-        return now.isBefore(start, 'day') // all after today.
-      })
+        return now.isBefore(start, 'day'); // all after today.
+      });
 
-      setUpcomingEvents(upcomingEvents)
+      setUpcomingEvents(upcomingEvents);
     }
 
     if (events && exhibits === null) {
-      const exhibits = events.filter(event => {
-        const type = event.relationships.field_event_type.name
+      const exhibits = events.filter((event) => {
+        const type = event.relationships.field_event_type.name;
 
         // We don't want exhibits in the events area.
-        return EXHIBIT_TYPES.includes(type)
-      })
+        return EXHIBIT_TYPES.includes(type);
+      });
 
-      setExhibits(exhibits)
+      setExhibits(exhibits);
     }
-  }, [events]) // eslint-disable-line
+  }, [events]); // eslint-disable-line
 
   return (
     <div
@@ -153,7 +153,7 @@ export default function EventsAndExhibitsPanel() {
 
         <TemplateSide
           css={{
-            '> *:first-child': {
+            '> *:first-of-type': {
               border: 'none',
             },
           }}
@@ -206,7 +206,7 @@ export default function EventsAndExhibitsPanel() {
         </TemplateSide>
       </Template>
     </div>
-  )
+  );
 }
 
 function TodaysEvents({ events }) {
@@ -220,15 +220,17 @@ function TodaysEvents({ events }) {
         >
           There are no events scheduled today.
         </p>
-      )
+      );
     }
 
     if (events.length > 0) {
-      return events.map((event, index) => <EventCard key={`event-card-${index}`} {...event} />)
+      return events.map((event, index) => (
+        <EventCard key={`event-card-${index}`} {...event} />
+      ));
     }
   }
 
-  return null
+  return null;
 }
 
 function UpcomingEvents({ events }) {
@@ -242,7 +244,7 @@ function UpcomingEvents({ events }) {
         >
           There are no upcoming events.
         </p>
-      )
+      );
     }
 
     if (events.length > 0) {
@@ -261,11 +263,11 @@ function UpcomingEvents({ events }) {
             <ExpandableButton name="events" count={events.length} />
           </div>
         </Expandable>
-      )
+      );
     }
   }
 
-  return null
+  return null;
 }
 
 function ExhibitEvents({ events, hasBorder = false }) {
@@ -279,15 +281,20 @@ function ExhibitEvents({ events, hasBorder = false }) {
         >
           There are no upcoming exhibits.
         </p>
-      )
+      );
     }
 
     if (events.length > 0) {
       return events.map((event, index) => (
-        <EventCard key={`event-card-${index}`} {...event} displayImage={false} hasBorder={hasBorder} />
-      ))
+        <EventCard
+          key={`event-card-${index}`}
+          {...event}
+          displayImage={false}
+          hasBorder={hasBorder}
+        />
+      ));
     }
   }
 
-  return null
+  return null;
 }

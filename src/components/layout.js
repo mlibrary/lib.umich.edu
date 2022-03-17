@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Global } from '@emotion/react'
-import { GlobalStyleSheet, COLORS } from '@reusable'
-import Header from './header'
-import Footer from './footer'
-import useNavigationData from '../hooks/use-navigation-data'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Global } from '@emotion/react';
+import { GlobalStyleSheet, COLORS } from '@reusable';
+import Header from './header';
+import Footer from './footer';
+import useNavigationData from '../hooks/use-navigation-data';
 
 function Layout({ children, drupalNid }) {
-  const { primary, secondary } = useNavigationData()
+  const { primary, secondary } = useNavigationData();
 
   return (
     <React.Fragment>
@@ -36,7 +36,7 @@ function Layout({ children, drupalNid }) {
           '[data-reach-dialog-overlay]': {
             zIndex: '999',
             background: 'hsla(0, 0%, 0%, 0.6)',
-          }
+          },
         }}
       />
       <Header primary={primary} secondary={secondary} />
@@ -50,11 +50,11 @@ function Layout({ children, drupalNid }) {
         />
       )}
     </React.Fragment>
-  )
+  );
 }
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
-}
+};
 
-export default Layout
+export default Layout;

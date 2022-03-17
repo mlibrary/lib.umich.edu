@@ -5,8 +5,8 @@ import React, {
   useReducer,
   useEffect,
   useRef,
-} from 'react'
-import { Link } from 'gatsby'
+} from 'react';
+import { Link } from 'gatsby';
 import {
   COLORS,
   SPACING,
@@ -15,19 +15,19 @@ import {
   Icon,
   Alert,
   LINK_STYLES,
-} from '@reusable'
-import VisuallyHidden from '@reach/visually-hidden'
+} from '@reusable';
+import VisuallyHidden from '@reach/visually-hidden';
 
-const StateContext = createContext()
-const dropdownSideWidth = '24rem'
+const StateContext = createContext();
+const dropdownSideWidth = '24rem';
 
 const StateProvider = ({ reducer, initialState, children }) => (
   <StateContext.Provider value={useReducer(reducer, initialState)}>
     {children}
   </StateContext.Provider>
-)
+);
 
-const useStateValue = () => useContext(StateContext)
+const useStateValue = () => useContext(StateContext);
 
 function Nav({ items }) {
   const reducer = (state, action) => {
@@ -36,22 +36,22 @@ function Nav({ items }) {
         return {
           ...state,
           open: action.open,
-        }
+        };
       case 'setPanelOpen':
         return {
           ...state,
           panelOpen: action.panelOpen,
-        }
+        };
       case 'setMinHeight':
         return {
           ...state,
           minHeight: action.minHeight,
-        }
+        };
 
       default:
-        return state
+        return state;
     }
-  }
+  };
 
   return (
     <StateProvider initialState={{ panelOpen: 0 }} reducer={reducer}>
@@ -80,19 +80,19 @@ function Nav({ items }) {
         </ul>
       </nav>
     </StateProvider>
-  )
+  );
 }
 
 function NavPrimaryItem({ text, items, i }) {
-  const [{ open }, dispatch] = useStateValue()
-  const isOpen = open === i
-  const primaryNode = useRef()
+  const [{ open }, dispatch] = useStateValue();
+  const isOpen = open === i;
+  const primaryNode = useRef();
 
   function activeStyles() {
     if (isOpen) {
       return {
         borderColor: COLORS.teal['400'],
-      }
+      };
     }
   }
 
@@ -134,18 +134,18 @@ function NavPrimaryItem({ text, items, i }) {
 
       {isOpen && <NavDropdown items={items} primaryNode={primaryNode} />}
     </li>
-  )
+  );
 }
 
 function NavDropdown({ items, primaryNode }) {
-  const [, dispatch] = useStateValue()
-  const dropdownNode = useRef()
+  const [, dispatch] = useStateValue();
+  const dropdownNode = useRef();
 
   function closeDropdown() {
     dispatch({
       type: 'setOpen',
       open: null,
-    })
+    });
   }
 
   function handleClick(e) {
@@ -160,7 +160,7 @@ function NavDropdown({ items, primaryNode }) {
         from here.
       */
       if (primaryNode.current.contains(e.target)) {
-        return
+        return;
       }
 
       /*
@@ -171,7 +171,7 @@ function NavDropdown({ items, primaryNode }) {
         but this case is caught above.
       */
       if (!dropdownNode.current.contains(e.target)) {
-        closeDropdown()
+        closeDropdown();
       }
     }
   }
@@ -179,19 +179,19 @@ function NavDropdown({ items, primaryNode }) {
   function handleKeydown(e) {
     if (e.keyCode === 27) {
       // ESC key
-      closeDropdown()
+      closeDropdown();
     }
   }
 
   useEffect(() => {
-    document.addEventListener('mouseup', handleClick)
-    document.addEventListener('keydown', handleKeydown)
+    document.addEventListener('mouseup', handleClick);
+    document.addEventListener('keydown', handleKeydown);
 
     return () => {
-      document.removeEventListener('mouseup', handleClick)
-      document.addEventListener('keydown', handleKeydown)
-    }
-  }, [])
+      document.removeEventListener('mouseup', handleClick);
+      document.addEventListener('keydown', handleKeydown);
+    };
+  }, []);
 
   return (
     <div
@@ -208,13 +208,13 @@ function NavDropdown({ items, primaryNode }) {
     >
       <NavPanel items={items} />
     </div>
-  )
+  );
 }
 
 function NavPanel({ items }) {
-  const [{ openPanel, minHeight }, dispatch] = useStateValue()
+  const [{ openPanel, minHeight }, dispatch] = useStateValue();
 
-  const minHeightValue = minHeight > 340 ? minHeight : 340
+  const minHeightValue = minHeight > 340 ? minHeight : 340;
 
   // Set panel open to null on "unmount" of the NavPanel.
   // This is useful so that when opening a different dropdown,
@@ -224,9 +224,9 @@ function NavPanel({ items }) {
       dispatch({
         type: 'setPanelOpen',
         panelOpen: 0,
-      })
-    }
-  }, [openPanel, dispatch])
+      });
+    };
+  }, [openPanel, dispatch]);
 
   return (
     <div
@@ -247,23 +247,23 @@ function NavPanel({ items }) {
         ))}
       </ul>
     </div>
-  )
+  );
 }
 
 function NavPanelItem({ text, to, description, children, i }) {
-  const [{ panelOpen }, dispatch] = useStateValue()
-  const isOpen = panelOpen === i
-  const noPanelsAreOpen = panelOpen === null
+  const [{ panelOpen }, dispatch] = useStateValue();
+  const isOpen = panelOpen === i;
+  const noPanelsAreOpen = panelOpen === null;
 
   function activeStyles() {
     if (isOpen) {
       return {
         borderColor: COLORS.teal['400'],
         background: COLORS.teal['100'],
-      }
+      };
     }
 
-    return {}
+    return {};
   }
 
   // Render as a link if no links to show in panel.
@@ -282,7 +282,7 @@ function NavPanelItem({ text, to, description, children, i }) {
           <span className="text">{text}</span>
         </Link>
       </li>
-    )
+    );
   }
 
   return (
@@ -332,29 +332,29 @@ function NavPanelItem({ text, to, description, children, i }) {
       )}
       {noPanelsAreOpen && <NoPanelsAreOpen />}
     </li>
-  )
+  );
 }
 
 function NavPanelItemLinks({ parentItem, items }) {
-  const [, dispatch] = useStateValue()
-  const ref = useRef()
+  const [, dispatch] = useStateValue();
+  const ref = useRef();
 
   useEffect(() => {
     dispatch({
       type: 'setMinHeight',
       minHeight: ref.current.clientHeight,
-    })
-  }, [dispatch])
+    });
+  }, [dispatch]);
 
   function columnStyles() {
     if (items.length > 4) {
       return {
         columns: items.length > 4 ? '2' : 'none',
         columnGap: SPACING['L'],
-      }
+      };
     }
 
-    return {}
+    return {};
   }
 
   return (
@@ -446,7 +446,7 @@ function NavPanelItemLinks({ parentItem, items }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 function NoPanelsAreOpen() {
@@ -474,7 +474,7 @@ function NoPanelsAreOpen() {
         Select an item from the list to see related links.
       </p>
     </div>
-  )
+  );
 }
 
-export default Nav
+export default Nav;

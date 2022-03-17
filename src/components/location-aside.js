@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-import { Heading, Icon, Text, COLORS, SPACING } from '@reusable'
-import Link from './link'
-import Hours from './todays-hours'
-import icons from '../reusable/icons'
-import Address from './address'
-import LocationAnchoredLink from './location-anchored-link'
+import { Heading, Icon, Text, COLORS, SPACING } from '@reusable';
+import Link from './link';
+import Hours from './todays-hours';
+import icons from '../reusable/icons';
+import Address from './address';
+import LocationAnchoredLink from './location-anchored-link';
 
 function LayoutWithIcon({ d, palette, children }) {
   return (
@@ -36,15 +36,19 @@ function LayoutWithIcon({ d, palette, children }) {
       </div>
       <div>{children}</div>
     </div>
-  )
+  );
 }
 
 export default function LocationAside({ node }) {
-  const { field_phone_number, field_email, relationships } = node
-  const buildingNode = relationships?.field_room_building
-  const parentLocationNode = relationships?.field_parent_location?.relationships?.field_parent_location
+  const { field_phone_number, field_email, relationships } = node;
+  const buildingNode = relationships?.field_room_building;
+  const parentLocationNode =
+    relationships?.field_parent_location?.relationships?.field_parent_location;
   const locationNode = buildingNode
-    ? buildingNode : parentLocationNode ? parentLocationNode : node
+    ? buildingNode
+    : parentLocationNode
+    ? parentLocationNode
+    : node;
 
   return (
     <React.Fragment>
@@ -122,5 +126,5 @@ export default function LocationAside({ node }) {
         </LayoutWithIcon>
       </address>
     </React.Fragment>
-  )
+  );
 }

@@ -1,92 +1,92 @@
-import React, { useState, useEffect } from 'react'
-import { Link as GatsbyLink } from 'gatsby'
-import { SPACING, Z_SPACE, COLORS, Icon, Alert, TYPOGRAPHY } from '@reusable'
-import { findAll } from 'highlight-words-core'
-import VisuallyHidden from '@reach/visually-hidden'
-import ReachAlert from '@reach/alert'
-import Link from '../components/link'
-import HEADER_MEDIA_QUERIES from '../components/header/header-media-queries'
-import useGoogleTagManager from '../hooks/use-google-tag-manager'
+import React, { useState, useEffect } from 'react';
+import { Link as GatsbyLink } from 'gatsby';
+import { SPACING, Z_SPACE, COLORS, Icon, Alert, TYPOGRAPHY } from '@reusable';
+import { findAll } from 'highlight-words-core';
+import VisuallyHidden from '@reach/visually-hidden';
+import ReachAlert from '@reach/alert';
+import Link from '../components/link';
+import HEADER_MEDIA_QUERIES from '../components/header/header-media-queries';
+import useGoogleTagManager from '../hooks/use-google-tag-manager';
 
-const lunr = require('lunr')
+const lunr = require('lunr');
 
 export default function SiteSearch({ label }) {
-  const [query, setQuery] = useState('')
-  const [error, setError] = useState(null)
-  const [results, setResults] = useState([])
-  const [openResults, setOpenResults] = useState([])
+  const [query, setQuery] = useState('');
+  const [error, setError] = useState(null);
+  const [results, setResults] = useState([]);
+  const [openResults, setOpenResults] = useState([]);
 
   useGoogleTagManager({
     eventName: 'siteSearch',
     value: query,
-  })
+  });
 
   useEffect(() => {
     // If the query changes, let results open again.
     if (!openResults) {
-      setOpenResults(true)
+      setOpenResults(true);
     }
 
     if (!query || !window.__LUNR__) {
-      setResults([])
-      return
+      setResults([]);
+      return;
     }
-    const lunrIndex = window.__LUNR__['en']
+    const lunrIndex = window.__LUNR__['en'];
 
     try {
-      const searchResults = lunrIndex.index.query(q => {
+      const searchResults = lunrIndex.index.query((q) => {
         q.term(lunr.tokenizer(query), {
           boost: 3,
-        })
+        });
         q.term(lunr.tokenizer(query), {
           boost: 2,
           wildcard: lunr.Query.wildcard.TRAILING,
-        })
+        });
         if (query.length > 2) {
           q.term(lunr.tokenizer(query), {
             wildcard:
               lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
-          })
+          });
         }
-      })
+      });
 
       setResults(
         searchResults.map(({ ref }) => {
           return {
             ...lunrIndex.store[ref],
             slug: ref.split(' /')[1],
-          }
+          };
         })
-      )
+      );
 
-      setError(null)
+      setError(null);
     } catch (e) {
       if (e instanceof lunr.QueryParseError) {
-        setError({ query: query, error: e })
-        return
+        setError({ query: query, error: e });
+        return;
       } else {
-        console.warn('Site search error', e)
+        console.warn('Site search error', e);
       }
     }
     // eslint-disable-next-line
-  }, [query])
+  }, [query]);
 
   function handleKeydown(e) {
     if (e.keyCode === 27) {
       // ESC key
-      setOpenResults(false)
+      setOpenResults(false);
     }
   }
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeydown)
+    document.addEventListener('keydown', handleKeydown);
 
     return () => {
-      document.addEventListener('keydown', handleKeydown)
-    }
-  })
+      document.addEventListener('keydown', handleKeydown);
+    };
+  });
 
-  const handleChange = e => setQuery(cleanQueryStringForLunr(e.target.value))
+  const handleChange = (e) => setQuery(cleanQueryStringForLunr(e.target.value));
   return (
     <form
       css={{
@@ -94,9 +94,9 @@ export default function SiteSearch({ label }) {
         display: 'flex',
         alignItems: 'center',
       }}
-      onSubmit={e => {
-        e.preventDefault()
-        setOpenResults(true)
+      onSubmit={(e) => {
+        e.preventDefault();
+        setOpenResults(true);
       }}
     >
       <Icon
@@ -154,31 +154,31 @@ export default function SiteSearch({ label }) {
         openResults={openResults}
       />
     </form>
-  )
+  );
 }
 
 function ResultsSummary({ searching, noResults, resultCount }) {
   if (noResults || !searching) {
-    return null
+    return null;
   }
 
-  const resultText = `${resultCount} result${resultCount > 1 ? 's' : ''}`
+  const resultText = `${resultCount} result${resultCount > 1 ? 's' : ''}`;
 
   return (
     <VisuallyHidden>
       <ReachAlert>{resultText}</ReachAlert>
     </VisuallyHidden>
-  )
+  );
 }
 
 function ResultsContainer({ results, query, error, openResults }) {
-  const searching = query.length > 0
-  const noResults = searching && results.length === 0
+  const searching = query.length > 0;
+  const noResults = searching && results.length === 0;
 
   // Do not render results, if user just hit ESC.
   // This is reset when the query changes.
   if (!openResults) {
-    return null
+    return null;
   }
 
   return (
@@ -196,13 +196,13 @@ function ResultsContainer({ results, query, error, openResults }) {
         error={error}
       />
     </React.Fragment>
-  )
+  );
 }
 
 function ResultsList({ searching, noResults, results, query, error }) {
   // If you're not searching, don't show anything.
   if (!searching) {
-    return null
+    return null;
   }
 
   if (noResults) {
@@ -210,7 +210,7 @@ function ResultsList({ searching, noResults, results, query, error }) {
       <Popover error={error}>
         <NoResults query={query} />
       </Popover>
-    )
+    );
   }
 
   return (
@@ -273,7 +273,7 @@ function ResultsList({ searching, noResults, results, query, error }) {
         ))}
       </ol>
     </Popover>
-  )
+  );
 }
 
 function KeyboardControlIntructions() {
@@ -282,7 +282,7 @@ function KeyboardControlIntructions() {
       <kbd>tab</kbd> to navigate, <kbd>enter</kbd> to select, <kbd>esc</kbd> to
       dismiss
     </React.Fragment>
-  )
+  );
 }
 
 function LibrarySearchScopeOption({ query }) {
@@ -345,7 +345,7 @@ function LibrarySearchScopeOption({ query }) {
         Find materials
       </span>
     </a>
-  )
+  );
 }
 
 function ResultContent({ query, result }) {
@@ -382,7 +382,7 @@ function ResultContent({ query, result }) {
         </p>
       )}
     </React.Fragment>
-  )
+  );
 }
 
 /**
@@ -392,26 +392,26 @@ function ResultContent({ query, result }) {
 function HighlightText({ query, text }) {
   // Escape regexp special characters in `str`
   function escapeRegexp(str) {
-    return String(str).replace(/([.*+?=^!:${}()|[\]/\\])/g, '\\$1')
+    return String(str).replace(/([.*+?=^!:${}()|[\]/\\])/g, '\\$1');
   }
 
   const chunks = findAll({
     searchWords: escapeRegexp(query || '').split(/\s+/),
     textToHighlight: text,
-  })
+  });
 
   const highlightedText = chunks.map((chunk, index) => {
-    const { end, highlight, start } = chunk
-    const textChunk = text.substr(start, end - start)
+    const { end, highlight, start } = chunk;
+    const textChunk = text.substr(start, end - start);
 
     if (highlight) {
-      return <mark key={`highlight-${index}`}>{textChunk}</mark>
+      return <mark key={`highlight-${index}`}>{textChunk}</mark>;
     } else {
-      return <React.Fragment key={`text-${index}`}>{textChunk}</React.Fragment>
+      return <React.Fragment key={`text-${index}`}>{textChunk}</React.Fragment>;
     }
-  })
+  });
 
-  return highlightedText
+  return highlightedText;
 }
 
 function NoResults({ query }) {
@@ -450,7 +450,7 @@ function NoResults({ query }) {
         for books, articles, and more.
       </span>
     </p>
-  )
+  );
 }
 
 function Popover({ children, error }) {
@@ -484,15 +484,15 @@ function Popover({ children, error }) {
         {children}
       </div>
     </div>
-  )
+  );
 }
 
 function cleanQueryStringForLunr(str) {
-  let query = str
+  let query = str;
 
   // Ignore quotation marks so they don't throw results -- LIBWEB-649
   // `""` => ``
-  query = query.replace(/['"]+/g, '')
+  query = query.replace(/['"]+/g, '');
 
-  return query
+  return query;
 }

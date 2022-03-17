@@ -1,6 +1,6 @@
-import React from 'react'
-import { Link as GatsbyLink } from 'gatsby'
-import { LINK_STYLES, SPACING, COLORS, Icon } from '@reusable'
+import React from 'react';
+import { Link as GatsbyLink } from 'gatsby';
+import { LINK_STYLES, SPACING, COLORS, Icon } from '@reusable';
 
 const linkCSS = {
   display: 'block',
@@ -9,7 +9,7 @@ const linkCSS = {
   background: COLORS.teal['100'],
   ':hover [data-link]': LINK_STYLES['description'][':hover'],
   borderRadius: '2px',
-}
+};
 
 function Link({ to, ...other }) {
   /*
@@ -20,7 +20,7 @@ function Link({ to, ...other }) {
       <GatsbyLink to={to} css={linkCSS}>
         <LinkContent {...other} />
       </GatsbyLink>
-    )
+    );
   }
 
   // A regular anchor link. Probably an external link.
@@ -28,7 +28,7 @@ function Link({ to, ...other }) {
     <a href={to} css={linkCSS}>
       <LinkContent {...other} />
     </a>
-  )
+  );
 }
 
 function LinkContent({ d, icon, children }) {
@@ -54,7 +54,7 @@ function LinkContent({ d, icon, children }) {
         {children}
       </span>
     </React.Fragment>
-  )
+  );
 }
 
-export default Link
+export default Link;

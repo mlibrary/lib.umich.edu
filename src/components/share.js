@@ -1,25 +1,25 @@
-import React from 'react'
-import { Heading, SPACING, COLORS } from '@reusable'
-import PlainLink from './plain-link'
-import IconText from './icon-text'
+import React from 'react';
+import { Heading, SPACING, COLORS } from '@reusable';
+import PlainLink from './plain-link';
+import IconText from './icon-text';
 
-const qs = require('qs')
+const qs = require('qs');
 
 export default function Share({ url, title }) {
   const emailProps = qs.stringify({
     subject: title,
     body: `University of Michigan Library: ${url}`,
-  })
+  });
 
   const twitterProps = qs.stringify({
     url,
     text: `${title} @UMichLibrary`,
-  })
+  });
 
   const fbProps = qs.stringify({
     u: url,
     t: title,
-  })
+  });
 
   const options = [
     {
@@ -37,7 +37,7 @@ export default function Share({ url, title }) {
       to: `mailto:?${emailProps}`,
       icon: 'email',
     },
-  ]
+  ];
 
   return (
     <React.Fragment>
@@ -72,9 +72,9 @@ export default function Share({ url, title }) {
                 </IconText>
               </PlainLink>
             </li>
-          )
+          );
         })}
       </ul>
     </React.Fragment>
-  )
+  );
 }

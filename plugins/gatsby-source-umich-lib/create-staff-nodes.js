@@ -1,5 +1,5 @@
-const crypto = require('crypto')
-const entities = require('entities')
+const crypto = require('crypto');
+const entities = require('entities');
 /*
   1. Fetch the staff API.
     https://cms.lib.umich.edu/api/staff
@@ -25,21 +25,21 @@ const entities = require('entities')
 */
 
 function processOffice(arr) {
-  const processed = processOfficeArray(arr).join(' ')
-  return processed.length > 0 ? processed : null
+  const processed = processOfficeArray(arr).join(' ');
+  return processed.length > 0 ? processed : null;
 }
 
 function processOfficeArray(rawArray) {
-  const arr = rawArray.filter(a => a)
+  const arr = rawArray.filter((a) => a);
 
-  return arr.filter(a => {
-    return a && a.length > 0
-  })
+  return arr.filter((a) => {
+    return a && a.length > 0;
+  });
 }
 
 async function createStaffNodes({ createNode, staffRawData }) {
-  staffRawData.forEach(rawMetadata => {
-    const metadata = processRawMetadata(rawMetadata)
+  staffRawData.forEach((rawMetadata) => {
+    const metadata = processRawMetadata(rawMetadata);
 
     const node = {
       // Staff person metadata
@@ -55,10 +55,10 @@ async function createStaffNodes({ createNode, staffRawData }) {
           .update(JSON.stringify(metadata))
           .digest(`hex`),
       },
-    }
+    };
 
-    createNode(node)
-  })
+    createNode(node);
+  });
 }
 
 function processRawMetadata(data) {
@@ -72,9 +72,9 @@ function processRawMetadata(data) {
     field_media_image,
     field_room_building,
     field_user_room,
-  } = data
-  const [division_nid, department_nid] = field_user_department.split(', ')
-  const office = processOffice([field_user_room, field_room_building])
+  } = data;
+  const [division_nid, department_nid] = field_user_department.split(', ');
+  const office = processOffice([field_user_room, field_room_building]);
   const processedMetadata = {
     uniqname: name,
     name: entities.decodeHTML(field_user_display_name),
@@ -85,9 +85,9 @@ function processRawMetadata(data) {
     division_nid,
     image_mid: field_media_image,
     office: office,
-  }
+  };
 
-  return processedMetadata
+  return processedMetadata;
 }
 
-exports.createStaffNodes = createStaffNodes
+exports.createStaffNodes = createStaffNodes;

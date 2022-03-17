@@ -1,31 +1,31 @@
-import React from 'react'
-import { graphql } from 'gatsby'
-import Img from 'gatsby-image'
-import * as moment from 'moment'
-import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '@reusable'
+import React from 'react';
+import { graphql } from 'gatsby';
+import Img from 'gatsby-image';
+import * as moment from 'moment';
+import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '@reusable';
 import {
   Template,
   TemplateSide,
   TemplateContent,
-} from '../components/aside-layout'
-import TemplateLayout from './template-layout'
-import Html from '../components/html'
-import Breadcrumb from '../components/breadcrumb'
-import Link from '../components/link'
-import Share from '../components/share'
-import { eventFormatWhen, eventFormatWhere } from '../utils/events'
+} from '../components/aside-layout';
+import TemplateLayout from './template-layout';
+import Html from '../components/html';
+import Breadcrumb from '../components/breadcrumb';
+import Link from '../components/link';
+import Share from '../components/share';
+import { eventFormatWhen, eventFormatWhere } from '../utils/events';
 
 export default function EventTemplate({ data }) {
-  const node = data.event
-  const { field_title_context, body, fields, relationships } = node
-  const { slug } = fields
+  const node = data.event;
+  const { field_title_context, body, fields, relationships } = node;
+  const { slug } = fields;
   const image =
-    relationships?.field_media_image?.relationships.field_media_image
-  const imageData = image ? image.localFile.childImageSharp.fluid : null
+    relationships?.field_media_image?.relationships.field_media_image;
+  const imageData = image ? image.localFile.childImageSharp.fluid : null;
   const imageCaptionHTML =
-    relationships?.field_media_image?.field_image_caption?.processed
-  const contact = relationships?.field_library_contact
-  const eventContacts = relationships?.field_non_library_event_contact
+    relationships?.field_media_image?.field_image_caption?.processed;
+  const contact = relationships?.field_library_contact;
+  const eventContacts = relationships?.field_non_library_event_contact;
 
   return (
     <TemplateLayout node={node}>
@@ -161,7 +161,7 @@ export default function EventTemplate({ data }) {
         </TemplateSide>
       </Template>
     </TemplateLayout>
-  )
+  );
 }
 
 /*
@@ -172,32 +172,35 @@ export default function EventTemplate({ data }) {
   - Event type.
 */
 function EventMetadata({ data }) {
-  const dates = data.field_event_date_s_
-  const eventType = data.relationships.field_event_type.name
+  const dates = data.field_event_date_s_;
+  const eventType = data.relationships.field_event_type.name;
   const registrationLink =
     data.field_registration_link && data.field_registration_link.uri
       ? {
           label: 'Register to attend',
           to: data.field_registration_link.uri,
         }
-      : null
-  const series = data.relationships.field_event_series?.name
-  const when = dates.map(date => {
-    const start = moment(date.value)
-    const end = moment(date.end_value)
+      : null;
+  const series = data.relationships.field_event_series?.name;
+  const when = dates.map((date) => {
+    const start = moment(date.value);
+    const end = moment(date.end_value);
 
     return eventFormatWhen({
       start,
       end,
       kind: 'full',
       type: eventType,
-    })
-  })
+    });
+  });
 
-  const where = eventFormatWhere({
-    node: data,
-    kind: 'full',
-  }, true)
+  const where = eventFormatWhere(
+    {
+      node: data,
+      kind: 'full',
+    },
+    true
+  );
 
   return (
     <table
@@ -252,11 +255,13 @@ function EventMetadata({ data }) {
               {where.map(({ label, href }, index) => {
                 if (href) {
                   return (
-                    <p key={index}><Link to={href}>{label}</Link></p>
-                  )
+                    <p key={index}>
+                      <Link to={href}>{label}</Link>
+                    </p>
+                  );
                 }
 
-                return <p key={index}>{label}</p>
+                return <p key={index}>{label}</p>;
               })}
             </td>
           </tr>
@@ -282,13 +287,13 @@ function EventMetadata({ data }) {
         )}
       </tbody>
     </table>
-  )
+  );
 }
 
 export const query = graphql`
-  query($slug: String!) {
+  query ($slug: String!) {
     event: nodeEventsAndExhibits(fields: { slug: { eq: $slug } }) {
       ...eventFragment
     }
   }
-`
+`;

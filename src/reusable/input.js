@@ -1,6 +1,6 @@
-import React from 'react'
-import styled from '@emotion/styled'
-import { INTENT_COLORS } from '@reusable'
+import React from 'react';
+import styled from '@emotion/styled';
+import { INTENT_COLORS } from '@reusable';
 
 const StyledInput = styled('input')(
   {
@@ -19,12 +19,10 @@ const StyledInput = styled('input')(
     borderColor: invalid && INTENT_COLORS.error,
     borderWidth: invalid && '2px',
   })
-)
+);
 
 function Input({ className, ...other }) {
-  return (
-    <StyledInput className={className} {...other} />
-  )
+  return <StyledInput className={className} {...other} />;
 }
 
 export default Input;

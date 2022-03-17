@@ -1,4 +1,4 @@
-import orderNodes from './order-nodes'
+import orderNodes from './order-nodes';
 
 export default function processHorizontalNavigationData({
   parentNodeOrderByDrupalId,
@@ -18,25 +18,25 @@ export default function processHorizontalNavigationData({
       currentNode,
       childrenNodeOrderByDrupalId,
       childrenNodes
-    )
+    );
   }
 
-  return createNavItems(parentNode, parentNodeOrderByDrupalId, parentNodes)
+  return createNavItems(parentNode, parentNodeOrderByDrupalId, parentNodes);
 }
 
 function createNavItems(firstNode, orderedIds, nodes) {
   const nodesOrdered = orderNodes(orderedIds, nodes).filter(
-    node => node !== undefined
-  )
+    (node) => node !== undefined
+  );
 
   return []
     .concat(createNavItem(firstNode))
-    .concat(nodesOrdered.map(({ node }) => createNavItem(node)))
+    .concat(nodesOrdered.map(({ node }) => createNavItem(node)));
 }
 
 function createNavItem(node) {
   return {
     to: node.fields.slug,
     text: node.field_title_context,
-  }
+  };
 }

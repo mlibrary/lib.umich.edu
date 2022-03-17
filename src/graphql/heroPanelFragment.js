@@ -1,4 +1,4 @@
-import { graphql } from 'gatsby'
+import { graphql } from 'gatsby';
 
 export const query = graphql`
   fragment heroPanelFragment on paragraph__hero_panel {
@@ -37,4 +37,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;

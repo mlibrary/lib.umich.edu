@@ -1,17 +1,17 @@
-const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/'
+const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/';
 const DRUPAL_CONCURRENT_FILE_REQUESTS =
-  parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 20
+  parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 20;
 
-console.log('[gatsby-config] ENV VARs')
-console.log(`DRUPAL_URL='${DRUPAL_URL}'`)
+console.log('[gatsby-config] ENV VARs');
+console.log(`DRUPAL_URL='${DRUPAL_URL}'`);
 console.log(
   `DRUPAL_CONCURRENT_FILE_REQUESTS=${DRUPAL_CONCURRENT_FILE_REQUESTS}`
-)
+);
 
 const siteMetadata = {
   title: 'University of Michigan Library',
   siteUrl: 'https://www.lib.umich.edu',
-}
+};
 
 module.exports = {
   siteMetadata,
@@ -22,7 +22,7 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        name: `images`, 
+        name: `images`,
         path: `${__dirname}/src/images/`,
       },
     },
@@ -46,7 +46,7 @@ module.exports = {
            * Assume development env for robots.txt unless explicity
            * set to production with ROBOTSTXT_MODE env var.
            */
-          let mode = 'development'
+          let mode = 'development';
 
           /**
            * Only is the mode in production when Netlify is deploying from
@@ -56,12 +56,12 @@ module.exports = {
             process.env.ROBOTSTXT_MODE === 'production' &&
             process.env.CONTEXT === 'production'
           ) {
-            mode = 'production'
+            mode = 'production';
           }
 
-          console.log(`[gatsby-plugin-robots-txt] is in ${mode} mode.`)
+          console.log(`[gatsby-plugin-robots-txt] is in ${mode} mode.`);
 
-          return mode
+          return mode;
         },
         env: {
           production: {
@@ -111,7 +111,7 @@ module.exports = {
             throwing an error when a 404 is returned from a file
             that does not exist.
           */
-          "file--file": "filter[status][value]=1",
+          'file--file': 'filter[status][value]=1',
         },
       },
     },
@@ -162,13 +162,13 @@ module.exports = {
         ],
         resolvers: {
           SitePage: {
-            uniqname: node => (node.context ? node.context.uniqname : null),
-            title: node => (node.context ? node.context.title : null),
-            summary: node => (node.context ? node.context.summary : null),
-            keywords: node => (node.context ? node.context.keywords : null),
+            uniqname: (node) => (node.context ? node.context.uniqname : null),
+            title: (node) => (node.context ? node.context.title : null),
+            summary: (node) => (node.context ? node.context.summary : null),
+            keywords: (node) => (node.context ? node.context.keywords : null),
           },
         },
       },
     },
   ],
-}
+};

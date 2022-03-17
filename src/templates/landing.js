@@ -1,17 +1,17 @@
-import React from 'react'
-import { graphql } from 'gatsby'
+import React from 'react';
+import { graphql } from 'gatsby';
 
-import { Margins } from '@reusable'
+import { Margins } from '@reusable';
 
-import Layout from '../components/layout'
-import SearchEngineOptimization from '../components/seo'
-import PageHeader from '../components/page-header'
-import Html from '../components/html'
-import Panels from '../components/panels'
-import transformNodePanels from '../utils/transform-node-panels'
+import Layout from '../components/layout';
+import SearchEngineOptimization from '../components/seo';
+import PageHeader from '../components/page-header';
+import Html from '../components/html';
+import Panels from '../components/panels';
+import transformNodePanels from '../utils/transform-node-panels';
 
 export default function LandingTemplate({ data, ...rest }) {
-  const node = data.page
+  const node = data.page;
   const {
     title,
     field_title_context,
@@ -19,9 +19,9 @@ export default function LandingTemplate({ data, ...rest }) {
     fields,
     relationships,
     drupal_internal__nid,
-  } = node
-  const description = body && body.summary ? body.summary : null
-  const { bodyPanels, fullPanels } = transformNodePanels({ node })
+  } = node;
+  const description = body && body.summary ? body.summary : null;
+  const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
@@ -44,11 +44,11 @@ export default function LandingTemplate({ data, ...rest }) {
       </Margins>
       <Panels data={fullPanels} />
     </Layout>
-  )
+  );
 }
 
 export const query = graphql`
-  query($slug: String!, $parents: [String]) {
+  query ($slug: String!, $parents: [String]) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
@@ -64,4 +64,4 @@ export const query = graphql`
       }
     }
   }
-`
+`;
