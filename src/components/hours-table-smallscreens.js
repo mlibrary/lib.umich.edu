@@ -20,6 +20,7 @@ export default function HoursTableSmallscreens({
       {tables.map((table, t) => (
         <table
           aria-labelledby={headingId}
+          key={`hours-table-${t}`}
           css={{
             width: '100%',
             maxWidth: '38rem',
@@ -66,7 +67,7 @@ export default function HoursTableSmallscreens({
             {table[0].text}
           </caption>
           {data.headings.map((heading, i) => (
-            <tr>
+            <tr key={`day-${i}`}>
               <th scope="row" aria-current={i === todayIndex - 1}>
                 <span
                   css={{

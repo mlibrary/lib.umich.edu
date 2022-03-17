@@ -67,8 +67,8 @@ function BulletedLinkList({ title, links, moreLink, hasTopBorder = false }) {
           marginTop: SPACING['M'],
         }}
       >
-        {links.map(({ text, to }) => (
-          <li>
+        {links.map(({ text, to }, index) => (
+          <li key={`bullet-${index}`}>
             <Link to={to}>{text}</Link>
           </li>
         ))}
@@ -145,6 +145,7 @@ function RelatedLinks({ data }) {
       >
         {field_link.map((link, i) => (
           <li
+            key={`related-link-${i}`}
             css={{
               maxWidth: '34rem',
             }}

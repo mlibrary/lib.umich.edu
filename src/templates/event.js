@@ -129,8 +129,8 @@ export default function EventTemplate({ data }) {
               >
                 Event contact
               </h2>
-              {eventContacts.map(eventContact => (
-                <p>
+              {eventContacts.map((eventContact, index) => (
+                <p key={index}>
                   {`${eventContact.field_first_name} ${eventContact.field_last_name}`}
                   {' · '}
                   <a
@@ -233,8 +233,8 @@ function EventMetadata({ data }) {
             },
           }}
         >
-          {when.map(str => (
-            <p>{str}</p>
+          {when.map((str, index) => (
+            <p key={index}>{str}</p>
           ))}
         </td>
       </tr>
@@ -248,10 +248,10 @@ function EventMetadata({ data }) {
               },
             }}
           >
-            {where.map(({ label, href }) => {
+            {where.map(({ label, href }, index) => {
               if (href) {
                 return (
-                  <p><Link to={href}>{label}</Link></p>
+                  <p key={index}><Link to={href}>{label}</Link></p>
                 )
               }
 

@@ -292,6 +292,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
             options={options}
             onChange={e => handleChange(e)}
             value={activeFilters[name]}
+            key={name}
           />
         ))}
         <Button

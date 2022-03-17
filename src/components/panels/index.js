@@ -270,8 +270,9 @@ function TextPanel({ data }) {
             marginTop: hasMarginTop ? SPACING['XL'] : 0,
           }}
         >
-          {cards.map(card => (
+          {cards.map((card, index) => (
             <section
+              key={`section-${index}`}
               css={{
                 paddingTop: hasTopBorder ? SPACING['XL'] : 0,
                 borderTop: hasTopBorder

@@ -36,6 +36,7 @@ const Breadcrumb = ({ children, ...rest }) => {
       >
         {React.Children.map(children, (child, i) => (
           <li
+            key={`breadcrumb-${i}`}
             css={{
               display: isParent(i) ? 'block' : 'none',
               [MEDIA_QUERIES.LARGESCREEN]: {

@@ -88,8 +88,8 @@ function DepartmentTemplate({ data }) {
                   },
                 }}
               >
-                {departmentInfo.map(({ icon, d, content }) => (
-                  <li>
+                {departmentInfo.map(({ icon, d, content }, index) => (
+                  <li key={index}>
                     {d ? <Icon d={d} /> : <Icon icon={icon} />}
                     {content}
                   </li>

@@ -32,7 +32,7 @@ export default function DestinationHorizontalPanel({ data }) {
       }}
     >
       {cards.map((card, i) => (
-        <DestinationCard key={i} card={card} />
+        <DestinationCard key={`destination-${i}`} card={card} />
       ))}
     </div>
   )

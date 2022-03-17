@@ -400,14 +400,14 @@ function HighlightText({ query, text }) {
     textToHighlight: text,
   })
 
-  const highlightedText = chunks.map(chunk => {
+  const highlightedText = chunks.map((chunk, index) => {
     const { end, highlight, start } = chunk
     const textChunk = text.substr(start, end - start)
 
     if (highlight) {
-      return <mark>{textChunk}</mark>
+      return <mark key={`highlight-${index}`}>{textChunk}</mark>
     } else {
-      return <React.Fragment>{textChunk}</React.Fragment>
+      return <React.Fragment key={`text-${index}`}>{textChunk}</React.Fragment>
     }
   })
 

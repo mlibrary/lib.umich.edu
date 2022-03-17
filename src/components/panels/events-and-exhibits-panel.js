@@ -224,7 +224,7 @@ function TodaysEvents({ events }) {
     }
 
     if (events.length > 0) {
-      return events.map(event => <EventCard {...event} />)
+      return events.map((event, index) => <EventCard key={`event-card-${index}`} {...event} />)
     }
   }
 
@@ -249,8 +249,8 @@ function UpcomingEvents({ events }) {
       return (
         <Expandable>
           <ExpandableChildren show={10}>
-            {events.map(event => (
-              <EventCard {...event} />
+            {events.map((event, index) => (
+              <EventCard key={`event-card-${index}`} {...event} />
             ))}
           </ExpandableChildren>
           <div
@@ -283,8 +283,8 @@ function ExhibitEvents({ events, hasBorder = false }) {
     }
 
     if (events.length > 0) {
-      return events.map(event => (
-        <EventCard {...event} displayImage={false} hasBorder={hasBorder} />
+      return events.map((event, index) => (
+        <EventCard key={`event-card-${index}`} {...event} displayImage={false} hasBorder={hasBorder} />
       ))
     }
   }

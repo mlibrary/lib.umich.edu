@@ -51,8 +51,8 @@ const Navigation = ({ data }) => {
         In this section
       </Heading>
       <StyledNavList>
-        {navData.map(item => (
-          <li>
+        {navData.map((item, index) => (
+          <li key={`styled-link-${index}`}>
             <StyledLink to={item.to}>{item.text}</StyledLink>
           </li>
         ))}
