@@ -68,7 +68,6 @@
     "entities": "^3.0.1",
     "fetch-retry": "^5.0.2",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
-    "gatsby-plugin-remove-trailing-slashes": "^4.10.0",
     "prettier": "^2.6.0"
   }
 }
