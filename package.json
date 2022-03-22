@@ -67,6 +67,7 @@
     "bottleneck": "^2.19.5",
     "entities": "^3.0.1",
     "fetch-retry": "^5.0.2",
+    "gatsby-plugin-netlify": "^4.1.0",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
     "prettier": "^2.6.0"
   }

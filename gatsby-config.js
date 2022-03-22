@@ -16,6 +16,7 @@ const siteMetadata = {
 module.exports = {
   siteMetadata,
   plugins: [
+    `gatsby-plugin-netlify`, // Netlify recommends this plugin on top of Essential Gatsby (Version 2): https://github.com/netlify/netlify-plugin-gatsby#install-the-gatsby-plugin
     `gatsby-plugin-meta-redirect`,
     `gatsby-plugin-remove-fingerprints`, // Why? Read why Netlify recommends: https://github.com/gatsbyjs/gatsby/issues/11961#issuecomment-492893594
     {
