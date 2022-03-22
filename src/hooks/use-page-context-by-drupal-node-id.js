@@ -19,12 +19,16 @@ export default function usePageContextByDrupalNodeID() {
     const { pageContext } = edge.node;
 
     if (pageContext) {
-      const { drupal_nid } = pageContext;
+      const { title, drupal_nid, slug } = pageContext;
 
       if (drupal_nid) {
         memo = {
           ...memo,
-          [drupal_nid]: pageContext,
+          [drupal_nid]: {
+            title,
+            drupal_nid,
+            slug,
+          },
         };
       }
     }
