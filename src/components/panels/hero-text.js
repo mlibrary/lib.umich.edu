@@ -1,6 +1,5 @@
 import React from 'react';
-
-import BackgroundImage from 'gatsby-background-image';
+import { BgImage } from 'gbimage-bridge';
 import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable';
 import Link from '../link';
 import Html from '../html';
@@ -141,11 +140,11 @@ function BackgroundSection({ data, children, ...rest }) {
   ];
 
   return (
-    <BackgroundImage
+    <BgImage
       Tag="section"
-      fluid={sources}
-      backgroundColor={COLORS.neutral['100']}
+      image={sources}
       css={{
+        backgroundColor: COLORS.blue['300'],
         backgroundPosition: 'center top 33%',
         [MEDIA_QUERIES.LARGESCREEN]: {
           backgroundPosition: 'center left 20%',
@@ -155,6 +154,6 @@ function BackgroundSection({ data, children, ...rest }) {
       {...rest}
     >
       {children}
-    </BackgroundImage>
+    </BgImage>
   );
 }

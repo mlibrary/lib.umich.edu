@@ -12,7 +12,7 @@ import {
 import { navigate } from '@reach/router';
 import { useDebounce } from 'use-debounce';
 import VisuallyHidden from '@reach/visually-hidden';
-import BackgroundImage from 'gatsby-background-image';
+import { BgImage } from 'gbimage-bridge';
 import Link from '../components/link';
 import PlainLink from '../components/plain-link';
 import Breadcrumb from '../components/breadcrumb';
@@ -362,11 +362,11 @@ function StaffPhoto({ mid, staffImages }) {
   }
 
   return (
-    <BackgroundImage
+    <BgImage
       aria-hidden="true"
       data-card-image
       tag="div"
-      fluid={img.childImageSharp.gatsbyImageData}
+      image={img.childImageSharp.gatsbyImageData}
       alt={img.alt}
       css={{
         width: '43px',

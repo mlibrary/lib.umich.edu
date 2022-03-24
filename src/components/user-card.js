@@ -1,5 +1,5 @@
 import React from 'react';
-import BackgroundImage from 'gatsby-background-image';
+import { BgImage } from 'gbimage-bridge';
 import { Text, SPACING, COLORS } from '@reusable';
 import Link from './link';
 import StaffPhotoPlaceholder from './staff-photo-placeholder';
@@ -23,11 +23,11 @@ function UserPhoto({ image }) {
   }
 
   return (
-    <BackgroundImage
+    <BgImage
       aria-hidden="true"
       data-card-image
       tag="div"
-      fluid={image.fluid}
+      image={image.fluid}
       alt={image.alt}
       css={photoContainerCSS}
     />

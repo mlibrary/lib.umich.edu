@@ -1,5 +1,5 @@
 import React from 'react';
-import BackgroundImage from 'gatsby-background-image';
+import { BgImage } from 'gbimage-bridge';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import {
   Heading,
@@ -65,9 +65,9 @@ export default function PageHeader({
           </div>
           {imageData && (
             <React.Fragment>
-              <BackgroundImage
+              <BgImage
                 tag="div"
-                fluid={imageData}
+                image={imageData}
                 css={{
                   display: 'none',
                   [MEDIA_QUERIES.LARGESCREEN]: {

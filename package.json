@@ -28,6 +28,7 @@
     "gatsby-source-drupal": "^5.10.1",
     "gatsby-source-filesystem": "^4.10.1",
     "gatsby-transformer-sharp": "^4.10.0",
+    "gbimage-bridge": "^0.2.1",
     "highlight-words-core": "^1.2.2",
     "isomorphic-fetch": "^3.0.0",
     "moment": "^2.29.1",
