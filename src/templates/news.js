@@ -87,6 +87,7 @@ export default function NewsTemplate({ data }) {
                   width: '100%',
                   borderRadius: '2px',
                 }}
+                alt=""
               />
               {imageCaption && (
                 <figcaption

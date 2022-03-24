@@ -69,6 +69,7 @@ export default function EventTemplate({ data }) {
                   width: '100%',
                   borderRadius: '2px',
                 }}
+                alt=""
               />
               {imageCaptionHTML && (
                 <figcaption

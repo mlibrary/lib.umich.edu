@@ -39,6 +39,7 @@ const Hero = ({ image, children }) => (
         width: '100%',
         height: '100%',
       }}
+      alt=""
     />
     <StyledHeroInnerContainer data-inner-container>
       <StyledTint />

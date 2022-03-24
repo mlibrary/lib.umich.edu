@@ -88,6 +88,7 @@ export default function PageHeader({
                     display: 'none',
                   },
                 }}
+                alt=""
               />
             </React.Fragment>
           )}

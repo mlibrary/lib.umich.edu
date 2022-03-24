@@ -81,6 +81,7 @@ function DestinationTemplate({ data, ...rest }) {
                 width: '100%',
                 borderRadius: '2px',
               }}
+              alt=""
             />
           )}
 
