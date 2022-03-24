@@ -95,8 +95,12 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-sharp',
       options: {
+        defaults: {
+          formats: ['auto'],
+          quality: 75,
+        },
         stripMetadata: true,
-        defaultQuality: 75,
+        failOnError: false,
       },
     },
     'gatsby-transformer-sharp',
