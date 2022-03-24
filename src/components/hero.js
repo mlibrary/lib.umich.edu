@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { MEDIA_QUERIES, COLORS } from '@reusable';
-import Image from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 
 const StyledHeroContainer = styled('div')({
   position: 'relative',
@@ -30,8 +30,8 @@ const StyledTint = styled('div')({
 
 const Hero = ({ image, children }) => (
   <StyledHeroContainer>
-    <Image
-      fluid={image}
+    <GatsbyImage
+      image={image}
       style={{
         position: 'absolute',
         left: 0,

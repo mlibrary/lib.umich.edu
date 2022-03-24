@@ -366,7 +366,7 @@ function StaffPhoto({ mid, staffImages }) {
       aria-hidden="true"
       data-card-image
       tag="div"
-      fluid={img.childImageSharp.fluid}
+      fluid={img.childImageSharp.gatsbyImageData}
       alt={img.alt}
       css={{
         width: '43px',
@@ -417,9 +417,11 @@ export const query = graphql`
                 field_media_image {
                   localFile {
                     childImageSharp {
-                      fluid(maxWidth: 120) {
-                        ...GatsbyImageSharpFluid_noBase64
-                      }
+                      gatsbyImageData(
+                        width: 120
+                        placeholder: NONE
+                        layout: CONSTRAINED
+                      )
                     }
                   }
                 }

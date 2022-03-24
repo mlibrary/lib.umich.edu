@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import { Margins, Heading, SPACING, COLORS } from '@reusable';
 import {
   Template,
@@ -37,7 +37,7 @@ function processContacts(userData) {
         alt: field_media_image.field_media_image.alt,
         fluid:
           field_media_image.relationships.field_media_image.localFile
-            .childImageSharp.fluid,
+            .childImageSharp.gatsbyImageData,
       };
     }
 
@@ -78,7 +78,9 @@ function CollectingAreaTemplate({ data, ...rest }) {
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image;
   const imageAlt = relationships.field_media_image?.field_media_image?.alt;
-  const imageData = image ? image.localFile.childImageSharp.fluid : null;
+  const imageData = image
+    ? image.localFile.childImageSharp.gatsbyImageData
+    : null;
   const imageCaption =
     relationships.field_media_image &&
     relationships.field_media_image.field_image_caption
@@ -121,13 +123,13 @@ function CollectingAreaTemplate({ data, ...rest }) {
                 maxWidth: '38rem',
               }}
             >
-              <Img
+              <GatsbyImage
+                image={imageData}
                 css={{
                   width: '100%',
                   borderRadius: '2px',
                 }}
                 alt={imageAlt}
-                fluid={imageData}
               />
               {imageCaption && (
                 <figcaption

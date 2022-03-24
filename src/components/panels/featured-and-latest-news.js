@@ -9,7 +9,7 @@ import Link from '../link';
 function processNewsNodeForCard({ newsNode }) {
   const newsImage =
     newsNode.relationships?.field_media_image?.relationships?.field_media_image
-      ?.localFile?.childImageSharp?.fluid;
+      ?.localFile?.childImageSharp?.gatsbyImageData;
 
   const children = newsNode.body?.summary;
 

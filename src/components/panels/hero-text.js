@@ -128,10 +128,10 @@ function BackgroundSection({ data, children, ...rest }) {
   const { field_hero_images } = data.relationships;
   const smallScreenImage = field_hero_images.find(
     (node) => node.field_orientation === 'vertical'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid;
+  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
   const largeScreenImage = field_hero_images.find(
     (node) => node.field_orientation === 'horizontal'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid;
+  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
   const sources = [
     smallScreenImage,
     {

@@ -109,7 +109,7 @@ function ProfileTemplate({ data }) {
       alt: field_media_image.field_media_image.alt,
       fluid:
         field_media_image.relationships.field_media_image.localFile
-          .childImageSharp.fluid,
+          .childImageSharp.gatsbyImageData,
     };
   }
 

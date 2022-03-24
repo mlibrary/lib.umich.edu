@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 
 import { Heading, SPACING, Margins, Text } from '@reusable';
 
@@ -23,7 +23,7 @@ function DestinationTemplate({ data, ...rest }) {
   const showChatIframe = fields?.slug === '/ask-librarian';
   const imageData =
     relationships?.field_media_image?.relationships?.field_media_image
-      ?.localFile?.childImageSharp?.fluid;
+      ?.localFile?.childImageSharp?.gatsbyImageData;
 
   return (
     <TemplateLayout node={node}>
@@ -75,12 +75,12 @@ function DestinationTemplate({ data, ...rest }) {
           }}
         >
           {imageData && (
-            <Img
+            <GatsbyImage
+              image={imageData}
               css={{
                 width: '100%',
                 borderRadius: '2px',
               }}
-              fluid={imageData}
             />
           )}
 

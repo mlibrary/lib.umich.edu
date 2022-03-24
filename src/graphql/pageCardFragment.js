@@ -19,9 +19,11 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 920) {
-                  ...GatsbyImageSharpFluid_noBase64
-                }
+                gatsbyImageData(
+                  width: 920
+                  placeholder: NONE
+                  layout: CONSTRAINED
+                )
               }
             }
           }
