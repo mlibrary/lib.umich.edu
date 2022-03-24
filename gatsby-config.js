@@ -16,25 +16,25 @@ const siteMetadata = {
 module.exports = {
   siteMetadata,
   plugins: [
-    `gatsby-plugin-netlify`, // Netlify recommends this plugin on top of Essential Gatsby (Version 2): https://github.com/netlify/netlify-plugin-gatsby#install-the-gatsby-plugin
-    `gatsby-plugin-meta-redirect`,
-    `gatsby-plugin-remove-fingerprints`, // Why? Read why Netlify recommends: https://github.com/gatsbyjs/gatsby/issues/11961#issuecomment-492893594
+    'gatsby-plugin-netlify', // Netlify recommends this plugin on top of Essential Gatsby (Version 2): https://github.com/netlify/netlify-plugin-gatsby#install-the-gatsby-plugin
+    'gatsby-plugin-meta-redirect',
+    'gatsby-plugin-remove-fingerprints', // Why? Read why Netlify recommends: https://github.com/gatsbyjs/gatsby/issues/11961#issuecomment-492893594
     {
-      resolve: `gatsby-source-filesystem`,
+      resolve: 'gatsby-source-filesystem',
       options: {
-        name: `images`,
+        name: 'images',
         path: `${__dirname}/src/images/`,
       },
     },
     {
-      resolve: `gatsby-alias-imports`,
+      resolve: 'gatsby-alias-imports',
       options: {
         aliases: {
           '@reusable': 'src/reusable/',
         },
       },
     },
-    `gatsby-plugin-sitemap`,
+    'gatsby-plugin-sitemap',
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
@@ -86,24 +86,25 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-plugin-react-helmet-canonical-urls`,
+      resolve: 'gatsby-plugin-react-helmet-canonical-urls',
       options: {
         siteUrl: siteMetadata.siteUrl,
       },
     },
-    'gatsby-transformer-sharp',
+    'gatsby-plugin-image',
     {
-      resolve: `gatsby-plugin-sharp`,
+      resolve: 'gatsby-plugin-sharp',
       options: {
         stripMetadata: true,
         defaultQuality: 75,
       },
     },
+    'gatsby-transformer-sharp',
     {
       resolve: 'gatsby-source-drupal',
       options: {
         baseUrl: DRUPAL_URL,
-        apiBase: `jsonapi`,
+        apiBase: 'jsonapi',
         concurrentFileRequests: DRUPAL_CONCURRENT_FILE_REQUESTS,
         filters: {
           /*
@@ -125,7 +126,7 @@ module.exports = {
     'gatsby-plugin-remove-serviceworker',
     'gatsby-plugin-emotion',
     {
-      resolve: `gatsby-plugin-manifest`,
+      resolve: 'gatsby-plugin-manifest',
       options: {
         name: 'University of Michigan Library',
         short_name: 'U-M Library',
@@ -137,7 +138,7 @@ module.exports = {
       },
     },
     {
-      resolve: `gatsby-plugin-lunr`,
+      resolve: 'gatsby-plugin-lunr',
       options: {
         languages: [{ name: 'en' }],
         fields: [
