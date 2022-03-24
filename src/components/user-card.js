@@ -27,7 +27,7 @@ function UserPhoto({ image }) {
       aria-hidden="true"
       data-card-image
       tag="div"
-      image={image.fluid}
+      image={image.imageData}
       alt={image.alt}
       css={photoContainerCSS}
     />

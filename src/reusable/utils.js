@@ -259,7 +259,7 @@ export const SmallScreen = styled('div')({
 
 export function lightOrDark(color) {
   // Variables for red, green, blue values
-  var r, g, b, hsp;
+  let r, g, b, hsp;
 
   // Check the format of the color, HEX or RGB?
   if (color.match(/^rgb/)) {

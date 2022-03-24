@@ -102,12 +102,12 @@ function ProfileTemplate({ data }) {
 
   const pronouns = processPronouns(pronouns_data);
 
-  var image;
+  let image;
 
   if (field_media_image) {
     image = {
       alt: field_media_image.field_media_image.alt,
-      fluid:
+      imageData:
         field_media_image.relationships.field_media_image.localFile
           .childImageSharp.gatsbyImageData,
     };
@@ -157,7 +157,7 @@ function ProfileTemplate({ data }) {
             >
               {image ? (
                 <BgImage
-                  image={image.fluid}
+                  image={image.imageData}
                   alt={image.alt}
                   css={{
                     width: '100%',

@@ -30,12 +30,12 @@ function processContacts(userData) {
       relationships,
     } = user;
     const { field_media_image } = relationships;
-    var image;
+    let image;
 
     if (field_media_image && field_media_image) {
       image = {
         alt: field_media_image.field_media_image.alt,
-        fluid:
+        imageData:
           field_media_image.relationships.field_media_image.localFile
             .childImageSharp.gatsbyImageData,
       };
