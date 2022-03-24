@@ -23,7 +23,7 @@ const NotFoundPage = () => {
         }}
       >
         <Image />
-        <Heading size="3XL" level="1" css={{ marginBottom: SPACING['M'] }}>
+        <Heading size="3XL" level={1} css={{ marginBottom: SPACING['M'] }}>
           <span
             css={{
               fontSize: '60%',
