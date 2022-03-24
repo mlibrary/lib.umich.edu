@@ -10,7 +10,7 @@
     "@reach/visually-hidden": "^0.16.0",
     "@reach/window-size": "^0.16.0",
     "@umich-lib/web": "^1.3.0",
-    "gatsby": "^4.6.2",
+    "gatsby": "^4.10.3",
     "gatsby-alias-imports": "^1.0.6",
     "gatsby-background-image": "^1.6.0",
     "gatsby-codemods": "^3.10.0",
