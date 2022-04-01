@@ -2,9 +2,10 @@
 name: Staging workflow
 
 # When workflow is triggered
-on: push
-  # push:
-    # branches: [ master ]
+on:
+  push:
+    branches:
+      - master
   repository_dispatch:
     types: [ publish_staging ]
 
