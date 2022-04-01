@@ -4,7 +4,8 @@ name: Production workflow
 # When workflow is triggered
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
   repository_dispatch:
     types: [ publish_production ]
 
