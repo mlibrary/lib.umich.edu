@@ -4,7 +4,10 @@ name: Production workflow
 # When workflow is triggered
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+  repository_dispatch:
+    types: [ publish_production ]
 
 # Jobs to carry out
 jobs:
@@ -25,10 +28,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
       # Install NodeJS
-      - name: Use Node.js 17.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: 17.x
+          node-version: 16.x
       # Run npm install and build on our code
       - run: npm install
       - run: npm run build
@@ -40,4 +43,3 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         with:
           args: deploy --dir=public --prod
-          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'

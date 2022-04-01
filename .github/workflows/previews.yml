@@ -1,0 +1,67 @@
+#  Name of workflow
+name: Previews workflow
+
+# When workflow is triggered
+on: 
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: tag
+        required: true
+
+# Jobs to carry out
+jobs:
+  build:
+    # Operating system to run job on
+    runs-on: ubuntu-latest
+    # Environment to run job on
+    environment: previews
+    # Environment variables
+    env:
+      DRUPAL_CONCURRENT_FILE_REQUESTS: 20
+      DRUPAL_REQUEST_TIMEOUT: 6000000
+      DRUPAL_URL: 'https://cms.lib.umich.edu/'
+    # Steps in job
+    steps:
+      # Get code from repo
+      - name: Checkout code
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 0
+      # Get tag from action input
+      - name: Check that the tag exists
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        id: tag_check
+        run: |
+          if git rev-parse 'refs/tags/${{ github.event.inputs.tag }}' &> /dev/null; then
+            echo '::set-output name=tag::${{ github.event.inputs.tag }}'
+          elif git rev-parse '${{ github.event.inputs.tag }}' &> /dev/null; then
+            echo "::set-output name=tag::`git rev-parse '${{ github.event.inputs.tag }}'`"
+          else
+            echo "Couldn't figure out tag from input: ${{ github.event.inputs.tag }}"
+            echo "Aborting deployment."
+            false
+          fi
+      # Checkout tag from repo
+      - name: Checkout correct repository
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.tag }}
+      # Install NodeJS
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      # Run npm install and build on our code
+      - run: npm install
+      - run: npm run build
+      # Deploy to Netlify using our production secrets
+      - name: Deploy to netlify
+        uses: netlify/actions/cli@master
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        with:
+          args: deploy --dir=public --prod
