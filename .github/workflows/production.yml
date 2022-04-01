@@ -2,9 +2,9 @@
 name: Production workflow
 
 # When workflow is triggered
-on: push
-  # push:
-    # branches: [ master ]
+on:
+  push:
+    branches: [ master ]
 
 # Jobs to carry out
 jobs:
@@ -40,4 +40,3 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         with:
           args: deploy --dir=public --prod
-          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
