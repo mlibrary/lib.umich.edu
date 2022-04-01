@@ -7,8 +7,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '30 19 * * *'
-    - cron: '30 7 * * MON-FRI'
+    - cron: '0 11 * * MON-FRI'
   repository_dispatch:
     types: [ publish_production ]
 
