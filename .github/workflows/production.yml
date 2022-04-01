@@ -2,9 +2,9 @@
 name: Production workflow
 
 # When workflow is triggered
-on:
-  push:
-    branches: [ master ]
+on: push
+  # push:
+    # branches: [ master ]
 
 # Jobs to carry out
 jobs:
