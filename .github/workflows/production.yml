@@ -14,7 +14,7 @@ on:
     inputs:
       tag:
         description: tag
-        required: true
+        required: false
 
 # Jobs to carry out
 jobs:
