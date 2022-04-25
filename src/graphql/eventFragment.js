@@ -67,9 +67,11 @@ export const query = graphql`
           field_media_image {
             localFile {
               childImageSharp {
-                fluid(maxWidth: 320) {
-                  ...GatsbyImageSharpFluid_noBase64
-                }
+                gatsbyImageData(
+                  width: 320
+                  placeholder: NONE
+                  layout: CONSTRAINED
+                )
               }
             }
           }

@@ -118,7 +118,8 @@ function CardPanel({ data, headingLevel = 2 }) {
   function getImage(image) {
     return !image || noImage
       ? null
-      : image.relationships.field_media_image.localFile.childImageSharp.fluid;
+      : image.relationships.field_media_image.localFile.childImageSharp
+          .gatsbyImageData;
   }
 
   function getCardHref(card) {
@@ -382,7 +383,7 @@ function TextPanel({ data }) {
         html: card.field_body.processed,
         image:
           card.relationships.field_text_image.relationships.field_media_image
-            .localFile.childImageSharp.fluid,
+            .localFile.childImageSharp.gatsbyImageData,
         imageAlt:
           card.relationships.field_text_image.relationships.field_media_image
             .relationships?.media__image[0]?.field_media_image.alt,

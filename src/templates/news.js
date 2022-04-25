@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import * as moment from 'moment';
 import { Margins, Heading, SPACING, COLORS, Text, TYPOGRAPHY } from '@reusable';
 import {
@@ -26,7 +26,9 @@ export default function NewsTemplate({ data }) {
   const image =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image;
-  const imageData = image ? image.localFile.childImageSharp.fluid : null;
+  const imageData = image
+    ? image.localFile.childImageSharp.gatsbyImageData
+    : null;
   const imageCaption =
     relationships.field_media_image &&
     relationships.field_media_image.field_image_caption
@@ -79,12 +81,13 @@ export default function NewsTemplate({ data }) {
                 marginBottom: SPACING['XL'],
               }}
             >
-              <Img
+              <GatsbyImage
+                image={imageData}
                 css={{
                   width: '100%',
                   borderRadius: '2px',
                 }}
-                fluid={imageData}
+                alt=""
               />
               {imageCaption && (
                 <figcaption

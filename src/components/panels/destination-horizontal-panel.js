@@ -53,7 +53,7 @@ function DestinationCard({ card }) {
         },
       }}
     >
-      <CardImage image={card.image.fluid} />
+      <CardImage image={card.image} />
       <div>
         <Heading
           size="S"

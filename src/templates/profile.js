@@ -21,7 +21,7 @@ import Breadcrumb from '../components/breadcrumb';
 import Layout from '../components/layout';
 import Link from '../components/link';
 import Html from '../components/html';
-import BackgroundImage from 'gatsby-background-image';
+import { BgImage } from 'gbimage-bridge';
 import LANGUAGES from '../utils/languages';
 import LinkCallout from '../components/link-callout';
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder';
@@ -102,14 +102,14 @@ function ProfileTemplate({ data }) {
 
   const pronouns = processPronouns(pronouns_data);
 
-  var image;
+  let image;
 
   if (field_media_image) {
     image = {
       alt: field_media_image.field_media_image.alt,
-      fluid:
+      imageData:
         field_media_image.relationships.field_media_image.localFile
-          .childImageSharp.fluid,
+          .childImageSharp.gatsbyImageData,
     };
   }
 
@@ -156,8 +156,8 @@ function ProfileTemplate({ data }) {
               }}
             >
               {image ? (
-                <BackgroundImage
-                  fluid={image.fluid}
+                <BgImage
+                  image={image.imageData}
                   alt={image.alt}
                   css={{
                     width: '100%',

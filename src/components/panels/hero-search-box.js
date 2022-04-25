@@ -1,5 +1,5 @@
 import React from 'react';
-import BackgroundImage from 'gatsby-background-image';
+import { BgImage } from 'gbimage-bridge';
 import VisuallyHidden from '@reach/visually-hidden';
 import {
   SPACING,
@@ -183,10 +183,10 @@ function BackgroundSection({ data, children, ...rest }) {
   const { field_hero_images } = data.relationships;
   const smallScreenImage = field_hero_images.find(
     (node) => node.field_orientation === 'vertical'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid;
+  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
   const largeScreenImage = field_hero_images.find(
     (node) => node.field_orientation === 'horizontal'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid;
+  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
   const sources = [
     smallScreenImage,
     {
@@ -196,11 +196,11 @@ function BackgroundSection({ data, children, ...rest }) {
   ];
 
   return (
-    <BackgroundImage
+    <BgImage
       Tag="section"
-      fluid={sources}
-      backgroundColor={COLORS.neutral['100']}
+      image={sources}
       css={{
+        backgroundColor: COLORS.neutral['100'],
         backgroundPosition: 'center top 33%',
         [MEDIAQUERIES['M']]: {
           backgroundPosition: 'center left 20%',
@@ -210,7 +210,7 @@ function BackgroundSection({ data, children, ...rest }) {
       {...rest}
     >
       {children}
-    </BackgroundImage>
+    </BgImage>
   );
 }
 

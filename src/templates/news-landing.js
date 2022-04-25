@@ -150,7 +150,7 @@ function processNewsData(data) {
     const { title, created, body, relationships, fields } = node;
     const image =
       relationships?.field_media_image?.relationships?.field_media_image
-        ?.localFile?.childImageSharp?.fluid;
+        ?.localFile?.childImageSharp?.gatsbyImageData;
 
     return {
       title,
