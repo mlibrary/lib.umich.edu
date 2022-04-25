@@ -31,6 +31,17 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
+      # Enabling cache
+      - name: Caching Gatsby
+        id: gatsby-cache-build
+        uses: actions/cache@v2
+        with:
+          path: |
+            public
+            .cache
+          key: ${{ runner.os }}-gatsby-build-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-gatsby-build-
       # Run npm install and build on our code
       - run: npm install
       - run: npm run build
