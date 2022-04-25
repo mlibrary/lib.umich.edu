@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+
+  web: 
+    build: .
+    ports: 
+    - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DRUPAL_CONCURRENT_FILE_REQUESTS=20
+      - DRUPAL_REQUEST_TIMEOUT=6000000
+      - DRUPAL_URL=https://cms.lib.umich.edu/
+      - ROBOTSTXT_MODE=production
+    command: npm run docker

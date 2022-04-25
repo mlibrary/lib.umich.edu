@@ -7,11 +7,7 @@ export default function usePageContextByDrupalNodeID() {
         allSitePage {
           edges {
             node {
-              context {
-                title
-                drupal_nid
-                slug
-              }
+              pageContext
             }
           }
         }
@@ -20,15 +16,19 @@ export default function usePageContextByDrupalNodeID() {
   );
 
   return data.allSitePage.edges.reduce((memo, edge) => {
-    const { context } = edge.node;
+    const { pageContext } = edge.node;
 
-    if (context) {
-      const { drupal_nid } = context;
+    if (pageContext) {
+      const { title, drupal_nid, slug } = pageContext;
 
       if (drupal_nid) {
         memo = {
           ...memo,
-          [drupal_nid]: context,
+          [drupal_nid]: {
+            title,
+            drupal_nid,
+            slug,
+          },
         };
       }
     }

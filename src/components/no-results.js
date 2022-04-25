@@ -1,17 +1,15 @@
 import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import { Heading, SPACING, Text } from '@reusable';
 import MEDIA_QUERIES from '../reusable/media-queries';
 
 export default function NoResults({ children }) {
   const { image } = useStaticQuery(graphql`
-    query {
+    {
       image: file(relativePath: { eq: "squirrel.png" }) {
         childImageSharp {
-          fluid(maxWidth: 920) {
-            ...GatsbyImageSharpFluid_noBase64
-          }
+          gatsbyImageData(width: 920, placeholder: NONE, layout: CONSTRAINED)
         }
       }
     }
@@ -48,8 +46,8 @@ export default function NoResults({ children }) {
         </Text>
       </div>
 
-      <Img
-        fluid={image.childImageSharp.fluid}
+      <GatsbyImage
+        image={image.childImageSharp.gatsbyImageData}
         alt=""
         css={{
           display: 'inline-block',

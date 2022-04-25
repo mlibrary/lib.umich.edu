@@ -1,14 +1,14 @@
 import React from 'react';
-import BackgroundImage from 'gatsby-background-image';
+import { BgImage } from 'gbimage-bridge';
 import { COLORS, SPACING } from '@reusable';
 
 export default function CardImage({ image }) {
   return (
-    <BackgroundImage
+    <BgImage
       aria-hidden="true"
       data-card-image
       tag="div"
-      fluid={image}
+      image={image}
       css={{
         backgroundColor: COLORS.blue['100'],
         paddingTop: '66.67%',

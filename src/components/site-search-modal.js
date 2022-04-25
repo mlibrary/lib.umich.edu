@@ -11,6 +11,7 @@ function SiteSearchModal({ handleDismiss }) {
   return (
     <React.Fragment>
       <Dialog
+        aria-label="Search this site"
         onDismiss={handleDismiss}
         css={{
           '&[data-reach-dialog-content]': {

@@ -38,7 +38,7 @@ jobs:
           fetch-depth: 0
       # Get tag from action input
       - name: Check that the tag exists
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.events.inputs.tag }}
         id: tag_check
         run: |
           if git rev-parse 'refs/tags/${{ github.event.inputs.tag }}' &> /dev/null; then
@@ -52,7 +52,7 @@ jobs:
           fi
       # Checkout tag from repo
       - name: Checkout correct repository
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: ${{ github.event_name == 'workflow_dispatch'  && github.events.inputs.tag }}
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.inputs.tag }}

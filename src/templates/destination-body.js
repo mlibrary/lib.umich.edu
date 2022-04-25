@@ -1,9 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import Img from 'gatsby-image';
-
+import { GatsbyImage } from 'gatsby-plugin-image';
 import { Heading, SPACING, Margins, Text, SmallScreen } from '@reusable';
-
 import { Template, Top, Side, Content } from '../components/page-layout';
 import Breadcrumb from '../components/breadcrumb';
 import TemplateLayout from './template-layout';
@@ -33,7 +31,9 @@ function DestinationTemplate({ data, ...rest }) {
   const image =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image;
-  const imageData = image ? image.localFile.childImageSharp.fluid : null;
+  const imageData = image
+    ? image.localFile.childImageSharp.gatsbyImageData
+    : null;
 
   return (
     <TemplateLayout node={node}>
@@ -85,13 +85,14 @@ function DestinationTemplate({ data, ...rest }) {
 
               <DestinationLocationInfo node={node} />
 
-              <Img
+              <GatsbyImage
+                image={imageData}
                 css={{
                   width: '100%',
                   borderRadius: '2px',
                   marginBottom: SPACING['2XL'],
                 }}
-                fluid={imageData}
+                alt=""
               />
             </div>
 

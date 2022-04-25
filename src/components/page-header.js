@@ -1,6 +1,6 @@
 import React from 'react';
-import BackgroundImage from 'gatsby-background-image';
-import Img from 'gatsby-image';
+import { BgImage } from 'gbimage-bridge';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import {
   Heading,
   SPACING,
@@ -19,7 +19,9 @@ export default function PageHeader({
   image,
   ...rest
 }) {
-  const imageData = image ? image.localFile.childImageSharp.fluid : null;
+  const imageData = image
+    ? image.localFile.childImageSharp.gatsbyImageData
+    : null;
 
   return (
     <div
@@ -63,9 +65,9 @@ export default function PageHeader({
           </div>
           {imageData && (
             <React.Fragment>
-              <BackgroundImage
+              <BgImage
                 tag="div"
-                fluid={imageData}
+                image={imageData}
                 css={{
                   display: 'none',
                   [MEDIA_QUERIES.LARGESCREEN]: {
@@ -78,14 +80,15 @@ export default function PageHeader({
                   flexGrow: '0',
                 }}
               />
-              <Img
-                fluid={imageData}
+              <GatsbyImage
+                image={imageData}
                 css={{
                   margin: `0 -${SPACING['M']}`,
                   [MEDIA_QUERIES.LARGESCREEN]: {
                     display: 'none',
                   },
                 }}
+                alt=""
               />
             </React.Fragment>
           )}

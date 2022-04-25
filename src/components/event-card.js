@@ -23,7 +23,9 @@ export default function EventCard(node) {
   const image =
     relationships.field_media_image &&
     relationships.field_media_image.relationships.field_media_image;
-  const imageData = image ? image.localFile.childImageSharp.fluid : null;
+  const imageData = image
+    ? image.localFile.childImageSharp.gatsbyImageData
+    : null;
   const start = field_event_date_s_[0].value;
   const end = field_event_date_s_[0].end_value;
   const type = relationships.field_event_type.name;

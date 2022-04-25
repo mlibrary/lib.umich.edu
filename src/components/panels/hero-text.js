@@ -1,6 +1,5 @@
 import React from 'react';
-
-import BackgroundImage from 'gatsby-background-image';
+import { BgImage } from 'gbimage-bridge';
 import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable';
 import Link from '../link';
 import Html from '../html';
@@ -128,10 +127,10 @@ function BackgroundSection({ data, children, ...rest }) {
   const { field_hero_images } = data.relationships;
   const smallScreenImage = field_hero_images.find(
     (node) => node.field_orientation === 'vertical'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid;
+  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
   const largeScreenImage = field_hero_images.find(
     (node) => node.field_orientation === 'horizontal'
-  ).relationships.field_media_image.localFile.childImageSharp.fluid;
+  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
   const sources = [
     smallScreenImage,
     {
@@ -141,11 +140,11 @@ function BackgroundSection({ data, children, ...rest }) {
   ];
 
   return (
-    <BackgroundImage
+    <BgImage
       Tag="section"
-      fluid={sources}
-      backgroundColor={COLORS.neutral['100']}
+      image={sources}
       css={{
+        backgroundColor: COLORS.blue['300'],
         backgroundPosition: 'center top 33%',
         [MEDIA_QUERIES.LARGESCREEN]: {
           backgroundPosition: 'center left 20%',
@@ -155,6 +154,6 @@ function BackgroundSection({ data, children, ...rest }) {
       {...rest}
     >
       {children}
-    </BackgroundImage>
+    </BgImage>
   );
 }

@@ -7,7 +7,7 @@ import Link from './link';
 export default function DrupalEntity(props) {
   const data = useStaticQuery(
     graphql`
-      query {
+      {
         allMediaRemoteVideo {
           edges {
             node {
@@ -49,9 +49,11 @@ export default function DrupalEntity(props) {
                 field_media_image {
                   localFile {
                     childImageSharp {
-                      fluid(maxWidth: 920) {
-                        ...GatsbyImageSharpFluid_noBase64
-                      }
+                      gatsbyImageData(
+                        width: 920
+                        placeholder: NONE
+                        layout: CONSTRAINED
+                      )
                     }
                   }
                 }
@@ -77,7 +79,7 @@ export default function DrupalEntity(props) {
   const alt = mediaImageNode?.node?.field_media_image?.alt;
   const mediaImage =
     mediaImageNode?.node?.relationships?.field_media_image?.localFile
-      ?.childImageSharp?.fluid;
+      ?.childImageSharp?.gatsbyImageData;
   if (mediaImage) {
     return (
       <div css={{ maxWidth: '38rem' }}>

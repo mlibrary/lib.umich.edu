@@ -6,8 +6,7 @@ on:
   push:
     branches:
       - master
-  repository_dispatch:
-    types: [ publish_staging ]
+  workflow_dispatch:
 
 # Jobs to carry out
 jobs:

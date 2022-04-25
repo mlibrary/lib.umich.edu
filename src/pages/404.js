@@ -2,7 +2,7 @@ import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 
 import { Heading, Text, SPACING, Margins, COLORS, List } from '@reusable';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import SearchEngineOptimization from '../components/seo';
 import Link from '../components/link';
 import Prose from '../components/prose';
@@ -23,7 +23,7 @@ const NotFoundPage = () => {
         }}
       >
         <Image />
-        <Heading size="3XL" level="1" css={{ marginBottom: SPACING['M'] }}>
+        <Heading size="3XL" level={1} css={{ marginBottom: SPACING['M'] }}>
           <span
             css={{
               fontSize: '60%',
@@ -70,12 +70,10 @@ const NotFoundPage = () => {
 
 function Image() {
   const imageData = useStaticQuery(graphql`
-    query {
+    {
       file(relativePath: { eq: "404.png" }) {
         childImageSharp {
-          fluid(maxWidth: 920) {
-            ...GatsbyImageSharpFluid_noBase64
-          }
+          gatsbyImageData(width: 920, placeholder: NONE, layout: CONSTRAINED)
         }
       }
     }
@@ -101,7 +99,10 @@ function Image() {
         marginBottom: SPACING['2XL'],
       }}
     >
-      <Img fluid={imageData.file.childImageSharp.fluid} alt="" />
+      <GatsbyImage
+        image={imageData.file.childImageSharp.gatsbyImageData}
+        alt=""
+      />
     </div>
   );
 }
