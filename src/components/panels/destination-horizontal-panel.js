@@ -17,7 +17,7 @@ export default function DestinationHorizontalPanel({ data }) {
     return {
       title: card.title,
       subtitle: `${parentTitle}, ${floor}, ${room}`,
-      image: imageData.localFile.childImageSharp,
+      image: imageData.localFile.childImageSharp.gatsbyImageData,
       content: <Html html={card.body.processed} />,
       bid: card.relationships.field_room_building.id,
       rid: card.relationships.field_floor.id,
