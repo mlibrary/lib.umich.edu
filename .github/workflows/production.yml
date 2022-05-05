@@ -22,7 +22,7 @@ jobs:
     # Operating system to run job on
     runs-on: ubuntu-latest
     # Environment to run job on
-    environment: Backup
+    environment: production
     # Environment variables
     env:
       DRUPAL_CONCURRENT_FILE_REQUESTS: 20
@@ -83,7 +83,7 @@ jobs:
       #    NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       #  with:
       #    args: deploy --dir=public --prod
-      # Deploy to s3 using backup secrets
+      # Deploy to s3
       - name: Set s3 bucket credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -91,4 +91,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
       - name: Copy files to s3
-        run: aws s3 sync . s3://lib-umich-backup
+        run: aws s3 sync ./public s3://lib-umich-backup
