@@ -1,5 +1,5 @@
 #  Name of workflow
-name: Production workflow
+name: Backup workflow
 
 # When workflow is triggered
 on:
