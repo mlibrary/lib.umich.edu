@@ -76,10 +76,17 @@ jobs:
       - run: npm install
       - run: npm run build
       # Deploy to Netlify using our production secrets
-      - name: Deploy to netlify
-        uses: netlify/actions/cli@master
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      #- name: Deploy to netlify
+      #  uses: netlify/actions/cli@master
+      #  env:
+      #    NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #    NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      #  with:
+      #    args: deploy --dir=public --prod
+      # Deploy to s3 using backup secrets
+      - name: Send to AWS s3 bucket
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          args: deploy --dir=public --prod
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
