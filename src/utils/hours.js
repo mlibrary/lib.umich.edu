@@ -118,29 +118,27 @@ export function displayHours({ node, now }) {
 
   const { starthours, endhours, comment } = hoursForNow;
 
-  if (comment) {
-    return {
-      text: comment,
-      label: comment,
-    };
-  }
-
-  // Needs to be 24 time format, ie ####.
-  const start = starthours < 1000 ? '0' + starthours : starthours;
-  const end = endhours < 1000 ? '0' + endhours : endhours;
-
-  if (start === end) {
+  if (!comment && starthours === endhours) {
     return null;
   }
 
-  const showTime = (time) => {
-    const minutes = time.toString().slice(2);
-    const timeFormat = minutes === '00' ? 'ha' : 'h:mma';
-    return moment(time, 'HHmm').format(timeFormat);
-  }
+  let [text, label] = [comment];
 
-  const text = `${showTime(start)} - ${showTime(end)}`;
-  const label = `${showTime(start)} to ${showTime(end)}`;
+  if (starthours !== endhours) {
+    const convertTo24Hour = (time) => {
+      return time < 1000 ? '0' + time : time;
+    };
+  
+    const formatTime = (time) => {
+      const setTime = convertTo24Hour(time);
+      const minutes = setTime.toString().slice(2);
+      const timeFormat = minutes === '00' ? 'ha' : 'h:mma';
+      return moment(setTime, 'HHmm').format(timeFormat);
+    }
+  
+    text = [`${formatTime(starthours)} - ${formatTime(endhours)}`, text].filter(Boolean).join(', ');
+    label = [`${formatTime(starthours)} to ${formatTime(endhours)}`, label].filter(Boolean).join(', ');
+  }
 
   return {
     text,
