@@ -125,15 +125,11 @@ export function displayHours({ node, now }) {
   let [text, label] = [comment];
 
   if (starthours !== endhours) {
-    const convertTo24Hour = (time) => {
-      return time < 1000 ? '0' + time : time;
-    };
-  
     const formatTime = (time) => {
-      const setTime = convertTo24Hour(time);
-      const minutes = setTime.toString().slice(2);
-      const timeFormat = minutes === '00' ? 'ha' : 'h:mma';
-      return moment(setTime, 'HHmm').format(timeFormat);
+      const time24Hours = time < 1000 ? '0' + time : time;
+      const getMinutes = time24Hours.toString().slice(2);
+      const setTimeFormat = getMinutes === '00' ? 'ha' : 'h:mma';
+      return moment(time24Hours, 'HHmm').format(setTimeFormat);
     }
   
     text = [`${formatTime(starthours)} - ${formatTime(endhours)}`, text].filter(Boolean).join(', ');
