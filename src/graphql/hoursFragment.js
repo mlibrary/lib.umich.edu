@@ -145,7 +145,6 @@ export const query = graphql`
         day
         starthours
         endhours
-        comment
       }
     }
     ... on paragraph__july_4_holiday_hours {
@@ -206,7 +205,6 @@ export const query = graphql`
         day
         starthours
         endhours
-        comment
       }
     }
   }

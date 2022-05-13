@@ -133,14 +133,14 @@ export function displayHours({ node, now }) {
     return null;
   }
 
-  const text =
-    moment(start, 'HHmm').format('ha') +
-    ' - ' +
-    moment(end, 'HHmm').format('ha');
-  const label =
-    moment(start, 'HHmm').format('ha') +
-    ' to ' +
-    moment(end, 'HHmm').format('ha');
+  const showTime = (time) => {
+    const minutes = time.toString().slice(2);
+    const timeFormat = minutes === '00' ? 'ha' : 'h:mma';
+    return moment(time, 'HHmm').format(timeFormat);
+  }
+
+  const text = `${showTime(start)} - ${showTime(end)}`;
+  const label = `${showTime(start)} to ${showTime(end)}`;
 
   return {
     text,
