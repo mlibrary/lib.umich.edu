@@ -131,9 +131,13 @@ export function displayHours({ node, now }) {
       const setTimeFormat = getMinutes === '00' ? 'ha' : 'h:mma';
       return moment(time24Hours, 'HHmm').format(setTimeFormat);
     }
+
+    const combinedValues = (separator = 'to') => {
+      return [`${formatTime(starthours)} ${separator} ${formatTime(endhours)}`, comment].filter(Boolean).join(', ');
+    };
   
-    text = [`${formatTime(starthours)} - ${formatTime(endhours)}`, text].filter(Boolean).join(', ');
-    label = [`${formatTime(starthours)} to ${formatTime(endhours)}`, label].filter(Boolean).join(', ');
+    text = combinedValues('-');
+    label = combinedValues();
   }
 
   return {
