@@ -127,7 +127,7 @@ export function displayHours({ node, now }) {
   if (starthours !== endhours) {
     const formatTime = (time) => {
       const time24Hours = time < 1000 ? '0' + time : time;
-      const getMinutes = time24Hours.toString().slice(2);
+      const getMinutes = time24Hours.toString().slice(-2);
       const setTimeFormat = getMinutes === '00' ? 'ha' : 'h:mma';
       return moment(time24Hours, 'HHmm').format(setTimeFormat);
     }
