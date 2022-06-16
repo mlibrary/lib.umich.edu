@@ -31,7 +31,7 @@
     "gbimage-bridge": "^0.2.1",
     "highlight-words-core": "^1.2.2",
     "isomorphic-fetch": "^3.0.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.3",
     "patch-package": "^6.4.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
