@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@emotion/react": "^11.9.3",
-    "@emotion/styled": "^11.8.1",
+    "@emotion/styled": "^11.9.3",
     "@reach/alert": "^0.16.0",
     "@reach/combobox": "^0.16.5",
     "@reach/dialog": "^0.16.2",
