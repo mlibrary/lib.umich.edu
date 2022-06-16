@@ -72,6 +72,6 @@
     "fetch-retry": "^5.0.2",
     "gatsby-plugin-netlify": "^4.1.0",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
-    "prettier": "^2.6.0"
+    "prettier": "^2.7.1"
   }
 }
