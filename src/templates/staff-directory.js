@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { graphql } from 'gatsby';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import {
   Heading,
   SPACING,
@@ -12,7 +13,6 @@ import {
 import { navigate } from '@reach/router';
 import { useDebounce } from 'use-debounce';
 import VisuallyHidden from '@reach/visually-hidden';
-import { BgImage } from 'gbimage-bridge';
 import Link from '../components/link';
 import PlainLink from '../components/plain-link';
 import Breadcrumb from '../components/breadcrumb';
@@ -362,18 +362,13 @@ function StaffPhoto({ mid, staffImages }) {
   }
 
   return (
-    <BgImage
-      aria-hidden="true"
-      data-card-image
-      tag="div"
+    <GatsbyImage
       image={img.childImageSharp.gatsbyImageData}
       alt={img.alt}
       css={{
-        width: '43px',
-        height: '57px',
         backgroundColor: COLORS.blue['100'],
         borderRadius: '2px',
-        overflow: 'hidden',
+        overflow: 'hidden'
       }}
     />
   );
@@ -418,9 +413,13 @@ export const query = graphql`
                   localFile {
                     childImageSharp {
                       gatsbyImageData(
-                        width: 120
+                        width: 43
+                        height: 57
                         placeholder: NONE
                         layout: CONSTRAINED
+                        transformOptions: {
+                          cropFocus: CENTER
+                        }
                       )
                     }
                   }
