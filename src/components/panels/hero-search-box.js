@@ -1,5 +1,4 @@
 import React from 'react';
-import { BgImage } from 'gbimage-bridge';
 import VisuallyHidden from '@reach/visually-hidden';
 import {
   SPACING,
@@ -196,21 +195,20 @@ function BackgroundSection({ data, children, ...rest }) {
   ];
 
   return (
-    <BgImage
-      Tag="section"
-      image={sources}
+    <section
       css={{
         backgroundColor: COLORS.neutral['100'],
-        backgroundPosition: 'center top 33%',
+        backgroundImage: `url('${sources[1].images.fallback.src}')`,
+        backgroundPosition: 'center',
         [MEDIAQUERIES['M']]: {
-          backgroundPosition: 'center left 20%',
           backgroundSize: 'cover',
         },
+        position: 'relative'
       }}
       {...rest}
     >
       {children}
-    </BgImage>
+    </section>
   );
 }
 
