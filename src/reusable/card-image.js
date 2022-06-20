@@ -1,20 +1,18 @@
 import React from 'react';
-import { BgImage } from 'gbimage-bridge';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import { COLORS, SPACING } from '@reusable';
 
 export default function CardImage({ image }) {
   return (
-    <BgImage
-      aria-hidden="true"
-      data-card-image
-      tag="div"
+    <GatsbyImage
       image={image}
+      alt={image.alt}
       css={{
+        aspectRatio: '3 / 2',
         backgroundColor: COLORS.blue['100'],
-        paddingTop: '66.67%',
-        marginBottom: SPACING['S'],
         borderRadius: '4px',
-        overflow: 'hidden',
+        marginBottom: SPACING['S'],
+        overflow: 'hidden'
       }}
     />
   );
