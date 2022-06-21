@@ -1,6 +1,5 @@
 import React from 'react';
 import * as moment from 'moment';
-import VisuallyHidden from '@reach/visually-hidden';
 import {
   Margins,
   Heading,
@@ -134,7 +133,7 @@ function PreviousNextWeekButton({ type, children, ...rest }) {
             <Icon icon="navigate_next" />
           )}
         </IconWrapper>
-        <VisuallyHidden>{children}</VisuallyHidden>
+        <span className='visually-hidden'>{children}</span>
       </Button>
     </React.Fragment>
   );
