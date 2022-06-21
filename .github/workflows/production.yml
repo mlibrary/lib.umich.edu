@@ -29,6 +29,7 @@ jobs:
       DRUPAL_REQUEST_TIMEOUT: 6000000
       DRUPAL_URL: 'https://cms.lib.umich.edu/'
       ROBOTSTXT_MODE: 'production'
+      CONTEXT: 'production'
     # Steps in job
     steps:
       # Get code from repo
