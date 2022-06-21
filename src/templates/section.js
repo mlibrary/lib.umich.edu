@@ -1,10 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-
-import VisuallyHidden from '@reach/visually-hidden';
-
 import { Heading, Margins, MEDIA_QUERIES } from '@reusable';
-
 import {
   Template,
   TemplateSide,
@@ -92,7 +88,7 @@ function SectionTemplate({ data, ...rest }) {
           <TemplateContent>
             <Prose>
               <Heading level={1} size="L" data-page-heading>
-                <VisuallyHidden>{title}</VisuallyHidden>
+                <span className='visually-hidden'>{title}</span>
                 <span aria-hidden="true">{field_title_context}</span>
               </Heading>
 
@@ -119,7 +115,7 @@ function SectionTemplate({ data, ...rest }) {
       ) : (
         <Margins>
           <Heading level={1} size="L" data-page-heading>
-            <VisuallyHidden>{title}</VisuallyHidden>
+            <span className='visually-hidden'>{title}</span>
             <span aria-hidden="true">{field_title_context}</span>
           </Heading>
         </Margins>

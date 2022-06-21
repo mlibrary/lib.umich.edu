@@ -1,15 +1,11 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import VisuallyHidden from '@reach/visually-hidden';
-
 import { Heading, List, COLORS } from '@reusable';
-
 import {
   Template,
   TemplateSide,
   TemplateContent,
 } from '../components/aside-layout';
-
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import PageHeader from '../components/page-header';
@@ -80,7 +76,7 @@ export default function VisitTemplate({ data, ...rest }) {
                 }}
                 data-page-heading
               >
-                <VisuallyHidden>{title}</VisuallyHidden>
+                <span className='visually-hidden'>{title}</span>
                 <span aria-hidden="true">{field_title_context}</span>
               </Heading>
               <HTMLList data={field_visit} />

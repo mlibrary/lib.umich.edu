@@ -1,5 +1,4 @@
 import React from 'react';
-import VisuallyHidden from '@reach/visually-hidden';
 import {
   SPACING,
   Margins,
@@ -164,9 +163,9 @@ function Caption({ data }) {
     >
       <figure aria-hidden={altText ? 'false' : 'true'}>
         {altText && (
-          <VisuallyHidden>
+          <span className='visually-hidden'>
             <img alt={altText} />
-          </VisuallyHidden>
+          </span>
         )}
         {caption && (
           <figcaption>
@@ -262,7 +261,7 @@ function Search({ labelId }) {
           }}
         >
           <Icon icon="search" size={20} />
-          <VisuallyHidden>Submit</VisuallyHidden>
+          <span className='visually-hidden'>Submit</span>
         </Button>
       </div>
     </form>

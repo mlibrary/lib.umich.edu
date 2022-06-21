@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link as GatsbyLink } from 'gatsby';
 import { SPACING, Z_SPACE, COLORS, Icon, Alert, TYPOGRAPHY } from '@reusable';
 import { findAll } from 'highlight-words-core';
-import VisuallyHidden from '@reach/visually-hidden';
 import ReachAlert from '@reach/alert';
 import Link from '../components/link';
 import HEADER_MEDIA_QUERIES from '../components/header/header-media-queries';
@@ -114,12 +113,12 @@ export default function SiteSearch({ label }) {
           width: '100%',
         }}
       >
-        <VisuallyHidden>
+        <span className='visually-hidden'>
           <p>{label}.</p>
           <p>
             To access results, <KeyboardControlIntructions />.
           </p>
-        </VisuallyHidden>
+        </span>
         <input
           id="site-search-input"
           onChange={handleChange}
@@ -165,9 +164,9 @@ function ResultsSummary({ searching, noResults, resultCount }) {
   const resultText = `${resultCount} result${resultCount > 1 ? 's' : ''}`;
 
   return (
-    <VisuallyHidden>
+    <span className='visually-hidden'>
       <ReachAlert>{resultText}</ReachAlert>
-    </VisuallyHidden>
+    </span>
   );
 }
 
@@ -329,7 +328,7 @@ function LibrarySearchScopeOption({ query }) {
           textOverflow: 'ellipsis',
         }}
       >
-        <VisuallyHidden>Search: </VisuallyHidden>
+        <span className='visually-hidden'>Search: </span>
         {query}
       </p>
       <span

@@ -14,7 +14,6 @@ import {
   COLORS,
   MEDIA_QUERIES,
 } from '@reusable';
-import VisuallyHidden from '@reach/visually-hidden';
 import { Template, Top, Side, Content } from '../components/page-layout';
 import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
@@ -463,7 +462,7 @@ function SocialLink({ to, icon, label }) {
       }}
     >
       <Icon icon={icon} size={24} />
-      <VisuallyHidden>{label}</VisuallyHidden>
+      <span className='visually-hidden'>{label}</span>
     </a>
   );
 }

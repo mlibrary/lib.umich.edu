@@ -16,7 +16,6 @@ import {
   Alert,
   LINK_STYLES,
 } from '@reusable';
-import VisuallyHidden from '@reach/visually-hidden';
 
 const StateContext = createContext();
 const dropdownSideWidth = '24rem';
@@ -56,12 +55,10 @@ function Nav({ items }) {
   return (
     <StateProvider initialState={{ panelOpen: 0 }} reducer={reducer}>
       <nav aria-label="Main" aria-describedby="main-nav-description">
-        <VisuallyHidden>
-          <p id="main-nav-description">
-            Expand main navigation buttons to view related content groups and
-            associated links.
-          </p>
-        </VisuallyHidden>
+        <p id="main-nav-description" className='visually-hidden'>
+          Expand main navigation buttons to view related content groups and
+          associated links.
+        </p>
         <ul
           css={{
             display: 'flex',
