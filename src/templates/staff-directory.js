@@ -12,7 +12,6 @@ import {
 } from '@reusable';
 import { navigate } from '@reach/router';
 import { useDebounce } from 'use-debounce';
-import VisuallyHidden from '@reach/visually-hidden';
 import Link from '../components/link';
 import PlainLink from '../components/plain-link';
 import Breadcrumb from '../components/breadcrumb';
@@ -502,9 +501,9 @@ function StaffDirectoryResults({
             textAlign: 'left',
           }}
         >
-          <VisuallyHidden>
+          <span className='visually-hidden'>
             <Alert>{resultsSummary}</Alert>
-          </VisuallyHidden>
+          </span>
 
           <p
             css={{
@@ -617,9 +616,9 @@ function StaffDirectoryResults({
 function StaffDirectorySmallScreenResults({ resultsSummary, staffInView }) {
   return (
     <React.Fragment>
-      <VisuallyHidden>
+      <span className='visually-hidden'>
         <Alert>{resultsSummary}</Alert>
-      </VisuallyHidden>
+      </span>
 
       <ol>
         {staffInView.map(({ uniqname, name, title, email, phone }) => (
