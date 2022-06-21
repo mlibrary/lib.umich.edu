@@ -52,10 +52,7 @@ module.exports = {
            * Only is the mode in production when Netlify is deploying from
            * the sites production branch and ROBOTSTXT_MODE is set to production.
            */
-          if (
-            process.env.ROBOTSTXT_MODE === 'production' &&
-            process.env.CONTEXT === 'production'
-          ) {
+          if (process.env.ROBOTSTXT_MODE === 'production') {
             mode = 'production';
           }
 
