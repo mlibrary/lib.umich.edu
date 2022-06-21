@@ -1,5 +1,4 @@
 import React from 'react';
-import { BgImage } from 'gbimage-bridge';
 import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable';
 import Link from '../link';
 import Html from '../html';
@@ -140,20 +139,19 @@ function BackgroundSection({ data, children, ...rest }) {
   ];
 
   return (
-    <BgImage
-      Tag="section"
-      image={sources}
+    <section
       css={{
         backgroundColor: COLORS.blue['300'],
-        backgroundPosition: 'center top 33%',
+        backgroundImage: `url('${sources[1].images.fallback.src}')`,
+        backgroundPosition: 'center',
         [MEDIA_QUERIES.LARGESCREEN]: {
-          backgroundPosition: 'center left 20%',
           backgroundSize: 'cover',
         },
+        position: 'relative'
       }}
       {...rest}
     >
       {children}
-    </BgImage>
+    </section>
   );
 }
