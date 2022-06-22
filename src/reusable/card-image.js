@@ -12,7 +12,8 @@ export default function CardImage({ image }) {
         backgroundColor: COLORS.blue['100'],
         borderRadius: '4px',
         marginBottom: SPACING['S'],
-        overflow: 'hidden'
+        overflow: 'hidden',
+        width: '100%'
       }}
     />
   );
