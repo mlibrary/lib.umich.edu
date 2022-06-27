@@ -104,7 +104,12 @@ function DatabaseLinkList({ data }) {
         }}
       >
         {field_link.map((d, i) => (
-          <li key={d.title + i}>
+          <li
+            key={d.title + i}
+            css={{
+              breakInside: 'avoid'
+            }}
+          >
             <Link
               kind="list"
               to={d.uri}
