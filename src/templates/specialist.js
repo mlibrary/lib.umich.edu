@@ -16,7 +16,6 @@ import {
   Alert,
 } from '@reusable';
 import { useLocation, navigate } from '@reach/router';
-import VisuallyHidden from '@reach/visually-hidden';
 import Link from '../components/link';
 import Breadcrumb from '../components/breadcrumb';
 import MEDIA_QUERIES from '../reusable/media-queries';
@@ -407,9 +406,9 @@ function SpecialistsResults() {
                 textAlign: 'left',
               }}
             >
-              <VisuallyHidden>
+              <span className='visually-hidden'>
                 <Alert>{resultsSummary}</Alert>
-              </VisuallyHidden>
+              </span>
 
               <p
                 css={{

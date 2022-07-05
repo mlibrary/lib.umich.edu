@@ -8,7 +8,6 @@ import {
   Icon,
   LargeScreen,
 } from '@reusable';
-import VisuallyHidden from '@reach/visually-hidden';
 
 export default function SideNavigation({ to, branch }) {
   if (!branch) {
@@ -92,7 +91,7 @@ function SideNavLink({ path, item, children, ...rest }) {
               color: COLORS.neutral['400'],
             }}
           >
-            <VisuallyHidden>(has sub-pages)</VisuallyHidden>
+            <span className='visually-hidden'>(has sub-pages)</span>
             <Icon icon="expand_more" />
           </span>
         )}

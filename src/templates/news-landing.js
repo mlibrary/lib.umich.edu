@@ -1,8 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-
 import { Margins, Heading, SPACING } from '@reusable';
-import VisuallyHidden from '@reach/visually-hidden';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
@@ -14,7 +12,6 @@ import {
   TemplateContent,
 } from '../components/aside-layout';
 import * as moment from 'moment';
-
 import { Expandable, ExpandableChildren, ExpandableButton } from '@reusable';
 
 export default function NewsLandingTemplate({ data }) {
@@ -59,11 +56,11 @@ export default function NewsLandingTemplate({ data }) {
 
           {news && (
             <React.Fragment>
-              <VisuallyHidden>
+              <span className='visually-hidden'>
                 <Heading level={2} size="L">
                   Main news
                 </Heading>
-              </VisuallyHidden>
+              </span>
               <Expandable>
                 <ol>
                   <ExpandableChildren show={newsMainInitialShow}>

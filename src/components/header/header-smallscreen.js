@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react';
 import { Link } from 'gatsby';
-import VisuallyHidden from '@reach/visually-hidden';
 import {
   SPACING,
   TYPOGRAPHY,
@@ -109,7 +108,7 @@ function Nav({ primary, secondary }) {
         }}
       >
         <Icon icon="search" size={32} />
-        <VisuallyHidden>Search this site</VisuallyHidden>
+        <span className='visually-hidden'>Search this site</span>
       </button>
       {isSearching && (
         <SiteSearchModal handleDismiss={() => setSearching(false)} />
@@ -134,7 +133,7 @@ function Nav({ primary, secondary }) {
         ) : (
           <Icon d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" size={32} />
         )}
-        <VisuallyHidden>Navigation</VisuallyHidden>
+        <span className='visually-hidden'>Navigation</span>
       </button>
       {isOpen && (
         <NavDropdown toggleNavNode={toggleNavNode}>

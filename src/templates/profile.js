@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-
+import { GatsbyImage } from 'gatsby-plugin-image';
 import {
   Margins,
   Heading,
@@ -14,14 +14,12 @@ import {
   COLORS,
   MEDIA_QUERIES,
 } from '@reusable';
-import VisuallyHidden from '@reach/visually-hidden';
 import { Template, Top, Side, Content } from '../components/page-layout';
 import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
 import Layout from '../components/layout';
 import Link from '../components/link';
 import Html from '../components/html';
-import { BgImage } from 'gbimage-bridge';
 import LANGUAGES from '../utils/languages';
 import LinkCallout from '../components/link-callout';
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder';
@@ -156,13 +154,13 @@ function ProfileTemplate({ data }) {
               }}
             >
               {image ? (
-                <BgImage
+                <GatsbyImage
                   image={image.imageData}
                   alt={image.alt}
                   css={{
-                    width: '100%',
+                    aspectRatio: '2 / 3',
                     borderRadius: '2px',
-                    paddingTop: '150%',
+                    width: '100%'
                   }}
                 />
               ) : (
@@ -464,7 +462,7 @@ function SocialLink({ to, icon, label }) {
       }}
     >
       <Icon icon={icon} size={24} />
-      <VisuallyHidden>{label}</VisuallyHidden>
+      <span className='visually-hidden'>{label}</span>
     </a>
   );
 }

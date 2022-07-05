@@ -1,6 +1,4 @@
 import React from 'react';
-import { BgImage } from 'gbimage-bridge';
-import VisuallyHidden from '@reach/visually-hidden';
 import {
   SPACING,
   Margins,
@@ -165,9 +163,9 @@ function Caption({ data }) {
     >
       <figure aria-hidden={altText ? 'false' : 'true'}>
         {altText && (
-          <VisuallyHidden>
+          <span className='visually-hidden'>
             <img alt={altText} />
-          </VisuallyHidden>
+          </span>
         )}
         {caption && (
           <figcaption>
@@ -196,21 +194,20 @@ function BackgroundSection({ data, children, ...rest }) {
   ];
 
   return (
-    <BgImage
-      Tag="section"
-      image={sources}
+    <section
       css={{
         backgroundColor: COLORS.neutral['100'],
-        backgroundPosition: 'center top 33%',
+        backgroundImage: `url('${sources[1].images.fallback.src}')`,
+        backgroundPosition: 'center',
         [MEDIAQUERIES['M']]: {
-          backgroundPosition: 'center left 20%',
           backgroundSize: 'cover',
         },
+        position: 'relative'
       }}
       {...rest}
     >
       {children}
-    </BgImage>
+    </section>
   );
 }
 
@@ -264,7 +261,7 @@ function Search({ labelId }) {
           }}
         >
           <Icon icon="search" size={20} />
-          <VisuallyHidden>Submit</VisuallyHidden>
+          <span className='visually-hidden'>Submit</span>
         </Button>
       </div>
     </form>

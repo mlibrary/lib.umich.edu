@@ -1,16 +1,16 @@
 import React from 'react';
-import { BgImage } from 'gbimage-bridge';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import { Text, SPACING, COLORS } from '@reusable';
 import Link from './link';
 import StaffPhotoPlaceholder from './staff-photo-placeholder';
 
 const photoContainerCSS = {
-  width: '75px',
-  height: '101px',
+  aspectRatio: '3 / 4',
   backgroundColor: COLORS.blue['100'],
   borderRadius: '2px',
-  overflow: 'hidden',
   flexShrink: '0',
+  overflow: 'hidden',
+  width: '75px'
 };
 
 function UserPhoto({ image }) {
@@ -23,10 +23,7 @@ function UserPhoto({ image }) {
   }
 
   return (
-    <BgImage
-      aria-hidden="true"
-      data-card-image
-      tag="div"
+    <GatsbyImage
       image={image.imageData}
       alt={image.alt}
       css={photoContainerCSS}

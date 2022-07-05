@@ -1,5 +1,4 @@
 import React from 'react';
-import { BgImage } from 'gbimage-bridge';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import {
   Heading,
@@ -65,19 +64,17 @@ export default function PageHeader({
           </div>
           {imageData && (
             <React.Fragment>
-              <BgImage
-                tag="div"
-                image={imageData}
+              <div
                 css={{
+                  backgroundImage: `url('${imageData.images.fallback.src}')`,
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'cover',
                   display: 'none',
                   [MEDIA_QUERIES.LARGESCREEN]: {
                     display: 'block',
                   },
-                  flex: '1 1 0',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  flexBasis: `calc(50%)`,
-                  flexGrow: '0',
+                  flex: '0 1 50%'
                 }}
               />
               <GatsbyImage

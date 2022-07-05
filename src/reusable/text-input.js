@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { COLORS, Input, Icon } from '@reusable';
-import VisuallyHidden from '@reach/visually-hidden';
 
 const StyledFormItem = styled('div')(
   {
@@ -101,7 +100,7 @@ const TextInput = ({
   return (
     <StyledFormItem invalid={invalid}>
       {hideLabel ? (
-        <VisuallyHidden>{label}</VisuallyHidden>
+        <span className='visually-hidden'>{label}</span>
       ) : (
         <React.Fragment>{label}</React.Fragment>
       )}
