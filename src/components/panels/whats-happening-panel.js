@@ -32,7 +32,7 @@ export default function WhatsHappening() {
         }
       ) {
         nodes {
-          ...eventFragment
+          ...eventCardFragment
         }
       }
       otherEvents: allNodeEventsAndExhibits(
@@ -47,7 +47,7 @@ export default function WhatsHappening() {
         }
       ) {
         nodes {
-          ...eventFragment
+          ...eventCardFragment
         }
       }
     }
