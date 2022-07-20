@@ -11,7 +11,6 @@ export const query = graphql`
       breadcrumb
     }
     body {
-      summary
       processed
     }
     field_event_date_s_ {
@@ -26,15 +25,6 @@ export const query = graphql`
       uri
       title
     }
-    field_event_in_non_library_locat
-    field_non_library_location_addre {
-      organization
-      locality
-      address_line1
-      address_line2
-      postal_code
-      administrative_area
-    }
     relationships {
       field_library_contact {
         field_user_display_name
@@ -46,17 +36,10 @@ export const query = graphql`
         field_last_name
         field_email
       }
-      field_library_contact {
-        field_user_display_name
-        field_user_email
-      }
       field_event_series {
         name
       }
       field_event_type {
-        name
-      }
-      field_event_series {
         name
       }
       field_media_image {
