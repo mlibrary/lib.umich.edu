@@ -44,7 +44,7 @@ export default function EventsAndExhibitsPanel() {
       ) {
         edges {
           node {
-            ...eventFragment
+            ...eventCardFragment
           }
         }
       }
