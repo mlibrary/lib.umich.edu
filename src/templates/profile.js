@@ -381,7 +381,7 @@ function ProfileHeader({
   relationships,
 }) {
   const { field_user_department } = relationships;
-  const depts = field_user_department.reverse();
+  const depts = [...field_user_department].reverse();
 
   return (
     <React.Fragment>
@@ -395,21 +395,16 @@ function ProfileHeader({
         {field_user_display_name}
       </Heading>
       {field_user_work_title && <Text lede>{field_user_work_title}</Text>}
-      {depts && (
-        <div>
-          {field_user_department[1] && (
-            <Link to={field_user_department[1].path.alias}>
-              {field_user_department[1].field_title_context}
+      {depts && depts.map((department, index) => {
+        return (
+          <span key={index}>
+            {index > 0 && ' · '}
+            <Link to={department.path.alias}>
+              {department.field_title_context}
             </Link>
-          )}
-          {field_user_department.length > 1 ? ' · ' : null}
-          {field_user_department[0] && (
-            <Link to={field_user_department[0].path.alias}>
-              {field_user_department[0].field_title_context}
-            </Link>
-          )}
-        </div>
-      )}
+          </span>
+        )
+      })}
     </React.Fragment>
   );
 }
