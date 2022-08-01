@@ -25,6 +25,9 @@ jobs:
       # Get code from repo
       - name: Checkout code
         uses: actions/checkout@v1
+      # Purposely fail
+      - name: Try to fail
+        run: exit 1
       # Install NodeJS
       - name: Use Node.js 16.x
         uses: actions/setup-node@v1
