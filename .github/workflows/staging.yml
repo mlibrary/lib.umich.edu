@@ -46,12 +46,10 @@ jobs:
       - run: npm run build
       # Deploy to Netlify using our production secrets
       - name: Deploy to netlify
-        uses: netlify/actions/cli@master
+        run: npx netlify-cli deploy --build --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        with:
-          args: deploy --dir=public --prod
       # Notify Slack if build fails
       - name: Report Status
         if: always()
