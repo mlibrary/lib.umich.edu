@@ -34,9 +34,8 @@ function PanelTemplate({ title, children, shaded, ...rest }) {
       data-panel
       css={{
         background: shaded ? COLORS.blue['100'] : '',
-        borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
-        ':last-of-type': {
-          borderBottom: 'none',
+        ':not(:last-of-type)': {
+          borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
         },
         paddingTop: SPACING['XL'],
         paddingBottom: SPACING['XL'],
@@ -399,7 +398,7 @@ function TextPanel({ data }) {
               display: 'flex',
               marginBottom: SPACING['L'],
               paddingBottom: SPACING['M'],
-              borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+              borderBottom: i !== items.length - 1 ? `solid 1px ${COLORS.neutral['100']}` : 'none',
             }}
           >
             <div
