@@ -58,7 +58,7 @@ function SearchEngineOptimization({
               .concat(meta)}
           >
             <link
-              href="https://unpkg.com/@umich-lib/css@v1/dist/umich-lib.css"
+              href="https://cdn.jsdelivr.net/npm/@umich-lib/css@1.0.9/dist/umich-lib.css"
               rel="stylesheet"
             />
             <script
