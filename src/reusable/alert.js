@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReachAlert from '@reach/alert';
+import { Alert as ReachAlert } from '@reach/alert';
 import { COLORS } from '@reusable';
 import styled from '@emotion/styled';
 
@@ -23,7 +23,7 @@ const alertIntentStyles = {
   },
 };
 
-const StyledAlert = styled(ReachAlert)(
+const StyledAlert = styled((props) => <ReachAlert {...props} />)(
   {
     margin: '0',
     padding: '0.5rem 0',

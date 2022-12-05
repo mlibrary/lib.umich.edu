@@ -25,7 +25,7 @@ const StyledNavList = styled('nav')({
   margin: '0',
 });
 
-const StyledLink = styled(Link)({
+const StyledLink = styled((props) => <Link {...props} />)({
   display: 'block',
   padding: '0.15rem 0',
   ':hover': {
