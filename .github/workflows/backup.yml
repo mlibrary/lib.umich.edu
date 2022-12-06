@@ -25,7 +25,7 @@ jobs:
     environment: backup
     # Environment variables
     env:
-      DRUPAL_CONCURRENT_FILE_REQUESTS: 20
+      DRUPAL_CONCURRENT_FILE_REQUESTS: 10
       DRUPAL_REQUEST_TIMEOUT: 6000000
       DRUPAL_URL: 'https://cms.lib.umich.edu/'
       ROBOTSTXT_MODE: 'production'

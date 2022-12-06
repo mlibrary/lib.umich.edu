@@ -19,7 +19,7 @@ jobs:
     environment: previews
     # Environment variables
     env:
-      DRUPAL_CONCURRENT_FILE_REQUESTS: 20
+      DRUPAL_CONCURRENT_FILE_REQUESTS: 10
       DRUPAL_REQUEST_TIMEOUT: 6000000
       DRUPAL_URL: 'https://cms.lib.umich.edu/'
     # Steps in job
@@ -50,10 +50,10 @@ jobs:
         with:
           ref: ${{ github.event.inputs.tag }}
       # Install NodeJS
-      - name: Use Node.js 16.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 18.x
       # Run npm install and build on our code
       - run: npm install
       - run: npm run build
