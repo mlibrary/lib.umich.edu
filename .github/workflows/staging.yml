@@ -18,7 +18,7 @@ jobs:
     # Environment variables
     env:
       DRUPAL_CONCURRENT_FILE_REQUESTS: 10
-      DRUPAL_REQUEST_TIMEOUT: 60000000
+      DRUPAL_REQUEST_TIMEOUT: 6000000
       DRUPAL_URL: 'https://cms.staging.lib.umich.edu/'
     # Steps in job
     steps:
