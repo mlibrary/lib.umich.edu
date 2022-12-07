@@ -42,7 +42,7 @@ export default function FeaturedAndLatestNews() {
     query {
       featuredNews: allNodeNews(
         filter: { field_featured_news_item: { eq: true } }
-        sort: { fields: created, order: DESC }
+        sort: {created: DESC}
         limit: 1
       ) {
         edges {
@@ -56,7 +56,7 @@ export default function FeaturedAndLatestNews() {
           field_priority_for_homepage: { eq: true }
           field_featured_news_item: { eq: false }
         }
-        sort: { fields: created, order: DESC }
+        sort: {created: DESC}
         limit: 5
       ) {
         edges {
@@ -70,7 +70,7 @@ export default function FeaturedAndLatestNews() {
           field_priority_for_homepage: { eq: false }
           field_featured_news_item: { eq: false }
         }
-        sort: { fields: created, order: DESC }
+        sort: {created: DESC}
         limit: 5
       ) {
         edges {
