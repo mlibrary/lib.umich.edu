@@ -23,7 +23,6 @@ export default function SiteMap() {
 
   return (
     <Layout>
-      <SearchEngineOptimization title="Site map" />
       <Margins
         css={{
           marginBottom: SPACING['4XL'],
@@ -89,6 +88,12 @@ export default function SiteMap() {
         </div>
       </Margins>
     </Layout>
+  );
+}
+
+export function Head() {
+  return (
+    <SearchEngineOptimization title="Site map" />
   );
 }
 

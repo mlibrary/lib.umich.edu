@@ -1,6 +1,5 @@
 import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-
 import { Heading, Text, SPACING, Margins, COLORS, List } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import SearchEngineOptimization from '../components/seo';
@@ -13,7 +12,6 @@ import MEDIA_QUERIES from '../reusable/media-queries';
 const NotFoundPage = () => {
   return (
     <Layout>
-      <SearchEngineOptimization title="404 - Page not found" />
       <Margins
         css={{
           marginTop: SPACING['XL'],
@@ -108,3 +106,9 @@ function Image() {
 }
 
 export default NotFoundPage;
+
+export function Head() {
+  return (
+    <SearchEngineOptimization title="404 - Page not found" />
+  );
+}

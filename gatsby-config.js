@@ -108,7 +108,6 @@ module.exports = {
         baseUrl: DRUPAL_URL,
       },
     },
-    'gatsby-plugin-react-helmet',
     'gatsby-plugin-remove-serviceworker',
     'gatsby-plugin-emotion',
     {

@@ -20,7 +20,6 @@ import getNode from '../utils/get-node';
 
 export default function VisitTemplate({ data, ...rest }) {
   const node = getNode(data);
-
   const {
     title,
     field_title_context,
@@ -35,11 +34,9 @@ export default function VisitTemplate({ data, ...rest }) {
   const isRootPage = field_root_page_ ? true : false;
   const { field_visit, field_amenities } = relationships;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
-  const description = body && body.summary ? body.summary : null;
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SearchEngineOptimization title={title} description={description} />
       <header aria-label="Location description">
         <PageHeader
           breadcrumb={fields.breadcrumb}
@@ -126,6 +123,17 @@ export default function VisitTemplate({ data, ...rest }) {
         <Panels data={fullPanels} />
       </div>
     </Layout>
+  );
+}
+
+export function Head({ data }) {
+  const node = getNode(data);
+  const { title, body } = node;
+  return (
+    <SearchEngineOptimization
+      title={title}
+      description={body && body.summary ? body.summary : null}
+    />
   );
 }
 

@@ -1,6 +1,13 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING } from '../reusable';
+import {
+  Margins,
+  Heading,
+  SPACING,
+  Expandable,
+  ExpandableChildren,
+  ExpandableButton
+} from '../reusable';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
@@ -12,28 +19,18 @@ import {
   TemplateContent,
 } from '../components/aside-layout';
 import * as moment from 'moment';
-import { Expandable, ExpandableChildren, ExpandableButton } from '../reusable';
 
 export default function NewsLandingTemplate({ data }) {
-  const node = data.page;
   const news = processNewsData(data.featuredNews).concat(
     processNewsData(data.restNews)
   );
   const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates);
   const newsMainInitialShow = 10;
   const newsLibraryUpdatesInitialShow = 20;
-
-  const { title, field_title_context, body, fields, drupal_internal__nid } =
-    node;
-  const description = body && body.summary ? body.summary : null;
+  const { field_title_context, body, fields, drupal_internal__nid } = data.page;
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SearchEngineOptimization
-        title={title}
-        drupalNid={drupal_internal__nid}
-        description={description}
-      />
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
         <Heading
@@ -135,6 +132,16 @@ export default function NewsLandingTemplate({ data }) {
         </TemplateSide>
       </Template>
     </Layout>
+  );
+}
+
+export function Head({ data }) {
+  const { title, body } = data.page;
+  return (
+    <SearchEngineOptimization
+      title={title}
+      description={body && body.summary ? body.summary : null}
+    />
   );
 }
 

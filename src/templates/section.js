@@ -53,13 +53,10 @@ function SectionTemplate({ data, ...rest }) {
     for PageHeader summary and image.
   */
   const summary = isRootPage ? body.summary : parentNode.body.summary;
-  const description = body && body.summary ? body.summary : null;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SearchEngineOptimization title={title} description={description} />
-
       {isRootPage ? (
         <PageHeader
           breadcrumb={breadcrumb}
@@ -127,6 +124,16 @@ function SectionTemplate({ data, ...rest }) {
 }
 
 export default SectionTemplate;
+
+export function Head({ data }) {
+  const { title, body } = data.page;
+  return (
+    <SearchEngineOptimization
+      title={title}
+      description={body && body.summary ? body.summary : null}
+    />
+  );
+}
 
 export const query = graphql`
   query ($slug: String!, $parents: [String], $children: [String]) {

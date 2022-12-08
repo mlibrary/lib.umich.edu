@@ -122,7 +122,6 @@ function ProfileTemplate({ data }) {
   ]);
   return (
     <Layout>
-      <SearchEngineOptimization title={field_user_display_name} />
       <Margins>
         <Template>
           <Top>
@@ -479,6 +478,12 @@ function MailingAddress({
 }
 
 export default ProfileTemplate;
+
+export function Head({ data }) {
+  return (
+    <SearchEngineOptimization title={data.profile.field_user_display_name} />
+  );
+}
 
 export const query = graphql`
   query ($name: String!) {
