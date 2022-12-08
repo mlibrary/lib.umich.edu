@@ -9,7 +9,7 @@ import {
   COLORS,
   Button,
   Alert,
-} from '@reusable';
+} from '../reusable';
 import { navigate } from '@reach/router';
 import { useDebounce } from 'use-debounce';
 import Link from '../components/link';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Heading, List, COLORS } from '@reusable';
+import { Heading, List, COLORS } from '../reusable';
 import {
   Template,
   TemplateSide,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 
-import { Margins } from '@reusable';
+import { Margins } from '../reusable';
 
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';

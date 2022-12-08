@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING, SmallScreen, LINK_STYLES } from '@reusable';
+import { Margins, Heading, SPACING, SmallScreen, LINK_STYLES } from '../reusable';
 
 import { Template, Top, Side, Content } from '../components/page-layout';
 import Html from '../components/html';

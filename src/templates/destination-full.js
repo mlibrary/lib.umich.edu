@@ -2,7 +2,7 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 
-import { Heading, SPACING, Margins, Text } from '@reusable';
+import { Heading, SPACING, Margins, Text } from '../reusable';
 
 import {
   Template,

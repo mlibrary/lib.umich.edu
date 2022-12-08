@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { COLORS, SPACING, Margins } from '@reusable';
+import { COLORS, SPACING, Margins } from '../reusable';
 import { Link as GatsbyLink } from 'gatsby';
 
 export default function SkipLinks() {

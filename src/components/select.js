@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS, SPACING, Icon } from '@reusable';
+import { COLORS, SPACING, Icon } from '../reusable';
 
 export default function Select({ label, name, options, value, ...rest }) {
   return (

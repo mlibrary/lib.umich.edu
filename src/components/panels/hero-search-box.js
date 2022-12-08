@@ -8,7 +8,7 @@ import {
   MEDIA_QUERIES,
   TYPOGRAPHY,
   COLORS,
-} from '@reusable';
+} from '../../reusable';
 import Html from '../html';
 
 const MEDIAQUERIES = {

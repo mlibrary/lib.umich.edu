@@ -2,7 +2,7 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import * as moment from 'moment';
-import { Margins, Heading, SPACING, COLORS, Text, TYPOGRAPHY } from '@reusable';
+import { Margins, Heading, SPACING, COLORS, Text, TYPOGRAPHY } from '../reusable';
 import {
   Template,
   TemplateSide,

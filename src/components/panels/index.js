@@ -6,7 +6,7 @@ import {
   Margins,
   Icon,
   MEDIA_QUERIES,
-} from '@reusable';
+} from '../../reusable';
 
 import Card from '../card';
 import Link from '../link';

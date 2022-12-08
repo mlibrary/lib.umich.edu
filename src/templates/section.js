@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Heading, Margins, MEDIA_QUERIES } from '@reusable';
+import { Heading, Margins, MEDIA_QUERIES } from '../reusable';
 import {
   Template,
   TemplateSide,

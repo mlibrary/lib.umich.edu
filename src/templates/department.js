@@ -9,7 +9,7 @@ import {
   List,
   Icon,
   Link as DSLink,
-} from '@reusable';
+} from '../reusable';
 import { Template, Top, Side, Content } from '../components/page-layout';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';

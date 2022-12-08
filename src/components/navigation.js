@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'gatsby';
 import styled from '@emotion/styled';
-import { Heading } from '@reusable';
+import { Heading } from '../reusable';
 
 const getPages = (data) => {
   return data.map((page) => {

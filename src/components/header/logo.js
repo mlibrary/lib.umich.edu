@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'gatsby';
-import { COLORS } from '@reusable';
+import { COLORS } from '../../reusable';
 
 const UMichBlockM = ({ size, color }) => (
   <svg

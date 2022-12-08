@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SPACING } from '@reusable';
+import { SPACING } from '../reusable';
 
 import IconText from '../components/icon-text';
 import icons from '../reusable/icons';

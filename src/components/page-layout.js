@@ -1,5 +1,5 @@
 import React from 'react';
-import { SPACING, MEDIA_QUERIES } from '@reusable';
+import { SPACING, MEDIA_QUERIES } from '../reusable';
 
 export function Template({ children, ...rest }) {
   return (

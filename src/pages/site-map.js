@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../components/layout';
 
-import { Heading, SPACING, Margins } from '@reusable';
+import { Heading, SPACING, Margins } from '../reusable';
 import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
 import Link from '../components/link';

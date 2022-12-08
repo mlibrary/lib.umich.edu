@@ -4,7 +4,7 @@ import {
   eventFormatWhen,
   eventFormatWhere,
 } from '../utils/events';
-import { Heading, SPACING, COLORS, TYPOGRAPHY, Icon } from '@reusable';
+import { Heading, SPACING, COLORS, TYPOGRAPHY, Icon } from '../reusable';
 import CardImage from '../reusable/card-image';
 import MEDIA_QUERIES from '../reusable/media-queries';
 import icons from '../reusable/icons';

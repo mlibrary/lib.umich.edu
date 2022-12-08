@@ -14,7 +14,7 @@ import {
   Icon,
   Margins,
   LINK_STYLES,
-} from '@reusable';
+} from '../../reusable';
 
 import Logo from './logo';
 import SiteSearchModal from '../site-search-modal';

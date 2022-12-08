@@ -14,7 +14,7 @@ const siteMetadata = {
 
 module.exports = {
   flags: {
-    DEV_SSR: true,
+    DEV_SSR: false, // Watches gatsby-ssr.js while developing
   },    
   siteMetadata,
   plugins: [
@@ -26,14 +26,6 @@ module.exports = {
       options: {
         name: 'images',
         path: `${__dirname}/src/images/`,
-      },
-    },
-    {
-      resolve: 'gatsby-alias-imports',
-      options: {
-        aliases: {
-          '@reusable': 'src/reusable/',
-        },
       },
     },
     'gatsby-plugin-sitemap',

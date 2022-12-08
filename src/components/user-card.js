@@ -1,6 +1,6 @@
 import React from 'react';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Text, SPACING, COLORS } from '@reusable';
+import { Text, SPACING, COLORS } from '../reusable';
 import Link from './link';
 import StaffPhotoPlaceholder from './staff-photo-placeholder';
 

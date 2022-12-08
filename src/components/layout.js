@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Global } from '@emotion/react';
-import { GlobalStyleSheet, COLORS } from '@reusable';
+import { GlobalStyleSheet, COLORS } from '../reusable';
 import Header from './header';
 import Footer from './footer';
 import useNavigationData from '../hooks/use-navigation-data';

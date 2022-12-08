@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MEDIA_QUERIES, SPACING, Link, Icon } from '@reusable';
+import { MEDIA_QUERIES, SPACING, Link, Icon } from '../reusable';
 
 const Breadcrumb = ({ children, ...rest }) => {
   const numberOfBreadcrumbs = React.Children.count(children);
