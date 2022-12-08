@@ -5,7 +5,6 @@ import { useStaticQuery, graphql } from 'gatsby';
 
 function SearchEngineOptimization({
   description,
-  lang,
   meta,
   keywords,
   title,
@@ -22,7 +21,6 @@ function SearchEngineOptimization({
   const metaDescription = description || data.site.siteMetadata.description;
   return (
     <Helmet
-      htmlAttributes={{lang}}
       defaultTitle={data.site.siteMetadata.title}
       title={title}
       titleTemplate={`%s | ${data.site.siteMetadata.title}`}
@@ -72,14 +70,12 @@ function SearchEngineOptimization({
 }
 
 SearchEngineOptimization.defaultProps = {
-  lang: 'en',
   meta: [],
   keywords: [],
 };
 
 SearchEngineOptimization.propTypes = {
   description: PropTypes.string,
-  lang: PropTypes.string,
   meta: PropTypes.array,
   keywords: PropTypes.arrayOf(PropTypes.string),
   title: PropTypes.string,
