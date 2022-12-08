@@ -56,6 +56,7 @@ function SearchEngineOptimization({
         )
         .concat(meta)}
     >
+      <link rel="canonical" href={window.location.href} />
       <link
         href="https://cdn.jsdelivr.net/npm/@umich-lib/css@1.0.9/dist/umich-lib.css"
         rel="stylesheet"

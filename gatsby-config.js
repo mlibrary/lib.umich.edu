@@ -76,12 +76,6 @@ module.exports = {
         },
       },
     },
-    {
-      resolve: 'gatsby-plugin-react-helmet-canonical-urls',
-      options: {
-        siteUrl: siteMetadata.siteUrl,
-      },
-    },
     'gatsby-plugin-image',
     {
       resolve: 'gatsby-plugin-sharp',
