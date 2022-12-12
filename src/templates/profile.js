@@ -1,19 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import {
-  Margins,
-  Heading,
-  SPACING,
-  Text,
-  TYPOGRAPHY,
-  List,
-  LargeScreen,
-  SmallScreen,
-  Icon,
-  COLORS,
-  MEDIA_QUERIES,
-} from '../reusable';
+import { Margins, Heading, SPACING, Text, TYPOGRAPHY, List, LargeScreen, SmallScreen, Icon, COLORS, MEDIA_QUERIES } from '../reusable';
 import { Template, Top, Side, Content } from '../components/page-layout';
 import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
@@ -480,9 +468,7 @@ function MailingAddress({
 export default ProfileTemplate;
 
 export function Head({ data }) {
-  return (
-    <SearchEngineOptimization title={data.profile.field_user_display_name} />
-  );
+  return <SearchEngineOptimization data={data.profile} titleField='field_user_display_name' />;
 }
 
 export const query = graphql`

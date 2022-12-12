@@ -20,12 +20,7 @@ function HomePageTemplate({ data }) {
 export default HomePageTemplate;
 
 export function Head({ data }) {
-  const { body } = data.page;
-  return (
-    <SearchEngineOptimization
-      description={body && body.summary ? body.summary : null}
-    />
-  );
+  return <SearchEngineOptimization data={data.page} />;
 }
 
 export const query = graphql`

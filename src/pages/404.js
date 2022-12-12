@@ -6,7 +6,6 @@ import SearchEngineOptimization from '../components/seo';
 import Link from '../components/link';
 import Prose from '../components/prose';
 import Layout from '../components/layout';
-
 import MEDIA_QUERIES from '../reusable/media-queries';
 
 const NotFoundPage = () => {
@@ -108,7 +107,5 @@ function Image() {
 export default NotFoundPage;
 
 export function Head() {
-  return (
-    <SearchEngineOptimization title="404 - Page not found" />
-  );
+  return <SearchEngineOptimization data={{title: '404 - Page not found'}} />;
 }

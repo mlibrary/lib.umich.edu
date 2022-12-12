@@ -1,11 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { Heading, List, COLORS } from '../reusable';
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import PageHeader from '../components/page-header';
@@ -127,14 +123,7 @@ export default function VisitTemplate({ data, ...rest }) {
 }
 
 export function Head({ data }) {
-  const node = getNode(data);
-  const { title, body } = node;
-  return (
-    <SearchEngineOptimization
-      title={title}
-      description={body && body.summary ? body.summary : null}
-    />
-  );
+  return <SearchEngineOptimization data={getNode(data)} titleField='title' />;
 }
 
 function HTMLList({ data }) {

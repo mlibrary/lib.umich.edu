@@ -1,11 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { Heading, Margins, MEDIA_QUERIES } from '../reusable';
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import Prose from '../components/prose';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
@@ -126,13 +122,7 @@ function SectionTemplate({ data, ...rest }) {
 export default SectionTemplate;
 
 export function Head({ data }) {
-  const { title, body } = data.page;
-  return (
-    <SearchEngineOptimization
-      title={title}
-      description={body && body.summary ? body.summary : null}
-    />
-  );
+  return <SearchEngineOptimization data={data.page} titleField='title' />;
 }
 
 export const query = graphql`

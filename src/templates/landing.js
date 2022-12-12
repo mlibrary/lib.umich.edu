@@ -39,13 +39,7 @@ export default function LandingTemplate({ data, ...rest }) {
 }
 
 export function Head({ data }) {
-  const { title, body } = data.page;
-  return (
-    <SearchEngineOptimization
-      title={title}
-      description={body && body.summary ? body.summary : null}
-    />
-  );
+  return <SearchEngineOptimization data={data.page} />;
 }
 
 export const query = graphql`

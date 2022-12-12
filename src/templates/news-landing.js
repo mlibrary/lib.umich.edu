@@ -1,23 +1,12 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import {
-  Margins,
-  Heading,
-  SPACING,
-  Expandable,
-  ExpandableChildren,
-  ExpandableButton
-} from '../reusable';
+import { Margins, Heading, SPACING, Expandable, ExpandableChildren, ExpandableButton } from '../reusable';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/card';
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import * as moment from 'moment';
 
 export default function NewsLandingTemplate({ data }) {
@@ -136,13 +125,7 @@ export default function NewsLandingTemplate({ data }) {
 }
 
 export function Head({ data }) {
-  const { title, body } = data.page;
-  return (
-    <SearchEngineOptimization
-      title={title}
-      description={body && body.summary ? body.summary : null}
-    />
-  );
+  return <SearchEngineOptimization data={data.page} titleField='title' />;
 }
 
 function processNewsData(data) {

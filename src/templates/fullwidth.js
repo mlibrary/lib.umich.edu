@@ -1,8 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-
 import { Margins, Heading, SPACING } from '../reusable';
-
+import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
@@ -51,6 +50,10 @@ export default function FullWidthTemplate({ data, ...rest }) {
       <Panels data={fullPanels} />
     </TemplateLayout>
   );
+}
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={getNode(data)} />;
 }
 
 export const query = graphql`

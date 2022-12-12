@@ -1,20 +1,7 @@
-import React, {
-  createContext,
-  useContext,
-  useReducer,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
+import SearchEngineOptimization from '../components/seo';
 import { graphql } from 'gatsby';
-import {
-  Heading,
-  SPACING,
-  Margins,
-  TextInput,
-  COLORS,
-  Button,
-  Alert,
-} from '../reusable';
+import { Heading, SPACING, Margins, TextInput, COLORS, Button, Alert } from '../reusable';
 import { useLocation, navigate } from '@reach/router';
 import Link from '../components/link';
 import Breadcrumb from '../components/breadcrumb';
@@ -85,6 +72,10 @@ export default function FinaASpecialistTemplate({ data }) {
       </Margins>
     </TemplateLayout>
   );
+}
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={ data.page } />;
 }
 
 function FindASpecialist({ specialists }) {
