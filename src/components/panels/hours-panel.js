@@ -12,7 +12,6 @@ import {
 import Html from '../html';
 import HoursTable from '../hours-table';
 import { useStateValue } from '../use-state';
-import getTransitionCSS from '../../utils/transition';
 import { displayHours } from '../../utils/hours';
 
 export function HoursPanelNextPrev() {
@@ -157,9 +156,10 @@ export default function HoursPanelContainer({ data }) {
     .replace(/[^a-z0-9]/g, '-')
     .replace(/-+/g, '-');
 
-  const transitionCSS = getTransitionCSS();
   return (
-    <section data-hours-panel css={transitionCSS}>
+    <section data-hours-panel css={{
+      animation: 'fadeIn 0.25s ease-in'
+    }}>
       <HoursPanelNextPrev />
       <Margins>
         <HoursPanel

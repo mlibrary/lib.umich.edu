@@ -431,6 +431,18 @@ export function GlobalStyleSheet() {
       height: 1px; width: 1px;
       overflow: hidden;
     }
+    /*
+      Keyframes
+    */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+    
+      100% {
+        opacity: 1;
+      }
+    }
   `;
 
   return (
