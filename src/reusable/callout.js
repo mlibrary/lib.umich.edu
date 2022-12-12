@@ -1,6 +1,4 @@
 import React from 'react';
-
-import { Alert } from '@reach/alert';
 import { SPACING, COLORS, Heading, Icon } from '../reusable';
 
 export default function Callout({ title, children, intent, alert, ...rest }) {
@@ -35,18 +33,9 @@ export default function Callout({ title, children, intent, alert, ...rest }) {
             }}
           />
         )}
-        <div>
-          {alert ? (
-            <Alert>
-              {title && <Heading size="M">{title}</Heading>}
-              {children}
-            </Alert>
-          ) : (
-            <React.Fragment>
-              {title && <Heading size="M">{title}</Heading>}
-              {children}
-            </React.Fragment>
-          )}
+        <div role={!alert ? 'status' : ''}>
+          {title && <Heading size="M">{title}</Heading>}
+          {children}
         </div>
       </div>
     </div>

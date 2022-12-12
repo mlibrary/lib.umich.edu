@@ -1,43 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Alert as ReachAlert } from '@reach/alert';
 import { COLORS } from '../reusable';
-import styled from '@emotion/styled';
-
-const alertIntentStyles = {
-  informational: {
-    background: COLORS.blue[100],
-    borderColor: COLORS.blue[400],
-  },
-  success: {
-    background: COLORS.teal[100],
-    borderColor: COLORS.teal[400],
-  },
-  warning: {
-    background: COLORS.maize[100],
-    borderColor: COLORS.maize[400],
-  },
-  error: {
-    background: COLORS.orange[100],
-    borderColor: COLORS.orange[500],
-  },
-};
-
-const StyledAlert = styled((props) => <ReachAlert {...props} />)(
-  {
-    margin: '0',
-    padding: '0.5rem 0',
-    borderBottom: `solid 1px transparent`,
-  },
-  (props) => ({
-    ...alertIntentStyles[props.intent],
-  })
-);
-
-const StyledAlertInner = styled('div')({
-  margin: '0 auto',
-  padding: '0 1rem',
-});
 
 /**
   Use Alerts to notify users of important information. 
@@ -45,11 +8,52 @@ const StyledAlertInner = styled('div')({
 class Alert extends React.Component {
   render() {
     const { intent, children, className, ...other } = this.props;
-
+    const alertStyles = (intent) => {
+      if (intent === 'success') {
+        return {
+          background: COLORS.teal[100],
+          borderColor: COLORS.teal[400],
+        };
+      }
+      if (intent === 'warning') {
+        return {
+          background: COLORS.maize[100],
+          borderColor: COLORS.maize[400],
+        };
+      }
+      if (intent === 'error') {
+        return {
+          background: COLORS.orange[100],
+          borderColor: COLORS.orange[500],
+        };
+      }
+      return {
+        background: COLORS.blue[100],
+        borderColor: COLORS.blue[400],
+      };
+    }
     return (
-      <StyledAlert intent={intent} {...other}>
-        <StyledAlertInner data-inner-container>{children}</StyledAlertInner>
-      </StyledAlert>
+      <div
+        role={intent === 'error' ? 'alert' : intent === 'warning' ? 'status' : ''}
+        intent={intent}
+        css={{
+          borderBottom: `solid 1px transparent`,
+          margin: '0',
+          padding: '0.5rem 0',
+          ...alertStyles(intent)
+        }}
+        {...other}
+      >
+        <div
+          css={{
+            margin: '0 auto',
+            padding: '0 1rem'
+          }}
+          data-inner-container
+        >
+          {children}
+        </div>
+      </div>
     );
   }
 }

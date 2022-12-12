@@ -4,7 +4,6 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@reach/alert": "^0.18.0",
     "@reach/combobox": "^0.18.0",
     "@reach/dialog": "^0.18.0",
     "@reach/window-size": "^0.18.0",
