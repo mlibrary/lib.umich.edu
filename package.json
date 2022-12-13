@@ -6,7 +6,6 @@
     "@emotion/styled": "^11.10.5",
     "@reach/combobox": "^0.18.0",
     "@reach/dialog": "^0.18.0",
-    "@reach/window-size": "^0.18.0",
     "@umich-lib/web": "^1.3.0",
     "gatsby": "^5.2.0",
     "gatsby-plugin-emotion": "^8.2.0",
