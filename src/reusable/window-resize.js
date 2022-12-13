@@ -12,20 +12,22 @@ function debounce(fn, ms) {
   };
 }
 
+const getWindow = typeof window !== 'undefined' && window;
+
 export default function WindowResize() {
   const [dimensions, setDimensions] = React.useState({
-    width: window.innerWidth
+    width: getWindow.innerWidth
   });
   React.useEffect(() => {
     const debouncedHandleResize = debounce(function handleResize() {
       setDimensions({
-        width: window.innerWidth
+        width: getWindow.innerWidth
       })
     }, 500);
-    window.addEventListener('resize', debouncedHandleResize);
+    getWindow.addEventListener('resize', debouncedHandleResize);
     // Clean up listener
     return () => {
-      window.removeEventListener('resize', debouncedHandleResize);
+      getWindow.removeEventListener('resize', debouncedHandleResize);
     }
   });
   return dimensions.width;
