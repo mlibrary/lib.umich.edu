@@ -103,8 +103,11 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
     });
   }
 
+  let hasLocation = false;
+
   if (!!node.field_event_in_non_library_locat && !!node.field_non_library_location_addre) {
     if (node.field_non_library_location_addre.organization) {
+      hasLocation = true;
       where.push({
         label: node.field_non_library_location_addre.organization
       });
@@ -129,9 +132,14 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
   const room = node.relationships.field_event_room?.title;
 
   if (building) {
+    hasLocation = true;
     where.push({
       label: [room, building].join(', '),
     });
+  }
+
+  if (node.field_event_online && hasLocation) {
+    where[0].label = 'Hybrid';
   }
 
   return where;
