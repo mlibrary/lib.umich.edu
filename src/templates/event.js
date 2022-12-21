@@ -250,21 +250,21 @@ function EventMetadata({ data }) {
             <th scope="row">Where</th>
             <td
               css={{
-                'p + p': {
+                'p + p:not(.margin-top-none)': {
                   marginTop: SPACING['XS'],
                 },
               }}
             >
-              {where.map(({ label, href }, index) => {
+              {where.map(({ label, href, className }, index) => {
                 if (href) {
                   return (
-                    <p key={index}>
+                    <p key={index} className={className}>
                       <Link to={href}>{label}</Link>
                     </p>
                   );
                 }
 
-                return <p key={index}>{label}</p>;
+                return <p key={index} className={className}>{label}</p>;
               })}
             </td>
           </tr>

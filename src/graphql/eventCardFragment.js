@@ -17,6 +17,10 @@ export const query = graphql`
       end_value
     }
     field_event_online
+    field_event_in_non_library_locat
+    field_non_library_location_addre {
+      organization
+    }
     relationships {
       field_event_type {
         name
