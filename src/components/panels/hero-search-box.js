@@ -179,28 +179,28 @@ function Caption({ data }) {
 
 function BackgroundSection({ data, children, ...rest }) {
   const { field_hero_images } = data.relationships;
-  const smallScreenImage = field_hero_images.find(
-    (node) => node.field_orientation === 'vertical'
-  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
-  const largeScreenImage = field_hero_images.find(
-    (node) => node.field_orientation === 'horizontal'
-  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
-  const sources = [
-    smallScreenImage,
-    {
-      ...largeScreenImage,
-      media: `(min-width: 720px)`,
-    },
-  ];
+  const screenImage = (orientation) => {
+    return field_hero_images
+      .find((node) => node.field_orientation === orientation)
+      .relationships
+      .field_media_image
+      .localFile
+      .childImageSharp
+      .gatsbyImageData
+      .images
+      .fallback
+      .src;
+  };
 
   return (
     <section
       css={{
         backgroundColor: COLORS.neutral['100'],
-        backgroundImage: `url('${sources[1].images.fallback.src}')`,
-        backgroundPosition: 'center',
+        backgroundImage: `url('${screenImage('vertical')}')`,
+        backgroundPosition: 'center top 33%',
         [MEDIAQUERIES['M']]: {
-          backgroundSize: 'cover',
+          backgroundImage: `url('${screenImage('horizontal')}')`,
+          backgroundPosition: 'center left 20%',
         },
         position: 'relative'
       }}
