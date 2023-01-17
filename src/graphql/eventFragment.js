@@ -25,6 +25,15 @@ export const query = graphql`
       uri
       title
     }
+    field_event_in_non_library_locat
+    field_non_library_location_addre {
+      organization
+      locality
+      address_line1
+      address_line2
+      postal_code
+      administrative_area
+    }
     relationships {
       field_library_contact {
         field_user_display_name

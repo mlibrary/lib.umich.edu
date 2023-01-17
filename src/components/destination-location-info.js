@@ -56,6 +56,10 @@ function DestinationLocationInfo({ node }) {
 
   const locationNode = resolveLocationFromNode(node);
 
+  const { fields } = node;
+  const askLibrarian = fields?.slug === '/ask-librarian';
+   
+
   return (
     <div
       css={{
@@ -77,13 +81,13 @@ function DestinationLocationInfo({ node }) {
           </IconText>
         </p>
       )}
-      {floorPlan && (
+      {(floorPlan || askLibrarian) && (
         <p>
           <IconText d={icons['address']}>
             <span>
               {locationSummary}
               <span css={{ display: 'block' }}>
-                <Link to={floorPlan.fields.slug}>View floorplan</Link>
+                {askLibrarian ? ('Online') : (<Link to={floorPlan.fields.slug}>View floorplan</Link>)}
               </span>
             </span>
           </IconText>
