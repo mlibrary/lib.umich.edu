@@ -432,6 +432,13 @@ export function GlobalStyleSheet() {
       overflow: hidden;
     }
     /*
+      Stop Scroll
+    */
+    body.stop-scroll {
+      height: 100vh;
+      overflow: hidden;
+    }
+    /*
       Keyframes
     */
     @keyframes fadeIn {

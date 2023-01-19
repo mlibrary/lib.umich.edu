@@ -4,7 +4,6 @@ import React, {
   useReducer,
   useEffect,
   useRef,
-  useState,
 } from 'react';
 import { Link } from 'gatsby';
 import {
@@ -17,7 +16,7 @@ import {
 } from '../../reusable';
 
 import Logo from './logo';
-import SiteSearchModal from '../site-search-modal';
+import SiteSearchModal from './site-search-modal';
 
 const StateContext = createContext();
 
@@ -68,11 +67,14 @@ function SmallScreenHeader({ primary, secondary }) {
         <Margins>
           <div
             css={{
-              position: 'relative',
+              display: 'flex',
+              justifyContent: 'space-between',
+              position: 'relative'
             }}
           >
             <div
               css={{
+                flexShrink: '1',
                 padding: `${SPACING['M']} 0`,
               }}
             >
@@ -87,7 +89,6 @@ function SmallScreenHeader({ primary, secondary }) {
 }
 
 function Nav({ primary, secondary }) {
-  const [isSearching, setSearching] = useState(false);
   const [{ openNav, open }, dispatch] = useStateValue();
   const isOpen = openNav === true;
   const toggleNavNode = useRef();
@@ -96,23 +97,10 @@ function Nav({ primary, secondary }) {
     <nav
       aria-label="Main and utility"
       css={{
-        position: 'absolute',
-        top: 0,
-        right: 0,
+        flexShrink: 0
       }}
     >
-      <button
-        onClick={() => setSearching(!isSearching)}
-        css={{
-          padding: `${SPACING['M']} ${SPACING['XS']}`,
-        }}
-      >
-        <Icon icon="search" size={32} />
-        <span className='visually-hidden'>Search this site</span>
-      </button>
-      {isSearching && (
-        <SiteSearchModal handleDismiss={() => setSearching(false)} />
-      )}
+      <SiteSearchModal />
       <button
         css={{
           padding: `${SPACING['M']} ${SPACING['XS']}`,
