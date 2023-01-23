@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "bottleneck": "^2.19.5",
-    "entities": "^4.3.0",
+    "entities": "^4.4.0",
     "fetch-retry": "^5.0.2",
     "gatsby-plugin-netlify": "^5.0.0",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
