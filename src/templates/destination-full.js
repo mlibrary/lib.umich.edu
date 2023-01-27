@@ -1,14 +1,9 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-
 import { Heading, SPACING, Margins, Text } from '../reusable';
-
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
+import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
 import TemplateLayout from './template-layout';
 import getNode from '../utils/get-node';
@@ -93,6 +88,10 @@ function DestinationTemplate({ data, ...rest }) {
 }
 
 export default DestinationTemplate;
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={getNode(data)} />;
+}
 
 export const query = graphql`
   query ($slug: String!) {

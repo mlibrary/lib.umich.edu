@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-
 import { Margins, Heading, SPACING, SmallScreen } from '../reusable';
 import { Template, Top, Side, Content } from '../components/page-layout';
+import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
 import SideNavigation from '../components/navigation/side-navigation';
@@ -66,6 +66,10 @@ function BasicTemplate({ data, ...rest }) {
 }
 
 export default BasicTemplate;
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={data.page ? data.page : data.room ? data.room : null} />;
+}
 
 export const query = graphql`
   query ($slug: String!) {

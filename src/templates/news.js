@@ -1,13 +1,10 @@
 import React from 'react';
+import SearchEngineOptimization from '../components/seo';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import * as moment from 'moment';
 import { Margins, Heading, SPACING, COLORS, Text, TYPOGRAPHY } from '../reusable';
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import TemplateLayout from './template-layout';
 import Panels from '../components/panels';
 import Html from '../components/html';
@@ -118,6 +115,10 @@ export default function NewsTemplate({ data }) {
       <Panels data={fullPanels} />
     </TemplateLayout>
   );
+}
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={ getNode(data) } />;
 }
 
 function StayInTheKnow() {

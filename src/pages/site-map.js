@@ -1,6 +1,5 @@
 import React from 'react';
 import Layout from '../components/layout';
-
 import { Heading, SPACING, Margins } from '../reusable';
 import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
@@ -23,7 +22,6 @@ export default function SiteMap() {
 
   return (
     <Layout>
-      <SearchEngineOptimization title="Site map" />
       <Margins
         css={{
           marginBottom: SPACING['4XL'],
@@ -90,6 +88,10 @@ export default function SiteMap() {
       </Margins>
     </Layout>
   );
+}
+
+export function Head() {
+  return <SearchEngineOptimization data={{title: 'Site map'}} />;
 }
 
 function NestLinkedList({ data }) {

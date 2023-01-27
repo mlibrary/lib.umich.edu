@@ -76,12 +76,6 @@ module.exports = {
         },
       },
     },
-    {
-      resolve: 'gatsby-plugin-react-helmet-canonical-urls',
-      options: {
-        siteUrl: siteMetadata.siteUrl,
-      },
-    },
     'gatsby-plugin-image',
     {
       resolve: 'gatsby-plugin-sharp',
@@ -114,7 +108,6 @@ module.exports = {
         baseUrl: DRUPAL_URL,
       },
     },
-    'gatsby-plugin-react-helmet',
     'gatsby-plugin-remove-serviceworker',
     'gatsby-plugin-emotion',
     {
