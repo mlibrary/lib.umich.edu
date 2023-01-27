@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ExpandableContext } from './expandable';
-import { Button } from '@reusable';
+import { Button } from '../../reusable';
 
 const cleanList = (list) => {
   return list

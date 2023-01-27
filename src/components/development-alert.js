@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Alert, Margins, SPACING } from '@reusable';
+import { Alert, Margins, SPACING } from '../reusable';
 
 import Link from './link';
 

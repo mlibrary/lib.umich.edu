@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { COLORS, SPACING, lightOrDark } from '@reusable';
+import { COLORS, SPACING, lightOrDark } from '../reusable';
 
 function getButtonColor(kind) {
   switch (kind) {

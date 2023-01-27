@@ -2,7 +2,7 @@ import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from '@emotion/styled';
 import * as moment from 'moment';
-import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '@reusable';
+import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '../../reusable';
 import Card from '../card';
 import Link from '../link';
 

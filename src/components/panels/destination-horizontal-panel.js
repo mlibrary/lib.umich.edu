@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, SPACING, TYPOGRAPHY, COLORS } from '@reusable';
+import { Heading, SPACING, TYPOGRAPHY, COLORS } from '../../reusable';
 import { getFloor, getParentTitle, getImage, getRoom } from '../../utils';
 import Html from '../html';
 import CardImage from '../../reusable/card-image';

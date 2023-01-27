@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { MEDIA_QUERIES, COLORS } from '@reusable';
+import { MEDIA_QUERIES, COLORS } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
 
 const StyledHeroContainer = styled('div')({

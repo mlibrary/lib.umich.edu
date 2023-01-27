@@ -1,5 +1,5 @@
 import React from 'react';
-import { SPACING, Heading, LINK_STYLES, COLORS, List } from '@reusable';
+import { SPACING, Heading, LINK_STYLES, COLORS, List } from '../../reusable';
 import Link from '../link';
 import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id';
 import { PanelTemplate } from './index';

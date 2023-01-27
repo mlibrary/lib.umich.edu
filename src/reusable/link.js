@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { LINK_STYLES } from '@reusable';
+import { LINK_STYLES } from '../reusable';
 
 const StyledLink = styled('a')((props) => LINK_STYLES[props.kind]);
 

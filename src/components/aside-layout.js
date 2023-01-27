@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SPACING, COLORS, Margins } from '@reusable';
+import { SPACING, COLORS, Margins } from '../reusable';
 
 import MEDIA_QUERIES from '../reusable/media-queries';
 

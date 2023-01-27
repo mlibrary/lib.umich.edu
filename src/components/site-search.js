@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link as GatsbyLink } from 'gatsby';
-import { SPACING, Z_SPACE, COLORS, Icon, Alert, TYPOGRAPHY } from '@reusable';
+import { SPACING, Z_SPACE, COLORS, Icon, Alert, TYPOGRAPHY } from '../reusable';
 import { findAll } from 'highlight-words-core';
 import ReachAlert from '@reach/alert';
 import Link from '../components/link';

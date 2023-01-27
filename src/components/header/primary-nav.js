@@ -15,7 +15,7 @@ import {
   Icon,
   Alert,
   LINK_STYLES,
-} from '@reusable';
+} from '../../reusable';
 
 const StateContext = createContext();
 const dropdownSideWidth = '24rem';

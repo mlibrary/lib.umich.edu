@@ -25,14 +25,6 @@ module.exports = {
         path: `${__dirname}/src/images/`,
       },
     },
-    {
-      resolve: 'gatsby-alias-imports',
-      options: {
-        aliases: {
-          '@reusable': 'src/reusable/',
-        },
-      },
-    },
     'gatsby-plugin-sitemap',
     {
       resolve: 'gatsby-plugin-robots-txt',

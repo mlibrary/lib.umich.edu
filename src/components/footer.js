@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS, SPACING, Margins, Heading, MEDIA_QUERIES } from '@reusable';
+import { COLORS, SPACING, Margins, Heading, MEDIA_QUERIES } from '../reusable';
 
 import fdlp from '../images/fdlp.png';
 import icons from '../reusable/icons';

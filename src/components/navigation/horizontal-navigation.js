@@ -8,7 +8,7 @@ import {
   MEDIA_QUERIES,
   LargeScreen,
   SmallScreen,
-} from '@reusable';
+} from '../../reusable';
 
 export default function HorizontalNavigation({ items, ...rest }) {
   if (!items) {

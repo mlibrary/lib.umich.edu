@@ -7,7 +7,7 @@ import {
   Button,
   Icon,
   MEDIA_QUERIES,
-} from '@reusable';
+} from '../../reusable';
 
 import Html from '../html';
 import HoursTable from '../hours-table';

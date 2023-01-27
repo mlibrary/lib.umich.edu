@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReachAlert from '@reach/alert';
-import { COLORS } from '@reusable';
+import { COLORS } from '../reusable';
 import styled from '@emotion/styled';
 
 const alertIntentStyles = {

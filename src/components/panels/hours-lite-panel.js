@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '@reusable';
+import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '../../reusable';
 import * as moment from 'moment';
 import { Link as GatsbyLink } from 'gatsby';
 

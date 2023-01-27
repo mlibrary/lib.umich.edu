@@ -7,7 +7,7 @@ import {
   MEDIA_QUERIES,
   Icon,
   LargeScreen,
-} from '@reusable';
+} from '../../reusable';
 
 export default function SideNavigation({ to, branch }) {
   if (!branch) {

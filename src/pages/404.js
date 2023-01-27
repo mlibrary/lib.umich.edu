@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 
-import { Heading, Text, SPACING, Margins, COLORS, List } from '@reusable';
+import { Heading, Text, SPACING, Margins, COLORS, List } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import SearchEngineOptimization from '../components/seo';
 import Link from '../components/link';

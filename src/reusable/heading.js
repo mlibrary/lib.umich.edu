@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
-import { TYPOGRAPHY } from '@reusable';
+import { TYPOGRAPHY } from '../reusable';
 
 /*
   Start with base styles and then bring in the

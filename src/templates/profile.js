@@ -13,7 +13,7 @@ import {
   Icon,
   COLORS,
   MEDIA_QUERIES,
-} from '@reusable';
+} from '../reusable';
 import { Template, Top, Side, Content } from '../components/page-layout';
 import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';

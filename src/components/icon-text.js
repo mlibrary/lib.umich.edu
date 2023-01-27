@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@reusable';
+import { Icon } from '../reusable';
 
 export default function IconText({ d, icon, children, ...rest }) {
   return (

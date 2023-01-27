@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Heading, SPACING, Margins, Text, SmallScreen } from '@reusable';
+import { Heading, SPACING, Margins, Text, SmallScreen } from '../reusable';
 import { Template, Top, Side, Content } from '../components/page-layout';
 import Breadcrumb from '../components/breadcrumb';
 import TemplateLayout from './template-layout';

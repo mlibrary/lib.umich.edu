@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
-import { SPACING } from '@reusable';
+import { SPACING } from '../reusable';
 
 const baseListStyles = {
   margin: '0',

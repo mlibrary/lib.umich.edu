@@ -14,7 +14,7 @@ import {
   COLORS,
   Button,
   Alert,
-} from '@reusable';
+} from '../reusable';
 import { useLocation, navigate } from '@reach/router';
 import Link from '../components/link';
 import Breadcrumb from '../components/breadcrumb';

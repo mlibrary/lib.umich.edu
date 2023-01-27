@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING } from '@reusable';
+import { Margins, Heading, SPACING } from '../reusable';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
@@ -12,7 +12,7 @@ import {
   TemplateContent,
 } from '../components/aside-layout';
 import * as moment from 'moment';
-import { Expandable, ExpandableChildren, ExpandableButton } from '@reusable';
+import { Expandable, ExpandableChildren, ExpandableButton } from '../reusable';
 
 export default function NewsLandingTemplate({ data }) {
   const node = data.page;
