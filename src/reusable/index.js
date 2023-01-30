@@ -25,6 +25,7 @@ import Input from './input';
 import Link from './link';
 import Card from './card';
 import Icon, { icons } from './icon';
+import WindowResize from './window-resize';
 
 import {
   Expandable,
@@ -60,6 +61,7 @@ export {
   Link,
   TextInput,
   Input,
+  WindowResize,
   Expandable,
   ExpandableButton,
   ExpandableChildren,
