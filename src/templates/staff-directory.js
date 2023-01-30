@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { graphql } from 'gatsby';
+import SearchEngineOptimization from '../components/seo';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import {
-  Heading,
-  SPACING,
-  Margins,
-  TextInput,
-  COLORS,
-  Button,
-  Alert,
-} from '@reusable';
+import { Heading, SPACING, Margins, TextInput, COLORS, Button, Alert, WindowResize } from '../reusable';
 import { navigate } from '@reach/router';
 import { useDebounce } from 'use-debounce';
 import Link from '../components/link';
@@ -23,7 +16,6 @@ import Select from '../components/select';
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import useGoogleTagManager from '../hooks/use-google-tag-manager';
-import { useWindowSize } from '@reach/window-size';
 
 const lunr = require('lunr');
 
@@ -66,6 +58,10 @@ export default function StaffDirectoryWrapper({ data, location }) {
       navigate={navigate}
     />
   );
+}
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={ data.page } />;
 }
 
 function StaffDirectoryQueryContainer({
@@ -450,13 +446,13 @@ function StaffDirectoryResults({
   staffInView,
 }) {
   const breakpoint = 820;
-  const { width } = useWindowSize();
+  const windowSize = WindowResize();
 
   if (results.length < 1) {
     return null;
   }
 
-  if (width < breakpoint) {
+  if (windowSize < breakpoint) {
     // prop drilling, woo!
     return (
       <StaffDirectorySmallScreenResults

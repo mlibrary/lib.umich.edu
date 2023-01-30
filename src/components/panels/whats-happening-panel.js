@@ -1,6 +1,6 @@
 import { useStaticQuery, graphql } from 'gatsby';
 import React, { useState, useEffect } from 'react';
-import { SPACING, MEDIA_QUERIES, Heading, Margins } from '@reusable';
+import { SPACING, MEDIA_QUERIES, Heading, Margins } from '../../reusable';
 import Link from '../link';
 import EventCard from '../event-card';
 import { sortEventsByStartDate } from '../../utils/events';

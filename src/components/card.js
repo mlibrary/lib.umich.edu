@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card as CoreCard } from '@reusable';
+import { Card as CoreCard } from '../reusable';
 import { Link } from 'gatsby';
 
 export default function Card({ href, ...rest }) {

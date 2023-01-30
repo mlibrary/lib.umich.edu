@@ -2,13 +2,10 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import * as moment from 'moment';
-import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '@reusable';
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '../reusable';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import TemplateLayout from './template-layout';
+import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
 import Link from '../components/link';
@@ -291,6 +288,10 @@ function EventMetadata({ data }) {
       </tbody>
     </table>
   );
+}
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={data.event} />;
 }
 
 export const query = graphql`

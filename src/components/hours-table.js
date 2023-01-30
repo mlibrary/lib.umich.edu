@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { COLORS, SPACING } from '@reusable';
+import { COLORS, SPACING } from '../reusable';
 import HoursTableSmallscreens from './hours-table-smallscreens';
 import Link from './link';
 

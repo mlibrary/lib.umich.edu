@@ -431,6 +431,13 @@ export function GlobalStyleSheet() {
       height: 1px; width: 1px;
       overflow: hidden;
     }
+    /*
+      Stop Scroll
+    */
+    body.stop-scroll {
+      height: 100vh;
+      overflow: hidden;
+    }
   `;
 
   return (

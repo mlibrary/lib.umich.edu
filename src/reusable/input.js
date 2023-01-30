@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { INTENT_COLORS } from '@reusable';
+import { INTENT_COLORS } from '../reusable';
 
 const StyledInput = styled('input')(
   {

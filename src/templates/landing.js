@@ -1,8 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-
-import { Margins } from '@reusable';
-
+import { Margins } from '../reusable';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import PageHeader from '../components/page-header';
@@ -13,23 +11,16 @@ import transformNodePanels from '../utils/transform-node-panels';
 export default function LandingTemplate({ data, ...rest }) {
   const node = data.page;
   const {
-    title,
     field_title_context,
     body,
     fields,
     relationships,
     drupal_internal__nid,
   } = node;
-  const description = body && body.summary ? body.summary : null;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SearchEngineOptimization
-        title={title}
-        drupalNid={drupal_internal__nid}
-        description={description}
-      />
       <PageHeader
         breadcrumb={fields.breadcrumb}
         title={field_title_context}
@@ -45,6 +36,10 @@ export default function LandingTemplate({ data, ...rest }) {
       <Panels data={fullPanels} />
     </Layout>
   );
+}
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={data.page} />;
 }
 
 export const query = graphql`

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Heading, SPACING, Text } from '@reusable';
+import { Heading, SPACING, Text } from '../reusable';
 import MEDIA_QUERIES from '../reusable/media-queries';
 
 export default function NoResults({ children }) {

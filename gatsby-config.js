@@ -13,6 +13,9 @@ const siteMetadata = {
 };
 
 module.exports = {
+  flags: {
+    DEV_SSR: false, // Watches gatsby-ssr.js while developing
+  },    
   siteMetadata,
   plugins: [
     'gatsby-plugin-netlify', // Netlify recommends this plugin on top of Essential Gatsby (Version 2): https://github.com/netlify/netlify-plugin-gatsby#install-the-gatsby-plugin
@@ -23,14 +26,6 @@ module.exports = {
       options: {
         name: 'images',
         path: `${__dirname}/src/images/`,
-      },
-    },
-    {
-      resolve: 'gatsby-alias-imports',
-      options: {
-        aliases: {
-          '@reusable': 'src/reusable/',
-        },
       },
     },
     'gatsby-plugin-sitemap',
@@ -81,12 +76,6 @@ module.exports = {
         },
       },
     },
-    {
-      resolve: 'gatsby-plugin-react-helmet-canonical-urls',
-      options: {
-        siteUrl: siteMetadata.siteUrl,
-      },
-    },
     'gatsby-plugin-image',
     {
       resolve: 'gatsby-plugin-sharp',
@@ -119,7 +108,6 @@ module.exports = {
         baseUrl: DRUPAL_URL,
       },
     },
-    'gatsby-plugin-react-helmet',
     'gatsby-plugin-remove-serviceworker',
     'gatsby-plugin-emotion',
     {

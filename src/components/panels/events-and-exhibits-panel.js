@@ -7,7 +7,7 @@ import {
   Expandable,
   ExpandableButton,
   ExpandableChildren,
-} from '@reusable';
+} from '../../reusable';
 import * as moment from 'moment';
 import Link from '../link';
 import {

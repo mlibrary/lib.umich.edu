@@ -1,5 +1,5 @@
 import React from 'react';
-import { SPACING, COLORS, TYPOGRAPHY } from '@reusable';
+import { SPACING, COLORS, TYPOGRAPHY } from '../reusable';
 
 export default function Switch({ on, label, children, ...rest }) {
   return (

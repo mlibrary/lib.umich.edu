@@ -7,7 +7,7 @@ import {
   Margins,
   MEDIA_QUERIES,
   COLORS,
-} from '@reusable';
+} from '../reusable';
 
 import Breadcrumb from './breadcrumb';
 

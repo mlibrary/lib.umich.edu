@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { SPACING } from '@reusable';
+import { SPACING } from '../reusable';
 
 const Prose = styled('div')({
   '> *:not(:last-child)': {

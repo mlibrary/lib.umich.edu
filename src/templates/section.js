@@ -1,11 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Heading, Margins, MEDIA_QUERIES } from '@reusable';
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Heading, Margins, MEDIA_QUERIES } from '../reusable';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import Prose from '../components/prose';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
@@ -53,13 +49,10 @@ function SectionTemplate({ data, ...rest }) {
     for PageHeader summary and image.
   */
   const summary = isRootPage ? body.summary : parentNode.body.summary;
-  const description = body && body.summary ? body.summary : null;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SearchEngineOptimization title={title} description={description} />
-
       {isRootPage ? (
         <PageHeader
           breadcrumb={breadcrumb}
@@ -127,6 +120,10 @@ function SectionTemplate({ data, ...rest }) {
 }
 
 export default SectionTemplate;
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={data.page} titleField='title' />;
+}
 
 export const query = graphql`
   query ($slug: String!, $parents: [String], $children: [String]) {

@@ -1,13 +1,10 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Margins, Heading, SPACING, COLORS } from '@reusable';
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Margins, Heading, SPACING, COLORS } from '../reusable';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import TemplateLayout from './template-layout';
+import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
 import transformNodePanels from '../utils/transform-node-panels';
@@ -177,6 +174,10 @@ function CollectingAreaTemplate({ data, ...rest }) {
 }
 
 export default CollectingAreaTemplate;
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={getNode(data)} />;
+}
 
 export const query = graphql`
   query ($slug: String!) {

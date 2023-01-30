@@ -1,4 +1,4 @@
-import { MEDIA_QUERIES as MQ } from '@reusable';
+import { MEDIA_QUERIES as MQ } from '../reusable';
 
 const MEDIA_QUERIES = {
   XL: '@media only screen and (min-width: 1200px)',

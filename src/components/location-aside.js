@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Heading, Icon, Text, COLORS, SPACING } from '@reusable';
+import { Heading, Icon, Text, COLORS, SPACING } from '../reusable';
 import Link from './link';
 import Hours from './todays-hours';
 import icons from '../reusable/icons';

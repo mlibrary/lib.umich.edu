@@ -1,11 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Heading, List, COLORS } from '@reusable';
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Heading, List, COLORS } from '../reusable';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import PageHeader from '../components/page-header';
@@ -20,7 +16,6 @@ import getNode from '../utils/get-node';
 
 export default function VisitTemplate({ data, ...rest }) {
   const node = getNode(data);
-
   const {
     title,
     field_title_context,
@@ -35,11 +30,9 @@ export default function VisitTemplate({ data, ...rest }) {
   const isRootPage = field_root_page_ ? true : false;
   const { field_visit, field_amenities } = relationships;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
-  const description = body && body.summary ? body.summary : null;
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <SearchEngineOptimization title={title} description={description} />
       <header aria-label="Location description">
         <PageHeader
           breadcrumb={fields.breadcrumb}
@@ -127,6 +120,10 @@ export default function VisitTemplate({ data, ...rest }) {
       </div>
     </Layout>
   );
+}
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={getNode(data)} titleField='title' />;
 }
 
 function HTMLList({ data }) {

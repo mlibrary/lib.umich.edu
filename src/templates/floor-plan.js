@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING, SmallScreen, LINK_STYLES } from '@reusable';
-
+import { Margins, Heading, SPACING, SmallScreen, LINK_STYLES } from '../reusable';
+import SearchEngineOptimization from '../components/seo';
 import { Template, Top, Side, Content } from '../components/page-layout';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
@@ -87,6 +87,10 @@ function FloorPlanTemplate({ data }) {
 }
 
 export default FloorPlanTemplate;
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={data.floorPlan} titleField='title' />;
+}
 
 export const query = graphql`
   query ($slug: String!) {

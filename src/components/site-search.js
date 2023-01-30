@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link as GatsbyLink } from 'gatsby';
-import { SPACING, Z_SPACE, COLORS, Icon, Alert, TYPOGRAPHY } from '@reusable';
+import { SPACING, Z_SPACE, COLORS, Icon, Alert, TYPOGRAPHY } from '../reusable';
 import { findAll } from 'highlight-words-core';
-import ReachAlert from '@reach/alert';
 import Link from '../components/link';
 import HEADER_MEDIA_QUERIES from '../components/header/header-media-queries';
 import useGoogleTagManager from '../hooks/use-google-tag-manager';
@@ -164,9 +163,9 @@ function ResultsSummary({ searching, noResults, resultCount }) {
   const resultText = `${resultCount} result${resultCount > 1 ? 's' : ''}`;
 
   return (
-    <span className='visually-hidden'>
-      <ReachAlert>{resultText}</ReachAlert>
-    </span>
+    <div className='visually-hidden' role='status'>
+      <span>{resultText}</span>
+    </div>
   );
 }
 

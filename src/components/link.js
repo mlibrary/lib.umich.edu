@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as GatsbyLink } from 'gatsby';
-import { Link as DSLink, LINK_STYLES } from '@reusable';
+import { Link as DSLink, LINK_STYLES } from '../reusable';
 
 function Link({ to, kind = 'default', ...other }) {
   /*

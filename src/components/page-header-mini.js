@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '@reusable';
+import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '../reusable';
 
 import Breadcrumb from './breadcrumb';
 

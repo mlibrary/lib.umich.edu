@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TYPOGRAPHY, COLORS, SPACING, Button, Icon } from '@reusable';
+import { TYPOGRAPHY, COLORS, SPACING, Button, Icon } from '../reusable';
 
 export default function HoursTableSmallscreens({
   data,

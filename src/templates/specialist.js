@@ -1,20 +1,7 @@
-import React, {
-  createContext,
-  useContext,
-  useReducer,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
+import SearchEngineOptimization from '../components/seo';
 import { graphql } from 'gatsby';
-import {
-  Heading,
-  SPACING,
-  Margins,
-  TextInput,
-  COLORS,
-  Button,
-  Alert,
-} from '@reusable';
+import { Heading, SPACING, Margins, TextInput, COLORS, Button, Alert, WindowResize } from '../reusable';
 import { useLocation, navigate } from '@reach/router';
 import Link from '../components/link';
 import Breadcrumb from '../components/breadcrumb';
@@ -27,7 +14,6 @@ import Switch from '../components/switch';
 import Select from '../components/select';
 import processSpecialistData from '../utils/process-specialist-data';
 import useGoogleTagManager from '../hooks/use-google-tag-manager';
-import { useWindowSize } from '@reach/window-size';
 
 const lunr = require('lunr');
 const SpecialistsContext = createContext();
@@ -85,6 +71,10 @@ export default function FinaASpecialistTemplate({ data }) {
       </Margins>
     </TemplateLayout>
   );
+}
+
+export function Head({ data }) {
+  return <SearchEngineOptimization data={ data.page } />;
 }
 
 function FindASpecialist({ specialists }) {
@@ -342,7 +332,7 @@ function SpecialistsSearch() {
 
 function SpecialistsResults() {
   const breakpoint = 720;
-  const { width } = useWindowSize();
+  const windowSize = WindowResize();
   const [show, setShow] = useState(20);
   const [{ results, category, healthSciencesOnly }] = useSpecialists();
   const resultsFiltered = filterResults({
@@ -364,7 +354,7 @@ function SpecialistsResults() {
 
   return (
     <React.Fragment>
-      {width < breakpoint ? (
+      {windowSize < breakpoint ? (
         <SpecialistsResultsSmallScreenResults
           results={resultsShown}
           healthSciencesOnly={healthSciencesOnly}
