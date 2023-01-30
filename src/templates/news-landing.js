@@ -159,7 +159,7 @@ export const query = graphql`
         field_news_type: { eq: "news_main" }
         field_featured_news_item: { eq: true }
       }
-      sort: { fields: created, order: DESC }
+      sort: { created: DESC }
     ) {
       edges {
         node {
@@ -172,7 +172,7 @@ export const query = graphql`
         field_news_type: { eq: "news_main" }
         field_featured_news_item: { eq: false }
       }
-      sort: { fields: created, order: DESC }
+      sort: { created: DESC }
     ) {
       edges {
         node {
@@ -187,7 +187,7 @@ export const query = graphql`
           field_design_template: { field_machine_name: { eq: "news" } }
         }
       }
-      sort: { fields: created, order: DESC }
+      sort: { created: DESC }
     ) {
       edges {
         node {
