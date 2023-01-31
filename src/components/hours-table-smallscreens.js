@@ -23,7 +23,6 @@ export default function HoursTableSmallscreens({
           key={`hours-table-${t}`}
           css={{
             width: '100%',
-            maxWidth: '38rem',
             textAlign: 'left',
             marginTop: SPACING['XS'],
             'caption, th, td': {

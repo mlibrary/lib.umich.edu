@@ -1,15 +1,12 @@
 import React from 'react';
-import { useMediaQuery } from 'react-responsive';
-import { COLORS, SPACING } from '../reusable';
+import { COLORS, SPACING, WindowResize } from '../reusable';
 import HoursTableSmallscreens from './hours-table-smallscreens';
 import Link from './link';
 
 export default function HoursTableContainer(props) {
-  const isLargeScreen = useMediaQuery({
-    query: '(min-width: 1100px)',
-  });
+  const windowSize = WindowResize();
 
-  if (!isLargeScreen) {
+  if (windowSize < 1100) {
     return <HoursTableSmallscreens {...props} />;
   }
 
