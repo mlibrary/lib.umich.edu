@@ -28,7 +28,8 @@
     "rehype-parse": "^8.0.4",
     "rehype-react": "^7.1.2",
     "unified": "^10.1.2",
-    "use-debounce": "^8.0.4"
+    "use-debounce": "^8.0.4",
+    "whatwg-url": "^11.0.0"
   },
   "keywords": [
     "gatsby"
