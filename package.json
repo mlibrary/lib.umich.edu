@@ -25,7 +25,6 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-player": "^2.11.0",
-    "react-responsive": "^8.2.0",
     "rehype-parse": "^8.0.4",
     "rehype-react": "^7.1.2",
     "unified": "^10.1.2",
