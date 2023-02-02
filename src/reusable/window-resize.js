@@ -1,34 +1,31 @@
 import React from 'react';
 
-// Force resizing less often
-function debounce(fn, ms) {
-  let timer;
-  return () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      fn.apply(this, arguments);
-      timer = null;
-    }, ms);
-  };
+function canUseDOM() {
+	return !!(
+		typeof window !== 'undefined' &&
+		window.document &&
+		window.document.createElement
+	);
 }
 
-const getWindow = typeof window !== 'undefined' && window;
+const useIsomorphicLayoutEffect = canUseDOM()
+	? React.useLayoutEffect
+	: React.useEffect;
 
 export default function WindowResize() {
-  const [dimensions, setDimensions] = React.useState({
-    width: getWindow.innerWidth
-  });
-  React.useEffect(() => {
-    const debouncedHandleResize = debounce(function handleResize() {
-      setDimensions({
-        width: getWindow.innerWidth
-      })
-    }, 500);
-    getWindow.addEventListener('resize', debouncedHandleResize);
-    // Clean up listener
-    return () => {
-      getWindow.removeEventListener('resize', debouncedHandleResize);
-    }
-  });
-  return dimensions.width;
+	let { current: hasWindow } = React.useRef(canUseDOM());
+	const [dimensions, setDimensions] = React.useState({
+		width: hasWindow ? window.innerWidth : 0,
+		height: hasWindow ? window.innerHeight : 0,
+	});
+	useIsomorphicLayoutEffect(() => {
+		const resize = () =>
+			setDimensions({
+				width: window.innerWidth,
+				height: window.innerHeight,
+			});
+		window.addEventListener('resize', resize);
+		return () => window.removeEventListener('resize', resize);
+	}, []);
+	return dimensions.width;
 }
