@@ -1,34 +1,31 @@
 import React from 'react';
 
-// Force resizing less often
-function debounce(fn, ms) {
-  let timer;
-  return () => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      fn.apply(this, arguments);
-      timer = null;
-    }, ms);
-  };
+function canUseDOM() {
+  return !!(
+    typeof window !== 'undefined' &&
+    window.document &&
+    window.document.createElement
+  );  
 }
 
-const getWindow = typeof window !== 'undefined' && window;
+const useIsomorphicLayoutEffect = canUseDOM()
+  ? React.useLayoutEffect
+  : React.useEffect;
 
 export default function WindowResize() {
+  let { current: hasWindow } = React.useRef(canUseDOM());
   const [dimensions, setDimensions] = React.useState({
-    width: getWindow.innerWidth
+    width: hasWindow ? window.innerWidth : 0,
+    height: hasWindow ? window.innerHeight : 0,
   });
-  React.useEffect(() => {
-    const debouncedHandleResize = debounce(function handleResize() {
+  useIsomorphicLayoutEffect(() => {
+    const resize = () =>
       setDimensions({
-        width: getWindow.innerWidth
-      })
-    }, 500);
-    getWindow.addEventListener('resize', debouncedHandleResize);
-    // Clean up listener
-    return () => {
-      getWindow.removeEventListener('resize', debouncedHandleResize);
-    }
-  });
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    window.addEventListener('resize', resize);
+    return () => window.removeEventListener('resize', resize);
+  }, []);
   return dimensions.width;
 }

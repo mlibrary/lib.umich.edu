@@ -35,20 +35,29 @@ function SearchEngineOptimization({data, children, titleField}) {
     return siteData.site.siteMetadata.description;
   }
   const metaKeywords = () => {
-    return field_seo_keywords ? field_seo_keywords.split(', ') : [];
+    if (!field_seo_keywords) {
+      return null;
+    }
+    return (
+      <meta name="keywords" content={field_seo_keywords} />
+    );
   }
+  const siteTitle = () => {
+    if (!metaTitle() || metaTitle() === 'Home') {
+      return defaultTitle;
+    }
+    return `${metaTitle()} | ${defaultTitle}`;
+  };
   return (
     <>
-      <title>{metaTitle() && metaTitle() !== 'Home' ? metaTitle() + ' | ' : ''}{defaultTitle}</title>
+      <title>{siteTitle()}</title>
       <meta property="og:title" content={metaTitle() && metaTitle() !== 'Home' ? metaTitle() : defaultTitle} />
       <meta name="description" content={metaDescription()}/>
-      <meta name="keywords" content={metaKeywords()} />
+      {metaKeywords()}
       <meta property="og:description" content={metaDescription()} />
       <meta property="og:type" content="website" />
       <meta property="twitter:description" content={metaDescription()} />
       <link rel="canonical" href={siteData.site.siteMetadata.siteUrl} />
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@umich-lib/css@1.0.9/dist/umich-lib.css" />
-      <script async type="text/javascript" src="https://umich.edu/apis/umalerts/umalerts.js"></script>
       {children}
     </>
   );
