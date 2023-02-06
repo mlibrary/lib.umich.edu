@@ -264,6 +264,11 @@ function ResultsList({ searching, noResults, results, query, error }) {
                   },
                 },
               }}
+              onClick={() => {
+                if (document.body.classList.contains('stop-scroll')) {
+                  document.body.classList.remove('stop-scroll')
+                }
+              }}
             >
               <ResultContent query={query} result={result} />
             </GatsbyLink>
