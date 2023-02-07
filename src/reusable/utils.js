@@ -391,7 +391,8 @@ export function GlobalStyleSheet() {
       font-size: 16px;
       font-family: 'Muli', sans-serif;
       line-height: 1.5;
-      color: ${COLORS.neutral[400]}
+      color: ${COLORS.neutral[400]};
+      scroll-behavior: smooth;
     }
     
     /*
