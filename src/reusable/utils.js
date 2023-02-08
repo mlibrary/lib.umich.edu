@@ -438,18 +438,6 @@ export function GlobalStyleSheet() {
       height: 100vh;
       overflow: hidden;
     }
-    /*
-      Keyframes
-    */
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-      }
-    
-      100% {
-        opacity: 1;
-      }
-    }
   `;
 
   return (
