@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from './link';
+import { LINK_STYLES } from '../reusable';
 
 export default function LocationAnchoredLinks({ node }) {
   const parentTitle = node.relationships?.field_parent_location?.title;
@@ -11,8 +11,11 @@ export default function LocationAnchoredLinks({ node }) {
     .replace(/-+/g, '-');
 
   return (
-    <Link to={`/locations-and-hours/hours-view#${titleSlugged}`}>
+    <a
+      href={`/locations-and-hours/hours-view#${titleSlugged}`}
+      css={{ ...LINK_STYLES['default'] }}
+    >
       View more hours
-    </Link>
+    </a>
   );
 }
