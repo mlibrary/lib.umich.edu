@@ -157,7 +157,12 @@ export default function HoursPanelContainer({ data }) {
     .replace(/-+/g, '-');
 
   return (
-    <section data-hours-panel>
+    <section
+      data-hours-panel
+      css={{
+        animation: 'fadeIn 0.25s ease-in'
+      }}
+    >
       <HoursPanelNextPrev />
       <Margins>
         <HoursPanel
