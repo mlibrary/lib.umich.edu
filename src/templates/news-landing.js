@@ -125,7 +125,7 @@ export default function NewsLandingTemplate({ data }) {
 }
 
 export function Head({ data }) {
-  return <SearchEngineOptimization data={data.page} titleField='title' />;
+  return <SearchEngineOptimization data={data.page} />;
 }
 
 function processNewsData(data) {
