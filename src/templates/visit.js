@@ -123,7 +123,7 @@ export default function VisitTemplate({ data, ...rest }) {
 }
 
 export function Head({ data }) {
-  return <SearchEngineOptimization data={getNode(data)} titleField='title' />;
+  return <SearchEngineOptimization data={getNode(data)} />;
 }
 
 function HTMLList({ data }) {

@@ -122,7 +122,7 @@ function SectionTemplate({ data, ...rest }) {
 export default SectionTemplate;
 
 export function Head({ data }) {
-  return <SearchEngineOptimization data={data.page} titleField='title' />;
+  return <SearchEngineOptimization data={data.page} />;
 }
 
 export const query = graphql`
