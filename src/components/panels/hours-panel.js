@@ -203,8 +203,8 @@ function HoursPanel({ title, id, tableData = {}, isCurrentWeek, children }) {
       {children}
       <HoursTable
         data={tableData}
-        headingId={id}
         dayOfWeek={isCurrentWeek ? moment().day() : false}
+        location={title}
       />
     </section>
   );
