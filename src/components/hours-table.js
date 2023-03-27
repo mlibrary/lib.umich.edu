@@ -23,6 +23,11 @@ export default function HoursTableResponsive({ data, dayOfWeek = false, location
           '&.today': {
             borderLeft: todayBorderStyle,
             borderRight: todayBorderStyle,
+          },
+          '& *.alternative': {
+            fontSize: '0.875rem',
+            fontWeight: '700',
+            textTransform: 'uppercase'
           }
         }
       }}
@@ -44,7 +49,7 @@ export default function HoursTableResponsive({ data, dayOfWeek = false, location
       }}>
         <tr>
           <th scope="col" colSpan="2">
-            <span className="visually-hidden">Inside {location}</span>
+            <span className="visually-hidden">{`Inside ${location}`}</span>
           </th>
           {data.headings.map(({ text, subtext, label }, i) => (
             <th
@@ -57,29 +62,26 @@ export default function HoursTableResponsive({ data, dayOfWeek = false, location
             >
               {i + 1 === todayIndex && (
                 <span
+                  aria-hidden
+                  className='alternative'
                   css={{
                     background: 'var(--color-maize-400)',
                     borderRadius: '2px 2px 0 0',
                     bottom: '100%',
                     display: 'inline-block',
-                    fontSize: '0.875rem',
-                    fontWeight: '700',
                     left: '-2px',
                     padding: '0 0.25rem',
-                    position: 'absolute',
-                    textTransform: 'uppercase'
+                    position: 'absolute'
                   }}
                 >
                   Today
                 </span>
               )}
-              <abbr aria-label={label}>
+              <abbr aria-label={i + 1 === todayIndex ? `Today, ${label}` : label}>
                 <span
+                  className='alternative'
                   css={{
-                    display: 'block',
-                    fontWeight: '700',
-                    textTransform: 'uppercase',
-                    fontSize: '0.875rem',
+                    display: 'block'
                   }}
                 >
                   {text}
@@ -134,7 +136,6 @@ export default function HoursTableResponsive({ data, dayOfWeek = false, location
                       }
                     }}
                   >
-                    {console.log(row, y)}
                     <Link to={col.to} kind="list-medium">
                       {col.text}
                     </Link>
@@ -144,57 +145,66 @@ export default function HoursTableResponsive({ data, dayOfWeek = false, location
                     className={i === todayIndex ? 'today' : ''}
                     css={{
                       [tableBreakpoint]: {
-                        display: 'flex!important'
+                        display: 'grid!important',
+                        gap: '5%',
+                        gridTemplateColumns: 'minmax(min-content, 6.5rem) 5fr max-content'
                       }
                     }}
                   >
-                    <span
-                      data-text={data.headings[i-1].text}
-                      data-subtext={data.headings[i-1].subtext}
+                    <div
                       css={{
+                        alignContent: 'baseline',
+                        alignItems: 'baseline',
+                        display: 'none',
+                        flexWrap: 'wrap',
                         [tableBreakpoint]: {
-                          display: 'inline-block',
-                          flex: '0 0 8.5rem',
-                          '&:before, &:after': {
-                            display: 'inline'
-                          },
-                          '&:before': {
-                            content: 'attr(data-text) " "',
-                            fontWeight: '700',
-                            textTransform: 'uppercase',
-                            fontSize: '0.875rem'
-                          },
-                          '&:after': {
-                            color: 'var(--color-neutral-300)',
-                            content: 'attr(data-subtext) " "'
-                          }
-                        }
-                      }}
-                    ></span>
-                    <span
-                      css={{
-                        [tableBreakpoint]: {
-                          flexGrow: '1',
-                          paddingRight: `${i === todayIndex ? '4rem' : 'inherit'}`,
-                          '&:after': {
-                            alignItems: 'center',
-                            bottom: '0',
-                            content: `${i === todayIndex ? '"Today"' : 'none'}`,
-                            display: 'flex',
-                            padding: '0.25rem 0.5rem',
-                            position: 'absolute',
-                            background: 'var(--color-maize-400)',
-                            fontWeight: '700',
-                            fontSize: '0.875rem',
-                            right: '0',
-                            textTransform: 'uppercase',
-                            top: '0'
-                          }
+                          display: 'flex'
                         }
                       }}
                     >
+                      <span
+                      className='alternative'
+                        css={{
+                          paddingRight: '0.5em'
+                        }}
+                      >
+                        {data.headings[i-1].text}
+                      </span>
+                      <span
+                        css={{
+                          color: 'var(--color-neutral-300)'
+                        }}
+                      >
+                        {data.headings[i-1].subtext}
+                      </span>
+                    </div>
+                    <abbr
+                      aria-label={col.label}
+                      css={{
+                        gridColumn: `2 / span ${i === todayIndex ? '1' : '2'}`
+                      }}
+                    >
                       {col.text}
-                    </span>
+                    </abbr>
+                    {i === todayIndex && (
+                      <span
+                        aria-hidden
+                        className='alternative'
+                        css={{
+                          background: 'var(--color-maize-400)',
+                          display: 'none',
+                          [tableBreakpoint]: {
+                            alignItems: 'center',
+                            display: 'flex'
+                          },
+                          margin: '-0.25rem -0.5rem',
+                          marginLeft: '0',
+                          padding: '0 0.5rem'
+                        }}
+                      >
+                        Today
+                      </span>
+                    )}
                   </td>
                 )}
               </React.Fragment>
