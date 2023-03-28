@@ -7,6 +7,7 @@ import {
   Button,
   Icon,
   MEDIA_QUERIES,
+  createSlug
 } from '../../reusable';
 
 import Html from '../html';
@@ -149,13 +150,6 @@ export default function HoursPanelContainer({ data }) {
 
   const { title } = relationships.field_parent_card[0];
 
-  // Simple slugifier
-  // remove alphanumerics & replace with '-', collapse dashes
-  const titleSlugged = title
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, '-')
-    .replace(/-+/g, '-');
-
   return (
     <section data-hours-panel>
       <HoursPanelNextPrev />
@@ -167,7 +161,7 @@ export default function HoursPanelContainer({ data }) {
             node: data,
             now: moment().add(weekOffset, 'weeks'),
           })}
-          id={titleSlugged}
+          id={createSlug(title)}
         >
           {field_body && <Html html={field_body.processed} />}
         </HoursPanel>

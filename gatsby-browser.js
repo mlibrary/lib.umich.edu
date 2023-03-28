@@ -63,24 +63,15 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
   /**
    * Will scroll to the position of the hash
    * if it exists on an element on the page.
+   * Let content load first before scrolling.
    */
-  if (location && location.hash) {
+  if (location.hash) {
     const element = document.querySelector(`${location.hash}`);
-    const padding = 64;
 
     if (element) {
-      window.scrollTo({
-        top: element.offsetTop - padding,
-        behavior: 'smooth',
-      });
+      window.addEventListener('load', window.scrollTo({
+        top: element.offsetTop - 64
+      }));
     }
   }
-};
-
-export const shouldUpdateScroll = ({ routerProps: { location } }) => {
-  if (location?.state?.preserveScroll) {
-    return false;
-  }
-
-  return true;
 };
