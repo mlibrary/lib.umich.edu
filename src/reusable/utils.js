@@ -392,6 +392,7 @@ export function GlobalStyleSheet() {
       font-family: 'Muli', sans-serif;
       line-height: 1.5;
       color: ${COLORS.neutral[400]};
+      scroll-behavior: smooth;
     }
     
     /*
@@ -437,18 +438,6 @@ export function GlobalStyleSheet() {
     body.stop-scroll {
       height: 100vh;
       overflow: hidden;
-    }
-    /*
-      Keyframes
-    */
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-      }
-    
-      100% {
-        opacity: 1;
-      }
     }
   `;
 
