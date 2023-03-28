@@ -9,22 +9,26 @@ import {
   MEDIA_QUERIES,
   createSlug
 } from '../../reusable';
-
 import Html from '../html';
 import HoursTable from '../hours-table';
 import { useStateValue } from '../use-state';
 import { displayHours } from '../../utils/hours';
 
-export function HoursPanelNextPrev() {
+const dateFormat = (string, abbreviated = false) => {
+  if (abbreviated) {
+    return string.format('MMM D');
+  }
+  return string.format('dddd, MMMM D, YYYY');
+}
+
+export function HoursPanelNextPrev({ location }) {
   const [{ weekOffset }, dispatch] = useStateValue();
   const from_date = moment().add(weekOffset, 'weeks').startOf('week');
   const to_date = moment().add(weekOffset, 'weeks').endOf('week');
 
   const hoursRange = {
-    text: `${from_date.format('MMM D')} - ${to_date.format('MMM D')}`,
-    label: `Showing hours from ${from_date.format(
-      'dddd, MMMM D, YYYY'
-    )} to ${to_date.format('dddd, MMMM D, YYYY')}`,
+    text: `${dateFormat(from_date, true)} - ${dateFormat(to_date, true)}`,
+    label: `Showing hours for ${location} from ${dateFormat(from_date)} to ${dateFormat(to_date)}`,
   };
 
   return (
@@ -52,11 +56,10 @@ export function HoursPanelNextPrev() {
           Previous week
         </PreviousNextWeekButton>
         <Heading level={2} size="S" css={{ fontWeight: '700' }}>
-          <span
-            aria-live="polite"
-            aria-atomic="true"
-            aria-label={hoursRange.label}
-          >
+          <span className='visually-hidden'>
+            {hoursRange.label}
+          </span>
+          <span aria-hidden>
             {hoursRange.text}
           </span>
         </Heading>
@@ -141,7 +144,6 @@ function PreviousNextWeekButton({ type, children, ...rest }) {
 
 export default function HoursPanelContainer({ data }) {
   const [{ weekOffset }] = useStateValue();
-
   const { relationships, field_body } = data;
 
   if (relationships.field_parent_card.length === 0) {
@@ -151,8 +153,8 @@ export default function HoursPanelContainer({ data }) {
   const { title } = relationships.field_parent_card[0];
 
   return (
-    <section data-hours-panel>
-      <HoursPanelNextPrev />
+    <section data-hours-panel id={createSlug(title)}>
+      <HoursPanelNextPrev location={title} />
       <Margins>
         <HoursPanel
           title={title}
@@ -161,7 +163,6 @@ export default function HoursPanelContainer({ data }) {
             node: data,
             now: moment().add(weekOffset, 'weeks'),
           })}
-          id={createSlug(title)}
         >
           {field_body && <Html html={field_body.processed} />}
         </HoursPanel>
@@ -170,7 +171,7 @@ export default function HoursPanelContainer({ data }) {
   );
 }
 
-function HoursPanel({ title, id, tableData = {}, isCurrentWeek, children }) {
+function HoursPanel({ title, tableData = {}, isCurrentWeek, children }) {
   return (
     <section
       css={{
@@ -179,13 +180,12 @@ function HoursPanel({ title, id, tableData = {}, isCurrentWeek, children }) {
       }}
     >
       <Heading
-        level={2}
+        level={3}
         size="L"
         css={{
           fontWeight: '700',
           marginBottom: SPACING['2XS'],
         }}
-        id={id}
       >
         {title}
       </Heading>

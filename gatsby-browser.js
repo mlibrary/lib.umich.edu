@@ -70,7 +70,7 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
 
     if (element) {
       window.addEventListener('load', window.scrollTo({
-        top: element.offsetTop - 64
+        top: element.offsetTop
       }));
     }
   }
