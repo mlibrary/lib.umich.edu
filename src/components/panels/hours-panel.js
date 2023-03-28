@@ -55,7 +55,15 @@ export function HoursPanelNextPrev({ location }) {
         >
           Previous week
         </PreviousNextWeekButton>
-        <Heading level={2} size="S" css={{ fontWeight: '700' }}>
+        <Heading
+          aria-live='polite'
+          aria-atomic='true'
+          level={2}
+          size='S'
+          css={{
+            fontWeight: '700'
+          }}
+        >
           <span className='visually-hidden'>
             {hoursRange.label}
           </span>
@@ -153,48 +161,35 @@ export default function HoursPanelContainer({ data }) {
   const { title } = relationships.field_parent_card[0];
 
   return (
-    <section data-hours-panel id={createSlug(title)}>
+    <section
+      data-hours-panel
+      id={createSlug(title)}
+      css={{
+        marginBottom: SPACING['4XL']
+      }}
+    >
       <HoursPanelNextPrev location={title} />
       <Margins>
-        <HoursPanel
-          title={title}
-          isCurrentWeek={weekOffset === 0}
-          tableData={transformTableData({
+        <Heading
+          level={3}
+          size='L'
+          css={{
+            fontWeight: '700',
+            marginBottom: SPACING['2XS'],
+          }}
+        >
+          {title}
+        </Heading>
+        {field_body && <Html html={field_body.processed} />}
+        <HoursTable
+          data={transformTableData({
             node: data,
             now: moment().add(weekOffset, 'weeks'),
           })}
-        >
-          {field_body && <Html html={field_body.processed} />}
-        </HoursPanel>
+          dayOfWeek={weekOffset === 0 ? moment().day() : false}
+          location={title}
+        />
       </Margins>
-    </section>
-  );
-}
-
-function HoursPanel({ title, tableData = {}, isCurrentWeek, children }) {
-  return (
-    <section
-      css={{
-        marginTop: SPACING['L'],
-        marginBottom: SPACING['4XL'],
-      }}
-    >
-      <Heading
-        level={3}
-        size="L"
-        css={{
-          fontWeight: '700',
-          marginBottom: SPACING['2XS'],
-        }}
-      >
-        {title}
-      </Heading>
-      {children}
-      <HoursTable
-        data={tableData}
-        dayOfWeek={isCurrentWeek ? moment().day() : false}
-        location={title}
-      />
     </section>
   );
 }
