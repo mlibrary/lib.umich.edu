@@ -69,9 +69,15 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
     const element = document.querySelector(`${location.hash}`);
 
     if (element) {
-      window.addEventListener('load', window.scrollTo({
-        top: element.offsetTop
-      }));
+      window.scrollTo({
+        top: element.offsetTop,
+        behavior: 'smooth'
+      })
     }
   }
+};
+
+export const shouldUpdateScroll = () => {
+  window.scrollTo(0, 0);
+  return false;
 };
