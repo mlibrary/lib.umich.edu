@@ -423,32 +423,11 @@ export function GlobalStyleSheet() {
       display: flex;
     }
     /*
-      Accessibility utilities
-    */
-    .visually-hidden {
-      /* https://snook.ca/archives/html_and_css/hiding-content-for-accessibility */
-      position: absolute !important;
-      height: 1px; width: 1px;
-      overflow: hidden;
-    }
-    /*
       Stop Scroll
     */
     body.stop-scroll {
       height: 100vh;
       overflow: hidden;
-    }
-    /*
-      Keyframes
-    */
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-      }
-    
-      100% {
-        opacity: 1;
-      }
     }
   `;
 

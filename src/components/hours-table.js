@@ -1,125 +1,217 @@
 import React from 'react';
-import { COLORS, SPACING, WindowResize } from '../reusable';
-import HoursTableSmallscreens from './hours-table-smallscreens';
 import Link from './link';
 
-export default function HoursTableContainer(props) {
-  const windowSize = WindowResize();
-
-  if (windowSize < 1100) {
-    return <HoursTableSmallscreens {...props} />;
-  }
-
-  return <HoursTable {...props} />;
-}
-
-function HoursTable({ data, headingId, dayOfWeek = false }) {
+export default function HoursTableResponsive({ data, dayOfWeek = false, location }) {
   const todayIndex = dayOfWeek !== false ? dayOfWeek + 1 : -1;
+  const todayBorderStyle = '2px solid var(--color-maize-400)';
+  const tableBreakpoint = '@media only screen and (max-width: 1100px)';
 
   return (
-    <div role="group" aria-labelledby={headingId}>
-      <table
-        css={{
-          width: '100%',
-          minWidth: '60rem',
-          marginTop: SPACING['XL'],
-          textAlign: 'left',
-          tableLayout: 'fixed',
-          'th, td': {
-            padding: '0.75rem',
-            borderBottom: 'solid 1px #E5E9ED',
+    <table
+      css={{
+        marginTop: '2rem',
+        tableLayout: 'fixed',
+        textAlign: 'left',
+        width: '100%',
+        'tr > *': {
+          padding: '0.75rem',
+          position: 'relative',
+          [tableBreakpoint]: {
+            display: 'block',
+            padding: '0.25rem 0.5rem'
           },
-          'tbody tr:first-of-type': {
-            borderTop: 'solid 2px #E5E9ED',
-            background: '#F7F8F9',
+          '&.today': {
+            borderLeft: todayBorderStyle,
+            borderRight: todayBorderStyle,
           },
-          'tbody th': {
+          '& *.alternative': {
+            fontSize: '0.875rem',
             fontWeight: '700',
-          },
-          [`th:nth-of-type(${todayIndex + 1}), td:nth-of-type(${todayIndex})`]:
-            {
-              borderRight: 'solid 2px #FFCB05',
-              borderLeft: 'solid 2px #FFCB05',
-            },
-          [`thead th:nth-of-type(${todayIndex + 1})`]: {
-            borderTop: 'solid 2px #FFCB05',
-          },
-          [`tbody > tr:last-child td:nth-of-type(${todayIndex})`]: {
-            borderBottom: 'solid 2px #FFCB05',
-          },
-        }}
-      >
-        <thead>
-          <tr>
-            <th colSpan="2" scope="col">
-              <span className="visually-hidden">Day</span>
-            </th>
-            {data.headings.map(({ text, subtext, label }, i) => (
-              <th
-                scope="col"
-                aria-current={i === todayIndex}
-                key={text + subtext + i}
-                aria-label={label}
-              >
-                <div
+            textTransform: 'uppercase'
+          }
+        }
+      }}
+    >
+      <thead css={{
+        borderBottom: '2px solid var(--color-neutral-100)',
+        [tableBreakpoint]: {
+          clip: 'rect(1px, 1px, 1px, 1px)',
+          clipPath: 'inset(50%)',
+          height: '1px',
+          overflow: 'hidden',
+          position: 'absolute',
+          whiteSpace: 'nowrap',
+          width: '1px',
+        },
+        'th.today': {
+          borderTop: todayBorderStyle
+        }
+      }}>
+        <tr>
+          <th scope="col" colSpan="2">
+            <span className="visually-hidden">{`Inside ${location}`}</span>
+          </th>
+          {data.headings.map(({ text, subtext, label }, i) => (
+            <th
+              scope="col"
+              key={text + subtext + i}
+              className={i + 1 === todayIndex ? 'today' : ''}
+              css={{
+                verticalAlign: 'bottom'
+              }}
+            >
+              {i + 1 === todayIndex && (
+                <span
+                  aria-hidden
+                  className='alternative'
                   css={{
-                    position: 'relative',
+                    background: 'var(--color-maize-400)',
+                    borderRadius: '2px 2px 0 0',
+                    bottom: '100%',
+                    display: 'inline-block',
+                    left: '-2px',
+                    padding: '0 0.25rem',
+                    position: 'absolute'
                   }}
                 >
-                  {i + 1 === todayIndex && (
-                    <span
-                      css={{
-                        position: 'absolute',
-                        marginLeft: `calc(-0.75rem + -2px)`,
-                        marginTop: `calc(-2rem + -2px)`,
-                        display: `inline-block`,
-                        padding: `0 ${SPACING['2XS']}`,
-                        background: '#FFCB05',
-                        borderRadius: '2px 2px 0 0',
-                        fontWeight: '700',
-                        fontSize: '0.875rem',
-                      }}
-                      aria-hidden="true"
-                    >
-                      TODAY
-                    </span>
-                  )}
-                  <span
+                  Today
+                </span>
+              )}
+              <abbr aria-label={i + 1 === todayIndex ? `Today, ${label}` : label}>
+                <span
+                  className='alternative'
+                  css={{
+                    display: 'block'
+                  }}
+                >
+                  {text}
+                </span>
+                <span css={{ color: 'var(--color-neutral-300)' }}>{subtext}</span>
+              </abbr>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {data.rows.map((row, y) => (
+          <tr
+            key={row + y}
+            css={{
+              borderBottom: '1px solid var(--color-neutral-100)',
+              [tableBreakpoint]: {
+                borderBottom: '0',
+                '&:not:(:first-of-type)': {
+                  background: 'inherit'
+                }
+              },
+              '&:first-of-type': {
+                background: 'var(--color-blue-100)',
+                [tableBreakpoint]: {
+                  background: 'inherit'
+                },
+              },
+              '& > *': {
+                [tableBreakpoint]: {
+                  border: '2px solid transparent',
+                  '&.today': {
+                    border: todayBorderStyle
+                  }
+                }
+              },
+              '&:last-of-type > *.today': {
+                borderBottom: todayBorderStyle
+              }
+            }}
+          >
+            {row.map((col, i) => (
+              <React.Fragment key={row + col.label + y + i}>
+                {i === 0 ? (
+                  <th
+                    scope="row"
+                    colSpan="2"
                     css={{
-                      display: 'block',
-                      fontWeight: '700',
-                      textTransform: 'uppercase',
-                      fontSize: '0.875rem',
+                      [tableBreakpoint]: {
+                        background: 'var(--color-blue-100)',
+                        borderBottomColor: 'var(--color-neutral-100)'
+                      }
                     }}
                   >
-                    {text}
-                  </span>
-                  <span css={{ color: COLORS.neutral['300'] }}>{subtext}</span>
-                </div>
-              </th>
+                    <Link to={col.to} kind="list-medium">
+                      {col.text}
+                    </Link>
+                  </th>
+                ) : (
+                  <td
+                    className={i === todayIndex ? 'today' : ''}
+                    css={{
+                      [tableBreakpoint]: {
+                        display: 'grid!important',
+                        gap: '5%',
+                        gridTemplateColumns: 'minmax(min-content, 6.5rem) 5fr max-content'
+                      }
+                    }}
+                  >
+                    <div
+                      css={{
+                        alignContent: 'baseline',
+                        alignItems: 'baseline',
+                        display: 'none',
+                        flexWrap: 'wrap',
+                        [tableBreakpoint]: {
+                          display: 'flex'
+                        }
+                      }}
+                    >
+                      <span
+                      className='alternative'
+                        css={{
+                          paddingRight: '0.5em'
+                        }}
+                      >
+                        {data.headings[i-1].text}
+                      </span>
+                      <span
+                        css={{
+                          color: 'var(--color-neutral-300)'
+                        }}
+                      >
+                        {data.headings[i-1].subtext}
+                      </span>
+                    </div>
+                    <abbr
+                      aria-label={col.label}
+                      css={{
+                        gridColumn: `2 / span ${i === todayIndex ? '1' : '2'}`
+                      }}
+                    >
+                      {col.text}
+                    </abbr>
+                    {i === todayIndex && (
+                      <span
+                        aria-hidden
+                        className='alternative'
+                        css={{
+                          background: 'var(--color-maize-400)',
+                          display: 'none',
+                          [tableBreakpoint]: {
+                            alignItems: 'center',
+                            display: 'flex'
+                          },
+                          margin: '-0.25rem -0.5rem',
+                          marginLeft: '0',
+                          padding: '0 0.5rem'
+                        }}
+                      >
+                        Today
+                      </span>
+                    )}
+                  </td>
+                )}
+              </React.Fragment>
             ))}
           </tr>
-        </thead>
-        <tbody>
-          {data.rows.map((row, y) => (
-            <tr key={row + y}>
-              {row.map((col, i) => (
-                <React.Fragment key={row + col.label + y + i}>
-                  {i === 0 ? (
-                    <th scope="row" colSpan="2" aria-label={col.label}>
-                      <Link to={col.to} kind="list-medium">
-                        {col.text}
-                      </Link>
-                    </th>
-                  ) : (
-                    <td aria-label={col.label}>{col.text}</td>
-                  )}
-                </React.Fragment>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   );
 }

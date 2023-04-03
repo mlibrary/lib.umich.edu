@@ -26,6 +26,7 @@ import Link from './link';
 import Card from './card';
 import Icon, { icons } from './icon';
 import WindowResize from './window-resize';
+import createSlug from './create-slug';
 
 import {
   Expandable,
@@ -62,6 +63,7 @@ export {
   TextInput,
   Input,
   WindowResize,
+  createSlug,
   Expandable,
   ExpandableButton,
   ExpandableChildren,
