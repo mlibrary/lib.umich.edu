@@ -20,11 +20,11 @@ function SearchEngineOptimization({data, children, titleField}) {
     if (titleField && data[titleField]) {
       return data[titleField];
     }
-    if (field_title_context) {
-      return field_title_context;
-    }
     if (title) {
       return title;
+    }
+    if (field_title_context) {
+      return field_title_context;
     }
     return null;
   }

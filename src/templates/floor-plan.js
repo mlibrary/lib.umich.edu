@@ -89,7 +89,7 @@ function FloorPlanTemplate({ data }) {
 export default FloorPlanTemplate;
 
 export function Head({ data }) {
-  return <SearchEngineOptimization data={data.floorPlan} titleField='title' />;
+  return <SearchEngineOptimization data={data.floorPlan} />;
 }
 
 export const query = graphql`
