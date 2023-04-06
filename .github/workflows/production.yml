@@ -34,7 +34,7 @@ jobs:
     steps:
       # Get code from repo
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       # Get tag from action input
@@ -59,7 +59,7 @@ jobs:
           ref: ${{ github.event.inputs.tag }}
       # Install NodeJS
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 18.x
       # Enabling cache
