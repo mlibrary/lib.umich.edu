@@ -332,16 +332,22 @@ function SpecialistsSearch() {
 
 function SpecialistsResults() {
   const [show, setShow] = useState(20);
-  const [{ results, category, healthSciencesOnly }] = useSpecialists();
+  const [{ results, query, category, healthSciencesOnly }] = useSpecialists();
   const resultsFiltered = filterResults({
     results,
     category,
     healthSciencesOnly,
   });
   const resultsShown = resultsFiltered.slice(0, show);
-  const resultsSummary = results.length
+  let resultsSummary = results.length
     ? `${resultsFiltered.length} results`
     : `No results`;
+  if (query) {
+    resultsSummary += ` for ${query}`;
+  }
+  if (category) {
+    resultsSummary += ` in ${category}`;
+  }
   const showMoreText =
     show < resultsFiltered.length
       ? `Showing ${show} of ${resultsFiltered.length} results`
