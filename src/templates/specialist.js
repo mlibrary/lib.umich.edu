@@ -406,9 +406,6 @@ function SpecialistsResults() {
               css={{
                 borderTop: borderStyle,
                 [tableBreakpoint]: {
-                  '> *:first-child': {
-                    paddingTop: '1rem'
-                  },
                   '> *:last-child': {
                     paddingBottom: '1rem'
                   }
@@ -420,7 +417,7 @@ function SpecialistsResults() {
                 css={{
                   [tableBreakpoint]: {
                     fontWeight: '600',
-                    paddingTop: '1rem'
+                    paddingTop: '1rem!important'
                   }
                 }}
               >
