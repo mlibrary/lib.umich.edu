@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
 import SearchEngineOptimization from '../components/seo';
 import { graphql } from 'gatsby';
-import { Heading, SPACING, Margins, TextInput, COLORS, Button, Alert, WindowResize } from '../reusable';
+import { Heading, SPACING, Margins, TextInput, COLORS, Button, Alert } from '../reusable';
 import { useLocation, navigate } from '@reach/router';
 import Link from '../components/link';
 import Breadcrumb from '../components/breadcrumb';
@@ -331,19 +331,23 @@ function SpecialistsSearch() {
 }
 
 function SpecialistsResults() {
-  const breakpoint = 720;
-  const windowSize = WindowResize();
   const [show, setShow] = useState(20);
-  const [{ results, category, healthSciencesOnly }] = useSpecialists();
+  const [{ results, query, category, healthSciencesOnly }] = useSpecialists();
   const resultsFiltered = filterResults({
     results,
     category,
     healthSciencesOnly,
   });
   const resultsShown = resultsFiltered.slice(0, show);
-  const resultsSummary = results.length
+  let resultsSummary = results.length
     ? `${resultsFiltered.length} results`
     : `No results`;
+  if (query) {
+    resultsSummary += ` for ${query}`;
+  }
+  if (category) {
+    resultsSummary += ` in ${category}`;
+  }
   const showMoreText =
     show < resultsFiltered.length
       ? `Showing ${show} of ${resultsFiltered.length} results`
@@ -351,91 +355,100 @@ function SpecialistsResults() {
   function showMore() {
     setShow(results.length);
   }
+  const tableBreakpoint = `@media only screen and (max-width: 720px)`;
+  const borderStyle = '1px solid var(--color-neutral-100)';
 
   return (
     <React.Fragment>
-      {windowSize < breakpoint ? (
-        <SpecialistsResultsSmallScreenResults
-          results={resultsShown}
-          healthSciencesOnly={healthSciencesOnly}
-        />
-      ) : (
-        <div
+      <table
+        css={{
+          tableLayout: 'fixed',
+          textAlign: 'left',
+          width: '100%',
+          'tr > *': {
+            padding: '0.75rem 0',
+            position: 'relative',
+            [tableBreakpoint]: {
+              display: 'block',
+              padding: '0.25rem 0'
+            },
+            '& + *': {
+              paddingLeft: '2rem',
+              [tableBreakpoint]: {
+                paddingLeft: '0'
+              }
+            }
+          }
+        }}
+      >
+        <caption className='visually-hidden'>
+          <Alert>{resultsSummary}</Alert>
+        </caption>
+        <thead
           css={{
-            overflowX: 'auto',
+            borderBottom: borderStyle,
+            color: COLORS.neutral['300'],
+            [tableBreakpoint]: {
+              clip: 'rect(1px, 1px, 1px, 1px)',
+              clipPath: 'inset(50%)',
+              height: '1px',
+              overflow: 'hidden',
+              position: 'absolute',
+              whiteSpace: 'nowrap',
+              width: '1px',
+            }
           }}
-          role="group"
-          aria-labelledby="caption"
         >
-          <table
-            css={{
-              width: '100%',
-              minWidth: breakpoint + 'px',
-              tableLayout: 'fixed',
-              marginBottom: SPACING['XL'],
-              'th, td': {
-                padding: `${SPACING['S']} 0`,
-                textAlign: 'left',
-                borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-                verticalAlign: 'top',
-                '> * + *': {
-                  marginTop: SPACING['S'],
-                },
-              },
-              'td:not(:last-of-type)': {
-                paddingRight: SPACING['XL'],
-              },
-              th: {
-                color: COLORS.neutral['300'],
-              },
-            }}
-          >
-            <caption
-              id="caption"
+          <tr>
+            <th scope="col">Subjects and specialties</th>
+            <th colSpan="2" scope="col">Contact</th>
+            {healthSciencesOnly && <th scope="col">Category</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {resultsShown.map(({ name, contacts, category }, i) => (
+            <tr
+              key={name + i}
               css={{
-                textAlign: 'left',
+                borderTop: borderStyle,
+                [tableBreakpoint]: {
+                  '> *:last-child': {
+                    paddingBottom: '1rem'
+                  }
+                }
               }}
             >
-              <span className='visually-hidden'>
-                <Alert>{resultsSummary}</Alert>
-              </span>
-
-              <p
+              <th
+                scope="row"
                 css={{
-                  '@media only screen and (min-width: 720px)': {
-                    display: 'none',
-                  },
+                  [tableBreakpoint]: {
+                    fontWeight: '600',
+                    paddingTop: '1rem!important'
+                  }
                 }}
               >
-                (Scroll to see more)
-              </p>
-            </caption>
-            <thead>
-              <tr>
-                <th>Subjects and specialties</th>
-                <th colSpan="2">Contact</th>
-                {healthSciencesOnly && <th>Category</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {resultsShown.map(({ name, contacts, category }, i) => (
-                <tr key={name + i}>
-                  <td>{name}</td>
-                  <td colSpan="2">
-                    {contacts.map(({ link, description }, y) => (
-                      <div key={link.to + y}>
-                        <Link to={link.to}>{link.label}</Link>
-                        <p>{description}</p>
-                      </div>
-                    ))}
-                  </td>
-                  {healthSciencesOnly && <td>{category}</td>}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                {name}
+              </th>
+              <td colSpan="2">
+                {contacts.map(({ link, description }, y) => (
+                  <div
+                    key={link.to + y}
+                    css={{
+                      '& + *': {
+                        paddingTop: '0.5rem'
+                      }
+                    }}
+                  >
+                    <Link to={link.to}>{link.label}</Link>
+                    <p>{description}</p>
+                  </div>
+                ))}
+              </td>
+              {healthSciencesOnly && <td>{category}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       {showMoreText && (
         <>
@@ -454,47 +467,6 @@ function SpecialistsResults() {
         <NoResults>Consider searching with different keywords.</NoResults>
       )}
     </React.Fragment>
-  );
-}
-
-function SpecialistsResultsSmallScreenResults({ results, healthSciencesOnly }) {
-  return (
-    <ol>
-      {results.map(({ name, contacts, category }, i) => (
-        <li
-          key={name + i}
-          css={{
-            borderTop: `solid 1px ${COLORS.neutral['100']}`,
-            paddingTop: SPACING['M'],
-            paddingBottom: SPACING['M'],
-          }}
-        >
-          <h2
-            css={{
-              fontWeight: '600',
-              marginBottom: SPACING['XS'],
-            }}
-          >
-            {name}
-          </h2>
-          <ul
-            css={{
-              '> li:not(:last-child)': {
-                marginBottom: SPACING['XS'],
-              },
-            }}
-          >
-            {contacts.map(({ link, description }, y) => (
-              <li key={link.to + y}>
-                <Link to={link.to}>{link.label}</Link>
-                <p>{description}</p>
-              </li>
-            ))}
-          </ul>
-          {healthSciencesOnly && <p>{category}</p>}
-        </li>
-      ))}
-    </ol>
   );
 }
 
