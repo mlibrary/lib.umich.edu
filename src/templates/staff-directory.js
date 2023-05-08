@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { graphql } from 'gatsby';
 import SearchEngineOptimization from '../components/seo';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Heading, SPACING, Margins, TextInput, COLORS, Button, Alert, WindowResize } from '../reusable';
+import { Heading, SPACING, Margins, TextInput, COLORS, Button, Alert } from '../reusable';
 import { navigate } from '@reach/router';
 import { useDebounce } from 'use-debounce';
 import Link from '../components/link';
@@ -241,10 +241,15 @@ const StaffDirectory = React.memo(function StaffDirectory({
 }) {
   const [show, setShow] = useState(20);
   const staffInView = results.slice(0, show);
-  const resultsSummary = results.length
+  let resultsSummary = results.length
     ? `${results.length} results`
     : `No results`;
-
+  if (query) {
+    resultsSummary += ` for ${query}`;
+  }
+  if (activeFilters.department) {
+    resultsSummary += ` in ${activeFilters.department}`;
+  }
   const showMoreText =
     show < results.length
       ? `Showing ${show} of ${results.length} results`
@@ -445,228 +450,176 @@ function StaffDirectoryResults({
   resultsSummary,
   staffInView,
 }) {
-  const breakpoint = 820;
-  const windowSize = WindowResize();
+  const tableBreakpoint = `@media only screen and (max-width: 820px)`;
+  const borderStyle = '1px solid var(--color-neutral-100)';
 
   if (results.length < 1) {
     return null;
   }
 
-  if (windowSize < breakpoint) {
-    // prop drilling, woo!
-    return (
-      <StaffDirectorySmallScreenResults
-        results={results}
-        resultsSummary={resultsSummary}
-        staffInView={staffInView}
-      />
-    );
-  }
-
   return (
-    <div
+    <table
       css={{
-        overflowX: 'auto',
+        tableLayout: 'fixed',
+        textAlign: 'left',
+        width: '100%',
+        'tr > *': {
+          padding: '0.75rem 0',
+          position: 'relative',
+          verticalAlign: 'top',
+          [tableBreakpoint]: {
+            display: 'block',
+            padding: '0.5rem 0 0 0'
+          },
+          '& + *': {
+            paddingLeft: '2rem',
+            [tableBreakpoint]: {
+              paddingLeft: '0',
+              '&:nth-of-type(2)': {
+                paddingTop: '1rem',
+                '& + *': {
+                  paddingBottom: '1rem'
+                }
+              }
+            }
+          }
+        }
       }}
-      role="group"
-      aria-labelledby="caption"
     >
-      <table
+      <caption className='visually-hidden'>
+        <Alert>{resultsSummary}</Alert>
+      </caption>
+      <colgroup>
+          <col
+            span="1"
+            css={{
+              width: '43px'
+            }} 
+          />
+      </colgroup>
+      <thead
         css={{
-          width: '100%',
-          minWidth: breakpoint + 'px',
-          tableLayout: 'fixed',
-          marginBottom: SPACING['XL'],
-          'th, td': {
-            padding: `${SPACING['S']} 0`,
-            textAlign: 'left',
-            borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-            verticalAlign: 'top',
-          },
-          'td:not(:last-of-type)': {
-            paddingRight: SPACING['XL'],
-          },
-          th: {
-            color: COLORS.neutral['300'],
-          },
+          borderBottom: borderStyle,
+          color: COLORS.neutral['300'],
+          [tableBreakpoint]: {
+            clip: 'rect(1px, 1px, 1px, 1px)',
+            clipPath: 'inset(50%)',
+            height: '1px',
+            overflow: 'hidden',
+            position: 'absolute',
+            whiteSpace: 'nowrap',
+            width: '1px',
+          }
         }}
       >
-        <caption
-          id="caption"
-          css={{
-            textAlign: 'left',
-          }}
-        >
-          <span className='visually-hidden'>
-            <Alert>{resultsSummary}</Alert>
-          </span>
-
-          <p
-            css={{
-              '@media only screen and (min-width: 720px)': {
-                display: 'none',
-              },
-            }}
-          >
-            (Scroll to see more)
-          </p>
-        </caption>
-        <thead>
-          <tr>
-            <th
+        <tr>
+          <th className="visually-hidden">Photo</th>
+          <th colSpan="3">Name and title</th>
+          <th colSpan="2">Contact info</th>
+          <th colSpan="3">Department</th>
+        </tr>
+      </thead>
+      <tbody>
+        {staffInView.map(
+          ({
+            uniqname,
+            name,
+            title,
+            email,
+            phone,
+            department,
+            division,
+            image_mid,
+          }) => (
+            <tr
+              key={uniqname}
               css={{
-                paddingLeft: `calc(43px + ${SPACING['L']}) !important`,
+                borderTop: borderStyle
               }}
-              colSpan="2"
             >
-              Name and title
-            </th>
-            <th>Contact info</th>
-            <th colSpan="2">Department</th>
-          </tr>
-        </thead>
-        <tbody>
-          {staffInView.map(
-            ({
-              uniqname,
-              name,
-              title,
-              email,
-              phone,
-              department,
-              division,
-              image_mid,
-            }) => (
-              <tr key={uniqname}>
-                <td colSpan="2">
-                  <div
-                    css={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                    }}
-                  >
+              <td
+                css={{
+                  [tableBreakpoint]: {
+                    display: 'none!important'
+                  }
+                }}
+              >
+                <StaffPhoto mid={image_mid} staffImages={staffImages} />
+              </td>
+              <td colSpan="3">
+                <PlainLink
+                  css={{
+                    color: COLORS.teal['400'],
+                    textDecoration: 'underline',
+                    ':hover': {
+                      textDecorationThickness: '2px',
+                    },
+                  }}
+                  to={`/users/` + uniqname}
+                >
+                  {name}
+                </PlainLink>
+                <span css={{ display: 'block' }}>{title}</span>
+              </td>
+              <td
+                colSpan="2"
+                css={{
+                  'span': {
+                    display: 'block',
+                    [tableBreakpoint]: {
+                      display: 'initial'
+                    }
+                  }
+                }}
+              >
+                <span>
+                  <Link to={`mailto:` + email} kind="subtle">
+                    {email}
+                  </Link>
+                </span>
+                {phone && (
+                  <>
                     <span
                       css={{
-                        display: 'inline-block',
-                        width: '43px',
-                        marginRight: SPACING['L'],
-                        lineHeight: '0',
-                        flexShrink: '0',
+                        display: 'none!important',
+                        padding: '0 0.5rem',
+                        [tableBreakpoint]: {
+                          display: 'initial!important'
+                        }
                       }}
-                    >
-                      <StaffPhoto mid={image_mid} staffImages={staffImages} />
-                    </span>
-                    <span>
-                      <PlainLink
-                        css={{
-                          color: COLORS.teal['400'],
-                          textDecoration: 'underline',
-                          ':hover': {
-                            textDecorationThickness: '2px',
-                          },
-                        }}
-                        to={`/users/` + uniqname}
-                      >
-                        {name}
-                      </PlainLink>
-                      <span css={{ display: 'block' }}>{title}</span>
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <span css={{ display: 'block' }}>
-                    <Link to={`mailto:` + email} kind="subtle">
-                      {email}
-                    </Link>
-                  </span>
-                  {phone && (
+                    >&middot;</span>
                     <span>
                       <Link to={`tel:1-` + phone} kind="subtle">
                         {phone}
                       </Link>
                     </span>
-                  )}
-                </td>
-                <td colSpan="2">
-                  {department && (
-                    <Link to={department.fields.slug} kind="subtle">
-                      {department.title}
-                    </Link>
-                  )}
-
-                  {!department && division && (
-                    <Link to={division.fields.slug} kind="subtle">
-                      {division.title}
-                    </Link>
-                  )}
-                </td>
-              </tr>
-            )
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function StaffDirectorySmallScreenResults({ resultsSummary, staffInView }) {
-  return (
-    <React.Fragment>
-      <span className='visually-hidden'>
-        <Alert>{resultsSummary}</Alert>
-      </span>
-
-      <ol>
-        {staffInView.map(({ uniqname, name, title, email, phone }) => (
-          <li
-            key={uniqname}
-            css={{
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
-              paddingTop: SPACING['M'],
-              paddingBottom: SPACING['M'],
-            }}
-          >
-            <PlainLink
-              css={{
-                color: COLORS.teal['400'],
-                textDecoration: 'underline',
-                ':hover': {
-                  textDecorationThickness: '2px',
-                },
-                display: 'block',
-              }}
-              to={`/users/` + uniqname}
-            >
-              {name}
-            </PlainLink>
-
-            <p css={{ display: 'block', marginBottom: SPACING['XS'] }}>
-              {title}
-            </p>
-            <p>
-              <Link to={`mailto:` + email} kind="subtle">
-                {email}
-              </Link>
-              {phone && (
-                <React.Fragment>
-                  <span
-                    css={{
-                      display: 'inline-block',
-                      padding: `0 ${SPACING['XS']}`,
-                    }}
-                    aria-hidden="true"
-                  >
-                    ·
-                  </span>
-                  <Link to={`tel:1-` + phone} kind="subtle">
-                    {phone}
+                  </>
+                )}
+              </td>
+              <td
+                colSpan="3"
+                css={{
+                  [tableBreakpoint]: {
+                    display: 'none!important'
+                  }
+                }}
+              >
+                {department && (
+                  <Link to={department.fields.slug} kind="subtle">
+                    {department.title}
                   </Link>
-                </React.Fragment>
-              )}
-            </p>
-          </li>
-        ))}
-      </ol>
-    </React.Fragment>
+                )}
+
+                {!department && division && (
+                  <Link to={division.fields.slug} kind="subtle">
+                    {division.title}
+                  </Link>
+                )}
+              </td>
+            </tr>
+          )
+        )}
+      </tbody>
+    </table>
   );
 }
