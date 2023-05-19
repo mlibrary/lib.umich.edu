@@ -95,6 +95,9 @@ export function findHoursSetByNodeForNow({ node, now }) {
     const end = set.field_date_range.end_value;
 
     // Check if "now" is within the range including start and end days.
+
+    // reassign now as a moment from date as I convert to date-fns
+    now = moment();
     return now.isSameOrAfter(start, 'day') && now.isSameOrBefore(end, 'day');
   });
 
@@ -107,7 +110,8 @@ export function displayHours({ node, now }) {
   if (!hoursSet) {
     return null;
   }
-
+  // reassign now as a moment from date as I convert to date-fns
+  now = moment();
   const hoursForNow = hoursSet.field_hours_open.find(
     (d) => d.day === now.day()
   );
@@ -130,12 +134,17 @@ export function displayHours({ node, now }) {
       const getMinutes = time24Hours.toString().slice(-2);
       const setTimeFormat = getMinutes === '00' ? 'ha' : 'h:mma';
       return moment(time24Hours, 'HHmm').format(setTimeFormat);
-    }
+    };
 
     const combinedValues = (separator = 'to') => {
-      return [`${formatTime(starthours)} ${separator} ${formatTime(endhours)}`, comment].filter(Boolean).join(', ');
+      return [
+        `${formatTime(starthours)} ${separator} ${formatTime(endhours)}`,
+        comment,
+      ]
+        .filter(Boolean)
+        .join(', ');
     };
-  
+
     text = combinedValues('-');
     label = combinedValues();
   }

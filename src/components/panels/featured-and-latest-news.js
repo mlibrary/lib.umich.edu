@@ -2,7 +2,14 @@ import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from '@emotion/styled';
 import * as moment from 'moment';
-import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '../../reusable';
+import { format, parseISO } from 'date-fns';
+import {
+  SPACING,
+  MEDIA_QUERIES,
+  COLORS,
+  Heading,
+  Margins,
+} from '../../reusable';
 import Card from '../card';
 import Link from '../link';
 
@@ -12,10 +19,10 @@ function processNewsNodeForCard({ newsNode }) {
       ?.localFile?.childImageSharp?.gatsbyImageData;
 
   const children = newsNode.body?.summary;
-
   return {
     title: newsNode.title,
-    subtitle: moment(newsNode.created).format('MMMM D, YYYY'),
+    // prettier-ignore
+    subtitle: format(parseISO(newsNode.created), "MMMM d, yyyy"),
     href: newsNode.fields.slug,
     image: newsImage,
     children,
@@ -42,7 +49,7 @@ export default function FeaturedAndLatestNews() {
     query {
       featuredNews: allNodeNews(
         filter: { field_featured_news_item: { eq: true } }
-        sort: {created: DESC}
+        sort: { created: DESC }
         limit: 1
       ) {
         edges {
@@ -56,7 +63,7 @@ export default function FeaturedAndLatestNews() {
           field_priority_for_homepage: { eq: true }
           field_featured_news_item: { eq: false }
         }
-        sort: {created: DESC}
+        sort: { created: DESC }
         limit: 5
       ) {
         edges {
@@ -70,7 +77,7 @@ export default function FeaturedAndLatestNews() {
           field_priority_for_homepage: { eq: false }
           field_featured_news_item: { eq: false }
         }
-        sort: {created: DESC}
+        sort: { created: DESC }
         limit: 5
       ) {
         edges {

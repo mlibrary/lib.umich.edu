@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '../../reusable';
-import * as moment from 'moment';
 import { Link as GatsbyLink } from 'gatsby';
 
 import Link from '../link';
@@ -133,8 +132,8 @@ const hoursDataExample = [
 function processHoursData(data, initialized) {
   function hours(node) {
     if (initialized) {
-      const now = moment();
-      return displayHours({ node, now });
+      const currentDate = new Date();
+      return displayHours({ node, now: currentDate });
     }
 
     return { text: '...', label: 'Loading hours... ' };

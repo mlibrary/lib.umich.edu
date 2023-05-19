@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import * as moment from 'moment';
 
 import { displayHours } from '../utils/hours';
 
@@ -18,7 +17,7 @@ export default function Hours({ node }) {
     return <React.Fragment>…</React.Fragment>;
   }
 
-  const now = moment();
+  const now = new Date();
   const hours = displayHours({ node, now });
 
   if (!hours) {

@@ -5,6 +5,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@umich-lib/web": "^1.3.0",
+    "date-fns": "^2.30.0",
     "gatsby": "^5.8.1",
     "gatsby-plugin-emotion": "^8.8.0",
     "gatsby-plugin-image": "^3.8.0",

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
+import { isEqual, isBefore, parseISO } from 'date-fns';
 import {
   Heading,
   SPACING,
@@ -8,7 +9,6 @@ import {
   ExpandableButton,
   ExpandableChildren,
 } from '../../reusable';
-import * as moment from 'moment';
 import Link from '../link';
 import {
   Template,
@@ -66,7 +66,7 @@ export default function EventsAndExhibitsPanel() {
     // Only process todaysEvents if it hasn't been done already.
     if (events && todaysEvents === null) {
       // useEffects are only client side, so we can use now here.
-      const now = moment();
+      const now = new Date();
 
       // Get Today's events.
       const todaysEvents = events.filter((event) => {
@@ -77,8 +77,7 @@ export default function EventsAndExhibitsPanel() {
         if (EXHIBIT_TYPES.includes(type)) {
           return false;
         }
-
-        return now.isSame(start, 'day'); // all today.
+        return isEqual(now, parseISO(start)); // all today.
       });
 
       setTodaysEvents(todaysEvents);
@@ -86,7 +85,7 @@ export default function EventsAndExhibitsPanel() {
 
     if (events && upcomingEvents === null) {
       // useEffects are only client side, so we can use now here.
-      const now = moment();
+      const now = new Date();
 
       // Get upcoming events.
       // This is repetative... but :shrug:
@@ -99,7 +98,7 @@ export default function EventsAndExhibitsPanel() {
           return false;
         }
 
-        return now.isBefore(start, 'day'); // all after today.
+        return isBefore(now, parseISO(start)); // all after today.
       });
 
       setUpcomingEvents(upcomingEvents);
