@@ -1,13 +1,24 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING, Expandable, ExpandableChildren, ExpandableButton } from '../reusable';
+import {
+  Margins,
+  Heading,
+  SPACING,
+  Expandable,
+  ExpandableChildren,
+  ExpandableButton,
+} from '../reusable';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/card';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
-import * as moment from 'moment';
+import {
+  Template,
+  TemplateSide,
+  TemplateContent,
+} from '../components/aside-layout';
+import { format, parseISO } from 'date-fns';
 
 export default function NewsLandingTemplate({ data }) {
   const news = processNewsData(data.featuredNews).concat(
@@ -42,7 +53,7 @@ export default function NewsLandingTemplate({ data }) {
 
           {news && (
             <React.Fragment>
-              <span className='visually-hidden'>
+              <span className="visually-hidden">
                 <Heading level={2} size="L">
                   Main news
                 </Heading>
@@ -138,10 +149,9 @@ function processNewsData(data) {
     const image =
       relationships?.field_media_image?.relationships?.field_media_image
         ?.localFile?.childImageSharp?.gatsbyImageData;
-
     return {
       title,
-      subtitle: moment(created).format('MMMM D, YYYY'),
+      subtitle: format(parseISO(created), 'MMMM d, yyyy'),
       description: body?.summary,
       href: fields.slug,
       image,
@@ -159,7 +169,7 @@ export const query = graphql`
         field_news_type: { eq: "news_main" }
         field_featured_news_item: { eq: true }
       }
-      sort: {created: DESC}
+      sort: { created: DESC }
     ) {
       edges {
         node {
@@ -172,7 +182,7 @@ export const query = graphql`
         field_news_type: { eq: "news_main" }
         field_featured_news_item: { eq: false }
       }
-      sort: {created: DESC}
+      sort: { created: DESC }
     ) {
       edges {
         node {
@@ -187,7 +197,7 @@ export const query = graphql`
           field_design_template: { field_machine_name: { eq: "news" } }
         }
       }
-      sort: {created: DESC}
+      sort: { created: DESC }
     ) {
       edges {
         node {

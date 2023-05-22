@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import { displayHours } from '../utils/hours';
 
 export default function Hours({ node }) {

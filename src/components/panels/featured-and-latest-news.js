@@ -1,8 +1,7 @@
 import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from '@emotion/styled';
-import * as moment from 'moment';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isBefore, isAfter } from 'date-fns';
 import {
   SPACING,
   MEDIA_QUERIES,
@@ -21,8 +20,7 @@ function processNewsNodeForCard({ newsNode }) {
   const children = newsNode.body?.summary;
   return {
     title: newsNode.title,
-    // prettier-ignore
-    subtitle: format(parseISO(newsNode.created), "MMMM d, yyyy"),
+    subtitle: format(parseISO(newsNode.created), 'MMMM d, yyyy'),
     href: newsNode.fields.slug,
     image: newsImage,
     children,
@@ -217,11 +215,11 @@ function sortNews({ data }) {
   const allNews = data.priorityNews.edges.concat(recentNewsSliced);
 
   function compareCreatedDate(a, b) {
-    if (moment(a.node.created).isBefore(b.node.created)) {
+    if (isBefore(parseISO(a.node.created), parseISO(b.node.created))) {
       return 1;
     }
 
-    if (moment(a.node.created).isAfter(b.node.created)) {
+    if (isAfter(parseISO(a.node.created), parseISO(b.node.created))) {
       return -1;
     }
 

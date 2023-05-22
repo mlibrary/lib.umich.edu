@@ -2,9 +2,20 @@ import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import * as moment from 'moment';
-import { Margins, Heading, SPACING, COLORS, Text, TYPOGRAPHY } from '../reusable';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
+import { format, parseISO } from 'date-fns';
+import {
+  Margins,
+  Heading,
+  SPACING,
+  COLORS,
+  Text,
+  TYPOGRAPHY,
+} from '../reusable';
+import {
+  Template,
+  TemplateSide,
+  TemplateContent,
+} from '../components/aside-layout';
 import TemplateLayout from './template-layout';
 import Panels from '../components/panels';
 import Html from '../components/html';
@@ -57,7 +68,7 @@ export default function NewsTemplate({ data }) {
                   paddingTop: SPACING['M'],
                 }}
               >
-                {moment(created).format('MMMM D, YYYY')}
+                {format(parseISO(created), 'MMMM d, yyyy')}
               </p>
             )}
           </Heading>
@@ -118,7 +129,7 @@ export default function NewsTemplate({ data }) {
 }
 
 export function Head({ data }) {
-  return <SearchEngineOptimization data={ getNode(data) } />;
+  return <SearchEngineOptimization data={getNode(data)} />;
 }
 
 function StayInTheKnow() {

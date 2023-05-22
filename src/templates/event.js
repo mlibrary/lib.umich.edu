@@ -1,9 +1,12 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import * as moment from 'moment';
 import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '../reusable';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
+import {
+  Template,
+  TemplateSide,
+  TemplateContent,
+} from '../components/aside-layout';
 import TemplateLayout from './template-layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
@@ -183,8 +186,8 @@ function EventMetadata({ data }) {
       : null;
   const series = data.relationships.field_event_series?.name;
   const when = dates.map((date) => {
-    const start = moment(date.value);
-    const end = moment(date.end_value);
+    const start = new Date(date.value);
+    const end = new Date(date.end_value);
 
     return eventFormatWhen({
       start,
@@ -261,7 +264,11 @@ function EventMetadata({ data }) {
                   );
                 }
 
-                return <p key={index} className={className}>{label}</p>;
+                return (
+                  <p key={index} className={className}>
+                    {label}
+                  </p>
+                );
               })}
             </td>
           </tr>

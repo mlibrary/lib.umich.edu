@@ -1,4 +1,11 @@
-import * as moment from 'moment';
+import {
+  format,
+  isBefore,
+  isAfter,
+  isSameYear,
+  isSameDay,
+  parseISO,
+} from 'date-fns';
 
 export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 
@@ -39,51 +46,53 @@ export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 export function eventFormatWhen({ start, end, kind, type }) {
   const isBrief = kind === 'brief';
   const isExhibit = EXHIBIT_TYPES.includes(type);
-  const S = moment(start);
-  const E = moment(end);
-  const isSameYear = S.isSame(E, 'year');
-  const isSameDay = S.isSame(E, 'day');
+  const S = new Date(start);
+  const E = new Date(end);
+  const isSameEventYear = isSameYear(S, E);
+  const isSameEventDay = isSameDay(S, E);
 
   // Exhibits share same format, regardless of kind.
   if (isExhibit) {
-    if (isSameYear) {
-      return S.format('MMMM D') + E.format(' [-] MMMM D');
+    if (isSameEventYear) {
+      return format(S, 'MMMM d') + format(E, '- MMMM d');
     } else {
-      return S.format('MMMM D, YYYY') + E.format(' [-] MMMM D, YYYY');
+      return format(S, 'MMMM d, yyyy') + format(E, '- MMMM d, yyyy');
     }
   }
 
   if (isBrief) {
-    if (isSameDay) {
-      return S.format('dddd, MMMM D [·] h:mma - ') + E.format('h:mma');
+    if (isSameEventDay) {
+      return format(S, 'eeee, MMMM d · h:mmaa - ') + format(E, 'h:mmaa');
     } else {
-      if (isSameYear) {
+      if (isSameEventYear) {
         return (
-          S.format('dddd, MMMM D [·] h:mma - ') +
-          E.format('dddd, MMMM D [·] h:mma')
+          format(S, 'eeee, MMMM d · h:mma - ') +
+          format(E, 'eeee, MMMM d · h:mma')
         );
       } else {
         return (
-          S.format('dddd, MMMM D [·] h:mma - ') +
-          E.format('dddd, MMMM D, YYYY [·] h:mma')
+          format(S, 'eeee, MMMM d · h:mma - ') +
+          format(E, 'eeee, MMMM d, yyyy · h:mma')
         );
       }
     }
   }
 
-  if (isSameDay) {
-    return S.format('dddd, MMMM D, YYYY [from] h:mma - ') + E.format('h:mma');
+  if (isSameEventDay) {
+    return (
+      format(S, "eeee, MMMM d, yyyy 'from' h:mmaaa - ") + format(E, 'h:mmaaa')
+    );
   }
 
-  if (isSameYear) {
+  if (isSameEventYear) {
     return (
-      S.format('dddd, MMMM D [·] h:mma - ') + E.format('dddd, MMMM D [·] h:mma')
+      format(S, 'eeee, MMMM d · h:mma - ') + format(E, 'eeee, MMMM d · h:mma')
     );
   }
 
   return (
-    S.format('dddd, MMMM D [·] h:mma - ') +
-    E.format('dddd, MMMM D, YYYY [·] h:mma')
+    format(S, 'eeee, MMMM d · h:mma - ') +
+    format(E, 'eeee, MMMM d, yyyy · h:mma')
   );
 }
 
@@ -105,25 +114,32 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
 
   let hasLocation = false;
 
-  if (!!node.field_event_in_non_library_locat && !!node.field_non_library_location_addre) {
+  if (
+    !!node.field_event_in_non_library_locat &&
+    !!node.field_non_library_location_addre
+  ) {
     if (node.field_non_library_location_addre.organization) {
       hasLocation = true;
       where.push({
-        label: node.field_non_library_location_addre.organization
+        label: node.field_non_library_location_addre.organization,
       });
     }
     if (kind !== 'brief') {
       const stateZip = [
         node.field_non_library_location_addre.administrative_area,
-        node.field_non_library_location_addre.postal_code
-      ].filter((field) => field).join(' ')
+        node.field_non_library_location_addre.postal_code,
+      ]
+        .filter((field) => field)
+        .join(' ');
       where.push({
         label: [
           node.field_non_library_location_addre.address_line1,
           node.field_non_library_location_addre.locality,
-          stateZip
-        ].filter((field) => field).join(', '),
-        className: 'margin-top-none'
+          stateZip,
+        ]
+          .filter((field) => field)
+          .join(', '),
+        className: 'margin-top-none',
       });
     }
   }
@@ -179,11 +195,11 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
     const startA = a.field_event_date_s_[0].value;
     const startB = b.field_event_date_s_[0].value;
 
-    if (moment(startA).isBefore(startB)) {
+    if (isBefore(parseISO(startA), parseISO(startB))) {
       return -1;
     }
 
-    if (moment(startA).isAfter(startB)) {
+    if (isAfter(parseISO(startA), parseISO(startB))) {
       return 1;
     }
 
@@ -192,11 +208,16 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
 
   if (onlyTodayOrAfter) {
     function isBeforeToday(event) {
-      // This broke Jon's brain Wednesday, October 2020. Can't explain.
+      const result = isBefore(
+        parseISO(event.field_event_date_s_[0].end_value),
+        new Date().getDay
+      );
+
+      /* This broke Jon's brain Wednesday, October 2020. Can't explain.
       const result = moment(event.field_event_date_s_[0].end_value).isBefore(
         moment(),
         'day'
-      );
+      );*/
 
       return !result;
     }
