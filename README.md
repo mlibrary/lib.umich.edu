@@ -1,6 +1,6 @@
 # lib.umich.edu
 
-[lib.umich.edu](https://lib.umich.edu/) is a headless [Drupal](https://www.drupal.org/) site, built with [Gatsby](https://www.gatsbyjs.com/) and (React)[https://react.dev/] as the front-end.
+[lib.umich.edu](https://lib.umich.edu/) is a headless [Drupal](https://www.drupal.org/) site, built with [Gatsby](https://www.gatsbyjs.com/) and [React](https://react.dev/) as the front-end.
 
 ## 🚀 Quick start
 
