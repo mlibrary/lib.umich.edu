@@ -202,7 +202,6 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
     if (isAfter(parseISO(startA), parseISO(startB))) {
       return 1;
     }
-
     return 0;
   }
 
@@ -210,7 +209,7 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
     function isBeforeToday(event) {
       const result = isBefore(
         parseISO(event.field_event_date_s_[0].end_value),
-        new Date().getDay
+        new Date()
       );
 
       /* This broke Jon's brain Wednesday, October 2020. Can't explain.
