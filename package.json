@@ -68,7 +68,6 @@
     "eslint-plugin-react": "^7.32.2",
     "fetch-retry": "^5.0.4",
     "gatsby-plugin-netlify": "^5.1.0",
-    "gatsby-plugin-remove-serviceworker": "^1.0.0",
-    "prettier": "^2.8.7"
+    "gatsby-plugin-remove-serviceworker": "^1.0.0"
   }
 }
