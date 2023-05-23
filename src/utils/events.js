@@ -5,6 +5,7 @@ import {
   isSameYear,
   isSameDay,
   parseISO,
+  add,
 } from 'date-fns';
 
 export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
@@ -62,16 +63,16 @@ export function eventFormatWhen({ start, end, kind, type }) {
 
   if (isBrief) {
     if (isSameEventDay) {
-      return format(S, 'eeee, MMMM d · h:mmaa - ') + format(E, 'h:mmaa');
+      return format(S, 'eeee, MMMM d · h:mmaaa - ') + format(E, 'h:mmaaa');
     } else {
       if (isSameEventYear) {
         return (
-          format(S, 'eeee, MMMM d · h:mma - ') +
-          format(E, 'eeee, MMMM d · h:mma')
+          format(S, 'eeee, MMMM d · h:mmaaa - ') +
+          format(E, 'eeee, MMMM d · h:mmaaa')
         );
       } else {
         return (
-          format(S, 'eeee, MMMM d · h:mma - ') +
+          format(S, 'eeee, MMMM d · h:mmaaa - ') +
           format(E, 'eeee, MMMM d, yyyy · h:mma')
         );
       }
@@ -86,13 +87,14 @@ export function eventFormatWhen({ start, end, kind, type }) {
 
   if (isSameEventYear) {
     return (
-      format(S, 'eeee, MMMM d · h:mma - ') + format(E, 'eeee, MMMM d · h:mma')
+      format(S, 'eeee, MMMM d · h:mmaaa - ') +
+      format(E, 'eeee, MMMM d · h:mmaaa')
     );
   }
 
   return (
-    format(S, 'eeee, MMMM d · h:mma - ') +
-    format(E, 'eeee, MMMM d, yyyy · h:mma')
+    format(S, 'eeee, MMMM d · h:mmaaa - ') +
+    format(E, 'eeee, MMMM d, yyyy · h:mmaaa')
   );
 }
 
