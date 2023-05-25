@@ -1,5 +1,12 @@
 import React from 'react';
-import * as moment from 'moment';
+import {
+  startOfWeek,
+  addWeeks,
+  format,
+  endOfWeek,
+  getDay,
+  setDay,
+} from 'date-fns';
 import {
   Margins,
   Heading,
@@ -7,7 +14,7 @@ import {
   Button,
   Icon,
   MEDIA_QUERIES,
-  createSlug
+  createSlug,
 } from '../../reusable';
 import Html from '../html';
 import HoursTable from '../hours-table';
@@ -16,19 +23,22 @@ import { displayHours } from '../../utils/hours';
 
 const dateFormat = (string, abbreviated = false) => {
   if (abbreviated) {
-    return string.format('MMM D');
+    return format(string, 'MMM d');
   }
-  return string.format('dddd, MMMM D, YYYY');
-}
+  return format(string, 'EEEE, MMMM d, yyyy');
+};
 
 export function HoursPanelNextPrev({ location }) {
   const [{ weekOffset }, dispatch] = useStateValue();
-  const from_date = moment().add(weekOffset, 'weeks').startOf('week');
-  const to_date = moment().add(weekOffset, 'weeks').endOf('week');
+
+  const from_date = startOfWeek(addWeeks(new Date(), weekOffset));
+  const to_date = endOfWeek(addWeeks(new Date(), weekOffset));
 
   const hoursRange = {
     text: `${dateFormat(from_date, true)} - ${dateFormat(to_date, true)}`,
-    label: `Showing hours for ${location} from ${dateFormat(from_date)} to ${dateFormat(to_date)}`,
+    label: `Showing hours for ${location} from ${dateFormat(
+      from_date
+    )} to ${dateFormat(to_date)}`,
   };
 
   return (
@@ -56,20 +66,16 @@ export function HoursPanelNextPrev({ location }) {
           Previous week
         </PreviousNextWeekButton>
         <Heading
-          aria-live='polite'
-          aria-atomic='true'
+          aria-live="polite"
+          aria-atomic="true"
           level={2}
-          size='S'
+          size="S"
           css={{
-            fontWeight: '700'
+            fontWeight: '700',
           }}
         >
-          <span className='visually-hidden'>
-            {hoursRange.label}
-          </span>
-          <span aria-hidden>
-            {hoursRange.text}
-          </span>
+          <span className="visually-hidden">{hoursRange.label}</span>
+          <span aria-hidden>{hoursRange.text}</span>
         </Heading>
         <PreviousNextWeekButton
           onClick={() =>
@@ -144,7 +150,7 @@ function PreviousNextWeekButton({ type, children, ...rest }) {
             <Icon icon="navigate_next" />
           )}
         </IconWrapper>
-        <span className='visually-hidden'>{children}</span>
+        <span className="visually-hidden">{children}</span>
       </Button>
     </React.Fragment>
   );
@@ -165,14 +171,14 @@ export default function HoursPanelContainer({ data }) {
       data-hours-panel
       id={createSlug(title)}
       css={{
-        marginBottom: SPACING['4XL']
+        marginBottom: SPACING['4XL'],
       }}
     >
       <HoursPanelNextPrev location={title} />
       <Margins>
         <Heading
           level={3}
-          size='L'
+          size="L"
           css={{
             fontWeight: '700',
             marginBottom: SPACING['2XS'],
@@ -184,9 +190,9 @@ export default function HoursPanelContainer({ data }) {
         <HoursTable
           data={transformTableData({
             node: data,
-            now: moment().add(weekOffset, 'weeks'),
+            now: addWeeks(new Date(), weekOffset),
           })}
-          dayOfWeek={weekOffset === 0 ? moment().day() : false}
+          dayOfWeek={weekOffset === 0 ? getDay(new Date()) : false}
           location={title}
         />
       </Margins>
@@ -213,12 +219,11 @@ function transformTableData({ node, now }) {
     ]
   */
   let headings = [];
-
   for (let i = 0; i < 7; i++) {
     headings = headings.concat({
-      text: now.day(i).format('ddd'),
-      subtext: now.day(i).format('MMM D'),
-      label: now.day(i).format('dddd, MMMM D'),
+      text: format(setDay(now, i), 'EEE'),
+      subtext: format(setDay(now, i), 'MMM d'),
+      label: format(setDay(now, i), 'EEEE, MMMM d'),
     });
   }
 
@@ -282,7 +287,8 @@ function getRow(node, nowWithWeekOffset, isParent) {
   };
 
   for (let i = 0; i < 7; i++) {
-    const now = moment(nowWithWeekOffset).day(i);
+    const now = setDay(new Date(nowWithWeekOffset), i);
+
     const display = displayHours({
       node,
       now,

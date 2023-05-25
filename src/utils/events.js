@@ -214,12 +214,6 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
         new Date()
       );
 
-      /* This broke Jon's brain Wednesday, October 2020. Can't explain.
-      const result = moment(event.field_event_date_s_[0].end_value).isBefore(
-        moment(),
-        'day'
-      );*/
-
       return !result;
     }
 

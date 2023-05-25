@@ -1,5 +1,14 @@
 import * as moment from 'moment';
 
+import {
+  isSameDay,
+  parseISO,
+  getDay,
+  isAfter,
+  isBefore,
+  format as datefnsformat,
+} from 'date-fns';
+
 /*
   Hours could be on the current node
   or on a parent node, depending
@@ -90,15 +99,14 @@ export function findHoursSetByNodeForNow({ node, now }) {
       return null;
     }
 
-    // Star and end of hour set range.
-    const start = set.field_date_range.value;
-    const end = set.field_date_range.end_value;
+    // Start and end of hour set range.
+    const start = parseISO(set.field_date_range.value);
+    const end = parseISO(set.field_date_range.end_value);
 
     // Check if "now" is within the range including start and end days.
-
-    // reassign now as a moment from date as I convert to date-fns
-    now = moment();
-    return now.isSameOrAfter(start, 'day') && now.isSameOrBefore(end, 'day');
+    return (
+      isSameDay(now, start) || isSameDay(now, end) || (now > start && now < end)
+    );
   });
 
   return nowHour;
@@ -110,10 +118,8 @@ export function displayHours({ node, now }) {
   if (!hoursSet) {
     return null;
   }
-  // reassign now as a moment from date as I convert to date-fns
-  now = moment();
   const hoursForNow = hoursSet.field_hours_open.find(
-    (d) => d.day === now.day()
+    (d) => d.day === getDay(now)
   );
 
   if (!hoursForNow) {
