@@ -1,13 +1,4 @@
-import * as moment from 'moment';
-
-import {
-  isSameDay,
-  parseISO,
-  getDay,
-  isAfter,
-  isBefore,
-  format as datefnsformat,
-} from 'date-fns';
+import { isSameDay, parseISO, getDay, parse, format } from 'date-fns';
 
 /*
   Hours could be on the current node
@@ -138,8 +129,11 @@ export function displayHours({ node, now }) {
     const formatTime = (time) => {
       const time24Hours = time < 1000 ? '0' + time : time;
       const getMinutes = time24Hours.toString().slice(-2);
-      const setTimeFormat = getMinutes === '00' ? 'ha' : 'h:mma';
-      return moment(time24Hours, 'HHmm').format(setTimeFormat);
+      const setTimeFormat = getMinutes === '00' ? 'haaa' : 'h:mmaaa';
+
+      const parsedTime = parse(time24Hours, 'HHmm', new Date());
+
+      return format(parsedTime, setTimeFormat);
     };
 
     const combinedValues = (separator = 'to') => {
