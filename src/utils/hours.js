@@ -127,11 +127,15 @@ export function displayHours({ node, now }) {
 
   if (starthours !== endhours) {
     const formatTime = (time) => {
+      if (time == '0') time = '000';
       const time24Hours = time < 1000 ? '0' + time : time;
       const getMinutes = time24Hours.toString().slice(-2);
       const setTimeFormat = getMinutes === '00' ? 'haaa' : 'h:mmaaa';
-
       const parsedTime = parse(time24Hours, 'HHmm', new Date());
+      console.log(
+        time + ' ' + parsedTime + ' ' + setTimeFormat + ' ' + time24Hours
+      );
+      console.log(format(parsedTime, setTimeFormat));
 
       return format(parsedTime, setTimeFormat);
     };
