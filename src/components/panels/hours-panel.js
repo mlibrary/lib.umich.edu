@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  startOfWeek,
-  addWeeks,
-  format,
-  endOfWeek,
-  getDay,
-  setDay,
-} from 'date-fns';
+import { startOfWeek, addWeeks, format, endOfWeek, getDay, setDay} from 'date-fns';
 import {
   Margins,
   Heading,
@@ -14,7 +7,7 @@ import {
   Button,
   Icon,
   MEDIA_QUERIES,
-  createSlug,
+  createSlug
 } from '../../reusable';
 import Html from '../html';
 import HoursTable from '../hours-table';
@@ -36,9 +29,7 @@ export function HoursPanelNextPrev({ location }) {
 
   const hoursRange = {
     text: `${dateFormat(from_date, true)} - ${dateFormat(to_date, true)}`,
-    label: `Showing hours for ${location} from ${dateFormat(
-      from_date
-    )} to ${dateFormat(to_date)}`,
+    label: `Showing hours for ${location} from ${dateFormat(from_date)} to ${dateFormat(to_date)}`,
   };
 
   return (
@@ -66,16 +57,20 @@ export function HoursPanelNextPrev({ location }) {
           Previous week
         </PreviousNextWeekButton>
         <Heading
-          aria-live="polite"
-          aria-atomic="true"
+          aria-live='polite'
+          aria-atomic='true'
           level={2}
-          size="S"
+          size='S'
           css={{
-            fontWeight: '700',
+            fontWeight: '700'
           }}
         >
-          <span className="visually-hidden">{hoursRange.label}</span>
-          <span aria-hidden>{hoursRange.text}</span>
+          <span className='visually-hidden'>
+            {hoursRange.label}
+          </span>
+          <span aria-hidden>
+            {hoursRange.text}
+          </span>
         </Heading>
         <PreviousNextWeekButton
           onClick={() =>
@@ -150,7 +145,7 @@ function PreviousNextWeekButton({ type, children, ...rest }) {
             <Icon icon="navigate_next" />
           )}
         </IconWrapper>
-        <span className="visually-hidden">{children}</span>
+        <span className='visually-hidden'>{children}</span>
       </Button>
     </React.Fragment>
   );
@@ -171,14 +166,14 @@ export default function HoursPanelContainer({ data }) {
       data-hours-panel
       id={createSlug(title)}
       css={{
-        marginBottom: SPACING['4XL'],
+        marginBottom: SPACING['4XL']
       }}
     >
       <HoursPanelNextPrev location={title} />
       <Margins>
         <Heading
           level={3}
-          size="L"
+          size='L'
           css={{
             fontWeight: '700',
             marginBottom: SPACING['2XS'],

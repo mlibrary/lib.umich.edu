@@ -2,11 +2,7 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '../reusable';
-import {
-  Template,
-  TemplateSide,
-  TemplateContent,
-} from '../components/aside-layout';
+import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import TemplateLayout from './template-layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
@@ -264,11 +260,7 @@ function EventMetadata({ data }) {
                   );
                 }
 
-                return (
-                  <p key={index} className={className}>
-                    {label}
-                  </p>
-                );
+                return <p key={index} className={className}>{label}</p>;
               })}
             </td>
           </tr>

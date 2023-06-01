@@ -116,10 +116,7 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
 
   let hasLocation = false;
 
-  if (
-    !!node.field_event_in_non_library_locat &&
-    !!node.field_non_library_location_addre
-  ) {
+  if (!!node.field_event_in_non_library_locat && !!node.field_non_library_location_addre) {
     if (node.field_non_library_location_addre.organization) {
       hasLocation = true;
       where.push({
@@ -129,19 +126,15 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
     if (kind !== 'brief') {
       const stateZip = [
         node.field_non_library_location_addre.administrative_area,
-        node.field_non_library_location_addre.postal_code,
-      ]
-        .filter((field) => field)
-        .join(' ');
+        node.field_non_library_location_addre.postal_code
+      ].filter((field) => field).join(' ')
       where.push({
         label: [
           node.field_non_library_location_addre.address_line1,
           node.field_non_library_location_addre.locality,
-          stateZip,
-        ]
-          .filter((field) => field)
-          .join(', '),
-        className: 'margin-top-none',
+          stateZip
+        ].filter((field) => field).join(', '),
+        className: 'margin-top-none'
       });
     }
   }

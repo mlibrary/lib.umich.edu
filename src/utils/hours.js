@@ -74,7 +74,7 @@ export function getHoursFromNode({ node }) {
 }
 
 /*
-  Pass in a node and moment "now" and get back 
+  Pass in a node and Date() "now" and get back 
   formated string for hours from "now".
 */
 export function findHoursSetByNodeForNow({ node, now }) {
