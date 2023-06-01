@@ -132,23 +132,13 @@ export function displayHours({ node, now }) {
       const getMinutes = time24Hours.toString().slice(-2);
       const setTimeFormat = getMinutes === '00' ? 'haaa' : 'h:mmaaa';
       const parsedTime = parse(time24Hours, 'HHmm', new Date());
-      console.log(
-        time + ' ' + parsedTime + ' ' + setTimeFormat + ' ' + time24Hours
-      );
-      console.log(format(parsedTime, setTimeFormat));
 
       return format(parsedTime, setTimeFormat);
     };
 
     const combinedValues = (separator = 'to') => {
-      return [
-        `${formatTime(starthours)} ${separator} ${formatTime(endhours)}`,
-        comment,
-      ]
-        .filter(Boolean)
-        .join(', ');
+      return [`${formatTime(starthours)} ${separator} ${formatTime(endhours)}`, comment].filter(Boolean).join(', ');
     };
-
     text = combinedValues('-');
     label = combinedValues();
   }

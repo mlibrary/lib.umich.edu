@@ -120,7 +120,7 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
     if (node.field_non_library_location_addre.organization) {
       hasLocation = true;
       where.push({
-        label: node.field_non_library_location_addre.organization,
+        label: node.field_non_library_location_addre.organization
       });
     }
     if (kind !== 'brief') {
