@@ -41,7 +41,8 @@
     "clean": "gatsby clean",
     "develop": "gatsby develop -H 0.0.0.0",
     "develop:staging": "DRUPAL_URL=https://cms.staging.lib.umich.edu/ npm run develop",
-    "format": "prettier --write '**/*.js'",
+    "format": "npm run lint -- --fix",
+    "lint": "npx eslint $* ./gatsby-*.js src/**/*.js",
     "patch": "patch-package gatsby-source-drupal",
     "postinstall": "patch-package",
     "serve": "gatsby serve --host 0.0.0.0",
@@ -57,9 +58,13 @@
   "devDependencies": {
     "bottleneck": "^2.19.5",
     "entities": "^4.4.0",
+    "eslint": "^8.39.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-config-standard-jsx": "^11.0.0",
+    "eslint-config-standard-react": "^13.0.0",
+    "eslint-plugin-react": "^7.32.2",
     "fetch-retry": "^5.0.4",
     "gatsby-plugin-netlify": "^5.1.0",
-    "gatsby-plugin-remove-serviceworker": "^1.0.0",
-    "prettier": "^2.8.7"
+    "gatsby-plugin-remove-serviceworker": "^1.0.0"
   }
 }
