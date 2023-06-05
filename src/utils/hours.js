@@ -1,4 +1,4 @@
-import { isSameDay, parseISO, getDay, parse, format } from 'date-fns';
+import { parseISO, getDay, parse, format } from 'date-fns';
 
 /*
   Hours could be on the current node
