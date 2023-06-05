@@ -96,7 +96,7 @@ export function findHoursSetByNodeForNow({ node, now }) {
 
     // Check if "now" is within the range including start and end days.
     return (
-      isSameDay(now, start) || isSameDay(now, end) || (now > start && now < end)
+      !(now < start || now > end)
     );
   });
 
