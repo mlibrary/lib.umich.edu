@@ -6,65 +6,65 @@ import { parseISO, getDay, parse, format } from 'date-fns';
   on some fields.
 */
 export function getHoursFromNode ({ node }) {
-  const { field_display_hours_ } = node;
+  const { field_display_hours_: fieldDisplayHours_ } = node;
 
   // Only check for hours if the node says to display hours.
-  if (!field_display_hours_) {
+  if (!fieldDisplayHours_) {
     return null;
   }
 
-  const { field_hours_different_from_build } = node;
+  const { field_hours_different_from_build: fieldHoursDifferentFromBuild } = node;
 
   // Hours come directly from this node.
-  if (field_hours_different_from_build) {
-    const { field_hours_open } = node.relationships;
+  if (fieldHoursDifferentFromBuild) {
+    const { field_hours_open: fieldHoursOpen } = node.relationships;
 
     return prioritizeHours({
-      hours: field_hours_open
+      hours: fieldHoursOpen
     });
   } else {
-    const { field_room_building, field_parent_location } = node.relationships;
+    const { field_room_building: fieldRoomBuilding, field_parent_location: fieldParentLocation } = node.relationships;
 
     // Display hours from field_room_building
-    if (field_room_building && field_room_building.field_display_hours_) {
+    if (fieldRoomBuilding && fieldRoomBuilding.field_display_hours_) {
       return prioritizeHours({
-        hours: field_room_building.relationships.field_hours_open
+        hours: fieldRoomBuilding.relationships.field_hours_open
       });
     }
 
     // Display hours from field_parent_location
-    if (field_parent_location && field_parent_location.field_display_hours_) {
+    if (fieldParentLocation && fieldParentLocation.field_display_hours_) {
       return prioritizeHours({
-        hours: field_parent_location.relationships.field_hours_open
+        hours: fieldParentLocation.relationships.field_hours_open
       });
     }
 
     // Do not display field_room_building hours, but use the
     // related parent location from the building.
     if (
-      field_room_building &&
-      !field_room_building.field_display_hours_ &&
-      field_room_building.relationships.field_parent_location &&
-      field_room_building.relationships.field_parent_location
+      fieldRoomBuilding &&
+      !fieldRoomBuilding.field_display_hours_ &&
+      fieldRoomBuilding.relationships.field_parent_location &&
+      fieldRoomBuilding.relationships.field_parent_location
         .field_display_hours_
     ) {
       return prioritizeHours({
         hours:
-          field_room_building.relationships.field_parent_location.relationships
+          fieldRoomBuilding.relationships.field_parent_location.relationships
             .field_hours_open
       });
     }
 
     if (
-      field_parent_location &&
-      !field_parent_location.field_display_hours_ &&
-      field_parent_location.relationships.field_parent_location &&
-      field_parent_location.relationships.field_parent_location
+      fieldParentLocation &&
+      !fieldParentLocation.field_display_hours_ &&
+      fieldParentLocation.relationships.field_parent_location &&
+      fieldParentLocation.relationships.field_parent_location
         .field_display_hours_
     ) {
       return prioritizeHours({
         hours:
-          field_parent_location.relationships.field_parent_location
+          fieldParentLocation.relationships.field_parent_location
             .relationships.field_hours_open
       });
     }
@@ -129,7 +129,7 @@ export function displayHours ({ node, now }) {
 
   if (starthours !== endhours) {
     const formatTime = (time) => {
-      if (time == '0') time = '000';
+      if (time === '0') time = '000';
       const time24Hours = time < 1000 ? '0' + time : time;
       const getMinutes = time24Hours.toString().slice(-2);
       const setTimeFormat = getMinutes === '00' ? 'haaa' : 'h:mmaaa';

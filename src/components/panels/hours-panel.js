@@ -155,7 +155,7 @@ function PreviousNextWeekButton ({ type, children, ...rest }) {
 
 export default function HoursPanelContainer ({ data }) {
   const [{ weekOffset }] = useStateValue();
-  const { relationships, field_body } = data;
+  const { relationships, field_body: fieldBody } = data;
 
   if (relationships.field_parent_card.length === 0) {
     return null;
@@ -183,7 +183,7 @@ export default function HoursPanelContainer ({ data }) {
         >
           {title}
         </Heading>
-        {field_body && <Html html={field_body.processed} />}
+        {fieldBody && <Html html={fieldBody.processed} />}
         <HoursTable
           data={transformTableData({
             node: data,
@@ -198,7 +198,7 @@ export default function HoursPanelContainer ({ data }) {
 }
 
 function transformTableData ({ node, now }) {
-  const { field_cards, field_parent_card } = node.relationships;
+  const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;
 
   /*
     [
@@ -254,8 +254,8 @@ function transformTableData ({ node, now }) {
   }
 
   const rows = [
-    getRow(field_parent_card[0], now, true),
-    ...field_cards.sort(sortByTitle).map((n) => {
+    getRow(fieldParentCard[0], now, true),
+    ...fieldCards.sort(sortByTitle).map((n) => {
       return getRow(n, now);
     })
   ];

@@ -17,7 +17,7 @@ import Share from '../components/share';
 export default function NewsTemplate ({ data }) {
   const node = getNode(data);
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
-  const { field_title_context, body, fields, relationships, created } = node;
+  const { field_title_context: fieldTitleContext, body, fields, relationships, created } = node;
   const { slug } = fields;
 
   const image =
@@ -47,7 +47,7 @@ export default function NewsTemplate ({ data }) {
               marginBottom: SPACING.XL
             }}
           >
-            {field_title_context}
+            {fieldTitleContext}
             {created && (
               <p
                 css={{
@@ -106,7 +106,7 @@ export default function NewsTemplate ({ data }) {
 
           <Share
             url={'https://www.lib.umich.edu' + slug}
-            title={field_title_context}
+            title={fieldTitleContext}
           />
           <StayInTheKnow />
         </TemplateSide>
