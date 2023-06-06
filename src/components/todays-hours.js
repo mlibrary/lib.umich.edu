@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { displayHours } from '../utils/hours';
 
-export default function Hours({ node }) {
+export default function Hours ({ node }) {
   const [initialized, setInitialized] = useState(false);
 
   /*
@@ -13,7 +13,7 @@ export default function Hours({ node }) {
   }, [initialized]);
 
   if (!initialized) {
-    return <React.Fragment>…</React.Fragment>;
+    return <>…</>;
   }
 
   const now = new Date();

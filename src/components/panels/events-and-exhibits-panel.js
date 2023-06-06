@@ -7,24 +7,24 @@ import {
   COLORS,
   Expandable,
   ExpandableButton,
-  ExpandableChildren,
+  ExpandableChildren
 } from '../../reusable';
 import Link from '../link';
 import {
   Template,
   TemplateSide,
-  TemplateContent,
+  TemplateContent
 } from '../../components/aside-layout';
 import EventCard from '../../components/event-card';
 import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
 
-export default function EventsAndExhibitsPanel() {
+export default function EventsAndExhibitsPanel () {
   /*
     Potential states for today, upcoming, and exhibits:
-    
+
     - null: means "loading", we need to figure this all out client side.
     - []: An empty array will mean no events.
-    - [{...}, {...}, ...]: An array of events, means we have some! 
+    - [{...}, {...}, ...]: An array of events, means we have some!
   */
   const [events, setEvents] = useState(null);
   const [todaysEvents, setTodaysEvents] = useState(null);
@@ -58,7 +58,9 @@ export default function EventsAndExhibitsPanel() {
     */
     if (events === null) {
       // Flatten things a bit.
-      const events = data.events.edges.map(({ node }) => node);
+      const events = data.events.edges.map(({ node }) => {
+        return node;
+      });
 
       setEvents(sortEventsByStartDate({ events }));
     }
@@ -119,16 +121,16 @@ export default function EventsAndExhibitsPanel() {
   return (
     <div
       css={{
-        marginTop: SPACING['2XL'],
+        marginTop: SPACING['2XL']
       }}
     >
       <Template>
         <TemplateContent>
           <Heading
             level={2}
-            size="M"
+            size='M'
             css={{
-              marginBottom: SPACING['M'],
+              marginBottom: SPACING.M
             }}
           >
             Today's Events
@@ -138,10 +140,10 @@ export default function EventsAndExhibitsPanel() {
 
           <Heading
             level={2}
-            size="M"
+            size='M'
             css={{
-              marginTop: SPACING['M'],
-              marginBottom: SPACING['M'],
+              marginTop: SPACING.M,
+              marginBottom: SPACING.M
             }}
           >
             Upcoming Events
@@ -153,22 +155,22 @@ export default function EventsAndExhibitsPanel() {
         <TemplateSide
           css={{
             '> *:first-of-type': {
-              border: 'none',
-            },
+              border: 'none'
+            }
           }}
         >
           <div
             css={{
               background: COLORS.blue['100'],
               borderRadius: '4px',
-              padding: SPACING['M'],
+              padding: SPACING.M
             }}
           >
             <Heading
               level={2}
-              size="M"
+              size='M'
               css={{
-                marginBottom: SPACING['M'],
+                marginBottom: SPACING.M
               }}
             >
               Exhibits
@@ -180,26 +182,26 @@ export default function EventsAndExhibitsPanel() {
           <h2
             css={{
               fontWeight: '700',
-              paddingTop: SPACING['XL'],
+              paddingTop: SPACING.XL
             }}
           >
             See past events
           </h2>
-          <Link to="https://events.umich.edu/month?filter=sponsors:1186,">
+          <Link to='https://events.umich.edu/month?filter=sponsors:1186,'>
             Use the U-M events calendar
           </Link>
 
           <h2
             css={{
               fontWeight: '700',
-              paddingTop: SPACING['M'],
-              marginTop: SPACING['L'],
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              paddingTop: SPACING.M,
+              marginTop: SPACING.L,
+              borderTop: `solid 1px ${COLORS.neutral['100']}`
             }}
           >
             Stay in the know
           </h2>
-          <Link to="https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D">
+          <Link to='https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D'>
             Sign up for email updates
           </Link>
         </TemplateSide>
@@ -208,13 +210,13 @@ export default function EventsAndExhibitsPanel() {
   );
 }
 
-function TodaysEvents({ events }) {
+function TodaysEvents ({ events }) {
   if (Array.isArray(events)) {
     if (events.length === 0) {
       return (
         <p
           css={{
-            marginBottom: SPACING['2XL'],
+            marginBottom: SPACING['2XL']
           }}
         >
           There are no events scheduled today.
@@ -223,22 +225,24 @@ function TodaysEvents({ events }) {
     }
 
     if (events.length > 0) {
-      return events.map((event, index) => (
-        <EventCard key={`event-card-${index}`} {...event} />
-      ));
+      return events.map((event, index) => {
+        return (
+          <EventCard key={`event-card-${index}`} {...event} />
+        );
+      });
     }
   }
 
   return null;
 }
 
-function UpcomingEvents({ events }) {
+function UpcomingEvents ({ events }) {
   if (Array.isArray(events)) {
     if (events.length === 0) {
       return (
         <p
           css={{
-            marginBottom: SPACING['2XL'],
+            marginBottom: SPACING['2XL']
           }}
         >
           There are no upcoming events.
@@ -250,16 +254,18 @@ function UpcomingEvents({ events }) {
       return (
         <Expandable>
           <ExpandableChildren show={10}>
-            {events.map((event, index) => (
-              <EventCard key={`event-card-${index}`} {...event} />
-            ))}
+            {events.map((event, index) => {
+              return (
+                <EventCard key={`event-card-${index}`} {...event} />
+              );
+            })}
           </ExpandableChildren>
           <div
             css={{
-              marginTop: SPACING['L'],
+              marginTop: SPACING.L
             }}
           >
-            <ExpandableButton name="events" count={events.length} />
+            <ExpandableButton name='events' count={events.length} />
           </div>
         </Expandable>
       );
@@ -269,13 +275,13 @@ function UpcomingEvents({ events }) {
   return null;
 }
 
-function ExhibitEvents({ events, hasBorder = false }) {
+function ExhibitEvents ({ events, hasBorder = false }) {
   if (Array.isArray(events)) {
     if (events.length === 0) {
       return (
         <p
           css={{
-            marginBottom: SPACING['2XL'],
+            marginBottom: SPACING['2XL']
           }}
         >
           There are no upcoming exhibits.
@@ -284,14 +290,16 @@ function ExhibitEvents({ events, hasBorder = false }) {
     }
 
     if (events.length > 0) {
-      return events.map((event, index) => (
-        <EventCard
-          key={`event-card-${index}`}
-          {...event}
-          displayImage={false}
-          hasBorder={hasBorder}
-        />
-      ));
+      return events.map((event, index) => {
+        return (
+          <EventCard
+            key={`event-card-${index}`}
+            {...event}
+            displayImage={false}
+            hasBorder={hasBorder}
+          />
+        );
+      });
     }
   }
 

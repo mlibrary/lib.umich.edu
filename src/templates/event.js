@@ -11,7 +11,7 @@ import Link from '../components/link';
 import Share from '../components/share';
 import { eventFormatWhen, eventFormatWhere } from '../utils/events';
 
-export default function EventTemplate({ data }) {
+export default function EventTemplate ({ data }) {
   const node = data.event;
   const { field_title_context, body, fields, relationships } = node;
   const { slug } = fields;
@@ -30,14 +30,14 @@ export default function EventTemplate({ data }) {
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
       </Margins>
-      <Template asideWidth={'25rem'}>
+      <Template asideWidth='25rem'>
         <TemplateContent>
           <Heading
             level={1}
-            size="3XL"
+            size='3XL'
             css={{
-              marginTop: SPACING['S'],
-              marginBottom: SPACING['XL'],
+              marginTop: SPACING.S,
+              marginBottom: SPACING.XL
             }}
           >
             {field_title_context}
@@ -48,30 +48,30 @@ export default function EventTemplate({ data }) {
         <TemplateSide
           css={{
             '> div': {
-              border: 'none',
-            },
+              border: 'none'
+            }
           }}
         >
           {imageData && (
             <figure
               css={{
                 maxWidth: '38rem',
-                marginBottom: SPACING['XL'],
+                marginBottom: SPACING.XL
               }}
             >
               <GatsbyImage
                 image={imageData}
                 css={{
                   width: '100%',
-                  borderRadius: '2px',
+                  borderRadius: '2px'
                 }}
-                alt=""
+                alt=''
               />
               {imageCaptionHTML && (
                 <figcaption
                   css={{
-                    paddingTop: SPACING['S'],
-                    color: COLORS.neutral['300'],
+                    paddingTop: SPACING.S,
+                    color: COLORS.neutral['300']
                   }}
                 >
                   <Html html={imageCaptionHTML} />
@@ -86,15 +86,15 @@ export default function EventTemplate({ data }) {
           />
 
           {contact && (
-            <React.Fragment>
+            <>
               <h2
                 css={{
                   fontWeight: '600',
                   fontSize: '1rem',
                   marginBottom: SPACING['2XS'],
                   borderTop: `solid 1px ${COLORS.neutral['100']}`,
-                  marginTop: SPACING['L'],
-                  paddingTop: SPACING['L'],
+                  marginTop: SPACING.L,
+                  paddingTop: SPACING.L
                 }}
               >
                 Library contact
@@ -107,49 +107,51 @@ export default function EventTemplate({ data }) {
                 <a
                   href={`mailto:${contact.field_user_email}`}
                   css={{
-                    textDecoration: 'underline',
+                    textDecoration: 'underline'
                   }}
                 >
                   {contact.field_user_email}
                 </a>
               </p>
-            </React.Fragment>
+            </>
           )}
 
           {eventContacts && eventContacts.length > 0 && (
-            <React.Fragment>
+            <>
               <h2
                 css={{
                   fontWeight: '600',
                   fontSize: '1rem',
                   marginBottom: SPACING['2XS'],
-                  paddingTop: SPACING['L'],
+                  paddingTop: SPACING.L
                 }}
               >
                 Event contact
               </h2>
-              {eventContacts.map((eventContact, index) => (
-                <p key={index}>
-                  {`${eventContact.field_first_name} ${eventContact.field_last_name}`}
-                  {' · '}
-                  <a
-                    href={`mailto:${eventContact.field_email}`}
-                    css={{
-                      textDecoration: 'underline',
-                    }}
-                  >
-                    {eventContact.field_email}
-                  </a>
-                </p>
-              ))}
-            </React.Fragment>
+              {eventContacts.map((eventContact, index) => {
+                return (
+                  <p key={index}>
+                    {`${eventContact.field_first_name} ${eventContact.field_last_name}`}
+                    {' · '}
+                    <a
+                      href={`mailto:${eventContact.field_email}`}
+                      css={{
+                        textDecoration: 'underline'
+                      }}
+                    >
+                      {eventContact.field_email}
+                    </a>
+                  </p>
+                );
+              })}
+            </>
           )}
 
           <p
             css={{
               borderTop: `solid 1px ${COLORS.neutral['100']}`,
-              marginTop: SPACING['L'],
-              paddingTop: SPACING['L'],
+              marginTop: SPACING.L,
+              paddingTop: SPACING.L
             }}
           >
             Library events are free and open to the public, and we are committed
@@ -170,14 +172,14 @@ export default function EventTemplate({ data }) {
   - Registration link
   - Event type.
 */
-function EventMetadata({ data }) {
+function EventMetadata ({ data }) {
   const dates = data.field_event_date_s_;
   const eventType = data.relationships.field_event_type.name;
   const registrationLink =
     data.field_registration_link && data.field_registration_link.uri
       ? {
           label: 'Register to attend',
-          to: data.field_registration_link.uri,
+          to: data.field_registration_link.uri
         }
       : null;
   const series = data.relationships.field_event_series?.name;
@@ -189,14 +191,14 @@ function EventMetadata({ data }) {
       start,
       end,
       kind: 'full',
-      type: eventType,
+      type: eventType
     });
   });
 
   const where = eventFormatWhere(
     {
       node: data,
-      kind: 'full',
+      kind: 'full'
     },
     true
   );
@@ -205,50 +207,52 @@ function EventMetadata({ data }) {
     <table
       css={{
         textAlign: 'left',
-        marginBottom: SPACING['XL'],
+        marginBottom: SPACING.XL,
         th: {
           width: '20%',
-          paddingTop: SPACING['S'],
-          paddingRight: SPACING['M'],
+          paddingTop: SPACING.S,
+          paddingRight: SPACING.M,
           fontWeight: '600',
-          ...TYPOGRAPHY['3XS'],
+          ...TYPOGRAPHY['3XS']
         },
         'tr:first-of-type > th': {
-          paddingTop: '0',
+          paddingTop: '0'
         },
         width: '100%',
         maxWidth: '38rem',
         'th, td': {
-          padding: SPACING['M'],
+          padding: SPACING.M,
           paddingLeft: '0',
-          borderBottom: `solid 1px ${COLORS.neutral[100]}`,
-        },
+          borderBottom: `solid 1px ${COLORS.neutral[100]}`
+        }
       }}
     >
-      <caption className="visually-hidden">Event details</caption>
+      <caption className='visually-hidden'>Event details</caption>
       <tbody>
         <tr>
-          <th scope="row">When</th>
+          <th scope='row'>When</th>
           <td
             css={{
               'p + p': {
-                marginTop: SPACING['XS'],
-              },
+                marginTop: SPACING.XS
+              }
             }}
           >
-            {when.map((str, index) => (
-              <p key={index}>{str}</p>
-            ))}
+            {when.map((str, index) => {
+              return (
+                <p key={index}>{str}</p>
+              );
+            })}
           </td>
         </tr>
         {where && where.length > 0 && (
           <tr>
-            <th scope="row">Where</th>
+            <th scope='row'>Where</th>
             <td
               css={{
                 'p + p:not(.margin-top-none)': {
-                  marginTop: SPACING['XS'],
-                },
+                  marginTop: SPACING.XS
+                }
               }}
             >
               {where.map(({ label, href, className }, index) => {
@@ -267,20 +271,20 @@ function EventMetadata({ data }) {
         )}
         {registrationLink && (
           <tr>
-            <th scope="row">Registration</th>
+            <th scope='row'>Registration</th>
             <td>
               <Link to={registrationLink.to}>{registrationLink.label}</Link>
             </td>
           </tr>
         )}
         <tr>
-          <th scope="row">Event type</th>
+          <th scope='row'>Event type</th>
           <td>{eventType}</td>
         </tr>
 
         {series && (
           <tr>
-            <th scope="row">Series</th>
+            <th scope='row'>Series</th>
             <td>{series}</td>
           </tr>
         )}
@@ -289,7 +293,7 @@ function EventMetadata({ data }) {
   );
 }
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={data.event} />;
 }
 

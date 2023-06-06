@@ -1,5 +1,5 @@
 import React from 'react';
-import { startOfWeek, addWeeks, format, endOfWeek, getDay, setDay} from 'date-fns';
+import { startOfWeek, addWeeks, format, endOfWeek, getDay, setDay } from 'date-fns';
 import {
   Margins,
   Heading,
@@ -21,15 +21,15 @@ const dateFormat = (string, abbreviated = false) => {
   return format(string, 'EEEE, MMMM d, yyyy');
 };
 
-export function HoursPanelNextPrev({ location }) {
+export function HoursPanelNextPrev ({ location }) {
   const [{ weekOffset }, dispatch] = useStateValue();
 
-  const from_date = startOfWeek(addWeeks(new Date(), weekOffset));
-  const to_date = endOfWeek(addWeeks(new Date(), weekOffset));
+  const fromDate = startOfWeek(addWeeks(new Date(), weekOffset));
+  const toDate = endOfWeek(addWeeks(new Date(), weekOffset));
 
   const hoursRange = {
-    text: `${dateFormat(from_date, true)} - ${dateFormat(to_date, true)}`,
-    label: `Showing hours for ${location} from ${dateFormat(from_date)} to ${dateFormat(to_date)}`,
+    text: `${dateFormat(fromDate, true)} - ${dateFormat(toDate, true)}`,
+    label: `Showing hours for ${location} from ${dateFormat(fromDate)} to ${dateFormat(toDate)}`
   };
 
   return (
@@ -39,20 +39,20 @@ export function HoursPanelNextPrev({ location }) {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'baseline',
-          marginTop: SPACING['L'],
-          marginBottom: SPACING['L'],
+          marginTop: SPACING.L,
+          marginBottom: SPACING.L,
           position: 'sticky',
-          top: 0,
+          top: 0
         }}
       >
         <PreviousNextWeekButton
-          onClick={() =>
-            dispatch({
+          onClick={() => {
+            return dispatch({
               type: 'setWeekOffset',
-              weekOffset: weekOffset - 1,
-            })
-          }
-          type="previous"
+              weekOffset: weekOffset - 1
+            });
+          }}
+          type='previous'
         >
           Previous week
         </PreviousNextWeekButton>
@@ -73,13 +73,13 @@ export function HoursPanelNextPrev({ location }) {
           </span>
         </Heading>
         <PreviousNextWeekButton
-          onClick={() =>
-            dispatch({
+          onClick={() => {
+            return dispatch({
               type: 'setWeekOffset',
-              weekOffset: weekOffset + 1,
-            })
-          }
-          type="next"
+              weekOffset: weekOffset + 1
+            });
+          }}
+          type='next'
         >
           Next week
         </PreviousNextWeekButton>
@@ -88,35 +88,35 @@ export function HoursPanelNextPrev({ location }) {
   );
 }
 
-function IconWrapper(props) {
+function IconWrapper (props) {
   return (
     <span
       css={{
         display: 'inline-block',
-        marginTop: '-2px',
+        marginTop: '-2px'
       }}
       {...props}
     />
   );
 }
 
-function PreviousNextWeekButton({ type, children, ...rest }) {
+function PreviousNextWeekButton ({ type, children, ...rest }) {
   return (
-    <React.Fragment>
+    <>
       <Button
         {...rest}
-        kind="subtle"
+        kind='subtle'
         css={{
           display: 'none',
           [MEDIA_QUERIES.LARGESCREEN]: {
-            display: 'flex',
-          },
+            display: 'flex'
+          }
         }}
       >
         {type === 'previous' && (
           <IconWrapper>
             <Icon
-              icon="navigate_before"
+              icon='navigate_before'
               css={{ marginRight: SPACING['2XS'] }}
             />
           </IconWrapper>
@@ -124,34 +124,36 @@ function PreviousNextWeekButton({ type, children, ...rest }) {
         {children}
         {type === 'next' && (
           <IconWrapper>
-            <Icon icon="navigate_next" css={{ marginLeft: SPACING['2XS'] }} />
+            <Icon icon='navigate_next' css={{ marginLeft: SPACING['2XS'] }} />
           </IconWrapper>
         )}
       </Button>
       <Button
         {...rest}
-        kind="subtle"
+        kind='subtle'
         css={{
           display: 'flex',
           [MEDIA_QUERIES.LARGESCREEN]: {
-            display: 'none',
-          },
+            display: 'none'
+          }
         }}
       >
         <IconWrapper>
-          {type === 'previous' ? (
-            <Icon icon="navigate_before" />
-          ) : (
-            <Icon icon="navigate_next" />
-          )}
+          {type === 'previous'
+            ? (
+              <Icon icon='navigate_before' />
+              )
+            : (
+              <Icon icon='navigate_next' />
+              )}
         </IconWrapper>
         <span className='visually-hidden'>{children}</span>
       </Button>
-    </React.Fragment>
+    </>
   );
 }
 
-export default function HoursPanelContainer({ data }) {
+export default function HoursPanelContainer ({ data }) {
   const [{ weekOffset }] = useStateValue();
   const { relationships, field_body } = data;
 
@@ -176,7 +178,7 @@ export default function HoursPanelContainer({ data }) {
           size='L'
           css={{
             fontWeight: '700',
-            marginBottom: SPACING['2XS'],
+            marginBottom: SPACING['2XS']
           }}
         >
           {title}
@@ -185,7 +187,7 @@ export default function HoursPanelContainer({ data }) {
         <HoursTable
           data={transformTableData({
             node: data,
-            now: addWeeks(new Date(), weekOffset),
+            now: addWeeks(new Date(), weekOffset)
           })}
           dayOfWeek={weekOffset === 0 ? getDay(new Date()) : false}
           location={title}
@@ -195,7 +197,7 @@ export default function HoursPanelContainer({ data }) {
   );
 }
 
-function transformTableData({ node, now }) {
+function transformTableData ({ node, now }) {
   const { field_cards, field_parent_card } = node.relationships;
 
   /*
@@ -218,7 +220,7 @@ function transformTableData({ node, now }) {
     headings = headings.concat({
       text: format(setDay(now, i), 'EEE'),
       subtext: format(setDay(now, i), 'MMM d'),
-      label: format(setDay(now, i), 'EEEE, MMMM d'),
+      label: format(setDay(now, i), 'EEEE, MMMM d')
     });
   }
 
@@ -236,7 +238,7 @@ function transformTableData({ node, now }) {
     ]
   */
 
-  function sortByTitle(a, b) {
+  function sortByTitle (a, b) {
     const titleA = a.title.toUpperCase();
     const titleB = b.title.toUpperCase();
 
@@ -253,12 +255,14 @@ function transformTableData({ node, now }) {
 
   const rows = [
     getRow(field_parent_card[0], now, true),
-    ...field_cards.sort(sortByTitle).map((n) => getRow(n, now)),
+    ...field_cards.sort(sortByTitle).map((n) => {
+      return getRow(n, now);
+    })
   ];
 
   return {
     headings,
-    rows,
+    rows
   };
 }
 
@@ -271,14 +275,14 @@ function transformTableData({ node, now }) {
     '10am - 5pm'
   ]
 */
-function getRow(node, nowWithWeekOffset, isParent) {
+function getRow (node, nowWithWeekOffset, isParent) {
   let hours = [];
   const notAvailableRow = { text: 'n/a', label: 'Not available' };
   const rowHeadingText = [isParent ? 'Main hours' : node.title];
   const mainHoursRow = {
     text: rowHeadingText,
     label: rowHeadingText,
-    to: node.fields.slug,
+    to: node.fields.slug
   };
 
   for (let i = 0; i < 7; i++) {
@@ -286,10 +290,10 @@ function getRow(node, nowWithWeekOffset, isParent) {
 
     const display = displayHours({
       node,
-      now,
+      now
     });
 
-    hours = hours.concat(display ? display : notAvailableRow);
+    hours = hours.concat(display || notAvailableRow);
   }
 
   return [mainHoursRow].concat(hours);

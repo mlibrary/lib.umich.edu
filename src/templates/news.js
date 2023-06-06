@@ -14,7 +14,7 @@ import transformNodePanels from '../utils/transform-node-panels';
 import Link from '../components/link';
 import Share from '../components/share';
 
-export default function NewsTemplate({ data }) {
+export default function NewsTemplate ({ data }) {
   const node = getNode(data);
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
   const { field_title_context, body, fields, relationships, created } = node;
@@ -37,14 +37,14 @@ export default function NewsTemplate({ data }) {
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
       </Margins>
-      <Template asideWidth={'25rem'}>
+      <Template asideWidth='25rem'>
         <TemplateContent>
           <Heading
             level={1}
-            size="3XL"
+            size='3XL'
             css={{
-              marginTop: SPACING['S'],
-              marginBottom: SPACING['XL'],
+              marginTop: SPACING.S,
+              marginBottom: SPACING.XL
             }}
           >
             {field_title_context}
@@ -54,7 +54,7 @@ export default function NewsTemplate({ data }) {
                   ...TYPOGRAPHY['2XS'],
                   color: COLORS.neutral['300'],
                   fontFamily: 'Muli',
-                  paddingTop: SPACING['M'],
+                  paddingTop: SPACING.M
                 }}
               >
                 {format(parseISO(created), 'MMMM d, yyyy')}
@@ -67,30 +67,30 @@ export default function NewsTemplate({ data }) {
         <TemplateSide
           css={{
             '> div': {
-              border: 'none',
-            },
+              border: 'none'
+            }
           }}
         >
           {imageData && (
             <figure
               css={{
                 maxWidth: '38rem',
-                marginBottom: SPACING['XL'],
+                marginBottom: SPACING.XL
               }}
             >
               <GatsbyImage
                 image={imageData}
                 css={{
                   width: '100%',
-                  borderRadius: '2px',
+                  borderRadius: '2px'
                 }}
-                alt=""
+                alt=''
               />
               {imageCaption && (
                 <figcaption
                   css={{
-                    paddingTop: SPACING['S'],
-                    color: COLORS.neutral['300'],
+                    paddingTop: SPACING.S,
+                    color: COLORS.neutral['300']
                   }}
                 >
                   <Html
@@ -117,24 +117,24 @@ export default function NewsTemplate({ data }) {
   );
 }
 
-export function Head({ data }) {
-  return <SearchEngineOptimization data={ getNode(data) } />;
+export function Head ({ data }) {
+  return <SearchEngineOptimization data={getNode(data)} />;
 }
 
-function StayInTheKnow() {
+function StayInTheKnow () {
   const newsEmailSignUpURL =
     'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D';
 
   return (
-    <React.Fragment>
+    <>
       <Heading
         level={2}
-        size="2XS"
+        size='2XS'
         css={{
-          marginTop: SPACING['L'],
-          paddingTop: SPACING['L'],
+          marginTop: SPACING.L,
+          paddingTop: SPACING.L,
           borderTop: `solid 1px ${COLORS.neutral['100']}`,
-          fontWeight: '600',
+          fontWeight: '600'
         }}
       >
         Stay in the know
@@ -144,13 +144,13 @@ function StayInTheKnow() {
         <Link
           to={newsEmailSignUpURL}
           css={{
-            display: 'inline-block',
+            display: 'inline-block'
           }}
         >
           Sign up for email updates
         </Link>{' '}
       </Text>
-    </React.Fragment>
+    </>
   );
 }
 
