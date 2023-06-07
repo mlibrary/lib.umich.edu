@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import * as moment from 'moment';
+import dayjs from 'dayjs';
 
 import { displayHours } from '../utils/hours';
 
-export default function Hours({ node }) {
+export default function Hours ({ node }) {
   const [initialized, setInitialized] = useState(false);
 
   /*
@@ -15,10 +15,10 @@ export default function Hours({ node }) {
   }, [initialized]);
 
   if (!initialized) {
-    return <React.Fragment>…</React.Fragment>;
+    return <>…</>;
   }
 
-  const now = moment();
+  const now = dayjs();
   const hours = displayHours({ node, now });
 
   if (!hours) {

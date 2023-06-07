@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import dayjs from 'dayjs';
 
 export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 
@@ -26,7 +26,6 @@ export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
     Full:
       => Tuesday, September 15, 2020 from 3:00pm - 3:50pm
 
-
   (C) A multi-day event. Show full range.
 
     Brief:
@@ -36,11 +35,11 @@ export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
     Full:
       => Wednesday, December 15, 2020 from 3:00pm to Friday, January 8, 2021 at 3:50pm
 */
-export function eventFormatWhen({ start, end, kind, type }) {
+export function eventFormatWhen ({ start, end, kind, type }) {
   const isBrief = kind === 'brief';
   const isExhibit = EXHIBIT_TYPES.includes(type);
-  const S = moment(start);
-  const E = moment(end);
+  const S = dayjs(start);
+  const E = dayjs(end);
   const isSameYear = S.isSame(E, 'year');
   const isSameDay = S.isSame(E, 'day');
 
@@ -87,19 +86,19 @@ export function eventFormatWhen({ start, end, kind, type }) {
   );
 }
 
-export function eventFormatWhere({ node, kind }, includeLink = false) {
-  let where = [];
+export function eventFormatWhere ({ node, kind }, includeLink = false) {
+  const where = [];
 
   if (node.field_event_online) {
     where.push({
-      label: 'Online',
+      label: 'Online'
     });
   }
 
   if (includeLink && node.field_online_event_link) {
     where.push({
       label: node.field_online_event_link.title,
-      href: node.field_online_event_link.uri,
+      href: node.field_online_event_link.uri
     });
   }
 
@@ -116,13 +115,17 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
       const stateZip = [
         node.field_non_library_location_addre.administrative_area,
         node.field_non_library_location_addre.postal_code
-      ].filter((field) => field).join(' ')
+      ].filter((field) => {
+        return field;
+      }).join(' ');
       where.push({
         label: [
           node.field_non_library_location_addre.address_line1,
           node.field_non_library_location_addre.locality,
           stateZip
-        ].filter((field) => field).join(', '),
+        ].filter((field) => {
+          return field;
+        }).join(', '),
         className: 'margin-top-none'
       });
     }
@@ -134,7 +137,7 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
   if (building) {
     hasLocation = true;
     where.push({
-      label: [room, building].join(', '),
+      label: [room, building].join(', ')
     });
   }
 
@@ -145,9 +148,13 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
   return where;
 }
 
-export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
+export function sortEventsByStartDate ({ events, onlyTodayOrAfter = false }) {
   const uniqueEvents = [...events].filter(
-    (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+    (v, i, a) => {
+      return a.findIndex((t) => {
+        return t.id === v.id;
+      }) === i;
+    }
   );
 
   // Duplicate events that have many occurances by
@@ -164,8 +171,8 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
         occurances = occurances.concat([
           {
             ...event,
-            field_event_date_s_: [date], // The one occurance
-          },
+            field_event_date_s_: [date] // The one occurance
+          }
         ]);
       });
     } else {
@@ -175,15 +182,15 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
 
   const sortedEvents = [...occurances].sort(compareStartDate);
 
-  function compareStartDate(a, b) {
+  function compareStartDate (a, b) {
     const startA = a.field_event_date_s_[0].value;
     const startB = b.field_event_date_s_[0].value;
 
-    if (moment(startA).isBefore(startB)) {
+    if (dayjs(startA).isBefore(dayjs(startB))) {
       return -1;
     }
 
-    if (moment(startA).isAfter(startB)) {
+    if (dayjs(startA).isAfter(dayjs(startB))) {
       return 1;
     }
 
@@ -191,10 +198,10 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
   }
 
   if (onlyTodayOrAfter) {
-    function isBeforeToday(event) {
+    function isBeforeToday (event) {
       // This broke Jon's brain Wednesday, October 2020. Can't explain.
-      const result = moment(event.field_event_date_s_[0].end_value).isBefore(
-        moment(),
+      const result = dayjs(event.field_event_date_s_[0].end_value).isBefore(
+        dayjs(),
         'day'
       );
 

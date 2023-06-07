@@ -9,7 +9,7 @@ import Card from '../components/card';
 import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import * as moment from 'moment';
 
-export default function NewsLandingTemplate({ data }) {
+export default function NewsLandingTemplate ({ data }) {
   const news = processNewsData(data.featuredNews).concat(
     processNewsData(data.restNews)
   );
@@ -23,10 +23,10 @@ export default function NewsLandingTemplate({ data }) {
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
         <Heading
-          size="3XL"
+          size='3XL'
           level={1}
           css={{
-            marginBottom: SPACING['L'],
+            marginBottom: SPACING.L
           }}
         >
           {field_title_context}
@@ -35,56 +35,58 @@ export default function NewsLandingTemplate({ data }) {
       <Template>
         <TemplateContent>
           {body && (
-            <div css={{ marginBottom: SPACING['XL'] }}>
+            <div css={{ marginBottom: SPACING.XL }}>
               <Html html={body.processed} />
             </div>
           )}
 
           {news && (
-            <React.Fragment>
+            <>
               <span className='visually-hidden'>
-                <Heading level={2} size="L">
+                <Heading level={2} size='L'>
                   Main news
                 </Heading>
               </span>
               <Expandable>
                 <ol>
                   <ExpandableChildren show={newsMainInitialShow}>
-                    {news.map((item, i) => (
-                      <li
-                        key={'news-item-' + i}
-                        css={{
-                          marginBottom: SPACING['L'],
-                        }}
-                      >
-                        <Card
-                          href={item.href}
-                          title={item.title}
-                          subtitle={item.subtitle}
-                          image={item.image}
-                          horizontal
+                    {news.map((item, i) => {
+                      return (
+                        <li
+                          key={'news-item-' + i}
+                          css={{
+                            marginBottom: SPACING.L
+                          }}
                         >
-                          {item.description}
-                        </Card>
-                      </li>
-                    ))}
+                          <Card
+                            href={item.href}
+                            title={item.title}
+                            subtitle={item.subtitle}
+                            image={item.image}
+                            horizontal
+                          >
+                            {item.description}
+                          </Card>
+                        </li>
+                      );
+                    })}
                   </ExpandableChildren>
                 </ol>
 
                 {news.length > newsMainInitialShow && (
-                  <ExpandableButton name="stories" count={news.length} />
+                  <ExpandableButton name='stories' count={news.length} />
                 )}
               </Expandable>
-            </React.Fragment>
+            </>
           )}
         </TemplateContent>
 
         <TemplateSide>
           <Heading
-            size="L"
+            size='L'
             level={2}
             css={{
-              marginBottom: SPACING['L'],
+              marginBottom: SPACING.L
             }}
           >
             Library Updates
@@ -93,26 +95,28 @@ export default function NewsLandingTemplate({ data }) {
             <Expandable>
               <ol>
                 <ExpandableChildren show={newsLibraryUpdatesInitialShow}>
-                  {newsLibraryUpdates.map((item, i) => (
-                    <li
-                      key={'news-item-' + i}
-                      css={{
-                        marginBottom: SPACING['XL'],
-                      }}
-                    >
-                      <Card
-                        href={item.href}
-                        title={item.title}
-                        subtitle={item.subtitle}
-                      />
-                    </li>
-                  ))}
+                  {newsLibraryUpdates.map((item, i) => {
+                    return (
+                      <li
+                        key={'news-item-' + i}
+                        css={{
+                          marginBottom: SPACING.XL
+                        }}
+                      >
+                        <Card
+                          href={item.href}
+                          title={item.title}
+                          subtitle={item.subtitle}
+                        />
+                      </li>
+                    );
+                  })}
                 </ExpandableChildren>
               </ol>
 
               {newsLibraryUpdates.length > newsLibraryUpdatesInitialShow && (
                 <ExpandableButton
-                  name="updates"
+                  name='updates'
                   count={newsLibraryUpdates.length}
                 />
               )}
@@ -124,11 +128,11 @@ export default function NewsLandingTemplate({ data }) {
   );
 }
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={data.page} />;
 }
 
-function processNewsData(data) {
+function processNewsData (data) {
   if (!data) {
     return [];
   }
@@ -144,7 +148,7 @@ function processNewsData(data) {
       subtitle: moment(created).format('MMMM D, YYYY'),
       description: body?.summary,
       href: fields.slug,
-      image,
+      image
     };
   });
 }
