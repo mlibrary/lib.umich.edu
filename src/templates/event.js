@@ -1,7 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import * as moment from 'moment';
 import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '../reusable';
 import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import TemplateLayout from './template-layout';
@@ -14,7 +13,7 @@ import { eventFormatWhen, eventFormatWhere } from '../utils/events';
 
 export default function EventTemplate ({ data }) {
   const node = data.event;
-  const { field_title_context, body, fields, relationships } = node;
+  const { field_title_context: fieldTitleContext, body, fields, relationships } = node;
   const { slug } = fields;
   const image =
     relationships?.field_media_image?.relationships.field_media_image;
@@ -41,7 +40,7 @@ export default function EventTemplate ({ data }) {
               marginBottom: SPACING.XL
             }}
           >
-            {field_title_context}
+            {fieldTitleContext}
           </Heading>
           <EventMetadata data={node} />
           {body && <Html html={body.processed} />}
@@ -83,7 +82,7 @@ export default function EventTemplate ({ data }) {
 
           <Share
             url={'https://www.lib.umich.edu' + slug}
-            title={field_title_context}
+            title={fieldTitleContext}
           />
 
           {contact && (
@@ -185,8 +184,8 @@ function EventMetadata ({ data }) {
       : null;
   const series = data.relationships.field_event_series?.name;
   const when = dates.map((date) => {
-    const start = moment(date.value);
-    const end = moment(date.end_value);
+    const start = new Date(date.value);
+    const end = new Date(date.end_value);
 
     return eventFormatWhen({
       start,

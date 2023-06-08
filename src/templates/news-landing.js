@@ -7,7 +7,7 @@ import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/card';
 import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
-import * as moment from 'moment';
+import { format, parseISO } from 'date-fns';
 
 export default function NewsLandingTemplate ({ data }) {
   const news = processNewsData(data.featuredNews).concat(
@@ -16,10 +16,10 @@ export default function NewsLandingTemplate ({ data }) {
   const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates);
   const newsMainInitialShow = 10;
   const newsLibraryUpdatesInitialShow = 20;
-  const { field_title_context, body, fields, drupal_internal__nid } = data.page;
+  const { field_title_context: fieldTitleContext, body, fields, drupal_internal__nid: drupalInternalNID } = data.page;
 
   return (
-    <Layout drupalNid={drupal_internal__nid}>
+    <Layout drupalNid={drupalInternalNID}>
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
         <Heading
@@ -29,7 +29,7 @@ export default function NewsLandingTemplate ({ data }) {
             marginBottom: SPACING.L
           }}
         >
-          {field_title_context}
+          {fieldTitleContext}
         </Heading>
       </Margins>
       <Template>
@@ -142,10 +142,9 @@ function processNewsData (data) {
     const image =
       relationships?.field_media_image?.relationships?.field_media_image
         ?.localFile?.childImageSharp?.gatsbyImageData;
-
     return {
       title,
-      subtitle: moment(created).format('MMMM D, YYYY'),
+      subtitle: format(parseISO(created), 'MMMM d, yyyy'),
       description: body?.summary,
       href: fields.slug,
       image
