@@ -1,0 +1,58 @@
+#  Name of workflow
+name: Dev workflow
+
+# When workflow is triggered
+on:
+  workflow_dispatch:
+
+# Jobs to carry out
+jobs:
+  build:
+    # Operating system to run job on
+    runs-on: ubuntu-latest
+    # Environment to run job on
+    environment: staging
+    # Environment variables
+    env:
+      DRUPAL_CONCURRENT_FILE_REQUESTS: 20
+      DRUPAL_REQUEST_TIMEOUT: 6000000
+      DRUPAL_URL: 'https://cms.dev.lib.umich.edu/'
+    # Steps in job
+    steps:
+      # Get code from repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+      # Install NodeJS
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      # Enabling cache
+      - name: Caching Gatsby
+        id: gatsby-cache-build
+        uses: actions/cache@v3
+        with:
+          path: |
+            public
+            .cache
+          key: ${{ runner.os }}-gatsby-build-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-gatsby-build-
+      # Run npm install and build on our code
+      - run: npm install
+      - run: npm run build
+      # Deploy to Netlify using our production secrets
+      - name: Deploy to netlify
+        run: npx netlify-cli deploy --dir=public --prod
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      # Notify Slack if build fails
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@v1
+        with:
+          status: ${{ job.status }}
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
