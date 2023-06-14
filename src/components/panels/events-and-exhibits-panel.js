@@ -17,6 +17,7 @@ import {
 } from '../../components/aside-layout';
 import EventCard from '../../components/event-card';
 import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
+import PropTypes from 'prop-types';
 
 export default function EventsAndExhibitsPanel () {
   /*
@@ -237,6 +238,10 @@ function TodaysEvents ({ events }) {
   return null;
 }
 
+TodaysEvents.propTypes = {
+  events: PropTypes.array
+};
+
 function UpcomingEvents ({ events }) {
   if (Array.isArray(events)) {
     if (events.length === 0) {
@@ -276,6 +281,10 @@ function UpcomingEvents ({ events }) {
   return null;
 }
 
+UpcomingEvents.propTypes = {
+  events: PropTypes.array
+};
+
 function ExhibitEvents ({ events, hasBorder = false }) {
   if (Array.isArray(events)) {
     if (events.length === 0) {
@@ -306,3 +315,8 @@ function ExhibitEvents ({ events, hasBorder = false }) {
 
   return null;
 }
+
+ExhibitEvents.propTypes = {
+  events: PropTypes.array,
+  hasBorder: PropTypes.bool
+};
