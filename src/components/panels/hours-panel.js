@@ -138,13 +138,7 @@ function PreviousNextWeekButton ({ type, children, ...rest }) {
         }}
       >
         <IconWrapper>
-          {type === 'previous'
-            ? (
-              <Icon icon='navigate_before' />
-              )
-            : (
-              <Icon icon='navigate_next' />
-              )}
+          <Icon icon={ type === 'previous' ? 'navigate_before' : 'navigate_next' } />
         </IconWrapper>
         <span className='visually-hidden'>{children}</span>
       </Button>
