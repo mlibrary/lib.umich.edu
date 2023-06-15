@@ -142,9 +142,15 @@ function processNewsData (data) {
     const image =
       relationships?.field_media_image?.relationships?.field_media_image
         ?.localFile?.childImageSharp?.gatsbyImageData;
+    const subtitle = new Date(created).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
     return {
       title,
-      subtitle: format(parseISO(created), 'MMMM d, yyyy'),
+      subtitle,
       description: body?.summary,
       href: fields.slug,
       image
