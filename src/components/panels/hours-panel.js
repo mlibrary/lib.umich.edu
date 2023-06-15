@@ -13,6 +13,7 @@ import Html from '../html';
 import HoursTable from '../hours-table';
 import { useStateValue } from '../use-state';
 import { displayHours } from '../../utils/hours';
+import PropTypes from 'prop-types';
 
 const dateFormat = (string, abbreviated = false) => {
   if (abbreviated) {
@@ -87,6 +88,10 @@ export function HoursPanelNextPrev ({ location }) {
   );
 }
 
+HoursPanelNextPrev.propTypes = {
+  location: PropTypes.string
+};
+
 function IconWrapper (props) {
   return (
     <span
@@ -138,13 +143,18 @@ function PreviousNextWeekButton ({ type, children, ...rest }) {
         }}
       >
         <IconWrapper>
-          <Icon icon={ type === 'previous' ? 'navigate_before' : 'navigate_next' } />
+          <Icon icon={type === 'previous' ? 'navigate_before' : 'navigate_next'} />
         </IconWrapper>
         <span className='visually-hidden'>{children}</span>
       </Button>
     </>
   );
 }
+
+PreviousNextWeekButton.propTypes = {
+  type: PropTypes.string,
+  children: PropTypes.string
+};
 
 export default function HoursPanelContainer ({ data }) {
   const [{ weekOffset }] = useStateValue();
@@ -189,6 +199,10 @@ export default function HoursPanelContainer ({ data }) {
     </section>
   );
 }
+
+HoursPanelContainer.propTypes = {
+  data: PropTypes.object
+};
 
 function transformTableData ({ node, now }) {
   const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;

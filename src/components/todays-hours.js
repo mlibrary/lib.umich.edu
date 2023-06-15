@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
+import PropTypes from 'prop-types';
 
 import { displayHours } from '../utils/hours';
 
@@ -27,3 +28,7 @@ export default function Hours ({ node }) {
 
   return <span aria-label={hours.label}>Today: {hours.text}</span>;
 }
+
+Hours.propTypes = {
+  node: PropTypes.object
+};

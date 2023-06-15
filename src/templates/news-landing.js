@@ -7,9 +7,9 @@ import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/card';
 import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
-import { format, parseISO } from 'date-fns';
+import PropTypes from 'prop-types';
 
-export default function NewsLandingTemplate ({ data }) {
+function NewsLandingTemplate ({ data }) {
   const news = processNewsData(data.featuredNews).concat(
     processNewsData(data.restNews)
   );
@@ -128,9 +128,15 @@ export default function NewsLandingTemplate ({ data }) {
   );
 }
 
+NewsLandingTemplate.propTypes = {
+  data: PropTypes.object
+};
+
 export function Head ({ data }) {
   return <SearchEngineOptimization data={data.page} />;
 }
+
+export default NewsLandingTemplate;
 
 function processNewsData (data) {
   if (!data) {
@@ -158,7 +164,7 @@ function processNewsData (data) {
   });
 }
 
-export const query = graphql`
+const query = graphql`
   query ($slug: String!) {
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
@@ -206,3 +212,5 @@ export const query = graphql`
     }
   }
 `;
+
+export { query };

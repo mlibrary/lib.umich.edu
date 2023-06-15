@@ -7,6 +7,7 @@ import Link from '../link';
 import icons from '../../reusable/icons';
 import MEDIA_QUERIES from '../../reusable/media-queries.js';
 import { displayHours } from '../../utils/hours';
+import PropTypes from 'prop-types';
 
 export default function HoursLitePanel ({ data }) {
   const [initialized, setInitialized] = useState(false);
@@ -106,6 +107,10 @@ export default function HoursLitePanel ({ data }) {
     </section>
   );
 }
+
+HoursLitePanel.propTypes = {
+  data: PropTypes.object
+};
 
 /*
 const hoursDataExample = [

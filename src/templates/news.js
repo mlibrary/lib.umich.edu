@@ -13,8 +13,9 @@ import getNode from '../utils/get-node';
 import transformNodePanels from '../utils/transform-node-panels';
 import Link from '../components/link';
 import Share from '../components/share';
+import PropTypes from 'prop-types';
 
-export default function NewsTemplate ({ data }) {
+function NewsTemplate ({ data }) {
   const node = getNode(data);
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
   const { field_title_context: fieldTitleContext, body, fields, relationships, created } = node;
@@ -117,9 +118,15 @@ export default function NewsTemplate ({ data }) {
   );
 }
 
+NewsTemplate.propTypes = {
+  data: PropTypes.object
+};
+
 export function Head ({ data }) {
   return <SearchEngineOptimization data={getNode(data)} />;
 }
+
+export default NewsTemplate;
 
 function StayInTheKnow () {
   const newsEmailSignUpURL =

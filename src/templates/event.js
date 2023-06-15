@@ -10,8 +10,9 @@ import Breadcrumb from '../components/breadcrumb';
 import Link from '../components/link';
 import Share from '../components/share';
 import { eventFormatWhen, eventFormatWhere } from '../utils/events';
+import PropTypes from 'prop-types';
 
-export default function EventTemplate ({ data }) {
+function EventTemplate ({ data }) {
   const node = data.event;
   const { field_title_context: fieldTitleContext, body, fields, relationships } = node;
   const { slug } = fields;
@@ -165,6 +166,10 @@ export default function EventTemplate ({ data }) {
   );
 }
 
+EventTemplate.propTypes = {
+  data: PropTypes.object
+};
+
 /*
   Details the events:
   - Dates and times
@@ -293,9 +298,15 @@ function EventMetadata ({ data }) {
   );
 }
 
+EventMetadata.propTypes = {
+  data: PropTypes.object
+};
+
 export function Head ({ data }) {
   return <SearchEngineOptimization data={data.event} />;
 }
+
+export default EventTemplate;
 
 export const query = graphql`
   query ($slug: String!) {
