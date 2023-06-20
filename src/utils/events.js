@@ -39,11 +39,10 @@ export function eventFormatWhen ({ start, end, kind, type }) {
   const S = new Date(start);
   const E = new Date(end);
   const isSameYear = S.getFullYear() === E.getFullYear();
-  const isSameDay = (S, E) => {
-    return S.getFullYear() === E.getFullYear() &&
+  const isSameDay =
+    S.getFullYear() === E.getFullYear() &&
     S.getMonth() === E.getMonth() &&
     S.getDate() === E.getDate();
-  };
 
   const sWeekday = S.toLocaleDateString('en-US', { weekday: 'long' });
   const sMonth = S.toLocaleDateString('en-US', { month: 'long' });
@@ -79,7 +78,7 @@ export function eventFormatWhen ({ start, end, kind, type }) {
   }
 
   if (isSameDay) {
-    return `${sWeekday}, ${sMonth} ${sDayDate}, ${sYear} from ${sTime} - ${eWeekday}, ${eMonth} ${eDayDate} · ${eTime}`;
+    return `${sWeekday}, ${sMonth} ${sDayDate}, ${sYear} from ${sTime} - ${eTime}`;
   }
 
   if (isSameYear) {
