@@ -16,7 +16,7 @@ jobs:
     env:
       DRUPAL_CONCURRENT_FILE_REQUESTS: 20
       DRUPAL_REQUEST_TIMEOUT: 6000000
-      DRUPAL_URL: 'https://cms.dev.lib.umich.edu/'
+      DRUPAL_URL: ${{ vars.DRUPAL_URL}}
     # Steps in job
     steps:
       # Get code from repo
