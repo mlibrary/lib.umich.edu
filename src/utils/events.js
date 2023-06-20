@@ -201,17 +201,16 @@ export function sortEventsByStartDate ({ events, onlyTodayOrAfter = false }) {
   if (onlyTodayOrAfter) {
     function isAfterToday (event) {
       // Why are we only checking after today if it's called onlyTODAYOrAfter?
+      const eventDate = new Date(event.field_event_date_s_[0].end_value);
+      const now = new Date();
 
-      const result = () => {
-        const eventDate = new Date(event.field_event_date_s_[0].end_value);
-        const now = new Date();
-        return (
+      const result =
           eventDate.getFullYear() > now.getFullYear() &&
           eventDate.getMonth() > now.getMonth() &&
-          eventDate.getDate() > now.getDate()
-        );
-      };
-      return !result;
+          eventDate.getDate() > now.getDate();
+
+      console.log(typeof result);
+      return result;
     }
 
     return sortedEvents.filter(isAfterToday);
