@@ -1,12 +1,3 @@
-import * as dayjs from 'dayjs';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-
-dayjs.extend(isSameOrBefore);
-dayjs.extend(isSameOrAfter);
-dayjs.extend(customParseFormat);
-
 /*
   Hours could be on the current node
   or on a parent node, depending
@@ -76,12 +67,11 @@ export function getHoursFromNode ({ node }) {
       });
     }
   }
-
   return null;
 }
 
 /*
-  Pass in a node and dayjs "now" and get back
+  Pass in a node and Date "now" and get back
   formated string for hours from "now".
 */
 export function findHoursSetByNodeForNow ({ node, now }) {
@@ -101,10 +91,14 @@ export function findHoursSetByNodeForNow ({ node, now }) {
     const start = set.field_date_range.value;
     const end = set.field_date_range.end_value;
 
-    // Check if "now" is within the range including start and end days.
-    return now.isSameOrAfter(dayjs(start), 'day') && now.isSameOrBefore(dayjs(end), 'day');
-  });
+    const startDate = new Date(start.replace(/-/g, '/').replace(/T.+/, ''));
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(end.replace(/-/g, '/').replace(/T.+/, ''));
+    endDate.setHours(23, 59, 59);
 
+    // Check if "now" is within the range including start and end days.
+    return startDate <= now && now <= endDate;
+  });
   return nowHour;
 }
 
@@ -116,7 +110,7 @@ export function displayHours ({ node, now }) {
 
   const hoursForNow = hoursSet.field_hours_open.find(
     (d) => {
-      return d.day === now.day();
+      return d.day === now.getDay();
     }
   );
 
@@ -134,10 +128,27 @@ export function displayHours ({ node, now }) {
 
   if (starthours !== endhours) {
     const formatTime = (time) => {
-      const time24Hours = time < 1000 ? '0' + time : time;
-      const getMinutes = time24Hours.toString().slice(-2);
-      const setTimeFormat = getMinutes === '00' ? 'ha' : 'h:mma';
-      return dayjs(String(time24Hours), 'HHmm').format(setTimeFormat);
+      const timeString = time.toString();
+      const hours = timeString.slice(0, -2);
+      const minutes = timeString.slice(-2);
+
+      let formattedTime = '';
+
+      if (hours === '0' || hours === '00') {
+        formattedTime = '12';
+      } else if (hours <= 12) {
+        formattedTime = hours;
+      } else {
+        formattedTime = (hours - 12).toString();
+      }
+
+      if (minutes !== '00') {
+        formattedTime += `:${minutes}`;
+      }
+
+      const period = hours >= 12 ? 'pm' : 'am';
+
+      return formattedTime + period;
     };
 
     const combinedValues = (separator = 'to') => {

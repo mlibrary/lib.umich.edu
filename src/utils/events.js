@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 
 /*
@@ -38,52 +36,56 @@ export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 export function eventFormatWhen ({ start, end, kind, type }) {
   const isBrief = kind === 'brief';
   const isExhibit = EXHIBIT_TYPES.includes(type);
-  const S = dayjs(start);
-  const E = dayjs(end);
-  const isSameYear = S.isSame(E, 'year');
-  const isSameDay = S.isSame(E, 'day');
+  const S = new Date(start);
+  const E = new Date(end);
+  const isSameYear = S.getFullYear() === E.getFullYear();
+  const isSameDay = (S, E) => {
+    return S.getFullYear() === E.getFullYear() &&
+    S.getMonth() === E.getMonth() &&
+    S.getDate() === E.getDate();
+  };
+
+  const sWeekday = S.toLocaleDateString('en-US', { weekday: 'long' });
+  const sMonth = S.toLocaleDateString('en-US', { month: 'long' });
+  const sDayDate = S.getDate();
+  const sYear = S.getFullYear();
+  const sTime = S.toLocaleTimeString('en-US', { timeStyle: 'short' });
+
+  const eWeekday = E.toLocaleDateString('en-US', { weekday: 'long' });
+  const eMonth = E.toLocaleDateString('en-US', { month: 'long' });
+  const eDayDate = E.getDate();
+  const eYear = E.getFullYear();
+  const eTime = E.toLocaleTimeString('en-US', { timeStyle: 'short' });
 
   // Exhibits share same format, regardless of kind.
   if (isExhibit) {
     if (isSameYear) {
-      return S.format('MMMM D') + E.format(' [-] MMMM D');
+      return `${sMonth} ${sDayDate} - ${eMonth} ${eDayDate}`;
     } else {
-      return S.format('MMMM D, YYYY') + E.format(' [-] MMMM D, YYYY');
+      return `${sMonth} ${sDayDate}, ${sYear} - ${eMonth} ${eDayDate}, ${eYear}`;
     }
   }
 
   if (isBrief) {
     if (isSameDay) {
-      return S.format('dddd, MMMM D [·] h:mma - ') + E.format('h:mma');
+      return `${sWeekday}, ${sMonth} ${sDayDate} · ${sTime} - ${eTime}`;
     } else {
       if (isSameYear) {
-        return (
-          S.format('dddd, MMMM D [·] h:mma - ') +
-          E.format('dddd, MMMM D [·] h:mma')
-        );
+        return `${sWeekday}, ${sMonth} ${sDayDate} · ${sTime} ${eWeekday}, ${eMonth} ${eDayDate} · ${eTime}`;
       } else {
-        return (
-          S.format('dddd, MMMM D [·] h:mma - ') +
-          E.format('dddd, MMMM D, YYYY [·] h:mma')
-        );
+        return `${sWeekday}, ${sMonth} ${sDayDate} · ${sTime} - ${eWeekday}, ${eMonth} ${eDayDate}, ${eYear} · ${eTime}`;
       }
     }
   }
 
   if (isSameDay) {
-    return S.format('dddd, MMMM D, YYYY [from] h:mma - ') + E.format('h:mma');
+    return `${sWeekday}, ${sMonth} ${sDayDate}, ${sYear} from ${sTime} - ${eWeekday}, ${eMonth} ${eDayDate} · ${eTime}`;
   }
 
   if (isSameYear) {
-    return (
-      S.format('dddd, MMMM D [·] h:mma - ') + E.format('dddd, MMMM D [·] h:mma')
-    );
+    return `${sWeekday}, ${sMonth} ${sDayDate} · ${eTime} - ${eWeekday}, ${eMonth} ${eDayDate} · ${eTime}`;
   }
-
-  return (
-    S.format('dddd, MMMM D [·] h:mma - ') +
-    E.format('dddd, MMMM D, YYYY [·] h:mma')
-  );
+  return `${sWeekday}, ${sMonth} ${sDayDate} · ${eTime} - ${eWeekday}, ${eMonth} ${eDayDate}, ${eYear} · ${eTime}`;
 }
 
 export function eventFormatWhere ({ node, kind }, includeLink = false) {
@@ -186,11 +188,11 @@ export function sortEventsByStartDate ({ events, onlyTodayOrAfter = false }) {
     const startA = a.field_event_date_s_[0].value;
     const startB = b.field_event_date_s_[0].value;
 
-    if (dayjs(startA).isBefore(dayjs(startB))) {
+    if (new Date(startA) < new Date(startB)) {
       return -1;
     }
 
-    if (dayjs(startA).isAfter(dayjs(startB))) {
+    if (new Date(startA) > new Date(startB)) {
       return 1;
     }
 
@@ -198,17 +200,22 @@ export function sortEventsByStartDate ({ events, onlyTodayOrAfter = false }) {
   }
 
   if (onlyTodayOrAfter) {
-    function isBeforeToday (event) {
-      // This broke Jon's brain Wednesday, October 2020. Can't explain.
-      const result = dayjs(event.field_event_date_s_[0].end_value).isBefore(
-        dayjs(),
-        'day'
-      );
+    function isAfterToday (event) {
+      // Why are we only checking after today if it's called onlyTODAYOrAfter?
 
+      const result = () => {
+        const eventDate = new Date(event.field_event_date_s_[0].end_value);
+        const now = new Date();
+        return (
+          eventDate.getFullYear() > now.getFullYear() &&
+          eventDate.getMonth() > now.getMonth() &&
+          eventDate.getDate() > now.getDate()
+        );
+      };
       return !result;
     }
 
-    return sortedEvents.filter(isBeforeToday);
+    return sortedEvents.filter(isAfterToday);
   }
 
   return sortedEvents;

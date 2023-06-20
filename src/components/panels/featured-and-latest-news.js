@@ -1,7 +1,6 @@
 import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from '@emotion/styled';
-import dayjs from 'dayjs';
 import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '../../reusable';
 import Card from '../card';
 import Link from '../link';
@@ -15,7 +14,11 @@ function processNewsNodeForCard ({ newsNode }) {
 
   return {
     title: newsNode.title,
-    subtitle: dayjs(newsNode.created).format('MMMM D, YYYY'),
+    subtitle: new Date(newsNode.created).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }),
     href: newsNode.fields.slug,
     image: newsImage,
     children
@@ -212,11 +215,11 @@ function sortNews ({ data }) {
   const allNews = data.priorityNews.edges.concat(recentNewsSliced);
 
   function compareCreatedDate (a, b) {
-    if (dayjs(a.node.created).isBefore(dayjs(b.node.created))) {
+    if (Date.parse(a.node.created) < Date.parse(b.node.created)) {
       return 1;
     }
 
-    if (dayjs(a.node.created).isAfter(dayjs(b.node.created))) {
+    if (Date.parse(a.node.created) > Date.parse(b.node.created)) {
       return -1;
     }
 

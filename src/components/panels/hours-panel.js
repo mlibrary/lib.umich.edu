@@ -1,5 +1,4 @@
 import React from 'react';
-import dayjs from 'dayjs';
 import {
   Margins,
   Heading,
@@ -17,15 +16,28 @@ import PropTypes from 'prop-types';
 
 const dateFormat = (string, abbreviated = false) => {
   if (abbreviated) {
-    return string.format('MMM D');
+    return string.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
   }
-  return string.format('dddd, MMMM D, YYYY');
+  return string.toLocaleString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
 };
 
 export function HoursPanelNextPrev ({ location }) {
   const [{ weekOffset }, dispatch] = useStateValue();
-  const fromDate = dayjs().add(weekOffset, 'week').startOf('week');
-  const toDate = dayjs().add(weekOffset, 'week').endOf('week');
+  const date = new Date();
+
+  const fromDate = new Date(date);
+  fromDate.setDate(date.getDate() + (weekOffset * 7) - date.getDay());
+
+  const toDate = new Date(date);
+  toDate.setDate(date.getDate() + (weekOffset * 7) + (6 - date.getDay()));
 
   const hoursRange = {
     text: `${dateFormat(fromDate, true)} - ${dateFormat(toDate, true)}`,
@@ -190,9 +202,9 @@ export default function HoursPanelContainer ({ data }) {
         <HoursTable
           data={transformTableData({
             node: data,
-            now: dayjs().add(weekOffset, 'week')
+            now: new Date(new Date().setDate(new Date().getDate() + weekOffset * 7))
           })}
-          dayOfWeek={weekOffset === 0 ? dayjs().day() : false}
+          dayOfWeek={weekOffset === 0 ? new Date().getDay() : false}
           location={title}
         />
       </Margins>
@@ -222,13 +234,28 @@ function transformTableData ({ node, now }) {
       },
     ]
   */
-  let headings = [];
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const currentDate = new Date(now);
+  // set to Sunday
+  currentDate.setDate(currentDate.getDate() - currentDate.getDay());
+
+  const headings = [];
 
   for (let i = 0; i < 7; i++) {
-    headings = headings.concat({
-      text: now.day(i).format('ddd'),
-      subtext: now.day(i).format('MMM D'),
-      label: now.day(i).format('dddd, MMMM D')
+    const date = new Date(currentDate);
+    date.setDate(currentDate.getDate() + i);
+
+    headings.push({
+      text: daysOfWeek[date.getDay()],
+      subtext: date.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      }),
+      label: date.toLocaleString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric'
+      })
     });
   }
 
@@ -294,12 +321,13 @@ function getRow (node, nowWithWeekOffset, isParent) {
   };
 
   for (let i = 0; i < 7; i++) {
-    const now = dayjs(nowWithWeekOffset).day(i);
+    const now = new Date(nowWithWeekOffset);
+
+    now.setDate(nowWithWeekOffset.getDate() + (i - nowWithWeekOffset.getDay()));
     const display = displayHours({
       node,
       now
     });
-
     hours = hours.concat(display || notAvailableRow);
   }
 

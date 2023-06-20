@@ -2,7 +2,6 @@ import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import dayjs from 'dayjs';
 import { Margins, Heading, SPACING, COLORS, Text, TYPOGRAPHY } from '../reusable';
 import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
 import TemplateLayout from './template-layout';
@@ -58,7 +57,11 @@ function NewsTemplate ({ data }) {
                   paddingTop: SPACING.M
                 }}
               >
-                {dayjs(created).format('MMMM D, YYYY')}
+                {new Date(created).toLocaleDateString('en-us', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
               </p>
             )}
           </Heading>

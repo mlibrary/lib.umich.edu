@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '../../reusable';
-import dayjs from 'dayjs';
 import { Link as GatsbyLink } from 'gatsby';
 
 import Link from '../link';
@@ -140,7 +139,7 @@ const hoursDataExample = [
 function processHoursData (data, initialized) {
   function hours (node) {
     if (initialized) {
-      const now = dayjs();
+      const now = new Date();
       return displayHours({ node, now });
     }
 

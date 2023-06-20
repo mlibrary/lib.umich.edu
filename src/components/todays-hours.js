@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 
 import { displayHours } from '../utils/hours';
@@ -19,7 +18,7 @@ export default function Hours ({ node }) {
     return <>…</>;
   }
 
-  const now = dayjs();
+  const now = new Date();
   const hours = displayHours({ node, now });
 
   if (!hours) {
