@@ -41,7 +41,7 @@ jobs:
       # Run npm install and build on our code
       - run: npm install
       - run: npm run build
-      # Deploy to Netlify using our production secrets
+      # Deploy to Netlify using our staging secrets
       - name: Deploy to netlify
         run: npx netlify-cli deploy --dir=public --prod
         env:
