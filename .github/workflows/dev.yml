@@ -11,7 +11,7 @@ jobs:
     # Operating system to run job on
     runs-on: ubuntu-latest
     # Environment to run job on
-    environment: staging
+    environment: development
     # Environment variables
     env:
       DRUPAL_CONCURRENT_FILE_REQUESTS: 20
@@ -46,7 +46,7 @@ jobs:
         run: npx netlify-cli deploy --dir=public --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
       # Notify Slack if build fails
       - name: Report Status
         if: always()
