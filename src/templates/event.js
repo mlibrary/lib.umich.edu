@@ -306,6 +306,10 @@ export function Head ({ data }) {
   return <SearchEngineOptimization data={data.event} />;
 }
 
+Head.propTypes = {
+  data: PropTypes.object
+};
+
 export default EventTemplate;
 
 export const query = graphql`

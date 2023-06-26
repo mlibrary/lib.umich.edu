@@ -136,6 +136,10 @@ export function Head ({ data }) {
   return <SearchEngineOptimization data={data.page} />;
 }
 
+Head.propTypes = {
+  data: PropTypes.object
+};
+
 export default NewsLandingTemplate;
 
 function processNewsData (data) {

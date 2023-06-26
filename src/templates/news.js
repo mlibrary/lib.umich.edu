@@ -129,6 +129,10 @@ export function Head ({ data }) {
   return <SearchEngineOptimization data={getNode(data)} />;
 }
 
+Head.propTypes = {
+  data: PropTypes.object
+};
+
 export default NewsTemplate;
 
 function StayInTheKnow () {
