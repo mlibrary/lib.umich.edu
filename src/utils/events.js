@@ -209,7 +209,6 @@ export function sortEventsByStartDate ({ events, onlyTodayOrAfter = false }) {
           eventDate.getMonth() > now.getMonth() &&
           eventDate.getDate() > now.getDate();
 
-      console.log(typeof result);
       return result;
     }
 
