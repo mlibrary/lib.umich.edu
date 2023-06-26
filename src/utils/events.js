@@ -33,58 +33,55 @@ export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
     Full:
       => Wednesday, December 15, 2020 from 3:00pm to Friday, January 8, 2021 at 3:50pm
 */
+const dateFormat = (date, ...properties) => {
+  const options = {
+    month: 'long',
+    day: 'numeric'
+  };
+  if (properties.includes('weekday')) options.weekday = 'long';
+  if (properties.includes('year')) options.year = 'numeric';
+  return date.toLocaleDateString('en-us', options);
+};
+
+const timeFormat = (date) => {
+  return date.toLocaleTimeString('en-US', { timeStyle: 'short' });
+};
+
 export function eventFormatWhen ({ start, end, kind, type }) {
-  const isBrief = kind === 'brief';
-  const isExhibit = EXHIBIT_TYPES.includes(type);
-  const S = new Date(start);
-  const E = new Date(end);
-  const isSameYear = S.getFullYear() === E.getFullYear();
-  const isSameDay =
-    S.getFullYear() === E.getFullYear() &&
-    S.getMonth() === E.getMonth() &&
-    S.getDate() === E.getDate();
-
-  const sWeekday = S.toLocaleDateString('en-US', { weekday: 'long' });
-  const sMonth = S.toLocaleDateString('en-US', { month: 'long' });
-  const sDayDate = S.getDate();
-  const sYear = S.getFullYear();
-  const sTime = S.toLocaleTimeString('en-US', { timeStyle: 'short' });
-
-  const eWeekday = E.toLocaleDateString('en-US', { weekday: 'long' });
-  const eMonth = E.toLocaleDateString('en-US', { month: 'long' });
-  const eDayDate = E.getDate();
-  const eYear = E.getFullYear();
-  const eTime = E.toLocaleTimeString('en-US', { timeStyle: 'short' });
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const startTime = timeFormat(startDate);
+  const endTime = timeFormat(endDate);
+  const isSameYear = startDate.getFullYear() === endDate.getFullYear();
+  const isSameDay = dateFormat(startDate, 'year') === dateFormat(endDate, 'year');
 
   // Exhibits share same format, regardless of kind.
-  if (isExhibit) {
+  if (EXHIBIT_TYPES.includes(type)) {
     if (isSameYear) {
-      return `${sMonth} ${sDayDate} - ${eMonth} ${eDayDate}`;
-    } else {
-      return `${sMonth} ${sDayDate}, ${sYear} - ${eMonth} ${eDayDate}, ${eYear}`;
+      return `${dateFormat(startDate)} - ${dateFormat(endDate)}`;
     }
+    return `${dateFormat(startDate, 'year')} - ${dateFormat(endDate, 'year')}`;
   }
 
-  if (isBrief) {
+  if (kind === 'brief') {
     if (isSameDay) {
-      return `${sWeekday}, ${sMonth} ${sDayDate} · ${sTime} - ${eTime}`;
-    } else {
-      if (isSameYear) {
-        return `${sWeekday}, ${sMonth} ${sDayDate} · ${sTime} ${eWeekday}, ${eMonth} ${eDayDate} · ${eTime}`;
-      } else {
-        return `${sWeekday}, ${sMonth} ${sDayDate} · ${sTime} - ${eWeekday}, ${eMonth} ${eDayDate}, ${eYear} · ${eTime}`;
-      }
+      return `${dateFormat(startDate, 'weekday')} · ${startTime} - ${endTime}`;
     }
+    if (isSameYear) {
+      return `${dateFormat(startDate, 'weekday')} · ${startTime} ${dateFormat(endDate, 'weekday')} · ${endTime}`;
+    }
+    return `${dateFormat(startDate, 'weekday')} · ${startTime} - ${dateFormat(endDate, 'weekday', 'year')} · ${endTime}`;
   }
 
   if (isSameDay) {
-    return `${sWeekday}, ${sMonth} ${sDayDate}, ${sYear} from ${sTime} - ${eTime}`;
+    return `${dateFormat(startDate, 'weekday', 'year')} from ${startTime} - ${endTime}`;
   }
 
   if (isSameYear) {
-    return `${sWeekday}, ${sMonth} ${sDayDate} · ${eTime} - ${eWeekday}, ${eMonth} ${eDayDate} · ${eTime}`;
+    return `${dateFormat(startDate, 'weekday')} · ${endTime} - ${dateFormat(endDate, 'weekday')} · ${endTime}`;
   }
-  return `${sWeekday}, ${sMonth} ${sDayDate} · ${eTime} - ${eWeekday}, ${eMonth} ${eDayDate}, ${eYear} · ${eTime}`;
+
+  return `${dateFormat(startDate, 'weekday')} · ${endTime} - ${dateFormat(endDate, 'weekday', 'year')} · ${endTime}`;
 }
 
 export function eventFormatWhere ({ node, kind }, includeLink = false) {
