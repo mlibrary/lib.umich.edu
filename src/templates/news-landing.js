@@ -132,13 +132,11 @@ NewsLandingTemplate.propTypes = {
   data: PropTypes.object
 };
 
+/* eslint-disable react/prop-types */
 export function Head ({ data }) {
   return <SearchEngineOptimization data={data.page} />;
 }
-
-Head.propTypes = {
-  data: PropTypes.object
-};
+/* eslint-enable react/prop-types */
 
 export default NewsLandingTemplate;
 

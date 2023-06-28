@@ -302,13 +302,11 @@ EventMetadata.propTypes = {
   data: PropTypes.object
 };
 
+/* eslint-disable react/prop-types */
 export function Head ({ data }) {
   return <SearchEngineOptimization data={data.event} />;
 }
-
-Head.propTypes = {
-  data: PropTypes.object
-};
+/* eslint-enable react/prop-types */
 
 export default EventTemplate;
 
