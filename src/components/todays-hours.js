@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import * as moment from 'moment';
+import PropTypes from 'prop-types';
 
 import { displayHours } from '../utils/hours';
 
-export default function Hours({ node }) {
+export default function Hours ({ node }) {
   const [initialized, setInitialized] = useState(false);
 
   /*
@@ -15,10 +15,10 @@ export default function Hours({ node }) {
   }, [initialized]);
 
   if (!initialized) {
-    return <React.Fragment>…</React.Fragment>;
+    return <>…</>;
   }
 
-  const now = moment();
+  const now = new Date();
   const hours = displayHours({ node, now });
 
   if (!hours) {
@@ -27,3 +27,7 @@ export default function Hours({ node }) {
 
   return <span aria-label={hours.label}>Today: {hours.text}</span>;
 }
+
+Hours.propTypes = {
+  node: PropTypes.object
+};

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '../../reusable';
-import * as moment from 'moment';
 import { Link as GatsbyLink } from 'gatsby';
 
 import Link from '../link';
 import icons from '../../reusable/icons';
 import MEDIA_QUERIES from '../../reusable/media-queries.js';
 import { displayHours } from '../../utils/hours';
+import PropTypes from 'prop-types';
 
-export default function HoursLitePanel({ data }) {
+export default function HoursLitePanel ({ data }) {
   const [initialized, setInitialized] = useState(false);
-  const { field_title } = data;
+  const { field_title: fieldTitle } = data;
   const hours = processHoursData(data.relationships.field_cards, initialized);
 
   useEffect(() => {
@@ -19,82 +19,84 @@ export default function HoursLitePanel({ data }) {
 
   return (
     <section>
-      <Heading level={2} size="M">
-        {field_title}
+      <Heading level={2} size='M'>
+        {fieldTitle}
       </Heading>
 
       <ol
         css={{
-          marginTop: SPACING['L'],
+          marginTop: SPACING.L
         }}
       >
-        {hours.map((h, i) => (
-          <li
-            key={i + h.text + h.to}
-            css={{
-              display: 'flex',
-            }}
-          >
-            <span
+        {hours.map((h, i) => {
+          return (
+            <li
+              key={i + h.text + h.to}
               css={{
-                display: 'inline',
-                color: COLORS.maize['500'],
-                width: '1.5rem',
-                flexShrink: '0',
+                display: 'flex'
               }}
             >
-              <Icon d={icons['clock']} />
-            </span>
-            <GatsbyLink
-              to={h.to}
-              css={{
-                flex: '1',
-                ':hover span': {
-                  textDecoration: 'underline',
-                },
-                paddingBottom: `${SPACING['S']}`,
-              }}
-            >
-              <span>
-                <span
-                  data-text
-                  css={{
-                    display: 'block',
-                    [MEDIA_QUERIES['M']]: {
-                      display: 'inline-block',
-                      marginRight: SPACING['XS'],
-                    },
-                  }}
-                >
-                  {h.text}
-                </span>
-                <span
-                  css={{
-                    display: 'inline-block',
-                    marginTop: SPACING['3XS'],
-                    [MEDIA_QUERIES['M']]: {
-                      marginTop: '0',
-                      display: 'inline-block',
-                    },
-                    ...TYPOGRAPHY['3XS'],
-                    color: COLORS.neutral['300'],
-                    textTransform: 'uppercase',
-                    fontWeight: '700',
-                    fontSize: '0.875rem',
-                  }}
-                  aria-label={h.subLabel}
-                >
-                  {h.subText}
-                </span>
+              <span
+                css={{
+                  display: 'inline',
+                  color: COLORS.maize['500'],
+                  width: '1.5rem',
+                  flexShrink: '0'
+                }}
+              >
+                <Icon d={icons.clock} />
               </span>
-            </GatsbyLink>
-          </li>
-        ))}
+              <GatsbyLink
+                to={h.to}
+                css={{
+                  flex: '1',
+                  ':hover span': {
+                    textDecoration: 'underline'
+                  },
+                  paddingBottom: `${SPACING.S}`
+                }}
+              >
+                <span>
+                  <span
+                    data-text
+                    css={{
+                      display: 'block',
+                      [MEDIA_QUERIES.M]: {
+                        display: 'inline-block',
+                        marginRight: SPACING.XS
+                      }
+                    }}
+                  >
+                    {h.text}
+                  </span>
+                  <span
+                    css={{
+                      display: 'inline-block',
+                      marginTop: SPACING['3XS'],
+                      [MEDIA_QUERIES.M]: {
+                        marginTop: '0',
+                        display: 'inline-block'
+                      },
+                      ...TYPOGRAPHY['3XS'],
+                      color: COLORS.neutral['300'],
+                      textTransform: 'uppercase',
+                      fontWeight: '700',
+                      fontSize: '0.875rem'
+                    }}
+                    aria-label={h.subLabel}
+                  >
+                    {h.subText}
+                  </span>
+                </span>
+              </GatsbyLink>
+            </li>
+          );
+        })}
         <li>
           <Link
-            to="/locations-and-hours/hours-view"
+            to='/locations-and-hours/hours-view'
             css={{
-              marginLeft: '1.5rem',
+              marginLeft: '1.5rem'
             }}
           >
             View all hours, locations, and access details
@@ -104,6 +106,10 @@ export default function HoursLitePanel({ data }) {
     </section>
   );
 }
+
+HoursLitePanel.propTypes = {
+  data: PropTypes.object
+};
 
 /*
 const hoursDataExample = [
@@ -130,10 +136,10 @@ const hoursDataExample = [
 ]
 */
 
-function processHoursData(data, initialized) {
-  function hours(node) {
+function processHoursData (data, initialized) {
+  function hours (node) {
     if (initialized) {
-      const now = moment();
+      const now = new Date();
       return displayHours({ node, now });
     }
 
@@ -142,18 +148,16 @@ function processHoursData(data, initialized) {
 
   const result = data.map((node) => {
     const hoursData = hours(node);
-    const { text, label } = hoursData
-      ? hoursData
-      : {
-          text: 'n/a',
-          label: 'n/a',
-        };
+    const { text, label } = hoursData || {
+      text: 'n/a',
+      label: 'n/a'
+    };
 
     return {
       text: node.title,
       subText: 'TODAY: ' + text,
       subLabel: 'TODAY: ' + label,
-      to: node.fields.slug,
+      to: node.fields.slug
     };
   });
 

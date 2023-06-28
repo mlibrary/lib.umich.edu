@@ -1,5 +1,3 @@
-import * as moment from 'moment';
-
 export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 
 /*
@@ -26,7 +24,6 @@ export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
     Full:
       => Tuesday, September 15, 2020 from 3:00pm - 3:50pm
 
-
   (C) A multi-day event. Show full range.
 
     Brief:
@@ -36,70 +33,70 @@ export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
     Full:
       => Wednesday, December 15, 2020 from 3:00pm to Friday, January 8, 2021 at 3:50pm
 */
-export function eventFormatWhen({ start, end, kind, type }) {
-  const isBrief = kind === 'brief';
-  const isExhibit = EXHIBIT_TYPES.includes(type);
-  const S = moment(start);
-  const E = moment(end);
-  const isSameYear = S.isSame(E, 'year');
-  const isSameDay = S.isSame(E, 'day');
+const dateFormat = (date, ...properties) => {
+  const options = {
+    month: 'long',
+    day: 'numeric'
+  };
+  if (properties.includes('weekday')) options.weekday = 'long';
+  if (properties.includes('year')) options.year = 'numeric';
+  return date.toLocaleDateString('en-us', options);
+};
+
+const timeFormat = (date) => {
+  return date.toLocaleTimeString('en-US', { timeStyle: 'short' });
+};
+
+export function eventFormatWhen ({ start, end, kind, type }) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const startTime = timeFormat(startDate);
+  const endTime = timeFormat(endDate);
+  const isSameYear = startDate.getFullYear() === endDate.getFullYear();
+  const isSameDay = dateFormat(startDate, 'year') === dateFormat(endDate, 'year');
 
   // Exhibits share same format, regardless of kind.
-  if (isExhibit) {
+  if (EXHIBIT_TYPES.includes(type)) {
     if (isSameYear) {
-      return S.format('MMMM D') + E.format(' [-] MMMM D');
-    } else {
-      return S.format('MMMM D, YYYY') + E.format(' [-] MMMM D, YYYY');
+      return `${dateFormat(startDate)} - ${dateFormat(endDate)}`;
     }
+    return `${dateFormat(startDate, 'year')} - ${dateFormat(endDate, 'year')}`;
   }
 
-  if (isBrief) {
+  if (kind === 'brief') {
     if (isSameDay) {
-      return S.format('dddd, MMMM D [·] h:mma - ') + E.format('h:mma');
-    } else {
-      if (isSameYear) {
-        return (
-          S.format('dddd, MMMM D [·] h:mma - ') +
-          E.format('dddd, MMMM D [·] h:mma')
-        );
-      } else {
-        return (
-          S.format('dddd, MMMM D [·] h:mma - ') +
-          E.format('dddd, MMMM D, YYYY [·] h:mma')
-        );
-      }
+      return `${dateFormat(startDate, 'weekday')} · ${startTime} - ${endTime}`;
     }
+    if (isSameYear) {
+      return `${dateFormat(startDate, 'weekday')} · ${startTime} ${dateFormat(endDate, 'weekday')} · ${endTime}`;
+    }
+    return `${dateFormat(startDate, 'weekday')} · ${startTime} - ${dateFormat(endDate, 'weekday', 'year')} · ${endTime}`;
   }
 
   if (isSameDay) {
-    return S.format('dddd, MMMM D, YYYY [from] h:mma - ') + E.format('h:mma');
+    return `${dateFormat(startDate, 'weekday', 'year')} from ${startTime} - ${endTime}`;
   }
 
   if (isSameYear) {
-    return (
-      S.format('dddd, MMMM D [·] h:mma - ') + E.format('dddd, MMMM D [·] h:mma')
-    );
+    return `${dateFormat(startDate, 'weekday')} · ${endTime} - ${dateFormat(endDate, 'weekday')} · ${endTime}`;
   }
 
-  return (
-    S.format('dddd, MMMM D [·] h:mma - ') +
-    E.format('dddd, MMMM D, YYYY [·] h:mma')
-  );
+  return `${dateFormat(startDate, 'weekday')} · ${endTime} - ${dateFormat(endDate, 'weekday', 'year')} · ${endTime}`;
 }
 
-export function eventFormatWhere({ node, kind }, includeLink = false) {
-  let where = [];
+export function eventFormatWhere ({ node, kind }, includeLink = false) {
+  const where = [];
 
   if (node.field_event_online) {
     where.push({
-      label: 'Online',
+      label: 'Online'
     });
   }
 
   if (includeLink && node.field_online_event_link) {
     where.push({
       label: node.field_online_event_link.title,
-      href: node.field_online_event_link.uri,
+      href: node.field_online_event_link.uri
     });
   }
 
@@ -116,13 +113,17 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
       const stateZip = [
         node.field_non_library_location_addre.administrative_area,
         node.field_non_library_location_addre.postal_code
-      ].filter((field) => field).join(' ')
+      ].filter((field) => {
+        return field;
+      }).join(' ');
       where.push({
         label: [
           node.field_non_library_location_addre.address_line1,
           node.field_non_library_location_addre.locality,
           stateZip
-        ].filter((field) => field).join(', '),
+        ].filter((field) => {
+          return field;
+        }).join(', '),
         className: 'margin-top-none'
       });
     }
@@ -134,7 +135,7 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
   if (building) {
     hasLocation = true;
     where.push({
-      label: [room, building].join(', '),
+      label: [room, building].join(', ')
     });
   }
 
@@ -145,9 +146,13 @@ export function eventFormatWhere({ node, kind }, includeLink = false) {
   return where;
 }
 
-export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
+export function sortEventsByStartDate ({ events, onlyTodayOrAfter = false }) {
   const uniqueEvents = [...events].filter(
-    (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+    (v, i, a) => {
+      return a.findIndex((t) => {
+        return t.id === v.id;
+      }) === i;
+    }
   );
 
   // Duplicate events that have many occurances by
@@ -164,8 +169,8 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
         occurances = occurances.concat([
           {
             ...event,
-            field_event_date_s_: [date], // The one occurance
-          },
+            field_event_date_s_: [date] // The one occurance
+          }
         ]);
       });
     } else {
@@ -175,15 +180,15 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
 
   const sortedEvents = [...occurances].sort(compareStartDate);
 
-  function compareStartDate(a, b) {
+  function compareStartDate (a, b) {
     const startA = a.field_event_date_s_[0].value;
     const startB = b.field_event_date_s_[0].value;
 
-    if (moment(startA).isBefore(startB)) {
+    if (new Date(startA) < new Date(startB)) {
       return -1;
     }
 
-    if (moment(startA).isAfter(startB)) {
+    if (new Date(startA) > new Date(startB)) {
       return 1;
     }
 
@@ -191,17 +196,20 @@ export function sortEventsByStartDate({ events, onlyTodayOrAfter = false }) {
   }
 
   if (onlyTodayOrAfter) {
-    function isBeforeToday(event) {
-      // This broke Jon's brain Wednesday, October 2020. Can't explain.
-      const result = moment(event.field_event_date_s_[0].end_value).isBefore(
-        moment(),
-        'day'
-      );
+    function isAfterToday (event) {
+      // Why are we only checking after today if it's called onlyTODAYOrAfter?
+      const eventDate = new Date(event.field_event_date_s_[0].end_value);
+      const now = new Date();
 
-      return !result;
+      const result =
+          eventDate.getFullYear() > now.getFullYear() &&
+          eventDate.getMonth() > now.getMonth() &&
+          eventDate.getDate() > now.getDate();
+
+      return result;
     }
 
-    return sortedEvents.filter(isBeforeToday);
+    return sortedEvents.filter(isAfterToday);
   }
 
   return sortedEvents;

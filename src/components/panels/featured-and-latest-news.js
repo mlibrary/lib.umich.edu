@@ -1,12 +1,11 @@
 import React from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import styled from '@emotion/styled';
-import * as moment from 'moment';
 import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '../../reusable';
 import Card from '../card';
 import Link from '../link';
 
-function processNewsNodeForCard({ newsNode }) {
+function processNewsNodeForCard ({ newsNode }) {
   const newsImage =
     newsNode.relationships?.field_media_image?.relationships?.field_media_image
       ?.localFile?.childImageSharp?.gatsbyImageData;
@@ -15,10 +14,14 @@ function processNewsNodeForCard({ newsNode }) {
 
   return {
     title: newsNode.title,
-    subtitle: moment(newsNode.created).format('MMMM D, YYYY'),
+    subtitle: new Date(newsNode.created).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }),
     href: newsNode.fields.slug,
     image: newsImage,
-    children,
+    children
   };
 }
 
@@ -31,13 +34,13 @@ const Layout = styled.div({
     [content-start] repeat(11, 1fr)
     1fr [content-end]
   `,
-  gridGap: SPACING['S'],
+  gridGap: SPACING.S,
   [MEDIA_QUERIES.LARGESCREEN]: {
-    gridGap: SPACING['L'],
-  },
+    gridGap: SPACING.L
+  }
 });
 
-export default function FeaturedAndLatestNews() {
+export default function FeaturedAndLatestNews () {
   const data = useStaticQuery(graphql`
     query {
       featuredNews: allNodeNews(
@@ -112,22 +115,22 @@ export default function FeaturedAndLatestNews() {
     <Margins>
       <Layout
         css={{
-          margin: `${SPACING['3XL']} 0`,
+          margin: `${SPACING['3XL']} 0`
         }}
       >
         <div
           css={{
             gridColumn: 'content-start / content-end',
             [MEDIA_QUERIES.LARGESCREEN]: {
-              gridColumn: 'content-start / span 6',
-            },
+              gridColumn: 'content-start / span 6'
+            }
           }}
         >
           <Heading
             level={2}
-            size="M"
+            size='M'
             css={{
-              marginBottom: SPACING['L'],
+              marginBottom: SPACING.L
             }}
           >
             Feature
@@ -135,9 +138,9 @@ export default function FeaturedAndLatestNews() {
           <div
             css={{
               [MEDIA_QUERIES.LARGESCREEN]: {
-                paddingRight: SPACING['XL'],
-                borderRight: `solid 1px ${COLORS.neutral['100']}`,
-              },
+                paddingRight: SPACING.XL,
+                borderRight: `solid 1px ${COLORS.neutral['100']}`
+              }
             }}
           >
             <Card
@@ -155,19 +158,19 @@ export default function FeaturedAndLatestNews() {
           css={{
             gridColumn: 'content-start / content-end',
             [MEDIA_QUERIES.LARGESCREEN]: {
-              gridColumn: 'span 6',
-            },
+              gridColumn: 'span 6'
+            }
           }}
         >
           <Heading
             level={2}
-            size="M"
+            size='M'
             css={{
-              marginTop: SPACING['XL'],
-              marginBottom: SPACING['L'],
+              marginTop: SPACING.XL,
+              marginBottom: SPACING.L,
               [MEDIA_QUERIES.LARGESCREEN]: {
-                marginTop: 0,
-              },
+                marginTop: 0
+              }
             }}
           >
             Recent news
@@ -176,15 +179,17 @@ export default function FeaturedAndLatestNews() {
           <ol
             css={{
               '> li': {
-                marginBottom: SPACING['XL'],
-              },
+                marginBottom: SPACING.XL
+              }
             }}
           >
-            {recentNewsCardProps.map(({ title, subtitle, href }, i) => (
-              <li key={i + href}>
-                <Card title={title} subtitle={subtitle} href={href} />
-              </li>
-            ))}
+            {recentNewsCardProps.map(({ title, subtitle, href }, i) => {
+              return (
+                <li key={i + href}>
+                  <Card title={title} subtitle={subtitle} href={href} />
+                </li>
+              );
+            })}
           </ol>
 
           <Link to={viewAllNewsHref}>View all news and stories</Link>
@@ -194,7 +199,7 @@ export default function FeaturedAndLatestNews() {
   );
 }
 
-function sortNews({ data }) {
+function sortNews ({ data }) {
   const priorityNewsCount = data.priorityNews.edges.length;
 
   // If there is no priority news, just send back recent news.
@@ -209,12 +214,12 @@ function sortNews({ data }) {
   );
   const allNews = data.priorityNews.edges.concat(recentNewsSliced);
 
-  function compareCreatedDate(a, b) {
-    if (moment(a.node.created).isBefore(b.node.created)) {
+  function compareCreatedDate (a, b) {
+    if (Date.parse(a.node.created) < Date.parse(b.node.created)) {
       return 1;
     }
 
-    if (moment(a.node.created).isAfter(b.node.created)) {
+    if (Date.parse(a.node.created) > Date.parse(b.node.created)) {
       return -1;
     }
 
