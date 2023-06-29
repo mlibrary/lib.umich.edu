@@ -125,13 +125,11 @@ NewsTemplate.propTypes = {
   data: PropTypes.object
 };
 
+/* eslint-disable react/prop-types */
 export function Head ({ data }) {
   return <SearchEngineOptimization data={getNode(data)} />;
 }
-
-Head.propTypes = {
-  data: PropTypes.object
-};
+/* eslint-enable react/prop-types */
 
 export default NewsTemplate;
 

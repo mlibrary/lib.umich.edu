@@ -134,7 +134,7 @@ export function displayHours ({ node, now }) {
 
       let formattedTime = '';
 
-      if (hours === '0' || hours === '00') {
+      if (+hours === 0) {
         formattedTime = '12';
       } else if (hours <= 12) {
         formattedTime = hours;
@@ -142,7 +142,7 @@ export function displayHours ({ node, now }) {
         formattedTime = (hours - 12).toString();
       }
 
-      if (minutes !== '00') {
+      if (+minutes > 0) {
         formattedTime += `:${minutes}`;
       }
 
