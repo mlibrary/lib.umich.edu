@@ -27,7 +27,7 @@ jobs:
     env:
       DRUPAL_CONCURRENT_FILE_REQUESTS: 20
       DRUPAL_REQUEST_TIMEOUT: 6000000
-      DRUPAL_URL: 'https://cms.lib.umich.edu/'
+      DRUPAL_URL: ${{ vars.DRUPAL_URL }} 
       ROBOTSTXT_MODE: 'production'
       CONTEXT: 'production'
     # Steps in job
@@ -38,14 +38,14 @@ jobs:
         with:
           fetch-depth: 0
       # Get tag from action input
-      - name: Check that the tag exists
-        if: ${{ github.event_name == 'workflow_dispatch' && github.events.inputs.tag }}
+      - name: Check that the tag exists in repo
+        if: ${{ github.event_name == 'workflow_dispatch'  && github.event.inputs.tag != '' }}
         id: tag_check
         run: |
           if git rev-parse 'refs/tags/${{ github.event.inputs.tag }}' &> /dev/null; then
-            echo '::set-output name=tag::${{ github.event.inputs.tag }}'
+            echo 'tag=${{ github.event.inputs.tag }}' >> $GITHUB_ENV
           elif git rev-parse '${{ github.event.inputs.tag }}' &> /dev/null; then
-            echo "::set-output name=tag::`git rev-parse '${{ github.event.inputs.tag }}'`"
+            echo "tag=`git rev-parse '${{ github.event.inputs.tag }}'`" >> $GITHUB_ENV
           else
             echo "Couldn't figure out tag from input: ${{ github.event.inputs.tag }}"
             echo "Aborting deployment."
@@ -56,7 +56,7 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch'  && github.events.inputs.tag }}
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.tag }}
+          ref: ${{ env.tag }}
       # Install NodeJS
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
@@ -81,13 +81,18 @@ jobs:
         run: npx netlify-cli deploy --dir=public --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+      - name: Output summary
+        run: echo "https://www.lib.umich.edu" >> $GITHUB_STEP_SUMMARY
       # Notify Slack if build fails
-      - name: Report Status
-        if: always()
-        uses: ravsamhq/notify-slack-action@v1
+      - name: Send custom JSON data to Slack workflow
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@v1.24.0
         with:
-          status: ${{ job.status }}
-          notify_when: 'failure'
+          payload: |
+            {
+              "url": "https://github.com/mlibrary/lib.umich.edu/actions/runs/${{ github.run_id }}",
+              "message": "Production build and deploy failed"
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
