@@ -19,7 +19,7 @@ jobs:
     env:
       DRUPAL_CONCURRENT_FILE_REQUESTS: 20
       DRUPAL_REQUEST_TIMEOUT: 6000000
-      DRUPAL_URL: 'https://cms.staging.lib.umich.edu/'
+      DRUPAL_URL: ${{ vars.DRUPAL_URL }}
     # Steps in job
     steps:
       # Get code from repo
@@ -49,13 +49,18 @@ jobs:
         run: npx netlify-cli deploy --dir=public --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+      - name: Output summary
+        run: echo "https://staging.lib.umich.edu" >> $GITHUB_STEP_SUMMARY
       # Notify Slack if build fails
-      - name: Report Status
-        if: always()
-        uses: ravsamhq/notify-slack-action@v1
+      - name: Send custom JSON data to Slack workflow
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@v1.24.0
         with:
-          status: ${{ job.status }}
-          notify_when: 'failure'
+          payload: |
+            {
+              "url": "https://github.com/mlibrary/lib.umich.edu/actions/runs/${{ github.run_id }}",
+              "message": "Staging build and deploy failed"
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
