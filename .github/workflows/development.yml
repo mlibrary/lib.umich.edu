@@ -22,6 +22,11 @@ jobs:
       # Get code from repo
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: get short sha
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+          echo "DEPLOY_URL=https://deploy-preview-$SHORT_SHA--future-wwwlib-development.netlify.app" >> $GITHUB_ENV
       # Install NodeJS
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
@@ -43,16 +48,21 @@ jobs:
       - run: npm run build
       # Deploy to Netlify using our staging secrets
       - name: Deploy to netlify
-        run: npx netlify-cli deploy --dir=public --prod
+        run: npx netlify-cli deploy --dir=public --prod --alias deploy-preview-${{ env.SHORT_SHA }}
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+      - name: Output summary
+        run: echo $DEPLOY_URL >> $GITHUB_STEP_SUMMARY
       # Notify Slack if build fails
-      - name: Report Status
-        if: always()
-        uses: ravsamhq/notify-slack-action@v1
+      - name: Send custom JSON data to Slack workflow
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@v1.24.0
         with:
-          status: ${{ job.status }}
-          notify_when: 'failure'
+          payload: |
+            {
+              "url": "https://github.com/mlibrary/lib.umich.edu/actions/runs/${{ github.run_id }}",
+              "message": "Development build and deploy failed"
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
