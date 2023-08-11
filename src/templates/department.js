@@ -37,7 +37,6 @@ function DepartmentTemplate ({ data }) {
     staffDirectorySlug: data.staffDirectoryNode.fields.slug
   });
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
-
   return (
     <TemplateLayout node={node}>
       <Margins>
@@ -146,35 +145,39 @@ export default DepartmentTemplate;
 function processDepartmentInfo ({ node, staffDirectorySlug }) {
   const { relationships, field_email: fieldEmail, field_fax_number: fieldFaxNumber, title } = node;
 
-  console.log(relationships);
-
   // FOR TESTING! DELETE ME!
-  relationships.field_department_head = [
-    { name: 'marieka', field_user_display_name: 'Marieka Kaye' },
-    { name: 'lstuch', field_user_display_name: 'Lance Thomas Stuchell' },
-    { name: 'lstuch', field_user_display_name: 'Lance Thomas Stuchell' },
-    { name: 'lstuch', field_user_display_name: 'Lance Thomas Stuchell' },
-    { name: 'josalaza', field_user_display_name: 'Josh Salazar' }
-
-  ];
+  // relationships.field_department_head = [
+  //   { name: 'marieka', field_user_display_name: 'Marieka Kaye' },
+  //   { name: 'lstuch', field_user_display_name: 'Lance Thomas Stuchell' },
+  //   { name: 'lstuch', field_user_display_name: 'Lance Thomas Stuchell' },
+  //   { name: 'lstuch', field_user_display_name: 'Lance Thomas Stuchell' },
+  //   { name: 'josalaza', field_user_display_name: 'Josh Salazar' }
+  // ];
   const leadership = relationships.field_department_head
     ? {
         icon: 'person_outline',
         content: (
           <>
             Leadership:{' '}
-            {relationships.field_department_head.map((departmentHead, index, arr) => {
-              return (
-                <React.Fragment key={index}>
-                  {index + 1 === arr.length && arr.length > 1 ? ' and ' : null}
-                  <Link to={'/users/' + departmentHead.name}>
-                    {departmentHead.field_user_display_name}
-                  </Link>
-                  {index + 1 === arr.length ? null : arr.length > 2 ? ', ' : null}
-                </React.Fragment>
-              );
-            })}
+            <Link to={'/users/' + relationships.field_department_head.name}>
+              {relationships.field_department_head.field_user_display_name}
+            </Link>
           </>
+
+        // <>
+        //   Leadership:{' '}
+        //   {relationships.field_department_head.map((departmentHead, index, arr) => {
+        //     return (
+        //       <React.Fragment key={index}>
+        //         {index + 1 === arr.length && arr.length > 1 ? ' and ' : null}
+        //         <Link to={'/users/' + departmentHead.name}>
+        //           {departmentHead.field_user_display_name}
+        //         </Link>
+        //         {index + 1 === arr.length ? null : arr.length > 2 ? ', ' : null}
+        //       </React.Fragment>
+        //     );
+        //   })}
+        // </>
         )
       }
     : null;
