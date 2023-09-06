@@ -146,17 +146,6 @@ export default DepartmentTemplate;
 function processDepartmentInfo ({ node, staffDirectorySlug }) {
   const { relationships, field_email: fieldEmail, field_fax_number: fieldFaxNumber, title } = node;
 
-  console.log(relationships);
-
-  // FOR TESTING! DELETE ME!
-  relationships.field_department_head = [
-    { name: 'marieka', field_user_display_name: 'Marieka Kaye' },
-    { name: 'lstuch', field_user_display_name: 'Lance Thomas Stuchell' },
-    { name: 'lstuch', field_user_display_name: 'Lance Thomas Stuchell' },
-    { name: 'lstuch', field_user_display_name: 'Lance Thomas Stuchell' },
-    { name: 'josalaza', field_user_display_name: 'Josh Salazar' }
-
-  ];
   const leadership = relationships.field_department_head
     ? {
         icon: 'person_outline',
@@ -166,11 +155,11 @@ function processDepartmentInfo ({ node, staffDirectorySlug }) {
             {relationships.field_department_head.map((departmentHead, index, arr) => {
               return (
                 <React.Fragment key={index}>
-                  {index + 1 === arr.length && arr.length > 1 ? ' and ' : null}
+                  {index > 0 && ', '}
+                  {index > 0 && index + 1 === arr.length && 'and '}
                   <Link to={'/users/' + departmentHead.name}>
                     {departmentHead.field_user_display_name}
                   </Link>
-                  {index + 1 === arr.length ? null : arr.length > 2 ? ', ' : null}
                 </React.Fragment>
               );
             })}
