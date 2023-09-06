@@ -150,12 +150,13 @@ function processDepartmentInfo ({ node, staffDirectorySlug }) {
         icon: 'person_outline',
         content: (
           <>
-            Leadership:{' '}
+            Leadership:
             {relationships.field_department_head.map((departmentHead, index, arr) => {
               return (
                 <React.Fragment key={index}>
-                  {index > 0 && ', '}
-                  {index > 0 && index + 1 === arr.length && 'and '}
+                  {index > 0 && arr.length !== 2 && ','}
+                  {index > 0 && index + 1 === arr.length && ' and'}
+                  {' '}
                   <Link to={'/users/' + departmentHead.name}>
                     {departmentHead.field_user_display_name}
                   </Link>
@@ -166,6 +167,7 @@ function processDepartmentInfo ({ node, staffDirectorySlug }) {
         )
       }
     : null;
+
   const email = fieldEmail
     ? {
         icon: 'mail_outline',
