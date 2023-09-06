@@ -53,11 +53,11 @@
   "devDependencies": {
     "bottleneck": "^2.19.5",
     "entities": "^4.5.0",
-    "eslint": "^8.44.0",
+    "eslint": "^8.47.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-config-standard-jsx": "^11.0.0",
     "eslint-config-standard-react": "^13.0.0",
-    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react": "^7.33.1",
     "fetch-retry": "^5.0.6",
     "gatsby-plugin-netlify": "^5.1.0",
     "gatsby-plugin-remove-serviceworker": "^1.0.0"
