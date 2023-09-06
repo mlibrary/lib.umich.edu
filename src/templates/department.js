@@ -37,7 +37,6 @@ function DepartmentTemplate ({ data }) {
     staffDirectorySlug: data.staffDirectoryNode.fields.slug
   });
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
-
   return (
     <TemplateLayout node={node}>
       <Margins>
