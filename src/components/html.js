@@ -9,6 +9,7 @@ import DrupalEntity from './drupal-entity';
 import Callout from '../reusable/callout';
 import Blockquote from '../reusable/blockquote';
 import Table from './table';
+import PropTypes from 'prop-types';
 
 /**
   Headings
@@ -20,6 +21,11 @@ const Heading2 = ({ children, ...other }) => {
     </Heading>
   );
 };
+
+Heading2.propTypes = {
+  children: PropTypes.object
+};
+
 const Heading3 = ({ children, ...other }) => {
   return (
     <Heading level={3} size='S' {...other}>
@@ -27,6 +33,11 @@ const Heading3 = ({ children, ...other }) => {
     </Heading>
   );
 };
+
+Heading3.propTypes = {
+  children: PropTypes.object
+};
+
 const Heading4 = ({ children, ...other }) => {
   return (
     <Heading
@@ -39,6 +50,11 @@ const Heading4 = ({ children, ...other }) => {
     </Heading>
   );
 };
+
+Heading4.propTypes = {
+  children: PropTypes.object
+};
+
 const Heading5 = ({ children, ...other }) => {
   return (
     <Heading level={5} size='3XS' {...other}>
@@ -46,6 +62,11 @@ const Heading5 = ({ children, ...other }) => {
     </Heading>
   );
 };
+
+Heading5.propTypes = {
+  children: PropTypes.object
+};
+
 const Heading6 = ({ children, ...other }) => {
   return (
     <Heading level={6} size='3XS' {...other}>
@@ -54,8 +75,12 @@ const Heading6 = ({ children, ...other }) => {
   );
 };
 
+Heading6.propTypes = {
+  children: PropTypes.object
+};
+
 const renderHast = () => {
-  return new rehypeReact({
+  return new rehypeReact({ // eslint-disable-line
     components: {
       h2: Heading2,
       h3: Heading3,
@@ -160,5 +185,9 @@ function Html ({ html, ...rest }) {
 
   return <Prose {...rest}>{renderHast(tree)}</Prose>;
 }
+
+Html.propTypes = {
+  html: PropTypes.string
+};
 
 export default Html;
