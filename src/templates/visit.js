@@ -14,7 +14,7 @@ import Panels from '../components/panels';
 import transformNodePanels from '../utils/transform-node-panels';
 import getNode from '../utils/get-node';
 
-export default function VisitTemplate({ data, ...rest }) {
+export default function VisitTemplate ({ data, ...rest }) {
   const node = getNode(data);
   const {
     title,
@@ -24,16 +24,31 @@ export default function VisitTemplate({ data, ...rest }) {
     drupal_internal__nid,
     body,
     field_root_page_,
-    field_access,
+    field_access
   } = node;
   const parentNode = relationships.field_parent_page[0];
-  const isRootPage = field_root_page_ ? true : false;
+  const isRootPage = !!field_root_page_;
   const { field_visit, field_amenities } = relationships;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
+  console.log('node');
+  console.log(node);
+
+  console.log('relationships.field_emenities');
+  console.log(relationships.field_amenities);
+
+  console.log('field_access');
+  console.log(field_access);
+
+  console.log('field_visit');
+  console.log(field_visit);
+
+  console.log('field_amenities');
+  console.log(field_amenities);
+
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      <header aria-label="Location description">
+      <header aria-label='Location description'>
         <PageHeader
           breadcrumb={fields.breadcrumb}
           title={title}
@@ -51,10 +66,10 @@ export default function VisitTemplate({ data, ...rest }) {
           childrenNodeOrderByDrupalId: rest.pageContext.children,
           childrenNodes: data.children.edges,
           isRootPage,
-          parentNode,
+          parentNode
         })}
       />
-      <section aria-label="Hours, parking, and amenities">
+      <section aria-label='Hours, parking, and amenities'>
         <Template>
           <TemplateSide>
             <LocationAside node={node} />
@@ -63,44 +78,48 @@ export default function VisitTemplate({ data, ...rest }) {
             <Prose>
               <Heading
                 level={1}
-                size="XL"
+                size='XL'
                 css={{
-                  fontWeight: '600',
+                  fontWeight: '600'
                 }}
                 data-page-heading
               >
                 <span className='visually-hidden'>{title}</span>
-                <span aria-hidden="true">{field_title_context}</span>
+                <span aria-hidden='true'>{field_title_context}</span>
               </Heading>
               <HTMLList data={field_visit} />
 
               {field_access && (
-                <React.Fragment>
-                  <Heading level={2} size="M">
+                <>
+                  <Heading level={2} size='M'>
                     Getting here
                   </Heading>
 
                   <Html html={field_access.processed} />
-                </React.Fragment>
+                </>
               )}
 
               {field_amenities?.length > 0 && (
-                <React.Fragment>
-                  <Heading level={2} size="M">
+                <>
+                  <Heading level={2} size='M'>
                     Amenities
                   </Heading>
-                  <List type="bulleted">
-                    {field_amenities.map(({ name, description }, i) => (
-                      <li key={i + name}>
-                        {description ? (
-                          <Html html={description.processed} />
-                        ) : (
-                          <React.Fragment>{name}</React.Fragment>
-                        )}
-                      </li>
-                    ))}
+                  <List type='bulleted'>
+                    {field_amenities.map(({ name, description }, i) => {
+                      return (
+                        <li key={i + name}>
+                          {description
+                            ? (
+                              <Html html={description.processed} />
+                              )
+                            : (
+                              <>{name}</>
+                              )}
+                        </li>
+                      );
+                    })}
                   </List>
-                </React.Fragment>
+                </>
               )}
             </Prose>
 
@@ -112,8 +131,8 @@ export default function VisitTemplate({ data, ...rest }) {
       <div
         css={{
           'section:nth-of-type(odd)': {
-            background: COLORS.blue['100'],
-          },
+            background: COLORS.blue['100']
+          }
         }}
       >
         <Panels data={fullPanels} />
@@ -122,11 +141,11 @@ export default function VisitTemplate({ data, ...rest }) {
   );
 }
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={getNode(data)} />;
 }
 
-function HTMLList({ data }) {
+function HTMLList ({ data }) {
   const sorted = data.sort((a, b) => {
     const weightA = a.weight;
     const weightB = b.weight;
@@ -143,12 +162,14 @@ function HTMLList({ data }) {
   });
 
   return (
-    <List type="bulleted">
-      {sorted.map(({ description }, i) => (
-        <li key={i + description.processed}>
-          <Html html={description.processed} />
-        </li>
-      ))}
+    <List type='bulleted'>
+      {sorted.map(({ description }, i) => {
+        return (
+          <li key={i + description.processed}>
+            <Html html={description.processed} />
+          </li>
+        );
+      })}
     </List>
   );
 }
