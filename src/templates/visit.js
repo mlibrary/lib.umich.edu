@@ -13,26 +13,26 @@ import LocationAside from '../components/location-aside';
 import Panels from '../components/panels';
 import transformNodePanels from '../utils/transform-node-panels';
 import getNode from '../utils/get-node';
+import PropTypes from 'prop-types';
 
 export default function VisitTemplate ({ data, ...rest }) {
   const node = getNode(data);
   const {
     title,
-    field_title_context,
+    field_title_context: fieldTitleContext,
     fields,
     relationships,
-    drupal_internal__nid,
+    drupal_internal__nid: drupalInternalNid,
     body,
-    field_root_page_,
-    field_access
+    field_root_page_: fieldRootPage,
+    field_access: fieldAccess
   } = node;
   const parentNode = relationships.field_parent_page[0];
-  const isRootPage = !!field_root_page_;
-  const { field_visit, field_amenities } = relationships;
+  const isRootPage = !!fieldRootPage;
+  const { field_visit: fieldVisit, field_amenities: fieldAmenities } = relationships;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
-
   return (
-    <Layout drupalNid={drupal_internal__nid}>
+    <Layout drupalNid={drupalInternalNid}>
       <header aria-label='Location description'>
         <PageHeader
           breadcrumb={fields.breadcrumb}
@@ -70,27 +70,41 @@ export default function VisitTemplate ({ data, ...rest }) {
                 data-page-heading
               >
                 <span className='visually-hidden'>{title}</span>
-                <span aria-hidden='true'>{field_title_context}</span>
+                <span aria-hidden='true'>{fieldTitleContext}</span>
               </Heading>
-              <HTMLList data={field_visit} />
+              {fieldVisit && (
+                <>
+                  <List type='bulleted'>
+                    {fieldVisit.sort((a, b) => {
+                      return a.weight - b.weight;
+                    }).map(({ description }, i) => {
+                      return (
+                        <li key={i + description.processed}>
+                          <Html html={description.processed} />
+                        </li>
+                      );
+                    })}
+                  </List>
+                </>
+              )}
 
-              {field_access && (
+              {fieldAccess && (
                 <>
                   <Heading level={2} size='M'>
                     Getting here
                   </Heading>
 
-                  <Html html={field_access.processed} />
+                  <Html html={fieldAccess.processed} />
                 </>
               )}
 
-              {field_amenities?.length > 0 && (
+              {fieldAmenities && (
                 <>
                   <Heading level={2} size='M'>
                     Amenities
                   </Heading>
                   <List type='bulleted'>
-                    {field_amenities.sort((a, b) => {
+                    {fieldAmenities.sort((a, b) => {
                       return a.weight - b.weight;
                     }).map(({ name, description }, i) => {
                       return (
@@ -128,37 +142,12 @@ export default function VisitTemplate ({ data, ...rest }) {
   );
 }
 
-export function Head ({ data }) {
+VisitTemplate.propTypes = {
+  data: PropTypes.object
+};
+
+export function Head ({ data }) { // eslint-disable-line
   return <SearchEngineOptimization data={getNode(data)} />;
-}
-
-function HTMLList ({ data }) {
-  const sorted = data.sort((a, b) => {
-    const weightA = a.weight;
-    const weightB = b.weight;
-
-    if (weightA < weightB) {
-      return -1;
-    }
-
-    if (weightA > weightB) {
-      return 1;
-    }
-
-    return 0;
-  });
-
-  return (
-    <List type='bulleted'>
-      {sorted.map(({ description }, i) => {
-        return (
-          <li key={i + description.processed}>
-            <Html html={description.processed} />
-          </li>
-        );
-      })}
-    </List>
-  );
 }
 
 export const query = graphql`
