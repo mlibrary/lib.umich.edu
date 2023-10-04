@@ -31,21 +31,6 @@ export default function VisitTemplate ({ data, ...rest }) {
   const { field_visit, field_amenities } = relationships;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
-  console.log('node');
-  console.log(node);
-
-  console.log('relationships.field_emenities');
-  console.log(relationships.field_amenities);
-
-  console.log('field_access');
-  console.log(field_access);
-
-  console.log('field_visit');
-  console.log(field_visit);
-
-  console.log('field_amenities');
-  console.log(field_amenities);
-
   return (
     <Layout drupalNid={drupal_internal__nid}>
       <header aria-label='Location description'>
@@ -105,7 +90,9 @@ export default function VisitTemplate ({ data, ...rest }) {
                     Amenities
                   </Heading>
                   <List type='bulleted'>
-                    {field_amenities.map(({ name, description }, i) => {
+                    {field_amenities.sort((a, b) => {
+                      return a.weight - b.weight;
+                    }).map(({ name, description }, i) => {
                       return (
                         <li key={i + name}>
                           {description
