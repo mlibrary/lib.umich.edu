@@ -98,7 +98,7 @@ export default function VisitTemplate ({ data, ...rest }) {
                 </>
               )}
 
-              {fieldAmenities && (
+              {fieldAmenities?.length > 0 && (
                 <>
                   <Heading level={2} size='M'>
                     Amenities
