@@ -72,6 +72,7 @@ export default function VisitTemplate ({ data, ...rest }) {
                 <span className='visually-hidden'>{title}</span>
                 <span aria-hidden='true'>{fieldTitleContext}</span>
               </Heading>
+
               {fieldVisit?.length > 0 && (
                 <>
                   <List type='bulleted'>
@@ -88,7 +89,7 @@ export default function VisitTemplate ({ data, ...rest }) {
                 </>
               )}
 
-              {fieldAccess?.length > 0 && (
+              {fieldAccess?.processed && (
                 <>
                   <Heading level={2} size='M'>
                     Getting here
