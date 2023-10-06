@@ -72,7 +72,7 @@ export default function VisitTemplate ({ data, ...rest }) {
                 <span className='visually-hidden'>{title}</span>
                 <span aria-hidden='true'>{fieldTitleContext}</span>
               </Heading>
-              {fieldVisit && (
+              {fieldVisit?.length > 0 && (
                 <>
                   <List type='bulleted'>
                     {fieldVisit.sort((a, b) => {
@@ -88,7 +88,7 @@ export default function VisitTemplate ({ data, ...rest }) {
                 </>
               )}
 
-              {fieldAccess && (
+              {fieldAccess?.length > 0 && (
                 <>
                   <Heading level={2} size='M'>
                     Getting here
