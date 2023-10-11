@@ -27,7 +27,7 @@ const downloadRedirectsFile = async (url, path) => {
         );
         resolve();
       } else {
-        throw `[redirects] Error! Unable to verify first redirect rule.`;
+        throw '[redirects] Error! Unable to verify first redirect rule.';
       }
     });
   });
@@ -41,7 +41,7 @@ const downloadRedirectsFile = async (url, path) => {
  * Production _redirects file: https://cms.lib.umich.edu/_redirects
  * Netlify redirect docs: https://docs.netlify.com/routing/redirects/
  */
-async function createNetlifyRedirectsFile({ baseUrl }) {
+async function createNetlifyRedirectsFile ({ baseUrl }) {
   const dir = 'public';
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
@@ -55,11 +55,11 @@ exports.createNetlifyRedirectsFile = createNetlifyRedirectsFile;
 /*
   https://www.gatsbyjs.org/packages/gatsby-plugin-client-side-redirect/
 */
-function createLocalRedirects({ createRedirect }) {
+function createLocalRedirects ({ createRedirect }) {
   console.log('[redirects] Creating local redirects.');
 
   const readInterface = readline.createInterface({
-    input: fs.createReadStream('public/_redirects'),
+    input: fs.createReadStream('public/_redirects')
   });
 
   readInterface.on('line', function (line) {
@@ -83,8 +83,7 @@ function createLocalRedirects({ createRedirect }) {
         createRedirect({
           fromPath: urls[0],
           toPath: urls[1],
-          isPermanent: true,
-          redirectInBrowser: true,
+          isPermanent: true
         });
       }
     }
