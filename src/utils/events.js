@@ -45,7 +45,7 @@ const dateFormat = (date, ...properties) => {
 };
 
 const timeFormat = (date) => {
-  return date.toLocaleTimeString('en-US', { timeStyle: 'short' });
+  return Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(date);
 };
 
 export function eventFormatWhen ({ start, end, kind, type }) {

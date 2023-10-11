@@ -150,11 +150,11 @@ function processNewsData (data) {
     const image =
       relationships?.field_media_image?.relationships?.field_media_image
         ?.localFile?.childImageSharp?.gatsbyImageData;
-    const subtitle = new Date(created).toLocaleString('en-US', {
+    const subtitle = Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
-    });
+    }).format(new Date(created));
 
     return {
       title,

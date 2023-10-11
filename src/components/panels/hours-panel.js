@@ -16,17 +16,17 @@ import PropTypes from 'prop-types';
 
 const dateFormat = (string, abbreviated = false) => {
   if (abbreviated) {
-    return string.toLocaleString('en-US', {
+    return Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric'
-    });
+    }).format(string);
   }
-  return string.toLocaleString('en-US', {
+  return Intl.DateTimeFormat('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric'
-  });
+  }).format(string);
 };
 
 export function HoursPanelNextPrev ({ location }) {
@@ -247,15 +247,15 @@ function transformTableData ({ node, now }) {
 
     headings.push({
       text: daysOfWeek[date.getDay()],
-      subtext: date.toLocaleString('en-US', {
+      subtext: Intl.DateTimeFormat('en-US', {
         month: 'short',
         day: 'numeric'
-      }),
-      label: date.toLocaleString('en-US', {
+      }).format(date),
+      label: Intl.DateTimeFormat('en-US', {
         weekday: 'long',
         month: 'long',
         day: 'numeric'
-      })
+      }).format(date)
     });
   }
 

@@ -14,11 +14,11 @@ function processNewsNodeForCard ({ newsNode }) {
 
   return {
     title: newsNode.title,
-    subtitle: new Date(newsNode.created).toLocaleString('en-US', {
+    subtitle: Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
-    }),
+    }).format(new Date(newsNode.created)),
     href: newsNode.fields.slug,
     image: newsImage,
     children

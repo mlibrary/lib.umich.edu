@@ -57,11 +57,11 @@ function NewsTemplate ({ data }) {
                   paddingTop: SPACING.M
                 }}
               >
-                {new Date(created).toLocaleDateString('en-us', {
+                {Intl.DateTimeFormat('en-us', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
-                })}
+                }).format(new Date(created))}
               </p>
             )}
           </Heading>
