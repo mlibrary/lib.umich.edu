@@ -83,7 +83,8 @@ function createLocalRedirects ({ createRedirect }) {
         createRedirect({
           fromPath: urls[0],
           toPath: urls[1],
-          isPermanent: true
+          isPermanent: true,
+          redirectInBrowser: true
         });
       }
     }
