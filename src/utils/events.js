@@ -40,7 +40,8 @@ const dateFormat = (date, ...properties) => {
   };
   if (properties.includes('weekday')) options.weekday = 'long';
   if (properties.includes('year')) options.year = 'numeric';
-  return date.toLocaleDateString('en-us', options);
+
+  return Intl.DateTimeFormat('en-US', options).format(date);
 };
 
 const timeFormat = (date) => {
