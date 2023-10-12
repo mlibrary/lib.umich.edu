@@ -16,6 +16,7 @@ function processNewsNodeForCard ({ newsNode }, initialized) {
     return {
       title: newsNode.title,
       subtitle: new Date(newsNode.created).toLocaleString('en-US', {
+        timeZone: 'America/New_York',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
