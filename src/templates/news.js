@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchEngineOptimization from '../components/seo';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -15,6 +15,11 @@ import Share from '../components/share';
 import PropTypes from 'prop-types';
 
 function NewsTemplate ({ data }) {
+  const [initialized, setInitialized] = useState(false);
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
+
   const node = getNode(data);
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
   const { field_title_context: fieldTitleContext, body, fields, relationships, created } = node;
@@ -31,6 +36,10 @@ function NewsTemplate ({ data }) {
     relationships.field_media_image.field_image_caption
       ? relationships.field_media_image.field_image_caption.processed
       : null;
+
+  if (!initialized) {
+    return null;
+  }
 
   return (
     <TemplateLayout node={node}>

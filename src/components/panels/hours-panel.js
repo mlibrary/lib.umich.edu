@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Margins,
   Heading,
@@ -14,7 +14,7 @@ import { useStateValue } from '../use-state';
 import { displayHours } from '../../utils/hours';
 import PropTypes from 'prop-types';
 
-const dateFormat = (string, abbreviated = false) => {
+const dateFormat = (string, abbreviated = false, initialized) => {
   if (abbreviated) {
     return string.toLocaleString('en-US', {
       timeZone: 'America/New_York',
@@ -32,6 +32,12 @@ const dateFormat = (string, abbreviated = false) => {
 };
 
 export function HoursPanelNextPrev ({ location }) {
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
+
   const [{ weekOffset }, dispatch] = useStateValue();
   const date = new Date();
 
@@ -42,10 +48,12 @@ export function HoursPanelNextPrev ({ location }) {
   toDate.setDate(date.getDate() + (weekOffset * 7) + (6 - date.getDay()));
 
   const hoursRange = {
-    text: `${dateFormat(fromDate, true)} - ${dateFormat(toDate, true)}`,
-    label: `Showing hours for ${location} from ${dateFormat(fromDate)} to ${dateFormat(toDate)}`
+    text: `${dateFormat(fromDate, true, initialized)} - ${dateFormat(toDate, true, initialized)}`,
+    label: `Showing hours for ${location} from ${dateFormat(fromDate, false, initialized)} to ${dateFormat(toDate, false, initialized)}`
   };
-
+  if (!initialized) {
+    return null;
+  }
   return (
     <Margins data-hours-panel-next-previous>
       <div
@@ -171,6 +179,12 @@ PreviousNextWeekButton.propTypes = {
 };
 
 export default function HoursPanelContainer ({ data }) {
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
+
   const [{ weekOffset }] = useStateValue();
   const { relationships, field_body: fieldBody } = data;
 
@@ -179,6 +193,10 @@ export default function HoursPanelContainer ({ data }) {
   }
 
   const { title } = relationships.field_parent_card[0];
+
+  if (!initialized) {
+    return null;
+  }
 
   return (
     <section
@@ -205,7 +223,7 @@ export default function HoursPanelContainer ({ data }) {
           data={transformTableData({
             node: data,
             now: new Date(new Date().setDate(new Date().getDate() + weekOffset * 7))
-          })}
+          }, initialized)}
           dayOfWeek={weekOffset === 0 ? new Date().getDay() : false}
           location={title}
         />
@@ -218,7 +236,7 @@ HoursPanelContainer.propTypes = {
   data: PropTypes.object
 };
 
-function transformTableData ({ node, now }) {
+function transformTableData ({ node, now }, initialized) {
   const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;
 
   /*

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '../reusable';
@@ -13,6 +13,12 @@ import { eventFormatWhen, eventFormatWhere } from '../utils/events';
 import PropTypes from 'prop-types';
 
 function EventTemplate ({ data }) {
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
+
   const node = data.event;
   const { field_title_context: fieldTitleContext, body, fields, relationships } = node;
   const { slug } = fields;
@@ -25,6 +31,10 @@ function EventTemplate ({ data }) {
     relationships?.field_media_image?.field_image_caption?.processed;
   const contact = relationships?.field_library_contact;
   const eventContacts = relationships?.field_non_library_event_contact;
+
+  if (!initialized) {
+    return null;
+  }
 
   return (
     <TemplateLayout node={node}>

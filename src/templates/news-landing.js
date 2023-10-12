@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { graphql } from 'gatsby';
 import { Margins, Heading, SPACING, Expandable, ExpandableChildren, ExpandableButton } from '../reusable';
 import Layout from '../components/layout';
@@ -10,13 +10,22 @@ import { Template, TemplateSide, TemplateContent } from '../components/aside-lay
 import PropTypes from 'prop-types';
 
 function NewsLandingTemplate ({ data }) {
-  const news = processNewsData(data.featuredNews).concat(
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
+  const news = processNewsData(data.featuredNews, initialized).concat(
     processNewsData(data.restNews)
   );
-  const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates);
+  const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates, initialized);
   const newsMainInitialShow = 10;
   const newsLibraryUpdatesInitialShow = 20;
   const { field_title_context: fieldTitleContext, body, fields, drupal_internal__nid: drupalInternalNID } = data.page;
+
+  if (!initialized) {
+    return null;
+  }
 
   return (
     <Layout drupalNid={drupalInternalNID}>
