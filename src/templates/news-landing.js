@@ -151,6 +151,7 @@ function processNewsData (data) {
       relationships?.field_media_image?.relationships?.field_media_image
         ?.localFile?.childImageSharp?.gatsbyImageData;
     const subtitle = new Date(created).toLocaleString('en-US', {
+      timeZone: 'America/New_York',
       year: 'numeric',
       month: 'long',
       day: 'numeric'

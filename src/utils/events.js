@@ -35,6 +35,7 @@ export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 */
 const dateFormat = (date, ...properties) => {
   const options = {
+    timeZone: 'America/New_York',
     month: 'long',
     day: 'numeric'
   };
@@ -44,7 +45,10 @@ const dateFormat = (date, ...properties) => {
 };
 
 const timeFormat = (date) => {
-  return date.toLocaleTimeString('en-US', { timeStyle: 'short' });
+  return date.toLocaleTimeString('en-US', {
+    timeZone: 'America/New_York',
+    timeStyle: 'short'
+  });
 };
 
 export function eventFormatWhen ({ start, end, kind, type }) {

@@ -17,11 +17,13 @@ import PropTypes from 'prop-types';
 const dateFormat = (string, abbreviated = false) => {
   if (abbreviated) {
     return string.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
       month: 'short',
       day: 'numeric'
     });
   }
   return string.toLocaleString('en-US', {
+    timeZone: 'America/New_York',
     weekday: 'long',
     month: 'long',
     day: 'numeric',
@@ -248,10 +250,12 @@ function transformTableData ({ node, now }) {
     headings.push({
       text: daysOfWeek[date.getDay()],
       subtext: date.toLocaleString('en-US', {
+        timeZone: 'America/New_York',
         month: 'short',
         day: 'numeric'
       }),
       label: date.toLocaleString('en-US', {
+        timeZone: 'America/New_York',
         weekday: 'long',
         month: 'long',
         day: 'numeric'

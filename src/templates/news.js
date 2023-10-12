@@ -58,6 +58,7 @@ function NewsTemplate ({ data }) {
                 }}
               >
                 {new Date(created).toLocaleDateString('en-us', {
+                  timeZone: 'America/New_York',
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
