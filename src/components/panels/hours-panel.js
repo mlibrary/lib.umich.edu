@@ -32,13 +32,16 @@ const dateFormat = (string, abbreviated = false, initialized) => {
 };
 
 export function HoursPanelNextPrev ({ location }) {
+  const [{ weekOffset }, dispatch] = useStateValue();
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     setInitialized(true);
-  }, []);
+  }, [initialized]);
 
-  const [{ weekOffset }, dispatch] = useStateValue();
+  if (!initialized) {
+    return <>…</>;
+  }
   const date = new Date();
 
   const fromDate = new Date(date);
@@ -179,14 +182,18 @@ PreviousNextWeekButton.propTypes = {
 };
 
 export default function HoursPanelContainer ({ data }) {
+  const [{ weekOffset }] = useStateValue();
+  const { relationships, field_body: fieldBody } = data;
+
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     setInitialized(true);
-  }, []);
+  }, [initialized]);
 
-  const [{ weekOffset }] = useStateValue();
-  const { relationships, field_body: fieldBody } = data;
+  if (!initialized) {
+    return <>…</>;
+  }
 
   if (relationships.field_parent_card.length === 0) {
     return null;

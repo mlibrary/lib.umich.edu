@@ -5,28 +5,25 @@ import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '../../reusable
 import Card from '../card';
 import Link from '../link';
 
-function processNewsNodeForCard ({ newsNode }, initialized) {
-  if (initialized) {
-    const newsImage =
+function processNewsNodeForCard ({ newsNode }) {
+  const newsImage =
     newsNode.relationships?.field_media_image?.relationships?.field_media_image
       ?.localFile?.childImageSharp?.gatsbyImageData;
 
-    const children = newsNode.body?.summary;
+  const children = newsNode.body?.summary;
 
-    return {
-      title: newsNode.title,
-      subtitle: new Date(newsNode.created).toLocaleString('en-US', {
-        timeZone: 'America/New_York',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }),
-      href: newsNode.fields.slug,
-      image: newsImage,
-      children
-    };
-  }
-  return null;
+  return {
+    title: newsNode.title,
+    subtitle: new Date(newsNode.created).toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }),
+    href: newsNode.fields.slug,
+    image: newsImage,
+    children
+  };
 }
 
 /*
@@ -46,6 +43,14 @@ const Layout = styled.div({
 
 export default function FeaturedAndLatestNews () {
   const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    setInitialized(true);
+  }, [initialized]);
+
+  if (!initialized) {
+    return <>…</>;
+  }
 
   const data = useStaticQuery(graphql`
     query {
@@ -110,16 +115,12 @@ export default function FeaturedAndLatestNews () {
   }
 
   const featureNode = data.featuredNews.edges[0].node;
-  const featureCardProps = processNewsNodeForCard({ newsNode: featureNode }, initialized);
+  const featureCardProps = processNewsNodeForCard({ newsNode: featureNode });
   const recentNews = sortNews({ data });
   const recentNewsCardProps = recentNews.map(({ node }) => {
-    return processNewsNodeForCard({ newsNode: node }, initialized);
+    return processNewsNodeForCard({ newsNode: node });
   });
   const viewAllNewsHref = data.newsLandingPage.fields.slug;
-
-  useEffect(() => {
-    setInitialized(true);
-  }, []);
 
   if (!featureCardProps || featureCardProps.length === 0 || !recentNewsCardProps || recentNewsCardProps.length === 0) {
     return null;

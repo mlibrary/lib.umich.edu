@@ -10,12 +10,17 @@ import PropTypes from 'prop-types';
 
 export default function HoursLitePanel ({ data }) {
   const [initialized, setInitialized] = useState(false);
-  const { field_title: fieldTitle } = data;
-  const hours = processHoursData(data.relationships.field_cards, initialized);
 
   useEffect(() => {
     setInitialized(true);
-  }, []);
+  }, [initialized]);
+
+  if (!initialized) {
+    return <>…</>;
+  }
+
+  const { field_title: fieldTitle } = data;
+  const hours = processHoursData(data.relationships.field_cards);
 
   return (
     <section>
@@ -138,12 +143,8 @@ const hoursDataExample = [
 
 function processHoursData (data, initialized) {
   function hours (node) {
-    if (initialized) {
-      const now = new Date();
-      return displayHours({ node, now });
-    }
-
-    return { text: '...', label: 'Loading hours... ' };
+    const now = new Date();
+    return displayHours({ node, now });
   }
 
   const result = data.map((node) => {
