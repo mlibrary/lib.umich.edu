@@ -73,16 +73,15 @@ export default function EventsAndExhibitsPanel () {
       // Get Today's events.
       const todaysEvents = events.filter((event) => {
         const start = new Date(event.field_event_date_s_[0].value);
+        const end = new Date(event.field_event_date_s_[0].end_value);
         const type = event.relationships.field_event_type.name;
-
         // We don't want exhibits in the events area.
         if (EXHIBIT_TYPES.includes(type)) {
           return false;
         }
 
-        return new Date(now.toDateString()) === new Date(start.toDateString()); // all today.
+        return (now.toDateString() === new Date(start).toDateString()) && (now.toTimeString() < end.toTimeString()); // all today that haven't ended.
       });
-
       setTodaysEvents(todaysEvents);
     }
 
