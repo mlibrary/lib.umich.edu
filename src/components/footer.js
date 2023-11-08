@@ -1,4 +1,5 @@
 import React from 'react';
+import dayjs from 'dayjs';
 import { COLORS, SPACING, Margins, Heading, MEDIA_QUERIES } from '../reusable';
 
 import fdlp from '../images/fdlp.png';
@@ -88,8 +89,7 @@ const links = [
 ];
 
 function Footer () {
-  const now = new Date();
-  const year = now.getUTCFullYear();
+  const year = dayjs().year();
 
   return (
     <footer
