@@ -14,7 +14,7 @@ const siteMetadata = {
 
 module.exports = {
   flags: {
-    DEV_SSR: false // Watches gatsby-ssr.js while developing
+    DEV_SSR: true // Watches gatsby-ssr.js while developing
   },
   siteMetadata,
   plugins: [
@@ -47,7 +47,7 @@ module.exports = {
            * the sites production branch and ROBOTSTXT_MODE is set to production.
            */
           if (process.env.ROBOTSTXT_MODE === 'production') {
-            mode = 'development';
+            mode = 'production';
           }
 
           console.log(`[gatsby-plugin-robots-txt] is in ${mode} mode.`);
