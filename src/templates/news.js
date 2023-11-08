@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import dayjs from 'dayjs';
 import SearchEngineOptimization from '../components/seo';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -57,12 +58,7 @@ function NewsTemplate ({ data }) {
                   paddingTop: SPACING.M
                 }}
               >
-                {new Date(created).toLocaleDateString('en-us', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  timeZone: 'America/New_York'
-                })}
+                {dayjs(created).format('MMMM D, YYYY')}
               </p>
             )}
           </Heading>
