@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchEngineOptimization from '../components/seo';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
