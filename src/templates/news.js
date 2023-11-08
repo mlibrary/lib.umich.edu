@@ -60,7 +60,8 @@ function NewsTemplate ({ data }) {
                 {new Date(created).toLocaleDateString('en-us', {
                   year: 'numeric',
                   month: 'long',
-                  day: 'numeric'
+                  day: 'numeric',
+                  timeZone: 'America/New_York'
                 })}
               </p>
             )}
