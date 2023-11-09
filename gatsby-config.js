@@ -14,7 +14,7 @@ const siteMetadata = {
 
 module.exports = {
   flags: {
-    DEV_SSR: true // Watches gatsby-ssr.js while developing
+    DEV_SSR: false // Watches gatsby-ssr.js while developing
   },
   siteMetadata,
   plugins: [
