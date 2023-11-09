@@ -36,7 +36,8 @@ export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 const dateFormat = (date, ...properties) => {
   const options = {
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'America/New_York'
   };
   if (properties.includes('weekday')) options.weekday = 'long';
   if (properties.includes('year')) options.year = 'numeric';
@@ -44,7 +45,7 @@ const dateFormat = (date, ...properties) => {
 };
 
 const timeFormat = (date) => {
-  return date.toLocaleTimeString('en-US', { timeStyle: 'short' });
+  return date.toLocaleTimeString('en-US', { timeStyle: 'short', timeZone: 'America/New_York' });
 };
 
 export function eventFormatWhen ({ start, end, kind, type }) {
