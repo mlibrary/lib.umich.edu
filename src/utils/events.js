@@ -53,7 +53,7 @@ export function eventFormatWhen ({ start, end, kind, type }) {
   const endDate = new Date(end);
   const startTime = timeFormat(startDate);
   const endTime = timeFormat(endDate);
-  const isSameYear = startDate.getFullYear() === endDate.getFullYear();
+  const isSameYear = startDate.getUTCFullYear() === endDate.getUTCFullYear();
   const isSameDay = dateFormat(startDate, 'year') === dateFormat(endDate, 'year');
 
   // Exhibits share same format, regardless of kind.
