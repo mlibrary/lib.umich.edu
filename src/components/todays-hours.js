@@ -18,7 +18,7 @@ export default function Hours ({ node }) {
     return <>…</>;
   }
 
-  const now = new Date();
+  const now = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' });
   const hours = displayHours({ node, now });
 
   if (!hours) {

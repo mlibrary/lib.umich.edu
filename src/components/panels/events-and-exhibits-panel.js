@@ -87,7 +87,7 @@ export default function EventsAndExhibitsPanel () {
 
     if (events && upcomingEvents === null) {
       // useEffects are only client side, so we can use now here.
-      const now = new Date();
+      const now = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' });
 
       // Get upcoming events.
       // This is repetative... but :shrug:

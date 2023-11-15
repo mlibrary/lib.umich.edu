@@ -9,7 +9,7 @@ import createGoogleMapsUrl from './utilities/create-google-maps-url';
 
 const locationURL = createGoogleMapsUrl({
   query:
-    'University of Michigan Library, 913 S. University Avenue, Ann Arbor, MI 48109',
+    'University of Michigan Library, 913 S. University Avenue, Ann Arbor, MI 48109'
 });
 
 // eslint-disable-next-line
@@ -19,36 +19,36 @@ const links = [
     links: [
       {
         text: (
-          <React.Fragment>
+          <>
             913 S. University Avenue
             <br />
             Ann Arbor, MI 48109-1190
-          </React.Fragment>
+          </>
         ),
         to: locationURL,
-        d: icons['address'],
+        d: icons.address
       },
       {
         text: '(734) 764-0400',
         to: 'tel:+1-734-764-0400',
-        d: icons['phone'],
+        d: icons.phone
       },
       {
         text: 'Send us an email',
         to: 'https://umich.qualtrics.com/jfe/form/SV_2bpfeZMnAK2ozhr',
-        icon: 'mail_outline',
+        icon: 'mail_outline'
       },
       {
         text: 'Accessibility',
         to: '/about-us/about-library/diversity-equity-inclusion-and-accessibility/accessibility',
-        icon: 'accessible_forward',
+        icon: 'accessible_forward'
       },
       {
         text: 'Site map',
         to: '/site-map',
-        icon: 'map',
-      },
-    ],
+        icon: 'map'
+      }
+    ]
   },
   {
     heading: 'Our community',
@@ -56,149 +56,151 @@ const links = [
       {
         text: 'Staff directory',
         to: '/about-us/staff-directory',
-        icon: 'people_outline',
+        icon: 'people_outline'
       },
       {
         text: 'Work for us',
         to: '/about-us/work-us',
-        icon: 'work',
+        icon: 'work'
       },
       {
         text: 'Blogs',
         to: 'https://apps.lib.umich.edu/blogs',
-        icon: 'blog',
+        icon: 'blog'
       },
       {
         text: 'Facebook',
         to: 'https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559',
-        icon: 'facebook',
+        icon: 'facebook'
       },
       {
         text: 'Twitter',
         to: 'https://twitter.com/umichlibrary',
-        icon: 'twitter',
+        icon: 'twitter'
       },
       {
         text: 'YouTube',
         to: 'http://www.youtube.com/user/umlibrary/videos',
-        icon: 'youtube',
-      },
-    ],
-  },
+        icon: 'youtube'
+      }
+    ]
+  }
 ];
 
-function Footer() {
-  const now = new Date();
+function Footer () {
+  const now = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' });
   const year = now.getFullYear();
 
   return (
     <footer
       css={{
-        background: COLORS['blue']['400'],
+        background: COLORS.blue['400'],
         '*:focus': {
-          outlineColor: 'white',
-        },
+          outlineColor: 'white'
+        }
       }}
     >
       <Margins
         css={{
-          color: 'white',
+          color: 'white'
         }}
       >
         <div
           css={{
             paddingTop: SPACING['2XL'],
-            paddingBottom: SPACING['L'],
+            paddingBottom: SPACING.L,
             [MEDIA_QUERIES.LARGESCREEN]: {
               paddingTop: SPACING['3XL'],
               columns: '3',
-              columnGap: SPACING['XL'],
+              columnGap: SPACING.XL,
               '& section': {
                 breakInside: 'avoid',
-                marginBottom: '0',
-              },
+                marginBottom: '0'
+              }
             },
             '& section:not(:last-of-type)': {
-              marginBottom: SPACING['XL'],
+              marginBottom: SPACING.XL
             },
             'a:hover': {
-              textDecoration: 'underline',
+              textDecoration: 'underline'
             },
             'h2, h3': {
-              color: COLORS['blue']['200'],
-            },
+              color: COLORS.blue['200']
+            }
           }}
         >
-          {links.map((section) => (
-            <section key={section.heading}>
-              <Heading level={2} size="3XS">
-                {section.heading}
-              </Heading>
-              <ul
-                css={{
-                  paddingTop: SPACING['S'],
-                }}
-              >
-                {section.links.map(({ text, to, d, icon }, y) => {
-                  return (
-                    <li key={y + to + text}>
-                      <PlainLink
-                        to={to}
-                        css={{
-                          display: 'inline-block',
-                          padding: `${SPACING['XS']} 0`,
-                        }}
-                      >
-                        <IconText icon={icon} d={d}>
-                          {text}
-                        </IconText>
-                      </PlainLink>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          ))}
+          {links.map((section) => {
+            return (
+              <section key={section.heading}>
+                <Heading level={2} size='3XS'>
+                  {section.heading}
+                </Heading>
+                <ul
+                  css={{
+                    paddingTop: SPACING.S
+                  }}
+                >
+                  {section.links.map(({ text, to, d, icon }, y) => {
+                    return (
+                      <li key={y + to + text}>
+                        <PlainLink
+                          to={to}
+                          css={{
+                            display: 'inline-block',
+                            padding: `${SPACING.XS} 0`
+                          }}
+                        >
+                          <IconText icon={icon} d={d}>
+                            {text}
+                          </IconText>
+                        </PlainLink>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            );
+          })}
           <section
             css={{
               a: {
-                textDecoration: 'underline',
+                textDecoration: 'underline'
               },
               borderTop: `solid 1px ${COLORS.blue['200']}`,
-              paddingTop: SPACING['XL'],
+              paddingTop: SPACING.XL,
               [MEDIA_QUERIES.LARGESCREEN]: {
                 border: '0',
                 padding: '0',
                 borderLeft: `solid 1px ${COLORS.blue['300']}`,
-                paddingLeft: SPACING['XL'],
-                marginLeft: `-${SPACING['2XL']}`,
-              },
+                paddingLeft: SPACING.XL,
+                marginLeft: `-${SPACING['2XL']}`
+              }
             }}
           >
             <Heading
               level={2}
-              size="3XS"
+              size='3XS'
               css={{
-                paddingBottom: SPACING['S'],
+                paddingBottom: SPACING.S
               }}
             >
               Privacy and copyright
             </Heading>
-            <PlainLink to="/about-us/policies/library-privacy-statement">
+            <PlainLink to='/about-us/policies/library-privacy-statement'>
               Library Privacy Statement
             </PlainLink>
             <p
               css={{
-                paddingTop: SPACING['S'],
-                paddingBottom: SPACING['L'],
+                paddingTop: SPACING.S,
+                paddingBottom: SPACING.L
               }}
             >
               Except where otherwise noted, this work is subject to a{' '}
-              <a href="http://creativecommons.org/licenses/by/4.0/">
+              <a href='http://creativecommons.org/licenses/by/4.0/'>
                 Creative Commons Attribution 4.0 license
               </a>
               . For details and exceptions, see the{' '}
-              <PlainLink to="/about-us/policies/copyright-policy">
+              <PlainLink to='/about-us/policies/copyright-policy'>
                 Library Copyright Policy
               </PlainLink>
               .
@@ -206,13 +208,13 @@ function Footer() {
 
             <p
               css={{
-                display: 'flex',
+                display: 'flex'
               }}
             >
               <img
                 src={fdlp}
-                alt=""
-                css={{ height: '2rem', marginRight: SPACING['S'] }}
+                alt=''
+                css={{ height: '2rem', marginRight: SPACING.S }}
               />
               <span>Federal Depository Library Program</span>
             </p>
@@ -221,14 +223,14 @@ function Footer() {
 
         <p
           css={{
-            marginBottom: SPACING['2XL'],
+            marginBottom: SPACING['2XL']
           }}
         >
           Have a question about this website?{' '}
           <a
-            href="https://umich.qualtrics.com/jfe/form/SV_87ZJbL09VT6wZvL"
+            href='https://umich.qualtrics.com/jfe/form/SV_87ZJbL09VT6wZvL'
             css={{
-              textDecoration: 'underline',
+              textDecoration: 'underline'
             }}
           >
             Contact the website team
@@ -238,21 +240,21 @@ function Footer() {
       </Margins>
       <div
         css={{
-          background: COLORS['blue']['500'],
-          padding: `${SPACING['M']} 0`,
-          color: COLORS.blue['200'],
+          background: COLORS.blue['500'],
+          padding: `${SPACING.M} 0`,
+          color: COLORS.blue['200']
         }}
       >
         <Margins>
           <span
             css={{
-              marginRight: SPACING['XL'],
+              marginRight: SPACING.XL,
               display: 'block',
-              paddingBottom: SPACING['XS'],
+              paddingBottom: SPACING.XS,
               [MEDIA_QUERIES.LARGESCREEN]: {
                 display: 'inline',
-                padding: '0',
-              },
+                padding: '0'
+              }
             }}
           >
             © {year}, Regents of the University of Michigan
@@ -260,12 +262,12 @@ function Footer() {
 
           <span
             css={{
-              marginRight: SPACING['XL'],
+              marginRight: SPACING.XL
             }}
           >
             Built with the{' '}
             <a
-              href="https://design-system.lib.umich.edu/"
+              href='https://design-system.lib.umich.edu/'
               css={{ textDecoration: 'underline' }}
             >
               U-M Library Design System
@@ -275,7 +277,7 @@ function Footer() {
           <span>
             <PlainLink
               css={{ textDecoration: 'underline' }}
-              to="/release-notes"
+              to='/release-notes'
             >
               Release notes
             </PlainLink>
