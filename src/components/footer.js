@@ -89,7 +89,7 @@ const links = [
 
 function Footer () {
   const now = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' });
-  const year = now.getFullYear();
+  const year = now.getUTCFullYear();
 
   return (
     <footer
