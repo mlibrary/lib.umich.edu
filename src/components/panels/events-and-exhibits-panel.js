@@ -65,10 +65,11 @@ export default function EventsAndExhibitsPanel () {
       setEvents(sortEventsByStartDate({ events }));
     }
 
+    const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' }));
+
     // Only process todaysEvents if it hasn't been done already.
     if (events && todaysEvents === null) {
       // useEffects are only client side, so we can use now here.
-      const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' }));
 
       // Get Today's events.
       const todaysEvents = events.filter((event) => {
@@ -87,7 +88,6 @@ export default function EventsAndExhibitsPanel () {
 
     if (events && upcomingEvents === null) {
       // useEffects are only client side, so we can use now here.
-      const now = new Date(new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }));
 
       // Get upcoming events.
       // This is repetative... but :shrug:
