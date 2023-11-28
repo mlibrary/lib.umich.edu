@@ -202,6 +202,8 @@ export function sortEventsByStartDate ({ events, onlyTodayOrAfter = false }) {
       const now = new Date(new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }));
 
       const result = eventEndTime > now;
+      console.log('now: ' + now);
+      console.log('eventEndTime: ' + eventEndTime);
       console.log(result);
 
       return result;
