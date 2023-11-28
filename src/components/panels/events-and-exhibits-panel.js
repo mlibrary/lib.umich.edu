@@ -99,7 +99,7 @@ export default function EventsAndExhibitsPanel () {
         if (EXHIBIT_TYPES.includes(type)) {
           return false;
         }
-        return new Date(now.toDateString()) < new Date(start.toDateString()); // all after today.
+        return now < start; // all after today.
       });
 
       setUpcomingEvents(upcomingEvents);
