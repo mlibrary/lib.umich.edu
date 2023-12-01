@@ -81,7 +81,7 @@ export default function EventsAndExhibitsPanel () {
           return false;
         }
 
-        return (now === new Date(start).toDateString()) && (now.getTime() < end.getTime()); // all today that haven't ended.
+        return (now === start) && (now.getTime() < end.getTime()); // all today that haven't ended.
       });
       setTodaysEvents(todaysEvents);
     }
