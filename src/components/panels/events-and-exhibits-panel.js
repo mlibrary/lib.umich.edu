@@ -65,7 +65,7 @@ export default function EventsAndExhibitsPanel () {
       setEvents(sortEventsByStartDate({ events }));
     }
 
-    const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' }));
+    const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' })); // toLocaleString for getting date AND time
 
     // Only process todaysEvents if it hasn't been done already.
     if (events && todaysEvents === null) {
@@ -81,7 +81,8 @@ export default function EventsAndExhibitsPanel () {
           return false;
         }
 
-        return (now.toDateString() === new Date(start).toDateString()) && (now.getTime() < end.getTime()); // all today that haven't ended.
+        // get all today using toDateString() that haven't ended yet using getTime()
+        return (now.toDateString() === new Date(start).toDateString()) && (now.getTime() < end.getTime());
       });
       setTodaysEvents(todaysEvents);
     }
