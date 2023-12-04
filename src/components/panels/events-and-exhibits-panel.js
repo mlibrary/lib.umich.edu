@@ -82,6 +82,7 @@ export default function EventsAndExhibitsPanel () {
         }
 
         // get all today using toDateString() that haven't ended yet using getTime()
+        // can only use === to compare dates as strings. You can not use it on Date() objects. So keep the .toDateString()'s in place.
         return (now.toDateString() === new Date(start).toDateString()) && (now.getTime() < end.getTime());
       });
       setTodaysEvents(todaysEvents);
