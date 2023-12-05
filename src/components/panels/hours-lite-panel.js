@@ -139,7 +139,7 @@ const hoursDataExample = [
 function processHoursData (data, initialized) {
   function hours (node) {
     if (initialized) {
-      const now = new Date();
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
       return displayHours({ node, now });
     }
 

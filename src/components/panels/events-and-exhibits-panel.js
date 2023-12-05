@@ -65,10 +65,11 @@ export default function EventsAndExhibitsPanel () {
       setEvents(sortEventsByStartDate({ events }));
     }
 
+    const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' })); // toLocaleString for getting date AND time
+
     // Only process todaysEvents if it hasn't been done already.
     if (events && todaysEvents === null) {
       // useEffects are only client side, so we can use now here.
-      const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' }));
 
       // Get Today's events.
       const todaysEvents = events.filter((event) => {
@@ -80,14 +81,15 @@ export default function EventsAndExhibitsPanel () {
           return false;
         }
 
-        return (now.toDateString() === new Date(start).toDateString()) && (now.getTime() < end.getTime()); // all today that haven't ended.
+        // get all today using toDateString() that haven't ended yet using getTime()
+        // can only use === to compare dates as strings. You can not use it on Date() objects. So keep the .toDateString()'s in place.
+        return (now.toDateString() === new Date(start).toDateString()) && (now.getTime() < end.getTime());
       });
       setTodaysEvents(todaysEvents);
     }
 
     if (events && upcomingEvents === null) {
       // useEffects are only client side, so we can use now here.
-      const now = new Date();
 
       // Get upcoming events.
       // This is repetative... but :shrug:
@@ -99,7 +101,7 @@ export default function EventsAndExhibitsPanel () {
         if (EXHIBIT_TYPES.includes(type)) {
           return false;
         }
-        return new Date(now.toDateString()) < new Date(start.toDateString()); // all after today.
+        return now < start; // all after today.
       });
 
       setUpcomingEvents(upcomingEvents);

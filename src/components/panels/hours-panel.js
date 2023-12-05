@@ -31,7 +31,7 @@ const dateFormat = (string, abbreviated = false) => {
 
 export function HoursPanelNextPrev ({ location }) {
   const [{ weekOffset }, dispatch] = useStateValue();
-  const date = new Date();
+  const date = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
 
   const fromDate = new Date(date);
   fromDate.setDate(date.getDate() + (weekOffset * 7) - date.getDay());
