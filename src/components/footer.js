@@ -74,7 +74,7 @@ const links = [
         icon: 'facebook'
       },
       {
-        text: 'Twitter',
+        text: 'X (formerly Twitter)',
         to: 'https://twitter.com/umichlibrary',
         icon: 'twitter'
       },
