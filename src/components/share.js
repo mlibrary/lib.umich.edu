@@ -1,51 +1,52 @@
 import React from 'react';
 import { Heading, SPACING, COLORS } from '../reusable';
+import PropTypes from 'prop-types';
 import PlainLink from './plain-link';
 import IconText from './icon-text';
 
 const qs = require('qs');
 
-export default function Share({ url, title }) {
+export default function Share ({ url, title }) {
   const emailProps = qs.stringify({
     subject: title,
-    body: `University of Michigan Library: ${url}`,
+    body: `University of Michigan Library: ${url}`
   });
 
   const twitterProps = qs.stringify({
     url,
-    text: `${title} @UMichLibrary`,
+    text: `${title} @UMichLibrary`
   });
 
   const fbProps = qs.stringify({
     u: url,
-    t: title,
+    t: title
   });
 
   const options = [
     {
       text: 'Facebook',
       to: `http://www.facebook.com/sharer/sharer.php?${fbProps}`,
-      icon: 'facebook',
+      icon: 'facebook'
     },
     {
-      text: 'Twitter',
+      text: 'X (formerly Twitter)',
       to: `https://twitter.com/share?${twitterProps}`,
-      icon: 'twitter',
+      icon: 'twitter'
     },
     {
       text: 'Email',
       to: `mailto:?${emailProps}`,
-      icon: 'email',
-    },
+      icon: 'email'
+    }
   ];
 
   return (
-    <React.Fragment>
+    <>
       <Heading
         level={2}
-        size="2XS"
+        size='2XS'
         css={{
-          fontWeight: '600',
+          fontWeight: '600'
         }}
       >
         Share
@@ -58,13 +59,13 @@ export default function Share({ url, title }) {
                 to={to}
                 css={{
                   display: 'inline-block',
-                  padding: `${SPACING['XS']} 0`,
+                  padding: `${SPACING.XS} 0`,
                   svg: {
-                    color: COLORS.neutral['300'],
+                    color: COLORS.neutral['300']
                   },
                   ':hover': {
-                    textDecoration: 'underline',
-                  },
+                    textDecoration: 'underline'
+                  }
                 }}
               >
                 <IconText icon={icon} d={d}>
@@ -75,6 +76,11 @@ export default function Share({ url, title }) {
           );
         })}
       </ul>
-    </React.Fragment>
+    </>
   );
 }
+
+Share.propTypes = {
+  url: PropTypes.string,
+  title: PropTypes.string
+};
