@@ -64,6 +64,7 @@ export const query = graphql`
         }
       }
       field_amenities {
+        weight
         name
         description {
           processed
