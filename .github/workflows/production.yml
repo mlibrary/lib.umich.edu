@@ -34,7 +34,7 @@ jobs:
     steps:
       # Get code from repo
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       # Get tag from action input
@@ -58,14 +58,14 @@ jobs:
         with:
           ref: ${{ env.tag }}
       # Install NodeJS
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       # Enabling cache
       - name: Caching Gatsby
         id: gatsby-cache-build
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             public
