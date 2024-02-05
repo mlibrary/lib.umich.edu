@@ -40,7 +40,7 @@ jobs:
         run: echo "DEPLOY_URL=https://deploy-preview-${{ github.event.number }}--future-wwwlib-previews.netlify.app" >> $GITHUB_ENV
       - name: Output summary
         run: echo $DEPLOY_URL >> $GITHUB_STEP_SUMMARY
-      - uses: LouisBrunner/checks-action@v1.6.1
+      - uses: LouisBrunner/checks-action@v2.0.0
         if: always()
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -51,7 +51,7 @@ jobs:
       ## Notify Slack if build fails
       - name: Send custom JSON data to Slack workflow
         if: ${{ failure() }}
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           payload: |
             {

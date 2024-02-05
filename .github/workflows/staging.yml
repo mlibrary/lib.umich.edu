@@ -55,7 +55,7 @@ jobs:
       # Notify Slack if build fails
       - name: Send custom JSON data to Slack workflow
         if: ${{ failure() }}
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           payload: |
             {
