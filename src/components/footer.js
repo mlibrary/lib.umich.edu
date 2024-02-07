@@ -29,7 +29,7 @@ const links = [
         d: icons.address
       },
       {
-        text: '(734) 764-04012',
+        text: '(734) 764-0401',
         to: 'tel:+1-734-764-0401',
         d: icons.phone
       },
