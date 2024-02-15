@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useStaticQuery, graphql } from 'gatsby';
 
-function SearchEngineOptimization({data, children, titleField}) {
+function SearchEngineOptimization ({ data, children, titleField }) {
   const siteData = useStaticQuery(graphql`
     query {
       site {
@@ -15,7 +15,8 @@ function SearchEngineOptimization({data, children, titleField}) {
     }
   `);
   const defaultTitle = siteData.site.siteMetadata.title;
-  const { title, field_title_context, body, field_seo_keywords} = data || {};
+  const { title, field_title_context, body, field_seo_keywords, fields } = data || {};
+  console.log(data);
   const metaTitle = () => {
     if (titleField && data[titleField]) {
       return data[titleField];
@@ -27,37 +28,44 @@ function SearchEngineOptimization({data, children, titleField}) {
       return field_title_context;
     }
     return null;
-  }
+  };
   const metaDescription = () => {
     if (body && body.summary) {
       return body.summary;
     }
     return siteData.site.siteMetadata.description;
-  }
+  };
   const metaKeywords = () => {
     if (!field_seo_keywords) {
       return null;
     }
     return (
-      <meta name="keywords" content={field_seo_keywords} />
+      <meta name='keywords' content={field_seo_keywords} />
     );
-  }
+  };
   const siteTitle = () => {
     if (!metaTitle() || metaTitle() === 'Home') {
       return defaultTitle;
     }
     return `${metaTitle()} | ${defaultTitle}`;
   };
+  const pageUrl = () => {
+    if (!fields.slug) {
+      return null;
+    }
+    return fields.slug;
+  };
   return (
     <>
       <title>{siteTitle()}</title>
-      <meta property="og:title" content={metaTitle() && metaTitle() !== 'Home' ? metaTitle() : defaultTitle} />
-      <meta name="description" content={metaDescription()}/>
+      <meta property='og:title' content={metaTitle() && metaTitle() !== 'Home' ? metaTitle() : defaultTitle} />
+      <meta property='og:url' content={siteData.site.siteMetadata.siteUrl + pageUrl()} />
+      <meta name='description' content={metaDescription()} />
       {metaKeywords()}
-      <meta property="og:description" content={metaDescription()} />
-      <meta property="og:type" content="website" />
-      <meta property="twitter:description" content={metaDescription()} />
-      <link rel="canonical" href={siteData.site.siteMetadata.siteUrl} />
+      <meta property='og:description' content={metaDescription()} />
+      <meta property='og:type' content='website' />
+      <meta property='twitter:description' content={metaDescription()} />
+      <link rel='canonical' href={siteData.site.siteMetadata.siteUrl} />
       {children}
     </>
   );
