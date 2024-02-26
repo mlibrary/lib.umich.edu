@@ -92,7 +92,6 @@ export default function EventsAndExhibitsPanel () {
       // useEffects are only client side, so we can use now here.
 
       // Get upcoming events.
-      // This is repetative... but :shrug:
       const upcomingEvents = events.filter((event) => {
         const start = new Date(event.field_event_date_s_[0].value);
         const type = event.relationships.field_event_type.name;
@@ -101,7 +100,7 @@ export default function EventsAndExhibitsPanel () {
         if (EXHIBIT_TYPES.includes(type)) {
           return false;
         }
-        return now < start; // all after today.
+        return now < new Date(start.toDateString()); // all after today.
       });
 
       setUpcomingEvents(upcomingEvents);
