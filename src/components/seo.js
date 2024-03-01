@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useStaticQuery, graphql } from 'gatsby';
+import { useLocation } from '@reach/router';
 
 function SearchEngineOptimization ({ data, children, titleField }) {
   const siteData = useStaticQuery(graphql`
@@ -16,6 +17,8 @@ function SearchEngineOptimization ({ data, children, titleField }) {
   `);
   const defaultTitle = siteData.site.siteMetadata.title;
   const { title, field_title_context, body, field_seo_keywords, fields } = data || {};
+
+  const location = useLocation();
 
   const metaImage = () => {
     return (
@@ -57,10 +60,8 @@ function SearchEngineOptimization ({ data, children, titleField }) {
   };
 
   const pageUrl = () => {
-    return (siteData.site.siteMetadata.siteUrl + location?.pathname || null);
+    return (siteData.site.siteMetadata.siteUrl + location?.pathname);
   };
-
-  console.log(pageUrl());
 
   return (
     <>
