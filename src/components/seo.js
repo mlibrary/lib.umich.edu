@@ -55,18 +55,19 @@ function SearchEngineOptimization ({ data, children, titleField }) {
     }
     return `${metaTitle()} | ${defaultTitle}`;
   };
+
   const pageUrl = () => {
-    if (!fields.slug) {
-      return null;
-    }
-    return fields.slug;
+    return (siteData.site.siteMetadata.siteUrl + location?.pathname || null);
   };
+
+  console.log(pageUrl());
+
   return (
     <>
       <title>{siteTitle()}</title>
       <meta property='og:title' content={metaTitle() && metaTitle() !== 'Home' ? metaTitle() : defaultTitle} />
       <meta property='og:image' content={siteData.site.siteMetadata.siteUrl + metaImage()} />
-      <meta property='og:url' content={siteData.site.siteMetadata.siteUrl + pageUrl()} />
+      <meta property='og:url' content={pageUrl()} />
       <meta name='description' content={metaDescription()} />
       {metaKeywords()}
       <meta property='og:description' content={metaDescription()} />
