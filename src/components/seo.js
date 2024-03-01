@@ -16,7 +16,7 @@ function SearchEngineOptimization ({ data, children, titleField }) {
     }
   `);
   const defaultTitle = siteData.site.siteMetadata.title;
-  const { title, field_title_context, body, field_seo_keywords, fields } = data || {};
+  const { title, field_title_context: fieldTitleContext, body, field_seo_keywords: fieldSeoKeywords } = data || {};
 
   const location = useLocation();
 
@@ -33,8 +33,8 @@ function SearchEngineOptimization ({ data, children, titleField }) {
     if (title) {
       return title;
     }
-    if (field_title_context) {
-      return field_title_context;
+    if (fieldTitleContext) {
+      return fieldTitleContext;
     }
     return null;
   };
@@ -45,11 +45,11 @@ function SearchEngineOptimization ({ data, children, titleField }) {
     return siteData.site.siteMetadata.description;
   };
   const metaKeywords = () => {
-    if (!field_seo_keywords) {
+    if (!fieldSeoKeywords) {
       return null;
     }
     return (
-      <meta name='keywords' content={field_seo_keywords} />
+      <meta name='keywords' content={fieldSeoKeywords} />
     );
   };
   const siteTitle = () => {
