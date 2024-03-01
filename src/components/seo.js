@@ -9,14 +9,20 @@ function SearchEngineOptimization ({ data, children, titleField }) {
         siteMetadata {
           title,
           siteUrl,
-          description
+          description,
         }
       }
     }
   `);
   const defaultTitle = siteData.site.siteMetadata.title;
-  const { title, field_title_context, body, field_seo_keywords, fields } = data || {};
-  console.log(data);
+  const { title, field_title_context, body, field_seo_keywords, fields, relationships } = data || {};
+
+  const metaImage = () => {
+    if (relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.gatsbyImageData.images.fallback.src) {
+      return relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.gatsbyImageData.images.fallback.src;
+    }
+  };
+
   const metaTitle = () => {
     if (titleField && data[titleField]) {
       return data[titleField];
@@ -59,6 +65,7 @@ function SearchEngineOptimization ({ data, children, titleField }) {
     <>
       <title>{siteTitle()}</title>
       <meta property='og:title' content={metaTitle() && metaTitle() !== 'Home' ? metaTitle() : defaultTitle} />
+      <meta property='og:image' content={siteData.site.siteMetadata.siteUrl + metaImage()} />
       <meta property='og:url' content={siteData.site.siteMetadata.siteUrl + pageUrl()} />
       <meta name='description' content={metaDescription()} />
       {metaKeywords()}
