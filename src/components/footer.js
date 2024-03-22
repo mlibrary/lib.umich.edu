@@ -219,23 +219,6 @@ function Footer () {
             </p>
           </section>
         </div>
-
-        <p
-          css={{
-            marginBottom: SPACING['2XL']
-          }}
-        >
-          Have a question about this website?{' '}
-          <a
-            href='https://umich.qualtrics.com/jfe/form/SV_87ZJbL09VT6wZvL'
-            css={{
-              textDecoration: 'underline'
-            }}
-          >
-            Contact the website team
-          </a>
-          .
-        </p>
       </Margins>
       <div
         css={{
@@ -271,15 +254,6 @@ function Footer () {
             >
               U-M Library Design System
             </a>
-          </span>
-
-          <span>
-            <PlainLink
-              css={{ textDecoration: 'underline' }}
-              to='/release-notes'
-            >
-              Release notes
-            </PlainLink>
           </span>
         </Margins>
       </div>
