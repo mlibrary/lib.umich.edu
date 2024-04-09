@@ -35,7 +35,7 @@ const links = [
       },
       {
         text: 'Send us an email',
-        to: 'https://umich.qualtrics.com/jfe/form/SV_2bpfeZMnAK2ozhr',
+        to: 'https://teamdynamix.umich.edu/TDClient/88/Portal/Requests/TicketRequests/NewForm?ID=1751&RequestorType=Service',
         icon: 'mail_outline'
       },
       {
