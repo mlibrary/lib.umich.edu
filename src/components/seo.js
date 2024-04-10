@@ -52,10 +52,10 @@ function SearchEngineOptimization ({ data, children, titleField }) {
     const imagesrc = data?.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData?.images?.fallback?.src;
 
     if (imagesrc) {
-      return siteData.site.siteMetadata.siteUrl + imagesrc;
+      return (<meta property='og:image' content={siteData.site.siteMetadata.siteUrl + imagesrc} />);
     }
     if (squarelogo) {
-      return squarelogo;
+      return (<meta property='og:image' content={squarelogo} />);
     }
     return null;
   };
@@ -76,15 +76,11 @@ function SearchEngineOptimization ({ data, children, titleField }) {
       <meta property='og:title' content={metaTitle() && metaTitle() !== 'Home' ? metaTitle() : defaultTitle} />
       <meta property='og:url' content={pageUrl()} />
       <meta name='description' content={metaDescription()} />
-      <meta property='og:image' content={metaImage()} />
+      {metaImage()}
       {metaKeywords()}
       <meta property='og:description' content={metaDescription()} />
       <meta property='og:type' content='website' />
-      <meta property='twitter:site' content='@UMichLibrary' />
-      <meta property='twitter:title' content={metaTitle() && metaTitle() !== 'Home' ? metaTitle() : defaultTitle} />
       <meta property='twitter:description' content={metaDescription()} />
-      <meta property='twitter:image' content={metaImage()} />
-
       <link rel='canonical' href={siteData.site.siteMetadata.siteUrl} />
       {children}
     </>
