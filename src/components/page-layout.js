@@ -1,7 +1,7 @@
 import React from 'react';
 import { SPACING, MEDIA_QUERIES } from '../reusable';
 
-export function Template({ children, ...rest }) {
+export function Template ({ children, ...rest }) {
   return (
     <div
       css={{
@@ -13,15 +13,12 @@ export function Template({ children, ...rest }) {
           `,
           gridTemplateColumns: `calc(216px + ${SPACING['4XL']}) 1fr`,
           gridTemplateRows: 'auto 1fr',
-          marginBottom: SPACING['5XL'],
+          marginBottom: SPACING['5XL']
         },
-        '[data-panel-margins], [data-panel]': {
-          padding: '0',
+        '[data-panel-margins]': {
+          padding: '0'
         },
-        '[data-panel] h2': {
-          marginTop: SPACING['2XL'],
-        },
-        marginBottom: SPACING['4XL'],
+        marginBottom: SPACING['4XL']
       }}
       {...rest}
     >
@@ -30,7 +27,7 @@ export function Template({ children, ...rest }) {
   );
 }
 
-export function Top({ children, ...rest }) {
+export function Top ({ children, ...rest }) {
   return (
     <div css={{ gridArea: 'top' }} {...rest}>
       {children}
@@ -38,14 +35,14 @@ export function Top({ children, ...rest }) {
   );
 }
 
-export function Side({ children, ...rest }) {
+export function Side ({ children, ...rest }) {
   return (
     <section
       css={{
         [MEDIA_QUERIES.LARGESCREEN]: {
           gridArea: 'side',
-          marginRight: SPACING['3XL'],
-        },
+          marginRight: SPACING['3XL']
+        }
       }}
       {...rest}
     >
@@ -54,12 +51,12 @@ export function Side({ children, ...rest }) {
   );
 }
 
-export function Content({ children, ...rest }) {
+export function Content ({ children, ...rest }) {
   return (
     <div
       css={{
         gridArea: 'content',
-        marginBottom: SPACING['XL'],
+        marginBottom: SPACING.XL
       }}
       {...rest}
     >
