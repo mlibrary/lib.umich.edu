@@ -76,14 +76,15 @@ function PanelList ({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
   const panelListColumnStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
       columns: '2',
-      columnGap: SPACING['3XL'],
-      '> li': {
-        marginTop: SPACING.XL,
-        breakInside: 'avoid'
-      },
-      '> li:first-of-type': {
-        marginTop: 0
-      }
+      columnGap: SPACING['3XL']
+    },
+    '> li': {
+      marginTop: SPACING.XL,
+      marginBottom: 0,
+      breakInside: 'avoid'
+    },
+    '> li:first-of-type': {
+      marginTop: 0
     }
   };
 
@@ -187,7 +188,11 @@ function CardPanel ({ data, headingLevel = 2 }) {
             <li
               key={i + card.title}
               css={{
-                marginBottom: SPACING.XL,
+                marginTop: SPACING.XL,
+                ':first-of-type': {
+                  marginTop: 0,
+                  color: 'red'
+                },
                 [MEDIA_QUERIES.LARGESCREEN]: {
                   margin: '0'
                 }
