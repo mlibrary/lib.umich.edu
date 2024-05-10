@@ -24,6 +24,7 @@ import getParentTitle from '../../utils/get-parent-title';
 import CustomPanel from './custom-panel';
 import Callout from '../../reusable/callout';
 import Image from '../image';
+import PropTypes from 'prop-types';
 
 import { StateProvider } from '../use-state';
 
@@ -65,6 +66,12 @@ function PanelTemplate ({ title, children, shaded, ...rest }) {
   );
 }
 
+PanelTemplate.propTypes = {
+  title: PropTypes.string,
+  children: PropTypes.any,
+  shaded: PropTypes.bool
+};
+
 function PanelList ({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
   const panelListGridStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
@@ -97,6 +104,12 @@ function PanelList ({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
     </ol>
   );
 }
+
+PanelList.propTypes = {
+  largeScreenTwoColumn: PropTypes.any,
+  children: PropTypes.any,
+  twoColumns: PropTypes.bool
+};
 
 function CardPanel ({ data, headingLevel = 2 }) {
   const template = data.relationships.field_card_template.field_machine_name;
@@ -207,13 +220,12 @@ function CardPanel ({ data, headingLevel = 2 }) {
                 href={getCardHref(card)}
                 subtitle={getCardSubtitle(card)}
                 title={card.title}
-                children={
-                useSummary ? getSummary(card.body) : renderCardChildren(card)
-              }
                 css={{
                   height: '100%'
                 }}
-              />
+              >
+                {useSummary ? getSummary(card.body) : renderCardChildren(card)}
+              </Card>
             </li>
           );
         })}
@@ -222,6 +234,11 @@ function CardPanel ({ data, headingLevel = 2 }) {
   );
 }
 
+CardPanel.propTypes = {
+  data: PropTypes.any,
+  headingLevel: PropTypes.number
+};
+
 function MarginsWrapper ({ useMargins = false, children }) {
   if (useMargins) {
     return <Margins>{children}</Margins>;
@@ -229,6 +246,11 @@ function MarginsWrapper ({ useMargins = false, children }) {
 
   return children;
 }
+
+MarginsWrapper.propTypes = {
+  useMargins: PropTypes.bool,
+  children: PropTypes.any
+};
 
 function TextPanel ({ data }) {
   const title = data.field_title;
@@ -358,10 +380,10 @@ function TextPanel ({ data }) {
     return (
       <PanelTemplate title={title}>
         <PanelList twoColumns>
-          {cards.map(({ field_title, field_body, field_link }, i) => {
+          {cards.map(({ field_title: fieldTitle, field_body: fieldBody, field_link: fieldLink }, i) => {
             return (
               <li
-                key={i + field_title}
+                key={i + fieldTitle}
                 css={{
                   marginBottom: SPACING.XL,
                   [MEDIA_QUERIES.LARGESCREEN]: {
@@ -374,12 +396,12 @@ function TextPanel ({ data }) {
                     marginBottom: SPACING.XS
                   }}
                 >
-                  <Link to={field_link[0].uri} kind='description'>
-                    {field_title}
+                  <Link to={fieldLink[0].uri} kind='description'>
+                    {fieldTitle}
                   </Link>
                 </div>
                 <div css={{ color: COLORS.neutral['300'] }}>
-                  <Html html={field_body.processed} />
+                  <Html html={fieldBody.processed} />
                 </div>
               </li>
             );
@@ -451,6 +473,10 @@ function TextPanel ({ data }) {
   return null;
 }
 
+TextPanel.propTypes = {
+  data: PropTypes.object
+};
+
 export default function Panels ({ data }) {
   if (!data) {
     return null;
@@ -488,6 +514,10 @@ export default function Panels ({ data }) {
   );
 }
 
+Panels.propTypes = {
+  data: PropTypes.object
+};
+
 function PanelStateWrapper ({ children }) {
   const initialState = {
     weekOffset: 0
@@ -511,5 +541,9 @@ function PanelStateWrapper ({ children }) {
     </StateProvider>
   );
 }
+
+PanelStateWrapper.propTypes = {
+  children: PropTypes.any
+};
 
 export { PanelTemplate, PanelList };
