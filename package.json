@@ -53,7 +53,7 @@
   "devDependencies": {
     "bottleneck": "^2.19.5",
     "entities": "^4.5.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.2.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-config-standard-jsx": "^11.0.0",
     "eslint-config-standard-react": "^13.0.0",
