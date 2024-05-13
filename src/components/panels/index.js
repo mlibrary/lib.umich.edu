@@ -204,7 +204,6 @@ function CardPanel ({ data, headingLevel = 2 }) {
                 marginTop: SPACING.XL,
                 ':first-of-type': {
                   marginTop: 0,
-                  color: 'red'
                 },
                 [MEDIA_QUERIES.LARGESCREEN]: {
                   margin: '0'
