@@ -232,7 +232,7 @@ function Footer () {
         }}
       >
         <Margins>
-          <nav aria-label='Legal and Resources'>
+          <nav aria-label='Legal and References'>
             <ul
               css={{
                 display: 'flex',
