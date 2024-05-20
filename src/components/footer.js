@@ -4,6 +4,8 @@ import { COLORS, SPACING, Margins, Heading, MEDIA_QUERIES } from '../reusable';
 import fdlp from '../images/fdlp.png';
 import icons from '../reusable/icons';
 import PlainLink from './plain-link';
+import Link from './link';
+
 import IconText from './icon-text';
 import createGoogleMapsUrl from './utilities/create-google-maps-url';
 
@@ -98,6 +100,7 @@ function Footer () {
           outlineColor: 'white'
         }
       }}
+      role='contentinfo'
     >
       <Margins
         css={{
@@ -126,7 +129,8 @@ function Footer () {
             'h2, h3': {
               color: COLORS.blue['200']
             }
-          }}
+          }
+        }
         >
           {links.map((section) => {
             return (
@@ -134,29 +138,31 @@ function Footer () {
                 <Heading level={2} size='3XS'>
                   {section.heading}
                 </Heading>
-                <ul
-                  css={{
-                    paddingTop: SPACING.S
-                  }}
-                >
-                  {section.links.map(({ text, to, d, icon }, y) => {
-                    return (
-                      <li key={y + to + text}>
-                        <PlainLink
-                          to={to}
-                          css={{
-                            display: 'inline-block',
-                            padding: `${SPACING.XS} 0`
-                          }}
-                        >
-                          <IconText icon={icon} d={d}>
-                            {text}
-                          </IconText>
-                        </PlainLink>
-                      </li>
-                    );
-                  })}
-                </ul>
+                <nav aria-label={section.heading + ' links'}> 
+                  <ul
+                    css={{
+                      paddingTop: SPACING.S
+                    }}
+                  >
+                    {section.links.map(({ text, to, d, icon }, y) => {
+                      return (
+                        <li key={y + to + text}>
+                          <PlainLink
+                            to={to}
+                            css={{
+                              display: 'inline-block',
+                              padding: `${SPACING.XS} 0`
+                            }}
+                          >
+                            <IconText icon={icon} d={d}>
+                              {text}
+                            </IconText>
+                          </PlainLink>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </nav>
               </section>
             );
           })}
@@ -165,7 +171,7 @@ function Footer () {
               a: {
                 textDecoration: 'underline'
               },
-              borderTop: `solid 1px ${COLORS.blue['200']}`,
+              borderTop: `solid 1px ${COLORS.blue['300']}`,
               paddingTop: SPACING.XL,
               [MEDIA_QUERIES.LARGESCREEN]: {
                 border: '0',
@@ -228,33 +234,56 @@ function Footer () {
         }}
       >
         <Margins>
-          <span
-            css={{
-              marginRight: SPACING.XL,
-              display: 'block',
-              paddingBottom: SPACING.XS,
-              [MEDIA_QUERIES.LARGESCREEN]: {
-                display: 'inline',
-                padding: '0'
-              }
-            }}
-          >
-            © {year}, Regents of the University of Michigan
-          </span>
-
-          <span
-            css={{
-              marginRight: SPACING.XL
-            }}
-          >
-            Built with the{' '}
-            <a
-              href='https://design-system.lib.umich.edu/'
-              css={{ textDecoration: 'underline' }}
+          <nav aria-label='Legal and Resources'>
+            <ul
+              css={{
+                display: 'flex',
+                listStyle: 'none',
+                flexWrap: 'wrap'
+              }}
             >
-              U-M Library Design System
-            </a>
-          </span>
+              <li
+                css={{
+                  marginRight: [SPACING.XL],
+                  marginTop: [SPACING.XS],
+                  marginBottom: [SPACING.XS]
+                }}
+              >
+                © {year}, Regents of the University of Michigan
+              </li>
+
+              <li
+                css={{
+                  marginRight: [SPACING.XL],
+                  marginTop: [SPACING.XS],
+                  marginBottom: [SPACING.XS]
+                }}
+              >
+                <a
+                  href='/about-us/about-library/territorial-acknowledgement'
+                  css={{ textDecoration: 'underline' }}
+                >
+                  Territorial Acknowledgement
+                </a>
+              </li>
+
+              <li
+                css={{
+                  marginRight: [SPACING.XL],
+                  marginTop: [SPACING.XS],
+                  marginBottom: [SPACING.XS]
+                }}
+              >
+                Built with the{' '}
+                <a
+                  href='https://design-system.lib.umich.edu/'
+                  css={{ textDecoration: 'underline' }}
+                >
+                  U-M Library Design System
+                </a>
+              </li>
+            </ul>
+          </nav>
         </Margins>
       </div>
     </footer>
