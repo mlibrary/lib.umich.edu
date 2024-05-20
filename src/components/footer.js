@@ -4,8 +4,6 @@ import { COLORS, SPACING, Margins, Heading, MEDIA_QUERIES } from '../reusable';
 import fdlp from '../images/fdlp.png';
 import icons from '../reusable/icons';
 import PlainLink from './plain-link';
-import Link from './link';
-
 import IconText from './icon-text';
 import createGoogleMapsUrl from './utilities/create-google-maps-url';
 
