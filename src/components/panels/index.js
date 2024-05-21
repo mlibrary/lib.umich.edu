@@ -514,7 +514,7 @@ export default function Panels ({ data }) {
 }
 
 Panels.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.array
 };
 
 function PanelStateWrapper ({ children }) {
