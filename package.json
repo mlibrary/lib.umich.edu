@@ -39,6 +39,7 @@
     "develop": "gatsby develop -H 0.0.0.0",
     "develop:staging": "DRUPAL_URL=https://cms.staging.lib.umich.edu/ npm run develop",
     "format": "npm run lint -- --fix",
+    "lint": "npx eslint $* ./gatsby-*.js src/**/*.js",
     "serve": "gatsby serve --host 0.0.0.0",
     "stage": "gatsby build && now public --name lib-umich --public",
     "start": "npm run develop",
