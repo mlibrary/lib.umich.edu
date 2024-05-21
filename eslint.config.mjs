@@ -15,7 +15,7 @@ export default [
       },
       globals: {
         ...globals.browser,
-        globals: globals.es2021
+        ...globals.es2021
       },
     },
     plugins: {
