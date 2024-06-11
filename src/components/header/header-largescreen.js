@@ -3,18 +3,19 @@ import { COLORS, Icon, LINK_STYLES, Margins, SPACING } from '../../reusable';
 import Logo from './logo';
 import Nav from './primary-nav';
 import PlainLink from '../plain-link';
+import PropTypes from 'prop-types';
 import React from 'react';
 import SiteSearch from '../site-search';
 
-function HeaderLargeScreen ({ primary, secondary }) {
+const HeaderLargeScreen = ({ primary, secondary }) => {
   return (
     <header
       css={{
-        borderBottom: `solid 2px ${COLORS.neutral[100]}`,
-        display: 'block',
         '@media only screen and (max-width: 1128px)': {
           display: 'none'
-        }
+        },
+        borderBottom: `solid 2px ${COLORS.neutral[100]}`,
+        display: 'block'
       }}
     >
       <Margins>
@@ -28,9 +29,9 @@ function HeaderLargeScreen ({ primary, secondary }) {
 
           <div
             css={{
+              alignItems: 'flex-end',
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'flex-end',
               marginTop: SPACING.XS
             }}
           >
@@ -39,32 +40,32 @@ function HeaderLargeScreen ({ primary, secondary }) {
               <nav
                 css={{
                   position: 'absolute',
-                  top: SPACING.M,
-                  right: '0'
+                  right: '0',
+                  top: SPACING.M
                 }}
                 aria-label='Utility'
               >
                 <ul>
-                  {secondary.map(({ text, to, icon }, i) => {
+                  {secondary.map(({ text, to, icon }, iterator) => {
                     return (
                       <li
                         css={{
-                          display: 'inline-block',
                           ':not(:last-child)': {
                             marginRight: SPACING.M
-                          }
+                          },
+                          display: 'inline-block'
                         }}
-                        key={i + text}
+                        key={iterator + text}
                       >
                         <PlainLink
                           to={to}
                           external={to === '/my-account'}
                           css={{
-                            ...LINK_STYLES.special,
-                            padding: `${SPACING.S} 0`,
                             ':hover': {
                               '.text': LINK_STYLES.special[':hover']
-                            }
+                            },
+                            ...LINK_STYLES.special,
+                            padding: `${SPACING.S} 0`
                           }}
                         >
                           {icon && (
@@ -98,6 +99,11 @@ function HeaderLargeScreen ({ primary, secondary }) {
       </Margins>
     </header>
   );
-}
+};
+
+HeaderLargeScreen.propTypes = {
+  primary: PropTypes.array,
+  secondary: PropTypes.array
+};
 
 export default HeaderLargeScreen;
