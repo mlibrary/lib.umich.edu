@@ -1,4 +1,4 @@
-export default function getFloor({ node }) {
+export default function getFloor ({ node }) {
   const { field_floor } = node.relationships;
 
   if (field_floor) {

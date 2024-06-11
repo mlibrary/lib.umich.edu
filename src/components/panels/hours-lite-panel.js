@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { SPACING, Icon, TYPOGRAPHY, COLORS, Heading } from '../../reusable';
+import React, { useEffect, useState } from 'react';
+import { COLORS, Heading, Icon, SPACING, TYPOGRAPHY } from '../../reusable';
 import { Link as GatsbyLink } from 'gatsby';
 
 import Link from '../link';
@@ -112,29 +112,29 @@ HoursLitePanel.propTypes = {
 };
 
 /*
-const hoursDataExample = [
-  {
-    text: 'Hatcher Library',
-    subText: 'Today: 8AM - 7PM',
-    to: '/'
-  },
-  {
-    text: 'Shapiro Library',
-    subText: 'Today: Open 24 hours',
-    to: '/'
-  },
-  {
-    text: 'Art, Architecture & Engineering Library',
-    subText: 'Today: 7AM - 11PM',
-    to: '/'
-  },
-  {
-    text: 'Taubman Health Sciences Library',
-    subText: 'Today: 6AM - 11PM',
-    to: '/'
-  }
-]
-*/
+ *Const hoursDataExample = [
+ *  {
+ *    text: 'Hatcher Library',
+ *    subText: 'Today: 8AM - 7PM',
+ *    to: '/'
+ *  },
+ *  {
+ *    text: 'Shapiro Library',
+ *    subText: 'Today: Open 24 hours',
+ *    to: '/'
+ *  },
+ *  {
+ *    text: 'Art, Architecture & Engineering Library',
+ *    subText: 'Today: 7AM - 11PM',
+ *    to: '/'
+ *  },
+ *  {
+ *    text: 'Taubman Health Sciences Library',
+ *    subText: 'Today: 6AM - 11PM',
+ *    to: '/'
+ *  }
+ *]
+ */
 
 function processHoursData (data, initialized) {
   function hours (node) {
@@ -155,8 +155,8 @@ function processHoursData (data, initialized) {
 
     return {
       text: node.title,
-      subText: 'TODAY: ' + text,
-      subLabel: 'TODAY: ' + label,
+      subText: `TODAY: ${text}`,
+      subLabel: `TODAY: ${label}`,
       to: node.fields.slug
     };
   });

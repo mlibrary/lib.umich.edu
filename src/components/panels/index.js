@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  Heading,
-  SPACING,
   COLORS,
-  Margins,
+  Heading,
   Icon,
-  MEDIA_QUERIES
+  Margins,
+  MEDIA_QUERIES,
+  SPACING
 } from '../../reusable';
 
 import Card from '../card';
@@ -203,7 +203,7 @@ function CardPanel ({ data, headingLevel = 2 }) {
               css={{
                 marginTop: SPACING.XL,
                 ':first-of-type': {
-                  marginTop: 0,
+                  marginTop: 0
                 },
                 [MEDIA_QUERIES.LARGESCREEN]: {
                   margin: '0'
@@ -485,7 +485,7 @@ export default function Panels ({ data }) {
     <PanelStateWrapper>
       {data.map((panel, i) => {
         const type = panel.__typename;
-        const id = panel.id;
+        const { id } = panel;
 
         switch (type) {
           case 'paragraph__hours_panel_lite':

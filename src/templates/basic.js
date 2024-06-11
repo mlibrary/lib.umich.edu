@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING, SmallScreen } from '../reusable';
-import { Template, Top, Side, Content } from '../components/page-layout';
+import { Heading, Margins, SmallScreen, SPACING } from '../reusable';
+import { Content, Side, Template, Top } from '../components/page-layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
@@ -12,7 +12,7 @@ import TemplateLayout from './template-layout';
 import useNavigationBranch from '../components/navigation/use-navigation-branch';
 import transformNodePanels from '../utils/transform-node-panels';
 
-function BasicTemplate({ data, ...rest }) {
+function BasicTemplate ({ data, ...rest }) {
   const node = data.page ? data.page : data.room ? data.room : null;
   const { field_title_context, body, fields, field_local_navigation } = node;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
@@ -37,7 +37,7 @@ function BasicTemplate({ data, ...rest }) {
               <SmallScreen>
                 <div
                   css={{
-                    margin: `0 -${SPACING['M']}`,
+                    margin: `0 -${SPACING.M}`
                   }}
                 >
                   <HorizontalNavigation items={smallScreenItems} />
@@ -47,10 +47,10 @@ function BasicTemplate({ data, ...rest }) {
           </Side>
           <Content>
             <Heading
-              size="3XL"
+              size='3XL'
               level={1}
               css={{
-                marginBottom: SPACING['L'],
+                marginBottom: SPACING.L
               }}
             >
               {field_title_context}
@@ -67,7 +67,7 @@ function BasicTemplate({ data, ...rest }) {
 
 export default BasicTemplate;
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={data.page ? data.page : data.room ? data.room : null} />;
 }
 

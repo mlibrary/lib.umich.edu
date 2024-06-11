@@ -1,8 +1,8 @@
 /*
-  Hours could be on the current node
-  or on a parent node, depending
-  on some fields.
-*/
+ *Hours could be on the current node
+ *or on a parent node, depending
+ *on some fields.
+ */
 export function getHoursFromNode ({ node }) {
   const { field_display_hours_: fieldDisplayHours_ } = node;
 
@@ -20,60 +20,62 @@ export function getHoursFromNode ({ node }) {
     return prioritizeHours({
       hours: fieldHoursOpen
     });
-  } else {
-    const { field_room_building: fieldRoomBuilding, field_parent_location: fieldParentLocation } = node.relationships;
+  }
+  const { field_room_building: fieldRoomBuilding, field_parent_location: fieldParentLocation } = node.relationships;
 
-    // Display hours from field_room_building
-    if (fieldRoomBuilding && fieldRoomBuilding.field_display_hours_) {
-      return prioritizeHours({
-        hours: fieldRoomBuilding.relationships.field_hours_open
-      });
-    }
+  // Display hours from field_room_building
+  if (fieldRoomBuilding && fieldRoomBuilding.field_display_hours_) {
+    return prioritizeHours({
+      hours: fieldRoomBuilding.relationships.field_hours_open
+    });
+  }
 
-    // Display hours from field_parent_location
-    if (fieldParentLocation && fieldParentLocation.field_display_hours_) {
-      return prioritizeHours({
-        hours: fieldParentLocation.relationships.field_hours_open
-      });
-    }
+  // Display hours from field_parent_location
+  if (fieldParentLocation && fieldParentLocation.field_display_hours_) {
+    return prioritizeHours({
+      hours: fieldParentLocation.relationships.field_hours_open
+    });
+  }
 
-    // Do not display field_room_building hours, but use the
-    // related parent location from the building.
-    if (
-      fieldRoomBuilding &&
-      !fieldRoomBuilding.field_display_hours_ &&
-      fieldRoomBuilding.relationships.field_parent_location &&
-      fieldRoomBuilding.relationships.field_parent_location
-        .field_display_hours_
-    ) {
-      return prioritizeHours({
-        hours:
+  /*
+   * Do not display field_room_building hours, but use the
+   * Related parent location from the building.
+   */
+  if (
+    fieldRoomBuilding
+    && !fieldRoomBuilding.field_display_hours_
+    && fieldRoomBuilding.relationships.field_parent_location
+    && fieldRoomBuilding.relationships.field_parent_location
+      .field_display_hours_
+  ) {
+    return prioritizeHours({
+      hours:
           fieldRoomBuilding.relationships.field_parent_location.relationships
             .field_hours_open
-      });
-    }
+    });
+  }
 
-    if (
-      fieldParentLocation &&
-      !fieldParentLocation.field_display_hours_ &&
-      fieldParentLocation.relationships.field_parent_location &&
-      fieldParentLocation.relationships.field_parent_location
-        .field_display_hours_
-    ) {
-      return prioritizeHours({
-        hours:
+  if (
+    fieldParentLocation
+    && !fieldParentLocation.field_display_hours_
+    && fieldParentLocation.relationships.field_parent_location
+    && fieldParentLocation.relationships.field_parent_location
+      .field_display_hours_
+  ) {
+    return prioritizeHours({
+      hours:
           fieldParentLocation.relationships.field_parent_location
             .relationships.field_hours_open
-      });
-    }
+    });
   }
+
   return null;
 }
 
 /*
-  Pass in a node and Date "now" and get back
-  formated string for hours from "now".
-*/
+ *Pass in a node and Date "now" and get back
+ *formated string for hours from "now".
+ */
 export function findHoursSetByNodeForNow ({ node, now }) {
   const allHours = getHoursFromNode({ node });
 
@@ -83,7 +85,7 @@ export function findHoursSetByNodeForNow ({ node, now }) {
 
   const nowHour = allHours.find((set) => {
     if (!set.field_date_range) {
-      // no range available in this set of hours.
+      // No range available in this set of hours.
       return null;
     }
 
@@ -166,10 +168,10 @@ export function displayHours ({ node, now }) {
 }
 
 /*
-  - Put "paragraph__hours_exceptions" first
-  - Add all the other ranges in the order presented
-  - Then add "paragraph__fall_and_winter_semester_hours" last
-*/
+ *- Put "paragraph__hours_exceptions" first
+ *- Add all the other ranges in the order presented
+ *- Then add "paragraph__fall_and_winter_semester_hours" last
+ */
 function prioritizeHours ({ hours }) {
   if (!hours) {
     return [];

@@ -1,6 +1,6 @@
-import { useStaticQuery, graphql } from 'gatsby';
+import { graphql, useStaticQuery } from 'gatsby';
 
-export default function useFloorPlan(bid, fid) {
+export default function useFloorPlan (bid, fid) {
   const data = useStaticQuery(
     graphql`
       query {

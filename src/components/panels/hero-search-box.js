@@ -1,13 +1,13 @@
 import React from 'react';
 import {
-  SPACING,
-  Margins,
   Button,
+  COLORS,
   Icon,
   Input,
+  Margins,
   MEDIA_QUERIES,
-  TYPOGRAPHY,
-  COLORS,
+  SPACING,
+  TYPOGRAPHY
 } from '../../reusable';
 import Html from '../html';
 
@@ -15,28 +15,28 @@ const MEDIAQUERIES = {
   XL: '@media only screen and (min-width: 1200px)',
   L: '@media only screen and (min-width:920px)',
   M: '@media only screen and (min-width: 720px)',
-  S: MEDIA_QUERIES.LARGESCREEN,
+  S: MEDIA_QUERIES.LARGESCREEN
 };
 
 const heroHeightCSS = {
   minHeight: '16rem',
-  [MEDIAQUERIES['L']]: {
-    minHeight: '25rem',
-  },
+  [MEDIAQUERIES.L]: {
+    minHeight: '25rem'
+  }
 };
 
 const frostCSS = {
   background: 'rgba(255,255,255,0.8)',
-  backdropFilter: 'blur(2px)',
+  backdropFilter: 'blur(2px)'
 };
 
 /*
-  We have two types of heros.
-
-  1. One that puts provides access to Library Search, "lib_search_box"
-  2. A heading and HTML content on an image, "text"
-*/
-export default function HeroSearchBox({ data }) {
+ *We have two types of heros.
+ *
+ *1. One that puts provides access to Library Search, "lib_search_box"
+ *2. A heading and HTML content on an image, "text"
+ */
+export default function HeroSearchBox ({ data }) {
   const hasFrost = data.field_background === 'white';
   const applyFrostCSS = hasFrost ? frostCSS : {};
 
@@ -45,84 +45,84 @@ export default function HeroSearchBox({ data }) {
       css={{
         padding: '0',
         [MEDIA_QUERIES.LARGESCREEN]: {
-          padding: '0',
+          padding: '0'
         },
-        [MEDIAQUERIES['M']]: {
-          padding: '0',
+        [MEDIAQUERIES.M]: {
+          padding: '0'
         },
-        [MEDIAQUERIES['L']]: {
-          padding: `0 ${SPACING['2XL']}`,
+        [MEDIAQUERIES.L]: {
+          padding: `0 ${SPACING['2XL']}`
         },
         'a, span': {
           borderColor: 'white',
-          boxShadow: 'none',
+          boxShadow: 'none'
         },
         a: {
           textDecoration: 'underline',
           color: COLORS.neutral['400'],
           ':hover': {
-            textDecorationThickness: '2px',
-          },
-        },
+            textDecorationThickness: '2px'
+          }
+        }
       }}
     >
       <BackgroundSection
         data={data}
         css={{
-          ...heroHeightCSS,
+          ...heroHeightCSS
         }}
       >
         <div
           css={{
             ...heroHeightCSS,
-            [MEDIAQUERIES['M']]: {
-              ...heroHeightCSS[MEDIAQUERIES['M']],
+            [MEDIAQUERIES.M]: {
+              ...heroHeightCSS[MEDIAQUERIES.M],
               display: 'flex',
-              alignItems: 'center',
-            },
+              alignItems: 'center'
+            }
           }}
         >
           <div
             css={{
               maxWidth: '28rem',
               margin: '0 auto',
-              padding: SPACING['M'],
+              padding: SPACING.M,
               [MEDIA_QUERIES.LARGESCREEN]: {
-                padding: SPACING['L'],
+                padding: SPACING.L
               },
-              [MEDIAQUERIES['M']]: {
+              [MEDIAQUERIES.M]: {
                 width: '34rem',
                 maxWidth: '100%',
                 margin: 0,
-                padding: SPACING['XL'],
+                padding: SPACING.XL,
                 borderRadius: '2px',
-                marginLeft: SPACING['2XL'],
+                marginLeft: SPACING['2XL']
               },
-              ...applyFrostCSS,
+              ...applyFrostCSS
             }}
           >
             <h1
-              id="help-find"
+              id='help-find'
               css={{
                 margin: '0 auto',
-                marginBottom: SPACING['XS'],
-                ...TYPOGRAPHY['M'],
+                marginBottom: SPACING.XS,
+                ...TYPOGRAPHY.M,
                 fontWeight: '700',
                 textAlign: 'center',
-                [MEDIAQUERIES['M']]: {
+                [MEDIAQUERIES.M]: {
                   maxWidth: '100%',
                   padding: '0',
-                  ...TYPOGRAPHY['XL'],
-                  textAlign: 'left',
+                  ...TYPOGRAPHY.XL,
+                  textAlign: 'left'
                 },
-                [MEDIAQUERIES['L']]: {
-                  fontSize: '2.25rem',
-                },
+                [MEDIAQUERIES.L]: {
+                  fontSize: '2.25rem'
+                }
               }}
             >
               What can we help you find?
             </h1>
-            <Search labelId={'help-find'} />
+            <Search labelId='help-find' />
           </div>
         </div>
         <Caption data={data} />
@@ -142,7 +142,7 @@ export default function HeroSearchBox({ data }) {
  * to the caption link that is not available from
  * the background image.
  */
-function Caption({ data }) {
+function Caption ({ data }) {
   const caption = data.field_caption_text && data.field_caption_text.processed;
   const altText = data.relationships.field_hero_images[0].field_media_image.alt;
 
@@ -156,9 +156,9 @@ function Caption({ data }) {
         position: 'absolute',
         right: '0',
         bottom: '0',
-        padding: `${SPACING['2XS']} ${SPACING['S']}`,
+        padding: `${SPACING['2XS']} ${SPACING.S}`,
         borderRadius: '2px 0 0 0',
-        ...frostCSS,
+        ...frostCSS
       }}
     >
       <figure aria-hidden={altText ? 'false' : 'true'}>
@@ -177,11 +177,13 @@ function Caption({ data }) {
   );
 }
 
-function BackgroundSection({ data, children, ...rest }) {
+function BackgroundSection ({ data, children, ...rest }) {
   const { field_hero_images } = data.relationships;
   const screenImage = (orientation) => {
     return field_hero_images
-      .find((node) => node.field_orientation === orientation)
+      .find((node) => {
+        return node.field_orientation === orientation;
+      })
       .relationships
       .field_media_image
       .localFile
@@ -198,9 +200,9 @@ function BackgroundSection({ data, children, ...rest }) {
         backgroundColor: COLORS.neutral['100'],
         backgroundImage: `url('${screenImage('vertical')}')`,
         backgroundPosition: 'center top 33%',
-        [MEDIAQUERIES['M']]: {
+        [MEDIAQUERIES.M]: {
           backgroundImage: `url('${screenImage('horizontal')}')`,
-          backgroundPosition: 'center left 20%',
+          backgroundPosition: 'center left 20%'
         },
         position: 'relative'
       }}
@@ -211,33 +213,35 @@ function BackgroundSection({ data, children, ...rest }) {
   );
 }
 
-function Search({ labelId }) {
+function Search ({ labelId }) {
   return (
     <form
-      action="https://search.lib.umich.edu/everything"
-      method="get"
+      action='https://search.lib.umich.edu/everything'
+      method='get'
       css={{
         textAlign: 'center',
-        [MEDIAQUERIES['M']]: {
-          textAlign: 'left',
-        },
+        [MEDIAQUERIES.M]: {
+          textAlign: 'left'
+        }
       }}
-      role="search"
+      role='search'
       aria-labelledby={labelId}
     >
       <label
-        htmlFor="library-search-query"
+        htmlFor='library-search-query'
         css={{
           display: 'block',
-          paddingBottom: SPACING['XS'],
+          paddingBottom: SPACING.XS
         }}
       >
-        Search our{' '}
-        <a href="https://search.lib.umich.edu/catalog?utm_source=lib-home">
+        Search our
+        {' '}
+        <a href='https://search.lib.umich.edu/catalog?utm_source=lib-home'>
           catalog
         </a>
-        ,{' '}
-        <a href="https://search.lib.umich.edu/articles?utm_source=lib-home">
+        ,
+        {' '}
+        <a href='https://search.lib.umich.edu/articles?utm_source=lib-home'>
           articles
         </a>
         , and more
@@ -247,20 +251,20 @@ function Search({ labelId }) {
           display: 'flex',
           alignItems: 'flex-end',
           input: {
-            height: '40px',
-          },
+            height: '40px'
+          }
         }}
       >
-        <Input id="library-search-query" type="search" name="query" />
-        <input type="hidden" name="utm_source" value="lib-home" />
+        <Input id='library-search-query' type='search' name='query' />
+        <input type='hidden' name='utm_source' value='lib-home' />
         <Button
-          type="submit"
-          kind="primary"
+          type='submit'
+          kind='primary'
           css={{
-            marginLeft: SPACING['XS'],
+            marginLeft: SPACING.XS
           }}
         >
-          <Icon icon="search" size={20} />
+          <Icon icon='search' size={20} />
           <span className='visually-hidden'>Submit</span>
         </Button>
       </div>

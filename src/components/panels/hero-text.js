@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, SPACING, COLORS, Margins, MEDIA_QUERIES } from '../../reusable';
+import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
 import Link from '../link';
 import Html from '../html';
 import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id';
@@ -8,10 +8,10 @@ const MEDIAQUERIES = {
   XL: '@media only screen and (min-width: 1200px)',
   L: '@media only screen and (min-width:920px)',
   M: '@media only screen and (min-width: 720px)',
-  S: MEDIA_QUERIES.LARGESCREEN,
+  S: MEDIA_QUERIES.LARGESCREEN
 };
 
-function getNIDFromURI({ uri }) {
+function getNIDFromURI ({ uri }) {
   if (uri.includes('entity:node/')) {
     return uri.split('/')[1];
   }
@@ -19,7 +19,7 @@ function getNIDFromURI({ uri }) {
   return null;
 }
 
-function getLinkByNID({ nids, nid }) {
+function getLinkByNID ({ nids, nid }) {
   const obj = nids[nid];
 
   if (!obj) {
@@ -28,14 +28,14 @@ function getLinkByNID({ nids, nid }) {
 
   return {
     text: obj.title,
-    to: obj.slug,
+    to: obj.slug
   };
 }
 
-export default function HeroText({ data }) {
+export default function HeroText ({ data }) {
   /*
-    Consider finding a better way to do this.
-  */
+   *Consider finding a better way to do this.
+   */
   const nids = usePageContextByDrupalNodeID();
   const nid = getNIDFromURI({ uri: data.field_link && data.field_link[0].uri });
   const link = getLinkByNID({ nids, nid });
@@ -45,25 +45,25 @@ export default function HeroText({ data }) {
       css={{
         padding: '0',
         [MEDIA_QUERIES.LARGESCREEN]: {
-          padding: '0',
+          padding: '0'
         },
-        [MEDIAQUERIES['M']]: {
-          padding: '0',
+        [MEDIAQUERIES.M]: {
+          padding: '0'
         },
-        [MEDIAQUERIES['L']]: {
-          padding: `0 ${SPACING['2XL']}`,
-        },
+        [MEDIAQUERIES.L]: {
+          padding: `0 ${SPACING['2XL']}`
+        }
       }}
     >
       <BackgroundSection data={data}>
         <div
           css={{
-            padding: `${SPACING['2XL']} ${SPACING['M']}`,
+            padding: `${SPACING['2XL']} ${SPACING.M}`,
             [MEDIA_QUERIES.LARGESCREEN]: {
-              padding: `${SPACING['4XL']} ${SPACING['S']}`,
+              padding: `${SPACING['4XL']} ${SPACING.S}`
             },
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: 'center'
           }}
         >
           <div
@@ -76,16 +76,16 @@ export default function HeroText({ data }) {
                 textDecoration: 'underline',
                 ':hover': {
                   boxShadow: 'none',
-                  textDecorationThickness: '2px',
-                },
-              },
+                  textDecorationThickness: '2px'
+                }
+              }
             }}
           >
             <Heading
-              size="3XL"
+              size='3XL'
               level={2}
               css={{
-                marginBottom: SPACING['M'],
+                marginBottom: SPACING.M
               }}
             >
               {data.field_title}
@@ -95,21 +95,21 @@ export default function HeroText({ data }) {
               css={{
                 display: 'inline-block',
                 fontSize: '1.25rem',
-                width: 'auto',
+                width: 'auto'
               }}
             />
             {link && (
               <div
                 css={{
-                  marginTop: SPACING['M'],
+                  marginTop: SPACING.M,
                   fontSize: '1.25rem',
                   a: {
                     textDecorationThickness: '2px',
                     textDecorationColor: COLORS.maize['400'],
                     ':focus, :hover': {
-                      textDecorationThickness: '4px',
-                    },
-                  },
+                      textDecorationThickness: '4px'
+                    }
+                  }
                 }}
               >
                 <Link to={link.to}>{link.text}</Link>
@@ -122,20 +122,24 @@ export default function HeroText({ data }) {
   );
 }
 
-function BackgroundSection({ data, children, ...rest }) {
+function BackgroundSection ({ data, children, ...rest }) {
   const { field_hero_images } = data.relationships;
   const smallScreenImage = field_hero_images.find(
-    (node) => node.field_orientation === 'vertical'
+    (node) => {
+      return node.field_orientation === 'vertical';
+    }
   ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
   const largeScreenImage = field_hero_images.find(
-    (node) => node.field_orientation === 'horizontal'
+    (node) => {
+      return node.field_orientation === 'horizontal';
+    }
   ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
   const sources = [
     smallScreenImage,
     {
       ...largeScreenImage,
-      media: `(min-width: 720px)`,
-    },
+      media: `(min-width: 720px)`
+    }
   ];
 
   return (
@@ -145,7 +149,7 @@ function BackgroundSection({ data, children, ...rest }) {
         backgroundImage: `url('${sources[1].images.fallback.src}')`,
         backgroundPosition: 'center',
         [MEDIA_QUERIES.LARGESCREEN]: {
-          backgroundSize: 'cover',
+          backgroundSize: 'cover'
         },
         position: 'relative'
       }}

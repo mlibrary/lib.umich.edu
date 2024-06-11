@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, SPACING, COLORS } from '../reusable';
+import { COLORS, Heading, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
 import PlainLink from './plain-link';
 import IconText from './icon-text';

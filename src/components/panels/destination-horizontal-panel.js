@@ -1,13 +1,13 @@
 import React from 'react';
-import { Heading, SPACING, TYPOGRAPHY, COLORS } from '../../reusable';
-import { getFloor, getParentTitle, getImage, getRoom } from '../../utils';
+import { COLORS, Heading, SPACING, TYPOGRAPHY } from '../../reusable';
+import { getFloor, getImage, getParentTitle, getRoom } from '../../utils';
 import Html from '../html';
 import CardImage from '../../reusable/card-image';
 import MEDIA_QUERIES from '../../reusable/media-queries';
 import Link from '../link';
 import useFloorPlan from '../../hooks/use-floor-plan';
 
-export default function DestinationHorizontalPanel({ data }) {
+export default function DestinationHorizontalPanel ({ data }) {
   const cards = data.relationships.field_cards.map((card) => {
     const parentTitle = getParentTitle({ node: card });
     const floor = getFloor({ node: card });
@@ -21,45 +21,47 @@ export default function DestinationHorizontalPanel({ data }) {
       content: <Html html={card.body.processed} />,
       bid: card.relationships.field_room_building.id,
       rid: card.relationships.field_floor.id,
-      linkDestText: `${parentTitle} ${floor}`,
+      linkDestText: `${parentTitle} ${floor}`
     };
   });
 
   return (
     <div
       css={{
-        marginTop: SPACING['XL'],
+        marginTop: SPACING.XL
       }}
     >
-      {cards.map((card, i) => (
-        <DestinationCard key={`destination-${i}`} card={card} />
-      ))}
+      {cards.map((card, i) => {
+        return (
+          <DestinationCard key={`destination-${i}`} card={card} />
+        );
+      })}
     </div>
   );
 }
 
-function DestinationCard({ card }) {
+function DestinationCard ({ card }) {
   const floorPlan = useFloorPlan(card.bid, card.rid);
   const floorPlanLinkText = `View the floor plan for ${card.linkDestText}`;
 
   return (
     <section
       css={{
-        marginBottom: SPACING['XL'],
-        [MEDIA_QUERIES['L']]: {
+        marginBottom: SPACING.XL,
+        [MEDIA_QUERIES.L]: {
           display: 'grid',
           gridTemplateColumns: `18.75rem 1fr `,
-          gridGap: SPACING['M'],
-        },
+          gridGap: SPACING.M
+        }
       }}
     >
       <CardImage image={card.image} />
       <div>
         <Heading
-          size="S"
+          size='S'
           level={2}
           css={{
-            marginBottom: SPACING['2XS'],
+            marginBottom: SPACING['2XS']
           }}
         >
           {card.title}
@@ -68,7 +70,7 @@ function DestinationCard({ card }) {
               marginTop: SPACING['3XS'],
               display: 'block',
               color: COLORS.neutral['300'],
-              ...TYPOGRAPHY['3XS'],
+              ...TYPOGRAPHY['3XS']
             }}
           >
             {card.subtitle}
@@ -77,7 +79,7 @@ function DestinationCard({ card }) {
         {card.content}
         <p
           css={{
-            marginTop: SPACING['M'],
+            marginTop: SPACING.M
           }}
         >
           <Link to={floorPlan.fields.slug}>{floorPlanLinkText}</Link>

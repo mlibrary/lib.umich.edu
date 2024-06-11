@@ -1,18 +1,18 @@
 import orderNodes from './order-nodes';
 
-export default function processHorizontalNavigationData({
+export default function processHorizontalNavigationData ({
   parentNodeOrderByDrupalId,
   parentNodes,
   childrenNodeOrderByDrupalId,
   childrenNodes,
   isRootPage,
   parentNode,
-  currentNode,
+  currentNode
 }) {
   /*
-    If it's the root page, then use children data,
-    not parent data.
-  */
+   *If it's the root page, then use children data,
+   *not parent data.
+   */
   if (isRootPage) {
     return createNavItems(
       currentNode,
@@ -24,19 +24,23 @@ export default function processHorizontalNavigationData({
   return createNavItems(parentNode, parentNodeOrderByDrupalId, parentNodes);
 }
 
-function createNavItems(firstNode, orderedIds, nodes) {
+function createNavItems (firstNode, orderedIds, nodes) {
   const nodesOrdered = orderNodes(orderedIds, nodes).filter(
-    (node) => node !== undefined
+    (node) => {
+      return node !== undefined;
+    }
   );
 
   return []
     .concat(createNavItem(firstNode))
-    .concat(nodesOrdered.map(({ node }) => createNavItem(node)));
+    .concat(nodesOrdered.map(({ node }) => {
+      return createNavItem(node);
+    }));
 }
 
-function createNavItem(node) {
+function createNavItem (node) {
   return {
     to: node.fields.slug,
-    text: node.field_title_context,
+    text: node.field_title_context
   };
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING, SmallScreen, List, Icon, Link as DSLink } from '../reusable';
-import { Template, Top, Side, Content } from '../components/page-layout';
+import { Link as DSLink, Heading, Icon, List, Margins, SmallScreen, SPACING } from '../reusable';
+import { Content, Side, Template, Top } from '../components/page-layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
@@ -157,7 +157,7 @@ function processDepartmentInfo ({ node, staffDirectorySlug }) {
                   {index > 0 && arr.length !== 2 && ','}
                   {index > 0 && index + 1 === arr.length && ' and'}
                   {' '}
-                  <Link to={'/users/' + departmentHead.name}>
+                  <Link to={`/users/${departmentHead.name}`}>
                     {departmentHead.field_user_display_name}
                   </Link>
                 </React.Fragment>
@@ -173,7 +173,7 @@ function processDepartmentInfo ({ node, staffDirectorySlug }) {
         icon: 'mail_outline',
         content: (
           <>
-            Email: <Link to={'mailto:' + fieldEmail}>{fieldEmail}</Link>
+            Email: <Link to={`mailto:${fieldEmail}`}>{fieldEmail}</Link>
           </>
         )
       }
@@ -207,11 +207,14 @@ function processDepartmentInfo ({ node, staffDirectorySlug }) {
     content: (
       <>
         <Link
-          to={staffDirectorySlug + '?' + stringifyState({ department: title })}
+          to={`${staffDirectorySlug}?${stringifyState({ department: title })}`}
         >
           Staff directory
-        </Link>{' '}
-        for {title}
+        </Link>
+        {' '}
+        for
+        {' '}
+        {title}
       </>
     )
   };

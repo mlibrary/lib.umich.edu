@@ -1,18 +1,18 @@
 import React, {
   createContext,
   useContext,
-  useReducer,
   useEffect,
-  useRef,
+  useReducer,
+  useRef
 } from 'react';
 import { Link } from 'gatsby';
 import {
-  SPACING,
-  TYPOGRAPHY,
   COLORS,
   Icon,
-  Margins,
   LINK_STYLES,
+  Margins,
+  SPACING,
+  TYPOGRAPHY
 } from '../../reusable';
 
 import Logo from './logo';
@@ -20,31 +20,35 @@ import SiteSearchModal from './site-search-modal';
 
 const StateContext = createContext();
 
-const StateProvider = ({ reducer, initialState, children }) => (
-  <StateContext.Provider value={useReducer(reducer, initialState)}>
-    {children}
-  </StateContext.Provider>
-);
+const StateProvider = ({ reducer, initialState, children }) => {
+  return (
+    <StateContext.Provider value={useReducer(reducer, initialState)}>
+      {children}
+    </StateContext.Provider>
+  );
+};
 
-const useStateValue = () => useContext(StateContext);
+const useStateValue = () => {
+  return useContext(StateContext);
+};
 
-function SmallScreenHeader({ primary, secondary }) {
+function SmallScreenHeader ({ primary, secondary }) {
   const reducer = (state, action) => {
     switch (action.type) {
       case 'setOpenNav':
         return {
           ...state,
-          openNav: action.openNav,
+          openNav: action.openNav
         };
       case 'setOpen':
         return {
           ...state,
-          open: action.open,
+          open: action.open
         };
       case 'setPanelOpen':
         return {
           ...state,
-          panelOpen: action.panelOpen,
+          panelOpen: action.panelOpen
         };
       case 'reset':
         return {};
@@ -60,8 +64,8 @@ function SmallScreenHeader({ primary, secondary }) {
           borderBottom: `solid 2px ${COLORS.neutral['100']}`,
           display: 'block',
           '@media only screen and (min-width: 1129px)': {
-            display: 'none',
-          },
+            display: 'none'
+          }
         }}
       >
         <Margins>
@@ -75,7 +79,7 @@ function SmallScreenHeader({ primary, secondary }) {
             <div
               css={{
                 flexShrink: '1',
-                padding: `${SPACING['M']} 0`,
+                padding: `${SPACING.M} 0`
               }}
             >
               <Logo size={32} />
@@ -88,14 +92,14 @@ function SmallScreenHeader({ primary, secondary }) {
   );
 }
 
-function Nav({ primary, secondary }) {
+function Nav ({ primary, secondary }) {
   const [{ openNav, open }, dispatch] = useStateValue();
   const isOpen = openNav === true;
   const toggleNavNode = useRef();
 
   return (
     <nav
-      aria-label="Main and utility"
+      aria-label='Main and utility'
       css={{
         flexShrink: 0
       }}
@@ -103,24 +107,26 @@ function Nav({ primary, secondary }) {
       <SiteSearchModal />
       <button
         css={{
-          padding: `${SPACING['M']} ${SPACING['XS']}`,
-          marginRight: `-${SPACING['XS']}`,
-          cursor: 'pointer',
+          padding: `${SPACING.M} ${SPACING.XS}`,
+          marginRight: `-${SPACING.XS}`,
+          cursor: 'pointer'
         }}
         ref={toggleNavNode}
         aria-expanded={isOpen}
-        onClick={() =>
-          dispatch({
+        onClick={() => {
+          return dispatch({
             type: 'setOpenNav',
-            openNav: !isOpen,
-          })
-        }
+            openNav: !isOpen
+          });
+        }}
       >
-        {isOpen ? (
-          <Icon icon="close" size={32} />
-        ) : (
-          <Icon d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" size={32} />
-        )}
+        {isOpen
+          ? (
+            <Icon icon='close' size={32} />
+            )
+          : (
+            <Icon d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z' size={32} />
+            )}
         <span className='visually-hidden'>Navigation</span>
       </button>
       {isOpen && (
@@ -135,57 +141,57 @@ function Nav({ primary, secondary }) {
   );
 }
 
-function NavDropdown({ children, toggleNavNode }) {
+function NavDropdown ({ children, toggleNavNode }) {
   const [, dispatch] = useStateValue();
   const dropdownNode = useRef();
 
   /*
-    Reset Nav state on unmount / close.
-  */
+   *Reset Nav state on unmount / close.
+   */
   useEffect(() => {
     return () => {
       dispatch({
-        type: 'reset',
+        type: 'reset'
       });
     };
   }, [dispatch]);
 
-  function closeDropdown() {
+  function closeDropdown () {
     dispatch({
       type: 'setOpenNav',
-      open: null,
+      open: null
     });
   }
 
-  function handleClick(e) {
+  function handleClick (e) {
     /*
-      Double check the node is current.
-    */
+     *Double check the node is current.
+     */
     if (dropdownNode.current) {
       /*
-        If the user is clicking the primary nav button
-        then they're clicking outside, but this button
-        will handle closing for us. No need to close it
-        from here.
-      */
+       *If the user is clicking the primary nav button
+       *then they're clicking outside, but this button
+       *will handle closing for us. No need to close it
+       *from here.
+       */
       if (toggleNavNode.current.contains(e.target)) {
         return;
       }
 
       /*
-        If the click is outside of the dropdown then
-        close the dropdown.
-
-        Except if they're click on the primary nav button,
-        but this case is caught above.
-      */
+       *If the click is outside of the dropdown then
+       *close the dropdown.
+       *
+       *Except if they're click on the primary nav button,
+       *but this case is caught above.
+       */
       if (!dropdownNode.current.contains(e.target)) {
         closeDropdown();
       }
     }
   }
 
-  function handleKeydown(e) {
+  function handleKeydown (e) {
     if (e.keyCode === 27) {
       // ESC key
       closeDropdown();
@@ -212,7 +218,7 @@ function NavDropdown({ children, toggleNavNode }) {
         background: 'white',
         right: 'calc(-1rem)', // Less the side site margin on small screens.
         boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
-        zIndex: '101',
+        zIndex: '101'
       }}
       ref={dropdownNode}
     >
@@ -221,38 +227,40 @@ function NavDropdown({ children, toggleNavNode }) {
   );
 }
 
-function NavSecondary({ items }) {
+function NavSecondary ({ items }) {
   return (
-    <ul aria-label="Utility">
-      {items.map(({ to, text, icon }, i) => (
-        <li key={i + text}>
-          <Link
-            to={to}
-            css={{
-              ...nav_item_styles,
-              ...TYPOGRAPHY['3XS'],
-              color: COLORS.neutral['300'],
-              background: COLORS.blue['100'],
-            }}
-          >
-            {icon && (
-              <Icon
-                icon={icon}
-                css={{
-                  marginRight: SPACING['2XS'],
-                  marginTop: '-2px',
-                }}
-              />
-            )}
-            <span>{text}</span>
-          </Link>
-        </li>
-      ))}
+    <ul aria-label='Utility'>
+      {items.map(({ to, text, icon }, i) => {
+        return (
+          <li key={i + text}>
+            <Link
+              to={to}
+              css={{
+                ...nav_item_styles,
+                ...TYPOGRAPHY['3XS'],
+                color: COLORS.neutral['300'],
+                background: COLORS.blue['100']
+              }}
+            >
+              {icon && (
+                <Icon
+                  icon={icon}
+                  css={{
+                    marginRight: SPACING['2XS'],
+                    marginTop: '-2px'
+                  }}
+                />
+              )}
+              <span>{text}</span>
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 }
 
-function NavPrimary({ items }) {
+function NavPrimary ({ items }) {
   const [{ open }] = useStateValue();
 
   // Is an primary nav item open.
@@ -261,15 +269,17 @@ function NavPrimary({ items }) {
   }
 
   return (
-    <ul aria-label="Main">
-      {items.map((item, i) => (
-        <NavPrimaryItem {...item} i={i} key={i + item.text} />
-      ))}
+    <ul aria-label='Main'>
+      {items.map((item, i) => {
+        return (
+          <NavPrimaryItem {...item} i={i} key={i + item.text} />
+        );
+      })}
     </ul>
   );
 }
 
-function NavPrimaryItem({ to, text, children, i }) {
+function NavPrimaryItem ({ to, text, children, i }) {
   const [{ open }, dispatch] = useStateValue();
   const isOpen = open === i;
 
@@ -278,15 +288,15 @@ function NavPrimaryItem({ to, text, children, i }) {
       <button
         css={{
           ...nav_item_styles,
-          justifyContent: 'space-between',
+          justifyContent: 'space-between'
         }}
         aria-expanded={isOpen}
-        onClick={() =>
-          dispatch({
+        onClick={() => {
+          return dispatch({
             type: 'setOpen',
-            open: isOpen ? null : i,
-          })
-        }
+            open: isOpen ? null : i
+          });
+        }}
       >
         {text} <NextIcon />
       </button>
@@ -294,34 +304,34 @@ function NavPrimaryItem({ to, text, children, i }) {
   );
 }
 
-function BeforeIcon() {
+function BeforeIcon () {
   return (
     <span
       css={{
-        paddingRight: SPACING['S'],
-        lineHeight: '1',
+        paddingRight: SPACING.S,
+        lineHeight: '1'
       }}
     >
-      <Icon icon="navigate_before" size={24} />
+      <Icon icon='navigate_before' size={24} />
     </span>
   );
 }
 
-function NextIcon() {
+function NextIcon () {
   return (
     <span
       css={{
-        paddingLeft: SPACING['S'],
-        lineHeight: '1',
+        paddingLeft: SPACING.S,
+        lineHeight: '1'
       }}
     >
-      <Icon icon="navigate_next" size={24} />
+      <Icon icon='navigate_next' size={24} />
     </span>
   );
 }
 
 const nav_item_styles = {
-  padding: SPACING['M'],
+  padding: SPACING.M,
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -329,10 +339,10 @@ const nav_item_styles = {
   borderBottom: `solid 1px ${COLORS.neutral['100']}`,
   textDecoration: 'none',
   color: COLORS.neutral['400'],
-  cursor: 'pointer',
+  cursor: 'pointer'
 };
 
-function NavPanelSecondary({ text, to, children }) {
+function NavPanelSecondary ({ text, to, children }) {
   const [{ panelOpen }, dispatch] = useStateValue();
   const beforeNode = useRef(null);
 
@@ -350,54 +360,58 @@ function NavPanelSecondary({ text, to, children }) {
     <div>
       <button
         css={{
-          ...nav_item_styles,
+          ...nav_item_styles
         }}
         ref={beforeNode}
         aria-expanded={true}
-        onClick={() =>
-          dispatch({
+        onClick={() => {
+          return dispatch({
             type: 'setOpen',
-            open: null,
-          })
-        }
+            open: null
+          });
+        }}
       >
         <BeforeIcon />
         <span css={{ fontWeight: '800' }}>{text}</span>
       </button>
 
       <ul>
-        {children.map((item, i) => (
-          <li key={i + item.text}>
-            {item.children ? (
-              <button
-                css={{
-                  ...nav_item_styles,
-                  justifyContent: 'space-between',
-                }}
-                aria-expanded={false}
-                onClick={() =>
-                  dispatch({
-                    type: 'setPanelOpen',
-                    panelOpen: i,
-                  })
-                }
-              >
-                {item.text}
-                <NextIcon />
-              </button>
-            ) : (
-              <Link to={item.to} css={nav_item_styles}>
-                {item.text}
-              </Link>
-            )}
-          </li>
-        ))}
+        {children.map((item, i) => {
+          return (
+            <li key={i + item.text}>
+              {item.children
+                ? (
+                  <button
+                    css={{
+                      ...nav_item_styles,
+                      justifyContent: 'space-between'
+                    }}
+                    aria-expanded={false}
+                    onClick={() => {
+                      return dispatch({
+                        type: 'setPanelOpen',
+                        panelOpen: i
+                      });
+                    }}
+                  >
+                    {item.text}
+                    <NextIcon />
+                  </button>
+                  )
+                : (
+                  <Link to={item.to} css={nav_item_styles}>
+                    {item.text}
+                  </Link>
+                  )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
 }
 
-function NavPanelTertiary({ text, to, children }) {
+function NavPanelTertiary ({ text, to, children }) {
   const [, dispatch] = useStateValue();
   const beforeNode = useRef();
 
@@ -409,14 +423,14 @@ function NavPanelTertiary({ text, to, children }) {
     <div>
       <button
         css={{
-          ...nav_item_styles,
+          ...nav_item_styles
         }}
-        onClick={() =>
-          dispatch({
+        onClick={() => {
+          return dispatch({
             type: 'setPanelOpen',
-            panelOpen: null,
-          })
-        }
+            panelOpen: null
+          });
+        }}
         ref={beforeNode}
         aria-expanded={true}
       >
@@ -425,13 +439,15 @@ function NavPanelTertiary({ text, to, children }) {
       </button>
 
       <ul>
-        {children.map((item, i) => (
-          <li key={i + item.text}>
-            <Link to={item.to} css={nav_item_styles}>
-              {item.text}
-            </Link>
-          </li>
-        ))}
+        {children.map((item, i) => {
+          return (
+            <li key={i + item.text}>
+              <Link to={item.to} css={nav_item_styles}>
+                {item.text}
+              </Link>
+            </li>
+          );
+        })}
         <li>
           <Link
             to={to}
@@ -440,15 +456,15 @@ function NavPanelTertiary({ text, to, children }) {
               fontSize: '1rem',
               fontWeight: '800',
               ':hover': {
-                '.text': LINK_STYLES['list-strong'][':hover'],
-              },
+                '.text': LINK_STYLES['list-strong'][':hover']
+              }
             }}
           >
-            <span className="text" css={{ marginRight: '0.5rem' }}>
+            <span className='text' css={{ marginRight: '0.5rem' }}>
               View all {text}
             </span>
             <span>
-              <Icon d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+              <Icon d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z' />
             </span>
           </Link>
         </li>

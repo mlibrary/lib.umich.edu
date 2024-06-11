@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React from 'react';
 import {
-  SPACING,
   Icon,
+  SPACING,
   Z_SPACE
 } from '../../reusable';
 import SiteSearch from '../site-search';
 
-function SiteSearchModal() {
+function SiteSearchModal () {
   return (
     <>
       <button
@@ -16,24 +16,24 @@ function SiteSearchModal() {
           document.getElementById('dialog').showModal();
         }}
         css={{
-          padding: `${SPACING['M']} ${SPACING['XS']}`,
+          padding: `${SPACING.M} ${SPACING.XS}`
         }}
       >
-        <Icon icon="search" size={32} />
+        <Icon icon='search' size={32} />
         <span className='visually-hidden'>Search this site</span>
       </button>
       <dialog
-        id="dialog"
+        id='dialog'
         onClick={() => {
           const dialog = document.getElementById('dialog');
-          dialog.addEventListener('click', ((event) => {
-            if(event.target === dialog) {
+          dialog.addEventListener('click', (event) => {
+            if (event.target === dialog) {
               event.target.close();
             }
-          }));
+          });
         }}
         onKeyDown={(event) => {
-          if(event.key === 'Escape') {
+          if (event.key === 'Escape') {
             document.getElementById('dialog').close();
           }
         }}
@@ -43,7 +43,7 @@ function SiteSearchModal() {
         css={{
           border: '0',
           borderRadius: '2px',
-          margin: `${SPACING['L']} auto`,
+          margin: `${SPACING.L} auto`,
           maxWidth: '82vw',
           padding: '0',
           width: '100%',
@@ -55,7 +55,7 @@ function SiteSearchModal() {
             display: 'table'
           },
           '& *[data-site-search-icon]': {
-            left: SPACING['L'],
+            left: SPACING.L
           },
           '& input': {
             border: 'none',
@@ -63,11 +63,11 @@ function SiteSearchModal() {
           },
           '& .search-popover': {
             maxWidth: '82vw',
-            position: 'fixed',
+            position: 'fixed'
           }
         }}
       >
-        <SiteSearch label="Search this site" css={{width: '100%'}} />
+        <SiteSearch label='Search this site' css={{ width: '100%' }} />
       </dialog>
     </>
   );

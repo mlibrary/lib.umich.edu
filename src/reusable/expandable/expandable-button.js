@@ -4,13 +4,15 @@ import { Button } from '../../reusable';
 
 const cleanList = (list) => {
   return list
-    .filter((x) => (x ? true : false))
+    .filter((x) => {
+      return (Boolean(x));
+    })
     .join(' ')
     .trim();
 };
 
 class ExpandableButtonComponent extends Component {
-  render() {
+  render () {
     const { context } = this.props;
 
     if (context.disabled) {
@@ -18,7 +20,12 @@ class ExpandableButtonComponent extends Component {
     }
 
     return (
-      <Button {...this.props} onClick={() => context.toggleExpanded()}>
+      <Button
+        {...this.props}
+        onClick={() => {
+          return context.toggleExpanded();
+        }}
+      >
         {context.expanded
           ? cleanList(['Show fewer', this.props.name])
           : cleanList(['Show all', this.props.count, this.props.name])}
@@ -27,10 +34,12 @@ class ExpandableButtonComponent extends Component {
   }
 }
 
-function ExpandableButton(props) {
+function ExpandableButton (props) {
   return (
     <ExpandableContext.Consumer>
-      {(context) => <ExpandableButtonComponent {...props} context={context} />}
+      {(context) => {
+        return <ExpandableButtonComponent {...props} context={context} />;
+      }}
     </ExpandableContext.Consumer>
   );
 }

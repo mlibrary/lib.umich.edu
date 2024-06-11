@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Heading, List, COLORS } from '../reusable';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
+import { COLORS, Heading, List } from '../reusable';
+import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import PageHeader from '../components/page-header';
@@ -28,7 +28,7 @@ export default function VisitTemplate ({ data, ...rest }) {
     field_access: fieldAccess
   } = node;
   const parentNode = relationships.field_parent_page[0];
-  const isRootPage = !!fieldRootPage;
+  const isRootPage = Boolean(fieldRootPage);
   const { field_visit: fieldVisit, field_amenities: fieldAmenities } = relationships;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
   return (

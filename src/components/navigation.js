@@ -10,27 +10,27 @@ const getPages = (data) => {
     return {
       text: page.title,
       to: page.path.alias,
-      pages: pages ? getPages(pages) : null,
+      pages: pages ? getPages(pages) : null
     };
   });
 };
 
 const StyledNav = styled('nav')({
-  marginTop: '1rem',
+  marginTop: '1rem'
 });
 
 const StyledNavList = styled('nav')({
   listStyle: 'none',
   padding: '0',
-  margin: '0',
+  margin: '0'
 });
 
 const StyledLink = styled(Link)({
   display: 'block',
   padding: '0.15rem 0',
   ':hover': {
-    textDecoration: 'underline',
-  },
+    textDecoration: 'underline'
+  }
 });
 
 const Navigation = ({ data }) => {
@@ -43,19 +43,21 @@ const Navigation = ({ data }) => {
     <StyledNav>
       <Heading
         level={2}
-        size="medium"
+        size='medium'
         style={{
-          marginTop: 0,
+          marginTop: 0
         }}
       >
         In this section
       </Heading>
       <StyledNavList>
-        {navData.map((item, index) => (
-          <li key={`styled-link-${index}`}>
-            <StyledLink to={item.to}>{item.text}</StyledLink>
-          </li>
-        ))}
+        {navData.map((item, index) => {
+          return (
+            <li key={`styled-link-${index}`}>
+              <StyledLink to={item.to}>{item.text}</StyledLink>
+            </li>
+          );
+        })}
       </StyledNavList>
     </StyledNav>
   );

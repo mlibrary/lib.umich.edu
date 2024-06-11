@@ -1,12 +1,12 @@
 import React from 'react';
 import {
-  Margins,
-  Heading,
-  SPACING,
   Button,
+  createSlug,
+  Heading,
   Icon,
+  Margins,
   MEDIA_QUERIES,
-  createSlug
+  SPACING
 } from '../../reusable';
 import Html from '../html';
 import HoursTable from '../hours-table';
@@ -220,23 +220,23 @@ function transformTableData ({ node, now }) {
   const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;
 
   /*
-    [
-      {
-        text: 'Sun',
-        subtext: 'Apr 15',
-        label: 'Sunday, April 15th'
-      },
-      ...
-      {
-        text: 'Sat',
-        subtext: 'Apr 21',
-        label: 'Saturday, April 21th'
-      },
-    ]
-  */
+   *[
+   *  {
+   *    text: 'Sun',
+   *    subtext: 'Apr 15',
+   *    label: 'Sunday, April 15th'
+   *  },
+   *  ...
+   *  {
+   *    text: 'Sat',
+   *    subtext: 'Apr 21',
+   *    label: 'Saturday, April 21th'
+   *  },
+   *]
+   */
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const currentDate = new Date(now);
-  // set to Sunday
+  // Set to Sunday
   currentDate.setDate(currentDate.getDate() - currentDate.getDay());
 
   const headings = [];
@@ -260,18 +260,18 @@ function transformTableData ({ node, now }) {
   }
 
   /*
-    Make the rows.
-      1. title (th[scope="row"])
-      2-n. The hours.
-
-    [
-      [
-        { text: 'General', label: 'General' },
-        { text: '24 hours', label: '24 hours' },
-        ...
-      ]
-    ]
-  */
+   *Make the rows.
+   *  1. title (th[scope="row"])
+   *  2-n. The hours.
+   *
+   *[
+   *  [
+   *    { text: 'General', label: 'General' },
+   *    { text: '24 hours', label: '24 hours' },
+   *    ...
+   *  ]
+   *]
+   */
 
   function sortByTitle (a, b) {
     const titleA = a.title.toUpperCase();
@@ -302,14 +302,14 @@ function transformTableData ({ node, now }) {
 }
 
 /*
-  Return
-
-  [
-    'General',
-    '24 hours',
-    '10am - 5pm'
-  ]
-*/
+ *Return
+ *
+ *[
+ *  'General',
+ *  '24 hours',
+ *  '10am - 5pm'
+ *]
+ */
 function getRow (node, nowWithWeekOffset, isParent) {
   let hours = [];
   const notAvailableRow = { text: 'n/a', label: 'Not available' };

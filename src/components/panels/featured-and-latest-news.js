@@ -1,13 +1,13 @@
 import React from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
+import { graphql, useStaticQuery } from 'gatsby';
 import styled from '@emotion/styled';
-import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '../../reusable';
+import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
 import Card from '../card';
 import Link from '../link';
 
 function processNewsNodeForCard ({ newsNode }) {
-  const newsImage =
-    newsNode.relationships?.field_media_image?.relationships?.field_media_image
+  const newsImage
+    = newsNode.relationships?.field_media_image?.relationships?.field_media_image
       ?.localFile?.childImageSharp?.gatsbyImageData;
 
   const children = newsNode.body?.summary;
@@ -26,8 +26,8 @@ function processNewsNodeForCard ({ newsNode }) {
 }
 
 /*
-  Experimenting with this layout system.
-*/
+ *Experimenting with this layout system.
+ */
 const Layout = styled.div({
   display: 'grid',
   gridTemplateColumns: `

@@ -1,17 +1,17 @@
 import {
-  COLORS,
-  SPACING,
   BREAKPOINTS,
-  MEDIA_QUERIES,
-  Z_SPACE,
-  TYPOGRAPHY,
-  Margins,
-  LargeScreen,
-  SmallScreen,
-  LINK_STYLES,
-  INTENT_COLORS,
-  lightOrDark,
+  COLORS,
   GlobalStyleSheet,
+  INTENT_COLORS,
+  LargeScreen,
+  lightOrDark,
+  LINK_STYLES,
+  Margins,
+  MEDIA_QUERIES,
+  SmallScreen,
+  SPACING,
+  TYPOGRAPHY,
+  Z_SPACE
 } from './utils';
 
 import { Breadcrumb, BreadcrumbItem } from './breadcrumb';
@@ -31,7 +31,7 @@ import {
   Expandable,
   ExpandableButton,
   ExpandableChildren,
-  ExpandableProvider,
+  ExpandableProvider
 } from './expandable/index';
 
 export {
@@ -65,5 +65,5 @@ export {
   Expandable,
   ExpandableButton,
   ExpandableChildren,
-  ExpandableProvider,
+  ExpandableProvider
 };

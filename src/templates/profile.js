@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Margins, Heading, SPACING, Text, TYPOGRAPHY, List, LargeScreen, SmallScreen, Icon, COLORS, MEDIA_QUERIES } from '../reusable';
-import { Template, Top, Side, Content } from '../components/page-layout';
+import { COLORS, Heading, Icon, LargeScreen, List, Margins, MEDIA_QUERIES, SmallScreen, SPACING, Text, TYPOGRAPHY } from '../reusable';
+import { Content, Side, Template, Top } from '../components/page-layout';
 import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
 import Layout from '../components/layout';
@@ -12,7 +12,7 @@ import LANGUAGES from '../utils/languages';
 import LinkCallout from '../components/link-callout';
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder';
 
-function ProfileTemplate({ data }) {
+function ProfileTemplate ({ data }) {
   const {
     field_user_display_name,
     field_user_pro_about,
@@ -28,7 +28,7 @@ function ProfileTemplate({ data }) {
     field_user_url,
     relationships,
     field_user_make_an_appointment,
-    field_physical_address_public_,
+    field_physical_address_public_
   } = data.profile;
   const { field_media_image, field_name_pronunciation } = relationships;
   const { office } = data.staff;
@@ -36,7 +36,7 @@ function ProfileTemplate({ data }) {
     field_user_pronoun_subject,
     field_user_pronoun_object,
     field_user_pronoun_dependent_pos,
-    field_user_pronoun_independent_p,
+    field_user_pronoun_independent_p
   ];
 
   const phone = field_user_phone !== '000-000-0000' ? field_user_phone : null;
@@ -64,23 +64,34 @@ function ProfileTemplate({ data }) {
    *   "They/Them/Their/Theirs"
    * ]
    */
-  function processPronouns(pronouns) {
-    const cleaned = pronouns.filter((pronoun) => typeof pronoun === 'string');
+  function processPronouns (pronouns) {
+    const cleaned = pronouns.filter((pronoun) => {
+      return typeof pronoun === 'string';
+    });
 
     // They don't have any.
     if (cleaned.length === 0) {
       return null;
     }
 
-    const matrix = cleaned.map((pronoun) => pronoun.split('/'));
+    const matrix = cleaned.map((pronoun) => {
+      return pronoun.split('/');
+    });
     const transposed = matrix.reduce(
-      (prev, next) => next.map((item, i) => (prev[i] || []).concat(next[i])),
+      (prev, next) => {
+        return next.map((item, i) => {
+          return (prev[i] || []).concat(next[i]);
+        });
+      },
       []
     );
-    const formatted = transposed.map((set) =>
-      set
-        .filter((v, i, arr) => v && arr.indexOf(v) === i) // remove duplicates
-        .join('/')
+    const formatted = transposed.map((set) => {
+      return set
+        .filter((v, i, arr) => {
+          return v && arr.indexOf(v) === i;
+        }) // Remove duplicates
+        .join('/');
+    }
     );
 
     return formatted;
@@ -95,18 +106,18 @@ function ProfileTemplate({ data }) {
       alt: field_media_image.field_media_image.alt,
       imageData:
         field_media_image.relationships.field_media_image.localFile
-          .childImageSharp.gatsbyImageData,
+          .childImageSharp.gatsbyImageData
     };
   }
 
   const breadcrumbData = JSON.stringify([
     {
       text: 'Home',
-      to: '/',
+      to: '/'
     },
     {
-      text: field_user_display_name,
-    },
+      text: field_user_display_name
+    }
   ]);
   return (
     <Layout>
@@ -119,7 +130,7 @@ function ProfileTemplate({ data }) {
             <SmallScreen>
               <div
                 css={{
-                  marginBottom: SPACING['XL'],
+                  marginBottom: SPACING.XL
                 }}
               >
                 <ProfileHeader {...data.profile} />
@@ -130,44 +141,48 @@ function ProfileTemplate({ data }) {
               css={{
                 marginBottom: SPACING['2XL'],
                 '> h2': {
-                  marginTop: SPACING['M'],
+                  marginTop: SPACING.M
                 },
                 background: COLORS.blue['100'],
-                padding: SPACING['M'],
-                margin: `0 -${SPACING['M']}`,
+                padding: SPACING.M,
+                margin: `0 -${SPACING.M}`,
                 [MEDIA_QUERIES.LARGESCREEN]: {
-                  margin: 0,
-                },
+                  margin: 0
+                }
               }}
             >
-              {image ? (
-                <GatsbyImage
-                  image={image.imageData}
-                  alt={image.alt}
-                  css={{
-                    aspectRatio: '2 / 3',
-                    borderRadius: '2px',
-                    width: '100%'
-                  }}
-                />
-              ) : (
-                <StaffPhotoPlaceholder />
-              )}
+              {image
+                ? (
+                  <GatsbyImage
+                    image={image.imageData}
+                    alt={image.alt}
+                    css={{
+                      aspectRatio: '2 / 3',
+                      borderRadius: '2px',
+                      width: '100%'
+                    }}
+                  />
+                  )
+                : (
+                  <StaffPhotoPlaceholder />
+                  )}
 
               {pronouns && (
                 <React.Fragment>
                   <Heading
                     level={2}
-                    size="2XS"
+                    size='2XS'
                     css={{
-                      fontWeight: '700',
+                      fontWeight: '700'
                     }}
                   >
                     Pronouns
                   </Heading>
-                  {pronouns.map((set, i) => (
-                    <Text key={`pronouns` + i}>{set}</Text>
-                  ))}
+                  {pronouns.map((set, i) => {
+                    return (
+                      <Text key={`pronouns${i}`}>{set}</Text>
+                    );
+                  })}
                 </React.Fragment>
               )}
 
@@ -175,14 +190,14 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
-                    size="2XS"
+                    size='2XS'
                     css={{
-                      fontWeight: '700',
+                      fontWeight: '700'
                     }}
                   >
                     Email
                   </Heading>
-                  <Link to={`mailto:` + field_user_email}>
+                  <Link to={`mailto:${field_user_email}`}>
                     {field_user_email}
                   </Link>
                 </React.Fragment>
@@ -192,14 +207,14 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
-                    size="2XS"
+                    size='2XS'
                     css={{
-                      fontWeight: '700',
+                      fontWeight: '700'
                     }}
                   >
                     Phone
                   </Heading>
-                  <Link to={`tel:1-` + phone}>{phone}</Link>
+                  <Link to={`tel:1-${phone}`}>{phone}</Link>
                 </React.Fragment>
               )}
 
@@ -207,9 +222,9 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
-                    size="2XS"
+                    size='2XS'
                     css={{
-                      fontWeight: '700',
+                      fontWeight: '700'
                     }}
                   >
                     Office
@@ -222,9 +237,9 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
-                    size="2XS"
+                    size='2XS'
                     css={{
-                      fontWeight: '700',
+                      fontWeight: '700'
                     }}
                   >
                     Mailing address
@@ -237,9 +252,9 @@ function ProfileTemplate({ data }) {
                 <React.Fragment>
                   <Heading
                     level={2}
-                    size="2XS"
+                    size='2XS'
                     css={{
-                      fontWeight: '700',
+                      fontWeight: '700'
                     }}
                   >
                     ORCID ID
@@ -261,13 +276,13 @@ function ProfileTemplate({ data }) {
                 css={{
                   marginTop: SPACING['2XL'],
                   a: {
-                    display: 'inline-block',
-                  },
+                    display: 'inline-block'
+                  }
                 }}
               >
                 <LinkCallout
                   to={field_user_make_an_appointment.uri}
-                  icon="today"
+                  icon='today'
                 >
                   Make an appointment
                 </LinkCallout>
@@ -278,28 +293,30 @@ function ProfileTemplate({ data }) {
               <figure
                 css={{
                   marginTop: SPACING['2XL'],
-                  marginBottom: SPACING['XL'],
+                  marginBottom: SPACING.XL
                 }}
               >
                 <figcaption
                   css={{
-                    ...TYPOGRAPHY['S'],
-                    marginBottom: SPACING['XS'],
+                    ...TYPOGRAPHY.S,
+                    marginBottom: SPACING.XS
                   }}
                 >
                   Name pronunciation
                 </figcaption>
-                {/* eslint-disable-next-line */}
+                { }
                 <audio
                   css={{
                     width: '100%',
-                    maxWidth: '24rem',
+                    maxWidth: '24rem'
                   }}
                   controls
                   src={field_name_pronunciation.localFile.publicURL}
                 >
                   Your browser does not support the
-                  <code>audio</code> element.
+                  <code>audio</code>
+                  {' '}
+                  element.
                 </audio>
               </figure>
             )}
@@ -307,20 +324,20 @@ function ProfileTemplate({ data }) {
             <div
               css={{
                 '> h2': {
-                  marginTop: SPACING['XL'],
-                  marginBottom: SPACING['XS'],
-                },
+                  marginTop: SPACING.XL,
+                  marginBottom: SPACING.XS
+                }
               }}
             >
               {field_user_pro_about && (
                 <React.Fragment>
-                  <Heading size="S" level={2}>
+                  <Heading size='S' level={2}>
                     About me
                   </Heading>
                   <Html
                     html={field_user_pro_about.processed}
                     css={{
-                      marginBottom: SPACING['XL'],
+                      marginBottom: SPACING.XL
                     }}
                   />
                 </React.Fragment>
@@ -328,12 +345,14 @@ function ProfileTemplate({ data }) {
 
               {field_languages_spoken && (
                 <React.Fragment>
-                  <Heading size="S" level={2}>
+                  <Heading size='S' level={2}>
                     Languages
                   </Heading>
                   <p>
                     {field_languages_spoken
-                      .map((lang) => LANGUAGES[lang].name)
+                      .map((lang) => {
+                        return LANGUAGES[lang].name;
+                      })
                       .join(', ')}
                   </p>
                 </React.Fragment>
@@ -341,16 +360,18 @@ function ProfileTemplate({ data }) {
 
               {field_user_url && field_user_url.length > 0 && (
                 <React.Fragment>
-                  <Heading size="S" level={2}>
+                  <Heading size='S' level={2}>
                     My links
                   </Heading>
 
-                  <List type="bulleted">
-                    {field_user_url.map(({ uri, title }) => (
-                      <li key={uri + title}>
-                        <Link to={uri}>{unescape(title)}</Link>
-                      </li>
-                    ))}
+                  <List type='bulleted'>
+                    {field_user_url.map(({ uri, title }) => {
+                      return (
+                        <li key={uri + title}>
+                          <Link to={uri}>{unescape(title)}</Link>
+                        </li>
+                      );
+                    })}
                   </List>
                 </React.Fragment>
               )}
@@ -362,10 +383,10 @@ function ProfileTemplate({ data }) {
   );
 }
 
-function ProfileHeader({
+function ProfileHeader ({
   field_user_display_name,
   field_user_work_title,
-  relationships,
+  relationships
 }) {
   const { field_user_department } = relationships;
   const depts = [...field_user_department].reverse();
@@ -373,10 +394,10 @@ function ProfileHeader({
   return (
     <React.Fragment>
       <Heading
-        size="3XL"
+        size='3XL'
         level={1}
         css={{
-          marginBottom: SPACING['XS'],
+          marginBottom: SPACING.XS
         }}
       >
         {field_user_display_name}
@@ -390,26 +411,28 @@ function ProfileHeader({
               {department.field_title_context}
             </Link>
           </span>
-        )
+        );
       })}
     </React.Fragment>
   );
 }
 
-function SocialLinks({
+function SocialLinks ({
   field_linkedin,
   field_facebook,
   field_instagram,
   field_slideshare,
-  field_twitter,
+  field_twitter
 }) {
   const links = [
     field_linkedin,
     field_facebook,
     field_instagram,
     field_slideshare,
-    field_twitter,
-  ].filter((l) => l && l.uri);
+    field_twitter
+  ].filter((l) => {
+    return l && l.uri;
+  });
 
   if (links.length === 0) {
     return null;
@@ -420,27 +443,27 @@ function SocialLinks({
       css={{
         '> a': {
           display: 'inline-block',
-          marginTop: SPACING['S'],
+          marginTop: SPACING.S,
           ':not(:last-of-type)': {
-            marginRight: SPACING['S'],
-          },
-        },
+            marginRight: SPACING.S
+          }
+        }
       }}
     >
       {links.map((sl) => {
-        const icon = sl.__typename.substr(16); // user__userField_linkedin -> linkedin
+        const icon = sl.__typename.substr(16); // User__userField_linkedin -> linkedin
         return <SocialLink to={sl.uri} icon={icon} label={icon} key={sl.uri} />;
       })}
     </div>
   );
 }
 
-function SocialLink({ to, icon, label }) {
+function SocialLink ({ to, icon, label }) {
   return (
     <a
       href={to}
       css={{
-        color: COLORS.neutral['300'],
+        color: COLORS.neutral['300']
       }}
     >
       <Icon icon={icon} size={24} />
@@ -449,11 +472,11 @@ function SocialLink({ to, icon, label }) {
   );
 }
 
-function MailingAddress({
+function MailingAddress ({
   address_line1,
   locality,
   administrative_area,
-  postal_code,
+  postal_code
 }) {
   return (
     <React.Fragment>
@@ -467,7 +490,7 @@ function MailingAddress({
 
 export default ProfileTemplate;
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={data.profile} titleField='field_user_display_name' />;
 }
 

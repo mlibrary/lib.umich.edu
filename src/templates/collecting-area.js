@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Margins, Heading, SPACING, COLORS } from '../reusable';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
+import { COLORS, Heading, Margins, SPACING } from '../reusable';
+import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import TemplateLayout from './template-layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
@@ -12,7 +12,7 @@ import getNode from '../utils/get-node';
 import Panels from '../components/panels';
 import UserCard from '../components/user-card';
 
-function processContacts(userData) {
+function processContacts (userData) {
   if (!userData) {
     return null;
   }
@@ -24,7 +24,7 @@ function processContacts(userData) {
       field_user_work_title,
       field_user_email,
       field_user_phone,
-      relationships,
+      relationships
     } = user;
     const { field_media_image } = relationships;
     let image;
@@ -34,7 +34,7 @@ function processContacts(userData) {
         alt: field_media_image.field_media_image.alt,
         imageData:
           field_media_image.relationships.field_media_image.localFile
-            .childImageSharp.gatsbyImageData,
+            .childImageSharp.gatsbyImageData
       };
     }
 
@@ -42,14 +42,14 @@ function processContacts(userData) {
       uniqname: name,
       name: field_user_display_name,
       title: field_user_work_title,
-      to: '/users/' + name,
+      to: `/users/${name}`,
       phone: field_user_phone === '000-000-0000' ? null : field_user_phone,
       email: field_user_email,
-      image,
+      image
     });
   }, []);
 
-  const userListSorted = userList.sort(function (a, b) {
+  const userListSorted = userList.sort((a, b) => {
     const nameA = a.name.toUpperCase();
     const nameB = b.name.toUpperCase();
 
@@ -67,20 +67,20 @@ function processContacts(userData) {
   return userListSorted;
 }
 
-function CollectingAreaTemplate({ data, ...rest }) {
+function CollectingAreaTemplate ({ data, ...rest }) {
   const node = getNode(data);
   const { field_title_context, body, fields, relationships } = node;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
-  const image =
-    relationships.field_media_image &&
-    relationships.field_media_image.relationships.field_media_image;
+  const image
+    = relationships.field_media_image
+    && relationships.field_media_image.relationships.field_media_image;
   const imageAlt = relationships.field_media_image?.field_media_image?.alt;
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
-  const imageCaption =
-    relationships.field_media_image &&
-    relationships.field_media_image.field_image_caption
+  const imageCaption
+    = relationships.field_media_image
+    && relationships.field_media_image.field_image_caption
       ? relationships.field_media_image.field_image_caption.processed
       : null;
   const contacts = processContacts(
@@ -92,14 +92,14 @@ function CollectingAreaTemplate({ data, ...rest }) {
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
       </Margins>
-      <Template asideWidth={'25rem'}>
+      <Template asideWidth='25rem'>
         <TemplateContent>
           <Heading
             level={1}
-            size="3XL"
+            size='3XL'
             css={{
-              marginTop: SPACING['S'],
-              marginBottom: SPACING['L'],
+              marginTop: SPACING.S,
+              marginBottom: SPACING.L
             }}
           >
             {field_title_context}
@@ -110,32 +110,32 @@ function CollectingAreaTemplate({ data, ...rest }) {
         <TemplateSide
           css={{
             '> div': {
-              border: 'none',
-            },
+              border: 'none'
+            }
           }}
         >
           {imageData && (
             <figure
               css={{
-                maxWidth: '38rem',
+                maxWidth: '38rem'
               }}
             >
               <GatsbyImage
                 image={imageData}
                 css={{
                   width: '100%',
-                  borderRadius: '2px',
+                  borderRadius: '2px'
                 }}
                 alt={imageAlt}
               />
               {imageCaption && (
                 <figcaption
                   css={{
-                    paddingTop: SPACING['S'],
+                    paddingTop: SPACING.S,
                     color: COLORS.neutral['300'],
-                    paddingBottom: SPACING['XL'],
-                    marginBottom: SPACING['XL'],
-                    borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+                    paddingBottom: SPACING.XL,
+                    marginBottom: SPACING.XL,
+                    borderBottom: `solid 1px ${COLORS.neutral['100']}`
                   }}
                 >
                   <Html
@@ -153,16 +153,18 @@ function CollectingAreaTemplate({ data, ...rest }) {
             <React.Fragment>
               <Heading
                 level={2}
-                size="M"
+                size='M'
                 css={{
-                  marginTop: SPACING['XL'],
+                  marginTop: SPACING.XL
                 }}
               >
                 Contact
               </Heading>
-              {contacts.map((contact) => (
-                <UserCard key={contact.uniqname} {...contact} />
-              ))}
+              {contacts.map((contact) => {
+                return (
+                  <UserCard key={contact.uniqname} {...contact} />
+                );
+              })}
             </React.Fragment>
           )}
         </TemplateSide>
@@ -175,7 +177,7 @@ function CollectingAreaTemplate({ data, ...rest }) {
 
 export default CollectingAreaTemplate;
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={getNode(data)} />;
 }
 
