@@ -3,35 +3,35 @@ import PropTypes from 'prop-types';
 import { COLORS } from '../reusable';
 
 /**
-  Use Alerts to notify users of important information. 
-*/
+ *Use Alerts to notify users of important information.
+ */
 class Alert extends React.Component {
-  render() {
+  render () {
     const { intent, children, className, ...other } = this.props;
     const alertStyles = (intent) => {
       if (intent === 'success') {
         return {
           background: COLORS.teal[100],
-          borderColor: COLORS.teal[400],
+          borderColor: COLORS.teal[400]
         };
       }
       if (intent === 'warning') {
         return {
           background: COLORS.maize[100],
-          borderColor: COLORS.maize[400],
+          borderColor: COLORS.maize[400]
         };
       }
       if (intent === 'error') {
         return {
           background: COLORS.orange[100],
-          borderColor: COLORS.orange[500],
+          borderColor: COLORS.orange[500]
         };
       }
       return {
         background: COLORS.blue[100],
-        borderColor: COLORS.blue[400],
+        borderColor: COLORS.blue[400]
       };
-    }
+    };
     return (
       <div
         role={intent === 'error' ? 'alert' : intent === 'warning' ? 'status' : ''}
@@ -61,11 +61,11 @@ class Alert extends React.Component {
 Alert.propTypes = {
   intent: PropTypes.oneOf(['informational', 'error', 'warning', 'success']),
   className: PropTypes.string,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };
 
 Alert.defaultProps = {
-  intent: 'informational',
+  intent: 'informational'
 };
 
 export default Alert;

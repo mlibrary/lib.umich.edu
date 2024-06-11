@@ -12,7 +12,7 @@ import useFloorPlan from '../hooks/use-floor-plan';
 
 import { getFloor } from '../utils';
 
-export default function DestinationLocationInfoContainer({ node }) {
+export default function DestinationLocationInfoContainer ({ node }) {
   if (node.__typename === 'node__page') {
     return null;
   }
@@ -20,22 +20,22 @@ export default function DestinationLocationInfoContainer({ node }) {
   return <DestinationLocationInfo node={node} />;
 }
 
-function resolveLocationFromNode(node) {
+function resolveLocationFromNode (node) {
   const { relationships } = node;
 
   const buildingNode = relationships?.field_room_building;
-  const parentLocationNode =
-    relationships?.field_parent_location?.relationships?.field_parent_location;
+  const parentLocationNode
+    = relationships?.field_parent_location?.relationships?.field_parent_location;
   const locationNode = buildingNode
     ? buildingNode
     : parentLocationNode
-    ? parentLocationNode
-    : node;
+      ? parentLocationNode
+      : node;
 
   return locationNode;
 }
 
-function DestinationLocationInfo({ node }) {
+function DestinationLocationInfo ({ node }) {
   const { field_parent_location, field_room_building } = node.relationships;
   const bid = field_room_building
     ? field_room_building.id
@@ -49,29 +49,30 @@ function DestinationLocationInfo({ node }) {
   const phone_number = node.field_phone_number;
   const email = node.field_email;
   const floor = getFloor({ node });
-  const room = node.field_room_number && 'Room ' + node.field_room_number;
+  const room = node.field_room_number && `Room ${node.field_room_number}`;
   const locationSummary = [locationTitle, floor, room]
-    .filter((i) => typeof i === 'string')
+    .filter((i) => {
+      return typeof i === 'string';
+    })
     .join(', ');
 
   const locationNode = resolveLocationFromNode(node);
 
   const { fields } = node;
   const askLibrarian = fields?.slug === '/ask-librarian';
-   
 
   return (
     <div
       css={{
         '> *:not(:last-child)': {
-          marginBottom: SPACING['M'],
+          marginBottom: SPACING.M
         },
-        marginBottom: SPACING['2XL'],
+        marginBottom: SPACING['2XL']
       }}
     >
       {shouldDisplayHours && (
         <p>
-          <IconText icon="access_time">
+          <IconText icon='access_time'>
             <span>
               <Hours node={node} />
               <span css={{ display: 'block' }}>
@@ -83,7 +84,7 @@ function DestinationLocationInfo({ node }) {
       )}
       {(floorPlan || askLibrarian) && (
         <p>
-          <IconText d={icons['address']}>
+          <IconText d={icons.address}>
             <span>
               {locationSummary}
               <span css={{ display: 'block' }}>
@@ -95,14 +96,14 @@ function DestinationLocationInfo({ node }) {
       )}
       {phone_number && (
         <p>
-          <IconText d={icons['phone']}>
+          <IconText d={icons.phone}>
             <Link to={`tel:+1-${phone_number}`}>{phone_number}</Link>
           </IconText>
         </p>
       )}
       {email && (
         <p>
-          <IconText icon="mail_outline">
+          <IconText icon='mail_outline'>
             <Link to={`mailto:${email}`}>{email}</Link>
           </IconText>
         </p>

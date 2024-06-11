@@ -1,17 +1,17 @@
 import React from 'react';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import {
+  COLORS,
   Heading,
-  SPACING,
-  Text,
   Margins,
   MEDIA_QUERIES,
-  COLORS,
+  SPACING,
+  Text
 } from '../reusable';
 
 import Breadcrumb from './breadcrumb';
 
-export default function PageHeader({
+export default function PageHeader ({
   breadcrumb,
   title,
   summary,
@@ -25,7 +25,7 @@ export default function PageHeader({
   return (
     <div
       css={{
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+        borderBottom: `solid 1px ${COLORS.neutral['100']}`
       }}
     >
       <Margins>
@@ -34,28 +34,28 @@ export default function PageHeader({
             [MEDIA_QUERIES.LARGESCREEN]: {
               display: 'flex',
               alignItems: 'stretch',
-              minHeight: '350px',
-            },
+              minHeight: '350px'
+            }
           }}
           {...rest}
         >
           <div
             css={{
               [MEDIA_QUERIES.LARGESCREEN]: {
-                flex: '1 1 0',
+                flex: '1 1 0'
               },
-              paddingBottom: SPACING['L'],
+              paddingBottom: SPACING.L,
               paddingTop: '0',
               paddingRight: SPACING['2XL'],
-              paddingLeft: '0',
+              paddingLeft: '0'
             }}
           >
             <Breadcrumb data={breadcrumb} />
             <Heading
-              size="3XL"
+              size='3XL'
               level={1}
               css={{
-                marginBottom: SPACING['M'],
+                marginBottom: SPACING.M
               }}
             >
               {title}
@@ -72,7 +72,7 @@ export default function PageHeader({
                   backgroundSize: 'cover',
                   display: 'none',
                   [MEDIA_QUERIES.LARGESCREEN]: {
-                    display: 'block',
+                    display: 'block'
                   },
                   flex: '0 1 50%'
                 }}
@@ -80,12 +80,12 @@ export default function PageHeader({
               <GatsbyImage
                 image={imageData}
                 css={{
-                  margin: `0 -${SPACING['M']}`,
+                  margin: `0 -${SPACING.M}`,
                   [MEDIA_QUERIES.LARGESCREEN]: {
-                    display: 'none',
-                  },
+                    display: 'none'
+                  }
                 }}
-                alt=""
+                alt=''
               />
             </React.Fragment>
           )}

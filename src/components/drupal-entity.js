@@ -1,10 +1,10 @@
 import React from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
+import { graphql, useStaticQuery } from 'gatsby';
 import MediaPlayer from './media-player';
 import Image from './image';
 import Link from './link';
 
-export default function DrupalEntity(props) {
+export default function DrupalEntity (props) {
   const data = useStaticQuery(
     graphql`
       {
@@ -66,7 +66,9 @@ export default function DrupalEntity(props) {
   );
 
   const videoNode = data.allMediaRemoteVideo.edges.find(
-    (edge) => edge.node.drupal_id === props['data-entity-uuid']
+    (edge) => {
+      return edge.node.drupal_id === props['data-entity-uuid'];
+    }
   );
   const videoUrl = videoNode?.node?.field_media_oembed_video;
   if (videoUrl) {
@@ -74,11 +76,13 @@ export default function DrupalEntity(props) {
   }
 
   const mediaImageNode = data.allMediaImage.edges.find(
-    (edge) => edge.node.drupal_id === props['data-entity-uuid']
+    (edge) => {
+      return edge.node.drupal_id === props['data-entity-uuid'];
+    }
   );
   const alt = mediaImageNode?.node?.field_media_image?.alt;
-  const mediaImage =
-    mediaImageNode?.node?.relationships?.field_media_image?.localFile
+  const mediaImage
+    = mediaImageNode?.node?.relationships?.field_media_image?.localFile
       ?.childImageSharp?.gatsbyImageData;
   if (mediaImage) {
     return (
@@ -89,7 +93,9 @@ export default function DrupalEntity(props) {
   }
 
   const fileNode = data.allMediaFile.edges.find(
-    (edge) => edge.node.drupal_id === props['data-entity-uuid']
+    (edge) => {
+      return edge.node.drupal_id === props['data-entity-uuid'];
+    }
   );
   if (fileNode) {
     const file = fileNode?.node?.relationships?.field_media_file;

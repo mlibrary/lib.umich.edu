@@ -1,15 +1,15 @@
 import React from 'react';
 import { Link } from 'gatsby';
 import {
-  Heading,
-  SPACING,
   COLORS,
-  MEDIA_QUERIES,
+  Heading,
   Icon,
   LargeScreen,
+  MEDIA_QUERIES,
+  SPACING
 } from '../../reusable';
 
-export default function SideNavigation({ to, branch }) {
+export default function SideNavigation ({ to, branch }) {
   if (!branch) {
     return null;
   }
@@ -27,58 +27,60 @@ export default function SideNavigation({ to, branch }) {
         css={{
           display: 'none',
           [MEDIA_QUERIES.LARGESCREEN]: {
-            display: 'block',
-          },
+            display: 'block'
+          }
         }}
-        aria-labelledby="side-nav-heading"
+        aria-labelledby='side-nav-heading'
       >
-        <Heading size="S" level={2} id="side-nav-heading">
+        <Heading size='S' level={2} id='side-nav-heading'>
           {title}
         </Heading>
         <ol
           css={{
-            marginTop: SPACING['XS'],
-            marginBottom: SPACING['M'],
+            marginTop: SPACING.XS,
+            marginBottom: SPACING.M,
             '> li:not(:last-of-type)': {
-              borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-            },
+              borderBottom: `solid 1px ${COLORS.neutral['100']}`
+            }
           }}
         >
-          {items.map((item) => (
-            <li key={item.to + item.text}>
-              <SideNavLink path={to} item={item}>
-                {item.text}
-              </SideNavLink>
-            </li>
-          ))}
+          {items.map((item) => {
+            return (
+              <li key={item.to + item.text}>
+                <SideNavLink path={to} item={item}>
+                  {item.text}
+                </SideNavLink>
+              </li>
+            );
+          })}
         </ol>
       </nav>
     </LargeScreen>
   );
 }
 
-function SideNavLink({ path, item, children, ...rest }) {
-  const hasChildren = item.children ? true : false;
+function SideNavLink ({ path, item, children, ...rest }) {
+  const hasChildren = Boolean(item.children);
   const renderChildren = hasChildren && path.includes(item.to);
   const isActive = path === item.to;
 
   return (
     <React.Fragment>
       <Link
-        kind="list"
+        kind='list'
         to={item.to}
         css={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          paddingRight: SPACING['S'],
+          paddingRight: SPACING.S,
           color: isActive ? COLORS.teal['400'] : 'inherit',
           fontWeight: isActive ? '700' : 'inherit',
           ':hover': {
-            textDecoration: 'underline',
+            textDecoration: 'underline'
           },
-          paddingTop: SPACING['M'],
-          paddingBottom: renderChildren ? SPACING['XS'] : SPACING['M'],
+          paddingTop: SPACING.M,
+          paddingBottom: renderChildren ? SPACING.XS : SPACING.M
         }}
         {...rest}
       >
@@ -86,37 +88,39 @@ function SideNavLink({ path, item, children, ...rest }) {
         {hasChildren && (
           <span
             css={{
-              paddingLeft: SPACING['XS'],
+              paddingLeft: SPACING.XS,
               lineHeight: '1',
-              color: COLORS.neutral['400'],
+              color: COLORS.neutral['400']
             }}
           >
             <span className='visually-hidden'>(has sub-pages)</span>
-            <Icon icon="expand_more" />
+            <Icon icon='expand_more' />
           </span>
         )}
       </Link>
       {renderChildren && (
         <ol
           css={{
-            paddingBottom: SPACING['XS'],
+            paddingBottom: SPACING.XS
           }}
         >
-          {item.children.map((child, index) => (
-            <li key={`child-${index}`}>
-              <SideNavLink
-                key={path + child.text}
-                path={path}
-                item={child}
-                css={{
-                  padding: `${SPACING['XS']} 0`,
-                  paddingLeft: SPACING['M'],
-                }}
-              >
-                {child.text}
-              </SideNavLink>
-            </li>
-          ))}
+          {item.children.map((child, index) => {
+            return (
+              <li key={`child-${index}`}>
+                <SideNavLink
+                  key={path + child.text}
+                  path={path}
+                  item={child}
+                  css={{
+                    padding: `${SPACING.XS} 0`,
+                    paddingLeft: SPACING.M
+                  }}
+                >
+                  {child.text}
+                </SideNavLink>
+              </li>
+            );
+          })}
         </ol>
       )}
     </React.Fragment>

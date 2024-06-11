@@ -2,7 +2,7 @@ import React from 'react';
 import HeaderLargeScreen from './header-largescreen';
 import HeaderSmallScreen from './header-smallscreen';
 
-function Header({ primary, secondary }) {
+function Header ({ primary, secondary }) {
   return (
     <React.Fragment>
       <HeaderSmallScreen primary={primary} secondary={secondary} />

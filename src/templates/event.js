@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Margins, Heading, SPACING, COLORS, TYPOGRAPHY } from '../reusable';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
+import { COLORS, Heading, Margins, SPACING, TYPOGRAPHY } from '../reusable';
+import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import TemplateLayout from './template-layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
@@ -16,13 +16,13 @@ function EventTemplate ({ data }) {
   const node = data.event;
   const { field_title_context: fieldTitleContext, body, fields, relationships } = node;
   const { slug } = fields;
-  const image =
-    relationships?.field_media_image?.relationships.field_media_image;
+  const image
+    = relationships?.field_media_image?.relationships.field_media_image;
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
-  const imageCaptionHTML =
-    relationships?.field_media_image?.field_image_caption?.processed;
+  const imageCaptionHTML
+    = relationships?.field_media_image?.field_image_caption?.processed;
   const contact = relationships?.field_library_contact;
   const eventContacts = relationships?.field_non_library_event_contact;
 
@@ -82,7 +82,7 @@ function EventTemplate ({ data }) {
           )}
 
           <Share
-            url={'https://www.lib.umich.edu' + slug}
+            url={`https://www.lib.umich.edu${slug}`}
             title={fieldTitleContext}
           />
 
@@ -101,7 +101,7 @@ function EventTemplate ({ data }) {
                 Library contact
               </h2>
               <p>
-                <Link to={'/users/' + contact.name}>
+                <Link to={`/users/${contact.name}`}>
                   {contact.field_user_display_name}
                 </Link>
                 {' · '}
@@ -171,17 +171,17 @@ EventTemplate.propTypes = {
 };
 
 /*
-  Details the events:
-  - Dates and times
-  - Location and directions
-  - Registration link
-  - Event type.
-*/
+ *Details the events:
+ *- Dates and times
+ *- Location and directions
+ *- Registration link
+ *- Event type.
+ */
 function EventMetadata ({ data }) {
   const dates = data.field_event_date_s_;
   const eventType = data.relationships.field_event_type.name;
-  const registrationLink =
-    data.field_registration_link && data.field_registration_link.uri
+  const registrationLink
+    = data.field_registration_link && data.field_registration_link.uri
       ? {
           label: 'Register to attend',
           to: data.field_registration_link.uri

@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS, SPACING, Margins, Heading, MEDIA_QUERIES } from '../reusable';
+import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
 
 import fdlp from '../images/fdlp.png';
 import icons from '../reusable/icons';
@@ -12,7 +12,6 @@ const locationURL = createGoogleMapsUrl({
     'University of Michigan Library, 913 S. University Avenue, Ann Arbor, MI 48109'
 });
 
-// eslint-disable-next-line
 const links = [
   {
     heading: 'University of Michigan Library',
@@ -127,8 +126,7 @@ function Footer () {
             'h2, h3': {
               color: COLORS.blue['200']
             }
-          }
-        }
+          }}
         >
           {links.map((section) => {
             return (
@@ -136,7 +134,7 @@ function Footer () {
                 <Heading level={2} size='3XS'>
                   {section.heading}
                 </Heading>
-                <nav aria-label={section.heading + ' links'}> 
+                <nav aria-label={`${section.heading} links`}>
                   <ul
                     css={{
                       paddingTop: SPACING.S
@@ -198,11 +196,13 @@ function Footer () {
                 paddingBottom: SPACING.L
               }}
             >
-              Except where otherwise noted, this work is subject to a{' '}
+              Except where otherwise noted, this work is subject to a
+              {' '}
               <a href='http://creativecommons.org/licenses/by/4.0/'>
                 Creative Commons Attribution 4.0 license
               </a>
-              . For details and exceptions, see the{' '}
+              . For details and exceptions, see the
+              {' '}
               <PlainLink to='/about-us/policies/copyright-policy'>
                 Library Copyright Policy
               </PlainLink>
@@ -272,7 +272,8 @@ function Footer () {
                   marginBottom: [SPACING.XS]
                 }}
               >
-                Built with the{' '}
+                Built with the
+                {' '}
                 <a
                   href='https://design-system.lib.umich.edu/'
                   css={{ textDecoration: 'underline' }}

@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
+import React, { useEffect, useState } from 'react';
+import { graphql, useStaticQuery } from 'gatsby';
 import {
-  Heading,
-  SPACING,
   COLORS,
   Expandable,
   ExpandableButton,
-  ExpandableChildren
+  ExpandableChildren,
+  Heading,
+  SPACING
 } from '../../reusable';
 import Link from '../link';
 import {
   Template,
-  TemplateSide,
-  TemplateContent
+  TemplateContent,
+  TemplateSide
 } from '../../components/aside-layout';
 import EventCard from '../../components/event-card';
 import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
@@ -20,12 +20,12 @@ import PropTypes from 'prop-types';
 
 export default function EventsAndExhibitsPanel () {
   /*
-    Potential states for today, upcoming, and exhibits:
-
-    - null: means "loading", we need to figure this all out client side.
-    - []: An empty array will mean no events.
-    - [{...}, {...}, ...]: An array of events, means we have some!
-  */
+   *Potential states for today, upcoming, and exhibits:
+   *
+   *- null: means "loading", we need to figure this all out client side.
+   *- []: An empty array will mean no events.
+   *- [{...}, {...}, ...]: An array of events, means we have some!
+   */
   const [events, setEvents] = useState(null);
   const [todaysEvents, setTodaysEvents] = useState(null);
   const [upcomingEvents, setUpcomingEvents] = useState(null);
@@ -53,9 +53,9 @@ export default function EventsAndExhibitsPanel () {
 
   useEffect(() => {
     /*
-      As this page is setup on the client,
-      prepare all events.
-    */
+     *As this page is setup on the client,
+     *prepare all events.
+     */
     if (events === null) {
       // Flatten things a bit.
       const events = data.events.edges.map(({ node }) => {
@@ -65,11 +65,11 @@ export default function EventsAndExhibitsPanel () {
       setEvents(sortEventsByStartDate({ events }));
     }
 
-    const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' })); // toLocaleString for getting date AND time
+    const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' })); // ToLocaleString for getting date AND time
 
     // Only process todaysEvents if it hasn't been done already.
     if (events && todaysEvents === null) {
-      // useEffects are only client side, so we can use now here.
+      // UseEffects are only client side, so we can use now here.
 
       // Get Today's events.
       const todaysEvents = events.filter((event) => {
@@ -81,15 +81,17 @@ export default function EventsAndExhibitsPanel () {
           return false;
         }
 
-        // get all today using toDateString() that haven't ended yet using getTime()
-        // can only use === to compare dates as strings. You can not use it on Date() objects. So keep the .toDateString()'s in place.
+        /*
+         * Get all today using toDateString() that haven't ended yet using getTime()
+         * can only use === to compare dates as strings. You can not use it on Date() objects. So keep the .toDateString()'s in place.
+         */
         return (now.toDateString() === new Date(start).toDateString()) && (now.getTime() < end.getTime());
       });
       setTodaysEvents(todaysEvents);
     }
 
     if (events && upcomingEvents === null) {
-      // useEffects are only client side, so we can use now here.
+      // UseEffects are only client side, so we can use now here.
 
       // Get upcoming events.
       const upcomingEvents = events.filter((event) => {
@@ -100,7 +102,7 @@ export default function EventsAndExhibitsPanel () {
         if (EXHIBIT_TYPES.includes(type)) {
           return false;
         }
-        return now < new Date(start.toDateString()); // all after today.
+        return now < new Date(start.toDateString()); // All after today.
       });
 
       setUpcomingEvents(upcomingEvents);
@@ -116,7 +118,7 @@ export default function EventsAndExhibitsPanel () {
 
       setExhibits(exhibits);
     }
-  }, [events]); // eslint-disable-line
+  }, [events]);
 
   return (
     <div
