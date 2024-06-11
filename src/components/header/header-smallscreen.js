@@ -1,11 +1,3 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useRef
-} from 'react';
-import { Link } from 'gatsby';
 import {
   COLORS,
   Icon,
@@ -14,8 +6,16 @@ import {
   SPACING,
   TYPOGRAPHY
 } from '../../reusable';
-
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef
+} from 'react';
+import { Link } from 'gatsby';
 import Logo from './logo';
+import PropTypes from 'prop-types';
 import SiteSearchModal from './site-search-modal';
 
 const StateContext = createContext();
@@ -28,11 +28,20 @@ const StateProvider = ({ reducer, initialState, children }) => {
   );
 };
 
+StateProvider.propTypes = {
+  cchildren: PropTypes.array,
+  initialState: PropTypes.object,
+  reducer: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.func
+  ])
+};
+
 const useStateValue = () => {
   return useContext(StateContext);
 };
 
-function SmallScreenHeader ({ primary, secondary }) {
+const SmallScreenHeader = ({ primary, secondary }) => {
   const reducer = (state, action) => {
     switch (action.type) {
       case 'setOpenNav':
@@ -61,11 +70,11 @@ function SmallScreenHeader ({ primary, secondary }) {
     <StateProvider initialState={{}} reducer={reducer}>
       <header
         css={{
-          borderBottom: `solid 2px ${COLORS.neutral['100']}`,
-          display: 'block',
           '@media only screen and (min-width: 1129px)': {
             display: 'none'
-          }
+          },
+          borderBottom: `solid 2px ${COLORS.neutral['100']}`,
+          display: 'block'
         }}
       >
         <Margins>
@@ -90,9 +99,14 @@ function SmallScreenHeader ({ primary, secondary }) {
       </header>
     </StateProvider>
   );
-}
+};
 
-function Nav ({ primary, secondary }) {
+SmallScreenHeader.propTypes = {
+  primary: PropTypes.array,
+  secondary: PropTypes.array
+};
+
+const Nav = ({ primary, secondary }) => {
   const [{ openNav, open }, dispatch] = useStateValue();
   const isOpen = openNav === true;
   const toggleNavNode = useRef();
@@ -107,16 +121,16 @@ function Nav ({ primary, secondary }) {
       <SiteSearchModal />
       <button
         css={{
-          padding: `${SPACING.M} ${SPACING.XS}`,
+          cursor: 'pointer',
           marginRight: `-${SPACING.XS}`,
-          cursor: 'pointer'
+          padding: `${SPACING.M} ${SPACING.XS}`
         }}
         ref={toggleNavNode}
         aria-expanded={isOpen}
         onClick={() => {
           return dispatch({
-            type: 'setOpenNav',
-            openNav: !isOpen
+            openNav: !isOpen,
+            type: 'setOpenNav'
           });
         }}
       >
@@ -139,9 +153,14 @@ function Nav ({ primary, secondary }) {
       )}
     </nav>
   );
-}
+};
 
-function NavDropdown ({ children, toggleNavNode }) {
+Nav.propTypes = {
+  primary: PropTypes.array,
+  secondary: PropTypes.array
+};
+
+const NavDropdown = ({ children, toggleNavNode }) => {
   const [, dispatch] = useStateValue();
   const dropdownNode = useRef();
 
@@ -156,14 +175,14 @@ function NavDropdown ({ children, toggleNavNode }) {
     };
   }, [dispatch]);
 
-  function closeDropdown () {
+  const closeDropdown = () => {
     dispatch({
-      type: 'setOpenNav',
-      open: null
+      open: null,
+      type: 'setOpenNav'
     });
-  }
+  };
 
-  function handleClick (e) {
+  const handleClick = (event) => {
     /*
      *Double check the node is current.
      */
@@ -174,7 +193,7 @@ function NavDropdown ({ children, toggleNavNode }) {
        *will handle closing for us. No need to close it
        *from here.
        */
-      if (toggleNavNode.current.contains(e.target)) {
+      if (toggleNavNode.current.contains(event.target)) {
         return;
       }
 
@@ -185,18 +204,18 @@ function NavDropdown ({ children, toggleNavNode }) {
        *Except if they're click on the primary nav button,
        *but this case is caught above.
        */
-      if (!dropdownNode.current.contains(e.target)) {
+      if (!dropdownNode.current.contains(event.target)) {
         closeDropdown();
       }
     }
-  }
+  };
 
-  function handleKeydown (e) {
-    if (e.keyCode === 27) {
+  const handleKeydown = (event) => {
+    if (event.keyCode === 27) {
       // ESC key
       closeDropdown();
     }
-  }
+  };
 
   useEffect(() => {
     document.addEventListener('mouseup', handleClick);
@@ -211,13 +230,14 @@ function NavDropdown ({ children, toggleNavNode }) {
   return (
     <div
       css={{
-        borderTop: `solid 1px ${COLORS.neutral[100]}`,
-        position: 'absolute',
-        width: '20rem',
-        maxWidth: '84vw',
         background: 'white',
-        right: 'calc(-1rem)', // Less the side site margin on small screens.
+        borderTop: `solid 1px ${COLORS.neutral[100]}`,
         boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
+        maxWidth: '84vw',
+        position: 'absolute',
+        /* Less the side site margin on small screens. */
+        right: 'calc(-1rem)',
+        width: '20rem',
         zIndex: '101'
       }}
       ref={dropdownNode}
@@ -225,21 +245,38 @@ function NavDropdown ({ children, toggleNavNode }) {
       {children}
     </div>
   );
-}
+};
 
-function NavSecondary ({ items }) {
+NavDropdown.propTypes = {
+  children: PropTypes.array,
+  toggleNavNode: PropTypes.func
+};
+
+const navItemStyles = {
+  alignItems: 'center',
+  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+  color: COLORS.neutral['400'],
+  cursor: 'pointer',
+  display: 'flex',
+  padding: SPACING.M,
+  textAlign: 'left',
+  textDecoration: 'none',
+  width: '100%'
+};
+
+const NavSecondary = ({ items }) => {
   return (
     <ul aria-label='Utility'>
-      {items.map(({ to, text, icon }, i) => {
+      {items.map(({ to, text, icon }, iterator) => {
         return (
-          <li key={i + text}>
+          <li key={iterator + text}>
             <Link
               to={to}
               css={{
-                ...nav_item_styles,
+                ...navItemStyles,
                 ...TYPOGRAPHY['3XS'],
-                color: COLORS.neutral['300'],
-                background: COLORS.blue['100']
+                background: COLORS.blue['100'],
+                color: COLORS.neutral['300']
               }}
             >
               {icon && (
@@ -258,9 +295,13 @@ function NavSecondary ({ items }) {
       })}
     </ul>
   );
-}
+};
 
-function NavPrimary ({ items }) {
+NavSecondary.propTypes = {
+  items: PropTypes.array
+};
+
+const NavPrimary = ({ items }) => {
   const [{ open }] = useStateValue();
 
   // Is an primary nav item open.
@@ -270,31 +311,35 @@ function NavPrimary ({ items }) {
 
   return (
     <ul aria-label='Main'>
-      {items.map((item, i) => {
+      {items.map((item, iterator) => {
         return (
-          <NavPrimaryItem {...item} i={i} key={i + item.text} />
+          <NavPrimaryItem {...item} i={iterator} key={iterator + item.text} />
         );
       })}
     </ul>
   );
-}
+};
 
-function NavPrimaryItem ({ to, text, children, i }) {
+NavPrimary.propTypes = {
+  items: PropTypes.array
+};
+
+const NavPrimaryItem = ({ text, i: iterator }) => {
   const [{ open }, dispatch] = useStateValue();
-  const isOpen = open === i;
+  const isOpen = open === iterator;
 
   return (
     <li>
       <button
         css={{
-          ...nav_item_styles,
+          ...navItemStyles,
           justifyContent: 'space-between'
         }}
         aria-expanded={isOpen}
         onClick={() => {
           return dispatch({
-            type: 'setOpen',
-            open: isOpen ? null : i
+            open: isOpen ? null : iterator,
+            type: 'setOpen'
           });
         }}
       >
@@ -302,47 +347,40 @@ function NavPrimaryItem ({ to, text, children, i }) {
       </button>
     </li>
   );
-}
+};
 
-function BeforeIcon () {
+NavPrimaryItem.propTypes = {
+  text: PropTypes.object,
+  i: PropTypes.number
+};
+
+const BeforeIcon = () => {
   return (
     <span
       css={{
-        paddingRight: SPACING.S,
-        lineHeight: '1'
+        lineHeight: '1',
+        paddingRight: SPACING.S
       }}
     >
       <Icon icon='navigate_before' size={24} />
     </span>
   );
-}
+};
 
-function NextIcon () {
+const NextIcon = () => {
   return (
     <span
       css={{
-        paddingLeft: SPACING.S,
-        lineHeight: '1'
+        lineHeight: '1',
+        paddingLeft: SPACING.S
       }}
     >
       <Icon icon='navigate_next' size={24} />
     </span>
   );
-}
-
-const nav_item_styles = {
-  padding: SPACING.M,
-  display: 'flex',
-  alignItems: 'center',
-  width: '100%',
-  textAlign: 'left',
-  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-  textDecoration: 'none',
-  color: COLORS.neutral['400'],
-  cursor: 'pointer'
 };
 
-function NavPanelSecondary ({ text, to, children }) {
+const NavPanelSecondary = ({ text, children }) => {
   const [{ panelOpen }, dispatch] = useStateValue();
   const beforeNode = useRef(null);
 
@@ -360,14 +398,14 @@ function NavPanelSecondary ({ text, to, children }) {
     <div>
       <button
         css={{
-          ...nav_item_styles
+          ...navItemStyles
         }}
         ref={beforeNode}
         aria-expanded={true}
         onClick={() => {
           return dispatch({
-            type: 'setOpen',
-            open: null
+            open: null,
+            type: 'setOpen'
           });
         }}
       >
@@ -376,21 +414,21 @@ function NavPanelSecondary ({ text, to, children }) {
       </button>
 
       <ul>
-        {children.map((item, i) => {
+        {children.map((item, iterator) => {
           return (
-            <li key={i + item.text}>
+            <li key={iterator + item.text}>
               {item.children
                 ? (
                   <button
                     css={{
-                      ...nav_item_styles,
+                      ...navItemStyles,
                       justifyContent: 'space-between'
                     }}
                     aria-expanded={false}
                     onClick={() => {
                       return dispatch({
-                        type: 'setPanelOpen',
-                        panelOpen: i
+                        panelOpen: iterator,
+                        type: 'setPanelOpen'
                       });
                     }}
                   >
@@ -399,7 +437,7 @@ function NavPanelSecondary ({ text, to, children }) {
                   </button>
                   )
                 : (
-                  <Link to={item.to} css={nav_item_styles}>
+                  <Link to={item.to} css={navItemStyles}>
                     {item.text}
                   </Link>
                   )}
@@ -409,9 +447,14 @@ function NavPanelSecondary ({ text, to, children }) {
       </ul>
     </div>
   );
-}
+};
 
-function NavPanelTertiary ({ text, to, children }) {
+NavPanelSecondary.propTypes = {
+  children: PropTypes.array,
+  text: PropTypes.string
+};
+
+const NavPanelTertiary = ({ text, to, children }) => {
   const [, dispatch] = useStateValue();
   const beforeNode = useRef();
 
@@ -423,12 +466,12 @@ function NavPanelTertiary ({ text, to, children }) {
     <div>
       <button
         css={{
-          ...nav_item_styles
+          ...navItemStyles
         }}
         onClick={() => {
           return dispatch({
-            type: 'setPanelOpen',
-            panelOpen: null
+            panelOpen: null,
+            type: 'setPanelOpen'
           });
         }}
         ref={beforeNode}
@@ -439,10 +482,10 @@ function NavPanelTertiary ({ text, to, children }) {
       </button>
 
       <ul>
-        {children.map((item, i) => {
+        {children.map((item, iterator) => {
           return (
-            <li key={i + item.text}>
-              <Link to={item.to} css={nav_item_styles}>
+            <li key={iterator + item.text}>
+              <Link to={item.to} css={navItemStyles}>
                 {item.text}
               </Link>
             </li>
@@ -452,12 +495,12 @@ function NavPanelTertiary ({ text, to, children }) {
           <Link
             to={to}
             css={{
-              ...nav_item_styles,
-              fontSize: '1rem',
-              fontWeight: '800',
               ':hover': {
                 '.text': LINK_STYLES['list-strong'][':hover']
-              }
+              },
+              ...navItemStyles,
+              fontSize: '1rem',
+              fontWeight: '800'
             }}
           >
             <span className='text' css={{ marginRight: '0.5rem' }}>
@@ -471,6 +514,12 @@ function NavPanelTertiary ({ text, to, children }) {
       </ul>
     </div>
   );
-}
+};
+
+NavPanelTertiary.propTypes = {
+  children: PropTypes.array,
+  text: PropTypes.string,
+  to: PropTypes.string
+};
 
 export default SmallScreenHeader;
