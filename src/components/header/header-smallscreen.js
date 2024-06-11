@@ -29,7 +29,7 @@ const StateProvider = ({ reducer, initialState, children }) => {
 };
 
 StateProvider.propTypes = {
-  cchildren: PropTypes.array,
+  children: PropTypes.object,
   initialState: PropTypes.object,
   reducer: PropTypes.oneOfType([
     PropTypes.array,
@@ -350,8 +350,8 @@ const NavPrimaryItem = ({ text, i: iterator }) => {
 };
 
 NavPrimaryItem.propTypes = {
-  text: PropTypes.object,
-  i: PropTypes.number
+  i: PropTypes.number,
+  text: PropTypes.object
 };
 
 const BeforeIcon = () => {
