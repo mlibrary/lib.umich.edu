@@ -1,8 +1,9 @@
-import React from 'react';
-import { Link } from 'gatsby';
 import { COLORS } from '../../reusable';
+import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-function Logo ({ size }) {
+const Logo = ({ size }) => {
   const logoTitle = 'University of Michigan Library';
   // Original logo size: 34px x 224px (17:112 ratio)
   const getWidth = Math.round((size * 112) / 17);
@@ -43,6 +44,10 @@ function Logo ({ size }) {
       </Link>
     </div>
   );
-}
+};
+
+Logo.propTypes = {
+  size: PropTypes.number
+};
 
 export default Logo;
