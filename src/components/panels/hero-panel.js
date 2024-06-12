@@ -1,6 +1,7 @@
-import React from 'react';
 import HeroSearchBox from '../panels/hero-search-box';
 import HeroText from '../panels/hero-text';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 /*
  *We have two types of heros.
@@ -9,15 +10,19 @@ import HeroText from '../panels/hero-text';
  *2. A heading and HTML content on an image, "text"
  */
 export default function HeroPanel ({ data }) {
-  const { field_machine_name } = data.relationships.field_hero_template;
+  const { field_machine_name: fieldMachineName } = data.relationships.field_hero_template;
 
-  if (field_machine_name === 'lib_search_box') {
+  if (fieldMachineName === 'lib_search_box') {
     return <HeroSearchBox data={data} />;
   }
 
-  if (field_machine_name === 'text') {
+  if (fieldMachineName === 'text') {
     return <HeroText data={data} />;
   }
 
   return null;
 }
+
+HeroPanel.propTypes = {
+  data: PropTypes.object
+};
