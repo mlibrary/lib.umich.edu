@@ -1,6 +1,3 @@
-import React from 'react';
-
-import { Link } from 'gatsby';
 import {
   COLORS,
   LargeScreen,
@@ -9,6 +6,9 @@ import {
   SmallScreen,
   SPACING
 } from '../../reusable';
+import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function HorizontalNavigation ({ items, ...rest }) {
   if (!items) {
@@ -18,9 +18,9 @@ export default function HorizontalNavigation ({ items, ...rest }) {
   return (
     <nav
       css={{
-        marginBottom: SPACING.XL,
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
         background: COLORS.blue['100'],
+        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+        marginBottom: SPACING.XL,
         zIndex: '1'
       }}
       {...rest}
@@ -35,16 +35,16 @@ export default function HorizontalNavigation ({ items, ...rest }) {
         }}
       >
         <ol>
-          {items.map(({ to, text }, i) => {
+          {items.map(({ to, text }, iterator) => {
             return (
               <li
-                key={i + to}
+                key={iterator + to}
                 css={{
                   borderTop: `solid 1px ${COLORS.neutral['100']}`,
                   [MEDIA_QUERIES.LARGESCREEN]: {
+                    border: 'none',
                     display: 'inline-block',
-                    marginRight: SPACING.L,
-                    border: 'none'
+                    marginRight: SPACING.L
                   }
                 }}
               >
@@ -52,12 +52,12 @@ export default function HorizontalNavigation ({ items, ...rest }) {
                   <Link
                     css={{
                       display: 'inline-block',
-                      paddingTop: SPACING.L,
-                      paddingBottom: `calc(${SPACING.L} - 4px)`
+                      paddingBottom: `calc(${SPACING.L} - 4px)`,
+                      paddingTop: SPACING.L
                     }}
                     activeStyle={{
-                      fontWeight: '700',
-                      borderBottom: `solid 4px ${COLORS.teal['400']}`
+                      borderBottom: `solid 4px ${COLORS.teal['400']}`,
+                      fontWeight: '700'
                     }}
                     to={to}
                   >
@@ -68,15 +68,15 @@ export default function HorizontalNavigation ({ items, ...rest }) {
                   <Link
                     css={{
                       display: 'block',
-                      paddingTop: SPACING.M,
                       paddingBottom: SPACING.M,
-                      paddingLeft: `calc(${SPACING.M} - 4px)`
+                      paddingLeft: `calc(${SPACING.M} - 4px)`,
+                      paddingTop: SPACING.M
                     }}
                     activeStyle={{
-                      fontWeight: '700',
-                      borderLeft: `solid 4px ${COLORS.teal['400']}`,
                       background: COLORS.teal['100'],
-                      color: COLORS.teal['400']
+                      borderLeft: `solid 4px ${COLORS.teal['400']}`,
+                      color: COLORS.teal['400'],
+                      fontWeight: '700'
                     }}
                     to={to}
                   >
@@ -91,3 +91,7 @@ export default function HorizontalNavigation ({ items, ...rest }) {
     </nav>
   );
 }
+
+HorizontalNavigation.propTypes = {
+  items: PropTypes.array
+};
