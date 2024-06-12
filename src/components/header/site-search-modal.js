@@ -1,13 +1,12 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import React from 'react';
 import {
   Icon,
   SPACING,
   Z_SPACE
 } from '../../reusable';
+import React from 'react';
 import SiteSearch from '../site-search';
 
-function SiteSearchModal () {
+const SiteSearchModal = () => {
   return (
     <>
       <button
@@ -48,22 +47,22 @@ function SiteSearchModal () {
           padding: '0',
           width: '100%',
           ...Z_SPACE['16'],
-          '::backdrop': {
-            backgroundColor: 'rgba(0, 0, 0, 0.6)'
-          },
-          '&[open]': {
-            display: 'table'
-          },
           '& *[data-site-search-icon]': {
             left: SPACING.L
+          },
+          '& .search-popover': {
+            maxWidth: '82vw',
+            position: 'fixed'
           },
           '& input': {
             border: 'none',
             padding: '0.75rem 1.5rem 0.75rem 3.5rem'
           },
-          '& .search-popover': {
-            maxWidth: '82vw',
-            position: 'fixed'
+          '&[open]': {
+            display: 'table'
+          },
+          '::backdrop': {
+            backgroundColor: 'rgba(0, 0, 0, 0.6)'
           }
         }}
       >
@@ -71,6 +70,6 @@ function SiteSearchModal () {
       </dialog>
     </>
   );
-}
+};
 
 export default SiteSearchModal;
