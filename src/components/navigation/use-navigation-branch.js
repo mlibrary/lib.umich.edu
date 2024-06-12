@@ -1,8 +1,8 @@
 import { graphql, useStaticQuery } from 'gatsby';
 
-function getSiteMapBranch ({ data, to }) {
-  const find = (n) => {
-    return to.startsWith(n.to);
+const getSiteMapBranch = ({ data, to }) => {
+  const find = (toFind) => {
+    return to.startsWith(toFind.to);
   };
   const root = data.find(find);
 
@@ -15,7 +15,7 @@ function getSiteMapBranch ({ data, to }) {
   }
 
   return null;
-}
+};
 
 export default function useNavigationBranch (to, type) {
   const data = useStaticQuery(
@@ -64,8 +64,8 @@ export default function useNavigationBranch (to, type) {
 
   if (type === 'small') {
     if (branch && branch.children) {
-      const next = branch.children.find((n) => {
-        return to.includes(n.to);
+      const next = branch.children.find((toFind) => {
+        return to.includes(toFind.to);
       });
 
       return next;
