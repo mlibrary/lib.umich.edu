@@ -1,5 +1,3 @@
-import React from 'react';
-import { Link } from 'gatsby';
 import {
   COLORS,
   Heading,
@@ -8,6 +6,9 @@ import {
   MEDIA_QUERIES,
   SPACING
 } from '../../reusable';
+import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function SideNavigation ({ to, branch }) {
   if (!branch) {
@@ -37,11 +38,11 @@ export default function SideNavigation ({ to, branch }) {
         </Heading>
         <ol
           css={{
-            marginTop: SPACING.XS,
-            marginBottom: SPACING.M,
             '> li:not(:last-of-type)': {
               borderBottom: `solid 1px ${COLORS.neutral['100']}`
-            }
+            },
+            marginBottom: SPACING.M,
+            marginTop: SPACING.XS
           }}
         >
           {items.map((item) => {
@@ -59,7 +60,12 @@ export default function SideNavigation ({ to, branch }) {
   );
 }
 
-function SideNavLink ({ path, item, children, ...rest }) {
+SideNavigation.propTypes = {
+  branch: PropTypes.object,
+  to: PropTypes.string
+};
+
+const SideNavLink = ({ path, item, children, ...rest }) => {
   const hasChildren = Boolean(item.children);
   const renderChildren = hasChildren && path.includes(item.to);
   const isActive = path === item.to;
@@ -70,17 +76,17 @@ function SideNavLink ({ path, item, children, ...rest }) {
         kind='list'
         to={item.to}
         css={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingRight: SPACING.S,
-          color: isActive ? COLORS.teal['400'] : 'inherit',
-          fontWeight: isActive ? '700' : 'inherit',
           ':hover': {
             textDecoration: 'underline'
           },
-          paddingTop: SPACING.M,
-          paddingBottom: renderChildren ? SPACING.XS : SPACING.M
+          alignItems: 'center',
+          color: isActive ? COLORS.teal['400'] : 'inherit',
+          display: 'flex',
+          fontWeight: isActive ? '700' : 'inherit',
+          justifyContent: 'space-between',
+          paddingBottom: renderChildren ? SPACING.XS : SPACING.M,
+          paddingRight: SPACING.S,
+          paddingTop: SPACING.M
         }}
         {...rest}
       >
@@ -88,9 +94,9 @@ function SideNavLink ({ path, item, children, ...rest }) {
         {hasChildren && (
           <span
             css={{
-              paddingLeft: SPACING.XS,
+              color: COLORS.neutral['400'],
               lineHeight: '1',
-              color: COLORS.neutral['400']
+              paddingLeft: SPACING.XS
             }}
           >
             <span className='visually-hidden'>(has sub-pages)</span>
@@ -125,4 +131,10 @@ function SideNavLink ({ path, item, children, ...rest }) {
       )}
     </React.Fragment>
   );
-}
+};
+
+SideNavLink.propTypes = {
+  children: PropTypes.string,
+  item: PropTypes.object,
+  path: PropTypes.string
+};
