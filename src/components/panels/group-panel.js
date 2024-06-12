@@ -1,24 +1,26 @@
-import React from 'react';
 import { COLORS, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
-
 import Panels from './index';
+import PropTypes from 'prop-types';
+import React from 'react';
 
+/* eslint-disable id-length, sort-keys */
 const MEDIAQUERIES = {
   XL: '@media only screen and (min-width: 1200px)',
   L: '@media only screen and (min-width:920px)',
   M: '@media only screen and (min-width: 720px)',
   S: MEDIA_QUERIES.LARGESCREEN
 };
+/* eslint-enable id-length, sort-keys */
 
 export default function GroupPanel ({ data }) {
-  const { field_panel_group_layout, relationships } = data;
+  const { field_panel_group_layout: fieldPanelGroupLayout, relationships } = data;
 
-  if (field_panel_group_layout === '50') {
-    const { field_panel_group } = relationships;
+  if (fieldPanelGroupLayout === '50') {
+    const { field_panel_group: fieldPanelGroup } = relationships;
 
     return (
       <PanelGroup50Container>
-        <Panels data={field_panel_group} />
+        <Panels data={fieldPanelGroup} />
       </PanelGroup50Container>
     );
   }
@@ -26,17 +28,15 @@ export default function GroupPanel ({ data }) {
   return null;
 }
 
-function PanelGroup50Container ({ children }) {
+GroupPanel.propTypes = {
+  data: PropTypes.object
+};
+
+const PanelGroup50Container = ({ children }) => {
   return (
     <Margins>
       <div
         css={{
-          display: 'grid',
-          [MEDIAQUERIES.L]: {
-            gridTemplateColumns: '1fr 1fr',
-            gridGap: SPACING['3XL']
-          },
-          marginTop: SPACING.XL,
           '> *': {
             marginBottom: SPACING.XL,
             paddingBottom: SPACING.XL,
@@ -49,14 +49,24 @@ function PanelGroup50Container ({ children }) {
             borderBottom: `solid 1px ${COLORS.neutral['100']}`,
             [MEDIAQUERIES.L]: {
               border: 'none',
-              paddingRight: SPACING['3XL'],
-              borderRight: `solid 1px ${COLORS.neutral[100]}`
+              borderRight: `solid 1px ${COLORS.neutral[100]}`,
+              paddingRight: SPACING['3XL']
             }
-          }
+          },
+          display: 'grid',
+          [MEDIAQUERIES.L]: {
+            gridGap: SPACING['3XL'],
+            gridTemplateColumns: '1fr 1fr'
+          },
+          marginTop: SPACING.XL
         }}
       >
         {children}
       </div>
     </Margins>
   );
-}
+};
+
+PanelGroup50Container.propTypes = {
+  children: PropTypes.object
+};
