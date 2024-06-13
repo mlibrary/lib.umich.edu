@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   COLORS,
   Heading,
@@ -8,42 +7,43 @@ import {
   SPACING
 } from '../../reusable';
 
-import Card from '../card';
-import Link from '../link';
-import Html from '../html';
 import Address from '../address';
-import Hours from '../todays-hours';
-import icons from '../../reusable/icons';
-import HoursPanel from './hours-panel';
-import HeroPanel from './hero-panel';
-import GroupPanel from './group-panel';
-import HoursLitePanel from './hours-lite-panel';
-import LinkPanel from './link-panel';
+import Callout from '../../reusable/callout';
+import Card from '../card';
+import CustomPanel from './custom-panel';
 import DestinationHorizontalPanel from './destination-horizontal-panel';
 import getParentTitle from '../../utils/get-parent-title';
-import CustomPanel from './custom-panel';
-import Callout from '../../reusable/callout';
+import GroupPanel from './group-panel';
+import HeroPanel from './hero-panel';
+import Hours from '../todays-hours';
+import HoursLitePanel from './hours-lite-panel';
+import HoursPanel from './hours-panel';
+import Html from '../html';
+import icons from '../../reusable/icons';
 import Image from '../image';
+import Link from '../link';
+import LinkPanel from './link-panel';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import { StateProvider } from '../use-state';
 
-function PanelTemplate ({ title, children, shaded, ...rest }) {
+const PanelTemplate = ({ title, children, shaded, ...rest }) => {
   return (
     <section
       data-can-be-shaded={shaded}
       data-panel
       css={{
-        background: shaded ? COLORS.blue['100'] : '',
         ':not(:last-of-type)': {
           borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
           paddingBottom: SPACING['3XL']
         },
-        paddingTop: SPACING.XL,
+        background: shaded ? COLORS.blue['100'] : '',
         paddingBottom: SPACING.XL,
+        paddingTop: SPACING.XL,
         [MEDIA_QUERIES.LARGESCREEN]: {
-          paddingTop: SPACING['3XL'],
-          paddingBottom: SPACING['3XL']
+          paddingBottom: SPACING['3XL'],
+          paddingTop: SPACING['3XL']
         }
       }}
       {...rest}
@@ -64,31 +64,31 @@ function PanelTemplate ({ title, children, shaded, ...rest }) {
       </Margins>
     </section>
   );
-}
-
-PanelTemplate.propTypes = {
-  title: PropTypes.string,
-  children: PropTypes.any,
-  shaded: PropTypes.bool
 };
 
-function PanelList ({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
+PanelTemplate.propTypes = {
+  children: PropTypes.any,
+  shaded: PropTypes.bool,
+  title: PropTypes.string
+};
+
+const PanelList = ({ children, twoColumns, ...rest }) => {
   const panelListGridStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-      gridGap: `${SPACING.XL} ${SPACING.M}`
+      gridGap: `${SPACING.XL} ${SPACING.M}`,
+      gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
     }
   };
   const panelListColumnStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
-      columns: '2',
-      columnGap: SPACING['3XL']
+      columnGap: SPACING['3XL'],
+      columns: '2'
     },
     '> li': {
-      marginTop: SPACING.XL,
+      breakInside: 'avoid',
       marginBottom: 0,
-      breakInside: 'avoid'
+      marginTop: SPACING.XL
     },
     '> li:first-of-type': {
       marginTop: 0
@@ -103,15 +103,14 @@ function PanelList ({ largeScreenTwoColumn, children, twoColumns, ...rest }) {
       {children}
     </ol>
   );
-}
+};
 
 PanelList.propTypes = {
-  largeScreenTwoColumn: PropTypes.any,
   children: PropTypes.any,
   twoColumns: PropTypes.bool
 };
 
-function CardPanel ({ data, headingLevel = 2 }) {
+const CardPanel = ({ data }) => {
   const template = data.relationships.field_card_template.field_machine_name;
 
   if (template === 'destination_hor_card_template') {
@@ -123,34 +122,34 @@ function CardPanel ({ data, headingLevel = 2 }) {
   const noImage = template === 'standard_no_image';
   const useSummary = template !== 'address_and_hours';
 
-  function getCardSubtitle (card) {
+  const getCardSubtitle = (card) => {
     if (template === 'destination_card_template') {
       return getParentTitle({ node: card });
     }
 
     return null;
-  }
+  };
 
-  function getImage (image) {
+  const getImage = (image) => {
     return !image || noImage
       ? null
       : image.relationships.field_media_image.localFile.childImageSharp
         .gatsbyImageData;
-  }
+  };
 
-  function getCardHref (card) {
+  const getCardHref = (card) => {
     if (card.field_url) {
       return card.field_url.uri;
     }
 
     return card.fields.slug;
-  }
+  };
 
-  function getSummary (body) {
+  const getSummary = (body) => {
     return body ? body.summary : null;
-  }
+  };
 
-  function renderCardChildren (data) {
+  const renderCardChildren = (dataRenderCardChildren) => {
     if (template === 'address_and_hours') {
       return (
         <>
@@ -168,7 +167,7 @@ function CardPanel ({ data, headingLevel = 2 }) {
             >
               <Icon d={icons.address} />
             </span>
-            <Address node={data} />
+            <Address node={dataRenderCardChildren} />
           </div>
           <div
             css={{
@@ -184,27 +183,27 @@ function CardPanel ({ data, headingLevel = 2 }) {
             >
               <Icon d={icons.clock} />
             </span>
-            <Hours node={data} />
+            <Hours node={dataRenderCardChildren} />
           </div>
         </>
       );
     }
 
     return null;
-  }
+  };
 
   return (
     <PanelTemplate title={title}>
       <PanelList twoColumns={noImage}>
-        {cards.map((card, i) => {
+        {cards.map((card, item) => {
           return (
             <li
-              key={i + card.title}
+              key={item + card.title}
               css={{
-                marginTop: SPACING.XL,
                 ':first-of-type': {
                   marginTop: 0
                 },
+                marginTop: SPACING.XL,
                 [MEDIA_QUERIES.LARGESCREEN]: {
                   margin: '0'
                 }
@@ -231,27 +230,26 @@ function CardPanel ({ data, headingLevel = 2 }) {
       </PanelList>
     </PanelTemplate>
   );
-}
-
-CardPanel.propTypes = {
-  data: PropTypes.any,
-  headingLevel: PropTypes.number
 };
 
-function MarginsWrapper ({ useMargins = false, children }) {
+CardPanel.propTypes = {
+  data: PropTypes.any
+};
+
+const MarginsWrapper = ({ useMargins = false, children }) => {
   if (useMargins) {
     return <Margins>{children}</Margins>;
   }
 
   return children;
-}
-
-MarginsWrapper.propTypes = {
-  useMargins: PropTypes.bool,
-  children: PropTypes.any
 };
 
-function TextPanel ({ data }) {
+MarginsWrapper.propTypes = {
+  children: PropTypes.any,
+  useMargins: PropTypes.bool
+};
+
+const TextPanel = ({ data }) => {
   const title = data.field_title;
   const placement = data.field_placement;
   const template = data.relationships.field_text_template.field_machine_name;
@@ -306,10 +304,10 @@ function TextPanel ({ data }) {
               <section
                 key={`section-${index}`}
                 css={{
-                  paddingTop: hasTopBorder ? SPACING.XL : 0,
                   borderTop: hasTopBorder
                     ? `solid 1px ${COLORS.neutral['100']}`
-                    : 'none'
+                    : 'none',
+                  paddingTop: hasTopBorder ? SPACING.XL : 0
                 }}
               >
                 <Heading
@@ -337,11 +335,11 @@ function TextPanel ({ data }) {
       <PanelTemplate
         shaded
         css={{
-          paddingTop: SPACING['3XL'],
           paddingBottom: SPACING['3XL'],
+          paddingTop: SPACING['3XL'],
           [MEDIA_QUERIES.LARGESCREEN]: {
-            paddingTop: SPACING['4XL'],
-            paddingBottom: SPACING['4XL']
+            paddingBottom: SPACING['4XL'],
+            paddingTop: SPACING['4XL']
           }
         }}
       >
@@ -353,8 +351,8 @@ function TextPanel ({ data }) {
         >
           <div
             css={{
-              textAlign: 'center',
-              maxWidth: '38rem'
+              maxWidth: '38rem',
+              textAlign: 'center'
             }}
           >
             <Heading
@@ -379,10 +377,10 @@ function TextPanel ({ data }) {
     return (
       <PanelTemplate title={title}>
         <PanelList twoColumns>
-          {cards.map(({ field_title: fieldTitle, field_body: fieldBody, field_link: fieldLink }, i) => {
+          {cards.map(({ field_title: fieldTitle, field_body: fieldBody, field_link: fieldLink }, item) => {
             return (
               <li
-                key={i + fieldTitle}
+                key={item + fieldTitle}
                 css={{
                   marginBottom: SPACING.XL,
                   [MEDIA_QUERIES.LARGESCREEN]: {
@@ -426,22 +424,22 @@ function TextPanel ({ data }) {
 
     return (
       <PanelTemplate title={title}>
-        {items.map(({ heading, html, image, imageAlt }, i) => {
+        {items.map(({ heading, html, image, imageAlt }, item) => {
           return (
             <section
-              key={i + html}
+              key={item + html}
               css={{
+                borderBottom: item === items.length - 1 ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
                 display: 'flex',
                 marginBottom: SPACING.L,
-                paddingBottom: SPACING.M,
-                borderBottom: i !== items.length - 1 ? `solid 1px ${COLORS.neutral['100']}` : 'none'
+                paddingBottom: SPACING.M
               }}
             >
               <div
                 css={{
-                  width: '8rem',
+                  flexShrink: '0',
                   marginRight: SPACING.L,
-                  flexShrink: '0'
+                  width: '8rem'
                 }}
               >
                 <Image image={image} alt={imageAlt} />
@@ -449,11 +447,12 @@ function TextPanel ({ data }) {
               <div>
                 {heading && (
                   <Heading
-                    level={title ? 2 : 2} // Use heading level 3 if has (h2) panel title.
+                    // Use heading level 3 if has (h2) panel title.
+                    level={title ? 2 : 2}
                     size='S'
                     css={{
-                      marginTop: '0 !important',
-                      marginBottom: SPACING.XS
+                      marginBottom: SPACING.XS,
+                      marginTop: '0 !important'
                     }}
                   >
                     {heading}
@@ -470,7 +469,7 @@ function TextPanel ({ data }) {
   }
 
   return null;
-}
+};
 
 TextPanel.propTypes = {
   data: PropTypes.object
@@ -483,7 +482,8 @@ export default function Panels ({ data }) {
 
   return (
     <PanelStateWrapper>
-      {data.map((panel, i) => {
+      {data.map((panel) => {
+        // eslint-disable-next-line no-underscore-dangle
         const type = panel.__typename;
         const { id } = panel;
 
@@ -505,7 +505,6 @@ export default function Panels ({ data }) {
           case 'paragraph__custom_panel':
             return <CustomPanel data={panel} key={id} />;
           default:
-            console.warn('Unknown panel type', type);
             return null;
         }
       })}
@@ -517,7 +516,7 @@ Panels.propTypes = {
   data: PropTypes.array
 };
 
-function PanelStateWrapper ({ children }) {
+const PanelStateWrapper = ({ children }) => {
   const initialState = {
     weekOffset: 0
   };
@@ -539,7 +538,7 @@ function PanelStateWrapper ({ children }) {
       {children}
     </StateProvider>
   );
-}
+};
 
 PanelStateWrapper.propTypes = {
   children: PropTypes.any
