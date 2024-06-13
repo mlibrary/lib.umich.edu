@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Button,
   createSlug,
@@ -8,28 +7,29 @@ import {
   MEDIA_QUERIES,
   SPACING
 } from '../../reusable';
-import Html from '../html';
-import HoursTable from '../hours-table';
-import { useStateValue } from '../use-state';
 import { displayHours } from '../../utils/hours';
+import HoursTable from '../hours-table';
+import Html from '../html';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { useStateValue } from '../use-state';
 
 const dateFormat = (string, abbreviated = false) => {
   if (abbreviated) {
     return string.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric'
+      day: 'numeric',
+      month: 'short'
     });
   }
   return string.toLocaleString('en-US', {
-    weekday: 'long',
-    month: 'long',
     day: 'numeric',
+    month: 'long',
+    weekday: 'long',
     year: 'numeric'
   });
 };
 
-export function HoursPanelNextPrev ({ location }) {
+export const HoursPanelNextPrev = ({ location }) => {
   const [{ weekOffset }, dispatch] = useStateValue();
   const date = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
 
@@ -40,19 +40,19 @@ export function HoursPanelNextPrev ({ location }) {
   toDate.setDate(date.getDate() + (weekOffset * 7) + (6 - date.getDay()));
 
   const hoursRange = {
-    text: `${dateFormat(fromDate, true)} - ${dateFormat(toDate, true)}`,
-    label: `Showing hours for ${location} from ${dateFormat(fromDate)} to ${dateFormat(toDate)}`
+    label: `Showing hours for ${location} from ${dateFormat(fromDate)} to ${dateFormat(toDate)}`,
+    text: `${dateFormat(fromDate, true)} - ${dateFormat(toDate, true)}`
   };
 
   return (
     <Margins data-hours-panel-next-previous>
       <div
         css={{
+          alignItems: 'baseline',
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'baseline',
-          marginTop: SPACING.L,
           marginBottom: SPACING.L,
+          marginTop: SPACING.L,
           position: 'sticky',
           top: 0
         }}
@@ -98,13 +98,13 @@ export function HoursPanelNextPrev ({ location }) {
       </div>
     </Margins>
   );
-}
+};
 
 HoursPanelNextPrev.propTypes = {
   location: PropTypes.string
 };
 
-function IconWrapper (props) {
+const IconWrapper = (props) => {
   return (
     <span
       css={{
@@ -114,9 +114,9 @@ function IconWrapper (props) {
       {...props}
     />
   );
-}
+};
 
-function PreviousNextWeekButton ({ type, children, ...rest }) {
+const PreviousNextWeekButton = ({ type, children, ...rest }) => {
   return (
     <>
       <Button
@@ -161,11 +161,115 @@ function PreviousNextWeekButton ({ type, children, ...rest }) {
       </Button>
     </>
   );
-}
+};
 
 PreviousNextWeekButton.propTypes = {
-  type: PropTypes.string,
-  children: PropTypes.string
+  children: PropTypes.string,
+  type: PropTypes.string
+};
+
+/*
+ *Return
+ *
+ *[
+ *  'General',
+ *  '24 hours',
+ *  '10am - 5pm'
+ *]
+ */
+const getRow = (node, nowWithWeekOffset, isParent) => {
+  let hours = [];
+  const notAvailableRow = { label: 'Not available', text: 'n/a' };
+  const rowHeadingText = [isParent ? 'Main hours' : node.title];
+  const mainHoursRow = {
+    label: rowHeadingText,
+    text: rowHeadingText,
+    to: node.fields.slug
+  };
+
+  for (let iterator = 0; iterator < 7; iterator += 1) {
+    const now = new Date(nowWithWeekOffset);
+
+    now.setDate(nowWithWeekOffset.getDate() + (iterator - nowWithWeekOffset.getDay()));
+    const display = displayHours({
+      node,
+      now
+    });
+    hours = hours.concat(display || notAvailableRow);
+  }
+
+  return [mainHoursRow].concat(hours);
+};
+
+const transformTableData = ({ node, now }) => {
+  const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;
+
+  /*
+   *[
+   *  {
+   *    text: 'Sun',
+   *    subtext: 'Apr 15',
+   *    label: 'Sunday, April 15th'
+   *  },
+   *  ...
+   *  {
+   *    text: 'Sat',
+   *    subtext: 'Apr 21',
+   *    label: 'Saturday, April 21th'
+   *  },
+   *]
+   */
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const currentDate = new Date(now);
+  // Set to Sunday
+  currentDate.setDate(currentDate.getDate() - currentDate.getDay());
+
+  const headings = [];
+
+  for (let iterator = 0; iterator < 7; iterator += 1) {
+    const date = new Date(currentDate);
+    date.setDate(currentDate.getDate() + iterator);
+
+    headings.push({
+      label: date.toLocaleString('en-US', {
+        day: 'numeric',
+        month: 'long',
+        weekday: 'long'
+      }),
+      subtext: date.toLocaleString('en-US', {
+        day: 'numeric',
+        month: 'short'
+      }),
+      text: daysOfWeek[date.getDay()]
+    });
+  }
+
+  const sortByTitle = (sortA, sortB) => {
+    const titleA = sortA.title.toUpperCase();
+    const titleB = sortB.title.toUpperCase();
+
+    if (titleA < titleB) {
+      return -1;
+    }
+
+    if (titleA > titleB) {
+      return 1;
+    }
+
+    return 0;
+  };
+
+  const rows = [
+    getRow(fieldParentCard[0], now, true),
+    ...fieldCards.sort(sortByTitle).map((nodeMap) => {
+      return getRow(nodeMap, now);
+    })
+  ];
+
+  return {
+    headings,
+    rows
+  };
 };
 
 export default function HoursPanelContainer ({ data }) {
@@ -176,7 +280,7 @@ export default function HoursPanelContainer ({ data }) {
     return null;
   }
 
-  const { title } = relationships.field_parent_card[0];
+  const [{ title }] = relationships.field_parent_card;
 
   return (
     <section
@@ -215,121 +319,3 @@ export default function HoursPanelContainer ({ data }) {
 HoursPanelContainer.propTypes = {
   data: PropTypes.object
 };
-
-function transformTableData ({ node, now }) {
-  const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;
-
-  /*
-   *[
-   *  {
-   *    text: 'Sun',
-   *    subtext: 'Apr 15',
-   *    label: 'Sunday, April 15th'
-   *  },
-   *  ...
-   *  {
-   *    text: 'Sat',
-   *    subtext: 'Apr 21',
-   *    label: 'Saturday, April 21th'
-   *  },
-   *]
-   */
-  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const currentDate = new Date(now);
-  // Set to Sunday
-  currentDate.setDate(currentDate.getDate() - currentDate.getDay());
-
-  const headings = [];
-
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(currentDate);
-    date.setDate(currentDate.getDate() + i);
-
-    headings.push({
-      text: daysOfWeek[date.getDay()],
-      subtext: date.toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric'
-      }),
-      label: date.toLocaleString('en-US', {
-        weekday: 'long',
-        month: 'long',
-        day: 'numeric'
-      })
-    });
-  }
-
-  /*
-   *Make the rows.
-   *  1. title (th[scope="row"])
-   *  2-n. The hours.
-   *
-   *[
-   *  [
-   *    { text: 'General', label: 'General' },
-   *    { text: '24 hours', label: '24 hours' },
-   *    ...
-   *  ]
-   *]
-   */
-
-  function sortByTitle (a, b) {
-    const titleA = a.title.toUpperCase();
-    const titleB = b.title.toUpperCase();
-
-    if (titleA < titleB) {
-      return -1;
-    }
-
-    if (titleA > titleB) {
-      return 1;
-    }
-
-    return 0;
-  }
-
-  const rows = [
-    getRow(fieldParentCard[0], now, true),
-    ...fieldCards.sort(sortByTitle).map((n) => {
-      return getRow(n, now);
-    })
-  ];
-
-  return {
-    headings,
-    rows
-  };
-}
-
-/*
- *Return
- *
- *[
- *  'General',
- *  '24 hours',
- *  '10am - 5pm'
- *]
- */
-function getRow (node, nowWithWeekOffset, isParent) {
-  let hours = [];
-  const notAvailableRow = { text: 'n/a', label: 'Not available' };
-  const rowHeadingText = [isParent ? 'Main hours' : node.title];
-  const mainHoursRow = {
-    text: rowHeadingText,
-    label: rowHeadingText,
-    to: node.fields.slug
-  };
-
-  for (let i = 0; i < 7; i++) {
-    const now = new Date(nowWithWeekOffset);
-
-    now.setDate(nowWithWeekOffset.getDate() + (i - nowWithWeekOffset.getDay()));
-    const display = displayHours({
-      node,
-      now
-    });
-    hours = hours.concat(display || notAvailableRow);
-  }
-
-  return [mainHoursRow].concat(hours);
-}
