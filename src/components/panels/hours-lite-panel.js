@@ -1,12 +1,39 @@
-import React, { useEffect, useState } from 'react';
 import { COLORS, Heading, Icon, SPACING, TYPOGRAPHY } from '../../reusable';
-import { Link as GatsbyLink } from 'gatsby';
-
-import Link from '../link';
-import icons from '../../reusable/icons';
-import MEDIA_QUERIES from '../../reusable/media-queries.js';
+import React, { useEffect, useState } from 'react';
 import { displayHours } from '../../utils/hours';
+import { Link as GatsbyLink } from 'gatsby';
+import icons from '../../reusable/icons';
+import Link from '../link';
+import MEDIA_QUERIES from '../../reusable/media-queries.js';
 import PropTypes from 'prop-types';
+
+const processHoursData = (data, initialized) => {
+  const hours = (node) => {
+    if (initialized) {
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+      return displayHours({ node, now });
+    }
+
+    return { label: 'Loading hours... ', text: '...' };
+  };
+
+  const result = data.map((node) => {
+    const hoursData = hours(node);
+    const { text, label } = hoursData || {
+      label: 'n/a',
+      text: 'n/a'
+    };
+
+    return {
+      subLabel: `TODAY: ${label}`,
+      subText: `TODAY: ${text}`,
+      text: node.title,
+      to: node.fields.slug
+    };
+  });
+
+  return result;
+};
 
 export default function HoursLitePanel ({ data }) {
   const [initialized, setInitialized] = useState(false);
@@ -28,31 +55,31 @@ export default function HoursLitePanel ({ data }) {
           marginTop: SPACING.L
         }}
       >
-        {hours.map((h, i) => {
+        {hours.map((hour, item) => {
           return (
             <li
-              key={i + h.text + h.to}
+              key={item + hour.text + hour.to}
               css={{
                 display: 'flex'
               }}
             >
               <span
                 css={{
-                  display: 'inline',
                   color: COLORS.maize['500'],
-                  width: '1.5rem',
-                  flexShrink: '0'
+                  display: 'inline',
+                  flexShrink: '0',
+                  width: '1.5rem'
                 }}
               >
                 <Icon d={icons.clock} />
               </span>
               <GatsbyLink
-                to={h.to}
+                to={hour.to}
                 css={{
-                  flex: '1',
                   ':hover span': {
                     textDecoration: 'underline'
                   },
+                  flex: '1',
                   paddingBottom: `${SPACING.S}`
                 }}
               >
@@ -67,25 +94,25 @@ export default function HoursLitePanel ({ data }) {
                       }
                     }}
                   >
-                    {h.text}
+                    {hour.text}
                   </span>
                   <span
                     css={{
                       display: 'inline-block',
                       marginTop: SPACING['3XS'],
                       [MEDIA_QUERIES.M]: {
-                        marginTop: '0',
-                        display: 'inline-block'
+                        display: 'inline-block',
+                        marginTop: '0'
                       },
                       ...TYPOGRAPHY['3XS'],
                       color: COLORS.neutral['300'],
-                      textTransform: 'uppercase',
+                      fontSize: '0.875rem',
                       fontWeight: '700',
-                      fontSize: '0.875rem'
+                      textTransform: 'uppercase'
                     }}
-                    aria-label={h.subLabel}
+                    aria-label={hour.subLabel}
                   >
-                    {h.subText}
+                    {hour.subText}
                   </span>
                 </span>
               </GatsbyLink>
@@ -135,31 +162,3 @@ HoursLitePanel.propTypes = {
  *  }
  *]
  */
-
-function processHoursData (data, initialized) {
-  function hours (node) {
-    if (initialized) {
-      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
-      return displayHours({ node, now });
-    }
-
-    return { text: '...', label: 'Loading hours... ' };
-  }
-
-  const result = data.map((node) => {
-    const hoursData = hours(node);
-    const { text, label } = hoursData || {
-      text: 'n/a',
-      label: 'n/a'
-    };
-
-    return {
-      text: node.title,
-      subText: `TODAY: ${text}`,
-      subLabel: `TODAY: ${label}`,
-      to: node.fields.slug
-    };
-  });
-
-  return result;
-}
