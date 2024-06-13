@@ -1,25 +1,28 @@
-import React from 'react';
 import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
-import Link from '../link';
 import Html from '../html';
+import Link from '../link';
+import PropTypes from 'prop-types';
+import React from 'react';
 import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id';
 
+/* eslint-disable id-length, sort-keys */
 const MEDIAQUERIES = {
   XL: '@media only screen and (min-width: 1200px)',
   L: '@media only screen and (min-width:920px)',
   M: '@media only screen and (min-width: 720px)',
   S: MEDIA_QUERIES.LARGESCREEN
 };
+/* eslint-enable id-length, sort-keys */
 
-function getNIDFromURI ({ uri }) {
+const getNIDFromURI = ({ uri }) => {
   if (uri.includes('entity:node/')) {
     return uri.split('/')[1];
   }
 
   return null;
-}
+};
 
-function getLinkByNID ({ nids, nid }) {
+const getLinkByNID = ({ nids, nid }) => {
   const obj = nids[nid];
 
   if (!obj) {
@@ -30,7 +33,7 @@ function getLinkByNID ({ nids, nid }) {
     text: obj.title,
     to: obj.slug
   };
-}
+};
 
 export default function HeroText ({ data }) {
   /*
@@ -38,7 +41,7 @@ export default function HeroText ({ data }) {
    */
   const nids = usePageContextByDrupalNodeID();
   const nid = getNIDFromURI({ uri: data.field_link && data.field_link[0].uri });
-  const link = getLinkByNID({ nids, nid });
+  const link = getLinkByNID({ nid, nids });
 
   return (
     <Margins
@@ -58,27 +61,28 @@ export default function HeroText ({ data }) {
       <BackgroundSection data={data}>
         <div
           css={{
+            display: 'flex',
+            justifyContent: 'center',
             padding: `${SPACING['2XL']} ${SPACING.M}`,
             [MEDIA_QUERIES.LARGESCREEN]: {
               padding: `${SPACING['4XL']} ${SPACING.S}`
-            },
-            display: 'flex',
-            justifyContent: 'center'
+            }
           }}
         >
           <div
             css={{
-              textAlign: 'center',
-              color: 'white',
+              // eslint-disable-next-line id-length
               a: {
-                color: 'white',
-                boxShadow: 'none',
-                textDecoration: 'underline',
                 ':hover': {
                   boxShadow: 'none',
                   textDecorationThickness: '2px'
-                }
-              }
+                },
+                boxShadow: 'none',
+                color: 'white',
+                textDecoration: 'underline'
+              },
+              color: 'white',
+              textAlign: 'center'
             }}
           >
             <Heading
@@ -101,15 +105,16 @@ export default function HeroText ({ data }) {
             {link && (
               <div
                 css={{
-                  marginTop: SPACING.M,
-                  fontSize: '1.25rem',
+                  // eslint-disable-next-line id-length
                   a: {
-                    textDecorationThickness: '2px',
-                    textDecorationColor: COLORS.maize['400'],
                     ':focus, :hover': {
                       textDecorationThickness: '4px'
-                    }
-                  }
+                    },
+                    textDecorationColor: COLORS.maize['400'],
+                    textDecorationThickness: '2px'
+                  },
+                  fontSize: '1.25rem',
+                  marginTop: SPACING.M
                 }}
               >
                 <Link to={link.to}>{link.text}</Link>
@@ -122,14 +127,18 @@ export default function HeroText ({ data }) {
   );
 }
 
-function BackgroundSection ({ data, children, ...rest }) {
-  const { field_hero_images } = data.relationships;
-  const smallScreenImage = field_hero_images.find(
+HeroText.propTypes = {
+  data: PropTypes.object
+};
+
+const BackgroundSection = ({ data, children, ...rest }) => {
+  const { field_hero_images: fieldHeroImages } = data.relationships;
+  const smallScreenImage = fieldHeroImages.find(
     (node) => {
       return node.field_orientation === 'vertical';
     }
   ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
-  const largeScreenImage = field_hero_images.find(
+  const largeScreenImage = fieldHeroImages.find(
     (node) => {
       return node.field_orientation === 'horizontal';
     }
@@ -158,4 +167,9 @@ function BackgroundSection ({ data, children, ...rest }) {
       {children}
     </section>
   );
-}
+};
+
+BackgroundSection.propTypes = {
+  children: PropTypes.array,
+  data: PropTypes.object
+};
