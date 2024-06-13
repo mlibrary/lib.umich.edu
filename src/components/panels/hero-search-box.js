@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Button,
   COLORS,
@@ -10,13 +9,17 @@ import {
   TYPOGRAPHY
 } from '../../reusable';
 import Html from '../html';
+import PropTypes from 'prop-types';
+import React from 'react';
 
+/* eslint-disable id-length, sort-keys */
 const MEDIAQUERIES = {
   XL: '@media only screen and (min-width: 1200px)',
   L: '@media only screen and (min-width:920px)',
   M: '@media only screen and (min-width: 720px)',
   S: MEDIA_QUERIES.LARGESCREEN
 };
+/* eslint-enable id-length, sort-keys */
 
 const heroHeightCSS = {
   minHeight: '16rem',
@@ -26,8 +29,8 @@ const heroHeightCSS = {
 };
 
 const frostCSS = {
-  background: 'rgba(255,255,255,0.8)',
-  backdropFilter: 'blur(2px)'
+  backdropFilter: 'blur(2px)',
+  background: 'rgba(255,255,255,0.8)'
 };
 
 /*
@@ -43,6 +46,18 @@ export default function HeroSearchBox ({ data }) {
   return (
     <Margins
       css={{
+        // eslint-disable-next-line id-length
+        a: {
+          ':hover': {
+            textDecorationThickness: '2px'
+          },
+          color: COLORS.neutral['400'],
+          textDecoration: 'underline'
+        },
+        'a, span': {
+          borderColor: 'white',
+          boxShadow: 'none'
+        },
         padding: '0',
         [MEDIA_QUERIES.LARGESCREEN]: {
           padding: '0'
@@ -52,17 +67,6 @@ export default function HeroSearchBox ({ data }) {
         },
         [MEDIAQUERIES.L]: {
           padding: `0 ${SPACING['2XL']}`
-        },
-        'a, span': {
-          borderColor: 'white',
-          boxShadow: 'none'
-        },
-        a: {
-          textDecoration: 'underline',
-          color: COLORS.neutral['400'],
-          ':hover': {
-            textDecorationThickness: '2px'
-          }
         }
       }}
     >
@@ -76,27 +80,27 @@ export default function HeroSearchBox ({ data }) {
           css={{
             ...heroHeightCSS,
             [MEDIAQUERIES.M]: {
-              ...heroHeightCSS[MEDIAQUERIES.M],
+              alignItems: 'center',
               display: 'flex',
-              alignItems: 'center'
+              ...heroHeightCSS[MEDIAQUERIES.M]
             }
           }}
         >
           <div
             css={{
-              maxWidth: '28rem',
               margin: '0 auto',
+              maxWidth: '28rem',
               padding: SPACING.M,
               [MEDIA_QUERIES.LARGESCREEN]: {
                 padding: SPACING.L
               },
               [MEDIAQUERIES.M]: {
-                width: '34rem',
-                maxWidth: '100%',
-                margin: 0,
-                padding: SPACING.XL,
                 borderRadius: '2px',
-                marginLeft: SPACING['2XL']
+                margin: 0,
+                marginLeft: SPACING['2XL'],
+                maxWidth: '100%',
+                padding: SPACING.XL,
+                width: '34rem'
               },
               ...applyFrostCSS
             }}
@@ -131,6 +135,9 @@ export default function HeroSearchBox ({ data }) {
   );
 }
 
+HeroSearchBox.propTypes = {
+  data: PropTypes.object
+};
 /**
  * The background image to the hero is decorative, as it is
  * a background CSS style.
@@ -142,7 +149,7 @@ export default function HeroSearchBox ({ data }) {
  * to the caption link that is not available from
  * the background image.
  */
-function Caption ({ data }) {
+const Caption = ({ data }) => {
   const caption = data.field_caption_text && data.field_caption_text.processed;
   const altText = data.relationships.field_hero_images[0].field_media_image.alt;
 
@@ -153,11 +160,11 @@ function Caption ({ data }) {
   return (
     <div
       css={{
-        position: 'absolute',
-        right: '0',
+        borderRadius: '2px 0 0 0',
         bottom: '0',
         padding: `${SPACING['2XS']} ${SPACING.S}`,
-        borderRadius: '2px 0 0 0',
+        position: 'absolute',
+        right: '0',
         ...frostCSS
       }}
     >
@@ -175,12 +182,16 @@ function Caption ({ data }) {
       </figure>
     </div>
   );
-}
+};
 
-function BackgroundSection ({ data, children, ...rest }) {
-  const { field_hero_images } = data.relationships;
+Caption.propTypes = {
+  data: PropTypes.object
+};
+
+const BackgroundSection = ({ data, children, ...rest }) => {
+  const { field_hero_images: fieldHeroImages } = data.relationships;
   const screenImage = (orientation) => {
-    return field_hero_images
+    return fieldHeroImages
       .find((node) => {
         return node.field_orientation === orientation;
       })
@@ -211,9 +222,14 @@ function BackgroundSection ({ data, children, ...rest }) {
       {children}
     </section>
   );
-}
+};
 
-function Search ({ labelId }) {
+BackgroundSection.propTypes = {
+  children: PropTypes.array,
+  data: PropTypes.object
+};
+
+const Search = ({ labelId }) => {
   return (
     <form
       action='https://search.lib.umich.edu/everything'
@@ -248,8 +264,8 @@ function Search ({ labelId }) {
       </label>
       <div
         css={{
-          display: 'flex',
           alignItems: 'flex-end',
+          display: 'flex',
           input: {
             height: '40px'
           }
@@ -270,4 +286,8 @@ function Search ({ labelId }) {
       </div>
     </form>
   );
-}
+};
+
+Search.propTypes = {
+  labelId: PropTypes.string
+};
