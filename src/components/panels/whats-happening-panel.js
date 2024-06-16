@@ -1,8 +1,8 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import React, { useEffect, useState } from 'react';
 import { Heading, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
-import Link from '../link';
+import React, { useEffect, useState } from 'react';
 import EventCard from '../event-card';
+import Link from '../link';
 import { sortEventsByStartDate } from '../../utils/events';
 
 /*
@@ -69,8 +69,8 @@ export default function WhatsHappening () {
       const sortedEvents = sortEventsByStartDate({
         events: joinedEvents
       });
-
-      setEvents(sortedEvents.slice(0, 3)); // Only keep 3
+      // Only keep 3
+      setEvents(sortedEvents.slice(0, 3));
     }
   }, [events]);
 
@@ -82,21 +82,21 @@ export default function WhatsHappening () {
   return (
     <div
       css={{
-        marginTop: SPACING['3XL'],
-        marginBottom: SPACING['3XL']
+        marginBottom: SPACING['3XL'],
+        marginTop: SPACING['3XL']
       }}
     >
       <Margins>
         <Heading level={2} size='L'>
-          What's happening?
+          What&rsquo;s happening?
         </Heading>
 
         <div
           css={{
             [MEDIA_QUERIES.LARGESCREEN]: {
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-              gridGap: `${SPACING.XL} ${SPACING.M}`
+              gridGap: `${SPACING.XL} ${SPACING.M}`,
+              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
             }
           }}
         >
