@@ -1,21 +1,22 @@
-import React from 'react';
 import { Breadcrumb, BreadcrumbItem } from '../reusable';
 import Link from './link';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function BreadcrumbContainer ({ data, ...rest }) {
   /*
    *Breadcrumb data is provided as encoded JSON.
    *We need to decode it and check if it's valid.
    */
-  const parsed_data = JSON.parse(data);
+  const parsedData = JSON.parse(data);
 
-  if (!parsed_data) {
+  if (!parsedData) {
     return null;
   }
 
   return (
     <Breadcrumb {...rest}>
-      {parsed_data.map(({ text, to }, i) => {
+      {parsedData.map(({ text, to }, i) => {
         return (
           <BreadcrumbItem key={to + i}>
             {to
@@ -31,3 +32,7 @@ export default function BreadcrumbContainer ({ data, ...rest }) {
     </Breadcrumb>
   );
 }
+
+BreadcrumbContainer.propTypes = {
+  data: PropTypes.string
+};
