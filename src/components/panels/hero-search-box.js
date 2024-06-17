@@ -225,7 +225,7 @@ const BackgroundSection = ({ data, children, ...rest }) => {
 };
 
 BackgroundSection.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.array,
   data: PropTypes.object
 };
 
