@@ -16,9 +16,9 @@ export default function BreadcrumbContainer ({ data, ...rest }) {
 
   return (
     <Breadcrumb {...rest}>
-      {parsedData.map(({ text, to }, i) => {
+      {parsedData.map(({ text, to }, item) => {
         return (
-          <BreadcrumbItem key={to + i}>
+          <BreadcrumbItem key={to + item}>
             {to
               ? (
                 <Link to={to}>{text}</Link>
