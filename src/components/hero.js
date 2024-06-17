@@ -1,31 +1,32 @@
-import React from 'react';
-import styled from '@emotion/styled';
 import { COLORS, MEDIA_QUERIES } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from '@emotion/styled';
 
 const StyledHeroContainer = styled('div')({
-  position: 'relative',
   minHeight: '20rem',
+  position: 'relative',
   [MEDIA_QUERIES.LARGESCREEN]: {
     height: '33vh'
   }
 });
 
 const StyledHeroInnerContainer = styled('div')({
-  display: 'flex',
-  justifyContent: 'center',
   alignItems: 'center',
-  height: '100%'
+  display: 'flex',
+  height: '100%',
+  justifyContent: 'center'
 });
 
 const StyledTint = styled('div')({
-  position: 'absolute',
-  top: '0',
-  right: '0',
+  background: COLORS.blue[400],
   bottom: '0',
   left: '0',
-  background: COLORS.blue[400],
-  opacity: '0.1'
+  opacity: '0.1',
+  position: 'absolute',
+  right: '0',
+  top: '0'
 });
 
 const Hero = ({ image, children }) => {
@@ -34,11 +35,11 @@ const Hero = ({ image, children }) => {
       <GatsbyImage
         image={image}
         style={{
-          position: 'absolute',
+          height: '100%',
           left: 0,
+          position: 'absolute',
           top: 0,
-          width: '100%',
-          height: '100%'
+          width: '100%'
         }}
         alt=''
       />
@@ -48,6 +49,11 @@ const Hero = ({ image, children }) => {
       </StyledHeroInnerContainer>
     </StyledHeroContainer>
   );
+};
+
+Hero.propTypes = {
+  children: PropTypes.array,
+  image: PropTypes.string
 };
 
 export default Hero;
