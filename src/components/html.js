@@ -1,14 +1,15 @@
-import React from 'react';
-import rehypeReact from 'rehype-react';
 import { COLORS, Heading, List, Text } from '../reusable';
-import { unified } from 'unified';
-import rehype from 'rehype-parse';
-import Prose from './prose';
-import Link from './link';
-import DrupalEntity from './drupal-entity';
-import Callout from '../reusable/callout';
 import Blockquote from '../reusable/blockquote';
+import Callout from '../reusable/callout';
+import DrupalEntity from './drupal-entity';
+import Link from './link';
+import PropTypes from 'prop-types';
+import Prose from './prose';
+import React from 'react';
+import rehype from 'rehype-parse';
+import rehypeReact from 'rehype-react';
 import Table from './table';
+import { unified } from 'unified';
 
 /**
  *Headings
@@ -20,6 +21,11 @@ const Heading2 = ({ children, ...other }) => {
     </Heading>
   );
 };
+
+Heading2.propTypes = {
+  children: PropTypes.object
+};
+
 const Heading3 = ({ children, ...other }) => {
   return (
     <Heading level={3} size='S' {...other}>
@@ -27,6 +33,11 @@ const Heading3 = ({ children, ...other }) => {
     </Heading>
   );
 };
+
+Heading3.propTypes = {
+  children: PropTypes.object
+};
+
 const Heading4 = ({ children, ...other }) => {
   return (
     <Heading
@@ -39,6 +50,11 @@ const Heading4 = ({ children, ...other }) => {
     </Heading>
   );
 };
+
+Heading4.propTypes = {
+  children: PropTypes.object
+};
+
 const Heading5 = ({ children, ...other }) => {
   return (
     <Heading level={5} size='3XS' {...other}>
@@ -46,12 +62,21 @@ const Heading5 = ({ children, ...other }) => {
     </Heading>
   );
 };
+
+Heading5.propTypes = {
+  children: PropTypes.object
+};
+
 const Heading6 = ({ children, ...other }) => {
   return (
     <Heading level={6} size='3XS' {...other}>
       {children}
     </Heading>
   );
+};
+
+Heading6.propTypes = {
+  children: PropTypes.object
 };
 
 const renderHast = new rehypeReact({
