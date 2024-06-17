@@ -1,14 +1,14 @@
-import React from 'react';
+import { COLORS, Heading, Icon, SPACING, TYPOGRAPHY } from '../reusable';
 import {
   eventFormatWhen,
   eventFormatWhere,
   EXHIBIT_TYPES
 } from '../utils/events';
-import { COLORS, Heading, Icon, SPACING, TYPOGRAPHY } from '../reusable';
 import CardImage from '../reusable/card-image';
-import MEDIA_QUERIES from '../reusable/media-queries';
 import icons from '../reusable/icons';
 import Link from './link';
+import MEDIA_QUERIES from '../reusable/media-queries';
+import React from 'react';
 
 export default function EventCard (node) {
   const {
@@ -17,7 +17,7 @@ export default function EventCard (node) {
     relationships,
     body,
     fields,
-    field_event_date_s_,
+    field_event_date_s_: fieldEventDateS,
     hasBorder = true
   } = node;
   const image
@@ -26,34 +26,34 @@ export default function EventCard (node) {
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
-  const start = field_event_date_s_[0].value;
-  const end = field_event_date_s_[0].end_value;
+  const start = fieldEventDateS[0].value;
+  const end = fieldEventDateS[0].end_value;
   const type = relationships.field_event_type.name;
   const isAnExhibit = EXHIBIT_TYPES.includes(type);
   const useBorder = hasBorder;
   const when = eventFormatWhen({
-    start,
     end,
     kind: 'brief',
+    start,
     type
   });
   const where = eventFormatWhere({
-    node,
-    kind: 'brief'
+    kind: 'brief',
+    node
   });
   const to = fields.slug;
 
   return (
     <section
       css={{
-        paddingBottom: SPACING.L,
+        borderBottom: useBorder ? `solid 1px ${COLORS.neutral['100']}` : '',
         marginTop: SPACING.L,
         [MEDIA_QUERIES.L]: {
           display: displayImage ? 'grid' : 'block',
-          gridTemplateColumns: `16rem 1fr `,
-          gridGap: SPACING.M
+          gridGap: SPACING.M,
+          gridTemplateColumns: `16rem 1fr `
         },
-        borderBottom: useBorder ? `solid 1px ${COLORS.neutral['100']}` : ''
+        paddingBottom: SPACING.L
       }}
     >
       {displayImage && <CardImage image={imageData} />}
@@ -74,9 +74,9 @@ export default function EventCard (node) {
           </span>
           <span
             css={{
-              marginTop: SPACING['3XS'],
-              display: 'block',
               color: COLORS.neutral['300'],
+              display: 'block',
+              marginTop: SPACING['3XS'],
               order: 0,
               ...TYPOGRAPHY['3XS']
             }}
@@ -86,8 +86,8 @@ export default function EventCard (node) {
         </Heading>
         <p
           css={{
-            marginTop: SPACING['2XS'],
-            color: COLORS.neutral['300']
+            color: COLORS.neutral['300'],
+            marginTop: SPACING['2XS']
           }}
         >
           {body.summary}
