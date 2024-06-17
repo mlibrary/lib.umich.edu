@@ -49,8 +49,8 @@ const DestinationLocationInfo = ({ node }) => {
   const floor = getFloor({ node });
   const room = node.field_room_number && `Room ${node.field_room_number}`;
   const locationSummary = [locationTitle, floor, room]
-    .filter((i) => {
-      return typeof i === 'string';
+    .filter((item) => {
+      return typeof item === 'string';
     })
     .join(', ');
 

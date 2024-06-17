@@ -1,8 +1,9 @@
-import React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
-import MediaPlayer from './media-player';
 import Image from './image';
 import Link from './link';
+import MediaPlayer from './media-player';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function DrupalEntity (props) {
   const data = useStaticQuery(
@@ -112,3 +113,7 @@ export default function DrupalEntity (props) {
 
   return null;
 }
+
+DrupalEntity.propTypes = {
+  'data-entity-uuid': PropTypes.string
+};
