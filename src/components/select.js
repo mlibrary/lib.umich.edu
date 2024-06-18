@@ -1,5 +1,6 @@
-import React from 'react';
 import { COLORS, Icon, SPACING } from '../reusable';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function Select ({ label, name, options, value, ...rest }) {
   return (
@@ -21,27 +22,27 @@ export default function Select ({ label, name, options, value, ...rest }) {
           name={name}
           css={{
             // Reset default <select> styles.
-            display: 'block',
-            width: '100%',
             appearance: 'none',
-            fontFamily: 'inherit',
-            fontSize: 'inherit',
-            boxShadow: 'none',
             background: 'transparent',
             backgroundImage: 'none',
-            padding: `${SPACING.XS} ${SPACING.XS}`,
-            paddingRight: `2rem`,
             border: `solid 1px ${COLORS.neutral['300']}`,
             borderRadius: '4px',
+            boxShadow: 'none',
+            display: 'block',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            height: '40px',
             lineHeight: '1.5',
-            height: '40px'
+            padding: `${SPACING.XS} ${SPACING.XS}`,
+            paddingRight: `2rem`,
+            width: '100%'
           }}
           value={value ? value : 'All'}
           {...rest}
         >
-          {options.map((opt, i) => {
+          {options.map((opt, item) => {
             return (
-              <option key={opt + i} id={name + opt} value={opt}>
+              <option key={opt + item} id={name + opt} value={opt}>
                 {opt}
               </option>
             );
@@ -51,13 +52,20 @@ export default function Select ({ label, name, options, value, ...rest }) {
         <Icon
           icon='expand_more'
           css={{
-            position: 'absolute',
-            right: SPACING.S,
             bottom: SPACING.S,
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            position: 'absolute',
+            right: SPACING.S
           }}
         />
       </div>
     </label>
   );
 }
+
+Select.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  options: PropTypes.array,
+  value: PropTypes.string
+};
