@@ -1,13 +1,13 @@
-import React from 'react';
-
 import { COLORS, Heading, Icon, SPACING, Text } from '../reusable';
-import Link from './link';
+import Address from './address';
 import Hours from './todays-hours';
 import icons from '../reusable/icons';
-import Address from './address';
+import Link from './link';
 import LocationAnchoredLink from './location-anchored-link';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-function LayoutWithIcon ({ d, palette, children }) {
+const LayoutWithIcon = ({ d: data, palette, children }) => {
   return (
     <div
       css={{
@@ -21,34 +21,43 @@ function LayoutWithIcon ({ d, palette, children }) {
       >
         <span
           css={{
-            display: 'flex',
+            alignItems: 'center',
             background: COLORS[palette][100],
-            color: COLORS[palette][300],
-            width: '2.5rem',
-            height: '2.5rem',
             borderRadius: '50%',
+            color: COLORS[palette][300],
+            display: 'flex',
+            height: '2.5rem',
             justifyContent: 'center',
-            alignItems: 'center'
+            width: '2.5rem'
           }}
         >
-          <Icon d={d} size={24} />
+          <Icon d={data} size={24} />
         </span>
       </div>
       <div>{children}</div>
     </div>
   );
-}
+};
+
+LayoutWithIcon.propTypes = {
+  children: PropTypes.node,
+  data: PropTypes.string,
+  palette: PropTypes.string
+};
 
 export default function LocationAside ({ node }) {
-  const { field_phone_number, field_email, relationships } = node;
+  const { field_phone_number: fieldPhoneNumber, field_email: fieldEmail, relationships } = node;
   const buildingNode = relationships?.field_room_building;
   const parentLocationNode
     = relationships?.field_parent_location?.relationships?.field_parent_location;
-  const locationNode = buildingNode
-    ? buildingNode
-    : parentLocationNode
-      ? parentLocationNode
-      : node;
+  const locationNode = () => {
+    if (buildingNode) {
+      return buildingNode;
+    } else if (parentLocationNode) {
+      return parentLocationNode;
+    }
+    return node;
+  };
 
   return (
     <React.Fragment>
@@ -64,8 +73,8 @@ export default function LocationAside ({ node }) {
             size='M'
             id='todays-hours'
             css={{
-              paddingTop: SPACING['2XS'],
-              paddingBottom: SPACING['2XS']
+              paddingBottom: SPACING['2XS'],
+              paddingTop: SPACING['2XS']
             }}
           >
             Hours
@@ -89,8 +98,8 @@ export default function LocationAside ({ node }) {
             level={2}
             size='M'
             css={{
-              paddingTop: SPACING['2XS'],
-              paddingBottom: SPACING['2XS']
+              paddingBottom: SPACING['2XS'],
+              paddingTop: SPACING['2XS']
             }}
           >
             Address
@@ -103,23 +112,23 @@ export default function LocationAside ({ node }) {
             level={2}
             size='M'
             css={{
-              paddingTop: SPACING['2XS'],
-              paddingBottom: SPACING['2XS']
+              paddingBottom: SPACING['2XS'],
+              paddingTop: SPACING['2XS']
             }}
           >
             Contact
           </Heading>
           <div css={{ '> p': { marginBottom: SPACING['2XS'] } }}>
-            {field_phone_number && (
+            {fieldPhoneNumber && (
               <p>
-                <Link to={`tel:${field_phone_number}`}>
-                  {field_phone_number}
+                <Link to={`tel:${fieldPhoneNumber}`}>
+                  {fieldPhoneNumber}
                 </Link>
               </p>
             )}
-            {field_email && (
+            {fieldEmail && (
               <p>
-                <Link to={`mailto:${field_email}`}>{field_email}</Link>
+                <Link to={`mailto:${fieldEmail}`}>{fieldEmail}</Link>
               </p>
             )}
           </div>
@@ -128,3 +137,7 @@ export default function LocationAside ({ node }) {
     </React.Fragment>
   );
 }
+
+LocationAside.propTypes = {
+  node: PropTypes.node
+};
