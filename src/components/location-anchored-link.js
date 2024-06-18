@@ -1,6 +1,7 @@
-import React from 'react';
 import { createSlug } from '../reusable';
 import Link from './link';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function LocationAnchoredLinks ({ node }) {
   const parentTitle = node.relationships?.field_parent_location?.title;
@@ -13,3 +14,7 @@ export default function LocationAnchoredLinks ({ node }) {
     </Link>
   );
 }
+
+LocationAnchoredLinks.propTypes = {
+  node: PropTypes.node
+};
