@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-
 import { displayHours } from '../utils/hours';
+import PropTypes from 'prop-types';
 
 export default function Hours ({ node }) {
   const [initialized, setInitialized] = useState(false);
