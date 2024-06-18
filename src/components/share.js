@@ -1,20 +1,20 @@
-import React from 'react';
 import { COLORS, Heading, SPACING } from '../reusable';
-import PropTypes from 'prop-types';
-import PlainLink from './plain-link';
 import IconText from './icon-text';
+import PlainLink from './plain-link';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const qs = require('qs');
 
 export default function Share ({ url, title }) {
   const emailProps = qs.stringify({
-    subject: title,
-    body: `University of Michigan Library: ${url}`
+    body: `University of Michigan Library: ${url}`,
+    subject: title
   });
 
   const twitterProps = qs.stringify({
-    url,
-    text: `${title} @UMichLibrary`
+    text: `${title} @UMichLibrary`,
+    url
   });
 
   const fbProps = qs.stringify({
@@ -24,19 +24,19 @@ export default function Share ({ url, title }) {
 
   const options = [
     {
+      icon: 'facebook',
       text: 'Facebook',
-      to: `http://www.facebook.com/sharer/sharer.php?${fbProps}`,
-      icon: 'facebook'
+      to: `http://www.facebook.com/sharer/sharer.php?${fbProps}`
     },
     {
+      icon: 'twitter',
       text: 'X (formerly Twitter)',
-      to: `https://twitter.com/share?${twitterProps}`,
-      icon: 'twitter'
+      to: `https://twitter.com/share?${twitterProps}`
     },
     {
+      icon: 'email',
       text: 'Email',
-      to: `mailto:?${emailProps}`,
-      icon: 'email'
+      to: `mailto:?${emailProps}`
     }
   ];
 
@@ -58,13 +58,13 @@ export default function Share ({ url, title }) {
               <PlainLink
                 to={to}
                 css={{
+                  ':hover': {
+                    textDecoration: 'underline'
+                  },
                   display: 'inline-block',
                   padding: `${SPACING.XS} 0`,
                   svg: {
                     color: COLORS.neutral['300']
-                  },
-                  ':hover': {
-                    textDecoration: 'underline'
                   }
                 }}
               >
@@ -81,6 +81,6 @@ export default function Share ({ url, title }) {
 }
 
 Share.propTypes = {
-  url: PropTypes.string,
-  title: PropTypes.string
+  title: PropTypes.string,
+  url: PropTypes.string
 };
