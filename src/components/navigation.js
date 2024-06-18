@@ -1,16 +1,17 @@
-import React from 'react';
-import { Link } from 'gatsby';
-import styled from '@emotion/styled';
 import { Heading } from '../reusable';
+import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from '@emotion/styled';
 
 const getPages = (data) => {
   return data.map((page) => {
     const pages = page.relationships && page.relationships.node__page;
 
     return {
+      pages: pages ? getPages(pages) : null,
       text: page.title,
-      to: page.path.alias,
-      pages: pages ? getPages(pages) : null
+      to: page.path.alias
     };
   });
 };
@@ -21,16 +22,16 @@ const StyledNav = styled('nav')({
 
 const StyledNavList = styled('nav')({
   listStyle: 'none',
-  padding: '0',
-  margin: '0'
+  margin: '0',
+  padding: '0'
 });
 
 const StyledLink = styled(Link)({
-  display: 'block',
-  padding: '0.15rem 0',
   ':hover': {
     textDecoration: 'underline'
-  }
+  },
+  display: 'block',
+  padding: '0.15rem 0'
 });
 
 const Navigation = ({ data }) => {
@@ -61,6 +62,10 @@ const Navigation = ({ data }) => {
       </StyledNavList>
     </StyledNav>
   );
+};
+
+Navigation.propTypes = {
+  data: PropTypes.node
 };
 
 export default Navigation;
