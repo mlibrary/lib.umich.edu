@@ -16,7 +16,7 @@ const cleanQueryStringForLunr = (str) => {
    * Ignore quotation marks so they don't throw results -- LIBWEB-649
    * `""` => ``
    */
-  query = query.replace(/['"]+/gu, '');
+  query = query.replace(/['"]+/g, '');
 
   return query;
 };
