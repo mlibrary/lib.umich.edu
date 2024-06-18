@@ -1,7 +1,7 @@
-import React from 'react';
 import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
-
 import Breadcrumb from './breadcrumb';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
   return (
@@ -19,17 +19,17 @@ export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
             [MEDIA_QUERIES.LARGESCREEN]: {
               flex: '1 1 0'
             },
-            paddingTop: '0',
+            paddingLeft: '0',
             paddingRight: SPACING['2XL'],
-            paddingLeft: '0'
+            paddingTop: '0'
           }}
         >
           <Breadcrumb
             data={breadcrumb}
             css={{
               [MEDIA_QUERIES.LARGESCREEN]: {
-                paddingTop: SPACING.L,
-                paddingBottom: SPACING.L
+                paddingBottom: SPACING.L,
+                paddingTop: SPACING.L
               }
             }}
           />
@@ -39,8 +39,8 @@ export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
             css={{
               paddingBottom: SPACING.L,
               [MEDIA_QUERIES.LARGESCREEN]: {
-                padding: '0',
-                marginTop: SPACING.S
+                marginTop: SPACING.S,
+                padding: '0'
               }
             }}
           >
@@ -51,3 +51,8 @@ export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
     </header>
   );
 }
+
+PageHeaderMini.propTypes = {
+  breadcrumb: PropTypes.string,
+  title: PropTypes.string
+};
