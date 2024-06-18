@@ -1,7 +1,8 @@
-import React from 'react';
 import { MEDIA_QUERIES, SPACING } from '../reusable';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export function Template ({ children, ...rest }) {
+export const Template = ({ children, ...rest }) => {
   return (
     <div
       css={{
@@ -28,17 +29,25 @@ export function Template ({ children, ...rest }) {
       {children}
     </div>
   );
-}
+};
 
-export function Top ({ children, ...rest }) {
+Template.propTypes = {
+  children: PropTypes.node
+};
+
+export const Top = ({ children, ...rest }) => {
   return (
     <div css={{ gridArea: 'top' }} {...rest}>
       {children}
     </div>
   );
-}
+};
 
-export function Side ({ children, ...rest }) {
+Top.propTypes = {
+  children: PropTypes.node
+};
+
+export const Side = ({ children, ...rest }) => {
   return (
     <section
       css={{
@@ -52,9 +61,13 @@ export function Side ({ children, ...rest }) {
       {children}
     </section>
   );
-}
+};
 
-export function Content ({ children, ...rest }) {
+Side.propTypes = {
+  children: PropTypes.node
+};
+
+export const Content = ({ children, ...rest }) => {
   return (
     <div
       css={{
@@ -66,4 +79,8 @@ export function Content ({ children, ...rest }) {
       {children}
     </div>
   );
-}
+};
+
+Content.propTypes = {
+  children: PropTypes.node
+};

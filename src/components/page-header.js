@@ -1,5 +1,3 @@
-import React from 'react';
-import { GatsbyImage } from 'gatsby-plugin-image';
 import {
   COLORS,
   Heading,
@@ -8,16 +6,12 @@ import {
   SPACING,
   Text
 } from '../reusable';
-
 import Breadcrumb from './breadcrumb';
+import { GatsbyImage } from 'gatsby-plugin-image';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export default function PageHeader ({
-  breadcrumb,
-  title,
-  summary,
-  image,
-  ...rest
-}) {
+export default function PageHeader ({ breadcrumb, title, summary, image, ...rest }) {
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
@@ -32,8 +26,8 @@ export default function PageHeader ({
         <header
           css={{
             [MEDIA_QUERIES.LARGESCREEN]: {
-              display: 'flex',
               alignItems: 'stretch',
+              display: 'flex',
               minHeight: '350px'
             }
           }}
@@ -45,9 +39,9 @@ export default function PageHeader ({
                 flex: '1 1 0'
               },
               paddingBottom: SPACING.L,
-              paddingTop: '0',
+              paddingLeft: '0',
               paddingRight: SPACING['2XL'],
-              paddingLeft: '0'
+              paddingTop: '0'
             }}
           >
             <Breadcrumb data={breadcrumb} />
@@ -94,3 +88,10 @@ export default function PageHeader ({
     </div>
   );
 }
+
+PageHeader.propTypes = {
+  breadcrumb: PropTypes.string,
+  image: PropTypes.string,
+  summary: PropTypes.string,
+  title: PropTypes.string
+};
