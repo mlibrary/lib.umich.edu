@@ -1,7 +1,8 @@
-import React from 'react';
 import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-function PlainLink ({ to, children, external, ...other }) {
+const PlainLink = ({ to, children, external, ...other }) => {
   /*
    *The check if the href is an internal link.
    */
@@ -19,6 +20,12 @@ function PlainLink ({ to, children, external, ...other }) {
       {children}
     </a>
   );
-}
+};
+
+PlainLink.propTypes = {
+  children: PropTypes.node,
+  external: PropTypes.bool,
+  to: PropTypes.string
+};
 
 export default PlainLink;

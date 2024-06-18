@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { SPACING } from '../reusable';
+import styled from '@emotion/styled';
 
 const Prose = styled('div')({
   '> *:not(:last-child)': {
@@ -17,14 +17,14 @@ const Prose = styled('div')({
   '> h5:not(:last-child)': {
     marginTop: SPACING.M
   },
-  li: {
-    marginBottom: SPACING.XS
-  },
   '[data-umich-lib-callout]': {
     maxWidth: '38rem'
   },
   '[data-umich-lib-callout] + [data-umich-lib-callout]': {
     marginTop: SPACING.L
+  },
+  li: {
+    marginBottom: SPACING.XS
   }
 });
 
