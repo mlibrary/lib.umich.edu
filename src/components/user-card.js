@@ -1,7 +1,8 @@
-import React from 'react';
-import { GatsbyImage } from 'gatsby-plugin-image';
 import { COLORS, SPACING, Text } from '../reusable';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import Link from './link';
+import PropTypes from 'prop-types';
+import React from 'react';
 import StaffPhotoPlaceholder from './staff-photo-placeholder';
 
 const photoContainerCSS = {
@@ -13,7 +14,7 @@ const photoContainerCSS = {
   width: '75px'
 };
 
-function UserPhoto ({ image }) {
+const UserPhoto = ({ image }) => {
   if (!image) {
     return (
       <div css={photoContainerCSS}>
@@ -29,7 +30,11 @@ function UserPhoto ({ image }) {
       css={photoContainerCSS}
     />
   );
-}
+};
+
+UserPhoto.propTypes = {
+  image: PropTypes.object
+};
 
 export default function UserCard ({ name, to, image, title, phone, email }) {
   return (
@@ -63,3 +68,12 @@ export default function UserCard ({ name, to, image, title, phone, email }) {
     </section>
   );
 }
+
+UserCard.propTypes = {
+  email: PropTypes.string,
+  image: PropTypes.string,
+  name: PropTypes.string,
+  phone: PropTypes.string,
+  title: PropTypes.string,
+  to: PropTypes.string
+};
