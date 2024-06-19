@@ -1,67 +1,73 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { COLORS } from '../reusable';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
- *Use Alerts to notify users of important information.
+ * Use Alerts to notify users of important information.
  */
-class Alert extends React.Component {
-  render () {
-    const { intent, children, className, ...other } = this.props;
-    const alertStyles = (intent) => {
-      if (intent === 'success') {
+const Alert = ({ intent, children, ...other }) => {
+  const alertStyles = (alertIntent) => {
+    switch (alertIntent) {
+      case 'success':
         return {
           background: COLORS.teal[100],
           borderColor: COLORS.teal[400]
         };
-      }
-      if (intent === 'warning') {
+      case 'warning':
         return {
           background: COLORS.maize[100],
           borderColor: COLORS.maize[400]
         };
-      }
-      if (intent === 'error') {
+      case 'error':
         return {
           background: COLORS.orange[100],
           borderColor: COLORS.orange[500]
         };
-      }
-      return {
-        background: COLORS.blue[100],
-        borderColor: COLORS.blue[400]
-      };
-    };
-    return (
+      default:
+        return {
+          background: COLORS.blue[100],
+          borderColor: COLORS.blue[400]
+        };
+    }
+  };
+
+  const getRole = (roleIntent) => {
+    if (roleIntent === 'error') {
+      return 'alert';
+    }
+    if (roleIntent === 'warning') {
+      return 'status';
+    }
+    return '';
+  };
+
+  return (
+    <div
+      role={getRole(intent)}
+      css={{
+        borderBottom: `solid 1px transparent`,
+        margin: '0',
+        padding: '0.5rem 0',
+        ...alertStyles(intent)
+      }}
+      {...other}
+    >
       <div
-        role={intent === 'error' ? 'alert' : intent === 'warning' ? 'status' : ''}
-        intent={intent}
         css={{
-          borderBottom: `solid 1px transparent`,
-          margin: '0',
-          padding: '0.5rem 0',
-          ...alertStyles(intent)
+          margin: '0 auto',
+          padding: '0 1rem'
         }}
-        {...other}
+        data-inner-container
       >
-        <div
-          css={{
-            margin: '0 auto',
-            padding: '0 1rem'
-          }}
-          data-inner-container
-        >
-          {children}
-        </div>
+        {children}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 Alert.propTypes = {
-  intent: PropTypes.oneOf(['informational', 'error', 'warning', 'success']),
-  className: PropTypes.string,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  intent: PropTypes.oneOf(['informational', 'error', 'warning', 'success'])
 };
 
 Alert.defaultProps = {

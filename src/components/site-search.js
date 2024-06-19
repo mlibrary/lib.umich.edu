@@ -16,7 +16,7 @@ const cleanQueryStringForLunr = (str) => {
    * Ignore quotation marks so they don't throw results -- LIBWEB-649
    * `""` => ``
    */
-  query = query.replace(/['"]+/g, '');
+  query = query.replace(/['"]+/gu, '');
 
   return query;
 };
@@ -454,11 +454,11 @@ ResultContent.propTypes = {
 const HighlightText = ({ query, text }) => {
   // Escape regexp special characters in `str`
   const escapeRegexp = (str) => {
-    return String(str).replace(/([.*+?=^!:${}()|[\]/\\])/g, '\\$1');
+    return String(str).replace(/(?:[.*+?=^!:${}()|[\]/\\])/gu, '\\$1');
   };
 
   const chunks = findAll({
-    searchWords: escapeRegexp(query || '').split(/\s+/),
+    searchWords: escapeRegexp(query || '').split(/\s+/u),
     textToHighlight: text
   });
 
