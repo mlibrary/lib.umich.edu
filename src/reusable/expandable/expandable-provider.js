@@ -1,10 +1,11 @@
-import React from 'react';
 import { ExpandableContext } from './expandable';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 /*
  *Provides expandable 'context' as a render prop.
  */
-function ExpandableProvider (props) {
+const ExpandableProvider = (props) => {
   return (
     <ExpandableContext.Consumer>
       {(context) => {
@@ -12,6 +13,10 @@ function ExpandableProvider (props) {
       }}
     </ExpandableContext.Consumer>
   );
-}
+};
+
+ExpandableProvider.propTypes = {
+  children: PropTypes.node
+};
 
 export default ExpandableProvider;

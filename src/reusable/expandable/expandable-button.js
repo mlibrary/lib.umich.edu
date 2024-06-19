@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const cleanList = (list) => {
   return list
     .filter((toFilter) => {
-      return (Boolean(toFilter));
+      return Boolean(toFilter);
     })
     .join(' ')
     .trim();
@@ -22,9 +22,7 @@ const ExpandableButton = (props) => {
   return (
     <Button
       {...props}
-      onClick={() => {
-        context.toggleExpanded();
-      }}
+      onClick={context.toggleExpanded}
     >
       {context.expanded
         ? cleanList(['Show fewer', props.name])

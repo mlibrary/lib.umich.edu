@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const ExpandableContext = React.createContext();
@@ -7,38 +7,33 @@ const ExpandableContext = React.createContext();
   Use Expandable to show only the first few items.
   The remaining will be hidden and can be expanded by the user.
 */
-class Expandable extends Component {
-  state = {
-    expanded: false,
-    toggleExpanded: () => {
-      this.setState({
-        expanded: !this.state.expanded,
-      });
-    },
-    disabled: false,
-    disable: () => {
-      this.setState({
-        disabled: true,
-      });
-    },
-  };
+const Expandable = ({ children }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
-  render() {
-    return (
-      <ExpandableContext.Provider value={this.state}>
-        {this.props.children}
-      </ExpandableContext.Provider>
-    );
-  }
-}
+  const toggleExpanded = useCallback(() => {
+    setExpanded((prevExpanded) => {
+      return !prevExpanded;
+    });
+  }, []);
+
+  const disable = useCallback(() => {
+    setDisabled(true);
+  }, []);
+
+  return (
+    <ExpandableContext.Provider value={{ disable, disabled, expanded, toggleExpanded }}>
+      {children}
+    </ExpandableContext.Provider>
+  );
+};
 
 Expandable.propTypes = {
-  expanded: PropTypes.bool,
-  disabled: PropTypes.bool,
+  children: PropTypes.node.isRequired
 };
 
 Expandable.defaultProps = {
-  expanded: false,
+  expanded: false
 };
 
 export default Expandable;
