@@ -1,6 +1,7 @@
-import React from 'react';
-import { GatsbyImage } from 'gatsby-plugin-image';
 import { COLORS, SPACING } from '../reusable';
+import { GatsbyImage } from 'gatsby-plugin-image';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function CardImage ({ image }) {
   return (
@@ -18,3 +19,9 @@ export default function CardImage ({ image }) {
     />
   );
 }
+
+CardImage.propTypes = {
+  image: PropTypes.shape({
+    alt: PropTypes.string
+  })
+};

@@ -1,5 +1,3 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import {
   COLORS,
   LINK_STYLES,
@@ -9,13 +7,14 @@ import {
   Z_SPACE
 } from '../reusable';
 import CardImage from './card-image';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export default function Card ({
   title,
   subtitle,
   image,
   href,
-  description,
   renderAnchor,
   children,
   horizontal,
@@ -24,12 +23,12 @@ export default function Card ({
   const horizontalStyles = horizontal
     ? {
         [MEDIA_QUERIES.LARGESCREEN]: {
-          display: 'grid',
-          gridTemplateColumns: `18.75rem 1fr `,
-          gridGap: SPACING.M,
           '[data-card-image]': {
             marginBottom: '0'
-          }
+          },
+          display: 'grid',
+          gridGap: SPACING.M,
+          gridTemplateColumns: `18.75rem 1fr `
         }
       }
     : {};
@@ -52,7 +51,7 @@ export default function Card ({
     ...rest
   };
 
-  function renderChildren () {
+  const renderChildren = () => {
     if (!children) {
       return null;
     }
@@ -67,7 +66,7 @@ export default function Card ({
     }
 
     return <div css={styles}>{children}</div>;
-  }
+  };
 
   const content = (
     <React.Fragment>
@@ -78,8 +77,8 @@ export default function Card ({
           {subtitle && (
             <span
               css={{
-                display: 'block',
                 color: COLORS.neutral[300],
+                display: 'block',
                 marginBottom: SPACING['2XS'],
                 ...TYPOGRAPHY['3XS']
               }}
@@ -110,23 +109,10 @@ export default function Card ({
     });
   }
 
-  return <a {...anchorProps} css={anchorStyles} children={content} />;
+  return <a {...anchorProps} css={anchorStyles}>{content}</a>;
 }
 
 Card.propTypes = {
-  /*
-   * Provide a Gatsby image object to image. This is purely decorative
-   * and shouldn't be required to understand the Card.
-   *
-   */
-  image: PropTypes.object,
-
-  /*
-   * The title should briefly describe where the Card will take
-   * the user when they click on it.
-   *
-   */
-  title: PropTypes.string.isRequired,
 
   /*
    * Regular React element.
@@ -135,10 +121,10 @@ Card.propTypes = {
   children: PropTypes.node,
 
   /*
-   * An optional addition to the Card heading. Only use if necessary.
+   * Let the Card know if it can go horizontal on large screens.
    *
    */
-  subtitle: PropTypes.string,
+  horizontal: PropTypes.bool,
 
   /*
    * Provide a url for where this card should route to.
@@ -147,10 +133,11 @@ Card.propTypes = {
   href: PropTypes.string,
 
   /*
-   * Let the Card know if it can go horizontal on large screens.
+   * Provide a Gatsby image object to image. This is purely decorative
+   * and shouldn't be required to understand the Card.
    *
    */
-  horizontal: PropTypes.bool,
+  image: PropTypes.object,
 
   /*
    * An optional parameter to allow overriding the anchor rendering.
@@ -158,5 +145,19 @@ Card.propTypes = {
    * side router libraries.
    *
    */
-  renderAnchor: PropTypes.func
+  renderAnchor: PropTypes.func,
+
+  /*
+   * An optional addition to the Card heading. Only use if necessary.
+   *
+   */
+  subtitle: PropTypes.string,
+
+  /*
+   * The title should briefly describe where the Card will take
+   * the user when they click on it.
+   *
+   */
+  title: PropTypes.string.isRequired
+
 };
