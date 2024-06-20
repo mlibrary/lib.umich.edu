@@ -1,26 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { Icon, Link, MEDIA_QUERIES, SPACING } from '../reusable';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const Breadcrumb = ({ children, ...rest }) => {
   const numberOfBreadcrumbs = React.Children.count(children);
   const parentBreadcrumbIndex
     = numberOfBreadcrumbs > 1 ? numberOfBreadcrumbs - 2 : 0;
 
-  function isParent (i) {
-    return parentBreadcrumbIndex === i;
-  }
+  const isParent = (index) => {
+    return parentBreadcrumbIndex === index;
+  };
 
   return (
     <nav
       aria-label='Breadcrumb'
       {...rest}
       css={{
-        paddingTop: SPACING.M,
         paddingBottom: SPACING.M,
+        paddingTop: SPACING.M,
         [MEDIA_QUERIES.LARGESCREEN]: {
-          paddingTop: SPACING['2XL'],
-          paddingBottom: SPACING.XL
+          paddingBottom: SPACING.XL,
+          paddingTop: SPACING['2XL']
         }
       }}
     >
@@ -34,12 +34,12 @@ const Breadcrumb = ({ children, ...rest }) => {
           }
         }}
       >
-        {React.Children.map(children, (child, i) => {
+        {React.Children.map(children, (child, index) => {
           return (
             <li
-              key={`breadcrumb-${i}`}
+              key={`breadcrumb-${index}`}
               css={{
-                display: isParent(i) ? 'block' : 'none',
+                display: isParent(index) ? 'block' : 'none',
                 [MEDIA_QUERIES.LARGESCREEN]: {
                   display: 'block'
                 }
@@ -56,7 +56,7 @@ const Breadcrumb = ({ children, ...rest }) => {
                   css={{
                     display: 'none',
                     [MEDIA_QUERIES.LARGESCREEN]: {
-                      display: i === 0 ? 'none' : 'inline-block'
+                      display: index === 0 ? 'none' : 'inline-block'
                     }
                   }}
                 />
@@ -71,7 +71,7 @@ const Breadcrumb = ({ children, ...rest }) => {
                 />
               </span>
               {React.cloneElement(child, {
-                isCurrent: i === numberOfBreadcrumbs - 1
+                isCurrent: index === numberOfBreadcrumbs - 1
               })}
             </li>
           );
@@ -115,11 +115,11 @@ BreadcrumbItem.propTypes = {
    * Pass in content that will be inside of the BreadcrumbItem
    */
   children: PropTypes.node,
-
   /**
    * Optional string representing the link location for the BreadcrumbItem
    */
-  href: PropTypes.string
+  href: PropTypes.string,
+  isCurrent: PropTypes.bool
 };
 
 export { Breadcrumb, BreadcrumbItem };
