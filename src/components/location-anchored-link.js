@@ -16,5 +16,5 @@ export default function LocationAnchoredLinks ({ node }) {
 }
 
 LocationAnchoredLinks.propTypes = {
-  node: PropTypes.node
+  node: PropTypes.any
 };

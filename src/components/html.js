@@ -197,7 +197,7 @@ const Html = ({ html, ...rest }) => {
 };
 
 Html.propTypes = {
-  html: PropTypes.string.isRequired
+  html: PropTypes.string
 };
 
 export default Html;

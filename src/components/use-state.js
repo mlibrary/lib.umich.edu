@@ -14,7 +14,7 @@ export const StateProvider = ({ reducer, initialState, children }) => {
 StateProvider.propTypes = {
   children: PropTypes.node,
   initialState: PropTypes.object,
-  reducer: PropTypes.object
+  reducer: PropTypes.func
 };
 
 export const useStateValue = () => {
