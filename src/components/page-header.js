@@ -91,7 +91,7 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
 
 PageHeader.propTypes = {
   breadcrumb: PropTypes.string,
-  image: PropTypes.string,
+  image: PropTypes.object,
   summary: PropTypes.string,
   title: PropTypes.string
 };

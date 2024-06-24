@@ -138,6 +138,18 @@ export default function LocationAside ({ node }) {
   );
 }
 
+/* eslint-disable camelcase */
 LocationAside.propTypes = {
-  node: PropTypes.node
+  node: PropTypes.shape({
+    field_email: PropTypes.any,
+    field_phone_number: PropTypes.any,
+    relationships: PropTypes.shape({
+      field_parent_location: PropTypes.shape({
+        relationships: PropTypes.shape({
+          field_parent_location: PropTypes.any
+        })
+      }),
+      field_room_building: PropTypes.any
+    })
+  })
 };

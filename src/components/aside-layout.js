@@ -69,7 +69,7 @@ export const TemplateSide = ({ children, ...rest }) => {
 };
 
 TemplateSide.propTypes = {
-  children: PropTypes.array
+  children: PropTypes.any
 };
 
 export const TemplateContent = ({ children, ...rest }) => {
