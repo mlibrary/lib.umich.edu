@@ -6,33 +6,39 @@ import { TYPOGRAPHY } from '../reusable';
 
 const StyledText = styled('p')(
   {
-    maxWidth: '38rem',
+    maxWidth: '38rem'
   },
-  ({ inline }) => ({
-    display: inline && 'inline',
-  }),
-  ({ size }) => ({
-    ...TYPOGRAPHY[size],
-  }),
+  ({ inline }) => {
+    return {
+      display: inline && 'inline'
+    };
+  },
+  ({ size }) => {
+    return {
+      ...TYPOGRAPHY[size]
+    };
+  },
   ({ lede }) => {
     if (lede) {
-      return TYPOGRAPHY['XS'];
+      return TYPOGRAPHY.XS;
     }
   }
 );
 
-const Text = ({ inline, lede, ...other }) => (
-  <StyledText inline={inline} lede={lede} {...other} />
-);
+const Text = ({ inline, lede, ...other }) => {
+  return (
+    <StyledText inline={inline} lede={lede} {...other} />
+  );
+};
 
 Text.propTypes = {
   inline: PropTypes.bool,
   lede: PropTypes.bool,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };
 
 Text.defaultProps = {
-  inline: false,
+  inline: false
 };
 
 export default Text;

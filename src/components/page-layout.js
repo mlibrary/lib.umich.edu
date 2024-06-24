@@ -1,7 +1,8 @@
+import { MEDIA_QUERIES, SPACING } from '../reusable';
+import PropTypes from 'prop-types';
 import React from 'react';
-import { SPACING, MEDIA_QUERIES } from '../reusable';
 
-export function Template({ children, ...rest }) {
+export const Template = ({ children, ...rest }) => {
   return (
     <div
       css={{
@@ -13,57 +14,73 @@ export function Template({ children, ...rest }) {
           `,
           gridTemplateColumns: `calc(216px + ${SPACING['4XL']}) 1fr`,
           gridTemplateRows: 'auto 1fr',
-          marginBottom: SPACING['5XL'],
+          marginBottom: SPACING['5XL']
         },
         '[data-panel-margins], [data-panel]': {
-          padding: '0',
+          padding: '0'
         },
         '[data-panel] h2': {
-          marginTop: SPACING['2XL'],
+          marginTop: SPACING['2XL']
         },
-        marginBottom: SPACING['4XL'],
+        marginBottom: SPACING['4XL']
       }}
       {...rest}
     >
       {children}
     </div>
   );
-}
+};
 
-export function Top({ children, ...rest }) {
+Template.propTypes = {
+  children: PropTypes.node
+};
+
+export const Top = ({ children, ...rest }) => {
   return (
     <div css={{ gridArea: 'top' }} {...rest}>
       {children}
     </div>
   );
-}
+};
 
-export function Side({ children, ...rest }) {
+Top.propTypes = {
+  children: PropTypes.node
+};
+
+export const Side = ({ children, ...rest }) => {
   return (
     <section
       css={{
         [MEDIA_QUERIES.LARGESCREEN]: {
           gridArea: 'side',
-          marginRight: SPACING['3XL'],
-        },
+          marginRight: SPACING['3XL']
+        }
       }}
       {...rest}
     >
       {children}
     </section>
   );
-}
+};
 
-export function Content({ children, ...rest }) {
+Side.propTypes = {
+  children: PropTypes.node
+};
+
+export const Content = ({ children, ...rest }) => {
   return (
     <div
       css={{
         gridArea: 'content',
-        marginBottom: SPACING['XL'],
+        marginBottom: SPACING.XL
       }}
       {...rest}
     >
       {children}
     </div>
   );
-}
+};
+
+Content.propTypes = {
+  children: PropTypes.node
+};

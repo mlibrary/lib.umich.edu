@@ -1,10 +1,10 @@
-import React from 'react';
+import { graphql, useStaticQuery } from 'gatsby';
 import PropTypes from 'prop-types';
-import { useStaticQuery, graphql } from 'gatsby';
-import { useLocation } from '@reach/router';
+import React from 'react';
 import squarelogo from '../images/squarelogo.png';
+import { useLocation } from '@reach/router';
 
-function SearchEngineOptimization ({ data, children, titleField }) {
+const SearchEngineOptimization = ({ data, children, titleField }) => {
   const siteData = useStaticQuery(graphql`
   query {
     site {
@@ -85,11 +85,11 @@ function SearchEngineOptimization ({ data, children, titleField }) {
       {children}
     </>
   );
-}
+};
 
 SearchEngineOptimization.propTypes = {
-  data: PropTypes.object,
   children: PropTypes.object,
+  data: PropTypes.object,
   titleField: PropTypes.string
 };
 

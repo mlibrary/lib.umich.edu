@@ -1,46 +1,50 @@
 export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 
 /*
-  Rules for how to handle parsing an event
-  start and end date times and the kinds of
-  display: brief (cards) and full (event page metadata).
-
-  Use cases:
-
-  (A) The event is an exhibit and it needs just
-  the Month, Day range.
-
-    Brief and Full
-      => September 2 - October 30
-      => December 10, 2020 - January 21, 2021
-
-  (B) The event is not an exhibit and needs
-  to display the full start and end. It all
-  happens same day.
-
-    Brief:
-      => Tuesday, September 15 · 3:00pm - 3:50pm
-
-    Full:
-      => Tuesday, September 15, 2020 from 3:00pm - 3:50pm
-
-  (C) A multi-day event. Show full range.
-
-    Brief:
-      => July 10 · 2:00pm to July 26 · 10:30am
-      => December 15 · 3:00pm to January 8, 2021 · 3:50pm
-
-    Full:
-      => Wednesday, December 15, 2020 from 3:00pm to Friday, January 8, 2021 at 3:50pm
-*/
+ *Rules for how to handle parsing an event
+ *start and end date times and the kinds of
+ *display: brief (cards) and full (event page metadata).
+ *
+ *Use cases:
+ *
+ *(A) The event is an exhibit and it needs just
+ *the Month, Day range.
+ *
+ *  Brief and Full
+ *    => September 2 - October 30
+ *    => December 10, 2020 - January 21, 2021
+ *
+ *(B) The event is not an exhibit and needs
+ *to display the full start and end. It all
+ *happens same day.
+ *
+ *  Brief:
+ *    => Tuesday, September 15 · 3:00pm - 3:50pm
+ *
+ *  Full:
+ *    => Tuesday, September 15, 2020 from 3:00pm - 3:50pm
+ *
+ *(C) A multi-day event. Show full range.
+ *
+ *  Brief:
+ *    => July 10 · 2:00pm to July 26 · 10:30am
+ *    => December 15 · 3:00pm to January 8, 2021 · 3:50pm
+ *
+ *  Full:
+ *    => Wednesday, December 15, 2020 from 3:00pm to Friday, January 8, 2021 at 3:50pm
+ */
 const dateFormat = (date, ...properties) => {
   const options = {
     month: 'long',
     day: 'numeric',
     timeZone: 'America/New_York'
   };
-  if (properties.includes('weekday')) options.weekday = 'long';
-  if (properties.includes('year')) options.year = 'numeric';
+  if (properties.includes('weekday')) {
+    options.weekday = 'long';
+  }
+  if (properties.includes('year')) {
+    options.year = 'numeric';
+  }
   return date.toLocaleDateString('en-us', options);
 };
 
@@ -103,7 +107,7 @@ export function eventFormatWhere ({ node, kind }, includeLink = false) {
 
   let hasLocation = false;
 
-  if (!!node.field_event_in_non_library_locat && !!node.field_non_library_location_addre) {
+  if (Boolean(node.field_event_in_non_library_locat) && Boolean(node.field_non_library_location_addre)) {
     if (node.field_non_library_location_addre.organization) {
       hasLocation = true;
       where.push({
@@ -156,8 +160,10 @@ export function sortEventsByStartDate ({ events, onlyTodayOrAfter = false }) {
     }
   );
 
-  // Duplicate events that have many occurances by
-  // checking if it has many datetimes.
+  /*
+   * Duplicate events that have many occurances by
+   * checking if it has many datetimes.
+   */
   let occurances = [];
   uniqueEvents.forEach((event) => {
     const hasOccurances = event.field_event_date_s_.length > 1;

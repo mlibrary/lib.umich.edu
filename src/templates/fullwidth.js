@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING } from '../reusable';
+import { Heading, Margins, SPACING } from '../reusable';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
 import Html from '../components/html';
@@ -10,7 +10,7 @@ import Panels from '../components/panels';
 import getNode from '../utils/get-node';
 import transformNodePanels from '../utils/transform-node-panels';
 
-export default function FullWidthTemplate({ data, ...rest }) {
+export default function FullWidthTemplate ({ data, ...rest }) {
   const node = getNode(data);
   const { field_title_context, body, fields } = node;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
@@ -20,10 +20,10 @@ export default function FullWidthTemplate({ data, ...rest }) {
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
         <Heading
-          size="3XL"
+          size='3XL'
           level={1}
           css={{
-            marginBottom: fullPanels.length ? '0' : SPACING['XL'],
+            marginBottom: fullPanels.length ? '0' : SPACING.XL
           }}
         >
           {field_title_context}
@@ -38,7 +38,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
       {body && (
         <Margins
           css={{
-            marginBottom: fullPanels.length ? '0' : SPACING['5XL'],
+            marginBottom: fullPanels.length ? '0' : SPACING['5XL']
           }}
         >
           <Html html={body.processed} />
@@ -52,7 +52,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
   );
 }
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={getNode(data)} />;
 }
 

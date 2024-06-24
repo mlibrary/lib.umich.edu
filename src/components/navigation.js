@@ -1,36 +1,37 @@
-import React from 'react';
-import { Link } from 'gatsby';
-import styled from '@emotion/styled';
 import { Heading } from '../reusable';
+import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from '@emotion/styled';
 
 const getPages = (data) => {
   return data.map((page) => {
     const pages = page.relationships && page.relationships.node__page;
 
     return {
-      text: page.title,
-      to: page.path.alias,
       pages: pages ? getPages(pages) : null,
+      text: page.title,
+      to: page.path.alias
     };
   });
 };
 
 const StyledNav = styled('nav')({
-  marginTop: '1rem',
+  marginTop: '1rem'
 });
 
 const StyledNavList = styled('nav')({
   listStyle: 'none',
-  padding: '0',
   margin: '0',
+  padding: '0'
 });
 
 const StyledLink = styled(Link)({
-  display: 'block',
-  padding: '0.15rem 0',
   ':hover': {
-    textDecoration: 'underline',
+    textDecoration: 'underline'
   },
+  display: 'block',
+  padding: '0.15rem 0'
 });
 
 const Navigation = ({ data }) => {
@@ -43,22 +44,28 @@ const Navigation = ({ data }) => {
     <StyledNav>
       <Heading
         level={2}
-        size="medium"
+        size='medium'
         style={{
-          marginTop: 0,
+          marginTop: 0
         }}
       >
         In this section
       </Heading>
       <StyledNavList>
-        {navData.map((item, index) => (
-          <li key={`styled-link-${index}`}>
-            <StyledLink to={item.to}>{item.text}</StyledLink>
-          </li>
-        ))}
+        {navData.map((item, index) => {
+          return (
+            <li key={`styled-link-${index}`}>
+              <StyledLink to={item.to}>{item.text}</StyledLink>
+            </li>
+          );
+        })}
       </StyledNavList>
     </StyledNav>
   );
+};
+
+Navigation.propTypes = {
+  data: PropTypes.node
 };
 
 export default Navigation;

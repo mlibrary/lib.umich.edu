@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Heading, SPACING, Margins, Text, SmallScreen } from '../reusable';
-import { Template, Top, Side, Content } from '../components/page-layout';
+import { Heading, Margins, SmallScreen, SPACING, Text } from '../reusable';
+import { Content, Side, Template, Top } from '../components/page-layout';
 import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
 import TemplateLayout from './template-layout';
@@ -14,14 +14,14 @@ import Panels from '../components/panels';
 import Html from '../components/html';
 import DestinationLocationInfo from '../components/destination-location-info';
 
-function DestinationTemplate({ data, ...rest }) {
+function DestinationTemplate ({ data, ...rest }) {
   const node = getNode(data);
   const {
     field_title_context,
     fields,
     body,
     relationships,
-    field_local_navigation,
+    field_local_navigation
   } = node;
 
   const navBranch = useNavigationBranch(fields.slug);
@@ -29,9 +29,9 @@ function DestinationTemplate({ data, ...rest }) {
   const smallScreenItems = smallScreenBranch
     ? smallScreenBranch.children
     : null;
-  const image =
-    relationships.field_media_image &&
-    relationships.field_media_image.relationships.field_media_image;
+  const image
+    = relationships.field_media_image
+    && relationships.field_media_image.relationships.field_media_image;
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
@@ -51,7 +51,7 @@ function DestinationTemplate({ data, ...rest }) {
               <SmallScreen>
                 <div
                   css={{
-                    margin: `0 -${SPACING['M']}`,
+                    margin: `0 -${SPACING.M}`
                   }}
                 >
                   <HorizontalNavigation items={smallScreenItems} />
@@ -62,15 +62,15 @@ function DestinationTemplate({ data, ...rest }) {
           <Content>
             <div
               css={{
-                maxWidth: '38rem',
+                maxWidth: '38rem'
               }}
             >
               <Heading
                 level={1}
-                size="3XL"
+                size='3XL'
                 css={{
-                  marginTop: SPACING['S'],
-                  marginBottom: SPACING['L'],
+                  marginTop: SPACING.S,
+                  marginBottom: SPACING.L
                 }}
               >
                 {field_title_context}
@@ -78,7 +78,7 @@ function DestinationTemplate({ data, ...rest }) {
               <Text
                 lede
                 css={{
-                  marginBottom: SPACING['XL'],
+                  marginBottom: SPACING.XL
                 }}
               >
                 {body.summary}
@@ -91,9 +91,9 @@ function DestinationTemplate({ data, ...rest }) {
                 css={{
                   width: '100%',
                   borderRadius: '2px',
-                  marginBottom: SPACING['2XL'],
+                  marginBottom: SPACING['2XL']
                 }}
-                alt=""
+                alt=''
               />
             </div>
 
@@ -109,7 +109,7 @@ function DestinationTemplate({ data, ...rest }) {
 
 export default DestinationTemplate;
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={getNode(data)} />;
 }
 

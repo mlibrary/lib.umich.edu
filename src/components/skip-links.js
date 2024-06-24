@@ -1,52 +1,52 @@
+import { COLORS, Margins, SPACING } from '../reusable';
+import { Link as GatsbyLink } from 'gatsby';
 import React from 'react';
 
-import { COLORS, SPACING, Margins } from '../reusable';
-import { Link as GatsbyLink } from 'gatsby';
-
-export default function SkipLinks() {
+export default function SkipLinks () {
   return (
     <section
-      aria-label="Skip links"
+      aria-label='Skip links'
       css={{
-        background: COLORS['blue']['400'],
+        '*:focus': {
+          outlineColor: 'white'
+        },
         ':focus-within': {
-          padding: `${SPACING['M']} 0`,
-          position: 'static',
-          width: 'auto',
-          height: 'auto',
+          // eslint-disable-next-line id-length
           a: {
             color: 'white',
-            textDecoration: 'underline',
-            padding: SPACING['XS'],
+            padding: SPACING.XS,
+            textDecoration: 'underline'
           },
-          'ul > li:not(:last-of-type)': {
-            marginBottom: SPACING['M'],
-          },
+          height: 'auto',
           li: {
-            textAlign: 'center',
+            textAlign: 'center'
           },
+          padding: `${SPACING.M} 0`,
+          position: 'static',
+          'ul > li:not(:last-of-type)': {
+            marginBottom: SPACING.M
+          },
+          width: 'auto'
         },
-        position: 'absolute',
-        left: '-10000px',
-        top: 'auto',
-        width: '1px',
+        background: COLORS.blue['400'],
         height: '1px',
+        left: '-10000px',
         overflow: 'hidden',
-        '*:focus': {
-          outlineColor: 'white',
-        },
+        position: 'absolute',
+        top: 'auto',
+        width: '1px'
       }}
     >
       <Margins>
         <ul>
           <li>
-            <a href="#maincontent">Skip to main content</a>
+            <a href='#maincontent'>Skip to main content</a>
           </li>
           <li>
-            <a href="#chat">Skip to Ask a Librarian chat</a>
+            <a href='#chat'>Skip to Ask a Librarian chat</a>
           </li>
           <li>
-            <GatsbyLink to="/site-map">View site map</GatsbyLink>
+            <GatsbyLink to='/site-map'>View site map</GatsbyLink>
           </li>
         </ul>
       </Margins>

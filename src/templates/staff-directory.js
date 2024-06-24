@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { graphql } from 'gatsby';
 import SearchEngineOptimization from '../components/seo';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Heading, SPACING, Margins, TextInput, COLORS, Button, Alert } from '../reusable';
+import { Alert, Button, COLORS, Heading, Margins, SPACING, TextInput } from '../reusable';
 import { navigate } from '@reach/router';
 import { useDebounce } from 'use-debounce';
 import Link from '../components/link';
@@ -19,21 +19,21 @@ import useGoogleTagManager from '../hooks/use-google-tag-manager';
 
 const lunr = require('lunr');
 
-export default function StaffDirectoryWrapper({ data, location }) {
+export default function StaffDirectoryWrapper ({ data, location }) {
   const node = data.page;
   const { allNodeDepartment, allStaff, allStaffImages } = data;
 
   const departments = allNodeDepartment.edges.reduce((acc, { node }) => {
     return {
       ...acc,
-      [node.drupal_internal__nid]: node,
+      [node.drupal_internal__nid]: node
     };
   }, {});
   const staff = allStaff.edges.map(({ node }) => {
     return {
       ...node,
       department: departments[node.department_nid],
-      division: departments[node.division_nid],
+      division: departments[node.division_nid]
     };
   });
   const staffImages = allStaffImages.edges.reduce((acc, { node }) => {
@@ -43,8 +43,8 @@ export default function StaffDirectoryWrapper({ data, location }) {
       ...acc,
       [img.drupal_internal__mid]: {
         alt: img.field_media_image.alt,
-        ...img.relationships.field_media_image.localFile,
-      },
+        ...img.relationships.field_media_image.localFile
+      }
     };
   }, {});
 
@@ -60,17 +60,17 @@ export default function StaffDirectoryWrapper({ data, location }) {
   );
 }
 
-export function Head({ data }) {
-  return <SearchEngineOptimization data={ data.page } />;
+export function Head ({ data }) {
+  return <SearchEngineOptimization data={data.page} />;
 }
 
-function StaffDirectoryQueryContainer({
+function StaffDirectoryQueryContainer ({
   node,
   staff,
   departments,
   staffImages,
   location,
-  navigate,
+  navigate
 }) {
   const [urlState] = useState(
     getUrlState(location.search, ['query', 'department'])
@@ -84,27 +84,27 @@ function StaffDirectoryQueryContainer({
   const [stateString] = useDebounce(
     stringifyState({
       query: query.length > 0 ? query : undefined,
-      department: activeFilters['department'],
+      department: activeFilters.department
     }),
     100
   );
 
   useGoogleTagManager({
     eventName: 'staffDirectorySearch',
-    value: query,
+    value: query
   });
 
   useEffect(() => {
-    navigate('?' + stateString, {
+    navigate(`?${stateString}`, {
       replace: true,
-      state: { preserveScroll: true },
+      state: { preserveScroll: true }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stateString]);
 
   useEffect(() => {
     if (!window.__SDI__) {
-      // create staff directory index if it does not exist
+      // Create staff directory index if it does not exist
       window.__SDI__ = lunr(function () {
         this.ref('uniqname');
         this.field('name');
@@ -124,32 +124,34 @@ function StaffDirectoryQueryContainer({
       const results = index
         .query((q) => {
           q.term(lunr.tokenizer(query), {
-            boost: 3,
+            boost: 3
           });
           q.term(lunr.tokenizer(query), {
             boost: 2,
-            wildcard: lunr.Query.wildcard.TRAILING,
+            wildcard: lunr.Query.wildcard.TRAILING
           });
           if (query.length > 2) {
             q.term(lunr.tokenizer(query), {
               wildcard:
-                lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
+                lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
             });
           }
         })
         .map(({ ref }) => {
-          return staff.find(({ uniqname }) => uniqname === ref);
+          return staff.find(({ uniqname }) => {
+            return uniqname === ref;
+          });
         });
 
       setResults(filterResults({ activeFilters, results }));
     } catch {
-      return;
+
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, activeFilters]);
 
-  function handleChange(e) {
+  function handleChange (e) {
     const { name, value } = e.target;
     if (name === 'query') {
       setQuery(value);
@@ -163,7 +165,7 @@ function StaffDirectoryQueryContainer({
     } else {
       activeFiltersCopy = {
         ...activeFiltersCopy,
-        [name]: value,
+        [name]: value
       };
     }
 
@@ -176,13 +178,15 @@ function StaffDirectoryQueryContainer({
       name: 'department',
       options: ['All'].concat(
         Object.keys(departments)
-          .map((d) => departments[d].title)
+          .map((d) => {
+            return departments[d].title;
+          })
           .sort()
-      ),
-    },
+      )
+    }
   ];
 
-  function handleClear() {
+  function handleClear () {
     setQuery('');
     setActiveFilters({});
     setResults(staff);
@@ -192,15 +196,15 @@ function StaffDirectoryQueryContainer({
     <TemplateLayout node={node}>
       <Margins
         css={{
-          marginBottom: SPACING['2XL'],
+          marginBottom: SPACING['2XL']
         }}
       >
         <Breadcrumb data={fields.breadcrumb} />
         <Heading
-          size="3XL"
+          size='3XL'
           level={1}
           css={{
-            marginBottom: SPACING['S'],
+            marginBottom: SPACING.S
           }}
         >
           {field_title_context}
@@ -209,7 +213,7 @@ function StaffDirectoryQueryContainer({
         {body && (
           <div
             css={{
-              marginBottom: SPACING['XL'],
+              marginBottom: SPACING.XL
             }}
           >
             <Html html={body.processed} />{' '}
@@ -230,15 +234,15 @@ function StaffDirectoryQueryContainer({
   );
 }
 
-const StaffDirectory = React.memo(function StaffDirectory({
+const StaffDirectory = React.memo(({
   handleChange,
   handleClear,
   filters,
   results,
   staffImages,
   query,
-  activeFilters,
-}) {
+  activeFilters
+}) => {
   const [show, setShow] = useState(20);
   const staffInView = results.slice(0, show);
   let resultsSummary = results.length
@@ -250,12 +254,12 @@ const StaffDirectory = React.memo(function StaffDirectory({
   if (activeFilters.department) {
     resultsSummary += ` in ${activeFilters.department}`;
   }
-  const showMoreText =
-    show < results.length
+  const showMoreText
+    = show < results.length
       ? `Showing ${show} of ${results.length} results`
       : null;
 
-  function showMore() {
+  function showMore () {
     setShow(results.length);
   }
 
@@ -264,42 +268,46 @@ const StaffDirectory = React.memo(function StaffDirectory({
       <div
         css={{
           display: 'grid',
-          gridGap: SPACING['S'],
-          [MEDIA_QUERIES['S']]: {
-            gridTemplateColumns: `3fr 2fr auto`,
+          gridGap: SPACING.S,
+          [MEDIA_QUERIES.S]: {
+            gridTemplateColumns: `3fr 2fr auto`
           },
           input: {
             lineHeight: '1.5',
-            height: '40px',
+            height: '40px'
           },
-          marginBottom: SPACING['M'],
+          marginBottom: SPACING.M
         }}
       >
         <TextInput
-          id="staff-directory-search-input"
-          labelText="Search by name, uniqname, or title"
-          name="query"
+          id='staff-directory-search-input'
+          labelText='Search by name, uniqname, or title'
+          name='query'
           value={query}
           onChange={(e) => {
             setShow(20);
             handleChange(e);
           }}
         />
-        {filters.map(({ label, name, options }) => (
-          <Select
-            label={label}
-            name={name}
-            options={options}
-            onChange={(e) => handleChange(e)}
-            value={activeFilters[name]}
-            key={name}
-          />
-        ))}
+        {filters.map(({ label, name, options }) => {
+          return (
+            <Select
+              label={label}
+              name={name}
+              options={options}
+              onChange={(e) => {
+                return handleChange(e);
+              }}
+              value={activeFilters[name]}
+              key={name}
+            />
+          );
+        })}
         <Button
-          kind="subtle"
+          kind='subtle'
           onClick={handleClear}
           css={{
-            alignSelf: 'end',
+            alignSelf: 'end'
           }}
         >
           Clear
@@ -317,7 +325,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
         <>
           <p
             css={{
-              marginBottom: SPACING['L'],
+              marginBottom: SPACING.L
             }}
           >
             {showMoreText}
@@ -336,7 +344,7 @@ const StaffDirectory = React.memo(function StaffDirectory({
   );
 });
 
-function filterResults({ activeFilters, results }) {
+function filterResults ({ activeFilters, results }) {
   const filterKeys = Object.keys(activeFilters);
 
   if (filterKeys.length === 0) {
@@ -348,13 +356,13 @@ function filterResults({ activeFilters, results }) {
     const department = result.department && result.department.title;
 
     return (
-      activeFilters['department'] === division ||
-      activeFilters['department'] === department
+      activeFilters.department === division
+      || activeFilters.department === department
     );
   });
 }
 
-function StaffPhoto({ mid, staffImages }) {
+function StaffPhoto ({ mid, staffImages }) {
   const img = staffImages[mid];
 
   if (!img) {
@@ -444,11 +452,11 @@ export const query = graphql`
   }
 `;
 
-function StaffDirectoryResults({
+function StaffDirectoryResults ({
   results,
   staffImages,
   resultsSummary,
-  staffInView,
+  staffInView
 }) {
   const tableBreakpoint = `@media only screen and (max-width: 820px)`;
   const borderStyle = '1px solid var(--color-neutral-100)';
@@ -490,12 +498,12 @@ function StaffDirectoryResults({
         <Alert>{resultsSummary}</Alert>
       </caption>
       <colgroup>
-          <col
-            span="1"
-            css={{
-              width: '43px'
-            }} 
-          />
+        <col
+          span='1'
+          css={{
+            width: '43px'
+          }}
+        />
       </colgroup>
       <thead
         css={{
@@ -508,15 +516,15 @@ function StaffDirectoryResults({
             overflow: 'hidden',
             position: 'absolute',
             whiteSpace: 'nowrap',
-            width: '1px',
+            width: '1px'
           }
         }}
       >
         <tr>
-          <th className="visually-hidden">Photo</th>
-          <th colSpan="3">Name and title</th>
-          <th colSpan="2">Contact info</th>
-          <th colSpan="3">Department</th>
+          <th className='visually-hidden'>Photo</th>
+          <th colSpan='3'>Name and title</th>
+          <th colSpan='2'>Contact info</th>
+          <th colSpan='3'>Department</th>
         </tr>
       </thead>
       <tbody>
@@ -529,95 +537,99 @@ function StaffDirectoryResults({
             phone,
             department,
             division,
-            image_mid,
-          }) => (
-            <tr
-              key={uniqname}
-              css={{
-                borderTop: borderStyle
-              }}
-            >
-              <td
+            image_mid
+          }) => {
+            return (
+              <tr
+                key={uniqname}
                 css={{
-                  [tableBreakpoint]: {
-                    display: 'none!important'
-                  }
+                  borderTop: borderStyle
                 }}
               >
-                <StaffPhoto mid={image_mid} staffImages={staffImages} />
-              </td>
-              <td colSpan="3">
-                <PlainLink
+                <td
                   css={{
-                    color: COLORS.teal['400'],
-                    textDecoration: 'underline',
-                    ':hover': {
-                      textDecorationThickness: '2px',
-                    },
-                  }}
-                  to={`/users/` + uniqname}
-                >
-                  {name}
-                </PlainLink>
-                <span css={{ display: 'block' }}>{title}</span>
-              </td>
-              <td
-                colSpan="2"
-                css={{
-                  'span': {
-                    display: 'block',
                     [tableBreakpoint]: {
-                      display: 'initial'
+                      display: 'none!important'
                     }
-                  }
-                }}
-              >
-                <span>
-                  <Link to={`mailto:` + email} kind="subtle">
-                    {email}
-                  </Link>
-                </span>
-                {phone && (
-                  <>
-                    <span
-                      css={{
-                        display: 'none!important',
-                        padding: '0 0.5rem',
-                        [tableBreakpoint]: {
-                          display: 'initial!important'
-                        }
-                      }}
-                    >&middot;</span>
-                    <span>
-                      <Link to={`tel:1-` + phone} kind="subtle">
-                        {phone}
-                      </Link>
-                    </span>
-                  </>
-                )}
-              </td>
-              <td
-                colSpan="3"
-                css={{
-                  [tableBreakpoint]: {
-                    display: 'none!important'
-                  }
-                }}
-              >
-                {department && (
-                  <Link to={department.fields.slug} kind="subtle">
-                    {department.title}
-                  </Link>
-                )}
+                  }}
+                >
+                  <StaffPhoto mid={image_mid} staffImages={staffImages} />
+                </td>
+                <td colSpan='3'>
+                  <PlainLink
+                    css={{
+                      color: COLORS.teal['400'],
+                      textDecoration: 'underline',
+                      ':hover': {
+                        textDecorationThickness: '2px'
+                      }
+                    }}
+                    to={`/users/${uniqname}`}
+                  >
+                    {name}
+                  </PlainLink>
+                  <span css={{ display: 'block' }}>{title}</span>
+                </td>
+                <td
+                  colSpan='2'
+                  css={{
+                    span: {
+                      display: 'block',
+                      [tableBreakpoint]: {
+                        display: 'initial'
+                      }
+                    }
+                  }}
+                >
+                  <span>
+                    <Link to={`mailto:${email}`} kind='subtle'>
+                      {email}
+                    </Link>
+                  </span>
+                  {phone && (
+                    <>
+                      <span
+                        css={{
+               display: 'none!important',
+               padding: '0 0.5rem',
+               [tableBreakpoint]: {
+                 display: 'initial!important'
+               }
+             }}
+                      >
+                      &middot;
+                      </span>
+                      <span>
+                        <Link to={`tel:1-${phone}`} kind='subtle'>
+               {phone}
+             </Link>
+                      </span>
+                    </>
+                  )}
+                </td>
+                <td
+                  colSpan='3'
+                  css={{
+                    [tableBreakpoint]: {
+                      display: 'none!important'
+                    }
+                  }}
+                >
+                  {department && (
+                    <Link to={department.fields.slug} kind='subtle'>
+                      {department.title}
+                    </Link>
+                  )}
 
-                {!department && division && (
-                  <Link to={division.fields.slug} kind="subtle">
-                    {division.title}
-                  </Link>
-                )}
-              </td>
-            </tr>
-          )
+                  {!department && division && (
+                    <Link to={division.fields.slug} kind='subtle'>
+                      {division.title}
+                    </Link>
+                  )}
+                </td>
+              </tr>
+            );
+          }
         )}
       </tbody>
     </table>
