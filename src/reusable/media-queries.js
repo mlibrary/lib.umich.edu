@@ -1,3 +1,4 @@
+/* eslint-disable id-length, sort-keys */
 import { MEDIA_QUERIES as MQ } from '../reusable';
 
 const MEDIA_QUERIES = {
