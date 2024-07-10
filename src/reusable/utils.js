@@ -1,7 +1,8 @@
-import React from 'react';
 import { css, Global } from '@emotion/react';
+import React from 'react';
 import styled from '@emotion/styled';
 
+/* eslint-disable sort-keys, id-length */
 export const SPACING = {
   '3XS': '0.125rem',
   '2XS': '0.25rem',
@@ -17,8 +18,8 @@ export const SPACING = {
 };
 
 export const BREAKPOINTS = {
-  SMALLSCREEN: 320,
-  LARGESCREEN: 641
+  LARGESCREEN: 641,
+  SMALLSCREEN: 320
 };
 
 export const MEDIA_QUERIES = {
@@ -27,8 +28,8 @@ export const MEDIA_QUERIES = {
 };
 
 const TYPE_2XL = {
-  fontSize: '2.25rem',
   fontFamily: 'Crimson Text',
+  fontSize: '2.25rem',
   lineHeight: '1.25'
 };
 
@@ -45,8 +46,8 @@ export const TYPOGRAPHY = {
   '3XL': {
     ...TYPE_2XL,
     [MEDIA_QUERIES.LARGESCREEN]: {
-      fontSize: '3.5rem',
       fontFamily: 'Crimson Text',
+      fontSize: '3.5rem',
       lineHeight: '1.125'
     }
   },
@@ -83,19 +84,13 @@ export const TYPOGRAPHY = {
     textTransform: 'uppercase'
   }
 };
+/* eslint-enable sort-keys, id-length */
 
 /*
  *Inspired by GitHub color system
  *https://styleguide.github.com/primer/support/color-system/
  */
 export const COLORS = {
-  maize: {
-    100: '#FFF9E6',
-    200: '#FFEA9B',
-    300: '#FFDA50',
-    400: '#FFCB05',
-    500: '#EABA02'
-  },
   blue: {
     100: '#F7F8F9',
     200: '#B2BEC9',
@@ -103,19 +98,33 @@ export const COLORS = {
     400: '#00274C',
     500: '#001324'
   },
+  green: {
+    100: '#EAF8EE',
+    200: '#96DBAA',
+    300: '#57BC75',
+    400: '#20A848',
+    500: '#198539'
+  },
+  indigo: {
+    100: '#EEF1F9',
+    200: '#AAB9E3',
+    300: '#7C93D4',
+    400: '#506FC5',
+    500: '#274391'
+  },
+  maize: {
+    100: '#FFF9E6',
+    200: '#FFEA9B',
+    300: '#FFDA50',
+    400: '#FFCB05',
+    500: '#EABA02'
+  },
   neutral: {
     100: '#E5E9ED',
     200: '#8A96A1',
     300: '#637381',
     400: '#212B36',
     500: '#06080A'
-  },
-  teal: {
-    100: '#E9F2F5',
-    200: '#A7CDDB',
-    300: '#65A8BF',
-    400: '#1D7491',
-    500: '#106684'
   },
   orange: {
     100: '#FFF1EB',
@@ -131,34 +140,27 @@ export const COLORS = {
     400: '#D93838',
     500: '#BF3232'
   },
-  indigo: {
-    100: '#EEF1F9',
-    200: '#AAB9E3',
-    300: '#7C93D4',
-    400: '#506FC5',
-    500: '#274391'
-  },
-  green: {
-    100: '#EAF8EE',
-    200: '#96DBAA',
-    300: '#57BC75',
-    400: '#20A848',
-    500: '#198539'
+  teal: {
+    100: '#E9F2F5',
+    200: '#A7CDDB',
+    300: '#65A8BF',
+    400: '#1D7491',
+    500: '#106684'
   }
 };
 
 export const INTENT_COLORS = {
+  error: COLORS.orange[400],
   informational: COLORS.blue[400],
   success: COLORS.teal[400],
-  warning: COLORS.maize[400],
-  error: COLORS.orange[400]
+  warning: COLORS.maize[400]
 };
 
 export const Margins = styled('div')({
-  width: '100%',
   margin: '0 auto',
   maxWidth: '1280px',
   padding: `0 ${SPACING.M}`,
+  width: '100%',
   [MEDIA_QUERIES.LARGESCREEN]: {
     padding: `0 ${SPACING['2XL']}`
   }
@@ -183,71 +185,71 @@ export const LargeScreen = styled('div')({
  */
 
 const DEFAULT_LINK_STYLE = {
-  color: COLORS.teal['400'],
-  boxShadow: `inset 0 -1px ${COLORS.teal[400]}`,
   ':hover': {
     boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
-  }
+  },
+  boxShadow: `inset 0 -1px ${COLORS.teal[400]}`,
+  color: COLORS.teal['400']
 };
 
 export const LINK_STYLES = {
   default: DEFAULT_LINK_STYLE,
-  subtle: {
-    color: COLORS.neutral['400'],
-    boxShadow: `inset 0 -1px ${COLORS.neutral[300]}`,
+  description: {
+    ...TYPOGRAPHY.XS,
     ':hover': {
-      boxShadow: `inset 0 -2px ${COLORS.neutral[300]}`
-    }
+      boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
+    },
+    boxShadow: `inset 0 -1px ${COLORS.teal[400]}`,
+    color: COLORS.neutral['400'],
+    fontWeight: '600'
   },
   light: {
-    color: 'white',
-    boxShadow: `inset 0 -1px white`,
     ':hover': {
       boxShadow: `inset 0 -2px white`
-    }
+    },
+    boxShadow: `inset 0 -1px white`,
+    color: 'white'
+  },
+  list: {
+    ':hover': {
+      boxShadow: `inset 0 -1px ${COLORS.neutral[400]}`
+    },
+    color: COLORS.neutral['400']
+  },
+  'list-medium': {
+    ':hover': {
+      boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
+    },
+    fontWeight: '600'
+  },
+  'list-strong': {
+    ':hover': {
+      boxShadow: `inset 0 -1px ${COLORS.neutral[400]}`
+    },
+    color: COLORS.neutral['400'],
+    fontWeight: '800'
   },
   special: {
     ...TYPOGRAPHY['3XS'],
-    color: COLORS.neutral['300'],
     ':hover': {
       boxShadow: `inset 0 -1px ${COLORS.neutral[300]}`
-    }
+    },
+    color: COLORS.neutral['300']
   },
-  list: {
-    color: COLORS.neutral['400'],
+  'special-subtle': DEFAULT_LINK_STYLE,
+  subtle: {
     ':hover': {
-      boxShadow: `inset 0 -1px ${COLORS.neutral[400]}`
-    }
-  },
-  'list-medium': {
-    fontWeight: '600',
-    ':hover': {
-      boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
-    }
-  },
-  'list-strong': {
-    fontWeight: '800',
-    color: COLORS.neutral['400'],
-    ':hover': {
-      boxShadow: `inset 0 -1px ${COLORS.neutral[400]}`
-    }
-  },
-  description: {
-    ...TYPOGRAPHY.XS,
-    fontWeight: '600',
-    color: COLORS.neutral['400'],
-    boxShadow: `inset 0 -1px ${COLORS.teal[400]}`,
-    ':hover': {
-      boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
-    }
-  },
+      boxShadow: `inset 0 -2px ${COLORS.neutral[300]}`
+    },
+    boxShadow: `inset 0 -1px ${COLORS.neutral[300]}`,
+    color: COLORS.neutral['400']
+  }
 
   /*
    *DEPRECATED kinds
    *To prevent a breaking change direct previously supported
    *link kinds to the default link style.
    */
-  'special-subtle': DEFAULT_LINK_STYLE
 };
 
 export const SmallScreen = styled('div')({
@@ -257,7 +259,8 @@ export const SmallScreen = styled('div')({
   }
 });
 
-export function lightOrDark (color) {
+export const lightOrDark = (color) => {
+  console.log(color);
   // Variables for red, green, blue values
   let b, g, hsp, r;
 
@@ -288,7 +291,7 @@ export function lightOrDark (color) {
     return 'light';
   }
   return 'dark';
-}
+};
 
 export function GlobalStyleSheet () {
   /*
