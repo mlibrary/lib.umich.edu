@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { LINK_STYLES } from '../reusable';
 
-const StyledLink = styled('a')((props) => LINK_STYLES[props.kind]);
+const StyledLink = styled('a')((props) => {
+  return LINK_STYLES[props.kind];
+});
 
-export default function Link({ children, ...other }) {
+export default function Link ({ children, ...other }) {
   return <StyledLink {...other}>{children}</StyledLink>;
 }
 
@@ -18,13 +20,13 @@ Link.propTypes = {
     'list',
     'list-medium',
     'list-strong',
-    'description',
+    'description'
   ]),
   children: PropTypes.node.isRequired,
-  as: PropTypes.node,
+  as: PropTypes.node
 };
 
 Link.defaultProps = {
   kind: 'default',
-  as: 'a',
+  as: 'a'
 };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { ExpandableContext } from './expandable';
 
 class ExpandableChildrenComponent extends Component {
-  componentDidMount() {
+  componentDidMount () {
     const { context, children, show } = this.props;
 
     if (children.length <= show && !context.disabled) {
@@ -11,7 +11,7 @@ class ExpandableChildrenComponent extends Component {
     }
   }
 
-  render() {
+  render () {
     const { context, children, show } = this.props;
 
     return (
@@ -23,19 +23,21 @@ class ExpandableChildrenComponent extends Component {
 }
 
 ExpandableChildrenComponent.propTypes = {
-  show: PropTypes.number,
+  show: PropTypes.number
 };
 
 ExpandableChildrenComponent.defaultProps = {
-  show: 3,
+  show: 3
 };
 
-function ExpandableChildren(props) {
+function ExpandableChildren (props) {
   return (
     <ExpandableContext.Consumer>
-      {(context) => (
-        <ExpandableChildrenComponent {...props} context={context} />
-      )}
+      {(context) => {
+        return (
+          <ExpandableChildrenComponent {...props} context={context} />
+        );
+      }}
     </ExpandableContext.Consumer>
   );
 }

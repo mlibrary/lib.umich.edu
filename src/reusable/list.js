@@ -10,28 +10,28 @@ const baseListStyles = {
   listStyle: 'none',
   maxWidth: '38rem',
   'li:not(:last-child)': {
-    marginBottom: SPACING['XS'],
-  },
+    marginBottom: SPACING.XS
+  }
 };
 
 const StyledList = styled('ul')({
-  ...baseListStyles,
+  ...baseListStyles
 });
 
 const listPaddingStyles = {
-  marginLeft: '1.5rem',
+  marginLeft: '1.5rem'
 };
 
 const StyledUL = styled('ul')({
   ...baseListStyles,
   ...listPaddingStyles,
-  listStyle: 'disc',
+  listStyle: 'disc'
 });
 
 const StyledOL = styled('ol')({
   ...baseListStyles,
   ...listPaddingStyles,
-  listStyle: 'decimal',
+  listStyle: 'decimal'
 });
 
 const List = ({ className, children, type, ...other }) => {
@@ -59,7 +59,7 @@ const List = ({ className, children, type, ...other }) => {
 };
 
 List.propTypes = {
-  type: PropTypes.string,
+  type: PropTypes.string
 };
 
 export default List;

@@ -4,7 +4,7 @@ import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import Panels from '../components/panels';
 
-function HomePageTemplate({ data }) {
+function HomePageTemplate ({ data }) {
   const { drupal_internal__nid, relationships } = data.page;
 
   return (
@@ -19,7 +19,7 @@ function HomePageTemplate({ data }) {
 
 export default HomePageTemplate;
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={data.page} />;
 }
 

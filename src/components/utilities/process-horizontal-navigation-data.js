@@ -1,18 +1,36 @@
 import orderNodes from './order-nodes';
 
-export default function processHorizontalNavigationData({
+const createNavItem = (node) => {
+  return {
+    text: node.field_title_context,
+    to: node.fields.slug
+  };
+};
+const createNavItems = (firstNode, orderedIds, nodes) => {
+  const nodesOrdered = orderNodes(orderedIds, nodes).filter((node) => {
+    return typeof node !== 'undefined';
+  });
+
+  return []
+    .concat(createNavItem(firstNode))
+    .concat(nodesOrdered.map(({ node }) => {
+      return createNavItem(node);
+    }));
+};
+
+export default function processHorizontalNavigationData ({
   parentNodeOrderByDrupalId,
   parentNodes,
   childrenNodeOrderByDrupalId,
   childrenNodes,
   isRootPage,
   parentNode,
-  currentNode,
+  currentNode
 }) {
   /*
-    If it's the root page, then use children data,
-    not parent data.
-  */
+   *If it's the root page, then use children data,
+   *not parent data.
+   */
   if (isRootPage) {
     return createNavItems(
       currentNode,
@@ -22,21 +40,4 @@ export default function processHorizontalNavigationData({
   }
 
   return createNavItems(parentNode, parentNodeOrderByDrupalId, parentNodes);
-}
-
-function createNavItems(firstNode, orderedIds, nodes) {
-  const nodesOrdered = orderNodes(orderedIds, nodes).filter(
-    (node) => node !== undefined
-  );
-
-  return []
-    .concat(createNavItem(firstNode))
-    .concat(nodesOrdered.map(({ node }) => createNavItem(node)));
-}
-
-function createNavItem(node) {
-  return {
-    to: node.fields.slug,
-    text: node.field_title_context,
-  };
 }

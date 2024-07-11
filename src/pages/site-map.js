@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../components/layout';
-import { Heading, SPACING, Margins } from '../reusable';
+import { Heading, Margins, SPACING } from '../reusable';
 import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
 import Link from '../components/link';
@@ -10,29 +10,29 @@ import MEDIA_QUERIES from '../reusable/media-queries';
 const breadcrumbData = [
   {
     text: 'Home',
-    to: '/',
+    to: '/'
   },
   {
-    text: 'Site map',
-  },
+    text: 'Site map'
+  }
 ];
 
-export default function SiteMap() {
+export default function SiteMap () {
   const { primary, secondary } = useNavigationData();
 
   return (
     <Layout>
       <Margins
         css={{
-          marginBottom: SPACING['4XL'],
+          marginBottom: SPACING['4XL']
         }}
       >
         <Breadcrumb data={JSON.stringify(breadcrumbData)} />
         <Heading
-          size="3XL"
+          size='3XL'
           level={1}
           css={{
-            marginBottom: SPACING['L'],
+            marginBottom: SPACING.L
           }}
         >
           Site map
@@ -41,33 +41,33 @@ export default function SiteMap() {
         <div
           css={{
             '> ol': {
-              [MEDIA_QUERIES['M']]: {
-                columns: '2',
+              [MEDIA_QUERIES.M]: {
+                columns: '2'
               },
-              [MEDIA_QUERIES['L']]: {
-                columns: '3',
-              },
+              [MEDIA_QUERIES.L]: {
+                columns: '3'
+              }
             },
             '> ol > li': {
               breakInside: 'avoid',
-              marginBottom: SPACING['3XL'],
+              marginBottom: SPACING['3XL']
             },
             '> ol > li > ol': {
-              listStyleType: 'lower-alpha',
+              listStyleType: 'lower-alpha'
             },
             '> ol > li > ol > li > ol': {
-              listStyleType: 'lower-roman',
+              listStyleType: 'lower-roman'
             },
             '> ol > li > ol > li > ol ol': {
-              listStyleType: 'disc',
-            },
+              listStyleType: 'disc'
+            }
           }}
         >
           <Heading
-            size="L"
+            size='L'
             level={2}
             css={{
-              marginTop: SPACING['XL'],
+              marginTop: SPACING.XL
             }}
           >
             Main navigation
@@ -75,10 +75,10 @@ export default function SiteMap() {
           <NestLinkedList data={primary} />
 
           <Heading
-            size="L"
+            size='L'
             level={2}
             css={{
-              marginTop: SPACING['XL'],
+              marginTop: SPACING.XL
             }}
           >
             Utility navigation
@@ -90,33 +90,35 @@ export default function SiteMap() {
   );
 }
 
-export function Head() {
-  return <SearchEngineOptimization data={{title: 'Site map'}} />;
+export function Head () {
+  return <SearchEngineOptimization data={{ title: 'Site map' }} />;
 }
 
-function NestLinkedList({ data }) {
+function NestLinkedList ({ data }) {
   return (
     <ol
       css={{
         listStyleType: 'decimal',
-        marginLeft: SPACING['L'],
+        marginLeft: SPACING.L,
         '> li': {
-          breakInside: 'avoid',
-        },
+          breakInside: 'avoid'
+        }
       }}
     >
-      {data.map(({ text, to, children }) => (
-        <li
-          key={to}
-          css={{
-            margin: SPACING['S'],
-            marginLeft: '0',
-          }}
-        >
-          <Link to={to}>{text}</Link>
-          {children && <NestLinkedList data={children} />}
-        </li>
-      ))}
+      {data.map(({ text, to, children }) => {
+        return (
+          <li
+            key={to}
+            css={{
+              margin: SPACING.S,
+              marginLeft: '0'
+            }}
+          >
+            <Link to={to}>{text}</Link>
+            {children && <NestLinkedList data={children} />}
+          </li>
+        );
+      })}
     </ol>
   );
 }

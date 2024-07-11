@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactPlayer from 'react-player';
 
-export default function MediaPlayer({ url }) {
+export default function MediaPlayer ({ url }) {
   if (!url) {
     return null;
   }
@@ -10,18 +10,18 @@ export default function MediaPlayer({ url }) {
     <div
       css={{
         position: 'relative',
-        paddingTop: '56.25%',
+        paddingTop: '56.25%'
       }}
     >
       <ReactPlayer
         url={url}
-        width="100%"
-        height="100%"
+        width='100%'
+        height='100%'
         controls={true}
         css={{
           position: 'absolute',
           top: '0',
-          left: '0',
+          left: '0'
         }}
       />
     </div>

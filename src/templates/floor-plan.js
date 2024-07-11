@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING, SmallScreen, LINK_STYLES } from '../reusable';
+import { Heading, LINK_STYLES, Margins, SmallScreen, SPACING } from '../reusable';
 import SearchEngineOptimization from '../components/seo';
-import { Template, Top, Side, Content } from '../components/page-layout';
+import { Content, Side, Template, Top } from '../components/page-layout';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
 import SideNavigation from '../components/navigation/side-navigation';
@@ -10,10 +10,10 @@ import HorizontalNavigation from '../components/navigation/horizontal-navigation
 import TemplateLayout from './template-layout';
 import useNavigationBranch from '../components/navigation/use-navigation-branch';
 
-function FloorPlanTemplate({ data }) {
+function FloorPlanTemplate ({ data }) {
   const node = data.floorPlan;
-  const { title, field_title_context, body, fields, field_local_navigation } =
-    node;
+  const { title, field_title_context, body, fields, field_local_navigation }
+    = node;
   const { field_svg_image, field_printable_image } = node.relationships;
   const navBranch = useNavigationBranch(fields.slug);
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small');
@@ -36,7 +36,7 @@ function FloorPlanTemplate({ data }) {
               <SmallScreen>
                 <div
                   css={{
-                    margin: `0 -${SPACING['M']}`,
+                    margin: `0 -${SPACING.M}`
                   }}
                 >
                   <HorizontalNavigation items={smallScreenItems} />
@@ -46,10 +46,10 @@ function FloorPlanTemplate({ data }) {
           </Side>
           <Content>
             <Heading
-              size="3XL"
+              size='3XL'
               level={1}
               css={{
-                marginBottom: SPACING['L'],
+                marginBottom: SPACING.L
               }}
             >
               {field_title_context}
@@ -58,12 +58,12 @@ function FloorPlanTemplate({ data }) {
 
             <p
               css={{
-                marginTop: SPACING['L'],
+                marginTop: SPACING.L
               }}
             >
               <a
                 href={field_printable_image.localFile.publicURL}
-                css={LINK_STYLES['default']}
+                css={LINK_STYLES.default}
               >
                 {title} PDF
               </a>
@@ -71,12 +71,12 @@ function FloorPlanTemplate({ data }) {
 
             <img
               src={field_svg_image.localFile.publicURL}
-              alt=""
+              alt=''
               css={{
                 display: 'block',
                 width: '100%',
                 maxWidth: '38rem',
-                marginTop: SPACING['2XL'],
+                marginTop: SPACING['2XL']
               }}
             />
           </Content>
@@ -88,7 +88,7 @@ function FloorPlanTemplate({ data }) {
 
 export default FloorPlanTemplate;
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={data.floorPlan} />;
 }
 

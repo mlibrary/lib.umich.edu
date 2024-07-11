@@ -1,6 +1,6 @@
 import React from 'react';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Text, SPACING, COLORS } from '../reusable';
+import { COLORS, SPACING, Text } from '../reusable';
 import Link from './link';
 import StaffPhotoPlaceholder from './staff-photo-placeholder';
 
@@ -13,7 +13,7 @@ const photoContainerCSS = {
   width: '75px'
 };
 
-function UserPhoto({ image }) {
+function UserPhoto ({ image }) {
   if (!image) {
     return (
       <div css={photoContainerCSS}>
@@ -31,32 +31,32 @@ function UserPhoto({ image }) {
   );
 }
 
-export default function UserCard({ name, to, image, title, phone, email }) {
+export default function UserCard ({ name, to, image, title, phone, email }) {
   return (
     <section
       css={{
         display: 'flex',
-        margin: `${SPACING['L']} 0`,
+        margin: `${SPACING.L} 0`
       }}
     >
       <UserPhoto image={image} />
       <div
         css={{
-          marginLeft: SPACING['M'],
+          marginLeft: SPACING.M
         }}
       >
-        <Link to={to} kind="description">
+        <Link to={to} kind='description'>
           {name}
         </Link>
         <Text>{title}</Text>
         {phone && (
           <p>
-            <Link to={'tel:' + phone}>{phone}</Link>
+            <Link to={`tel:${phone}`}>{phone}</Link>
           </p>
         )}
         {email && (
           <p>
-            <Link to={'mailto:' + email}>{email}</Link>
+            <Link to={`mailto:${email}`}>{email}</Link>
           </p>
         )}
       </div>

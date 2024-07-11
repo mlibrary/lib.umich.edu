@@ -13,15 +13,17 @@ const StyledInput = styled('input')(
     width: '100%',
     appearance: 'textfield',
     fontFamily: 'inherit',
-    boxSizing: 'border-box',
+    boxSizing: 'border-box'
   },
-  ({ invalid }) => ({
-    borderColor: invalid && INTENT_COLORS.error,
-    borderWidth: invalid && '2px',
-  })
+  ({ invalid }) => {
+    return {
+      borderColor: invalid && INTENT_COLORS.error,
+      borderWidth: invalid && '2px'
+    };
+  }
 );
 
-function Input({ className, ...other }) {
+function Input ({ className, ...other }) {
   return <StyledInput className={className} {...other} />;
 }
 

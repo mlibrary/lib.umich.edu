@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   COLORS,
-  SPACING,
-  Z_SPACE,
   LINK_STYLES,
-  TYPOGRAPHY,
   MEDIA_QUERIES,
+  SPACING,
+  TYPOGRAPHY,
+  Z_SPACE
 } from '../reusable';
 import CardImage from './card-image';
 
-export default function Card({
+export default function Card ({
   title,
   subtitle,
   image,
@@ -26,11 +26,11 @@ export default function Card({
         [MEDIA_QUERIES.LARGESCREEN]: {
           display: 'grid',
           gridTemplateColumns: `18.75rem 1fr `,
-          gridGap: SPACING['M'],
+          gridGap: SPACING.M,
           '[data-card-image]': {
-            marginBottom: '0',
-          },
-        },
+            marginBottom: '0'
+          }
+        }
       }
     : {};
 
@@ -39,27 +39,27 @@ export default function Card({
     ...horizontalStyles,
     ':hover': {
       '[data-card-image]': {
-        ...Z_SPACE[8],
+        ...Z_SPACE[8]
       },
       '[data-card-title]': {
-        ...LINK_STYLES['description'][':hover'],
-      },
-    },
+        ...LINK_STYLES.description[':hover']
+      }
+    }
   };
 
   const anchorProps = {
     href,
-    ...rest,
+    ...rest
   };
 
-  function renderChildren() {
+  function renderChildren () {
     if (!children) {
       return null;
     }
 
     const styles = {
       color: COLORS.neutral[300],
-      marginTop: SPACING['XS'],
+      marginTop: SPACING.XS
     };
 
     if (typeof children === 'string') {
@@ -74,14 +74,14 @@ export default function Card({
       {image && <CardImage image={image} />}
 
       <div>
-        <p role="heading" aria-level="3">
+        <p role='heading' aria-level='3'>
           {subtitle && (
             <span
               css={{
                 display: 'block',
                 color: COLORS.neutral[300],
                 marginBottom: SPACING['2XS'],
-                ...TYPOGRAPHY['3XS'],
+                ...TYPOGRAPHY['3XS']
               }}
             >
               {subtitle}
@@ -89,7 +89,7 @@ export default function Card({
           )}
           <span
             css={{
-              ...LINK_STYLES['description'],
+              ...LINK_STYLES.description
             }}
             data-card-title
           >
@@ -105,8 +105,8 @@ export default function Card({
   if (renderAnchor) {
     return renderAnchor({
       ...anchorProps,
-      anchorStyles: anchorStyles,
-      children: content,
+      anchorStyles,
+      children: content
     });
   }
 
@@ -117,39 +117,46 @@ Card.propTypes = {
   /*
    * Provide a Gatsby image object to image. This is purely decorative
    * and shouldn't be required to understand the Card.
-   **/
+   *
+   */
   image: PropTypes.object,
 
   /*
    * The title should briefly describe where the Card will take
    * the user when they click on it.
-   **/
+   *
+   */
   title: PropTypes.string.isRequired,
 
   /*
    * Regular React element.
-   **/
+   *
+   */
   children: PropTypes.node,
 
   /*
    * An optional addition to the Card heading. Only use if necessary.
-   **/
+   *
+   */
   subtitle: PropTypes.string,
 
   /*
    * Provide a url for where this card should route to.
-   **/
+   *
+   */
   href: PropTypes.string,
 
   /*
    * Let the Card know if it can go horizontal on large screens.
-   **/
+   *
+   */
   horizontal: PropTypes.bool,
 
   /*
    * An optional parameter to allow overriding the anchor rendering.
    * Useful for using Card along with react-router or other client
    * side router libraries.
-   **/
-  renderAnchor: PropTypes.func,
+   *
+   */
+  renderAnchor: PropTypes.func
 };

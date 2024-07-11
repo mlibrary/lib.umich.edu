@@ -1,12 +1,12 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING, Expandable, ExpandableChildren, ExpandableButton } from '../reusable';
+import { Expandable, ExpandableButton, ExpandableChildren, Heading, Margins, SPACING } from '../reusable';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
 import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/card';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
+import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import PropTypes from 'prop-types';
 
 function NewsLandingTemplate ({ data }) {
@@ -53,7 +53,7 @@ function NewsLandingTemplate ({ data }) {
                     {news.map((item, i) => {
                       return (
                         <li
-                          key={'news-item-' + i}
+                          key={`news-item-${i}`}
                           css={{
                             marginBottom: SPACING.L
                           }}
@@ -98,7 +98,7 @@ function NewsLandingTemplate ({ data }) {
                   {newsLibraryUpdates.map((item, i) => {
                     return (
                       <li
-                        key={'news-item-' + i}
+                        key={`news-item-${i}`}
                         css={{
                           marginBottom: SPACING.XL
                         }}
@@ -147,8 +147,8 @@ function processNewsData (data) {
 
   return data.edges.map(({ node }) => {
     const { title, created, body, relationships, fields } = node;
-    const image =
-      relationships?.field_media_image?.relationships?.field_media_image
+    const image
+      = relationships?.field_media_image?.relationships?.field_media_image
         ?.localFile?.childImageSharp?.gatsbyImageData;
     const subtitle = new Date(created).toLocaleString('en-US', {
       year: 'numeric',

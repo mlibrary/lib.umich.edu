@@ -2,10 +2,10 @@ import React from 'react';
 import { Link as GatsbyLink } from 'gatsby';
 import { Link as DSLink, LINK_STYLES } from '../reusable';
 
-function Link({ to, kind = 'default', ...other }) {
+function Link ({ to, kind = 'default', ...other }) {
   /*
-    The check if the href is an internal link.
-  */
+   *The check if the href is an internal link.
+   */
   if (to.startsWith('/')) {
     return <GatsbyLink to={to} css={{ ...LINK_STYLES[kind] }} {...other} />;
   }

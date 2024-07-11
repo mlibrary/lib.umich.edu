@@ -1,8 +1,9 @@
-import React from 'react';
 import { Card as CoreCard } from '../reusable';
 import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export default function Card({ href, ...rest }) {
+export default function Card ({ href, ...rest }) {
   if (href.startsWith('/')) {
     return (
       <CoreCard
@@ -20,3 +21,7 @@ export default function Card({ href, ...rest }) {
 
   return <CoreCard href={href} {...rest} />;
 }
+
+Card.propTypes = {
+  href: PropTypes.string
+};

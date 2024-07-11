@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import { Heading, Margins, MEDIA_QUERIES } from '../reusable';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
+import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Prose from '../components/prose';
 import Layout from '../components/layout';
 import SearchEngineOptimization from '../components/seo';
@@ -14,17 +14,17 @@ import LocationAside from '../components/location-aside';
 import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data';
 import transformNodePanels from '../utils/transform-node-panels';
 
-function renderHorziontalNavigationCSS(isRootPage) {
+function renderHorziontalNavigationCSS (isRootPage) {
   if (!isRootPage) {
     return {
-      borderTop: 'none',
+      borderTop: 'none'
     };
   }
 
   return {};
 }
 
-function SectionTemplate({ data, ...rest }) {
+function SectionTemplate ({ data, ...rest }) {
   const node = data.page;
   const {
     title,
@@ -34,35 +34,37 @@ function SectionTemplate({ data, ...rest }) {
     body,
     fields,
     relationships,
-    drupal_internal__nid,
+    drupal_internal__nid
   } = node;
 
   const parentNode = relationships.field_parent_page[0];
-  const breadcrumb = fields.breadcrumb;
-  const isRootPage = field_root_page_ ? true : false;
-  const pageHeaderImage =
-    relationships.field_media_image &&
-    relationships.field_media_image.relationships.field_media_image;
+  const { breadcrumb } = fields;
+  const isRootPage = Boolean(field_root_page_);
+  const pageHeaderImage
+    = relationships.field_media_image
+    && relationships.field_media_image.relationships.field_media_image;
   const hasBody = body && body.processed && body.processed.length;
   /*
-    Use the parent page if not the root
-    for PageHeader summary and image.
-  */
+   *Use the parent page if not the root
+   *for PageHeader summary and image.
+   */
   const summary = isRootPage ? body.summary : parentNode.body.summary;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
   return (
     <Layout drupalNid={drupal_internal__nid}>
-      {isRootPage ? (
-        <PageHeader
-          breadcrumb={breadcrumb}
-          title={field_header_title}
-          summary={summary}
-          image={pageHeaderImage}
-        />
-      ) : (
-        <PageHeaderMini breadcrumb={breadcrumb} title={field_header_title} />
-      )}
+      {isRootPage
+        ? (
+          <PageHeader
+            breadcrumb={breadcrumb}
+            title={field_header_title}
+            summary={summary}
+            image={pageHeaderImage}
+          />
+          )
+        : (
+          <PageHeaderMini breadcrumb={breadcrumb} title={field_header_title} />
+          )}
       <HorizontalNavigation
         items={processHorizontalNavigationData({
           parentNodeOrderByDrupalId: rest.pageContext.parents,
@@ -71,48 +73,50 @@ function SectionTemplate({ data, ...rest }) {
           childrenNodeOrderByDrupalId: rest.pageContext.children,
           childrenNodes: data.children.edges,
           isRootPage,
-          parentNode,
+          parentNode
         })}
         css={renderHorziontalNavigationCSS(isRootPage)}
       />
 
-      {hasBody ? (
-        <Template>
-          <TemplateContent>
-            <Prose>
-              <Heading level={1} size="L" data-page-heading>
-                <span className='visually-hidden'>{title}</span>
-                <span aria-hidden="true">{field_title_context}</span>
-              </Heading>
+      {hasBody
+        ? (
+          <Template>
+            <TemplateContent>
+              <Prose>
+                <Heading level={1} size='L' data-page-heading>
+                  <span className='visually-hidden'>{title}</span>
+                  <span aria-hidden='true'>{field_title_context}</span>
+                </Heading>
 
-              {body && <Html html={body.processed} />}
-            </Prose>
+                {body && <Html html={body.processed} />}
+              </Prose>
 
-            <Panels data={bodyPanels} />
-          </TemplateContent>
-          {relationships.field_design_template.field_machine_name ===
-            'section_locaside' &&
-            parentNode && (
+              <Panels data={bodyPanels} />
+            </TemplateContent>
+            {relationships.field_design_template.field_machine_name
+            === 'section_locaside'
+            && parentNode && (
               <TemplateSide
                 css={{
                   display: 'none',
                   [MEDIA_QUERIES.LARGESCREEN]: {
-                    display: 'block',
-                  },
+                    display: 'block'
+                  }
                 }}
               >
                 <LocationAside node={parentNode} />
               </TemplateSide>
             )}
-        </Template>
-      ) : (
-        <Margins>
-          <Heading level={1} size="L" data-page-heading>
-            <span className='visually-hidden'>{title}</span>
-            <span aria-hidden="true">{field_title_context}</span>
-          </Heading>
-        </Margins>
-      )}
+          </Template>
+          )
+        : (
+          <Margins>
+            <Heading level={1} size='L' data-page-heading>
+              <span className='visually-hidden'>{title}</span>
+              <span aria-hidden='true'>{field_title_context}</span>
+            </Heading>
+          </Margins>
+          )}
 
       <Panels data={fullPanels} />
     </Layout>
@@ -121,7 +125,7 @@ function SectionTemplate({ data, ...rest }) {
 
 export default SectionTemplate;
 
-export function Head({ data }) {
+export function Head ({ data }) {
   return <SearchEngineOptimization data={data.page} />;
 }
 

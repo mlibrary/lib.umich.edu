@@ -1,39 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { COLORS, Input, Icon } from '../reusable';
+import { COLORS, Icon, Input } from '../reusable';
 
 const StyledFormItem = styled('div')(
   {
     width: '100%',
-    boxSizing: 'border-box',
+    boxSizing: 'border-box'
   },
-  ({ invalid }) => ({
-    borderLeft: invalid && `solid 4px ${COLORS.orange[400]}`,
-    paddingLeft: invalid && '1rem',
-  })
+  ({ invalid }) => {
+    return {
+      borderLeft: invalid && `solid 4px ${COLORS.orange[400]}`,
+      paddingLeft: invalid && '1rem'
+    };
+  }
 );
 
 const StyledLabel = styled('label')({
   display: 'block',
   marginBottom: '0.5rem',
-  boxSizing: 'border-box',
+  boxSizing: 'border-box'
 });
 
 const StyledFormItemDescription = styled('span')({
   display: 'block',
-  color: COLORS.neutral[400],
+  color: COLORS.neutral[400]
 });
 
 const StyledFormItemErrorMessage = styled('p')({
   marginTop: '0.5rem',
   color: COLORS.orange[400],
-  fontWeight: '600',
+  fontWeight: '600'
 });
 
 /**
-  Use this when you need to let users enter text that's no longer than a single line.
-*/
+ *Use this when you need to let users enter text that's no longer than a single line.
+ */
 const TextInput = ({
   labelText,
   descriptionText,
@@ -61,49 +63,59 @@ const TextInput = ({
       }
     },
     placeholder,
-    type,
+    type
   };
 
-  const errorId = id + '-error-msg';
+  const errorId = `${id}-error-msg`;
 
-  const description = descriptionText ? (
-    <StyledFormItemDescription>{descriptionText}</StyledFormItemDescription>
-  ) : null;
+  const description = descriptionText
+    ? (
+      <StyledFormItemDescription>{descriptionText}</StyledFormItemDescription>
+      )
+    : null;
 
   // TODO: add hidden style
-  const label = labelText ? (
-    <StyledLabel htmlFor={id}>
-      <span>{labelText}</span>
-      {description}
-    </StyledLabel>
-  ) : null;
+  const label = labelText
+    ? (
+      <StyledLabel htmlFor={id}>
+        <span>{labelText}</span>
+        {description}
+      </StyledLabel>
+      )
+    : null;
 
-  const error = invalid ? (
-    <StyledFormItemErrorMessage id={errorId}>
-      <Icon icon="error" /> {invalidText}
-    </StyledFormItemErrorMessage>
-  ) : null;
+  const error = invalid
+    ? (
+      <StyledFormItemErrorMessage id={errorId}>
+        <Icon icon='error' /> {invalidText}
+      </StyledFormItemErrorMessage>
+      )
+    : null;
 
-  const input = invalid ? (
-    <Input
-      {...other}
-      {...textInputProps}
-      invalid
-      data-invalid
-      aria-invalid
-      aria-describedby={errorId}
-    />
-  ) : (
-    <Input {...other} {...textInputProps} />
-  );
+  const input = invalid
+    ? (
+      <Input
+        {...other}
+        {...textInputProps}
+        invalid
+        data-invalid
+        aria-invalid
+        aria-describedby={errorId}
+      />
+      )
+    : (
+      <Input {...other} {...textInputProps} />
+      );
 
   return (
     <StyledFormItem invalid={invalid}>
-      {hideLabel ? (
-        <span className='visually-hidden'>{label}</span>
-      ) : (
-        <React.Fragment>{label}</React.Fragment>
-      )}
+      {hideLabel
+        ? (
+          <span className='visually-hidden'>{label}</span>
+          )
+        : (
+          <React.Fragment>{label}</React.Fragment>
+          )}
       {input}
       {error}
     </StyledFormItem>
@@ -123,7 +135,7 @@ TextInput.propTypes = {
   type: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   invalid: PropTypes.bool,
-  invalidText: PropTypes.string,
+  invalidText: PropTypes.string
 };
 
 TextInput.defaultProps = {
@@ -132,7 +144,7 @@ TextInput.defaultProps = {
   onChange: () => {},
   onClick: () => {},
   invalid: false,
-  invalidText: '',
+  invalidText: ''
 };
 
 export default TextInput;

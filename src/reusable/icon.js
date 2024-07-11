@@ -118,8 +118,8 @@ const StyledSVG = styled('svg')({
 });
 
 /**
-  Use this to render SVG icons.
-*/
+ *Use this to render SVG icons.
+ */
 const Icon = ({ icon, size, title, className, d, ...other }) => {
   // If no title, then hide for AD.
   const isHidden = !title;
