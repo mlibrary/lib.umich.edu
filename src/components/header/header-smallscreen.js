@@ -136,10 +136,10 @@ const Nav = ({ primary, secondary }) => {
       >
         {isOpen
           ? (
-            <Icon icon='close' size={32} />
+              <Icon icon='close' size={32} />
             )
           : (
-            <Icon d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z' size={32} />
+              <Icon d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z' size={32} />
             )}
         <span className='visually-hidden'>Navigation</span>
       </button>
@@ -419,27 +419,27 @@ const NavPanelSecondary = ({ text, children }) => {
             <li key={iterator + item.text}>
               {item.children
                 ? (
-                  <button
-                    css={{
-                      ...navItemStyles,
-                      justifyContent: 'space-between'
-                    }}
-                    aria-expanded={false}
-                    onClick={() => {
-                      return dispatch({
-                        panelOpen: iterator,
-                        type: 'setPanelOpen'
-                      });
-                    }}
-                  >
-                    {item.text}
-                    <NextIcon />
-                  </button>
+                    <button
+                      css={{
+                        ...navItemStyles,
+                        justifyContent: 'space-between'
+                      }}
+                      aria-expanded={false}
+                      onClick={() => {
+                        return dispatch({
+                          panelOpen: iterator,
+                          type: 'setPanelOpen'
+                        });
+                      }}
+                    >
+                      {item.text}
+                      <NextIcon />
+                    </button>
                   )
                 : (
-                  <Link to={item.to} css={navItemStyles}>
-                    {item.text}
-                  </Link>
+                    <Link to={item.to} css={navItemStyles}>
+                      {item.text}
+                    </Link>
                   )}
             </li>
           );
