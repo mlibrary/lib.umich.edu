@@ -1,20 +1,22 @@
-import React from 'react';
-import { graphql } from 'gatsby';
-import { Heading, LINK_STYLES, Margins, SmallScreen, SPACING } from '../reusable';
-import SearchEngineOptimization from '../components/seo';
 import { Content, Side, Template, Top } from '../components/page-layout';
-import Html from '../components/html';
+import { Heading, LINK_STYLES, Margins, SmallScreen, SPACING } from '../reusable';
 import Breadcrumb from '../components/breadcrumb';
-import SideNavigation from '../components/navigation/side-navigation';
+import { graphql } from 'gatsby';
 import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import Html from '../components/html';
+import PropTypes from 'prop-types';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
+import SideNavigation from '../components/navigation/side-navigation';
 import TemplateLayout from './template-layout';
 import useNavigationBranch from '../components/navigation/use-navigation-branch';
 
-function FloorPlanTemplate ({ data }) {
+const FloorPlanTemplate = ({ data }) => {
   const node = data.floorPlan;
-  const { title, field_title_context, body, fields, field_local_navigation }
+
+  const { title, field_title_context: fieldTitleContext, body, fields, field_local_navigation: fieldLocalNavigation }
     = node;
-  const { field_svg_image, field_printable_image } = node.relationships;
+  const { field_svg_image: fieldSvgImage, field_printable_image: fieldPrintableImage } = node.relationships;
   const navBranch = useNavigationBranch(fields.slug);
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small');
   const smallScreenItems = smallScreenBranch
@@ -29,10 +31,10 @@ function FloorPlanTemplate ({ data }) {
             <Breadcrumb data={fields.breadcrumb} />
           </Top>
           <Side>
-            {field_local_navigation && (
+            {fieldLocalNavigation && (
               <SideNavigation to={fields.slug} branch={navBranch} />
             )}
-            {field_local_navigation && smallScreenItems && (
+            {fieldLocalNavigation && smallScreenItems && (
               <SmallScreen>
                 <div
                   css={{
@@ -52,7 +54,7 @@ function FloorPlanTemplate ({ data }) {
                 marginBottom: SPACING.L
               }}
             >
-              {field_title_context}
+              {fieldTitleContext}
             </Heading>
             {body && <Html html={body.processed} />}
 
@@ -62,7 +64,7 @@ function FloorPlanTemplate ({ data }) {
               }}
             >
               <a
-                href={field_printable_image.localFile.publicURL}
+                href={fieldPrintableImage.localFile.publicURL}
                 css={LINK_STYLES.default}
               >
                 {title} PDF
@@ -70,13 +72,13 @@ function FloorPlanTemplate ({ data }) {
             </p>
 
             <img
-              src={field_svg_image.localFile.publicURL}
+              src={fieldSvgImage.localFile.publicURL}
               alt=''
               css={{
                 display: 'block',
-                width: '100%',
+                marginTop: SPACING['2XL'],
                 maxWidth: '38rem',
-                marginTop: SPACING['2XL']
+                width: '100%'
               }}
             />
           </Content>
@@ -84,7 +86,38 @@ function FloorPlanTemplate ({ data }) {
       </Margins>
     </TemplateLayout>
   );
-}
+};
+
+/* eslint-disable camelcase */
+FloorPlanTemplate.propTypes = {
+  data: PropTypes.shape({
+    floorPlan: PropTypes.shape({
+      body: PropTypes.shape({
+        processed: PropTypes.any
+      }),
+      field_local_navigation: PropTypes.any,
+      field_title_context: PropTypes.any,
+      fields: PropTypes.shape({
+        breadcrumb: PropTypes.any,
+        slug: PropTypes.any
+      }),
+      relationships: PropTypes.shape({
+        field_printable_image: PropTypes.shape({
+          localFile: PropTypes.shape({
+            publicURL: PropTypes.any
+          })
+        }),
+        field_svg_image: PropTypes.shape({
+          localFile: PropTypes.shape({
+            publicURL: PropTypes.any
+          })
+        })
+      }),
+      title: PropTypes.any
+    })
+  })
+};
+/* eslint-enable camelcase */
 
 export default FloorPlanTemplate;
 
