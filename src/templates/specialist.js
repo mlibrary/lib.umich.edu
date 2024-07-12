@@ -440,23 +440,24 @@ const SpecialistsResults = () => {
     <React.Fragment>
       <table
         css={{
-          '& + *': {
-            paddingLeft: '2rem',
-            [tableBreakpoint]: {
-              paddingLeft: '0'
-            }
-          },
           tableLayout: 'fixed',
           textAlign: 'left',
           'tr > *': {
+            '& + *': {
+              paddingLeft: '2rem',
+              [tableBreakpoint]: {
+                paddingLeft: '0'
+              }
+            },
             padding: '0.75rem 0',
             position: 'relative',
             [tableBreakpoint]: {
               display: 'block',
               padding: '0.25rem 0'
-            },
-            width: '100%'
-          }
+            }
+          },
+          width: '100%'
+
         }}
       >
         <caption className='visually-hidden'>
