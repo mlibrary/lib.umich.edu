@@ -1,20 +1,26 @@
-import React from 'react';
-import { graphql } from 'gatsby';
-import { Heading, Margins, SmallScreen, SPACING } from '../reusable';
 import { Content, Side, Template, Top } from '../components/page-layout';
-import SearchEngineOptimization from '../components/seo';
-import Html from '../components/html';
+import { Heading, Margins, SmallScreen, SPACING } from '../reusable';
 import Breadcrumb from '../components/breadcrumb';
-import SideNavigation from '../components/navigation/side-navigation';
+import { graphql } from 'gatsby';
 import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import Html from '../components/html';
 import Panels from '../components/panels';
+import PropTypes from 'prop-types';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
+import SideNavigation from '../components/navigation/side-navigation';
 import TemplateLayout from './template-layout';
-import useNavigationBranch from '../components/navigation/use-navigation-branch';
 import transformNodePanels from '../utils/transform-node-panels';
+import useNavigationBranch from '../components/navigation/use-navigation-branch';
 
-function BasicTemplate ({ data, ...rest }) {
-  const node = data.page ? data.page : data.room ? data.room : null;
-  const { field_title_context, body, fields, field_local_navigation } = node;
+const BasicTemplate = ({ data }) => {
+  let node = null;
+  if (data.page) {
+    node = data.page;
+  } else if (data.room) {
+    node = data.room;
+  }
+  const { field_title_context: fieldTitleContext, body, fields, field_local_navigation: fieldLocalNavigation } = node;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
   const navBranch = useNavigationBranch(fields.slug);
   const smallScreenBranch = useNavigationBranch(fields.slug, 'small');
@@ -30,10 +36,10 @@ function BasicTemplate ({ data, ...rest }) {
             <Breadcrumb data={fields.breadcrumb} />
           </Top>
           <Side>
-            {field_local_navigation && (
+            {fieldLocalNavigation && (
               <SideNavigation to={fields.slug} branch={navBranch} />
             )}
-            {field_local_navigation && smallScreenItems && (
+            {fieldLocalNavigation && smallScreenItems && (
               <SmallScreen>
                 <div
                   css={{
@@ -53,7 +59,7 @@ function BasicTemplate ({ data, ...rest }) {
                 marginBottom: SPACING.L
               }}
             >
-              {field_title_context}
+              {fieldTitleContext}
             </Heading>
             {body && <Html html={body.processed} />}
             <Panels data={bodyPanels} />
@@ -63,13 +69,35 @@ function BasicTemplate ({ data, ...rest }) {
       <Panels data={fullPanels} />
     </TemplateLayout>
   );
-}
+};
+
+BasicTemplate.propTypes = {
+  data: PropTypes.shape({
+    page: PropTypes.any,
+    room: PropTypes.any
+  })
+};
 
 export default BasicTemplate;
 
-export function Head ({ data }) {
-  return <SearchEngineOptimization data={data.page ? data.page : data.room ? data.room : null} />;
-}
+export const Head = ({ data }) => {
+  let node = null;
+
+  if (data.page) {
+    node = data.page;
+  } else if (data.room) {
+    node = data.room;
+  }
+
+  return <SearchEngineOptimization data={node} />;
+};
+
+Head.propTypes = {
+  data: PropTypes.shape({
+    page: PropTypes.any,
+    room: PropTypes.any
+  })
+};
 
 export const query = graphql`
   query ($slug: String!) {
