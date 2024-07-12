@@ -260,31 +260,37 @@ export const SmallScreen = styled('div')({
 });
 
 export const lightOrDark = (color) => {
-  console.log(color);
   // Variables for red, green, blue values
-  let b, g, hsp, r;
+  /* eslint-disable init-declarations */
+
+  let red;
+  let green;
+  let blue;
 
   // Check the format of the color, HEX or RGB?
-  if (color.match(/^rgb/)) {
+  if (color.match(/^rgb/u)) {
     // If HEX --> store the red, green, blue values in separate variables
-    color = color.match(
+    const colorMatch = color.match(
+      // eslint-disable-next-line require-unicode-regexp, prefer-named-capture-group
       /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/
     );
 
-    r = color[1];
-    g = color[2];
-    b = color[3];
+    if (colorMatch) {
+      [, red, green, blue] = colorMatch;
+    }
   } else {
     // If RGB --> Convert it to HEX: http://gist.github.com/983661
-    color = +(`0x${color.slice(1).replace(color.length < 5 && /./g, '$&$&')}`);
+    const hexColor = Number(`0x${color.slice(1).replace(color.length < 5 && /./gu, '$&$&')}`);
 
-    r = color >> 16;
-    g = (color >> 8) & 255;
-    b = color & 255;
+    /* eslint-disable no-bitwise */
+    red = hexColor >> 16;
+    green = (hexColor >> 8) & 255;
+    blue = hexColor & 255;
+    /* eslint-enable no-bitwise */
   }
 
   // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-  hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+  const hsp = Math.sqrt(0.299 * (red * red) + 0.587 * (green * green) + 0.114 * (blue * blue));
 
   // Using the HSP value, determine whether the color is light or dark
   if (hsp > 127.5) {
@@ -293,7 +299,7 @@ export const lightOrDark = (color) => {
   return 'dark';
 };
 
-export function GlobalStyleSheet () {
+export const GlobalStyleSheet = () => {
   /*
    *TODO:
    *- [ ] Import global css from a plain css file.
@@ -440,4 +446,4 @@ export function GlobalStyleSheet () {
       `}
     />
   );
-}
+};
