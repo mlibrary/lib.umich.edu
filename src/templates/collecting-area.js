@@ -1,18 +1,20 @@
-import React from 'react';
-import { graphql } from 'gatsby';
-import { GatsbyImage } from 'gatsby-plugin-image';
+/* eslint-disable camelcase */
 import { COLORS, Heading, Margins, SPACING } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
-import TemplateLayout from './template-layout';
-import SearchEngineOptimization from '../components/seo';
-import Html from '../components/html';
 import Breadcrumb from '../components/breadcrumb';
-import transformNodePanels from '../utils/transform-node-panels';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import getNode from '../utils/get-node';
+import { graphql } from 'gatsby';
+import Html from '../components/html';
 import Panels from '../components/panels';
+import PropTypes from 'prop-types';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
+import TemplateLayout from './template-layout';
+import transformNodePanels from '../utils/transform-node-panels';
 import UserCard from '../components/user-card';
 
-function processContacts (userData) {
+const processContacts = (userData) => {
   if (!userData) {
     return null;
   }
@@ -27,7 +29,7 @@ function processContacts (userData) {
       relationships
     } = user;
     const { field_media_image } = relationships;
-    let image;
+    let image = {};
 
     if (field_media_image && field_media_image) {
       image = {
@@ -39,19 +41,19 @@ function processContacts (userData) {
     }
 
     return memo.concat({
-      uniqname: name,
+      email: field_user_email,
+      image,
       name: field_user_display_name,
+      phone: field_user_phone === '000-000-0000' ? null : field_user_phone,
       title: field_user_work_title,
       to: `/users/${name}`,
-      phone: field_user_phone === '000-000-0000' ? null : field_user_phone,
-      email: field_user_email,
-      image
+      uniqname: name
     });
   }, []);
 
-  const userListSorted = userList.sort((a, b) => {
-    const nameA = a.name.toUpperCase();
-    const nameB = b.name.toUpperCase();
+  const userListSorted = userList.sort((sortA, sortB) => {
+    const nameA = sortA.name.toUpperCase();
+    const nameB = sortB.name.toUpperCase();
 
     if (nameA < nameB) {
       return -1;
@@ -65,9 +67,9 @@ function processContacts (userData) {
   });
 
   return userListSorted;
-}
+};
 
-function CollectingAreaTemplate ({ data, ...rest }) {
+const CollectingAreaTemplate = ({ data }) => {
   const node = getNode(data);
   const { field_title_context, body, fields, relationships } = node;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
@@ -98,8 +100,8 @@ function CollectingAreaTemplate ({ data, ...rest }) {
             level={1}
             size='3XL'
             css={{
-              marginTop: SPACING.S,
-              marginBottom: SPACING.L
+              marginBottom: SPACING.L,
+              marginTop: SPACING.S
             }}
           >
             {field_title_context}
@@ -123,19 +125,19 @@ function CollectingAreaTemplate ({ data, ...rest }) {
               <GatsbyImage
                 image={imageData}
                 css={{
-                  width: '100%',
-                  borderRadius: '2px'
+                  borderRadius: '2px',
+                  width: '100%'
                 }}
                 alt={imageAlt}
               />
               {imageCaption && (
                 <figcaption
                   css={{
-                    paddingTop: SPACING.S,
+                    borderBottom: `solid 1px ${COLORS.neutral['100']}`,
                     color: COLORS.neutral['300'],
-                    paddingBottom: SPACING.XL,
                     marginBottom: SPACING.XL,
-                    borderBottom: `solid 1px ${COLORS.neutral['100']}`
+                    paddingBottom: SPACING.XL,
+                    paddingTop: SPACING.S
                   }}
                 >
                   <Html
@@ -173,14 +175,18 @@ function CollectingAreaTemplate ({ data, ...rest }) {
       <Panels data={fullPanels} />
     </TemplateLayout>
   );
-}
+};
+
+CollectingAreaTemplate.propTypes = {
+  data: PropTypes.any
+};
 
 export default CollectingAreaTemplate;
 
 /* eslint-disable react/prop-types */
-export function Head ({ data }) {
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={getNode(data)} />;
-}
+};
 /* eslint-enable react/prop-types */
 
 export const query = graphql`
