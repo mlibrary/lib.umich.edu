@@ -1,18 +1,19 @@
-import React from 'react';
-import { graphql } from 'gatsby';
 import { Heading, Margins, SPACING } from '../reusable';
+import Breadcrumb from '../components/breadcrumb';
+import getNode from '../utils/get-node';
+import { graphql } from 'gatsby';
+import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import Html from '../components/html';
+import Panels from '../components/panels';
+import PropTypes from 'prop-types';
+import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
-import Html from '../components/html';
-import Breadcrumb from '../components/breadcrumb';
-import HorizontalNavigation from '../components/navigation/horizontal-navigation';
-import Panels from '../components/panels';
-import getNode from '../utils/get-node';
 import transformNodePanels from '../utils/transform-node-panels';
 
 export default function FullWidthTemplate ({ data, ...rest }) {
   const node = getNode(data);
-  const { field_title_context, body, fields } = node;
+  const { field_title_context: fieldTitleContext, body, fields } = node;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
   return (
@@ -26,7 +27,7 @@ export default function FullWidthTemplate ({ data, ...rest }) {
             marginBottom: fullPanels.length ? '0' : SPACING.XL
           }}
         >
-          {field_title_context}
+          {fieldTitleContext}
         </Heading>
       </Margins>
 
@@ -52,9 +53,19 @@ export default function FullWidthTemplate ({ data, ...rest }) {
   );
 }
 
-export function Head ({ data }) {
+FullWidthTemplate.propTypes = {
+  data: PropTypes.shape({
+    parents: PropTypes.any
+  })
+};
+
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={getNode(data)} />;
-}
+};
+
+Head.propTypes = {
+  data: PropTypes.any
+};
 
 export const query = graphql`
   query ($slug: String!, $parents: [String]) {
