@@ -1,27 +1,28 @@
-import React from 'react';
-import { graphql } from 'gatsby';
-import { GatsbyImage } from 'gatsby-plugin-image';
-import { Heading, Margins, SmallScreen, SPACING, Text } from '../reusable';
 import { Content, Side, Template, Top } from '../components/page-layout';
-import SearchEngineOptimization from '../components/seo';
+import { Heading, Margins, SmallScreen, SPACING, Text } from '../reusable';
 import Breadcrumb from '../components/breadcrumb';
-import TemplateLayout from './template-layout';
-import getNode from '../utils/get-node';
-import SideNavigation from '../components/navigation/side-navigation';
-import HorizontalNavigation from '../components/navigation/horizontal-navigation';
-import useNavigationBranch from '../components/navigation/use-navigation-branch';
-import Panels from '../components/panels';
-import Html from '../components/html';
 import DestinationLocationInfo from '../components/destination-location-info';
+import { GatsbyImage } from 'gatsby-plugin-image';
+import getNode from '../utils/get-node';
+import { graphql } from 'gatsby';
+import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import Html from '../components/html';
+import Panels from '../components/panels';
+import PropTypes from 'prop-types';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
+import SideNavigation from '../components/navigation/side-navigation';
+import TemplateLayout from './template-layout';
+import useNavigationBranch from '../components/navigation/use-navigation-branch';
 
-function DestinationTemplate ({ data, ...rest }) {
+const DestinationTemplate = ({ data }) => {
   const node = getNode(data);
   const {
-    field_title_context,
+    field_title_context: fieldTitleContext,
     fields,
     body,
     relationships,
-    field_local_navigation
+    field_local_navigation: fieldLocalNavigation
   } = node;
 
   const navBranch = useNavigationBranch(fields.slug);
@@ -44,10 +45,10 @@ function DestinationTemplate ({ data, ...rest }) {
             <Breadcrumb data={fields.breadcrumb} />
           </Top>
           <Side>
-            {field_local_navigation && (
+            {fieldLocalNavigation && (
               <SideNavigation to={fields.slug} branch={navBranch} />
             )}
-            {field_local_navigation && smallScreenItems && (
+            {fieldLocalNavigation && smallScreenItems && (
               <SmallScreen>
                 <div
                   css={{
@@ -69,11 +70,11 @@ function DestinationTemplate ({ data, ...rest }) {
                 level={1}
                 size='3XL'
                 css={{
-                  marginTop: SPACING.S,
-                  marginBottom: SPACING.L
+                  marginBottom: SPACING.L,
+                  marginTop: SPACING.S
                 }}
               >
-                {field_title_context}
+                {fieldTitleContext}
               </Heading>
               <Text
                 lede
@@ -89,9 +90,9 @@ function DestinationTemplate ({ data, ...rest }) {
               <GatsbyImage
                 image={imageData}
                 css={{
-                  width: '100%',
                   borderRadius: '2px',
-                  marginBottom: SPACING['2XL']
+                  marginBottom: SPACING['2XL'],
+                  width: '100%'
                 }}
                 alt=''
               />
@@ -105,13 +106,21 @@ function DestinationTemplate ({ data, ...rest }) {
       </Margins>
     </TemplateLayout>
   );
-}
+};
+
+DestinationTemplate.propTypes = {
+  data: PropTypes.any
+};
 
 export default DestinationTemplate;
 
-export function Head ({ data }) {
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={getNode(data)} />;
-}
+};
+
+Head.propTypes = {
+  data: PropTypes.any
+};
 
 export const query = graphql`
   query ($slug: String!) {
