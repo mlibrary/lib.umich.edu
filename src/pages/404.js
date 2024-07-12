@@ -1,12 +1,12 @@
-import React from 'react';
-import { graphql, useStaticQuery } from 'gatsby';
 import { COLORS, Heading, List, Margins, SPACING, Text } from '../reusable';
+import { graphql, useStaticQuery } from 'gatsby';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import SearchEngineOptimization from '../components/seo';
-import Link from '../components/link';
-import Prose from '../components/prose';
 import Layout from '../components/layout';
+import Link from '../components/link';
 import MEDIA_QUERIES from '../reusable/media-queries';
+import Prose from '../components/prose';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
 
 const NotFoundPage = () => {
   return (
@@ -23,9 +23,9 @@ const NotFoundPage = () => {
         <Heading size='3XL' level={1} css={{ marginBottom: SPACING.M }}>
           <span
             css={{
-              fontSize: '60%',
+              color: COLORS.orange['400'],
               display: 'block',
-              color: COLORS.orange['400']
+              fontSize: '60%'
             }}
           >
             404
@@ -71,7 +71,7 @@ const NotFoundPage = () => {
   );
 };
 
-function Image () {
+const Image = () => {
   const imageData = useStaticQuery(graphql`
     {
       file(relativePath: { eq: "404.png" }) {
@@ -87,17 +87,17 @@ function Image () {
       css={{
         display: 'block',
         [MEDIA_QUERIES.M]: {
-          margin: SPACING.L,
           float: 'right',
-          width: '40vw',
+          margin: SPACING.L,
+          marginBottom: 0,
           shapeMargin: SPACING.XL,
           shapeOutside:
             'polygon(65px 381px, 84px 210px, -18px 211px, -35px 141px, -11px 106px, 103px 115px, 123px 96px, 189px 111px, 262px 27px, 266px -14px, 313px -30px, 427px -29px, 475px 18px, 456px 75px, 458px 177px, 504px 163px, 632px 171px, 632px 225px, 536px 235px, 524px 490px, 44px 491px)',
-          marginBottom: 0
+          width: '40vw'
         },
         [MEDIA_QUERIES.L]: {
-          width: '50vw',
-          maxWidth: '38rem'
+          maxWidth: '38rem',
+          width: '50vw'
         },
         marginBottom: SPACING['2XL']
       }}
@@ -108,10 +108,10 @@ function Image () {
       />
     </div>
   );
-}
+};
 
 export default NotFoundPage;
 
-export function Head () {
+export const Head = () => {
   return <SearchEngineOptimization data={{ title: '404 - Page not found' }} />;
-}
+};

@@ -21,10 +21,10 @@ export default function BreadcrumbContainer ({ data, ...rest }) {
           <BreadcrumbItem key={to + item}>
             {to
               ? (
-                <Link to={to}>{text}</Link>
+                  <Link to={to}>{text}</Link>
                 )
               : (
-                <React.Fragment>{text}</React.Fragment>
+                  <React.Fragment>{text}</React.Fragment>
                 )}
           </BreadcrumbItem>
         );

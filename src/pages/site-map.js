@@ -1,11 +1,12 @@
-import React from 'react';
-import Layout from '../components/layout';
+import PropTypes from 'prop-types';
 import { Heading, Margins, SPACING } from '../reusable';
-import SearchEngineOptimization from '../components/seo';
 import Breadcrumb from '../components/breadcrumb';
+import Layout from '../components/layout';
 import Link from '../components/link';
-import useNavigationData from '../hooks/use-navigation-data';
 import MEDIA_QUERIES from '../reusable/media-queries';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
+import useNavigationData from '../hooks/use-navigation-data';
 
 const breadcrumbData = [
   {
@@ -90,19 +91,19 @@ export default function SiteMap () {
   );
 }
 
-export function Head () {
+export const Head = () => {
   return <SearchEngineOptimization data={{ title: 'Site map' }} />;
-}
+};
 
-function NestLinkedList ({ data }) {
+const NestLinkedList = ({ data }) => {
   return (
     <ol
       css={{
-        listStyleType: 'decimal',
-        marginLeft: SPACING.L,
         '> li': {
           breakInside: 'avoid'
-        }
+        },
+        listStyleType: 'decimal',
+        marginLeft: SPACING.L
       }}
     >
       {data.map(({ text, to, children }) => {
@@ -121,4 +122,10 @@ function NestLinkedList ({ data }) {
       })}
     </ol>
   );
-}
+};
+
+NestLinkedList.propTypes = {
+  data: PropTypes.shape({
+    map: PropTypes.func
+  })
+};

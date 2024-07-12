@@ -424,72 +424,72 @@ const NavPanelItemLinks = ({ parentItem, items }) => {
       )}
       {items
         ? (
-          <ul
-            css={{
-              ...columnStyles(),
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
-              marginTop: SPACING.M,
-              paddingTop: SPACING.L
-            }}
-          >
-            {items.map(({ text, to }, iterator) => {
-              return (
-                <li
-                  key={iterator + text}
-                  css={{
-                    breakInside: 'avoid'
-                  }}
-                >
+            <ul
+              css={{
+                ...columnStyles(),
+                borderTop: `solid 1px ${COLORS.neutral['100']}`,
+                marginTop: SPACING.M,
+                paddingTop: SPACING.L
+              }}
+            >
+              {items.map(({ text, to }, iterator) => {
+                return (
+                  <li
+                    key={iterator + text}
+                    css={{
+                      breakInside: 'avoid'
+                    }}
+                  >
+                    <Link
+                      to={to}
+                      css={{
+                        ':hover': {
+                          '.text': LINK_STYLES.list[':hover']
+                        },
+                        display: 'block',
+                        fontSize: '1rem',
+                        padding: `${SPACING.XS} 0`
+                      }}
+                    >
+                      <span className='text'>{text}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+              {parentItem.to && (
+                <li>
                   <Link
-                    to={to}
+                    to={parentItem.to}
                     css={{
                       ':hover': {
-                        '.text': LINK_STYLES.list[':hover']
+                        '.text': LINK_STYLES['list-strong'][':hover']
                       },
                       display: 'block',
                       fontSize: '1rem',
+                      fontWeight: '800',
                       padding: `${SPACING.XS} 0`
                     }}
                   >
-                    <span className='text'>{text}</span>
+                    <span className='text'>View all {parentItem.text}</span>
+                    {' '}
+                    <Icon d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z' />
                   </Link>
                 </li>
-              );
-            })}
-            {parentItem.to && (
-              <li>
-                <Link
-                  to={parentItem.to}
-                  css={{
-                    ':hover': {
-                      '.text': LINK_STYLES['list-strong'][':hover']
-                    },
-                    display: 'block',
-                    fontSize: '1rem',
-                    fontWeight: '800',
-                    padding: `${SPACING.XS} 0`
-                  }}
-                >
-                  <span className='text'>View all {parentItem.text}</span>
-                  {' '}
-                  <Icon d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z' />
-                </Link>
-              </li>
-            )}
-          </ul>
+              )}
+            </ul>
           )
         : (
-          <div
-            css={{
-              padding: `${SPACING.L} 0`
-            }}
-          >
-            <Alert intent='warning'>
-              <span style={{ fontSize: '1rem' }}>
-                This navigation panel does not have any pages to show.
-              </span>
-            </Alert>
-          </div>
+            <div
+              css={{
+                padding: `${SPACING.L} 0`
+              }}
+            >
+              <Alert intent='warning'>
+                <span style={{ fontSize: '1rem' }}>
+                  This navigation panel does not have any pages to show.
+                </span>
+              </Alert>
+            </div>
           )}
     </div>
   );

@@ -19,11 +19,12 @@ export default function useFloorPlan (bid, fid) {
     return null;
   }
 
+  // eslint-disable-next-line no-shadow
   const { node } = data.allNodeFloorPlan.edges.find(({ node }) => {
-    const { field_room_building, field_floor } = node.relationships;
+    const { field_room_building: fieldRoomBuilding, field_floor: fieldFloor } = node.relationships;
 
     // The floor plan node matches when building and floor id both match.
-    return field_room_building.id === bid && field_floor.id === fid;
+    return fieldRoomBuilding.id === bid && fieldFloor.id === fid;
   });
 
   return node;
