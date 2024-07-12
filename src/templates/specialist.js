@@ -446,10 +446,10 @@ function SpecialistsResults () {
                       <div
                         key={link.to + y}
                         css={{
-               '& + *': {
-                 paddingTop: '0.5rem'
-               }
-             }}
+                          '& + *': {
+                            paddingTop: '0.5rem'
+                          }
+                        }}
                       >
                         <Link to={link.to}>{link.label}</Link>
                         <p>{description}</p>

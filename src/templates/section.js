@@ -55,15 +55,15 @@ function SectionTemplate ({ data, ...rest }) {
     <Layout drupalNid={drupal_internal__nid}>
       {isRootPage
         ? (
-          <PageHeader
-            breadcrumb={breadcrumb}
-            title={field_header_title}
-            summary={summary}
-            image={pageHeaderImage}
-          />
+            <PageHeader
+              breadcrumb={breadcrumb}
+              title={field_header_title}
+              summary={summary}
+              image={pageHeaderImage}
+            />
           )
         : (
-          <PageHeaderMini breadcrumb={breadcrumb} title={field_header_title} />
+            <PageHeaderMini breadcrumb={breadcrumb} title={field_header_title} />
           )}
       <HorizontalNavigation
         items={processHorizontalNavigationData({
@@ -80,42 +80,42 @@ function SectionTemplate ({ data, ...rest }) {
 
       {hasBody
         ? (
-          <Template>
-            <TemplateContent>
-              <Prose>
-                <Heading level={1} size='L' data-page-heading>
-                  <span className='visually-hidden'>{title}</span>
-                  <span aria-hidden='true'>{field_title_context}</span>
-                </Heading>
+            <Template>
+              <TemplateContent>
+                <Prose>
+                  <Heading level={1} size='L' data-page-heading>
+                    <span className='visually-hidden'>{title}</span>
+                    <span aria-hidden='true'>{field_title_context}</span>
+                  </Heading>
 
-                {body && <Html html={body.processed} />}
-              </Prose>
+                  {body && <Html html={body.processed} />}
+                </Prose>
 
-              <Panels data={bodyPanels} />
-            </TemplateContent>
-            {relationships.field_design_template.field_machine_name
-            === 'section_locaside'
-            && parentNode && (
-              <TemplateSide
-                css={{
-                  display: 'none',
-                  [MEDIA_QUERIES.LARGESCREEN]: {
-                    display: 'block'
-                  }
-                }}
-              >
-                <LocationAside node={parentNode} />
-              </TemplateSide>
-            )}
-          </Template>
+                <Panels data={bodyPanels} />
+              </TemplateContent>
+              {relationships.field_design_template.field_machine_name
+              === 'section_locaside'
+              && parentNode && (
+                <TemplateSide
+                  css={{
+                    display: 'none',
+                    [MEDIA_QUERIES.LARGESCREEN]: {
+                      display: 'block'
+                    }
+                  }}
+                >
+                  <LocationAside node={parentNode} />
+                </TemplateSide>
+              )}
+            </Template>
           )
         : (
-          <Margins>
-            <Heading level={1} size='L' data-page-heading>
-              <span className='visually-hidden'>{title}</span>
-              <span aria-hidden='true'>{field_title_context}</span>
-            </Heading>
-          </Margins>
+            <Margins>
+              <Heading level={1} size='L' data-page-heading>
+                <span className='visually-hidden'>{title}</span>
+                <span aria-hidden='true'>{field_title_context}</span>
+              </Heading>
+            </Margins>
           )}
 
       <Panels data={fullPanels} />

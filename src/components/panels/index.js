@@ -211,10 +211,10 @@ const CardPanel = ({ data }) => {
             >
               <Card
                 image={
-                card.relationships
-                  ? getImage(card.relationships.field_media_image)
-                  : null
-              }
+                  card.relationships
+                    ? getImage(card.relationships.field_media_image)
+                    : null
+                }
                 href={getCardHref(card)}
                 subtitle={getCardSubtitle(card)}
                 title={card.title}

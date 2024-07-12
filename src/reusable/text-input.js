@@ -69,50 +69,50 @@ const TextInput = ({
 
   const description = descriptionText
     ? (
-      <StyledFormItemDescription>{descriptionText}</StyledFormItemDescription>
+        <StyledFormItemDescription>{descriptionText}</StyledFormItemDescription>
       )
     : null;
 
   const label = labelText
     ? (
-      <StyledLabel htmlFor={id}>
-        <span>{labelText}</span>
-        {description}
-      </StyledLabel>
+        <StyledLabel htmlFor={id}>
+          <span>{labelText}</span>
+          {description}
+        </StyledLabel>
       )
     : null;
 
   const error = invalid
     ? (
-      <StyledFormItemErrorMessage id={errorId}>
-        <Icon icon='error' /> {invalidText}
-      </StyledFormItemErrorMessage>
+        <StyledFormItemErrorMessage id={errorId}>
+          <Icon icon='error' /> {invalidText}
+        </StyledFormItemErrorMessage>
       )
     : null;
 
   const input = invalid
     ? (
-      <Input
-        {...other}
-        {...textInputProps}
-        invalid
-        data-invalid
-        aria-invalid
-        aria-describedby={errorId}
-      />
+        <Input
+          {...other}
+          {...textInputProps}
+          invalid
+          data-invalid
+          aria-invalid
+          aria-describedby={errorId}
+        />
       )
     : (
-      <Input {...other} {...textInputProps} />
+        <Input {...other} {...textInputProps} />
       );
 
   return (
     <StyledFormItem invalid={invalid}>
       {hideLabel
         ? (
-          <span className='visually-hidden'>{label}</span>
+            <span className='visually-hidden'>{label}</span>
           )
         : (
-          <React.Fragment>{label}</React.Fragment>
+            <React.Fragment>{label}</React.Fragment>
           )}
       {input}
       {error}

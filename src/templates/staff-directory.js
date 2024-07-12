@@ -590,19 +590,19 @@ function StaffDirectoryResults ({
                     <>
                       <span
                         css={{
-               display: 'none!important',
-               padding: '0 0.5rem',
-               [tableBreakpoint]: {
-                 display: 'initial!important'
-               }
-             }}
+                          display: 'none!important',
+                          padding: '0 0.5rem',
+                          [tableBreakpoint]: {
+                            display: 'initial!important'
+                          }
+                        }}
                       >
-                      &middot;
+                        &middot;
                       </span>
                       <span>
                         <Link to={`tel:1-${phone}`} kind='subtle'>
-               {phone}
-             </Link>
+                          {phone}
+                        </Link>
                       </span>
                     </>
                   )}

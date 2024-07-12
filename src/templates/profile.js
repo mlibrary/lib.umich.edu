@@ -153,18 +153,18 @@ function ProfileTemplate ({ data }) {
             >
               {image
                 ? (
-                  <GatsbyImage
-                    image={image.imageData}
-                    alt={image.alt}
-                    css={{
-                      aspectRatio: '2 / 3',
-                      borderRadius: '2px',
-                      width: '100%'
-                    }}
-                  />
+                    <GatsbyImage
+                      image={image.imageData}
+                      alt={image.alt}
+                      css={{
+                        aspectRatio: '2 / 3',
+                        borderRadius: '2px',
+                        width: '100%'
+                      }}
+                    />
                   )
                 : (
-                  <StaffPhotoPlaceholder />
+                    <StaffPhotoPlaceholder />
                   )}
 
               {pronouns && (

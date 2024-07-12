@@ -112,10 +112,10 @@ export default function VisitTemplate ({ data, ...rest }) {
                         <li key={i + name}>
                           {description
                             ? (
-                              <Html html={description.processed} />
+                                <Html html={description.processed} />
                               )
                             : (
-                              <>{name}</>
+                                <>{name}</>
                               )}
                         </li>
                       );
