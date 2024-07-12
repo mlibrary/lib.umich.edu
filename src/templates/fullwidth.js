@@ -59,13 +59,11 @@ FullWidthTemplate.propTypes = {
   })
 };
 
+/* eslint-disable react/prop-types */
 export const Head = ({ data }) => {
   return <SearchEngineOptimization data={getNode(data)} />;
 };
-
-Head.propTypes = {
-  data: PropTypes.any
-};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!, $parents: [String]) {

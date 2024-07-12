@@ -121,9 +121,11 @@ FloorPlanTemplate.propTypes = {
 
 export default FloorPlanTemplate;
 
-export function Head ({ data }) {
+/* eslint-disable react/prop-types */
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={data.floorPlan} />;
-}
+};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!) {

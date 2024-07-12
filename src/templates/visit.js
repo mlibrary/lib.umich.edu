@@ -147,9 +147,11 @@ VisitTemplate.propTypes = {
   data: PropTypes.object
 };
 
-export function Head ({ data }) { // eslint-disable-line
+/* eslint-disable react/prop-types */
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={getNode(data)} />;
-}
+};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!, $parents: [String], $children: [String]) {

@@ -32,15 +32,11 @@ HomePageTemplate.propTypes = {
 
 export default HomePageTemplate;
 
+/* eslint-disable react/prop-types */
 export const Head = ({ data }) => {
   return <SearchEngineOptimization data={data.page} />;
 };
-
-Head.propTypes = {
-  data: PropTypes.shape({
-    page: PropTypes.any
-  })
-};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!) {

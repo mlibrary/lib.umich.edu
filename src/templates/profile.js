@@ -579,15 +579,11 @@ MailingAddress.propTypes = {
 
 export default ProfileTemplate;
 
+/* eslint-disable react/prop-types */
 export const Head = ({ data }) => {
   return <SearchEngineOptimization data={data.profile} titleField='field_user_display_name' />;
 };
-
-Head.propTypes = {
-  data: PropTypes.shape({
-    profile: PropTypes.any
-  })
-};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($name: String!) {

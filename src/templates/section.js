@@ -166,15 +166,11 @@ SectionTemplate.propTypes = {
 
 export default SectionTemplate;
 
+/* eslint-disable react/prop-types */
 export const Head = ({ data }) => {
   return <SearchEngineOptimization data={data.page} />;
 };
-
-Head.propTypes = {
-  data: PropTypes.shape({
-    page: PropTypes.any
-  })
-};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!, $parents: [String], $children: [String]) {

@@ -80,6 +80,7 @@ BasicTemplate.propTypes = {
 
 export default BasicTemplate;
 
+/* eslint-disable react/prop-types */
 export const Head = ({ data }) => {
   let node = null;
 
@@ -91,13 +92,7 @@ export const Head = ({ data }) => {
 
   return <SearchEngineOptimization data={node} />;
 };
-
-Head.propTypes = {
-  data: PropTypes.shape({
-    page: PropTypes.any,
-    room: PropTypes.any
-  })
-};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!) {

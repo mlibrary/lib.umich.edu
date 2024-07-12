@@ -1,18 +1,19 @@
-import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
-import SearchEngineOptimization from '../components/seo';
-import { graphql } from 'gatsby';
 import { Alert, Button, COLORS, Heading, Margins, SPACING, TextInput } from '../reusable';
-import { navigate, useLocation } from '@reach/router';
-import Link from '../components/link';
-import Breadcrumb from '../components/breadcrumb';
-import MEDIA_QUERIES from '../reusable/media-queries';
-import TemplateLayout from './template-layout';
-import Html from '../components/html';
-import NoResults from '../components/no-results';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
-import Switch from '../components/switch';
-import Select from '../components/select';
+import { navigate, useLocation } from '@reach/router';
+import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
+import Breadcrumb from '../components/breadcrumb';
+import { graphql } from 'gatsby';
+import Html from '../components/html';
+import Link from '../components/link';
+import MEDIA_QUERIES from '../reusable/media-queries';
+import NoResults from '../components/no-results';
 import processSpecialistData from '../utils/process-specialist-data';
+import PropTypes from 'prop-types';
+import SearchEngineOptimization from '../components/seo';
+import Select from '../components/select';
+import Switch from '../components/switch';
+import TemplateLayout from './template-layout';
 import useGoogleTagManager from '../hooks/use-google-tag-manager';
 
 const lunr = require('lunr');
@@ -26,6 +27,12 @@ const SpecialistsProvider = ({ reducer, intialState, children }) => {
   );
 };
 
+SpecialistsProvider.propTypes = {
+  children: PropTypes.any,
+  intialState: PropTypes.any,
+  reducer: PropTypes.any
+};
+
 const useSpecialists = () => {
   return useContext(SpecialistsContext);
 };
@@ -34,7 +41,7 @@ export default function FinaASpecialistTemplate ({ data }) {
   const [initialized, setInitialized] = useState(false);
   const [specialists, setSpecialists] = useState();
   const node = data.page;
-  const { body, fields, field_title_context } = node;
+  const { body, fields, field_title_context: fieldTitleContext } = node;
 
   useEffect(() => {
     if (!initialized) {
@@ -58,7 +65,7 @@ export default function FinaASpecialistTemplate ({ data }) {
             marginBottom: SPACING.S
           }}
         >
-          {field_title_context}
+          {fieldTitleContext}
         </Heading>
 
         {body && (
@@ -77,26 +84,58 @@ export default function FinaASpecialistTemplate ({ data }) {
   );
 }
 
-export function Head ({ data }) {
-  return <SearchEngineOptimization data={data.page} />;
-}
+FinaASpecialistTemplate.propTypes = {
+  data: PropTypes.shape({
+    page: PropTypes.shape({
+      body: PropTypes.shape({
+        processed: PropTypes.any
+      }),
+      // eslint-disable-next-line camelcase
+      field_title_context: PropTypes.any,
+      fields: PropTypes.shape({
+        breadcrumb: PropTypes.any
+      })
+    })
+  })
+};
 
-function FindASpecialist ({ specialists }) {
+/* eslint-disable react/prop-types */
+export const Head = ({ data }) => {
+  return <SearchEngineOptimization data={data.page} />;
+};
+/* eslint-enable react/prop-types */
+
+const getCategories = (specialists) => {
+  return Array.from(
+    new Set(
+      specialists
+        .map(({ category }) => {
+          return category;
+        })
+        .filter((category) => {
+          return category;
+        })
+        .sort()
+    )
+  );
+};
+
+const FindASpecialist = ({ specialists }) => {
   const location = useLocation();
   const urlState = getUrlState(location.search, ['query', 'hs', 'category']);
   const results = specialists;
   const initialState = {
-    query: urlState.query ? urlState.query : '',
-    specialists,
-    results,
-    stateString: stringifyState({
-      query: urlState.query,
-      hs: urlState.hs,
-      category: urlState.category
-    }),
-    healthSciencesOnly: Boolean(urlState.hs),
+    categories: getCategories(specialists),
     category: urlState.category,
-    categories: getCategories(specialists)
+    healthSciencesOnly: Boolean(urlState.hs),
+    query: urlState.query ? urlState.query : '',
+    results,
+    specialists,
+    stateString: stringifyState({
+      category: urlState.category,
+      hs: urlState.hs,
+      query: urlState.query
+    })
   };
 
   const reducer = (state, action) => {
@@ -162,7 +201,11 @@ function FindASpecialist ({ specialists }) {
       <SpecialistsResults />
     </SpecialistsProvider>
   );
-}
+};
+
+FindASpecialist.propTypes = {
+  specialists: PropTypes.any
+};
 
 function SpecialistsURLState () {
   const location = useLocation();
@@ -504,21 +547,6 @@ function filterResults ({ results, healthSciencesOnly, category }) {
   }
 
   return filteredResults;
-}
-
-function getCategories (specialists) {
-  return Array.from(
-    new Set(
-      specialists
-        .map(({ category }) => {
-          return category;
-        })
-        .filter((category) => {
-          return category !== undefined;
-        })
-        .sort()
-    )
-  );
 }
 
 export const query = graphql`

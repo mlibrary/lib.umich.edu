@@ -177,9 +177,11 @@ function CollectingAreaTemplate ({ data, ...rest }) {
 
 export default CollectingAreaTemplate;
 
+/* eslint-disable react/prop-types */
 export function Head ({ data }) {
   return <SearchEngineOptimization data={getNode(data)} />;
 }
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!) {

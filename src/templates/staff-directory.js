@@ -60,9 +60,11 @@ export default function StaffDirectoryWrapper ({ data, location }) {
   );
 }
 
-export function Head ({ data }) {
+/* eslint-disable react/prop-types */
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={data.page} />;
-}
+};
+/* eslint-enable react/prop-types */
 
 function StaffDirectoryQueryContainer ({
   node,

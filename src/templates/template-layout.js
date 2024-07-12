@@ -10,6 +10,8 @@ export default function TemplateLayout ({ node, children, ...rest }) {
   );
 }
 
-export function Head ({ node }) {
+/* eslint-disable react/prop-types */
+export const Head = ({ node }) => {
   return <SearchEngineOptimization data={node} />;
-}
+};
+/* eslint-enable react/prop-types */
