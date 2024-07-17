@@ -1,8 +1,8 @@
-import globals from 'globals';
 import { fixupConfigRules } from '@eslint/compat';
+import globals from 'globals';
 import pluginJs from '@eslint/js';
-import stylistic from '@stylistic/eslint-plugin';
 import pluginReactConfig from 'eslint-plugin-react/configs/recommended.js';
+import stylistic from '@stylistic/eslint-plugin';
 
 export default [
   {
