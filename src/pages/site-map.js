@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 import { Heading, Margins, SPACING } from '../reusable';
 import Breadcrumb from '../components/breadcrumb';
 import Layout from '../components/layout';
 import Link from '../components/link';
 import MEDIA_QUERIES from '../reusable/media-queries';
+import PropTypes from 'prop-types';
 import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import useNavigationData from '../hooks/use-navigation-data';

@@ -96,9 +96,14 @@ Nav.propTypes = {
   items: PropTypes.array
 };
 
-const NavPrimaryItem = ({ text, items, i: iterator }) => {
+const NavPrimaryItem = ({
+  text,
+  items,
+  // eslint-disable-next-line react/prop-types
+  i: item
+}) => {
   const [{ open }, dispatch] = useStateValue();
-  const isOpen = open === iterator;
+  const isOpen = open === item;
   const primaryNode = useRef();
 
   const activeStyles = () => {
@@ -112,7 +117,7 @@ const NavPrimaryItem = ({ text, items, i: iterator }) => {
 
   return (
     <li
-      key={iterator + text}
+      key={item + text}
       css={{
         '> button': {
           marginRight: SPACING.L
@@ -123,7 +128,7 @@ const NavPrimaryItem = ({ text, items, i: iterator }) => {
       <button
         onClick={() => {
           return dispatch({
-            open: isOpen ? null : iterator,
+            open: isOpen ? null : item,
             type: 'setOpen'
           });
         }}
@@ -283,9 +288,16 @@ NavPanel.propTypes = {
   items: PropTypes.array
 };
 
-const NavPanelItem = ({ text, to, description, children, i: iterator }) => {
+const NavPanelItem = ({
+  text,
+  to,
+  description,
+  children,
+  // eslint-disable-next-line react/prop-types
+  i: item
+}) => {
   const [{ panelOpen }, dispatch] = useStateValue();
-  const isOpen = panelOpen === iterator;
+  const isOpen = panelOpen === item;
   const noPanelsAreOpen = panelOpen === null;
 
   const activeStyles = () => {
@@ -340,11 +352,11 @@ const NavPanelItem = ({ text, to, description, children, i: iterator }) => {
         }}
         onClick={() => {
           return dispatch({
-            panelOpen: panelOpen === iterator ? null : iterator,
+            panelOpen: panelOpen === item ? null : item,
             type: 'setPanelOpen'
           });
         }}
-        aria-expanded={panelOpen === iterator}
+        aria-expanded={panelOpen === item}
       >
         <span
           className='text'

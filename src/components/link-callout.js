@@ -36,7 +36,12 @@ Link.propTypes = {
   to: PropTypes.string
 };
 
-const LinkContent = ({ d: data, icon, children }) => {
+const LinkContent = ({
+  // eslint-disable-next-line react/prop-types
+  d: data,
+  icon,
+  children
+}) => {
   return (
     <React.Fragment>
       <span

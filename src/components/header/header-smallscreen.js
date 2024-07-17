@@ -324,9 +324,9 @@ NavPrimary.propTypes = {
   items: PropTypes.array
 };
 
-const NavPrimaryItem = ({ text, i: iterator }) => {
+const NavPrimaryItem = ({ text, i: item }) => {
   const [{ open }, dispatch] = useStateValue();
-  const isOpen = open === iterator;
+  const isOpen = open === item;
 
   return (
     <li>
@@ -338,7 +338,7 @@ const NavPrimaryItem = ({ text, i: iterator }) => {
         aria-expanded={isOpen}
         onClick={() => {
           return dispatch({
-            open: isOpen ? null : iterator,
+            open: isOpen ? null : item,
             type: 'setOpen'
           });
         }}
@@ -350,6 +350,7 @@ const NavPrimaryItem = ({ text, i: iterator }) => {
 };
 
 NavPrimaryItem.propTypes = {
+  // eslint-disable-next-line id-length
   i: PropTypes.number,
   text: PropTypes.object
 };

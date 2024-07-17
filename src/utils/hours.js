@@ -168,7 +168,9 @@ export const displayHours = ({ node, now }) => {
       const hours = timeString.slice(0, -2);
       const minutes = timeString.slice(-2);
 
+      /* eslint-disable */
       let formattedTime = '';
+      /* eslint-enable */
 
       if (Number(hours) === 0) {
         formattedTime = '12';

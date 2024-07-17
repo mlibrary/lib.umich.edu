@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Alert, COLORS, Icon, SPACING, TYPOGRAPHY, Z_SPACE } from '../reusable';
 import React, { useEffect, useState } from 'react';
 import { findAll } from 'highlight-words-core';
@@ -56,6 +57,7 @@ export default function SiteSearch ({ label }) {
         if (query.length > 2) {
           queryTerm.term(lunr.tokenizer(query), {
             wildcard:
+              // eslint-disable-next-line no-bitwise
               lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
           });
         }
@@ -71,11 +73,13 @@ export default function SiteSearch ({ label }) {
       );
 
       setError(null);
-    } catch (error) {
-      if (error instanceof lunr.QueryParseError) {
-        setError({ e: error, query });
+    } catch (catchError) {
+      if (catchError instanceof lunr.QueryParseError) {
+        // eslint-disable-next-line id-length
+        setError({ e: catchError, query });
       } else {
-        console.warn('Site search error', error);
+        // eslint-disable-next-line no-console
+        console.warn('Site search error', catchError);
       }
     }
   }, [query]);

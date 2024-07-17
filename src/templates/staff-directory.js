@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-import PropTypes from 'prop-types';
 import { Alert, Button, COLORS, Heading, Margins, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import React, { useEffect, useState } from 'react';
@@ -12,6 +11,7 @@ import MEDIA_QUERIES from '../reusable/media-queries';
 import { navigate } from '@reach/router';
 import NoResults from '../components/no-results';
 import PlainLink from '../components/plain-link';
+import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
 import Select from '../components/select';
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder';

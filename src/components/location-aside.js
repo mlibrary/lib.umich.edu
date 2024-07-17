@@ -7,7 +7,12 @@ import LocationAnchoredLink from './location-anchored-link';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const LayoutWithIcon = ({ d: data, palette, children }) => {
+const LayoutWithIcon = ({
+  // eslint-disable-next-line react/prop-types
+  d: data,
+  palette,
+  children
+}) => {
   return (
     <div
       css={{

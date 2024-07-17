@@ -1,3 +1,4 @@
+/* eslint-disable id-length */
 import { COLORS, Heading, SPACING } from '../reusable';
 import IconText from './icon-text';
 import PlainLink from './plain-link';
@@ -18,8 +19,8 @@ export default function Share ({ url, title }) {
   });
 
   const fbProps = qs.stringify({
-    u: url,
-    t: title
+    t: title,
+    u: url
   });
 
   const options = [

@@ -2,7 +2,11 @@ import { Icon } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function IconText ({ d: data, icon, children }) {
+export default function IconText ({
+  // eslint-disable-next-line react/prop-types
+  d: data,
+  icon, children
+}) {
   return (
     <span css={{ display: 'flex' }}>
       <span
