@@ -201,7 +201,6 @@ export const sortEventsByStartDate = ({ events, onlyTodayOrAfter = false }) => {
 
     return 0;
   };
-  /* eslint-enable no-underscore-dangle */
 
   const sortedEvents = [...occurances].sort(compareStartDate);
 
