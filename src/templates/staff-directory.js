@@ -139,6 +139,7 @@ const StaffDirectoryQueryContainer = ({
   const [urlState] = useState(
     getUrlState(location.search, ['query', 'department'])
   );
+
   // eslint-disable-next-line react/prop-types
   const { body, fields, field_title_context: fieldTitleContext } = node;
   const [query, setQuery] = useState(urlState.query ? urlState.query : '');

@@ -1,9 +1,43 @@
+/* eslint-disable no-underscore-dangle */
+/*
+ *- Put "paragraph__hours_exceptions" first
+ *- Add all the other ranges in the order presented
+ *- Then add "paragraph__fall_and_winter_semester_hours" last
+ */
+const prioritizeHours = ({ hours }) => {
+  if (!hours) {
+    return [];
+  }
+
+  const types = [
+    'paragraph__hours_exceptions',
+    'paragraph__fall_and_winter_semester_hours'
+  ];
+  const exceptions = hours.filter((set) => {
+    return set.__typename === types[0];
+  });
+  const fallAndWinter = hours.filter((set) => {
+    return set.__typename === types[1];
+  });
+  const everythingElse = hours.filter((set) => {
+    return !types.includes(set.__typename);
+  });
+
+  const prioritized = []
+    .concat(exceptions, everythingElse, fallAndWinter)
+    .filter((el) => {
+      return el !== null;
+    });
+
+  return prioritized;
+};
+
 /*
  *Hours could be on the current node
  *or on a parent node, depending
  *on some fields.
  */
-export function getHoursFromNode ({ node }) {
+export const getHoursFromNode = ({ node }) => {
   const { field_display_hours_: fieldDisplayHours_ } = node;
 
   // Only check for hours if the node says to display hours.
@@ -70,13 +104,13 @@ export function getHoursFromNode ({ node }) {
   }
 
   return null;
-}
+};
 
 /*
  *Pass in a node and Date "now" and get back
  *formated string for hours from "now".
  */
-export function findHoursSetByNodeForNow ({ node, now }) {
+export const findHoursSetByNodeForNow = ({ node, now }) => {
   const allHours = getHoursFromNode({ node });
 
   if (!allHours) {
@@ -93,26 +127,26 @@ export function findHoursSetByNodeForNow ({ node, now }) {
     const start = set.field_date_range.value;
     const end = set.field_date_range.end_value;
 
-    const startDate = new Date(start.replace(/-/g, '/').replace(/T.+/, ''));
+    const startDate = new Date(start.replace(/-/gu, '/').replace(/T.+/u, ''));
     startDate.setHours(0, 0, 0, 0);
-    const endDate = new Date(end.replace(/-/g, '/').replace(/T.+/, ''));
+    const endDate = new Date(end.replace(/-/gu, '/').replace(/T.+/u, ''));
     endDate.setHours(23, 59, 59);
 
     // Check if "now" is within the range including start and end days.
     return startDate <= now && now <= endDate;
   });
   return nowHour;
-}
+};
 
-export function displayHours ({ node, now }) {
+export const displayHours = ({ node, now }) => {
   const hoursSet = findHoursSetByNodeForNow({ node, now });
   if (!hoursSet) {
     return null;
   }
 
   const hoursForNow = hoursSet.field_hours_open.find(
-    (d) => {
-      return d.day === now.getDay();
+    (data) => {
+      return data.day === now.getDay();
     }
   );
 
@@ -136,7 +170,7 @@ export function displayHours ({ node, now }) {
 
       let formattedTime = '';
 
-      if (+hours === 0) {
+      if (Number(hours) === 0) {
         formattedTime = '12';
       } else if (hours <= 12) {
         formattedTime = hours;
@@ -144,7 +178,7 @@ export function displayHours ({ node, now }) {
         formattedTime = (hours - 12).toString();
       }
 
-      if (+minutes > 0) {
+      if (Number(minutes) > 0) {
         formattedTime += `:${minutes}`;
       }
 
@@ -162,40 +196,7 @@ export function displayHours ({ node, now }) {
   }
 
   return {
-    text,
-    label
+    label,
+    text
   };
-}
-
-/*
- *- Put "paragraph__hours_exceptions" first
- *- Add all the other ranges in the order presented
- *- Then add "paragraph__fall_and_winter_semester_hours" last
- */
-function prioritizeHours ({ hours }) {
-  if (!hours) {
-    return [];
-  }
-
-  const types = [
-    'paragraph__hours_exceptions',
-    'paragraph__fall_and_winter_semester_hours'
-  ];
-  const exceptions = hours.filter((set) => {
-    return set.__typename === types[0];
-  });
-  const fallAndWinter = hours.filter((set) => {
-    return set.__typename === types[1];
-  });
-  const everythingElse = hours.filter((set) => {
-    return !types.includes(set.__typename);
-  });
-
-  const prioritized = []
-    .concat(exceptions, everythingElse, fallAndWinter)
-    .filter((el) => {
-      return el != null;
-    });
-
-  return prioritized;
-}
+};
