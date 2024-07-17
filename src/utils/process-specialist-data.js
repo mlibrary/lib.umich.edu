@@ -30,19 +30,94 @@ export default function processSpecialistData ({ data }) {
 
   let inheritedNodesIds = [];
 
-  const result = flatten.reduce((acc, node, i) => {
+  const getChildren = (node) => {
+    const { relationships } = node;
+    const { field_synonym: fieldSynonym } = relationships;
+
+    return fieldSynonym;
+  };
+
+  const getUsers = (node) => {
+    const { relationships } = node;
+    /* eslint-disable camelcase */
+    const { user__user } = relationships;
+    const users = user__user ? user__user : [];
+    /* eslint-disable camelcase */
+
+    return users;
+  };
+
+  const processUserNodes = (nodes) => {
+    return nodes.map(
+      ({ name, field_user_display_name, field_user_work_title }) => {
+        return {
+          description: field_user_work_title,
+          link: {
+            label: field_user_display_name,
+            to: `/users/${name}`
+          }
+        };
+      }
+    );
+  };
+
+  const processGroupEmail = ({ node }) => {
+    const { field_group_email, field_brief_group_description } = node;
+
+    if (!field_group_email) {
+      return [];
+    }
+
+    return [
+      {
+        description: field_brief_group_description,
+        link: {
+          label: field_group_email,
+          to: `mailto:${field_group_email}`
+        }
+      }
+    ];
+  };
+
+  /*
+   *If there is a groupEmail, use that.
+   *Otherwise use users, and if there are no users,
+   *use the Ask a Librarian contact.
+   */
+  const processContacts = ({ users, groupEmail }) => {
+    if (groupEmail.length > 0) {
+      return groupEmail;
+    }
+
+    if (users.length > 0) {
+      return users;
+    }
+
+    return [
+      {
+        description:
+          'We can help you locate library resources, connect with a specialist, or find support at any stage of your project.',
+        link: {
+          label: 'Ask a Librarian',
+          to: '/ask-librarian'
+        }
+      }
+    ];
+  };
+
+  const result = flatten.reduce((acc, node, index) => {
     if (inheritedNodesIds.includes(node.id)) {
       return acc;
     }
-    const children = flatten.slice(i + 1).filter((n) => {
-      const isChild = getChildren(n).find((c) => {
-        return node.id === c.id;
+    const children = flatten.slice(index + 1).filter((callbackFn) => {
+      const isChild = getChildren(callbackFn).find((elementToFind) => {
+        return node.id === elementToFind.id;
       });
       return isChild;
     });
     const userNodes = getUsers(node).concat(
-      children.map((n) => {
-        return getUsers(n);
+      children.map((callbackFn) => {
+        return getUsers(callbackFn);
       }).flat()
     );
     const uniqueUserNames = Array.from(
@@ -51,8 +126,8 @@ export default function processSpecialistData ({ data }) {
       }))
     );
     const uniqueUserNodes = uniqueUserNames.map((name) => {
-      return userNodes.find((n) => {
-        return n.name === name;
+      return userNodes.find((callbackFn) => {
+        return callbackFn.name === name;
       });
     });
     const users = processUserNodes(uniqueUserNodes);
@@ -70,15 +145,15 @@ export default function processSpecialistData ({ data }) {
     });
 
     return acc.concat({
-      name: node.name,
+      category: node.relationships?.field_health_sciences_category?.name,
       contacts,
-      category: node.relationships?.field_health_sciences_category?.name
+      name: node.name
     });
   }, []);
 
-  const sortedResult = [...result].sort((a, b) => {
-    const nameA = a.name.toLowerCase();
-    const nameB = b.name.toLowerCase();
+  const sortedResult = [...result].sort((sortLeft, sortRight) => {
+    const nameA = sortLeft.name.toLowerCase();
+    const nameB = sortRight.name.toLowerCase();
 
     if (nameA < nameB) {
       return -1;
@@ -90,79 +165,6 @@ export default function processSpecialistData ({ data }) {
 
     return 0;
   });
-
-  function processUserNodes (nodes) {
-    return nodes.map(
-      ({ name, field_user_display_name, field_user_work_title }) => {
-        return {
-          link: {
-            to: `/users/${name}`,
-            label: field_user_display_name
-          },
-          description: field_user_work_title
-        };
-      }
-    );
-  }
-
-  function processGroupEmail ({ node }) {
-    const { field_group_email, field_brief_group_description } = node;
-
-    if (!field_group_email) {
-      return [];
-    }
-
-    return [
-      {
-        link: {
-          to: `mailto:${field_group_email}`,
-          label: field_group_email
-        },
-        description: field_brief_group_description
-      }
-    ];
-  }
-
-  /*
-   *If there is a groupEmail, use that.
-   *Otherwise use users, and if there are no users,
-   *use the Ask a Librarian contact.
-   */
-  function processContacts ({ users, groupEmail }) {
-    if (groupEmail.length > 0) {
-      return groupEmail;
-    }
-
-    if (users.length > 0) {
-      return users;
-    }
-
-    return [
-      {
-        link: {
-          to: '/ask-librarian',
-          label: 'Ask a Librarian'
-        },
-        description:
-          'We can help you locate library resources, connect with a specialist, or find support at any stage of your project.'
-      }
-    ];
-  }
-
-  function getUsers (node) {
-    const { relationships } = node;
-    const { user__user } = relationships;
-    const users = user__user ? user__user : [];
-
-    return users;
-  }
-
-  function getChildren (node) {
-    const { relationships } = node;
-    const { field_synonym } = relationships;
-
-    return field_synonym;
-  }
 
   return sortedResult;
 }
