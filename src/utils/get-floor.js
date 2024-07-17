@@ -1,9 +1,9 @@
 export default function getFloor ({ node }) {
-  const { field_floor } = node.relationships;
+  const { field_floor: fieldFloor } = node.relationships;
 
-  if (field_floor) {
-    const floor_split = field_floor.name.split(' - ');
-    const floor = floor_split[floor_split.length - 1];
+  if (fieldFloor) {
+    const floorSplit = fieldFloor.name.split(' - ');
+    const floor = floorSplit[floorSplit.length - 1];
 
     return floor;
   }

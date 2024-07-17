@@ -1,5 +1,5 @@
-/* eslint-disable camelcase */
-/* eslint-disable no-shadow */
+/* eslint-disable no-underscore-dangle */
+import PropTypes from 'prop-types';
 import { Alert, Button, COLORS, Heading, Margins, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import React, { useEffect, useState } from 'react';
@@ -12,7 +12,6 @@ import MEDIA_QUERIES from '../reusable/media-queries';
 import { navigate } from '@reach/router';
 import NoResults from '../components/no-results';
 import PlainLink from '../components/plain-link';
-import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
 import Select from '../components/select';
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder';
@@ -26,21 +25,21 @@ export default function StaffDirectoryWrapper ({ data, location }) {
   const node = data.page;
   const { allNodeDepartment, allStaff, allStaffImages } = data;
 
-  const departments = allNodeDepartment.edges.reduce((acc, { node }) => {
+  const departments = allNodeDepartment.edges.reduce((acc, { node: departmentsNode }) => {
     return {
       ...acc,
-      [node.drupal_internal__nid]: node
+      [departmentsNode.drupal_internal__nid]: departmentsNode
     };
   }, {});
-  const staff = allStaff.edges.map(({ node }) => {
+  const staff = allStaff.edges.map(({ node: staffNode }) => {
     return {
-      ...node,
-      department: departments[node.department_nid],
-      division: departments[node.division_nid]
+      ...staffNode,
+      department: departments[staffNode.department_nid],
+      division: departments[staffNode.division_nid]
     };
   });
-  const staffImages = allStaffImages.edges.reduce((acc, { node }) => {
-    const img = node.relationships.field_media_image;
+  const staffImages = allStaffImages.edges.reduce((acc, { node: staffImagesNode }) => {
+    const img = staffImagesNode.relationships.field_media_image;
 
     return {
       ...acc,
@@ -81,6 +80,7 @@ StaffDirectoryWrapper.propTypes = {
       })
     }),
     page: PropTypes.shape({
+      /* eslint-disable camelcase */
       department_nid: PropTypes.any,
       division_nid: PropTypes.any,
       drupal_internal__nid: PropTypes.any,
@@ -97,6 +97,8 @@ StaffDirectoryWrapper.propTypes = {
           })
         })
       })
+      /* eslint-enable camelcase */
+
     })
   }),
   location: PropTypes.any
@@ -132,12 +134,13 @@ const StaffDirectoryQueryContainer = ({
   departments,
   staffImages,
   location,
-  navigate
+  navigate: staffDirectoryNavigate
 }) => {
   const [urlState] = useState(
     getUrlState(location.search, ['query', 'department'])
   );
-  const { body, fields, field_title_context } = node;
+  // eslint-disable-next-line react/prop-types
+  const { body, fields, field_title_context: fieldTitleContext } = node;
   const [query, setQuery] = useState(urlState.query ? urlState.query : '');
   const [activeFilters, setActiveFilters] = useState(
     urlState.department ? { department: urlState.department } : {}
@@ -146,7 +149,8 @@ const StaffDirectoryQueryContainer = ({
   const [stateString] = useDebounce(
     stringifyState({
       department: activeFilters.department,
-      query: query.length > 0 ? query : ''
+      // eslint-disable-next-line no-undefined
+      query: query.length > 0 ? query : undefined
     }),
     100
   );
@@ -157,17 +161,16 @@ const StaffDirectoryQueryContainer = ({
   });
 
   useEffect(() => {
-    navigate(`?${stateString}`, {
+    staffDirectoryNavigate(`?${stateString}`, {
       replace: true,
       state: { preserveScroll: true }
     });
   }, [stateString]);
 
   useEffect(() => {
-    /* eslint-disable no-underscore-dangle */
     if (!window.__SDI__) {
       // Create staff directory index if it does not exist
-      window.__SDI__ = lunr(function createStaffDirectoryIndex () {
+      window.__SDI__ = lunr(function createStaffDirectory () {
         /* eslint-disable no-invalid-this */
         this.ref('uniqname');
         this.field('name');
@@ -177,39 +180,41 @@ const StaffDirectoryQueryContainer = ({
         staff.forEach(function addPerson (person) {
           this.add(person);
         }, this);
+        /* eslint-enable no-invalid-this */
       });
     }
-    /* eslint-enable no-invalid-this */
 
     // Get the staff directory index
     const index = window.__SDI__;
-    /* eslint-enable no-underscore-dangle */
 
     try {
-      const results = index
-        .query((query) => {
-          query.term(lunr.tokenizer(query), {
+      const tryResults = index
+        /* eslint-disable id-length */
+        .query((q) => {
+          q.term(lunr.tokenizer(query), {
             boost: 3
           });
-          query.term(lunr.tokenizer(query), {
+          q.term(lunr.tokenizer(query), {
             boost: 2,
             wildcard: lunr.Query.wildcard.TRAILING
           });
           if (query.length > 2) {
-            query.term(lunr.tokenizer(query), {
+            q.term(lunr.tokenizer(query), {
               wildcard:
                 // eslint-disable-next-line no-bitwise
                 lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
             });
           }
         })
+        /* eslint-enable id-length */
+
         .map(({ ref }) => {
           return staff.find(({ uniqname }) => {
             return uniqname === ref;
           });
         });
 
-      setResults(filterResults({ activeFilters, results }));
+      setResults(filterResults({ activeFilters, results: tryResults }));
     } catch {
       // Intentionally left blank
     }
@@ -271,7 +276,7 @@ const StaffDirectoryQueryContainer = ({
             marginBottom: SPACING.S
           }}
         >
-          {field_title_context}
+          {fieldTitleContext}
         </Heading>
 
         {body && (
@@ -308,7 +313,7 @@ StaffDirectoryQueryContainer.propTypes = {
     body: PropTypes.shape({
       processed: PropTypes.any
     }),
-    field_title_context: PropTypes.any,
+    fieldTitleContext: PropTypes.any,
     fields: PropTypes.shape({
       breadcrumb: PropTypes.any
     })
@@ -449,6 +454,7 @@ StaffDirectory.propTypes = {
   staffImages: PropTypes.any
 };
 
+// Need to set display name for StaffDirectory React.memo. Can also export default React.memo(StaffDirectory)
 StaffDirectory.displayName = 'StaffDirectory';
 
 const StaffPhoto = ({ mid, staffImages }) => {
@@ -472,8 +478,8 @@ const StaffPhoto = ({ mid, staffImages }) => {
 };
 
 StaffPhoto.propTypes = {
-  mid: PropTypes.any,
-  staffImages: PropTypes.any
+  mid: PropTypes.number,
+  staffImages: PropTypes.array
 };
 
 export const query = graphql`
@@ -563,6 +569,7 @@ const StaffDirectoryResults = ({
     <table
       css={{
         tableLayout: 'fixed',
+
         textAlign: 'left',
         'tr > *': {
           '& + *': {
@@ -631,7 +638,7 @@ const StaffDirectoryResults = ({
             phone,
             department,
             division,
-            image_mid
+            image_mid: iamgeMid
           }) => {
             return (
               <tr
@@ -647,7 +654,7 @@ const StaffDirectoryResults = ({
                     }
                   }}
                 >
-                  <StaffPhoto mid={image_mid} staffImages={staffImages} />
+                  <StaffPhoto mid={iamgeMid} staffImages={staffImages} />
                 </td>
                 <td colSpan='3'>
                   <PlainLink
