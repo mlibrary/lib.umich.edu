@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Heading, Margins, SPACING, Text } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
@@ -9,6 +8,7 @@ import getNode from '../utils/get-node';
 import { graphql } from 'gatsby';
 import Html from '../components/html';
 import Panels from '../components/panels';
+import PropTypes from 'prop-types';
 import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
