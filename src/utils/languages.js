@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 const LANGUAGES = {
   aa: {
     name: 'Afar',
