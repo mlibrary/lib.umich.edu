@@ -14,7 +14,7 @@ const getButtonColor = (kind) => {
   }
 };
 
-const getButtonKindCSS = (kind, color) => {
+const getButtonKindCSS = (kind = 'secondary', color) => {
   switch (kind) {
     case 'tertiary':
       return {
@@ -96,10 +96,6 @@ Button.propTypes = {
   disabled: PropTypes.bool,
   kind: PropTypes.oneOf(['primary', 'secondary', 'tertiary', 'subtle', 'reset'])
     .isRequired
-};
-
-Button.defaultProps = {
-  kind: 'secondary'
 };
 
 export default Button;

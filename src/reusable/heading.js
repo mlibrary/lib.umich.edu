@@ -15,7 +15,7 @@ const StyledHeading = styled.h1(({ size }) => {
 /**
  *Use headings consistently to create a clear content hierarchy.
  */
-const Heading = ({ children, level, className, ...other }) => {
+const Heading = ({ children, level = 1, className, ...other }) => {
   return (
     <StyledHeading as={`h${level}`} className={className} {...other}>
       {children}
@@ -31,11 +31,6 @@ Heading.propTypes = {
    */
   level: PropTypes.oneOf([1, 2, 3, 4, 5, 6]),
   size: PropTypes.oneOf(Object.keys(TYPOGRAPHY)).isRequired
-};
-
-Heading.defaultProps = {
-  level: 1,
-  size: 'small'
 };
 
 export default Heading;

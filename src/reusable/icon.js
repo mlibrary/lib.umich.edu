@@ -122,7 +122,7 @@ const StyledSVG = styled('svg')({
  *Use this to render SVG icons.
  */
 // eslint-disable-next-line react/prop-types
-const Icon = ({ icon, size, title, className, d: path, ...other }) => {
+const Icon = ({ icon, size = 16, title, className, d: path, ...other }) => {
   // If no title, then hide for AD.
   const isHidden = !title;
 
@@ -151,10 +151,6 @@ Icon.propTypes = {
   /** Include a title if this icon requires a text alternative. */
   title: PropTypes.string
 
-};
-
-Icon.defaultProps = {
-  size: 16
 };
 
 export { icons };

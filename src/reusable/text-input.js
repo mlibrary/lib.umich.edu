@@ -36,19 +36,21 @@ const StyledFormItemErrorMessage = styled('p')({
 /**
  *Use this when you need to let users enter text that's no longer than a single line.
  */
+/* eslint-disable no-empty-function */
 const TextInput = ({
   descriptionText,
   hideLabel,
   id,
-  invalid,
-  invalidText,
+  invalid = false,
+  invalidText = '',
   labelText,
-  onChange,
-  onClick,
+  onChange = () => {},
+  onClick = () => {},
   placeholder,
-  type,
+  type = 'text',
   ...other
 }) => {
+/* eslint-enable no-empty-function */
   const textInputProps = {
     id,
     onChange: (evt) => {
@@ -136,16 +138,5 @@ TextInput.propTypes = {
   type: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
-
-/* eslint-disable no-empty-function */
-TextInput.defaultProps = {
-  disabled: false,
-  invalid: false,
-  invalidText: '',
-  onChange: () => {},
-  onClick: () => {},
-  type: 'text'
-};
-/* eslint-enable no-empty-function */
 
 export default TextInput;

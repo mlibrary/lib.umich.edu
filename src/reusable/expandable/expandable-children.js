@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { ExpandableContext } from './expandable';
 import PropTypes from 'prop-types';
 
-const ExpandableChildrenComponent = ({ children, show }) => {
+const ExpandableChildrenComponent = ({ children, show = 3 }) => {
   const context = useContext(ExpandableContext);
 
   useEffect(() => {
@@ -21,10 +21,6 @@ const ExpandableChildrenComponent = ({ children, show }) => {
 ExpandableChildrenComponent.propTypes = {
   children: PropTypes.node.isRequired,
   show: PropTypes.number
-};
-
-ExpandableChildrenComponent.defaultProps = {
-  show: 3
 };
 
 const ExpandableChildren = (props) => {

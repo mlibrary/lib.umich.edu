@@ -79,27 +79,7 @@ StaffDirectoryWrapper.propTypes = {
         reduce: PropTypes.func
       })
     }),
-    page: PropTypes.shape({
-      /* eslint-disable camelcase */
-      department_nid: PropTypes.any,
-      division_nid: PropTypes.any,
-      drupal_internal__nid: PropTypes.any,
-      relationships: PropTypes.shape({
-        field_media_image: PropTypes.shape({
-          drupal_internal__mid: PropTypes.any,
-          field_media_image: PropTypes.shape({
-            alt: PropTypes.any
-          }),
-          relationships: PropTypes.shape({
-            field_media_image: PropTypes.shape({
-              localFile: PropTypes.any
-            })
-          })
-        })
-      })
-      /* eslint-enable camelcase */
-
-    })
+    page: PropTypes.any
   }),
   location: PropTypes.any
 };

@@ -32,9 +32,5 @@ Expandable.propTypes = {
   children: PropTypes.node.isRequired
 };
 
-Expandable.defaultProps = {
-  expanded: false
-};
-
 export default Expandable;
 export { ExpandableContext };

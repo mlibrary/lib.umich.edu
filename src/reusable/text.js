@@ -26,7 +26,7 @@ const StyledText = styled('p')(
   }
 );
 
-const Text = ({ inline, lede, ...other }) => {
+const Text = ({ inline = false, lede, ...other }) => {
   return (
     <StyledText inline={inline} lede={lede} {...other} />
   );
@@ -36,10 +36,6 @@ Text.propTypes = {
   children: PropTypes.node.isRequired,
   inline: PropTypes.bool,
   lede: PropTypes.bool
-};
-
-Text.defaultProps = {
-  inline: false
 };
 
 export default Text;

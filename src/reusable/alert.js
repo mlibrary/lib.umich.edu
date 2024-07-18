@@ -5,7 +5,7 @@ import React from 'react';
 /**
  * Use Alerts to notify users of important information.
  */
-const Alert = ({ intent, children, ...other }) => {
+const Alert = ({ intent = 'informational', children, ...other }) => {
   const alertStyles = (alertIntent) => {
     switch (alertIntent) {
       case 'success':
@@ -68,10 +68,6 @@ const Alert = ({ intent, children, ...other }) => {
 Alert.propTypes = {
   children: PropTypes.node.isRequired,
   intent: PropTypes.oneOf(['informational', 'error', 'warning', 'success'])
-};
-
-Alert.defaultProps = {
-  intent: 'informational'
 };
 
 export default Alert;
