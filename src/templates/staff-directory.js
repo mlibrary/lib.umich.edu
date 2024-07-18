@@ -190,24 +190,22 @@ const StaffDirectoryQueryContainer = ({
 
     try {
       const tryResults = index
-        /* eslint-disable id-length */
-        .query((q) => {
-          q.term(lunr.tokenizer(query), {
+        .query((queryName) => {
+          queryName.term(lunr.tokenizer(query), {
             boost: 3
           });
-          q.term(lunr.tokenizer(query), {
+          queryName.term(lunr.tokenizer(query), {
             boost: 2,
             wildcard: lunr.Query.wildcard.TRAILING
           });
           if (query.length > 2) {
-            q.term(lunr.tokenizer(query), {
+            queryName.term(lunr.tokenizer(query), {
               wildcard:
                 // eslint-disable-next-line no-bitwise
                 lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
             });
           }
         })
-        /* eslint-enable id-length */
 
         .map(({ ref }) => {
           return staff.find(({ uniqname }) => {
