@@ -171,28 +171,17 @@ const production = { Fragment: prod.Fragment, jsx: prod.jsx, jsxs: prod.jsxs, co
  * @param {string} text
  * @returns {JSX.Element}
  */
-const useProcessor = (text) => {
-  const [Content, setContent] = useState(null);
+const processHtmlSync = (text) => {
+  const file = unified()
+    .use(rehypeParse, { fragment: true })
+    .use(rehypeReact, production)
+    .processSync(text);
 
-  useEffect(
-    () => {
-      ;(async function AsyncUnify () {
-        const file = await unified()
-          .use(rehypeParse, { fragment: true })
-          .use(rehypeReact, production)
-          .process(text);
-
-        setContent(file.result);
-      })();
-    },
-    [text]
-  );
-
-  return Content;
+  return file.result;
 };
 
 const Html = ({ html, ...rest }) => {
-  const tree = useProcessor(html);
+  const tree = processHtmlSync(html);
   return <Prose {...rest}>{tree}</Prose>;
 };
 
