@@ -55,14 +55,7 @@ export default function LocationAside ({ node }) {
   const buildingNode = relationships?.field_room_building;
   const parentLocationNode
     = relationships?.field_parent_location?.relationships?.field_parent_location;
-  const locationNode = () => {
-    if (buildingNode) {
-      return buildingNode;
-    } else if (parentLocationNode) {
-      return parentLocationNode;
-    }
-    return node;
-  };
+  const locationNode = buildingNode ?? parentLocationNode ?? node;
 
   return (
     <React.Fragment>

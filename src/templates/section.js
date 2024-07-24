@@ -132,9 +132,7 @@ SectionTemplate.propTypes = {
     }),
     page: PropTypes.shape({
       body: PropTypes.shape({
-        processed: PropTypes.shape({
-          length: PropTypes.any
-        }),
+        processed: PropTypes.string,
         summary: PropTypes.any
       }),
       drupal_internal__nid: PropTypes.any,

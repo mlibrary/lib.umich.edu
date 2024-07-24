@@ -3,7 +3,7 @@ import Link from './link';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function LocationAnchoredLinks ({ node }) {
+export default function LocationAnchoredLink ({ node }) {
   const parentTitle = node.relationships?.field_parent_location?.title;
 
   const title = parentTitle ? parentTitle : node.title;
@@ -14,6 +14,6 @@ export default function LocationAnchoredLinks ({ node }) {
   );
 }
 
-LocationAnchoredLinks.propTypes = {
+LocationAnchoredLink.propTypes = {
   node: PropTypes.any
 };
