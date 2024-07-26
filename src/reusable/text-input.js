@@ -37,8 +37,10 @@ const StyledFormItemErrorMessage = styled('p')({
  *Use this when you need to let users enter text that's no longer than a single line.
  */
 /* eslint-disable no-empty-function */
+/* eslint-disable no-unused-vars */
 const TextInput = ({
   descriptionText,
+  disabled = false,
   hideLabel,
   id,
   invalid = false,
@@ -51,6 +53,7 @@ const TextInput = ({
   ...other
 }) => {
 /* eslint-enable no-empty-function */
+/* eslint-enable no-unused-vars */
   const textInputProps = {
     id,
     onChange: (evt) => {
