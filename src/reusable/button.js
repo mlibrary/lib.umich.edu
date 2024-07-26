@@ -14,7 +14,7 @@ const getButtonColor = (kind) => {
   }
 };
 
-const getButtonKindCSS = (kind = 'secondary', color) => {
+const getButtonKindCSS = (kind, color) => {
   switch (kind) {
     case 'tertiary':
       return {
@@ -88,7 +88,7 @@ const getButtonCSS = (kind, disabled) => {
 /**
  * Use buttons to move though a transaction, aim to use only one primary button per page.
  */
-const Button = ({ kind, disabled, ...rest }) => {
+const Button = ({ kind = 'secondary', disabled, ...rest }) => {
   return <button css={getButtonCSS(kind, disabled)} {...rest} />;
 };
 
