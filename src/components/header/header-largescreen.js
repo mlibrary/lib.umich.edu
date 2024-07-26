@@ -61,10 +61,10 @@ const HeaderLargeScreen = ({ primary, secondary }) => {
                           to={to}
                           external={to === '/my-account'}
                           css={{
+                            ...LINK_STYLES.special,
                             ':hover': {
                               '.text': LINK_STYLES.special[':hover']
                             },
-                            ...LINK_STYLES.special,
                             padding: `${SPACING.S} 0`
                           }}
                         >

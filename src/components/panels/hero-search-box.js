@@ -80,9 +80,9 @@ export default function HeroSearchBox ({ data }) {
           css={{
             ...heroHeightCSS,
             [MEDIAQUERIES.M]: {
+              ...heroHeightCSS[MEDIAQUERIES.M],
               alignItems: 'center',
-              display: 'flex',
-              ...heroHeightCSS[MEDIAQUERIES.M]
+              display: 'flex'
             }
           }}
         >
