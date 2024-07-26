@@ -15,9 +15,9 @@ const StyledHeading = styled.h1(({ size }) => {
 /**
  *Use headings consistently to create a clear content hierarchy.
  */
-const Heading = ({ children, level = 1, className, ...other }) => {
+const Heading = ({ children, level = 1, size = 'small', className, ...other }) => {
   return (
-    <StyledHeading as={`h${level}`} className={className} {...other}>
+    <StyledHeading as={`h${level}`} size={size} className={className} {...other}>
       {children}
     </StyledHeading>
   );
