@@ -12,6 +12,7 @@ export default function Link ({ children, kind = 'default', as = 'a', ...other }
 }
 
 Link.propTypes = {
+  as: PropTypes.string,
   children: PropTypes.node.isRequired,
   kind: PropTypes.oneOf([
     'default',
