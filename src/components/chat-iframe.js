@@ -53,7 +53,8 @@ export default function ChatIframe () {
           height='400px'
           src='https://libraryh3lp.com/chat/umlibraryaskalibrarian@chat.libraryh3lp.com?skin=36020'
           css={{
-            borderRadius: '4px'
+            borderRadius: '4px',
+            marginBottom: '-6px'
           }}
         />
       </div>
