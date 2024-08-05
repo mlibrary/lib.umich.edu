@@ -137,14 +137,14 @@ const NavPrimaryItem = ({
           ':hover': {
             borderColor: COLORS.teal['400']
           },
-          ...activeStyles(),
           ...TYPOGRAPHY.XS,
           borderBottom: `solid 3px transparent`,
           cursor: 'pointer',
           display: 'inline-block',
           height: '100%',
           paddingBottom: `calc(${SPACING.M} - 3px)`,
-          paddingTop: SPACING.M
+          paddingTop: SPACING.M,
+          ...activeStyles()
         }}
         ref={primaryNode}
       >
@@ -340,7 +340,6 @@ const NavPanelItem = ({
             },
             cursor: 'pointer'
           },
-          ...activeStyles(),
           alignItems: 'center',
           borderLeft: 'solid 5px transparent',
           display: 'flex',
@@ -348,7 +347,8 @@ const NavPanelItem = ({
           padding: `${SPACING.S} ${SPACING.L}`,
           paddingLeft: `calc(${SPACING.L} - 5px)`,
           textAlign: 'left',
-          width: '100%'
+          width: '100%',
+          ...activeStyles()
         }}
         onClick={() => {
           return dispatch({

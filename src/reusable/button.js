@@ -74,13 +74,13 @@ const getButtonCSS = (kind, disabled) => {
         : 'white',
     display: 'flex',
     fontWeight: '800',
+    minHeight: '2.5rem',
+    padding: `${SPACING.XS} ${SPACING.M}`,
     ...getButtonKindCSS(kind, color, disabled),
     ':focus': {
       boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px ${COLORS.neutral['400']}`,
       outline: 'none'
     },
-    minHeight: '2.5rem',
-    padding: `${SPACING.XS} ${SPACING.M}`,
     ...getDisabledCSS(disabled)
   };
 };
