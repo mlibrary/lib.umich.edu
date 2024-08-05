@@ -617,7 +617,7 @@ const StaffDirectoryResults = ({
             phone,
             department,
             division,
-            image_mid: iamgeMid
+            image_mid: imageMid
           }) => {
             return (
               <tr
@@ -633,7 +633,7 @@ const StaffDirectoryResults = ({
                     }
                   }}
                 >
-                  <StaffPhoto mid={iamgeMid} staffImages={staffImages} />
+                  <StaffPhoto mid={imageMid} staffImages={staffImages} />
                 </td>
                 <td colSpan='3'>
                   <PlainLink

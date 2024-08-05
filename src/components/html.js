@@ -1,20 +1,20 @@
-import * as prod from 'react/jsx-runtime';
+/* eslint-disable id-length */
 import { COLORS, Heading, List, Text } from '../reusable';
-import { createElement, Fragment, React, useEffect, useState } from 'react';
 import Blockquote from '../reusable/blockquote';
 import Callout from '../reusable/callout';
 import DrupalEntity from './drupal-entity';
 import Link from './link';
 import PropTypes from 'prop-types';
 import Prose from './prose';
-import rehypeParse from 'rehype-parse';
+import React from 'react';
+import rehype from 'rehype-parse';
 import rehypeReact from 'rehype-react';
 import Table from './table';
 import { unified } from 'unified';
 
 /**
- *Headings
- */
+  Headings
+*/
 const Heading2 = ({ children, ...other }) => {
   return (
     <Heading level={2} size='M' {...other}>
@@ -24,7 +24,7 @@ const Heading2 = ({ children, ...other }) => {
 };
 
 Heading2.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.any
 };
 
 const Heading3 = ({ children, ...other }) => {
@@ -36,9 +36,8 @@ const Heading3 = ({ children, ...other }) => {
 };
 
 Heading3.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.any
 };
-
 const Heading4 = ({ children, ...other }) => {
   return (
     <Heading
@@ -53,9 +52,8 @@ const Heading4 = ({ children, ...other }) => {
 };
 
 Heading4.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.any
 };
-
 const Heading5 = ({ children, ...other }) => {
   return (
     <Heading level={5} size='3XS' {...other}>
@@ -65,9 +63,8 @@ const Heading5 = ({ children, ...other }) => {
 };
 
 Heading5.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.any
 };
-
 const Heading6 = ({ children, ...other }) => {
   return (
     <Heading level={6} size='3XS' {...other}>
@@ -77,116 +74,117 @@ const Heading6 = ({ children, ...other }) => {
 };
 
 Heading6.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.any
 };
 
-// Components setup
-/* eslint-disable sort-keys */
-/* eslint-disable id-length */
-const components = {
-  h2: Heading2,
-  h3: Heading3,
-  h4: Heading4,
-  h5: Heading5,
-  h6: Heading6,
-  a: ({ children, href }) => {
-    if (!children || !href) {
+// eslint-disable-next-line new-cap
+const renderHast = new rehypeReact({
+  components: {
+    a: ({ children, href }) => {
+      if (!children || !href) {
+        // Don't render links without a label or href
+        return null;
+      }
+      return <Link to={href}>{children}</Link>;
+    },
+    article: () => {
       return null;
-    }
-    return <Link to={href}>{children}</Link>;
-  },
-  p: ({ children, className }) => {
-    if (className === 'umich-lib-callout') {
-      return <Callout>{children}</Callout>;
-    }
-    if (className === 'umich-lib-alert') {
+    },
+    blockquote: (props) => {
+      return <Blockquote {...props} />;
+    },
+    br: () => {
+      return <br />;
+    },
+    'drupal-entity': (props) => {
+      return <DrupalEntity {...props} />;
+    },
+    em: (props) => {
+      return <em {...props} css={{ fontStyle: 'italic' }} />;
+    },
+    figcaption: (props) => {
       return (
-        <Callout intent='warning' alert={true}>
-          {children}
-        </Callout>
+        <figcaption
+          {...props}
+          css={{
+            color: COLORS.neutral['300']
+          }}
+        />
       );
+    },
+    figure: (props) => {
+      return <figure {...props} css={{ maxWidth: '38rem' }} />;
+    },
+    h2: Heading2,
+    h3: Heading3,
+    h4: Heading4,
+    h5: Heading5,
+    h6: Heading6,
+    iframe: () => {
+      return null;
+    },
+    lede: ({ children, ...other }) => {
+      return (
+        <Text lede {...other}>
+          {children}
+        </Text>
+      );
+    },
+    ol: ({ children }) => {
+      return <List type='numbered'>{children}</List>;
+    },
+    p: ({ children, className }) => {
+      if (className === 'umich-lib-callout') {
+        return <Callout>{children}</Callout>;
+      }
+
+      if (className === 'umich-lib-alert') {
+        return (
+          <Callout intent='warning' alert={true}>
+            {children}
+          </Callout>
+        );
+      }
+
+      return <Text>{children}</Text>;
+    },
+    strong: ({ children }) => {
+      return (
+        <strong css={{ fontWeight: '800' }}>{children}</strong>
+      );
+    },
+    table: Table,
+    text: Text,
+    u: ({ children }) => {
+      return children;
+    },
+    ul: ({ children }) => {
+      return <List type='bulleted'>{children}</List>;
     }
-    return <Text>{children}</Text>;
   },
-  strong: ({ children }) => {
-    return (
-      <strong style={{ fontWeight: '800' }}>{children}</strong>
-    );
-  },
-  ul: ({ children }) => {
-    return <List type='bulleted'>{children}</List>;
-  },
-  ol: ({ children }) => {
-    return <List type='numbered'>{children}</List>;
-  },
-  br: () => {
-    return <br />;
-  },
-  em: (props) => {
-    return <em {...props} style={{ fontStyle: 'italic' }} />;
-  },
-  text: Text,
-  lede: ({ children, ...other }) => {
-    return (
-      <Text lede {...other}>
-        {children}
-      </Text>
-    );
-  },
-  u: ({ children }) => {
-    return children;
-  },
-  blockquote: (props) => {
-    return <Blockquote {...props} />;
-  },
-  'drupal-entity': (props) => {
-    return <DrupalEntity {...props} />;
-  },
-  iframe: () => {
-    return null;
-  },
-  article: () => {
-    return null;
-  },
-  figure: (props) => {
-    return <figure {...props} style={{ maxWidth: '38rem' }} />;
-  },
-  figcaption: (props) => {
-    return (
-      <figcaption
-        {...props}
-        style={{
-          // Replace COLORS.neutral['300'] with the actual color value
-          color: 'neutral.300'
-        }}
-      />
-    );
-  },
-  table: Table
-};
 
-const production = { Fragment: prod.Fragment, jsx: prod.jsx, jsxs: prod.jsxs, components };
+  // A workaround to replace the container div created by rehype-react with a React fragment.
+  createElement: (component, props = {}, children = []) => {
+    if (props['data-entity-uuid']) {
+      return <DrupalEntity {...props} />;
+    }
 
-/**
- * @param {string} text
- * @returns {JSX.Element}
- */
-const processHtmlSync = (text) => {
-  const file = unified()
-    .use(rehypeParse, { fragment: true })
-    .use(rehypeReact, production)
-    .processSync(text);
+    if (component === 'div') {
+      return <React.Fragment {...props}>{children}</React.Fragment>;
+    }
 
-  return file.result;
-};
+    return React.createElement(component, props, children);
+  }
+}).Compiler;
 
 const Html = ({ html, ...rest }) => {
-  const tree = processHtmlSync(html);
-  return <Prose {...rest}>{tree}</Prose>;
+  const tree = unified().use(rehype, { fragment: true }).parse(html);
+
+  return <Prose {...rest}>{renderHast(tree)}</Prose>;
 };
 
 Html.propTypes = {
-  html: PropTypes.string
+  html: PropTypes.any
 };
 
 export default Html;
