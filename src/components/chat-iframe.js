@@ -50,9 +50,10 @@ export default function ChatIframe () {
           title='Ask a Librarian'
           width='100%'
           height='400px'
-          src='https://libraryh3lp.com/chat/umlibraryaskalibrarian@chat.libraryh3lp.com?skin=27279'
+          src='https://libraryh3lp.com/chat/umlibraryaskalibrarian@chat.libraryh3lp.com?skin=36020'
           css={{
-            borderRadius: '4px'
+            borderRadius: '4px',
+            marginBottom: '-6px'
           }}
         />
       </div>
