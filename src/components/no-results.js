@@ -1,10 +1,11 @@
-import React from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
-import { GatsbyImage } from 'gatsby-plugin-image';
+import { graphql, useStaticQuery } from 'gatsby';
 import { Heading, SPACING, Text } from '../reusable';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import MEDIA_QUERIES from '../reusable/media-queries';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export default function NoResults({ children }) {
+export default function NoResults ({ children }) {
   const { image } = useStaticQuery(graphql`
     {
       image: file(relativePath: { eq: "squirrel.png" }) {
@@ -18,28 +19,28 @@ export default function NoResults({ children }) {
   return (
     <div
       css={{
-        [MEDIA_QUERIES['L']]: {
-          display: 'grid',
-          gridTemplateColumns: `2fr 3fr`,
-          gridGap: SPACING['3XL'],
+        [MEDIA_QUERIES.L]: {
           alignItems: 'end',
+          display: 'grid',
+          gridGap: SPACING['3XL'],
+          gridTemplateColumns: `2fr 3fr`
         },
         marginBottom: SPACING['4XL'],
-        marginTop: SPACING['2XL'],
+        marginTop: SPACING['2XL']
       }}
     >
       <div
         css={{
-          margin: 'auto 0',
+          margin: 'auto 0'
         }}
       >
-        <Heading size="L" level={2}>
-          We couldn't find any results
+        <Heading size='L' level={2}>
+          We couldn&rsquo;t find any results
         </Heading>
         <Text
           lede
           css={{
-            marginTop: SPACING['XS'],
+            marginTop: SPACING.XS
           }}
         >
           {children}
@@ -48,19 +49,23 @@ export default function NoResults({ children }) {
 
       <GatsbyImage
         image={image.childImageSharp.gatsbyImageData}
-        alt=""
+        alt=''
         css={{
           display: 'inline-block',
-          maxWidth: '16rem',
           margin: '1rem auto',
-          [MEDIA_QUERIES['L']]: {
-            margin: '0',
-            width: '100%',
+          maxWidth: '16rem',
+          [MEDIA_QUERIES.L]: {
             display: 'block',
-            marginBottom: SPACING['L'],
-          },
+            margin: '0',
+            marginBottom: SPACING.L,
+            width: '100%'
+          }
         }}
       />
     </div>
   );
 }
+
+NoResults.propTypes = {
+  children: PropTypes.node
+};

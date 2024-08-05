@@ -1,38 +1,41 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
-import PropTypes from 'prop-types';
 
 import { TYPOGRAPHY } from '../reusable';
 
 const StyledText = styled('p')(
   {
-    maxWidth: '38rem',
+    maxWidth: '38rem'
   },
-  ({ inline }) => ({
-    display: inline && 'inline',
-  }),
-  ({ size }) => ({
-    ...TYPOGRAPHY[size],
-  }),
+  ({ inline }) => {
+    return {
+      display: inline && 'inline'
+    };
+  },
+  ({ size }) => {
+    return {
+      ...TYPOGRAPHY[size]
+    };
+  },
   ({ lede }) => {
     if (lede) {
-      return TYPOGRAPHY['XS'];
+      return TYPOGRAPHY.XS;
     }
+    return null;
   }
 );
 
-const Text = ({ inline, lede, ...other }) => (
-  <StyledText inline={inline} lede={lede} {...other} />
-);
-
-Text.propTypes = {
-  inline: PropTypes.bool,
-  lede: PropTypes.bool,
-  children: PropTypes.node.isRequired,
+const Text = ({ inline = false, lede, ...other }) => {
+  return (
+    <StyledText inline={inline} lede={lede} {...other} />
+  );
 };
 
-Text.defaultProps = {
-  inline: false,
+Text.propTypes = {
+  children: PropTypes.node.isRequired,
+  inline: PropTypes.bool,
+  lede: PropTypes.bool
 };
 
 export default Text;

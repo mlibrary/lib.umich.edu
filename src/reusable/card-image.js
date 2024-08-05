@@ -1,8 +1,9 @@
-import React from 'react';
-import { GatsbyImage } from 'gatsby-plugin-image';
 import { COLORS, SPACING } from '../reusable';
+import { GatsbyImage } from 'gatsby-plugin-image';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export default function CardImage({ image }) {
+export default function CardImage ({ image }) {
   return (
     <GatsbyImage
       image={image}
@@ -11,10 +12,16 @@ export default function CardImage({ image }) {
         aspectRatio: '3 / 2',
         backgroundColor: COLORS.blue['100'],
         borderRadius: '4px',
-        marginBottom: SPACING['S'],
+        marginBottom: SPACING.S,
         overflow: 'hidden',
         width: '100%'
       }}
     />
   );
 }
+
+CardImage.propTypes = {
+  image: PropTypes.shape({
+    alt: PropTypes.string
+  })
+};

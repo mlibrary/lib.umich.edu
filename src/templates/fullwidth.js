@@ -1,18 +1,19 @@
-import React from 'react';
+import { Heading, Margins, SPACING } from '../reusable';
+import Breadcrumb from '../components/breadcrumb';
+import getNode from '../utils/get-node';
 import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING } from '../reusable';
+import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import Html from '../components/html';
+import Panels from '../components/panels';
+import PropTypes from 'prop-types';
+import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
-import Html from '../components/html';
-import Breadcrumb from '../components/breadcrumb';
-import HorizontalNavigation from '../components/navigation/horizontal-navigation';
-import Panels from '../components/panels';
-import getNode from '../utils/get-node';
 import transformNodePanels from '../utils/transform-node-panels';
 
-export default function FullWidthTemplate({ data, ...rest }) {
+export default function FullWidthTemplate ({ data, ...rest }) {
   const node = getNode(data);
-  const { field_title_context, body, fields } = node;
+  const { field_title_context: fieldTitleContext, body, fields } = node;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
   return (
@@ -20,13 +21,13 @@ export default function FullWidthTemplate({ data, ...rest }) {
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
         <Heading
-          size="3XL"
+          size='3XL'
           level={1}
           css={{
-            marginBottom: fullPanels.length ? '0' : SPACING['XL'],
+            marginBottom: fullPanels.length ? '0' : SPACING.XL
           }}
         >
-          {field_title_context}
+          {fieldTitleContext}
         </Heading>
       </Margins>
 
@@ -38,7 +39,7 @@ export default function FullWidthTemplate({ data, ...rest }) {
       {body && (
         <Margins
           css={{
-            marginBottom: fullPanels.length ? '0' : SPACING['5XL'],
+            marginBottom: fullPanels.length ? '0' : SPACING['5XL']
           }}
         >
           <Html html={body.processed} />
@@ -52,9 +53,17 @@ export default function FullWidthTemplate({ data, ...rest }) {
   );
 }
 
-export function Head({ data }) {
+FullWidthTemplate.propTypes = {
+  data: PropTypes.shape({
+    parents: PropTypes.any
+  })
+};
+
+/* eslint-disable react/prop-types */
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={getNode(data)} />;
-}
+};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!, $parents: [String]) {

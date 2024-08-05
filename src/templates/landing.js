@@ -1,21 +1,23 @@
-import React from 'react';
+/* eslint-disable camelcase */
 import { graphql } from 'gatsby';
-import { Margins } from '../reusable';
-import Layout from '../components/layout';
-import SearchEngineOptimization from '../components/seo';
-import PageHeader from '../components/page-header';
 import Html from '../components/html';
+import Layout from '../components/layout';
+import { Margins } from '../reusable';
+import PageHeader from '../components/page-header';
 import Panels from '../components/panels';
+import PropTypes from 'prop-types';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
 import transformNodePanels from '../utils/transform-node-panels';
 
-export default function LandingTemplate({ data, ...rest }) {
+export default function LandingTemplate ({ data }) {
   const node = data.page;
   const {
     field_title_context,
     body,
     fields,
     relationships,
-    drupal_internal__nid,
+    drupal_internal__nid
   } = node;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
@@ -26,8 +28,8 @@ export default function LandingTemplate({ data, ...rest }) {
         title={field_title_context}
         summary={body ? body.summary : null}
         image={
-          relationships.field_media_image &&
-          relationships.field_media_image.relationships.field_media_image
+          relationships.field_media_image
+          && relationships.field_media_image.relationships.field_media_image
         }
       />
       <Margins>
@@ -38,9 +40,34 @@ export default function LandingTemplate({ data, ...rest }) {
   );
 }
 
-export function Head({ data }) {
+LandingTemplate.propTypes = {
+  data: PropTypes.shape({
+    page: PropTypes.shape({
+      body: PropTypes.shape({
+        processed: PropTypes.any,
+        summary: PropTypes.any
+      }),
+      drupal_internal__nid: PropTypes.any,
+      field_title_context: PropTypes.any,
+      fields: PropTypes.shape({
+        breadcrumb: PropTypes.any
+      }),
+      relationships: PropTypes.shape({
+        field_media_image: PropTypes.shape({
+          relationships: PropTypes.shape({
+            field_media_image: PropTypes.any
+          })
+        })
+      })
+    })
+  })
+};
+
+/* eslint-disable react/prop-types */
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={data.page} />;
-}
+};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!, $parents: [String]) {

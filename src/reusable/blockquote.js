@@ -1,20 +1,24 @@
+import { COLORS, SPACING, TYPOGRAPHY } from '../reusable';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-import { SPACING, COLORS, TYPOGRAPHY } from '../reusable';
-
-export default function Blockquote({ children, ...rest }) {
+export default function Blockquote ({ children }) {
   return (
     <blockquote
       css={{
-        ...TYPOGRAPHY['XS'],
-        margin: SPACING['XL'] + '!important',
-        paddingLeft: SPACING['M'],
+        ...TYPOGRAPHY.XS,
         borderLeft: `solid 4px ${COLORS.teal['400']}`,
-        maxWidth: '38rem',
         fontStyle: 'italic',
+        margin: `${SPACING.XL}!important`,
+        maxWidth: '38rem',
+        paddingLeft: SPACING.M
       }}
     >
       {children}
     </blockquote>
   );
 }
+
+Blockquote.propTypes = {
+  children: PropTypes.node
+};

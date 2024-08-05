@@ -1,19 +1,30 @@
-import React from 'react';
 import { Icon } from '../reusable';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-export default function IconText({ d, icon, children, ...rest }) {
+export default function IconText ({
+  // eslint-disable-next-line react/prop-types
+  d: data,
+  icon, children
+}) {
   return (
     <span css={{ display: 'flex' }}>
       <span
         css={{
-          width: '1.75rem',
           flexShrink: '0',
           marginTop: '-2px',
+          width: '1.75rem'
         }}
       >
-        {d ? <Icon d={d} /> : <Icon icon={icon} />}
+        {data ? <Icon d={data} /> : <Icon icon={icon} />}
       </span>
       {children}
     </span>
   );
 }
+
+IconText.propTypes = {
+  children: PropTypes.node,
+  data: PropTypes.object,
+  icon: PropTypes.string
+};

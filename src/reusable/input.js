@@ -1,28 +1,35 @@
+import { INTENT_COLORS } from '../reusable';
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
-import { INTENT_COLORS } from '../reusable';
 
 const StyledInput = styled('input')(
   {
+    appearance: 'textfield',
+    border: 'solid 1px rgba(0,0,0,0.5)',
+    borderRadius: '4px',
+    boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.1)',
+    boxSizing: 'border-box',
+    fontFamily: 'inherit',
     fontSize: '1rem',
     margin: '0',
-    border: 'solid 1px rgba(0,0,0,0.5)',
-    boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.1)',
-    borderRadius: '4px',
     padding: '0.5rem 0.75rem',
-    width: '100%',
-    appearance: 'textfield',
-    fontFamily: 'inherit',
-    boxSizing: 'border-box',
+    width: '100%'
   },
-  ({ invalid }) => ({
-    borderColor: invalid && INTENT_COLORS.error,
-    borderWidth: invalid && '2px',
-  })
+  ({ invalid }) => {
+    return {
+      borderColor: invalid && INTENT_COLORS.error,
+      borderWidth: invalid && '2px'
+    };
+  }
 );
 
-function Input({ className, ...other }) {
+const Input = ({ className, ...other }) => {
   return <StyledInput className={className} {...other} />;
-}
+};
+
+Input.propTypes = {
+  className: PropTypes.string
+};
 
 export default Input;

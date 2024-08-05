@@ -1,10 +1,12 @@
-import React from 'react';
+/* eslint-disable camelcase */
 import { graphql } from 'gatsby';
 import Layout from '../components/layout';
-import SearchEngineOptimization from '../components/seo';
 import Panels from '../components/panels';
+import PropTypes from 'prop-types';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
 
-function HomePageTemplate({ data }) {
+const HomePageTemplate = ({ data }) => {
   const { drupal_internal__nid, relationships } = data.page;
 
   return (
@@ -15,13 +17,26 @@ function HomePageTemplate({ data }) {
       <Panels data={relationships.field_panels} />
     </Layout>
   );
-}
+};
+
+HomePageTemplate.propTypes = {
+  data: PropTypes.shape({
+    page: PropTypes.shape({
+      drupal_internal__nid: PropTypes.any,
+      relationships: PropTypes.shape({
+        field_panels: PropTypes.any
+      })
+    })
+  })
+};
 
 export default HomePageTemplate;
 
-export function Head({ data }) {
+/* eslint-disable react/prop-types */
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={data.page} />;
-}
+};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!) {

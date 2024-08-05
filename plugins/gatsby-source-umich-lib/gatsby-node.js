@@ -4,7 +4,7 @@ const { createBreadcrumb } = require(`./create-breadcrumb`);
 const { createStaffNodes } = require(`./create-staff-nodes`);
 const {
   createNetlifyRedirectsFile,
-  createLocalRedirects,
+  createLocalRedirects
 } = require('./create-redirects');
 
 /**
@@ -13,9 +13,9 @@ const {
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
-function removeTrailingSlash(s) {
-  return s.replace(/\/$/, '');
-}
+const removeTrailingSlash = (slash) => {
+  return slash.replace(/\/$/u, '');
+};
 
 /*
   Custom Drupal APIs created with Drupal views
@@ -28,7 +28,7 @@ function removeTrailingSlash(s) {
 
   [ [ [] ] ]
 */
-function sanitizeDrupalView(data) {
+const sanitizeDrupalView = (data) => {
   // Everything is wrapped in an array because Drupal views.
   if (Array.isArray(data)) {
     // We're looking for objects {}. If it's not an array
@@ -39,7 +39,7 @@ function sanitizeDrupalView(data) {
   }
 
   return null;
-}
+};
 
 exports.createSchemaCustomization = ({ actions }) => {
   const typeDefs = `
@@ -56,7 +56,7 @@ exports.createSchemaCustomization = ({ actions }) => {
 };
 
 /*
-  sourceNodes is only called once per plugin by Gatsby.
+  SourceNodes is only called once per plugin by Gatsby.
 */
 exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
   const { createNode } = actions;
@@ -70,11 +70,11 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
         children: [... more of these objects],
       }
     */
-  function processDrupalNavData(data) {
+  const processDrupalNavData = (data) => {
     return data.map((item) => {
-      let navItem = {
+      const navItem = {
         text: item.text,
-        to: item.to,
+        to: item.to
       };
 
       if (item.description && item.description.length) {
@@ -91,27 +91,27 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
 
       return navItem;
     });
-  }
+  };
 
   /*
     Create navigation nodes.
   */
-  function createNavNode(id, type, data) {
+  const createNavNode = (id, type, data) => {
     const processedData = processDrupalNavData(data);
 
     const nodeMeta = {
-      id,
-      parent: null,
       children: [],
+      id,
       internal: {
-        type: type,
         content: JSON.stringify(data),
         contentDigest: createContentDigest(processedData),
+        type
       },
       nav: processedData,
+      parent: null
     };
     createNode(nodeMeta);
-  }
+  };
 
   const baseUrlWithoutTrailingSlash = removeTrailingSlash(baseUrl);
 
@@ -119,25 +119,24 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
     Fetch data from Drupal for primary and utlity,
     process it, then create nodes for each.
   */
-  const nav_primary_data = await fetch(
-    baseUrlWithoutTrailingSlash + '/api/nav/primary'
+  const navPrimaryData = await fetch(
+    `${baseUrlWithoutTrailingSlash}/api/nav/primary`
   );
-  createNavNode('nav-primary', 'NavPrimary', nav_primary_data[0].children);
+  createNavNode('nav-primary', 'NavPrimary', navPrimaryData[0].children);
 
-  const nav_utility_data = await fetch(
-    baseUrlWithoutTrailingSlash + '/api/nav/utility'
+  const navUtilityData = await fetch(
+    `${baseUrlWithoutTrailingSlash}/api/nav/utility`
   );
-  createNavNode('nav-utlity', 'NavUtility', nav_utility_data[0].children);
+  createNavNode('nav-utlity', 'NavUtility', navUtilityData[0].children);
 
   /*
     Fetch Staff person related data. Used for creating
     Staff Directory and Specialist pages.
   */
-  const staffRawData = await fetch(baseUrlWithoutTrailingSlash + '/api/staff');
+  const staffRawData = await fetch(`${baseUrlWithoutTrailingSlash}/api/staff`);
   createStaffNodes({ createNode, staffRawData });
 
   // Tell Gatsby we're done.
-  return;
 };
 
 /*
@@ -147,7 +146,7 @@ exports.sourceNodes = async ({ actions, createContentDigest }, { baseUrl }) => {
   Take the the graphql node __typename and trim "node__" from it.
   so "node__events_and_exhibits" => "events_and_exhibits".
 */
-const drupal_node_types_we_care_about = [
+const drupalNodeTypesWeCareAbout = [
   'page',
   'building',
   'section_page',
@@ -156,7 +155,7 @@ const drupal_node_types_we_care_about = [
   'floor_plan',
   'department',
   'news',
-  'events_and_exhibits',
+  'events_and_exhibits'
 ];
 
 // Create a slug for each page and set it as a field on the node.
@@ -167,54 +166,54 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
   // Check for Drupal node type.
   // Substring off the "node__" part.
   if (
-    drupal_node_types_we_care_about.includes(node.internal.type.substring(6))
+    drupalNodeTypesWeCareAbout.includes(node.internal.type.substring(6))
   ) {
     // Handle creating breadcrumb for node.
     createBreadcrumb({
-      node,
-      createNodeField,
       baseUrl: baseUrlWithoutTrailingSlash,
+      createNodeField,
+      node
     });
 
     createNodeField({
-      node,
       name: `slug`,
-      value: node.path.alias,
+      node,
+      value: node.path.alias
     });
 
     createNodeField({
-      node,
       name: `title`,
-      value: node.title,
+      node,
+      value: node.title
     });
   }
 
-  async function createParentChildFields(fieldId, name) {
+  const createParentChildFields = async (fieldId, name) => {
     if (node[fieldId]) {
       const url = baseUrlWithoutTrailingSlash + node[fieldId];
       const data = await fetch(url);
       const sanitizedData = sanitizeDrupalView(data);
       const value = sanitizedData
-        ? sanitizedData.map(({ uuid }) => uuid)
+        ? sanitizedData.map(({ uuid }) => {
+          return uuid;
+        })
         : [`no-${name}`];
 
       createNodeField({
-        node,
         name,
-        value,
+        node,
+        value
       });
     }
-
-    return;
-  }
+  };
 
   await createParentChildFields('field_parent_menu', 'parents');
   await createParentChildFields('field_child_menu', 'children');
 };
 
 // Implement the Gatsby API “createPages”. This is called once the
-// data layer is bootstrapped to let plugins create pages from data.
-exports.createPages = ({ actions, graphql }, { baseUrl }) => {
+// Data layer is bootstrapped to let plugins create pages from data.
+exports.createPages = ({ actions, graphql }) => {
   const { createPage, createRedirect } = actions;
 
   createLocalRedirects({ createRedirect });
@@ -252,10 +251,10 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
     */
     const eventTemplate = path.resolve(`src/templates/event.js`);
 
-    function getTemplate(node) {
-      const { field_machine_name } = node.relationships.field_design_template;
+    const getTemplate = (node) => {
+      const { field_machine_name: fieldMachineName } = node.relationships.field_design_template;
 
-      switch (field_machine_name) {
+      switch (fieldMachineName) {
         case 'basic':
           return basicTemplate;
         case 'homepage':
@@ -292,7 +291,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
         default:
           return null;
       }
-    }
+    };
 
     // Query for nodes to use in creating pages.
     resolve(
@@ -616,7 +615,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           floorPlans,
           departments,
           news,
-          events,
+          events
         } = result.data;
         const edges = pages.edges
           .concat(sections.edges)
@@ -637,15 +636,16 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
 
           if (template) {
             createPage({
-              path: node.fields.slug,
               component: template,
               context: {
                 ...node.fields,
-                title: node.title,
+                // eslint-disable-next-line camelcase
                 drupal_nid: node.drupal_internal__nid,
+                keywords,
                 summary,
-                keywords: keywords,
+                title: node.title
               },
+              path: node.fields.slug
             });
           }
         });
@@ -659,15 +659,16 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
           const profileTemplate = path.resolve(`src/templates/profile.js`);
 
           createPage({
-            path: `/users/${node.name}`,
             component: profileTemplate,
             context: {
-              name: node.name,
-              title: node.field_user_display_name,
-              summary: node.field_user_work_title, // used for site search
-              uniqname: node.name,
               kind: 'user',
+              name: node.name,
+              // Used for site search
+              summary: node.field_user_work_title,
+              title: node.field_user_display_name,
+              uniqname: node.name
             },
+            path: `/users/${node.name}`
           });
         });
       })
@@ -675,6 +676,7 @@ exports.createPages = ({ actions, graphql }, { baseUrl }) => {
   });
 };
 
+// eslint-disable-next-line no-empty-pattern
 exports.onPreBootstrap = async ({}, { baseUrl }) => {
-  createNetlifyRedirectsFile({ baseUrl: removeTrailingSlash(baseUrl) });
+  await createNetlifyRedirectsFile({ baseUrl: removeTrailingSlash(baseUrl) });
 };
