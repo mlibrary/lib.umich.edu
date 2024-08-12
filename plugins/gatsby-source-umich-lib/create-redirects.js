@@ -22,12 +22,13 @@ const downloadRedirectsFile = async (url, path) => {
       );
 
       if (hasFirstRedirect) {
+        // eslint-disable-next-line no-console
         console.log(
           '[redirects] _redirects file was **successfully** created.'
         );
         resolve();
       } else {
-        throw `[redirects] Error! Unable to verify first redirect rule.`;
+        throw new Error(`[redirects] Error! Unable to verify first redirect rule.`);
       }
     });
   });
@@ -41,28 +42,29 @@ const downloadRedirectsFile = async (url, path) => {
  * Production _redirects file: https://cms.lib.umich.edu/_redirects
  * Netlify redirect docs: https://docs.netlify.com/routing/redirects/
  */
-async function createNetlifyRedirectsFile({ baseUrl }) {
+const createNetlifyRedirectsFile = async ({ baseUrl }) => {
   const dir = 'public';
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
 
-  downloadRedirectsFile(baseUrl + '/_redirects', redirectsPath);
-}
+  await downloadRedirectsFile(`${baseUrl}/_redirects`, redirectsPath);
+};
 
 exports.createNetlifyRedirectsFile = createNetlifyRedirectsFile;
 
 /*
   https://www.gatsbyjs.org/packages/gatsby-plugin-client-side-redirect/
 */
-function createLocalRedirects({ createRedirect }) {
+const createLocalRedirects = ({ createRedirect }) => {
+  // eslint-disable-next-line no-console
   console.log('[redirects] Creating local redirects.');
 
   const readInterface = readline.createInterface({
-    input: fs.createReadStream('public/_redirects'),
+    input: fs.createReadStream('public/_redirects')
   });
 
-  readInterface.on('line', function (line) {
+  readInterface.on('line', (line) => {
     if (line) {
       const urls = line.split(' ');
       /**
@@ -71,7 +73,7 @@ function createLocalRedirects({ createRedirect }) {
        */
       if (urls[0].startsWith('/') && !urls[0].endsWith('/*')) {
         /*
-        console.log('[redirect] URL:')
+        Console.log('[redirect] URL:')
         console.log(' - from: ' + urls[0])
         console.log(' - to: ' + urls[1])
         */
@@ -82,13 +84,13 @@ function createLocalRedirects({ createRedirect }) {
          */
         createRedirect({
           fromPath: urls[0],
-          toPath: urls[1],
           isPermanent: true,
           redirectInBrowser: true,
+          toPath: urls[1]
         });
       }
     }
   });
-}
+};
 
 exports.createLocalRedirects = createLocalRedirects;

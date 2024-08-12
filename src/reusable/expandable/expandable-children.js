@@ -1,43 +1,30 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext, useEffect } from 'react';
 import { ExpandableContext } from './expandable';
+import PropTypes from 'prop-types';
 
-class ExpandableChildrenComponent extends Component {
-  componentDidMount() {
-    const { context, children, show } = this.props;
+const ExpandableChildrenComponent = ({ children, show = 3 }) => {
+  const context = useContext(ExpandableContext);
 
+  useEffect(() => {
     if (children.length <= show && !context.disabled) {
       context.disable();
     }
-  }
+  }, [children, show, context]);
 
-  render() {
-    const { context, children, show } = this.props;
-
-    return (
-      <React.Fragment>
-        {context.expanded ? children : children.slice(0, show)}
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <>
+      {context.expanded ? children : children.slice(0, show)}
+    </>
+  );
+};
 
 ExpandableChildrenComponent.propTypes = {
-  show: PropTypes.number,
+  children: PropTypes.node.isRequired,
+  show: PropTypes.number
 };
 
-ExpandableChildrenComponent.defaultProps = {
-  show: 3,
+const ExpandableChildren = (props) => {
+  return <ExpandableChildrenComponent {...props} />;
 };
-
-function ExpandableChildren(props) {
-  return (
-    <ExpandableContext.Consumer>
-      {(context) => (
-        <ExpandableChildrenComponent {...props} context={context} />
-      )}
-    </ExpandableContext.Consumer>
-  );
-}
 
 export default ExpandableChildren;

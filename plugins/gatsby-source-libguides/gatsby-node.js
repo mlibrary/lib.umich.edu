@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const originalFetch = require('isomorphic-fetch');
 const fetch = require('fetch-retry')(originalFetch);
 
@@ -15,62 +16,64 @@ exports.sourceNodes = async (
     return; // Tell Gatsby we're done.
   }
 
-  async function clientTokenFetch() {
+  const clientTokenFetch = async () => {
     const bodyObj = {
       client_id: client.id,
       client_secret: client.secret,
-      grant_type: 'client_credentials',
+      grant_type: 'client_credentials'
     };
     const bodyKeys = Object.keys(bodyObj).map(
-      (key) => `${key}=${bodyObj[key]}`
+      (key) => {
+        return `${key}=${bodyObj[key]}`;
+      }
     );
     const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
       body: bodyKeys.join('&'),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      method: 'POST'
     };
 
     return fetch(client.url, options)
-      .then(function (resp) {
+      .then((resp) => {
         return resp.json();
       })
-      .then(function (data) {
+      .then((data) => {
         return data;
       })
-      .catch(function () {
+      .catch(() => {
         reporter.error(
           `[gatsby-source-libguides]`,
           new Error('Unable to authenticate.')
         );
       });
-  }
+  };
 
   const clientData = await clientTokenFetch();
 
-  async function fetchGuides() {
+  const fetchGuides = async () => {
     const options = {
-      method: 'GET',
       headers: {
-        Authorization: `Bearer ${clientData.access_token}`,
+        Authorization: `Bearer ${clientData.access_token}`
       },
+      method: 'GET'
     };
 
     return fetch(api.url, options)
-      .then(function (resp) {
+      .then((resp) => {
         return resp.json();
       })
-      .then(function (data) {
+      .then((data) => {
         return data;
       })
-      .catch(function () {
+      .catch(() => {
         reporter.error(
           `[gatsby-source-libguides]`,
           new Error('Unable to fetch from API.')
         );
       });
-  }
+  };
 
   const guidesData = await fetchGuides();
 
@@ -83,20 +86,20 @@ exports.sourceNodes = async (
   guidesData.forEach((guide) => {
     const nodeContent = JSON.stringify(guide);
     const nodeMeta = {
-      id: createNodeId(`libguide-${guide.id}`),
-      parent: null,
       children: [],
+      id: createNodeId(`libguide-${guide.id}`),
       internal: {
-        type: 'LibGuide',
         content: nodeContent,
         contentDigest: createContentDigest(guide),
+        type: 'LibGuide'
       },
+      parent: null
     };
-    const node = Object.assign({}, guide, nodeMeta);
+    const node = { ...guide, ...nodeMeta };
     createNode(node);
   });
 
   reporter.info(`[gatsby-source-libguides] Done.`);
 
-  return; // Tell Gatsby we're done sourcing nodes.
+  // Tell Gatsby we're done sourcing nodes.
 };

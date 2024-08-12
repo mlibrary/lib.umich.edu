@@ -1,38 +1,40 @@
-import React, { Component } from 'react';
-import { ExpandableContext } from './expandable';
+import React, { useContext } from 'react';
 import { Button } from '../../reusable';
+import { ExpandableContext } from './expandable';
+import PropTypes from 'prop-types';
 
 const cleanList = (list) => {
   return list
-    .filter((x) => (x ? true : false))
+    .filter((toFilter) => {
+      return Boolean(toFilter);
+    })
     .join(' ')
     .trim();
 };
 
-class ExpandableButtonComponent extends Component {
-  render() {
-    const { context } = this.props;
+const ExpandableButton = (props) => {
+  const context = useContext(ExpandableContext);
 
-    if (context.disabled) {
-      return null;
-    }
-
-    return (
-      <Button {...this.props} onClick={() => context.toggleExpanded()}>
-        {context.expanded
-          ? cleanList(['Show fewer', this.props.name])
-          : cleanList(['Show all', this.props.count, this.props.name])}
-      </Button>
-    );
+  if (context.disabled) {
+    return null;
   }
-}
 
-function ExpandableButton(props) {
   return (
-    <ExpandableContext.Consumer>
-      {(context) => <ExpandableButtonComponent {...props} context={context} />}
-    </ExpandableContext.Consumer>
+    <Button
+      {...props}
+      onClick={context.toggleExpanded}
+    >
+      {context.expanded
+        ? cleanList(['Show fewer', props.name])
+        : cleanList(['Show all', props.count, props.name])}
+    </Button>
   );
-}
+};
+
+ExpandableButton.propTypes = {
+  count: PropTypes.number,
+  name: PropTypes.string,
+  props: PropTypes.object
+};
 
 export default ExpandableButton;

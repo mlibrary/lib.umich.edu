@@ -1,8 +1,8 @@
-import React from 'react';
+import { COLORS, lightOrDark, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
-import { COLORS, SPACING, lightOrDark } from '../reusable';
+import React from 'react';
 
-function getButtonColor(kind) {
+const getButtonColor = (kind) => {
   switch (kind) {
     case 'primary':
       return COLORS.maize;
@@ -12,53 +12,53 @@ function getButtonColor(kind) {
     default:
       return COLORS.blue;
   }
-}
+};
 
-function getButtonKindCSS(kind, color) {
+const getButtonKindCSS = (kind, color) => {
   switch (kind) {
     case 'tertiary':
       return {
-        background: 'white',
-        padding: `calc(${SPACING['XS']} - 1px) calc(${SPACING['M']} - 1px)`,
-        border: `solid 1px ${color['400']}`,
-        color: color['400'],
         ':hover': {
           outline: `solid 1px ${color['400']}`,
-          outlineOffset: '-2px',
+          outlineOffset: '-2px'
         },
+        background: 'white',
+        border: `solid 1px ${color['400']}`,
+        color: color['400'],
+        padding: `calc(${SPACING.XS} - 1px) calc(${SPACING.M} - 1px)`
       };
     case 'subtle':
       return {
-        background: COLORS.neutral['100'],
         ':hover': {
-          background: COLORS.blue['200'],
+          background: COLORS.blue['200']
         },
+        background: COLORS.neutral['100']
       };
     case 'reset':
       return {};
     default:
       return {
-        background: color['400'],
         ':hover': {
-          background: color['500'],
+          background: color['500']
         },
+        background: color['400']
       };
   }
-}
+};
 
-function getDisabledCSS(disabled) {
+const getDisabledCSS = (disabled) => {
   if (disabled) {
     return {
-      opacity: '0.5',
       ':hover': {},
       cursor: 'not-allowed',
+      opacity: '0.5'
     };
   }
 
   return {};
-}
+};
 
-function getButtonCSS(kind, disabled) {
+const getButtonCSS = (kind, disabled) => {
   const color = getButtonColor(kind);
 
   if (kind === 'reset') {
@@ -66,39 +66,36 @@ function getButtonCSS(kind, disabled) {
   }
 
   return {
-    display: 'flex',
     alignItems: 'center',
     borderRadius: '2px',
-    minHeight: '2.5rem',
-    padding: `${SPACING['XS']} ${SPACING['M']}`,
     color:
       lightOrDark(color['400']) === 'light' || kind === 'subtle'
         ? 'inherit'
         : 'white',
+    display: 'flex',
     fontWeight: '800',
+    minHeight: '2.5rem',
+    padding: `${SPACING.XS} ${SPACING.M}`,
     ...getButtonKindCSS(kind, color, disabled),
     ':focus': {
-      outline: 'none',
       boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px ${COLORS.neutral['400']}`,
+      outline: 'none'
     },
-    ...getDisabledCSS(disabled),
+    ...getDisabledCSS(disabled)
   };
-}
+};
 
 /**
  * Use buttons to move though a transaction, aim to use only one primary button per page.
  */
-const Button = ({ kind, disabled, ...rest }) => {
+const Button = ({ kind = 'secondary', disabled, ...rest }) => {
   return <button css={getButtonCSS(kind, disabled)} {...rest} />;
 };
 
 Button.propTypes = {
+  disabled: PropTypes.bool,
   kind: PropTypes.oneOf(['primary', 'secondary', 'tertiary', 'subtle', 'reset'])
-    .isRequired,
-};
-
-Button.defaultProps = {
-  kind: 'secondary',
+    .isRequired
 };
 
 export default Button;

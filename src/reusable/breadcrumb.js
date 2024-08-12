@@ -1,27 +1,27 @@
-import React from 'react';
+import { Icon, Link, MEDIA_QUERIES, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
-import { MEDIA_QUERIES, SPACING, Link, Icon } from '../reusable';
+import React from 'react';
 
 const Breadcrumb = ({ children, ...rest }) => {
   const numberOfBreadcrumbs = React.Children.count(children);
-  const parentBreadcrumbIndex =
-    numberOfBreadcrumbs > 1 ? numberOfBreadcrumbs - 2 : 0;
+  const parentBreadcrumbIndex
+    = numberOfBreadcrumbs > 1 ? numberOfBreadcrumbs - 2 : 0;
 
-  function isParent(i) {
-    return parentBreadcrumbIndex === i;
-  }
+  const isParent = (index) => {
+    return parentBreadcrumbIndex === index;
+  };
 
   return (
     <nav
-      aria-label="Breadcrumb"
+      aria-label='Breadcrumb'
       {...rest}
       css={{
-        paddingTop: SPACING['M'],
-        paddingBottom: SPACING['M'],
+        paddingBottom: SPACING.M,
+        paddingTop: SPACING.M,
         [MEDIA_QUERIES.LARGESCREEN]: {
-          paddingTop: SPACING['2XL'],
-          paddingBottom: SPACING['XL'],
-        },
+          paddingBottom: SPACING.XL,
+          paddingTop: SPACING['2XL']
+        }
       }}
     >
       <ol
@@ -29,51 +29,53 @@ const Breadcrumb = ({ children, ...rest }) => {
           [MEDIA_QUERIES.LARGESCREEN]: {
             '> li': {
               display: 'inline-block',
-              marginRight: SPACING['2XS'],
-            },
-          },
+              marginRight: SPACING['2XS']
+            }
+          }
         }}
       >
-        {React.Children.map(children, (child, i) => (
-          <li
-            key={`breadcrumb-${i}`}
-            css={{
-              display: isParent(i) ? 'block' : 'none',
-              [MEDIA_QUERIES.LARGESCREEN]: {
-                display: 'block',
-              },
-            }}
-          >
-            <span
-              aria-hidden="true"
+        {React.Children.map(children, (child, index) => {
+          return (
+            <li
+              key={`breadcrumb-${index}`}
               css={{
-                marginRight: SPACING['2XS'],
+                display: isParent(index) ? 'block' : 'none',
+                [MEDIA_QUERIES.LARGESCREEN]: {
+                  display: 'block'
+                }
               }}
             >
-              <Icon
-                icon="navigate_next"
+              <span
+                aria-hidden='true'
                 css={{
-                  display: 'none',
-                  [MEDIA_QUERIES.LARGESCREEN]: {
-                    display: i === 0 ? 'none' : 'inline-block',
-                  },
+                  marginRight: SPACING['2XS']
                 }}
-              />
-              <Icon
-                icon="navigate_before"
-                css={{
-                  display: 'inline-block',
-                  [MEDIA_QUERIES.LARGESCREEN]: {
+              >
+                <Icon
+                  icon='navigate_next'
+                  css={{
                     display: 'none',
-                  },
-                }}
-              />
-            </span>
-            {React.cloneElement(child, {
-              isCurrent: i === numberOfBreadcrumbs - 1,
-            })}
-          </li>
-        ))}
+                    [MEDIA_QUERIES.LARGESCREEN]: {
+                      display: index === 0 ? 'none' : 'inline-block'
+                    }
+                  }}
+                />
+                <Icon
+                  icon='navigate_before'
+                  css={{
+                    display: 'inline-block',
+                    [MEDIA_QUERIES.LARGESCREEN]: {
+                      display: 'none'
+                    }
+                  }}
+                />
+              </span>
+              {React.cloneElement(child, {
+                isCurrent: index === numberOfBreadcrumbs - 1
+              })}
+            </li>
+          );
+        })}
       </ol>
     </nav>
   );
@@ -83,13 +85,13 @@ Breadcrumb.propTypes = {
   /**
    * Pass in the BreadcrumbItem's for your Breadcrumb
    */
-  children: PropTypes.node,
+  children: PropTypes.node
 };
 
 const BreadcrumbItem = ({ children, href, isCurrent, ...rest }) => {
   const currentProps = isCurrent
     ? {
-        'aria-current': 'page',
+        'aria-current': 'page'
       }
     : {};
 
@@ -113,11 +115,11 @@ BreadcrumbItem.propTypes = {
    * Pass in content that will be inside of the BreadcrumbItem
    */
   children: PropTypes.node,
-
   /**
    * Optional string representing the link location for the BreadcrumbItem
    */
   href: PropTypes.string,
+  isCurrent: PropTypes.bool
 };
 
 export { Breadcrumb, BreadcrumbItem };

@@ -1,24 +1,23 @@
-import React from 'react';
-
 import { COLORS, Heading, SPACING, Z_SPACE } from '../reusable';
+import React from 'react';
 
 export default function ChatIframe () {
   return (
     <div
       css={{
-        marginTop: SPACING.S,
-        maxWidth: '20rem',
         border: `solid 1px ${COLORS.neutral['100']}`,
         borderRadius: '4px',
         borderTop: `solid 2px ${COLORS.maize['400']}`,
+        marginTop: SPACING.S,
+        maxWidth: '20rem',
         ...Z_SPACE['8']
       }}
     >
       <Heading
         size='2XS'
         css={{
-          display: 'flex',
           alignItems: 'center',
+          display: 'flex',
           padding: `${SPACING['2XS']} ${SPACING.S}`
         }}
       >
@@ -28,9 +27,9 @@ export default function ChatIframe () {
           width='24'
           css={{
             flexShrink: '0',
+            height: '32px',
             marginRight: SPACING.M,
-            width: '32px',
-            height: '32px'
+            width: '32px'
           }}
         >
           <path

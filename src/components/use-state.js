@@ -1,13 +1,22 @@
 import React, { createContext, useContext, useReducer } from 'react';
+import PropTypes from 'prop-types';
 
 const StateContext = createContext();
 
-export function StateProvider({ reducer, initialState, children }) {
+export const StateProvider = ({ reducer, initialState, children }) => {
   return (
     <StateContext.Provider value={useReducer(reducer, initialState)}>
       {children}
     </StateContext.Provider>
   );
-}
+};
 
-export const useStateValue = () => useContext(StateContext);
+StateProvider.propTypes = {
+  children: PropTypes.node,
+  initialState: PropTypes.object,
+  reducer: PropTypes.func
+};
+
+export const useStateValue = () => {
+  return useContext(StateContext);
+};

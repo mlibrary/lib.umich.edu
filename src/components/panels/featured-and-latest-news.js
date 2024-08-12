@@ -1,44 +1,76 @@
-import React from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
-import styled from '@emotion/styled';
-import { SPACING, MEDIA_QUERIES, COLORS, Heading, Margins } from '../../reusable';
+import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
+import { graphql, useStaticQuery } from 'gatsby';
 import Card from '../card';
 import Link from '../link';
+import React from 'react';
+import styled from '@emotion/styled';
 
-function processNewsNodeForCard ({ newsNode }) {
-  const newsImage =
-    newsNode.relationships?.field_media_image?.relationships?.field_media_image
+const processNewsNodeForCard = ({ newsNode }) => {
+  const newsImage
+    = newsNode.relationships?.field_media_image?.relationships?.field_media_image
       ?.localFile?.childImageSharp?.gatsbyImageData;
 
   const children = newsNode.body?.summary;
 
   return {
-    title: newsNode.title,
-    subtitle: new Date(newsNode.created).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }),
+    children,
     href: newsNode.fields.slug,
     image: newsImage,
-    children
+    subtitle: new Date(newsNode.created).toLocaleString('en-US', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }),
+    title: newsNode.title
   };
-}
+};
 
 /*
-  Experimenting with this layout system.
-*/
+ *Experimenting with this layout system.
+ */
 const Layout = styled.div({
   display: 'grid',
+  gridGap: SPACING.S,
   gridTemplateColumns: `
     [content-start] repeat(11, 1fr)
     1fr [content-end]
   `,
-  gridGap: SPACING.S,
   [MEDIA_QUERIES.LARGESCREEN]: {
     gridGap: SPACING.L
   }
 });
+
+const sortNews = ({ data }) => {
+  const priorityNewsCount = data.priorityNews.edges.length;
+
+  // If there is no priority news, just send back recent news.
+  if (priorityNewsCount === 0) {
+    return data.recentNews;
+  }
+
+  // Otherwise, merge the two, sort by date.
+  const recentNewsSliced = data.recentNews.edges.slice(
+    0,
+    5 - priorityNewsCount
+  );
+  const allNews = data.priorityNews.edges.concat(recentNewsSliced);
+
+  const compareCreatedDate = (compareA, compareB) => {
+    if (Date.parse(compareA.node.created) < Date.parse(compareB.node.created)) {
+      return 1;
+    }
+
+    if (Date.parse(compareA.node.created) > Date.parse(compareB.node.created)) {
+      return -1;
+    }
+
+    return 0;
+  };
+
+  const sorted = [...allNews].sort(compareCreatedDate);
+
+  return sorted;
+};
 
 export default function FeaturedAndLatestNews () {
   const data = useStaticQuery(graphql`
@@ -138,8 +170,8 @@ export default function FeaturedAndLatestNews () {
           <div
             css={{
               [MEDIA_QUERIES.LARGESCREEN]: {
-                paddingRight: SPACING.XL,
-                borderRight: `solid 1px ${COLORS.neutral['100']}`
+                borderRight: `solid 1px ${COLORS.neutral['100']}`,
+                paddingRight: SPACING.XL
               }
             }}
           >
@@ -166,8 +198,8 @@ export default function FeaturedAndLatestNews () {
             level={2}
             size='M'
             css={{
-              marginTop: SPACING.XL,
               marginBottom: SPACING.L,
+              marginTop: SPACING.XL,
               [MEDIA_QUERIES.LARGESCREEN]: {
                 marginTop: 0
               }
@@ -183,9 +215,9 @@ export default function FeaturedAndLatestNews () {
               }
             }}
           >
-            {recentNewsCardProps.map(({ title, subtitle, href }, i) => {
+            {recentNewsCardProps.map(({ title, subtitle, href }, item) => {
               return (
-                <li key={i + href}>
+                <li key={item + href}>
                   <Card title={title} subtitle={subtitle} href={href} />
                 </li>
               );
@@ -197,36 +229,4 @@ export default function FeaturedAndLatestNews () {
       </Layout>
     </Margins>
   );
-}
-
-function sortNews ({ data }) {
-  const priorityNewsCount = data.priorityNews.edges.length;
-
-  // If there is no priority news, just send back recent news.
-  if (priorityNewsCount === 0) {
-    return data.recentNews;
-  }
-
-  // Otherwise, merge the two, sort by date.
-  const recentNewsSliced = data.recentNews.edges.slice(
-    0,
-    5 - priorityNewsCount
-  );
-  const allNews = data.priorityNews.edges.concat(recentNewsSliced);
-
-  function compareCreatedDate (a, b) {
-    if (Date.parse(a.node.created) < Date.parse(b.node.created)) {
-      return 1;
-    }
-
-    if (Date.parse(a.node.created) > Date.parse(b.node.created)) {
-      return -1;
-    }
-
-    return 0;
-  }
-
-  const sorted = [...allNews].sort(compareCreatedDate);
-
-  return sorted;
 }

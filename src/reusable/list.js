@@ -1,37 +1,36 @@
-import React from 'react';
-import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
-
+import React from 'react';
 import { SPACING } from '../reusable';
+import styled from '@emotion/styled';
 
 const baseListStyles = {
-  margin: '0',
-  padding: '0',
-  listStyle: 'none',
-  maxWidth: '38rem',
   'li:not(:last-child)': {
-    marginBottom: SPACING['XS'],
+    marginBottom: SPACING.XS
   },
+  listStyle: 'none',
+  margin: '0',
+  maxWidth: '38rem',
+  padding: '0'
 };
 
 const StyledList = styled('ul')({
-  ...baseListStyles,
+  ...baseListStyles
 });
 
 const listPaddingStyles = {
-  marginLeft: '1.5rem',
+  marginLeft: '1.5rem'
 };
 
 const StyledUL = styled('ul')({
   ...baseListStyles,
   ...listPaddingStyles,
-  listStyle: 'disc',
+  listStyle: 'disc'
 });
 
 const StyledOL = styled('ol')({
   ...baseListStyles,
   ...listPaddingStyles,
-  listStyle: 'decimal',
+  listStyle: 'decimal'
 });
 
 const List = ({ className, children, type, ...other }) => {
@@ -59,7 +58,9 @@ const List = ({ className, children, type, ...other }) => {
 };
 
 List.propTypes = {
-  type: PropTypes.string,
+  children: PropTypes.any,
+  className: PropTypes.any,
+  type: PropTypes.string
 };
 
 export default List;

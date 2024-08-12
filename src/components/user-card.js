@@ -1,7 +1,8 @@
-import React from 'react';
+import { COLORS, SPACING, Text } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { Text, SPACING, COLORS } from '../reusable';
 import Link from './link';
+import PropTypes from 'prop-types';
+import React from 'react';
 import StaffPhotoPlaceholder from './staff-photo-placeholder';
 
 const photoContainerCSS = {
@@ -13,7 +14,7 @@ const photoContainerCSS = {
   width: '75px'
 };
 
-function UserPhoto({ image }) {
+const UserPhoto = ({ image }) => {
   if (!image) {
     return (
       <div css={photoContainerCSS}>
@@ -29,37 +30,50 @@ function UserPhoto({ image }) {
       css={photoContainerCSS}
     />
   );
-}
+};
 
-export default function UserCard({ name, to, image, title, phone, email }) {
+UserPhoto.propTypes = {
+  image: PropTypes.object
+};
+
+export default function UserCard ({ name, to, image, title, phone, email }) {
   return (
     <section
       css={{
         display: 'flex',
-        margin: `${SPACING['L']} 0`,
+        margin: `${SPACING.L} 0`
       }}
     >
       <UserPhoto image={image} />
       <div
         css={{
-          marginLeft: SPACING['M'],
+          marginLeft: SPACING.M
         }}
       >
-        <Link to={to} kind="description">
+        <Link to={to} kind='description'>
           {name}
         </Link>
         <Text>{title}</Text>
         {phone && (
           <p>
-            <Link to={'tel:' + phone}>{phone}</Link>
+            <Link to={`tel:${phone}`}>{phone}</Link>
           </p>
         )}
         {email && (
           <p>
-            <Link to={'mailto:' + email}>{email}</Link>
+            <Link to={`mailto:${email}`}>{email}</Link>
           </p>
         )}
       </div>
     </section>
   );
 }
+
+UserCard.propTypes = {
+  email: PropTypes.string,
+  image: PropTypes.string,
+  name: PropTypes.string,
+  phone: PropTypes.string,
+  title: PropTypes.string,
+  to: PropTypes.string
+};

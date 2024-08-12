@@ -1,23 +1,22 @@
-import React from 'react';
-import { COLORS, SPACING, Margins, Heading, MEDIA_QUERIES } from '../reusable';
-
+import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
+import createGoogleMapsUrl from './utilities/create-google-maps-url';
 import fdlp from '../images/fdlp.png';
 import icons from '../reusable/icons';
-import PlainLink from './plain-link';
 import IconText from './icon-text';
-import createGoogleMapsUrl from './utilities/create-google-maps-url';
+import PlainLink from './plain-link';
+import React from 'react';
 
 const locationURL = createGoogleMapsUrl({
   query:
     'University of Michigan Library, 913 S. University Avenue, Ann Arbor, MI 48109'
 });
 
-// eslint-disable-next-line
 const links = [
   {
     heading: 'University of Michigan Library',
     links: [
       {
+        data: icons.address,
         text: (
           <>
             913 S. University Avenue
@@ -25,28 +24,27 @@ const links = [
             Ann Arbor, MI 48109-1190
           </>
         ),
-        to: locationURL,
-        d: icons.address
+        to: locationURL
       },
       {
+        data: icons.phone,
         text: '(734) 764-0401',
-        to: 'tel:+1-734-764-0401',
-        d: icons.phone
+        to: 'tel:+1-734-764-0401'
       },
       {
+        icon: 'mail_outline',
         text: 'Send us an email',
-        to: 'https://teamdynamix.umich.edu/TDClient/88/Portal/Requests/TicketRequests/NewForm?ID=1751&RequestorType=Service',
-        icon: 'mail_outline'
+        to: 'https://teamdynamix.umich.edu/TDClient/88/Portal/Requests/TicketRequests/NewForm?ID=1751&RequestorType=Service'
       },
       {
+        icon: 'accessible_forward',
         text: 'Accessibility',
-        to: '/about-us/about-library/diversity-equity-inclusion-and-accessibility/accessibility',
-        icon: 'accessible_forward'
+        to: '/about-us/about-library/diversity-equity-inclusion-and-accessibility/accessibility'
       },
       {
+        icon: 'map',
         text: 'Site map',
-        to: '/site-map',
-        icon: 'map'
+        to: '/site-map'
       }
     ]
   },
@@ -54,49 +52,49 @@ const links = [
     heading: 'Our community',
     links: [
       {
+        icon: 'people_outline',
         text: 'Staff directory',
-        to: '/about-us/staff-directory',
-        icon: 'people_outline'
+        to: '/about-us/staff-directory'
       },
       {
+        icon: 'work',
         text: 'Work for us',
-        to: '/about-us/work-us',
-        icon: 'work'
+        to: '/about-us/work-us'
       },
       {
+        icon: 'blog',
         text: 'Blogs',
-        to: 'https://apps.lib.umich.edu/blogs',
-        icon: 'blog'
+        to: 'https://apps.lib.umich.edu/blogs'
       },
       {
+        icon: 'facebook',
         text: 'Facebook',
-        to: 'https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559',
-        icon: 'facebook'
+        to: 'https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559'
       },
       {
+        icon: 'twitter',
         text: 'X (formerly Twitter)',
-        to: 'https://twitter.com/umichlibrary',
-        icon: 'twitter'
+        to: 'https://twitter.com/umichlibrary'
       },
       {
+        icon: 'youtube',
         text: 'YouTube',
-        to: 'http://www.youtube.com/user/umlibrary/videos',
-        icon: 'youtube'
+        to: 'http://www.youtube.com/user/umlibrary/videos'
       }
     ]
   }
 ];
 
-function Footer () {
+const Footer = () => {
   const year = new Date(new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' })).getFullYear();
 
   return (
     <footer
       css={{
-        background: COLORS.blue['400'],
         '*:focus': {
           outlineColor: 'white'
-        }
+        },
+        background: COLORS.blue['400']
       }}
       role='contentinfo'
     >
@@ -107,17 +105,6 @@ function Footer () {
       >
         <div
           css={{
-            paddingTop: SPACING['2XL'],
-            paddingBottom: SPACING.L,
-            [MEDIA_QUERIES.LARGESCREEN]: {
-              paddingTop: SPACING['3XL'],
-              columns: '3',
-              columnGap: SPACING.XL,
-              '& section': {
-                breakInside: 'avoid',
-                marginBottom: '0'
-              }
-            },
             '& section:not(:last-of-type)': {
               marginBottom: SPACING.XL
             },
@@ -126,25 +113,37 @@ function Footer () {
             },
             'h2, h3': {
               color: COLORS.blue['200']
+            },
+            paddingBottom: SPACING.L,
+            paddingTop: SPACING['2XL'],
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              '& section': {
+                breakInside: 'avoid',
+                marginBottom: '0'
+              },
+              columnGap: SPACING.XL,
+              columns: '3',
+              paddingTop: SPACING['3XL']
             }
-          }
-        }
+          }}
         >
           {links.map((section) => {
+          /* eslint-disable id-length */
+          // Disabling because eslint is picking things up like "a" for anchor emotion css styles
             return (
               <section key={section.heading}>
                 <Heading level={2} size='3XS'>
                   {section.heading}
                 </Heading>
-                <nav aria-label={section.heading + ' links'}> 
+                <nav aria-label={`${section.heading} links`}>
                   <ul
                     css={{
                       paddingTop: SPACING.S
                     }}
                   >
-                    {section.links.map(({ text, to, d, icon }, y) => {
+                    {section.links.map(({ text, to, data: d, icon }, index) => {
                       return (
-                        <li key={y + to + text}>
+                        <li key={index + to + text}>
                           <PlainLink
                             to={to}
                             css={{
@@ -173,10 +172,10 @@ function Footer () {
               paddingTop: SPACING.XL,
               [MEDIA_QUERIES.LARGESCREEN]: {
                 border: '0',
-                padding: '0',
                 borderLeft: `solid 1px ${COLORS.blue['300']}`,
-                paddingLeft: SPACING.XL,
-                marginLeft: `-${SPACING['2XL']}`
+                marginLeft: `-${SPACING['2XL']}`,
+                padding: '0',
+                paddingLeft: SPACING.XL
               }
             }}
           >
@@ -194,15 +193,17 @@ function Footer () {
             </PlainLink>
             <p
               css={{
-                paddingTop: SPACING.S,
-                paddingBottom: SPACING.L
+                paddingBottom: SPACING.L,
+                paddingTop: SPACING.S
               }}
             >
-              Except where otherwise noted, this work is subject to a{' '}
+              Except where otherwise noted, this work is subject to a
+              {' '}
               <a href='http://creativecommons.org/licenses/by/4.0/'>
                 Creative Commons Attribution 4.0 license
               </a>
-              . For details and exceptions, see the{' '}
+              . For details and exceptions, see the
+              {' '}
               <PlainLink to='/about-us/policies/copyright-policy'>
                 Library Copyright Policy
               </PlainLink>
@@ -227,8 +228,8 @@ function Footer () {
       <div
         css={{
           background: COLORS.blue['500'],
-          padding: `${SPACING.M} 0`,
-          color: COLORS.blue['200']
+          color: COLORS.blue['200'],
+          padding: `${SPACING.M} 0`
         }}
       >
         <Margins>
@@ -236,15 +237,15 @@ function Footer () {
             <ul
               css={{
                 display: 'flex',
-                listStyle: 'none',
-                flexWrap: 'wrap'
+                flexWrap: 'wrap',
+                listStyle: 'none'
               }}
             >
               <li
                 css={{
+                  marginBottom: [SPACING.XS],
                   marginRight: [SPACING.XL],
-                  marginTop: [SPACING.XS],
-                  marginBottom: [SPACING.XS]
+                  marginTop: [SPACING.XS]
                 }}
               >
                 © {year}, Regents of the University of Michigan
@@ -252,9 +253,9 @@ function Footer () {
 
               <li
                 css={{
+                  marginBottom: [SPACING.XS],
                   marginRight: [SPACING.XL],
-                  marginTop: [SPACING.XS],
-                  marginBottom: [SPACING.XS]
+                  marginTop: [SPACING.XS]
                 }}
               >
                 <a
@@ -267,12 +268,13 @@ function Footer () {
 
               <li
                 css={{
+                  marginBottom: [SPACING.XS],
                   marginRight: [SPACING.XL],
-                  marginTop: [SPACING.XS],
-                  marginBottom: [SPACING.XS]
+                  marginTop: [SPACING.XS]
                 }}
               >
-                Built with the{' '}
+                Built with the
+                {' '}
                 <a
                   href='https://design-system.lib.umich.edu/'
                   css={{ textDecoration: 'underline' }}
@@ -286,6 +288,6 @@ function Footer () {
       </div>
     </footer>
   );
-}
+};
 
 export default Footer;

@@ -2,21 +2,21 @@ const { fetch } = require('./fetch');
 
 // Breadcumb
 // If the page has a breadcrumb, fetch it and store it as 'breadcrumb' field.
-function processBreadcrumbData({ node, data }) {
+const processBreadcrumbData = ({ data }) => {
   // We want to make sure the data returned has some breadcrumb items.
   // Sometimes Drupal will hand an empty array and that's
-  // not what we want to process.
+  // Not what we want to process.
   if (data.length) {
     let result = [];
-    function getParentItem(item) {
+    const getParentItem = (item) => {
       result = result.concat({
-        to: item.to,
         text: item.text,
+        to: item.to
       });
       if (item.parent) {
         getParentItem(item.parent[0]);
       }
-    }
+    };
     getParentItem(data[0]);
 
     // Reverse order and add current page to the end.
@@ -26,26 +26,26 @@ function processBreadcrumbData({ node, data }) {
   }
 
   return null;
-}
+};
 
-async function createBreadcrumb({ node, createNodeField, baseUrl }) {
-  function createBreadcrumbNodeField(value) {
+const createBreadcrumb = async ({ node, createNodeField, baseUrl }) => {
+  const createBreadcrumbNodeField = (value) => {
     createNodeField({
-      node,
       name: `breadcrumb`,
-      value: JSON.stringify(value),
+      node,
+      value: JSON.stringify(value)
     });
-  }
+  };
 
-  function createDefaultBreadcrumb() {
+  const createDefaultBreadcrumb = () => {
     const defaultBreadcrumb = [{ text: 'Home', to: '/' }, { text: node.title }];
 
     createBreadcrumbNodeField(defaultBreadcrumb);
-  }
+  };
 
   if (node.field_breadcrumb) {
     const data = await fetch(baseUrl + node.field_breadcrumb);
-    const breadcrumb = processBreadcrumbData({ node, data });
+    const breadcrumb = processBreadcrumbData({ data, node });
 
     if (breadcrumb) {
       createBreadcrumbNodeField(breadcrumb);
@@ -55,6 +55,6 @@ async function createBreadcrumb({ node, createNodeField, baseUrl }) {
   } else {
     createDefaultBreadcrumb();
   }
-}
+};
 
 exports.createBreadcrumb = createBreadcrumb;

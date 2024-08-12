@@ -1,15 +1,41 @@
-import React from 'react';
-import { graphql } from 'gatsby';
-import { Margins, Heading, SPACING, Expandable, ExpandableChildren, ExpandableButton } from '../reusable';
-import Layout from '../components/layout';
-import SearchEngineOptimization from '../components/seo';
-import Html from '../components/html';
+import { Expandable, ExpandableButton, ExpandableChildren, Heading, Margins, SPACING } from '../reusable';
+import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/card';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
+import { graphql } from 'gatsby';
+import Html from '../components/html';
+import Layout from '../components/layout';
 import PropTypes from 'prop-types';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
 
-function NewsLandingTemplate ({ data }) {
+const processNewsData = (data) => {
+  if (!data) {
+    return [];
+  }
+
+  return data.edges.map(({ node }) => {
+    const { title, created, body, relationships, fields } = node;
+    const image
+      = relationships?.field_media_image?.relationships?.field_media_image
+        ?.localFile?.childImageSharp?.gatsbyImageData;
+    const subtitle = new Date(created).toLocaleString('en-US', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    return {
+      description: body?.summary,
+      href: fields.slug,
+      image,
+      subtitle,
+      title
+    };
+  });
+};
+
+const NewsLandingTemplate = ({ data }) => {
   const news = processNewsData(data.featuredNews).concat(
     processNewsData(data.restNews)
   );
@@ -50,10 +76,10 @@ function NewsLandingTemplate ({ data }) {
               <Expandable>
                 <ol>
                   <ExpandableChildren show={newsMainInitialShow}>
-                    {news.map((item, i) => {
+                    {news.map((item, index) => {
                       return (
                         <li
-                          key={'news-item-' + i}
+                          key={`news-item-${index}`}
                           css={{
                             marginBottom: SPACING.L
                           }}
@@ -95,10 +121,10 @@ function NewsLandingTemplate ({ data }) {
             <Expandable>
               <ol>
                 <ExpandableChildren show={newsLibraryUpdatesInitialShow}>
-                  {newsLibraryUpdates.map((item, i) => {
+                  {newsLibraryUpdates.map((item, index) => {
                     return (
                       <li
-                        key={'news-item-' + i}
+                        key={`news-item-${index}`}
                         css={{
                           marginBottom: SPACING.XL
                         }}
@@ -126,45 +152,19 @@ function NewsLandingTemplate ({ data }) {
       </Template>
     </Layout>
   );
-}
+};
 
 NewsLandingTemplate.propTypes = {
   data: PropTypes.object
 };
 
 /* eslint-disable react/prop-types */
-export function Head ({ data }) {
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={data.page} />;
-}
+};
 /* eslint-enable react/prop-types */
 
 export default NewsLandingTemplate;
-
-function processNewsData (data) {
-  if (!data) {
-    return [];
-  }
-
-  return data.edges.map(({ node }) => {
-    const { title, created, body, relationships, fields } = node;
-    const image =
-      relationships?.field_media_image?.relationships?.field_media_image
-        ?.localFile?.childImageSharp?.gatsbyImageData;
-    const subtitle = new Date(created).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-
-    return {
-      title,
-      subtitle,
-      description: body?.summary,
-      href: fields.slug,
-      image
-    };
-  });
-}
 
 const query = graphql`
   query ($slug: String!) {

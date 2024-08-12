@@ -1,15 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from '@emotion/styled';
 import { LINK_STYLES } from '../reusable';
+import PropTypes from 'prop-types';
+import React from 'react';
+import styled from '@emotion/styled';
 
-const StyledLink = styled('a')((props) => LINK_STYLES[props.kind]);
+const StyledLink = styled('a')((props) => {
+  return LINK_STYLES[props.kind];
+});
 
-export default function Link({ children, ...other }) {
-  return <StyledLink {...other}>{children}</StyledLink>;
+export default function Link ({ children, kind = 'default', as = 'a', ...other }) {
+  return <StyledLink as={as} kind={kind} {...other}>{children}</StyledLink>;
 }
 
 Link.propTypes = {
+  as: PropTypes.string,
+  children: PropTypes.node.isRequired,
   kind: PropTypes.oneOf([
     'default',
     'subtle',
@@ -18,13 +22,6 @@ Link.propTypes = {
     'list',
     'list-medium',
     'list-strong',
-    'description',
-  ]),
-  children: PropTypes.node.isRequired,
-  as: PropTypes.node,
-};
-
-Link.defaultProps = {
-  kind: 'default',
-  as: 'a',
+    'description'
+  ])
 };

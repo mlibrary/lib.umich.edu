@@ -1,17 +1,22 @@
-import React from 'react';
 import { GatsbyImage } from 'gatsby-plugin-image';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { SPACING } from '../reusable';
 
-export default function Image({ image, caption, alt = '' }) {
+export default function Image ({ image, alt = '' }) {
   return (
     <GatsbyImage
       image={image}
       css={{
-        width: '100%',
         borderRadius: '4px',
-        marginBottom: SPACING['S'],
+        marginBottom: SPACING.S,
+        width: '100%'
       }}
       alt={alt}
     />
   );
 }
+Image.propTypes = {
+  alt: PropTypes.string,
+  image: PropTypes.string
+};

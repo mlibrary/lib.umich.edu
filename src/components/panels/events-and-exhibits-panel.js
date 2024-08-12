@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { useStaticQuery, graphql } from 'gatsby';
+/* eslint-disable no-underscore-dangle */
 import {
-  Heading,
-  SPACING,
   COLORS,
   Expandable,
   ExpandableButton,
-  ExpandableChildren
+  ExpandableChildren,
+  Heading,
+  SPACING
 } from '../../reusable';
-import Link from '../link';
+import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
+import { graphql, useStaticQuery } from 'gatsby';
+import React, { useEffect, useState } from 'react';
 import {
   Template,
-  TemplateSide,
-  TemplateContent
+  TemplateContent,
+  TemplateSide
 } from '../../components/aside-layout';
 import EventCard from '../../components/event-card';
-import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
+import Link from '../link';
 import PropTypes from 'prop-types';
 
 export default function EventsAndExhibitsPanel () {
   /*
-    Potential states for today, upcoming, and exhibits:
-
-    - null: means "loading", we need to figure this all out client side.
-    - []: An empty array will mean no events.
-    - [{...}, {...}, ...]: An array of events, means we have some!
-  */
+   *Potential states for today, upcoming, and exhibits:
+   *
+   *- null: means "loading", we need to figure this all out client side.
+   *- []: An empty array will mean no events.
+   *- [{...}, {...}, ...]: An array of events, means we have some!
+   */
   const [events, setEvents] = useState(null);
   const [todaysEvents, setTodaysEvents] = useState(null);
   const [upcomingEvents, setUpcomingEvents] = useState(null);
@@ -53,26 +54,27 @@ export default function EventsAndExhibitsPanel () {
 
   useEffect(() => {
     /*
-      As this page is setup on the client,
-      prepare all events.
-    */
+     *As this page is setup on the client,
+     *prepare all events.
+     */
     if (events === null) {
       // Flatten things a bit.
-      const events = data.events.edges.map(({ node }) => {
+      const getEvents = data.events.edges.map(({ node }) => {
         return node;
       });
 
-      setEvents(sortEventsByStartDate({ events }));
+      setEvents(sortEventsByStartDate({ events: getEvents }));
     }
 
-    const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' })); // toLocaleString for getting date AND time
+    /* ToLocaleString for getting date AND time */
+    const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' }));
 
     // Only process todaysEvents if it hasn't been done already.
     if (events && todaysEvents === null) {
-      // useEffects are only client side, so we can use now here.
+      // UseEffects are only client side, so we can use now here.
 
       // Get Today's events.
-      const todaysEvents = events.filter((event) => {
+      const getTodaysEvents = events.filter((event) => {
         const start = new Date(event.field_event_date_s_[0].value);
         const end = new Date(event.field_event_date_s_[0].end_value);
         const type = event.relationships.field_event_type.name;
@@ -81,18 +83,20 @@ export default function EventsAndExhibitsPanel () {
           return false;
         }
 
-        // get all today using toDateString() that haven't ended yet using getTime()
-        // can only use === to compare dates as strings. You can not use it on Date() objects. So keep the .toDateString()'s in place.
+        /*
+         * Get all today using toDateString() that haven't ended yet using getTime()
+         * can only use === to compare dates as strings. You can not use it on Date() objects. So keep the .toDateString()'s in place.
+         */
         return (now.toDateString() === new Date(start).toDateString()) && (now.getTime() < end.getTime());
       });
-      setTodaysEvents(todaysEvents);
+      setTodaysEvents(getTodaysEvents);
     }
 
     if (events && upcomingEvents === null) {
-      // useEffects are only client side, so we can use now here.
+      // UseEffects are only client side, so we can use now here.
 
       // Get upcoming events.
-      const upcomingEvents = events.filter((event) => {
+      const getUpcomingEvents = events.filter((event) => {
         const start = new Date(event.field_event_date_s_[0].value);
         const type = event.relationships.field_event_type.name;
 
@@ -100,23 +104,25 @@ export default function EventsAndExhibitsPanel () {
         if (EXHIBIT_TYPES.includes(type)) {
           return false;
         }
-        return now < new Date(start.toDateString()); // all after today.
+
+        // All after today.
+        return now < new Date(start.toDateString());
       });
 
-      setUpcomingEvents(upcomingEvents);
+      setUpcomingEvents(getUpcomingEvents);
     }
 
     if (events && exhibits === null) {
-      const exhibits = events.filter((event) => {
+      const getExhibits = events.filter((event) => {
         const type = event.relationships.field_event_type.name;
 
         // We don't want exhibits in the events area.
         return EXHIBIT_TYPES.includes(type);
       });
 
-      setExhibits(exhibits);
+      setExhibits(getExhibits);
     }
-  }, [events]); // eslint-disable-line
+  }, [events]);
 
   return (
     <div
@@ -133,7 +139,7 @@ export default function EventsAndExhibitsPanel () {
               marginBottom: SPACING.M
             }}
           >
-            Today's Events
+            Today&rsquo;s Events
           </Heading>
 
           <TodaysEvents events={todaysEvents} />
@@ -142,8 +148,8 @@ export default function EventsAndExhibitsPanel () {
             level={2}
             size='M'
             css={{
-              marginTop: SPACING.M,
-              marginBottom: SPACING.M
+              marginBottom: SPACING.M,
+              marginTop: SPACING.M
             }}
           >
             Upcoming Events
@@ -193,10 +199,10 @@ export default function EventsAndExhibitsPanel () {
 
           <h2
             css={{
+              borderTop: `solid 1px ${COLORS.neutral['100']}`,
               fontWeight: '700',
-              paddingTop: SPACING.M,
               marginTop: SPACING.L,
-              borderTop: `solid 1px ${COLORS.neutral['100']}`
+              paddingTop: SPACING.M
             }}
           >
             Stay in the know
@@ -210,7 +216,7 @@ export default function EventsAndExhibitsPanel () {
   );
 }
 
-function TodaysEvents ({ events }) {
+const TodaysEvents = ({ events }) => {
   if (Array.isArray(events)) {
     if (events.length === 0) {
       return (
@@ -234,13 +240,13 @@ function TodaysEvents ({ events }) {
   }
 
   return null;
-}
+};
 
 TodaysEvents.propTypes = {
   events: PropTypes.array
 };
 
-function UpcomingEvents ({ events }) {
+const UpcomingEvents = ({ events }) => {
   if (Array.isArray(events)) {
     if (events.length === 0) {
       return (
@@ -277,13 +283,13 @@ function UpcomingEvents ({ events }) {
   }
 
   return null;
-}
+};
 
 UpcomingEvents.propTypes = {
   events: PropTypes.array
 };
 
-function ExhibitEvents ({ events, hasBorder = false }) {
+const ExhibitEvents = ({ events, hasBorder = false }) => {
   if (Array.isArray(events)) {
     if (events.length === 0) {
       return (
@@ -312,7 +318,7 @@ function ExhibitEvents ({ events, hasBorder = false }) {
   }
 
   return null;
-}
+};
 
 ExhibitEvents.propTypes = {
   events: PropTypes.array,

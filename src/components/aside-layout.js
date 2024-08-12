@@ -1,31 +1,30 @@
+import { COLORS, Margins, SPACING } from '../reusable';
+import MEDIA_QUERIES from '../reusable/media-queries';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-import { SPACING, COLORS, Margins } from '../reusable';
-
-import MEDIA_QUERIES from '../reusable/media-queries';
-
-export function Template({ children, asideWidth, ...rest }) {
+export const Template = ({ children, asideWidth, ...rest }) => {
   const asWidth = asideWidth ? asideWidth : '21rem';
 
   return (
     <Margins>
       <div
         css={{
-          paddingBottom: SPACING['XL'],
-          [MEDIA_QUERIES['XL']]: {
-            paddingBottom: SPACING['3XL'],
-            display: 'grid',
-            gridTemplateAreas: `
-              "content side"
-            `,
-            gridTemplateColumns: `1fr calc(${asWidth} + ${SPACING['4XL']}) `,
-          },
           '[data-panel-margins], [data-panel]': {
-            padding: '0',
+            padding: '0'
           },
           '[data-panel] h2': {
-            marginTop: SPACING['2XL'],
+            marginTop: SPACING['2XL']
           },
+          paddingBottom: SPACING.XL,
+          [MEDIA_QUERIES.XL]: {
+            display: 'grid',
+            gridTemplateAreas: `
+            "content side"
+            `,
+            gridTemplateColumns: `1fr calc(${asWidth} + ${SPACING['4XL']}) `,
+            paddingBottom: SPACING['3XL']
+          }
         }}
         {...rest}
       >
@@ -33,50 +32,63 @@ export function Template({ children, asideWidth, ...rest }) {
       </div>
     </Margins>
   );
-}
+};
 
-export function TemplateSide({ children, ...rest }) {
+Template.propTypes = {
+  asideWidth: PropTypes.string,
+  children: PropTypes.array
+};
+
+export const TemplateSide = ({ children, ...rest }) => {
   return (
     <section
       css={{
-        [MEDIA_QUERIES['L']]: {
-          gridArea: 'side',
-        },
+        [MEDIA_QUERIES.L]: {
+          gridArea: 'side'
+        }
       }}
       {...rest}
     >
       <div
         css={{
-          [MEDIA_QUERIES['XL']]: {
-            paddingLeft: SPACING['3XL'],
-            borderLeft: `solid 1px ${COLORS.neutral['100']}`,
+          [MEDIA_QUERIES.XL]: {
             borderBottom: 'none',
+            borderLeft: `solid 1px ${COLORS.neutral['100']}`,
             paddingBottom: 0,
+            paddingLeft: SPACING['3XL']
           },
           borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-          paddingBottom: SPACING['2XL'],
           marginBottom: SPACING['2XL'],
+          paddingBottom: SPACING['2XL']
         }}
       >
         {children}
       </div>
     </section>
   );
-}
+};
 
-export function TemplateContent({ children, ...rest }) {
+TemplateSide.propTypes = {
+  children: PropTypes.any
+};
+
+export const TemplateContent = ({ children, ...rest }) => {
   return (
     <div
       css={{
-        [MEDIA_QUERIES['L']]: {
+        [MEDIA_QUERIES.L]: {
           gridArea: 'content',
-          marginRight: SPACING['2XL'],
+          marginRight: SPACING['2XL']
         },
-        marginBottom: SPACING['XL'],
+        marginBottom: SPACING.XL
       }}
       {...rest}
     >
       {children}
     </div>
   );
-}
+};
+
+TemplateContent.propTypes = {
+  children: PropTypes.array
+};

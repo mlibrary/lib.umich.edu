@@ -1,6 +1,6 @@
-import { useStaticQuery, graphql } from 'gatsby';
+import { graphql, useStaticQuery } from 'gatsby';
 
-export default function usePageContextByDrupalNodeID() {
+export default function usePageContextByDrupalNodeID () {
   const data = useStaticQuery(
     graphql`
       query {
@@ -19,16 +19,17 @@ export default function usePageContextByDrupalNodeID() {
     const { pageContext } = edge.node;
 
     if (pageContext) {
-      const { title, drupal_nid, slug } = pageContext;
+      const { title, drupal_nid: drupalNid, slug } = pageContext;
 
-      if (drupal_nid) {
-        memo = {
+      if (drupalNid) {
+        return {
           ...memo,
-          [drupal_nid]: {
-            title,
-            drupal_nid,
+          [drupalNid]: {
+            // eslint-disable-next-line camelcase
+            drupal_nid: drupalNid,
             slug,
-          },
+            title
+          }
         };
       }
     }

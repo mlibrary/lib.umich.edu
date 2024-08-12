@@ -1,19 +1,19 @@
-import React from 'react';
-import { graphql } from 'gatsby';
-import { Heading, List, COLORS } from '../reusable';
-import { Template, TemplateSide, TemplateContent } from '../components/aside-layout';
-import Layout from '../components/layout';
-import SearchEngineOptimization from '../components/seo';
-import PageHeader from '../components/page-header';
-import Prose from '../components/prose';
-import HorizontalNavigation from '../components/navigation/horizontal-navigation';
-import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data';
-import Html from '../components/html';
-import LocationAside from '../components/location-aside';
-import Panels from '../components/panels';
-import transformNodePanels from '../utils/transform-node-panels';
+import { COLORS, Heading, List } from '../reusable';
+import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import getNode from '../utils/get-node';
+import { graphql } from 'gatsby';
+import HorizontalNavigation from '../components/navigation/horizontal-navigation';
+import Html from '../components/html';
+import Layout from '../components/layout';
+import LocationAside from '../components/location-aside';
+import PageHeader from '../components/page-header';
+import Panels from '../components/panels';
+import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data';
 import PropTypes from 'prop-types';
+import Prose from '../components/prose';
+import React from 'react';
+import SearchEngineOptimization from '../components/seo';
+import transformNodePanels from '../utils/transform-node-panels';
 
 export default function VisitTemplate ({ data, ...rest }) {
   const node = getNode(data);
@@ -27,8 +27,8 @@ export default function VisitTemplate ({ data, ...rest }) {
     field_root_page_: fieldRootPage,
     field_access: fieldAccess
   } = node;
-  const parentNode = relationships.field_parent_page[0];
-  const isRootPage = !!fieldRootPage;
+  const [parentNode] = relationships.field_parent_page;
+  const isRootPage = Boolean(fieldRootPage);
   const { field_visit: fieldVisit, field_amenities: fieldAmenities } = relationships;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
   return (
@@ -45,13 +45,13 @@ export default function VisitTemplate ({ data, ...rest }) {
       </header>
       <HorizontalNavigation
         items={processHorizontalNavigationData({
-          parentNodeOrderByDrupalId: rest.pageContext.parents,
-          parentNodes: data.parents.edges,
-          currentNode: node,
           childrenNodeOrderByDrupalId: rest.pageContext.children,
           childrenNodes: data.children.edges,
+          currentNode: node,
           isRootPage,
-          parentNode
+          parentNode,
+          parentNodeOrderByDrupalId: rest.pageContext.parents,
+          parentNodes: data.parents.edges
         })}
       />
       <section aria-label='Hours, parking, and amenities'>
@@ -76,11 +76,11 @@ export default function VisitTemplate ({ data, ...rest }) {
               {fieldVisit?.length > 0 && (
                 <>
                   <List type='bulleted'>
-                    {fieldVisit.sort((a, b) => {
-                      return a.weight - b.weight;
-                    }).map(({ description }, i) => {
+                    {fieldVisit.sort((sortLeft, sortRight) => {
+                      return sortLeft.weight - sortRight.weight;
+                    }).map(({ description }, iterator) => {
                       return (
-                        <li key={i + description.processed}>
+                        <li key={iterator + description.processed}>
                           <Html html={description.processed} />
                         </li>
                       );
@@ -105,17 +105,17 @@ export default function VisitTemplate ({ data, ...rest }) {
                     Amenities
                   </Heading>
                   <List type='bulleted'>
-                    {fieldAmenities.sort((a, b) => {
-                      return a.weight - b.weight;
-                    }).map(({ name, description }, i) => {
+                    {fieldAmenities.sort((sortLeft, sortRight) => {
+                      return sortLeft.weight - sortRight.weight;
+                    }).map(({ name, description }, iterator) => {
                       return (
-                        <li key={i + name}>
+                        <li key={iterator + name}>
                           {description
                             ? (
-                              <Html html={description.processed} />
+                                <Html html={description.processed} />
                               )
                             : (
-                              <>{name}</>
+                                <>{name}</>
                               )}
                         </li>
                       );
@@ -147,9 +147,11 @@ VisitTemplate.propTypes = {
   data: PropTypes.object
 };
 
-export function Head ({ data }) { // eslint-disable-line
+/* eslint-disable react/prop-types */
+export const Head = ({ data }) => {
   return <SearchEngineOptimization data={getNode(data)} />;
-}
+};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!, $parents: [String], $children: [String]) {
