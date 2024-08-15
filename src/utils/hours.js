@@ -144,6 +144,8 @@ export const displayHours = ({ node, now }) => {
     return null;
   }
 
+  let isOpen = true;
+
   const hoursForNow = hoursSet.field_hours_open.find(
     (data) => {
       return data.day === now.getDay();
@@ -195,9 +197,16 @@ export const displayHours = ({ node, now }) => {
 
     text = combinedValues('-');
     label = combinedValues();
+
+    // Convert starthours and endhours to Date objects for comparison
+    const closingTime = new Date(now);
+    closingTime.setHours(Math.floor(endhours / 100), endhours % 100, 0, 0);
+
+    isOpen = now < closingTime;
   }
 
   return {
+    isOpen,
     label,
     text
   };

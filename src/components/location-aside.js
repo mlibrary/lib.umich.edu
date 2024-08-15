@@ -105,7 +105,7 @@ export default function LocationAside ({ node }) {
           <Address node={node} directions={true} kind='full' />
         </LayoutWithIcon>
 
-        <LayoutWithIcon d={icons.phone} palette='maize'>
+        <LayoutWithIcon d={icons.phone} palette='neutral'>
           <Heading
             level={2}
             size='M'

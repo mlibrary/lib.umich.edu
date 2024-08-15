@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 const processHoursData = (data, initialized) => {
   const hours = (node) => {
     if (initialized) {
-      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'UTC' }));
       return displayHours({ node, now });
     }
 
@@ -25,6 +25,7 @@ const processHoursData = (data, initialized) => {
     };
 
     return {
+      isOpen: hoursData.isOpen,
       subLabel: `TODAY: ${label}`,
       subText: `TODAY: ${text}`,
       text: node.title,
@@ -65,7 +66,7 @@ export default function HoursLitePanel ({ data }) {
             >
               <span
                 css={{
-                  color: COLORS.maize['500'],
+                  color: hour.isOpen ? COLORS.neutral['300'] : COLORS.pink['300'],
                   display: 'inline',
                   flexShrink: '0',
                   width: '1.5rem'
