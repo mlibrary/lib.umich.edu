@@ -66,7 +66,7 @@ export default function HoursLitePanel ({ data }) {
             >
               <span
                 css={{
-                  color: hour.isOpen ? COLORS.neutral['300'] : COLORS.pink['300'],
+                  color: COLORS.neutral['300'],
                   display: 'inline',
                   flexShrink: '0',
                   width: '1.5rem'
