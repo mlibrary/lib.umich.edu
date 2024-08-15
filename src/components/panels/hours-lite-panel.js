@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 const processHoursData = (data, initialized) => {
   const hours = (node) => {
     if (initialized) {
-      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'UTC' }));
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
       return displayHours({ node, now });
     }
 
