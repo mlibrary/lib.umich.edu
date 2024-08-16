@@ -462,6 +462,7 @@ const SpecialistsResults = () => {
           width: '100%'
 
         }}
+        aria-live='polite'
       >
         <caption>
           <Alert>{resultsSummary}</Alert>
