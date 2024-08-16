@@ -161,7 +161,7 @@ const CardPanel = ({ data }) => {
           >
             <span
               css={{
-                color: COLORS.maize['500'],
+                color: COLORS.indigo['300'],
                 marginRight: SPACING.XS
               }}
             >
@@ -177,7 +177,7 @@ const CardPanel = ({ data }) => {
           >
             <span
               css={{
-                color: COLORS.maize['500'],
+                color: COLORS.indigo['300'],
                 marginRight: SPACING.XS
               }}
             >
