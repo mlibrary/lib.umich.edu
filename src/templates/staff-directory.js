@@ -315,9 +315,13 @@ const StaffDirectory = React.memo(({
 }) => {
   const [show, setShow] = useState(20);
   const staffInView = results.slice(0, show);
-  let resultsSummary = results.length
-    ? `${results.length} results`
-    : `No results`;
+  let resultsSummary = `No results`;
+  if (results.length > 0) {
+    resultsSummary = `${results.length} results`;
+    if (show < results.length) {
+      resultsSummary = `Showing ${show} of ${results.length} results`;
+    }
+  }
   if (query) {
     resultsSummary += ` for "${query}"`;
   }

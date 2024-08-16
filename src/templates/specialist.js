@@ -417,9 +417,14 @@ const SpecialistsResults = () => {
     results
   });
   const resultsShown = resultsFiltered.slice(0, show);
-  let resultsSummary = results.length
-    ? `${resultsFiltered.length} results`
-    : `No results`;
+  let resultsSummary = `No results`;
+  console.log(results.length);
+  if (results.length > 0) {
+    resultsSummary = `${resultsFiltered.length} results`;
+    if (show < results.length) {
+      resultsSummary = `Showing ${show} of ${results.length} results`;
+    }
+  }
   if (query) {
     resultsSummary += ` for "${query}"`;
   }
