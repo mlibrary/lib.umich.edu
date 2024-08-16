@@ -319,10 +319,10 @@ const StaffDirectory = React.memo(({
     ? `${results.length} results`
     : `No results`;
   if (query) {
-    resultsSummary += ` for ${query}`;
+    resultsSummary += ` for "${query}"`;
   }
   if (activeFilters.department) {
-    resultsSummary += ` in ${activeFilters.department}`;
+    resultsSummary += ` in "${activeFilters.department}"`;
   }
   const showMoreText
     = show < results.length
@@ -383,7 +383,6 @@ const StaffDirectory = React.memo(({
           Clear
         </Button>
       </div>
-
       <StaffDirectoryResults
         results={results}
         staffImages={staffImages}
@@ -573,8 +572,9 @@ const StaffDirectoryResults = ({
         },
         width: '100%'
       }}
+      aria-live='polite'
     >
-      <caption className='visually-hidden'>
+      <caption>
         <Alert>{resultsSummary}</Alert>
       </caption>
       <colgroup>
