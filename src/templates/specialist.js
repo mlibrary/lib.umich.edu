@@ -421,10 +421,13 @@ const SpecialistsResults = () => {
     ? `${resultsFiltered.length} results`
     : `No results`;
   if (query) {
-    resultsSummary += ` for ${query}`;
+    resultsSummary += ` for "${query}"`;
   }
   if (category) {
-    resultsSummary += ` in ${category}`;
+    resultsSummary += ` in "${category}"`;
+  }
+  if (healthSciencesOnly) {
+    resultsSummary += 'with the "Show Health Sciences Only" filter active';
   }
   const showMoreText
     = show < resultsFiltered.length
@@ -460,7 +463,7 @@ const SpecialistsResults = () => {
 
         }}
       >
-        <caption className='visually-hidden'>
+        <caption>
           <Alert>{resultsSummary}</Alert>
         </caption>
         <thead
