@@ -418,7 +418,6 @@ const SpecialistsResults = () => {
   });
   const resultsShown = resultsFiltered.slice(0, show);
   let resultsSummary = `No results`;
-  console.log(results.length);
   if (results.length > 0) {
     resultsSummary = `${resultsFiltered.length} results`;
     if (show < results.length) {
@@ -432,7 +431,7 @@ const SpecialistsResults = () => {
     resultsSummary += ` in "${category}"`;
   }
   if (healthSciencesOnly) {
-    resultsSummary += 'with the "Show Health Sciences Only" filter active';
+    resultsSummary += ' with the "Show Health Sciences Only" filter active';
   }
   const showMoreText
     = show < resultsFiltered.length

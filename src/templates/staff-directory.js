@@ -576,7 +576,6 @@ const StaffDirectoryResults = ({
         },
         width: '100%'
       }}
-      aria-live='polite'
     >
       <caption>
         <Alert>{resultsSummary}</Alert>
@@ -605,10 +604,10 @@ const StaffDirectoryResults = ({
         }}
       >
         <tr>
-          <th className='visually-hidden'>Photo</th>
-          <th colSpan='3'>Name and title</th>
-          <th colSpan='2'>Contact info</th>
-          <th colSpan='3'>Department</th>
+          <th scope='col' className='visually-hidden'>Photo</th>
+          <th scope='colgroup' colSpan='3'>Name and title</th>
+          <th scope='colgroup' colSpan='2'>Contact info</th>
+          <th scope='colgroup' colSpan='3'>Department</th>
         </tr>
       </thead>
       <tbody>
@@ -629,6 +628,7 @@ const StaffDirectoryResults = ({
                 css={{
                   borderTop: borderStyle
                 }}
+                scope='row'
               >
                 <td
                   css={{
