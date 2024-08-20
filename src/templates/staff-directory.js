@@ -315,18 +315,26 @@ const StaffDirectory = React.memo(({
 }) => {
   const [show, setShow] = useState(20);
   const staffInView = results.slice(0, show);
-  let resultsSummary = `No results`;
+  let resultsSummary = (<span>No results</span>);
   if (results.length > 0) {
-    resultsSummary = `${results.length} results`;
+    resultsSummary = (<span><strong style={{ fontWeight: '800' }}>{results.length}</strong> results</span>);
     if (show < results.length) {
-      resultsSummary = `Showing ${show} of ${results.length} results`;
+      resultsSummary = (<span>Showing {show} of {results.length} results</span>);
     }
   }
   if (query) {
-    resultsSummary += ` for "${query}"`;
+    resultsSummary = (
+      <>
+        {resultsSummary} for <strong style={{ fontWeight: '800' }}>{query}</strong>
+      </>
+    );
   }
   if (activeFilters.department) {
-    resultsSummary += ` in "${activeFilters.department}"`;
+    resultsSummary = (
+      <>
+        {resultsSummary} in <strong style={{ fontWeight: '800' }}>{activeFilters.department}</strong>
+      </>
+    );
   }
   const showMoreText
     = show < results.length
