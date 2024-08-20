@@ -317,7 +317,7 @@ const StaffDirectory = React.memo(({
   const staffInView = results.slice(0, show);
   let resultsSummary = (<span>No results</span>);
   if (results.length > 0) {
-    resultsSummary = (<span><strong style={{ fontWeight: '800' }}>{results.length}</strong> results</span>);
+    resultsSummary = (<span>{results.length} results</span>);
     if (show < results.length) {
       resultsSummary = (<span>Showing {show} of {results.length} results</span>);
     }
@@ -370,6 +370,7 @@ const StaffDirectory = React.memo(({
             setShow(20);
             handleChange(event);
           }}
+          aria-describedby='results'
         />
         {filters.map(({ label, name, options }) => {
           return (
@@ -585,8 +586,13 @@ const StaffDirectoryResults = ({
         width: '100%'
       }}
     >
-      <caption>
-        <Alert>{resultsSummary}</Alert>
+      <caption
+        css={{
+          textAlign: 'left'
+        }}
+        id='results'
+      >
+        {resultsSummary}
       </caption>
       <colgroup>
         <col
