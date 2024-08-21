@@ -315,9 +315,9 @@ const StaffDirectory = React.memo(({
 }) => {
   const [show, setShow] = useState(20);
   const staffInView = results.slice(0, show);
-  let resultsSummary = (<span>No results</span>);
+  let resultsSummary = (<span aria-live='assertive'>No results</span>);
   if (results.length > 0) {
-    resultsSummary = (<span>{results.length} results</span>);
+    resultsSummary = (<span>{results.length} {results.length > 1 ? 'results' : 'result'}</span>);
     if (show < results.length) {
       resultsSummary = (<span>Showing {show} of {results.length} results</span>);
     }
@@ -590,7 +590,6 @@ const StaffDirectoryResults = ({
           textAlign: 'left'
         }}
         aria-live='polite'
-        aria-atomic='true'
       >
         {resultsSummary}
       </caption>

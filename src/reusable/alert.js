@@ -38,7 +38,7 @@ const Alert = ({ intent = 'informational', children, ...other }) => {
     if (roleIntent === 'warning') {
       return 'status';
     }
-    return 'status';
+    return '';
   };
 
   return (

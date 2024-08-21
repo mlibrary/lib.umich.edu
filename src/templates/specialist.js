@@ -488,7 +488,7 @@ const SpecialistsResults = () => {
         >
           <tr>
             <th scope='col'>Subjects and specialties</th>
-            <th colSpan='2' scope='col'>Contact</th>
+            <th colSpan='2' scope='colgroup'>Contact</th>
             {healthSciencesOnly && <th scope='col'>Category</th>}
           </tr>
         </thead>
