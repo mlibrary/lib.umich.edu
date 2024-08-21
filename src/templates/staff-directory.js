@@ -370,7 +370,6 @@ const StaffDirectory = React.memo(({
             setShow(20);
             handleChange(event);
           }}
-          aria-describedby='results'
         />
         {filters.map(({ label, name, options }) => {
           return (
@@ -590,7 +589,8 @@ const StaffDirectoryResults = ({
         css={{
           textAlign: 'left'
         }}
-        id='results'
+        aria-live='polite'
+        aria-atomic='true'
       >
         {resultsSummary}
       </caption>
