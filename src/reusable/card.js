@@ -1,5 +1,6 @@
 import {
   COLORS,
+  Heading,
   LINK_STYLES,
   MEDIA_QUERIES,
   SPACING,
@@ -13,6 +14,7 @@ import React from 'react';
 export default function Card ({
   title,
   subtitle,
+  headingLevel = '3',
   image,
   href,
   renderAnchor,
@@ -73,7 +75,7 @@ export default function Card ({
       {image && <CardImage image={image} />}
 
       <div>
-        <p role='heading' aria-level='3'>
+        <Heading level={headingLevel}>
           {subtitle && (
             <span
               css={{
@@ -94,7 +96,7 @@ export default function Card ({
           >
             {title}
           </span>
-        </p>
+        </Heading>
 
         {renderChildren()}
       </div>
@@ -115,10 +117,16 @@ export default function Card ({
 Card.propTypes = {
 
   /*
-   * Regular React element.
+  * Regular React element.
+  *
+  */
+  children: PropTypes.node,
+
+  /*
+   * Determine the heading level to render to ensure proper hierarchy on each page.
    *
    */
-  children: PropTypes.node,
+  headingLevel: PropTypes.oneOf(['h3', 'h2']),
 
   /*
    * Let the Card know if it can go horizontal on large screens.
