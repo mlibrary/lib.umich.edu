@@ -6,7 +6,7 @@ export default function Callout ({ title, children, intent, alert, ...rest }) {
   return (
     <div
       css={{
-        border: `solid 1px ${COLORS.neutral['100']}`,
+        border: `solid 1px var(--colors-neutral-100)`,
         borderLeft: `solid 4px ${
           intent === 'warning' ? COLORS.maize['400'] : COLORS.teal['400']
         }`,

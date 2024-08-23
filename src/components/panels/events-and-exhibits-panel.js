@@ -199,7 +199,7 @@ export default function EventsAndExhibitsPanel () {
 
           <h2
             css={{
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              borderTop: `solid 1px var(--colors-neutral-100)`,
               fontWeight: '700',
               marginTop: SPACING.L,
               paddingTop: SPACING.M

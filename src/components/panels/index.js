@@ -35,7 +35,7 @@ const PanelTemplate = ({ title, children, shaded, ...rest }) => {
       data-panel
       css={{
         ':not(:last-of-type)': {
-          borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+          borderBottom: shaded ? 'none' : `solid 1px var(--colors-neutral-100)`,
           paddingBottom: SPACING['3XL']
         },
         background: shaded ? COLORS.blue['100'] : '',
@@ -305,7 +305,7 @@ const TextPanel = ({ data }) => {
                 key={`section-${index}`}
                 css={{
                   borderTop: hasTopBorder
-                    ? `solid 1px ${COLORS.neutral['100']}`
+                    ? `solid 1px var(--colors-neutral-100)`
                     : 'none',
                   paddingTop: hasTopBorder ? SPACING.XL : 0
                 }}
@@ -429,7 +429,7 @@ const TextPanel = ({ data }) => {
             <section
               key={item + html}
               css={{
-                borderBottom: item === items.length - 1 ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+                borderBottom: item === items.length - 1 ? 'none' : `solid 1px var(--colors-neutral-100)`,
                 display: 'flex',
                 marginBottom: SPACING.L,
                 paddingBottom: SPACING.M

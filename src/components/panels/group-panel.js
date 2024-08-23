@@ -46,7 +46,7 @@ const PanelGroup50Container = ({ children }) => {
             }
           },
           '> *:not(:last-child)': {
-            borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+            borderBottom: `solid 1px var(--colors-neutral-100)`,
             [MEDIAQUERIES.L]: {
               border: 'none',
               borderRight: `solid 1px ${COLORS.neutral[100]}`,

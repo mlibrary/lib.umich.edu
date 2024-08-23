@@ -78,7 +78,7 @@ const getButtonCSS = (kind, disabled) => {
     padding: `${SPACING.XS} ${SPACING.M}`,
     ...getButtonKindCSS(kind, color, disabled),
     ':focus': {
-      boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px ${COLORS.neutral['400']}`,
+      boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px var(--colors-neutral-400)`,
       outline: 'none'
     },
     ...getDisabledCSS(disabled)

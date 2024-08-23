@@ -149,7 +149,7 @@ export default function SiteSearch ({ label }) {
             alignItems: 'center',
             appearance: 'textfield',
             background: 'none',
-            border: `solid 1px ${COLORS.neutral['300']}`,
+            border: `solid 1px var(--colors-neutral-300)`,
             borderRadius: '2px',
             boxShadow: `inset 0 1px 4px rgba(0,0,0,0.1)`,
             boxSizing: 'border-box',
@@ -252,11 +252,11 @@ const ResultsList = ({ searching, noResults, results, query, error }) => {
       <p
         css={{
           background: COLORS.blue['100'],
-          borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+          borderBottom: `solid 1px var(--colors-neutral-100)`,
           color: COLORS.neutral['300'],
           kbd: {
             background: 'white',
-            border: `solid 1px ${COLORS.neutral['200']}`,
+            border: `solid 1px var(--colors-neutral-200)`,
             borderRadius: '4px',
             boxShadow: `0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;`,
             display: 'inline-block',
@@ -282,7 +282,7 @@ const ResultsList = ({ searching, noResults, results, query, error }) => {
               value={result.title}
               css={{
                 ':not(:last-child)': {
-                  borderBottom: `solid 1px ${COLORS.neutral['100']}`
+                  borderBottom: `solid 1px var(--colors-neutral-100)`
                 }
               }}
             >
@@ -294,7 +294,7 @@ const ResultsList = ({ searching, noResults, results, query, error }) => {
                       textDecoration: 'underline'
                     },
                     background: COLORS.teal['100'],
-                    borderLeft: `solid 4px ${COLORS.teal['400']}`,
+                    borderLeft: `solid 4px var(--colors-teal-400)`,
                     outline: 'none',
                     paddingLeft: `calc(${SPACING.L} - 4px)`
                   },
@@ -352,12 +352,12 @@ const LibrarySearchScopeOption = ({ query }) => {
             textDecoration: 'underline'
           },
           background: COLORS.teal['100'],
-          borderLeft: `solid 4px ${COLORS.teal['400']}`,
+          borderLeft: `solid 4px var(--colors-teal-400)`,
           outline: 'none',
           paddingLeft: `calc(${SPACING.L} - 4px)`
         },
         alignItems: 'center',
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+        borderBottom: `solid 1px var(--colors-neutral-100)`,
         display: 'grid',
         gridGap: SPACING.S,
         gridTemplateColumns: 'auto 1fr auto',
@@ -378,7 +378,7 @@ const LibrarySearchScopeOption = ({ query }) => {
         css={{
           ...TYPOGRAPHY.XS,
           mark: {
-            background: `${COLORS.maize['200']}!important`,
+            background: `var(--colors-maize-200)!important`,
             fontWeight: '700'
           },
           overflow: 'hidden',
@@ -394,7 +394,7 @@ const LibrarySearchScopeOption = ({ query }) => {
           display: 'inline-block',
           ...TYPOGRAPHY['3XS'],
           background: COLORS.blue['100'],
-          border: `solid 1px ${COLORS.neutral['100']}`,
+          border: `solid 1px var(--colors-neutral-100)`,
           borderRadius: '4px',
           padding: `0 ${SPACING['2XS']}`
         }}
@@ -417,7 +417,7 @@ const ResultContent = ({ query, result }) => {
         css={{
           ...TYPOGRAPHY.XS,
           mark: {
-            background: `${COLORS.maize['200']}!important`,
+            background: `var(--colors-maize-200)!important`,
             fontWeight: '700'
           }
         }}
@@ -531,7 +531,7 @@ const Popover = ({ children, error }) => {
       css={{
         ...Z_SPACE['16'],
         background: 'white',
-        border: `solid 1px ${COLORS.neutral['100']}`,
+        border: `solid 1px var(--colors-neutral-100)`,
         borderRadius: '2px',
         maxHeight: '70vh',
         overflow: 'hidden',

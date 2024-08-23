@@ -133,7 +133,7 @@ const CollectingAreaTemplate = ({ data }) => {
               {imageCaption && (
                 <figcaption
                   css={{
-                    borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+                    borderBottom: `solid 1px var(--colors-neutral-100)`,
                     color: COLORS.neutral['300'],
                     marginBottom: SPACING.XL,
                     paddingBottom: SPACING.XL,

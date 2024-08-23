@@ -73,7 +73,7 @@ const SmallScreenHeader = ({ primary, secondary }) => {
           '@media only screen and (min-width: 1129px)': {
             display: 'none'
           },
-          borderBottom: `solid 2px ${COLORS.neutral['100']}`,
+          borderBottom: `solid 2px var(--colors-neutral-100)`,
           display: 'block'
         }}
       >
@@ -254,7 +254,7 @@ NavDropdown.propTypes = {
 
 const navItemStyles = {
   alignItems: 'center',
-  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+  borderBottom: `solid 1px var(--colors-neutral-100)`,
   color: COLORS.neutral['400'],
   cursor: 'pointer',
   display: 'flex',

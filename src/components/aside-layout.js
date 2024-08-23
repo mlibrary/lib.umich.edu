@@ -53,11 +53,11 @@ export const TemplateSide = ({ children, ...rest }) => {
         css={{
           [MEDIA_QUERIES.XL]: {
             borderBottom: 'none',
-            borderLeft: `solid 1px ${COLORS.neutral['100']}`,
+            borderLeft: `solid 1px var(--colors-neutral-100)`,
             paddingBottom: 0,
             paddingLeft: SPACING['3XL']
           },
-          borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+          borderBottom: `solid 1px var(--colors-neutral-100)`,
           marginBottom: SPACING['2XL'],
           paddingBottom: SPACING['2XL']
         }}

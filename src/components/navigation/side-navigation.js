@@ -39,7 +39,7 @@ export default function SideNavigation ({ to, branch }) {
         <ol
           css={{
             '> li:not(:last-of-type)': {
-              borderBottom: `solid 1px ${COLORS.neutral['100']}`
+              borderBottom: `solid 1px var(--colors-neutral-100)`
             },
             marginBottom: SPACING.M,
             marginTop: SPACING.XS

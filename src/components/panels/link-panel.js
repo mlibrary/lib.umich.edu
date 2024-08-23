@@ -75,7 +75,7 @@ const BulletedLinkList = ({ title, links, moreLink, hasTopBorder = false }) => {
   return (
     <section
       css={{
-        borderTop: hasTopBorder ? `solid 1px ${COLORS.neutral['100']}` : 'none',
+        borderTop: hasTopBorder ? `solid 1px var(--colors-neutral-100)` : 'none',
         marginBottom: SPACING.XL,
         marginTop: SPACING.XL,
         paddingTop: hasTopBorder ? SPACING.XL : 0

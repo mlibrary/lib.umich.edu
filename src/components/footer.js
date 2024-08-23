@@ -168,11 +168,11 @@ const Footer = () => {
               a: {
                 textDecoration: 'underline'
               },
-              borderTop: `solid 1px ${COLORS.blue['300']}`,
+              borderTop: `solid 1px var(--colors-blue-300)`,
               paddingTop: SPACING.XL,
               [MEDIA_QUERIES.LARGESCREEN]: {
                 border: '0',
-                borderLeft: `solid 1px ${COLORS.blue['300']}`,
+                borderLeft: `solid 1px var(--colors-blue-300)`,
                 marginLeft: `-${SPACING['2XL']}`,
                 padding: '0',
                 paddingLeft: SPACING.XL

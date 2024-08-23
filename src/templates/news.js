@@ -143,7 +143,7 @@ const StayInTheKnow = () => {
         level={2}
         size='2XS'
         css={{
-          borderTop: `solid 1px ${COLORS.neutral['100']}`,
+          borderTop: `solid 1px var(--colors-neutral-100)`,
           fontWeight: '600',
           marginTop: SPACING.L,
           paddingTop: SPACING.L

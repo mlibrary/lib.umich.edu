@@ -7,7 +7,7 @@ export default function Blockquote ({ children }) {
     <blockquote
       css={{
         ...TYPOGRAPHY.XS,
-        borderLeft: `solid 4px ${COLORS.teal['400']}`,
+        borderLeft: `solid 4px var(--colors-teal-400)`,
         fontStyle: 'italic',
         margin: `${SPACING.XL}!important`,
         maxWidth: '38rem',

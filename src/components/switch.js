@@ -9,11 +9,11 @@ export default function Switch ({ on, children, ...rest }) {
       aria-checked={on}
       css={{
         ':focus [data-switch-track]': {
-          boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px ${COLORS.neutral['400']}`,
+          boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px var(--colors-neutral-400)`,
           outline: 'none'
         },
         ':hover [data-switch-track]': {
-          boxShadow: `0 0 0 4px ${COLORS.neutral['100']}`
+          boxShadow: `0 0 0 4px var(--colors-neutral-100)`
         },
         alignItems: 'center',
         display: 'flex',

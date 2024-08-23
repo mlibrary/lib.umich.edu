@@ -25,7 +25,7 @@ export default function Select ({ label, name, options, value, ...rest }) {
             appearance: 'none',
             background: 'transparent',
             backgroundImage: 'none',
-            border: `solid 1px ${COLORS.neutral['300']}`,
+            border: `solid 1px var(--colors-neutral-300)`,
             borderRadius: '4px',
             boxShadow: 'none',
             display: 'block',

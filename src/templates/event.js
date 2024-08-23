@@ -90,7 +90,7 @@ const EventTemplate = ({ data }) => {
             <>
               <h2
                 css={{
-                  borderTop: `solid 1px ${COLORS.neutral['100']}`,
+                  borderTop: `solid 1px var(--colors-neutral-100)`,
                   fontSize: '1rem',
                   fontWeight: '600',
                   marginBottom: SPACING['2XS'],
@@ -150,7 +150,7 @@ const EventTemplate = ({ data }) => {
 
           <p
             css={{
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              borderTop: `solid 1px var(--colors-neutral-100)`,
               marginTop: SPACING.L,
               paddingTop: SPACING.L
             }}

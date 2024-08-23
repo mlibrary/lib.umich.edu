@@ -170,7 +170,7 @@ export default function FeaturedAndLatestNews () {
           <div
             css={{
               [MEDIA_QUERIES.LARGESCREEN]: {
-                borderRight: `solid 1px ${COLORS.neutral['100']}`,
+                borderRight: `solid 1px var(--colors-neutral-100)`,
                 paddingRight: SPACING.XL
               }
             }}

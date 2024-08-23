@@ -24,7 +24,7 @@ const Layout = ({ children, drupalNid }) => {
           'h1.focus': {
             '&:focus': {
               '&:before': {
-                borderLeft: `solid 4px ${COLORS.teal['400']}`,
+                borderLeft: `solid 4px var(--colors-teal-400)`,
                 content: '""',
                 height: '100%',
                 left: '-0.3em',

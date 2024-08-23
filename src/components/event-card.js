@@ -46,7 +46,7 @@ export default function EventCard (node) {
   return (
     <section
       css={{
-        borderBottom: useBorder ? `solid 1px ${COLORS.neutral['100']}` : '',
+        borderBottom: useBorder ? `solid 1px var(--colors-neutral-100)` : '',
         marginTop: SPACING.L,
         [MEDIA_QUERIES.L]: {
           display: displayImage ? 'grid' : 'block',

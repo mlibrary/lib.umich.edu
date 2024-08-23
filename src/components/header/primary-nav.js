@@ -439,7 +439,7 @@ const NavPanelItemLinks = ({ parentItem, items }) => {
             <ul
               css={{
                 ...columnStyles(),
-                borderTop: `solid 1px ${COLORS.neutral['100']}`,
+                borderTop: `solid 1px var(--colors-neutral-100)`,
                 marginTop: SPACING.M,
                 paddingTop: SPACING.L
               }}

@@ -19,7 +19,7 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
   return (
     <div
       css={{
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`
+        borderBottom: `solid 1px var(--colors-neutral-100)`
       }}
     >
       <Margins>
