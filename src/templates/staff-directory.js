@@ -395,6 +395,14 @@ const StaffDirectory = React.memo(({
           Clear
         </Button>
       </div>
+      <div
+        css={{
+          textAlign: 'left'
+        }}
+        aria-live='polite'
+      >
+        {resultsSummary}
+      </div>
       <StaffDirectoryResults
         results={results}
         staffImages={staffImages}
@@ -585,14 +593,7 @@ const StaffDirectoryResults = ({
         width: '100%'
       }}
     >
-      <caption
-        css={{
-          textAlign: 'left'
-        }}
-        aria-live='polite'
-      >
-        {resultsSummary}
-      </caption>
+
       <colgroup>
         <col
           span='1'
