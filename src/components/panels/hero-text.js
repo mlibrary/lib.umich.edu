@@ -110,7 +110,7 @@ export default function HeroText ({ data }) {
                     ':focus, :hover': {
                       textDecorationThickness: '4px'
                     },
-                    textDecorationColor: COLORS.maize['400'],
+                    textDecorationColor: 'var(--colors-maize-400)',
                     textDecorationThickness: '2px'
                   },
                   fontSize: '1.25rem',
@@ -154,7 +154,7 @@ const BackgroundSection = ({ data, children, ...rest }) => {
   return (
     <section
       css={{
-        backgroundColor: COLORS.blue['300'],
+        backgroundColor: 'var(--colors-blue-300)',
         backgroundImage: `url('${sources[1].images.fallback.src}')`,
         backgroundPosition: 'center',
         [MEDIA_QUERIES.LARGESCREEN]: {

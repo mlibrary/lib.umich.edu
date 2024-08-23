@@ -189,7 +189,7 @@ const DEFAULT_LINK_STYLE = {
     boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
   },
   boxShadow: `inset 0 -1px ${COLORS.teal[400]}`,
-  color: COLORS.teal['400']
+  color: 'var(--colors-teal-400)'
 };
 
 export const LINK_STYLES = {

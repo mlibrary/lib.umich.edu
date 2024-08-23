@@ -10,7 +10,7 @@ export default function CardImage ({ image }) {
       alt={image.alt || ''}
       css={{
         aspectRatio: '3 / 2',
-        backgroundColor: COLORS.blue['100'],
+        backgroundColor: 'var(--colors-blue-100)',
         borderRadius: '4px',
         marginBottom: SPACING.S,
         overflow: 'hidden',

@@ -8,7 +8,7 @@ export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
     <header
       css={{
         [MEDIA_QUERIES.LARGESCREEN]: {
-          background: COLORS.blue['100']
+          background: 'var(--colors-blue-100)'
         }
       }}
       {...rest}

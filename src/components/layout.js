@@ -15,7 +15,7 @@ const Layout = ({ children, drupalNid }) => {
       <Global
         styles={{
           '*:focus': {
-            outlineColor: COLORS.blue['400']
+            outlineColor: 'var(--colors-blue-400)'
           },
           '[data-reach-dialog-overlay]': {
             background: 'hsla(0, 0%, 0%, 0.6)',

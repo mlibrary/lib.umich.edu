@@ -448,7 +448,7 @@ const StaffPhoto = ({ mid, staffImages }) => {
       image={img.childImageSharp.gatsbyImageData}
       alt={img.alt}
       css={{
-        backgroundColor: COLORS.blue['100'],
+        backgroundColor: 'var(--colors-blue-100)',
         borderRadius: '2px',
         overflow: 'hidden'
       }}
@@ -641,7 +641,7 @@ const StaffDirectoryResults = ({
                       ':hover': {
                         textDecorationThickness: '2px'
                       },
-                      color: COLORS.teal['400'],
+                      color: 'var(--colors-teal-400)',
                       textDecoration: 'underline'
                     }}
                     to={`/users/${uniqname}`}

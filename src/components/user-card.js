@@ -7,7 +7,7 @@ import StaffPhotoPlaceholder from './staff-photo-placeholder';
 
 const photoContainerCSS = {
   aspectRatio: '3 / 4',
-  backgroundColor: COLORS.blue['100'],
+  backgroundColor: 'var(--colors-blue-100)',
   borderRadius: '2px',
   flexShrink: '0',
   overflow: 'hidden',

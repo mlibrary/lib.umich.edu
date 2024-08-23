@@ -18,7 +18,7 @@ export default function HorizontalNavigation ({ items, ...rest }) {
   return (
     <nav
       css={{
-        background: COLORS.blue['100'],
+        background: 'var(--colors-blue-100)',
         borderBottom: `solid 1px var(--colors-neutral-100)`,
         marginBottom: SPACING.XL,
         zIndex: '1'
@@ -73,9 +73,9 @@ export default function HorizontalNavigation ({ items, ...rest }) {
                       paddingTop: SPACING.M
                     }}
                     activeStyle={{
-                      background: COLORS.teal['100'],
+                      background: 'var(--colors-teal-100)',
                       borderLeft: `solid 4px var(--colors-teal-400)`,
-                      color: COLORS.teal['400'],
+                      color: 'var(--colors-teal-400)',
                       fontWeight: '700'
                     }}
                     to={to}

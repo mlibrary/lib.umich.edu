@@ -38,7 +38,7 @@ const PanelTemplate = ({ title, children, shaded, ...rest }) => {
           borderBottom: shaded ? 'none' : `solid 1px var(--colors-neutral-100)`,
           paddingBottom: SPACING['3XL']
         },
-        background: shaded ? COLORS.blue['100'] : '',
+        background: shaded ? 'var(--colors-blue-100)' : '',
         paddingBottom: SPACING.XL,
         paddingTop: SPACING.XL,
         [MEDIA_QUERIES.LARGESCREEN]: {
@@ -161,7 +161,7 @@ const CardPanel = ({ data }) => {
           >
             <span
               css={{
-                color: COLORS.indigo['300'],
+                color: 'var(--colors-indigo-300)',
                 marginRight: SPACING.XS
               }}
             >
@@ -177,7 +177,7 @@ const CardPanel = ({ data }) => {
           >
             <span
               css={{
-                color: COLORS.indigo['300'],
+                color: 'var(--colors-indigo-300)',
                 marginRight: SPACING.XS
               }}
             >

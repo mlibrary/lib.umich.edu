@@ -5,7 +5,7 @@ import React from 'react';
 
 const linkCSS = {
   ':hover [data-link]': LINK_STYLES.description[':hover'],
-  background: COLORS.teal['100'],
+  background: 'var(--colors-teal-100)',
   borderRadius: '2px',
   display: 'block',
   padding: SPACING.M,
@@ -46,7 +46,7 @@ const LinkContent = ({
     <React.Fragment>
       <span
         css={{
-          color: COLORS.teal['400'],
+          color: 'var(--colors-teal-400)',
           marginRight: SPACING.XS
         }}
       >

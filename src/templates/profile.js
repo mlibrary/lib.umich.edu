@@ -145,7 +145,7 @@ const ProfileTemplate = ({ data }) => {
                 '> h2': {
                   marginTop: SPACING.M
                 },
-                background: COLORS.blue['100'],
+                background: 'var(--colors-blue-100)',
                 margin: `0 -${SPACING.M}`,
                 marginBottom: SPACING['2XL'],
                 padding: SPACING.M,

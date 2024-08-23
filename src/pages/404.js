@@ -23,7 +23,7 @@ const NotFoundPage = () => {
         <Heading size='3XL' level={1} css={{ marginBottom: SPACING.M }}>
           <span
             css={{
-              color: COLORS.orange['400'],
+              color: 'var(--colors-orange-400)',
               display: 'block',
               fontSize: '60%'
             }}

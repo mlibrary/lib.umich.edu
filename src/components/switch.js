@@ -48,9 +48,9 @@ export default function Switch ({ on, children, ...rest }) {
             right: on ? 'auto' : '5px',
             top: '2px'
           },
-          background: on ? COLORS.green['500'] : COLORS.neutral['300'],
+          background: on ? 'var(--colors-green-500)' : COLORS.neutral['300'],
           border: `solid 2px`,
-          borderColor: on ? COLORS.green['500'] : COLORS.neutral['300'],
+          borderColor: on ? 'var(--colors-green-500)' : COLORS.neutral['300'],
           borderRadius: '16px',
           display: 'inline-block',
           height: '24px',

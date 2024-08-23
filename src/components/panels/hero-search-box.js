@@ -208,7 +208,7 @@ const BackgroundSection = ({ data, children, ...rest }) => {
   return (
     <section
       css={{
-        backgroundColor: COLORS.neutral['100'],
+        backgroundColor: 'var(--colors-neutral-100)',
         backgroundImage: `url('${screenImage('vertical')}')`,
         backgroundPosition: 'center top 33%',
         [MEDIAQUERIES.M]: {

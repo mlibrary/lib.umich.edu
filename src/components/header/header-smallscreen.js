@@ -275,7 +275,7 @@ const NavSecondary = ({ items }) => {
               css={{
                 ...navItemStyles,
                 ...TYPOGRAPHY['3XS'],
-                background: COLORS.blue['100'],
+                background: 'var(--colors-blue-100)',
                 color: COLORS.neutral['300']
               }}
             >

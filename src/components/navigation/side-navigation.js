@@ -80,7 +80,7 @@ const SideNavLink = ({ path, item, children, ...rest }) => {
             textDecoration: 'underline'
           },
           alignItems: 'center',
-          color: isActive ? COLORS.teal['400'] : 'inherit',
+          color: isActive ? 'var(--colors-teal-400)' : 'inherit',
           display: 'flex',
           fontWeight: isActive ? '700' : 'inherit',
           justifyContent: 'space-between',

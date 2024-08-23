@@ -28,7 +28,7 @@ export default function SkipLinks () {
           },
           width: 'auto'
         },
-        background: COLORS.blue['400'],
+        background: 'var(--colors-blue-400)',
         height: '1px',
         left: '-10000px',
         overflow: 'hidden',

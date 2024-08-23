@@ -30,9 +30,9 @@ const getButtonKindCSS = (kind, color) => {
     case 'subtle':
       return {
         ':hover': {
-          background: COLORS.blue['200']
+          background: 'var(--colors-blue-200)'
         },
-        background: COLORS.neutral['100']
+        background: 'var(--colors-neutral-100)'
       };
     case 'reset':
       return {};

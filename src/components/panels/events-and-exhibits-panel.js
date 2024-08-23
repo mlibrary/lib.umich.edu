@@ -167,7 +167,7 @@ export default function EventsAndExhibitsPanel () {
         >
           <div
             css={{
-              background: COLORS.blue['100'],
+              background: 'var(--colors-blue-100)',
               borderRadius: '4px',
               padding: SPACING.M
             }}

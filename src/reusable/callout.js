@@ -8,7 +8,7 @@ export default function Callout ({ title, children, intent, alert, ...rest }) {
       css={{
         border: `solid 1px var(--colors-neutral-100)`,
         borderLeft: `solid 4px ${
-          intent === 'warning' ? COLORS.maize['400'] : COLORS.teal['400']
+          intent === 'warning' ? 'var(--colors-maize-400)' : 'var(--colors-teal-400)'
         }`,
         borderRadius: '4px',
         margin: `${SPACING.XL} 0`,
@@ -29,7 +29,7 @@ export default function Callout ({ title, children, intent, alert, ...rest }) {
             d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'
             size={24}
             css={{
-              color: COLORS.maize['500'],
+              color: 'var(--colors-maize-500)',
               marginTop: SPACING['2XS']
             }}
           />

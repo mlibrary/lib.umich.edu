@@ -94,7 +94,7 @@ const Footer = () => {
         '*:focus': {
           outlineColor: 'white'
         },
-        background: COLORS.blue['400']
+        background: 'var(--colors-blue-400)'
       }}
       role='contentinfo'
     >
@@ -112,7 +112,7 @@ const Footer = () => {
               textDecoration: 'underline'
             },
             'h2, h3': {
-              color: COLORS.blue['200']
+              color: 'var(--colors-blue-200)'
             },
             paddingBottom: SPACING.L,
             paddingTop: SPACING['2XL'],
@@ -227,8 +227,8 @@ const Footer = () => {
       </Margins>
       <div
         css={{
-          background: COLORS.blue['500'],
-          color: COLORS.blue['200'],
+          background: 'var(--colors-blue-500)',
+          color: 'var(--colors-blue-200)',
           padding: `${SPACING.M} 0`
         }}
       >

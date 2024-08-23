@@ -251,7 +251,7 @@ const ResultsList = ({ searching, noResults, results, query, error }) => {
     <Popover error={error}>
       <p
         css={{
-          background: COLORS.blue['100'],
+          background: 'var(--colors-blue-100)',
           borderBottom: `solid 1px var(--colors-neutral-100)`,
           color: COLORS.neutral['300'],
           kbd: {
@@ -293,7 +293,7 @@ const ResultsList = ({ searching, noResults, results, query, error }) => {
                     '[data-title]': {
                       textDecoration: 'underline'
                     },
-                    background: COLORS.teal['100'],
+                    background: 'var(--colors-teal-100)',
                     borderLeft: `solid 4px var(--colors-teal-400)`,
                     outline: 'none',
                     paddingLeft: `calc(${SPACING.L} - 4px)`
@@ -351,7 +351,7 @@ const LibrarySearchScopeOption = ({ query }) => {
           '[data-title]': {
             textDecoration: 'underline'
           },
-          background: COLORS.teal['100'],
+          background: 'var(--colors-teal-100)',
           borderLeft: `solid 4px var(--colors-teal-400)`,
           outline: 'none',
           paddingLeft: `calc(${SPACING.L} - 4px)`
@@ -393,7 +393,7 @@ const LibrarySearchScopeOption = ({ query }) => {
         css={{
           display: 'inline-block',
           ...TYPOGRAPHY['3XS'],
-          background: COLORS.blue['100'],
+          background: 'var(--colors-blue-100)',
           border: `solid 1px var(--colors-neutral-100)`,
           borderRadius: '4px',
           padding: `0 ${SPACING['2XS']}`
@@ -549,7 +549,7 @@ const Popover = ({ children, error }) => {
       <div
         css={{
           borderBottom: `solid 1px`,
-          borderBottomColor: COLORS.neutral['100']
+          borderBottomColor: 'var(--colors-neutral-100)'
         }}
       >
         {error && <Alert intent='error'>{error.error.message}</Alert>}

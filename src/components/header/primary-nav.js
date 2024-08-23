@@ -109,7 +109,7 @@ const NavPrimaryItem = ({
   const activeStyles = () => {
     if (isOpen) {
       return {
-        borderColor: COLORS.teal['400']
+        borderColor: 'var(--colors-teal-400)'
       };
     }
     return {};
@@ -135,7 +135,7 @@ const NavPrimaryItem = ({
         aria-expanded={isOpen}
         css={{
           ':hover': {
-            borderColor: COLORS.teal['400']
+            borderColor: 'var(--colors-teal-400)'
           },
           ...TYPOGRAPHY.XS,
           borderBottom: `solid 3px transparent`,
@@ -303,8 +303,8 @@ const NavPanelItem = ({
   const activeStyles = () => {
     if (isOpen) {
       return {
-        background: COLORS.teal['100'],
-        borderColor: COLORS.teal['400']
+        background: 'var(--colors-teal-100)',
+        borderColor: 'var(--colors-teal-400)'
       };
     }
 
@@ -517,7 +517,7 @@ const NoPanelsAreOpen = () => {
     <div
       css={{
         alignItems: 'center',
-        background: COLORS.blue['100'],
+        background: 'var(--colors-blue-100)',
         color: COLORS.neutral['300'],
         display: 'flex',
         height: '100%',
