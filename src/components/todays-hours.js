@@ -23,7 +23,6 @@ export default function Hours ({ node }) {
   if (!hours) {
     return 'Today: n/a';
   }
-
   return <span aria-label={hours.label}>Today: {hours.text}</span>;
 }
 
