@@ -25,6 +25,7 @@ const processHoursData = (data, initialized) => {
     };
 
     return {
+      isOpen: hoursData.isOpen,
       subLabel: `TODAY: ${label}`,
       subText: `TODAY: ${text}`,
       text: node.title,
@@ -65,7 +66,7 @@ export default function HoursLitePanel ({ data }) {
             >
               <span
                 css={{
-                  color: COLORS.maize['500'],
+                  color: COLORS.indigo['300'],
                   display: 'inline',
                   flexShrink: '0',
                   width: '1.5rem'
