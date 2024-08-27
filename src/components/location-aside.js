@@ -29,7 +29,7 @@ const LayoutWithIcon = ({
             alignItems: 'center',
             background: `var(--color-${palette}-100)`,
             borderRadius: '50%',
-            color: `var(--color${palette}-300)`,
+            color: `var(--color-${palette}-300)`,
             display: 'flex',
             height: '2.5rem',
             justifyContent: 'center',
