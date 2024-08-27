@@ -27,9 +27,9 @@ const LayoutWithIcon = ({
         <span
           css={{
             alignItems: 'center',
-            background: COLORS[palette][100],
+            background: `var(--color-${palette}-100)`,
             borderRadius: '50%',
-            color: COLORS[palette][300],
+            color: `var(--color${palette}-300)`,
             display: 'flex',
             height: '2.5rem',
             justifyContent: 'center',

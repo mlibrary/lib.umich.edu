@@ -86,69 +86,6 @@ export const TYPOGRAPHY = {
 };
 /* eslint-enable sort-keys, id-length */
 
-/*
- *Inspired by GitHub color system
- *https://styleguide.github.com/primer/support/color-system/
- */
-export const COLORS = {
-  blue: {
-    100: '#F7F8F9',
-    200: '#B2BEC9',
-    300: '#4C6781',
-    400: '#00274C',
-    500: '#001324'
-  },
-  green: {
-    100: '#EAF8EE',
-    200: '#96DBAA',
-    300: '#57BC75',
-    400: '#20A848',
-    500: '#198539'
-  },
-  indigo: {
-    100: '#EEF1F9',
-    200: '#AAB9E3',
-    300: '#7C93D4',
-    400: '#506FC5',
-    500: '#274391'
-  },
-  maize: {
-    100: '#FFF9E6',
-    200: '#FFEA9B',
-    300: '#FFDA50',
-    400: '#FFCB05',
-    500: '#EABA02'
-  },
-  neutral: {
-    100: '#E5E9ED',
-    200: '#8A96A1',
-    300: '#637381',
-    400: '#212B36',
-    500: '#06080A'
-  },
-  orange: {
-    100: '#FFF1EB',
-    200: '#FFB899',
-    300: '#FF8A58',
-    400: '#F25F1F',
-    500: '#C74E1A'
-  },
-  pink: {
-    100: '#FCEBEB',
-    200: '#F29D9D',
-    300: '#EC6969',
-    400: '#D93838',
-    500: '#BF3232'
-  },
-  teal: {
-    100: '#E9F2F5',
-    200: '#A7CDDB',
-    300: '#65A8BF',
-    400: '#1D7491',
-    500: '#106684'
-  }
-};
-
 export const INTENT_COLORS = {
   error: 'var(--color-orange-400)',
   informational: 'var(--color-blue-400)',

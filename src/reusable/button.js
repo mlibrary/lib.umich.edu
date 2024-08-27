@@ -1,16 +1,16 @@
-import { COLORS, lightOrDark, SPACING } from '../reusable';
+import { lightOrDark, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 const getButtonColor = (kind) => {
   switch (kind) {
     case 'primary':
-      return COLORS.maize;
+      return 'var(--color-maize-';
     case 'secondary':
     case 'tertiary':
-      return COLORS.teal;
+      return 'var(--color-teal-';
     default:
-      return COLORS.blue;
+      return 'var(--color-blue-';
   }
 };
 
@@ -19,12 +19,12 @@ const getButtonKindCSS = (kind, color) => {
     case 'tertiary':
       return {
         ':hover': {
-          outline: `solid 1px ${color['400']}`,
+          outline: `solid 1px ${color}400)'}`,
           outlineOffset: '-2px'
         },
         background: 'white',
-        border: `solid 1px ${color['400']}`,
-        color: color['400'],
+        border: `solid 1px ${color}400)'}`,
+        color: `${color}400)`,
         padding: `calc(${SPACING.XS} - 1px) calc(${SPACING.M} - 1px)`
       };
     case 'subtle':
@@ -39,9 +39,9 @@ const getButtonKindCSS = (kind, color) => {
     default:
       return {
         ':hover': {
-          background: color['500']
+          background: `${color}500)`
         },
-        background: color['400']
+        background: `${color}400)`
       };
   }
 };
@@ -69,7 +69,7 @@ const getButtonCSS = (kind, disabled) => {
     alignItems: 'center',
     borderRadius: '2px',
     color:
-      lightOrDark(color['400']) === 'light' || kind === 'subtle'
+      lightOrDark(`${color}400)`) === 'light' || kind === 'subtle'
         ? 'inherit'
         : 'white',
     display: 'flex',
