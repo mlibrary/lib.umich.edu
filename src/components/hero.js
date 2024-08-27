@@ -1,5 +1,5 @@
-import { COLORS, MEDIA_QUERIES } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
+import { MEDIA_QUERIES } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
@@ -20,7 +20,7 @@ const StyledHeroInnerContainer = styled('div')({
 });
 
 const StyledTint = styled('div')({
-  background: COLORS.blue[400],
+  background: 'var(--color-blue-400)',
   bottom: '0',
   left: '0',
   opacity: '0.1',

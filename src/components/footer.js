@@ -1,4 +1,4 @@
-import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
+import { Heading, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
 import createGoogleMapsUrl from './utilities/create-google-maps-url';
 import fdlp from '../images/fdlp.png';
 import icons from '../reusable/icons';
@@ -94,7 +94,7 @@ const Footer = () => {
         '*:focus': {
           outlineColor: 'white'
         },
-        background: COLORS.blue['400']
+        background: 'var(--color-blue-400)'
       }}
       role='contentinfo'
     >
@@ -112,7 +112,7 @@ const Footer = () => {
               textDecoration: 'underline'
             },
             'h2, h3': {
-              color: COLORS.blue['200']
+              color: 'var(--color-blue-200)'
             },
             paddingBottom: SPACING.L,
             paddingTop: SPACING['2XL'],
@@ -168,11 +168,11 @@ const Footer = () => {
               a: {
                 textDecoration: 'underline'
               },
-              borderTop: `solid 1px ${COLORS.blue['300']}`,
+              borderTop: `solid 1px var(--color-blue-300)`,
               paddingTop: SPACING.XL,
               [MEDIA_QUERIES.LARGESCREEN]: {
                 border: '0',
-                borderLeft: `solid 1px ${COLORS.blue['300']}`,
+                borderLeft: `solid 1px var(--color-blue-300)`,
                 marginLeft: `-${SPACING['2XL']}`,
                 padding: '0',
                 paddingLeft: SPACING.XL
@@ -227,8 +227,8 @@ const Footer = () => {
       </Margins>
       <div
         css={{
-          background: COLORS.blue['500'],
-          color: COLORS.blue['200'],
+          background: 'var(--color-blue-500)',
+          color: 'var(--color-blue-200)',
           padding: `${SPACING.M} 0`
         }}
       >

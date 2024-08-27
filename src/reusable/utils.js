@@ -150,10 +150,10 @@ export const COLORS = {
 };
 
 export const INTENT_COLORS = {
-  error: COLORS.orange[400],
-  informational: COLORS.blue[400],
-  success: COLORS.teal[400],
-  warning: COLORS.maize[400]
+  error: 'var(--color-orange-400)',
+  informational: 'var(--color-blue-400)',
+  success: 'var(--color-teal-400)',
+  warning: 'var(--color-maize-400)'
 };
 
 export const Margins = styled('div')({
@@ -186,10 +186,10 @@ export const LargeScreen = styled('div')({
 
 const DEFAULT_LINK_STYLE = {
   ':hover': {
-    boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
+    boxShadow: `inset 0 -2px var(--color-teal-400)`
   },
-  boxShadow: `inset 0 -1px ${COLORS.teal[400]}`,
-  color: COLORS.teal['400']
+  boxShadow: `inset 0 -1px var(--color-teal-400)`,
+  color: 'var(--color-teal-400)'
 };
 
 export const LINK_STYLES = {
@@ -197,10 +197,10 @@ export const LINK_STYLES = {
   description: {
     ...TYPOGRAPHY.XS,
     ':hover': {
-      boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
+      boxShadow: `inset 0 -2px var(--color-teal-400)`
     },
-    boxShadow: `inset 0 -1px ${COLORS.teal[400]}`,
-    color: COLORS.neutral['400'],
+    boxShadow: `inset 0 -1px var(--color-teal-400)`,
+    color: 'var(--color-neutral-400)',
     fontWeight: '600'
   },
   light: {
@@ -212,37 +212,37 @@ export const LINK_STYLES = {
   },
   list: {
     ':hover': {
-      boxShadow: `inset 0 -1px ${COLORS.neutral[400]}`
+      boxShadow: `inset 0 -1px var(--color-neutral-400)`
     },
-    color: COLORS.neutral['400']
+    color: 'var(--color-neutral-400)'
   },
   'list-medium': {
     ':hover': {
-      boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
+      boxShadow: `inset 0 -2px var(--color-teal-400)`
     },
     fontWeight: '600'
   },
   'list-strong': {
     ':hover': {
-      boxShadow: `inset 0 -1px ${COLORS.neutral[400]}`
+      boxShadow: `inset 0 -1px var(--color-neutral-400)`
     },
-    color: COLORS.neutral['400'],
+    color: 'var(--color-neutral-400)',
     fontWeight: '800'
   },
   special: {
     ...TYPOGRAPHY['3XS'],
     ':hover': {
-      boxShadow: `inset 0 -1px ${COLORS.neutral[300]}`
+      boxShadow: `inset 0 -1px var(--color-neutral-300)`
     },
-    color: COLORS.neutral['300']
+    color: 'var(--color-neutral-300)'
   },
   'special-subtle': DEFAULT_LINK_STYLE,
   subtle: {
     ':hover': {
-      boxShadow: `inset 0 -2px ${COLORS.neutral[300]}`
+      boxShadow: `inset 0 -2px var(--color-neutral-300)`
     },
-    boxShadow: `inset 0 -1px ${COLORS.neutral[300]}`,
-    color: COLORS.neutral['400']
+    boxShadow: `inset 0 -1px var(--color-neutral-300)`,
+    color: 'var(--color-neutral-400)'
   }
 
   /*
@@ -399,7 +399,7 @@ export const GlobalStyleSheet = () => {
       font-size: 16px;
       font-family: 'Muli', sans-serif;
       line-height: 1.5;
-      color: ${COLORS.neutral[400]};
+      color: var(--color-neutral-400);
     }
     
     /*

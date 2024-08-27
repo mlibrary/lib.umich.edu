@@ -1,5 +1,5 @@
-import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
 import { graphql, useStaticQuery } from 'gatsby';
+import { Heading, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
 import Card from '../card';
 import Link from '../link';
 import React from 'react';
@@ -170,7 +170,7 @@ export default function FeaturedAndLatestNews () {
           <div
             css={{
               [MEDIA_QUERIES.LARGESCREEN]: {
-                borderRight: `solid 1px ${COLORS.neutral['100']}`,
+                borderRight: `solid 1px var(--color-neutral-100)`,
                 paddingRight: SPACING.XL
               }
             }}

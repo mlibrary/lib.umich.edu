@@ -1,4 +1,4 @@
-import { COLORS, Heading, Icon, SPACING, Text } from '../reusable';
+import { Heading, Icon, SPACING, Text } from '../reusable';
 import Address from './address';
 import Hours from './todays-hours';
 import icons from '../reusable/icons';

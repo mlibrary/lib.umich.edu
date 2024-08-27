@@ -1,12 +1,12 @@
-import { COLORS, SPACING, TYPOGRAPHY } from '../reusable';
+import { SPACING, TYPOGRAPHY } from '../reusable';
 import styled from '@emotion/styled';
 
 const Table = styled('table')({
   td: {
-    borderBottom: `solid 1px ${COLORS.neutral[100]}`
+    borderBottom: `solid 1px var(--color-neutral-100)`
   },
   th: {
-    borderBottom: `solid 2px ${COLORS.maize[400]}`,
+    borderBottom: `solid 2px var(--color-maize-400)`,
     textAlign: 'left',
     ...TYPOGRAPHY['3XS']
   },

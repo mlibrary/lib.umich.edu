@@ -1,5 +1,5 @@
-import { COLORS, Heading, SPACING, TYPOGRAPHY } from '../../reusable';
 import { getFloor, getImage, getParentTitle, getRoom } from '../../utils';
+import { Heading, SPACING, TYPOGRAPHY } from '../../reusable';
 import CardImage from '../../reusable/card-image';
 import Html from '../html';
 import Link from '../link';
@@ -72,7 +72,7 @@ const DestinationCard = ({ card }) => {
           {card.title}
           <span
             css={{
-              color: COLORS.neutral['300'],
+              color: 'var(--color-neutral-300)',
               display: 'block',
               marginTop: SPACING['3XS'],
               ...TYPOGRAPHY['3XS']

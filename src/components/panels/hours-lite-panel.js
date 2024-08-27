@@ -1,4 +1,4 @@
-import { COLORS, Heading, Icon, SPACING, TYPOGRAPHY } from '../../reusable';
+import { Heading, Icon, SPACING, TYPOGRAPHY } from '../../reusable';
 import React, { useEffect, useState } from 'react';
 import { displayHours } from '../../utils/hours';
 import { Link as GatsbyLink } from 'gatsby';
@@ -66,7 +66,7 @@ export default function HoursLitePanel ({ data }) {
             >
               <span
                 css={{
-                  color: COLORS.indigo['300'],
+                  color: 'var(--color-indigo-300)',
                   display: 'inline',
                   flexShrink: '0',
                   width: '1.5rem'
@@ -106,7 +106,7 @@ export default function HoursLitePanel ({ data }) {
                         marginTop: '0'
                       },
                       ...TYPOGRAPHY['3XS'],
-                      color: COLORS.neutral['300'],
+                      color: 'var(--color-neutral-300)',
                       fontSize: '0.875rem',
                       fontWeight: '700',
                       textTransform: 'uppercase'

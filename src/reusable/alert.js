@@ -10,23 +10,23 @@ const Alert = ({ intent = 'informational', children, ...other }) => {
     switch (alertIntent) {
       case 'success':
         return {
-          background: COLORS.teal[100],
-          borderColor: COLORS.teal[400]
+          background: 'var(--color-teal-100)',
+          borderColor: 'var(--color-teal-400)'
         };
       case 'warning':
         return {
-          background: COLORS.maize[100],
-          borderColor: COLORS.maize[400]
+          background: 'var(--color-maize-100)',
+          borderColor: 'var(--color-maize-400)'
         };
       case 'error':
         return {
-          background: COLORS.orange[100],
-          borderColor: COLORS.orange[500]
+          background: 'var(--color-orange-100)',
+          borderColor: 'var(--color-orange-500)'
         };
       default:
         return {
-          background: COLORS.blue[100],
-          borderColor: COLORS.blue[400]
+          background: 'var(--color-blue-100)',
+          borderColor: 'var(--color-blue-400)'
         };
     }
   };

@@ -1,5 +1,4 @@
 import {
-  COLORS,
   LINK_STYLES,
   MEDIA_QUERIES,
   SPACING,
@@ -57,7 +56,7 @@ export default function Card ({
     }
 
     const styles = {
-      color: COLORS.neutral[300],
+      color: 'var(--color-neutral-300)',
       marginTop: SPACING.XS
     };
 
@@ -77,7 +76,7 @@ export default function Card ({
           {subtitle && (
             <span
               css={{
-                color: COLORS.neutral[300],
+                color: 'var(--color-neutral-300)',
                 display: 'block',
                 marginBottom: SPACING['2XS'],
                 ...TYPOGRAPHY['3XS']

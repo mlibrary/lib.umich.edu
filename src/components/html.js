@@ -1,5 +1,5 @@
 /* eslint-disable id-length */
-import { COLORS, Heading, List, Text } from '../reusable';
+import { Heading, List, Text } from '../reusable';
 import Blockquote from '../reusable/blockquote';
 import Callout from '../reusable/callout';
 import DrupalEntity from './drupal-entity';
@@ -43,7 +43,7 @@ const Heading4 = ({ children, ...other }) => {
     <Heading
       level={4}
       size='3XS'
-      style={{ color: COLORS.neutral['300'] }}
+      style={{ color: 'var(--color-neutral-300)' }}
       {...other}
     >
       {children}
@@ -107,7 +107,7 @@ const renderHast = new rehypeReact({
         <figcaption
           {...props}
           css={{
-            color: COLORS.neutral['300']
+            color: 'var(--color-neutral-300)'
           }}
         />
       );

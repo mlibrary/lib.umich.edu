@@ -1,6 +1,5 @@
 import {
   Alert,
-  COLORS,
   Heading,
   Icon,
   LINK_STYLES,
@@ -109,7 +108,7 @@ const NavPrimaryItem = ({
   const activeStyles = () => {
     if (isOpen) {
       return {
-        borderColor: COLORS.teal['400']
+        borderColor: 'var(--color-teal-400)'
       };
     }
     return {};
@@ -135,7 +134,7 @@ const NavPrimaryItem = ({
         aria-expanded={isOpen}
         css={{
           ':hover': {
-            borderColor: COLORS.teal['400']
+            borderColor: 'var(--color-teal-400)'
           },
           ...TYPOGRAPHY.XS,
           borderBottom: `solid 3px transparent`,
@@ -222,7 +221,7 @@ const NavDropdown = ({ items, primaryNode }) => {
     <div
       css={{
         background: 'white',
-        border: `solid 1px ${COLORS.neutral[100]}`,
+        border: `solid 1px var(--color-neutral-100)`,
         boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
         left: '0',
         position: 'absolute',
@@ -268,7 +267,7 @@ const NavPanel = ({ items }) => {
     >
       <ul
         css={{
-          borderRight: `solid 1px ${COLORS.neutral[100]}`,
+          borderRight: `solid 1px var(--color-neutral-100)`,
           minHeight: minHeightValue,
           padding: `${SPACING.S} 0`,
           width: dropdownSideWidth
@@ -303,8 +302,8 @@ const NavPanelItem = ({
   const activeStyles = () => {
     if (isOpen) {
       return {
-        background: COLORS.teal['100'],
-        borderColor: COLORS.teal['400']
+        background: 'var(--color-teal-100)',
+        borderColor: 'var(--color-teal-400)'
       };
     }
 
@@ -427,7 +426,7 @@ const NavPanelItemLinks = ({ parentItem, items }) => {
       {parentItem.description && (
         <p
           css={{
-            color: COLORS.neutral[300],
+            color: 'var(--color-neutral-300)',
             paddingTop: SPACING.XS
           }}
         >
@@ -439,7 +438,7 @@ const NavPanelItemLinks = ({ parentItem, items }) => {
             <ul
               css={{
                 ...columnStyles(),
-                borderTop: `solid 1px ${COLORS.neutral['100']}`,
+                borderTop: `solid 1px var(--color-neutral-100)`,
                 marginTop: SPACING.M,
                 paddingTop: SPACING.L
               }}
@@ -517,8 +516,8 @@ const NoPanelsAreOpen = () => {
     <div
       css={{
         alignItems: 'center',
-        background: COLORS.blue['100'],
-        color: COLORS.neutral['300'],
+        background: 'var(--color-blue-100)',
+        color: 'var(--color-neutral-300)',
         display: 'flex',
         height: '100%',
         justifyContent: 'center',
