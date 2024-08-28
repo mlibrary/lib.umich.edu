@@ -64,7 +64,6 @@ const getButtonCSS = (kind, disabled) => {
   if (kind === 'reset') {
     return {};
   }
-
   return {
     alignItems: 'center',
     borderRadius: '2px',

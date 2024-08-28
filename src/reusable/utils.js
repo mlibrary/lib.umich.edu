@@ -197,6 +197,21 @@ export const SmallScreen = styled('div')({
 });
 
 export const lightOrDark = (color) => {
+// Helper to resolve CSS variable
+  const resolveCssVariable = (cssVar) => {
+    const tempElement = document.createElement('div');
+    tempElement.style.color = cssVar;
+    document.body.appendChild(tempElement);
+    const resolvedColor = getComputedStyle(tempElement).color;
+    document.body.removeChild(tempElement);
+    return resolvedColor;
+  };
+
+  // If the color is a CSS variable, resolve it
+  if (color.startsWith('var(')) {
+    color = resolveCssVariable(color);
+  }
+
   // Variables for red, green, blue values
   /* eslint-disable init-declarations */
 
