@@ -197,19 +197,16 @@ export const SmallScreen = styled('div')({
 });
 
 export const lightOrDark = (color) => {
-// Helper to resolve CSS variable
+  let resolvedColor = color;
+
   const resolveCssVariable = (cssVar) => {
-    const tempElement = document.createElement('div');
-    tempElement.style.color = cssVar;
-    document.body.appendChild(tempElement);
-    const resolvedColor = getComputedStyle(tempElement).color;
-    document.body.removeChild(tempElement);
-    return resolvedColor;
+    const rootStyle = getComputedStyle(document.documentElement);
+    return rootStyle.getPropertyValue(cssVar).trim();
   };
 
-  // If the color is a CSS variable, resolve it
-  if (color.startsWith('var(')) {
-    color = resolveCssVariable(color);
+  if (resolvedColor.startsWith('var(')) {
+    const cssVar = resolvedColor.match(/var\((?:--[\w-]+)\)/u)[0].slice(4, -1);
+    resolvedColor = resolveCssVariable(cssVar);
   }
 
   // Variables for red, green, blue values
@@ -220,9 +217,9 @@ export const lightOrDark = (color) => {
   let blue;
 
   // Check the format of the color, HEX or RGB?
-  if (color.match(/^rgb/u)) {
+  if (resolvedColor.match(/^rgb/u)) {
     // If HEX --> store the red, green, blue values in separate variables
-    const colorMatch = color.match(
+    const colorMatch = resolvedColor.match(
       // eslint-disable-next-line require-unicode-regexp, prefer-named-capture-group
       /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/
     );
@@ -232,7 +229,7 @@ export const lightOrDark = (color) => {
     }
   } else {
     // If RGB --> Convert it to HEX: http://gist.github.com/983661
-    const hexColor = Number(`0x${color.slice(1).replace(color.length < 5 && /./gu, '$&$&')}`);
+    const hexColor = Number(`0x${resolvedColor.slice(1).replace(resolvedColor.length < 5 && /./gu, '$&$&')}`);
 
     /* eslint-disable no-bitwise */
     red = hexColor >> 16;
