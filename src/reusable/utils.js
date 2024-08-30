@@ -196,58 +196,6 @@ export const SmallScreen = styled('div')({
   }
 });
 
-export const lightOrDark = (color) => {
-  let resolvedColor = color;
-
-  const resolveCssVariable = (cssVar) => {
-    const rootStyle = getComputedStyle(document.documentElement);
-    return rootStyle.getPropertyValue(cssVar).trim();
-  };
-
-  if (resolvedColor.startsWith('var(')) {
-    const cssVar = resolvedColor.match(/var\((?:--[\w-]+)\)/u)[0].slice(4, -1);
-    resolvedColor = resolveCssVariable(cssVar);
-  }
-
-  // Variables for red, green, blue values
-  /* eslint-disable init-declarations */
-
-  let red;
-  let green;
-  let blue;
-
-  // Check the format of the color, HEX or RGB?
-  if (resolvedColor.match(/^rgb/u)) {
-    // If HEX --> store the red, green, blue values in separate variables
-    const colorMatch = resolvedColor.match(
-      // eslint-disable-next-line require-unicode-regexp, prefer-named-capture-group
-      /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/
-    );
-
-    if (colorMatch) {
-      [, red, green, blue] = colorMatch;
-    }
-  } else {
-    // If RGB --> Convert it to HEX: http://gist.github.com/983661
-    const hexColor = Number(`0x${resolvedColor.slice(1).replace(resolvedColor.length < 5 && /./gu, '$&$&')}`);
-
-    /* eslint-disable no-bitwise */
-    red = hexColor >> 16;
-    green = (hexColor >> 8) & 255;
-    blue = hexColor & 255;
-    /* eslint-enable no-bitwise */
-  }
-
-  // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-  const hsp = Math.sqrt(0.299 * (red * red) + 0.587 * (green * green) + 0.114 * (blue * blue));
-
-  // Using the HSP value, determine whether the color is light or dark
-  if (hsp > 127.5) {
-    return 'light';
-  }
-  return 'dark';
-};
-
 export const GlobalStyleSheet = () => {
   /*
    *TODO:

@@ -1,8 +1,8 @@
-import { lightOrDark, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { SPACING } from '../reusable';
 
-const getButtonColor = (kind) => {
+const getButtonBackground = (kind) => {
   switch (kind) {
     case 'primary':
       return 'var(--color-maize-';
@@ -59,7 +59,7 @@ const getDisabledCSS = (disabled) => {
 };
 
 const getButtonCSS = (kind, disabled) => {
-  const color = getButtonColor(kind);
+  const color = getButtonBackground(kind);
 
   if (kind === 'reset') {
     return {};
@@ -67,10 +67,7 @@ const getButtonCSS = (kind, disabled) => {
   return {
     alignItems: 'center',
     borderRadius: '2px',
-    color:
-      lightOrDark(`${color}400)`) === 'light' || kind === 'subtle'
-        ? 'inherit'
-        : 'white',
+    color: kind === 'tertiary' || kind === 'primary' || kind === 'subtle' ? 'inherit' : 'white',
     display: 'flex',
     fontWeight: '800',
     minHeight: '2.5rem',

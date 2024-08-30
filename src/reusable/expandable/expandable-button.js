@@ -20,14 +20,52 @@ const ExpandableButton = (props) => {
   }
 
   return (
-    <Button
-      {...props}
-      onClick={context.toggleExpanded}
-    >
-      {context.expanded
-        ? cleanList(['Show fewer', props.name])
-        : cleanList(['Show all', props.count, props.name])}
-    </Button>
+    <>
+      <Button
+        {...props}
+        onClick={context.toggleExpanded}
+      >
+        {context.expanded
+          ? cleanList(['Show fewer', props.name])
+          : cleanList(['Show all', props.count, props.name])}
+      </Button>
+      <Button
+        kind='primary'
+        {...props}
+        onClick={context.toggleExpanded}
+      >
+        {context.expanded
+          ? cleanList(['Show fewer', props.name])
+          : cleanList(['Show all', props.count, props.name])}
+      </Button>
+      <Button
+        kind='tertiary'
+        {...props}
+        onClick={context.toggleExpanded}
+      >
+        {context.expanded
+          ? cleanList(['Show fewer', props.name])
+          : cleanList(['Show all', props.count, props.name])}
+      </Button>
+      <Button
+        kind='reset'
+        {...props}
+        onClick={context.toggleExpanded}
+      >
+        {context.expanded
+          ? cleanList(['Show fewer', props.name])
+          : cleanList(['Show all', props.count, props.name])}
+      </Button>
+      <Button
+        kind='subtle'
+        {...props}
+        onClick={context.toggleExpanded}
+      >
+        {context.expanded
+          ? cleanList(['Show fewer', props.name])
+          : cleanList(['Show all', props.count, props.name])}
+      </Button>
+    </>
   );
 };
 
