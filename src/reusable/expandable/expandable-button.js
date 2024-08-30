@@ -20,16 +20,14 @@ const ExpandableButton = (props) => {
   }
 
   return (
-    <>
-      <Button
-        {...props}
-        onClick={context.toggleExpanded}
-      >
-        {context.expanded
-          ? cleanList(['Show fewer', props.name])
-          : cleanList(['Show all', props.count, props.name])}
-      </Button>
-    </>
+    <Button
+      {...props}
+      onClick={context.toggleExpanded}
+    >
+      {context.expanded
+        ? cleanList(['Show fewer', props.name])
+        : cleanList(['Show all', props.count, props.name])}
+    </Button>
   );
 };
 
