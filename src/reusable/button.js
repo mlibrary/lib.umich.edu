@@ -19,11 +19,11 @@ const getButtonKindCSS = (kind, color) => {
     case 'tertiary':
       return {
         ':hover': {
-          outline: `solid 1px ${color}400)'}`,
+          outline: `solid 1px ${color}400)`,
           outlineOffset: '-2px'
         },
         background: 'white',
-        border: `solid 1px ${color}400)'}`,
+        border: `solid 1px ${color}400)`,
         color: `${color}400)`,
         padding: `calc(${SPACING.XS} - 1px) calc(${SPACING.M} - 1px)`
       };
