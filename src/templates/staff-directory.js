@@ -315,7 +315,7 @@ const StaffDirectory = React.memo(({
 }) => {
   const [show, setShow] = useState(20);
   const staffInView = results.slice(0, show);
-  let resultsSummary = (<span aria-live='assertive'>No results</span>);
+  let resultsSummary = (<div><span aria-live='assertive'>No results</span></div>);
   if (results.length > 0) {
     resultsSummary = (<span>{results.length} {results.length > 1 ? 'results' : 'result'}</span>);
     if (show < results.length) {
