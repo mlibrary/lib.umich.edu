@@ -75,7 +75,7 @@ export default function Card ({
       {image && <CardImage image={image} />}
 
       <div>
-        <Heading level={headingLevel} css={{ marginTop: '0 !important' }}>
+        <Heading level={headingLevel} style={{ marginTop: '0' }}>
           {subtitle && (
             <span
               css={{
