@@ -67,7 +67,7 @@ const getButtonCSS = (kind, disabled) => {
   return {
     alignItems: 'center',
     borderRadius: '2px',
-    color: kind === 'tertiary' || kind === 'primary' || kind === 'subtle' ? 'inherit' : 'white',
+    color: ['tertiary', 'primary', 'subtle'].includes(kind) ? 'inherit' : 'white',
     display: 'flex',
     fontWeight: '800',
     minHeight: '2.5rem',
