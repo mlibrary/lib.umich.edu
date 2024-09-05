@@ -1,4 +1,4 @@
-import { COLORS, Heading, Margins, SPACING, Text, TYPOGRAPHY } from '../reusable';
+import { Heading, Margins, SPACING, Text, TYPOGRAPHY } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -52,7 +52,7 @@ const NewsTemplate = ({ data }) => {
               <p
                 css={{
                   ...TYPOGRAPHY['2XS'],
-                  color: COLORS.neutral['300'],
+                  color: 'var(--color-neutral-300)',
                   fontFamily: 'Muli',
                   paddingTop: SPACING.M
                 }}
@@ -93,7 +93,7 @@ const NewsTemplate = ({ data }) => {
               {imageCaption && (
                 <figcaption
                   css={{
-                    color: COLORS.neutral['300'],
+                    color: 'var(--color-neutral-300)',
                     paddingTop: SPACING.S
                   }}
                 >
@@ -143,7 +143,7 @@ const StayInTheKnow = () => {
         level={2}
         size='2XS'
         css={{
-          borderTop: `solid 1px ${COLORS.neutral['100']}`,
+          borderTop: `solid 1px var(--color-neutral-100)`,
           fontWeight: '600',
           marginTop: SPACING.L,
           paddingTop: SPACING.L

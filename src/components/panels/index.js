@@ -1,5 +1,4 @@
 import {
-  COLORS,
   Heading,
   Icon,
   Margins,
@@ -35,10 +34,10 @@ const PanelTemplate = ({ title, children, shaded, ...rest }) => {
       data-panel
       css={{
         ':not(:last-of-type)': {
-          borderBottom: shaded ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+          borderBottom: shaded ? 'none' : `solid 1px var(--color-neutral-100)`,
           paddingBottom: SPACING['3XL']
         },
-        background: shaded ? COLORS.blue['100'] : '',
+        background: shaded ? 'var(--color-blue-100)' : '',
         paddingBottom: SPACING.XL,
         paddingTop: SPACING.XL,
         [MEDIA_QUERIES.LARGESCREEN]: {
@@ -161,7 +160,7 @@ const CardPanel = ({ data }) => {
           >
             <span
               css={{
-                color: COLORS.indigo['300'],
+                color: 'var(--color-indigo-300)',
                 marginRight: SPACING.XS
               }}
             >
@@ -177,7 +176,7 @@ const CardPanel = ({ data }) => {
           >
             <span
               css={{
-                color: COLORS.indigo['300'],
+                color: 'var(--color-indigo-300)',
                 marginRight: SPACING.XS
               }}
             >
@@ -306,7 +305,7 @@ const TextPanel = ({ data }) => {
                 key={`section-${index}`}
                 css={{
                   borderTop: hasTopBorder
-                    ? `solid 1px ${COLORS.neutral['100']}`
+                    ? `solid 1px var(--color-neutral-100)`
                     : 'none',
                   paddingTop: hasTopBorder ? SPACING.XL : 0
                 }}
@@ -365,7 +364,7 @@ const TextPanel = ({ data }) => {
             >
               {title}
             </Heading>
-            <div css={{ color: COLORS.neutral['300'] }}>
+            <div css={{ color: 'var(--color-neutral-300)' }}>
               <Html html={html} />
             </div>
           </div>
@@ -398,7 +397,7 @@ const TextPanel = ({ data }) => {
                     {fieldTitle}
                   </Link>
                 </div>
-                <div css={{ color: COLORS.neutral['300'] }}>
+                <div css={{ color: 'var(--color-neutral-300)' }}>
                   <Html html={fieldBody.processed} />
                 </div>
               </li>
@@ -430,7 +429,7 @@ const TextPanel = ({ data }) => {
             <section
               key={item + html}
               css={{
-                borderBottom: item === items.length - 1 ? 'none' : `solid 1px ${COLORS.neutral['100']}`,
+                borderBottom: item === items.length - 1 ? 'none' : `solid 1px var(--color-neutral-100)`,
                 display: 'flex',
                 marginBottom: SPACING.L,
                 paddingBottom: SPACING.M

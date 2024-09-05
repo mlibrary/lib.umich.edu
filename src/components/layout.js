@@ -1,6 +1,6 @@
-import { COLORS, GlobalStyleSheet } from '../reusable';
 import Footer from './footer';
 import { Global } from '@emotion/react';
+import { GlobalStyleSheet } from '../reusable';
 import Header from './header';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -15,7 +15,7 @@ const Layout = ({ children, drupalNid }) => {
       <Global
         styles={{
           '*:focus': {
-            outlineColor: COLORS.blue['400']
+            outlineColor: 'var(--color-blue-400)'
           },
           '[data-reach-dialog-overlay]': {
             background: 'hsla(0, 0%, 0%, 0.6)',
@@ -24,7 +24,7 @@ const Layout = ({ children, drupalNid }) => {
           'h1.focus': {
             '&:focus': {
               '&:before': {
-                borderLeft: `solid 4px ${COLORS.teal['400']}`,
+                borderLeft: `solid 4px var(--color-teal-400)`,
                 content: '""',
                 height: '100%',
                 left: '-0.3em',

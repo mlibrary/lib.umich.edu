@@ -1,11 +1,11 @@
-import { COLORS, Icon, LINK_STYLES, SPACING } from '../reusable';
+import { Icon, LINK_STYLES, SPACING } from '../reusable';
 import { Link as GatsbyLink } from 'gatsby';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 const linkCSS = {
   ':hover [data-link]': LINK_STYLES.description[':hover'],
-  background: COLORS.teal['100'],
+  background: 'var(--color-teal-100)',
   borderRadius: '2px',
   display: 'block',
   padding: SPACING.M,
@@ -46,7 +46,7 @@ const LinkContent = ({
     <React.Fragment>
       <span
         css={{
-          color: COLORS.teal['400'],
+          color: 'var(--color-teal-400)',
           marginRight: SPACING.XS
         }}
       >
@@ -57,7 +57,7 @@ const LinkContent = ({
         data-link
         css={{
           ...LINK_STYLES.description,
-          color: COLORS.neutral['400'],
+          color: 'var(--color-neutral-400)',
           fontSize: '1rem'
         }}
       >

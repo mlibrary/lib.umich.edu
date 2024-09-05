@@ -1,5 +1,4 @@
-import { COLORS, Icon, LINK_STYLES, Margins, SPACING } from '../../reusable';
-
+import { Icon, LINK_STYLES, Margins, SPACING } from '../../reusable';
 import Logo from './logo';
 import Nav from './primary-nav';
 import PlainLink from '../plain-link';
@@ -14,7 +13,7 @@ const HeaderLargeScreen = ({ primary, secondary }) => {
         '@media only screen and (max-width: 1128px)': {
           display: 'none'
         },
-        borderBottom: `solid 2px ${COLORS.neutral[100]}`,
+        borderBottom: `solid 2px var(--color-neutral-100)`,
         display: 'block'
       }}
     >

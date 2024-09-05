@@ -1,5 +1,5 @@
-import { COLORS, Heading, Margins, SPACING, TYPOGRAPHY } from '../reusable';
 import { eventFormatWhen, eventFormatWhere } from '../utils/events';
+import { Heading, Margins, SPACING, TYPOGRAPHY } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -71,7 +71,7 @@ const EventTemplate = ({ data }) => {
               {imageCaptionHTML && (
                 <figcaption
                   css={{
-                    color: COLORS.neutral['300'],
+                    color: 'var(--color-neutral-300)',
                     paddingTop: SPACING.S
                   }}
                 >
@@ -90,7 +90,7 @@ const EventTemplate = ({ data }) => {
             <>
               <h2
                 css={{
-                  borderTop: `solid 1px ${COLORS.neutral['100']}`,
+                  borderTop: `solid 1px var(--color-neutral-100)`,
                   fontSize: '1rem',
                   fontWeight: '600',
                   marginBottom: SPACING['2XS'],
@@ -150,7 +150,7 @@ const EventTemplate = ({ data }) => {
 
           <p
             css={{
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              borderTop: `solid 1px var(--color-neutral-100)`,
               marginTop: SPACING.L,
               paddingTop: SPACING.L
             }}
@@ -223,7 +223,7 @@ const EventMetadata = ({ data }) => {
           ...TYPOGRAPHY['3XS']
         },
         'th, td': {
-          borderBottom: `solid 1px ${COLORS.neutral[100]}`,
+          borderBottom: `solid 1px var(--color-neutral-100)`,
           padding: SPACING.M,
           paddingLeft: '0'
         },

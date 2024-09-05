@@ -86,74 +86,11 @@ export const TYPOGRAPHY = {
 };
 /* eslint-enable sort-keys, id-length */
 
-/*
- *Inspired by GitHub color system
- *https://styleguide.github.com/primer/support/color-system/
- */
-export const COLORS = {
-  blue: {
-    100: '#F7F8F9',
-    200: '#B2BEC9',
-    300: '#4C6781',
-    400: '#00274C',
-    500: '#001324'
-  },
-  green: {
-    100: '#EAF8EE',
-    200: '#96DBAA',
-    300: '#57BC75',
-    400: '#20A848',
-    500: '#198539'
-  },
-  indigo: {
-    100: '#EEF1F9',
-    200: '#AAB9E3',
-    300: '#7C93D4',
-    400: '#506FC5',
-    500: '#274391'
-  },
-  maize: {
-    100: '#FFF9E6',
-    200: '#FFEA9B',
-    300: '#FFDA50',
-    400: '#FFCB05',
-    500: '#EABA02'
-  },
-  neutral: {
-    100: '#E5E9ED',
-    200: '#8A96A1',
-    300: '#637381',
-    400: '#212B36',
-    500: '#06080A'
-  },
-  orange: {
-    100: '#FFF1EB',
-    200: '#FFB899',
-    300: '#FF8A58',
-    400: '#F25F1F',
-    500: '#C74E1A'
-  },
-  pink: {
-    100: '#FCEBEB',
-    200: '#F29D9D',
-    300: '#EC6969',
-    400: '#D93838',
-    500: '#BF3232'
-  },
-  teal: {
-    100: '#E9F2F5',
-    200: '#A7CDDB',
-    300: '#65A8BF',
-    400: '#1D7491',
-    500: '#106684'
-  }
-};
-
 export const INTENT_COLORS = {
-  error: COLORS.orange[400],
-  informational: COLORS.blue[400],
-  success: COLORS.teal[400],
-  warning: COLORS.maize[400]
+  error: 'var(--color-orange-400)',
+  informational: 'var(--color-blue-400)',
+  success: 'var(--color-teal-400)',
+  warning: 'var(--color-maize-400)'
 };
 
 export const Margins = styled('div')({
@@ -186,10 +123,10 @@ export const LargeScreen = styled('div')({
 
 const DEFAULT_LINK_STYLE = {
   ':hover': {
-    boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
+    boxShadow: `inset 0 -2px var(--color-teal-400)`
   },
-  boxShadow: `inset 0 -1px ${COLORS.teal[400]}`,
-  color: COLORS.teal['400']
+  boxShadow: `inset 0 -1px var(--color-teal-400)`,
+  color: 'var(--color-teal-400)'
 };
 
 export const LINK_STYLES = {
@@ -197,10 +134,10 @@ export const LINK_STYLES = {
   description: {
     ...TYPOGRAPHY.XS,
     ':hover': {
-      boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
+      boxShadow: `inset 0 -2px var(--color-teal-400)`
     },
-    boxShadow: `inset 0 -1px ${COLORS.teal[400]}`,
-    color: COLORS.neutral['400'],
+    boxShadow: `inset 0 -1px var(--color-teal-400)`,
+    color: 'var(--color-neutral-400)',
     fontWeight: '600'
   },
   light: {
@@ -212,37 +149,37 @@ export const LINK_STYLES = {
   },
   list: {
     ':hover': {
-      boxShadow: `inset 0 -1px ${COLORS.neutral[400]}`
+      boxShadow: `inset 0 -1px var(--color-neutral-400)`
     },
-    color: COLORS.neutral['400']
+    color: 'var(--color-neutral-400)'
   },
   'list-medium': {
     ':hover': {
-      boxShadow: `inset 0 -2px ${COLORS.teal[400]}`
+      boxShadow: `inset 0 -2px var(--color-teal-400)`
     },
     fontWeight: '600'
   },
   'list-strong': {
     ':hover': {
-      boxShadow: `inset 0 -1px ${COLORS.neutral[400]}`
+      boxShadow: `inset 0 -1px var(--color-neutral-400)`
     },
-    color: COLORS.neutral['400'],
+    color: 'var(--color-neutral-400)',
     fontWeight: '800'
   },
   special: {
     ...TYPOGRAPHY['3XS'],
     ':hover': {
-      boxShadow: `inset 0 -1px ${COLORS.neutral[300]}`
+      boxShadow: `inset 0 -1px var(--color-neutral-300)`
     },
-    color: COLORS.neutral['300']
+    color: 'var(--color-neutral-300)'
   },
   'special-subtle': DEFAULT_LINK_STYLE,
   subtle: {
     ':hover': {
-      boxShadow: `inset 0 -2px ${COLORS.neutral[300]}`
+      boxShadow: `inset 0 -2px var(--color-neutral-300)`
     },
-    boxShadow: `inset 0 -1px ${COLORS.neutral[300]}`,
-    color: COLORS.neutral['400']
+    boxShadow: `inset 0 -1px var(--color-neutral-300)`,
+    color: 'var(--color-neutral-400)'
   }
 
   /*
@@ -258,46 +195,6 @@ export const SmallScreen = styled('div')({
     display: 'none'
   }
 });
-
-export const lightOrDark = (color) => {
-  // Variables for red, green, blue values
-  /* eslint-disable init-declarations */
-
-  let red;
-  let green;
-  let blue;
-
-  // Check the format of the color, HEX or RGB?
-  if (color.match(/^rgb/u)) {
-    // If HEX --> store the red, green, blue values in separate variables
-    const colorMatch = color.match(
-      // eslint-disable-next-line require-unicode-regexp, prefer-named-capture-group
-      /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/
-    );
-
-    if (colorMatch) {
-      [, red, green, blue] = colorMatch;
-    }
-  } else {
-    // If RGB --> Convert it to HEX: http://gist.github.com/983661
-    const hexColor = Number(`0x${color.slice(1).replace(color.length < 5 && /./gu, '$&$&')}`);
-
-    /* eslint-disable no-bitwise */
-    red = hexColor >> 16;
-    green = (hexColor >> 8) & 255;
-    blue = hexColor & 255;
-    /* eslint-enable no-bitwise */
-  }
-
-  // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-  const hsp = Math.sqrt(0.299 * (red * red) + 0.587 * (green * green) + 0.114 * (blue * blue));
-
-  // Using the HSP value, determine whether the color is light or dark
-  if (hsp > 127.5) {
-    return 'light';
-  }
-  return 'dark';
-};
 
 export const GlobalStyleSheet = () => {
   /*
@@ -399,7 +296,7 @@ export const GlobalStyleSheet = () => {
       font-size: 16px;
       font-family: 'Muli', sans-serif;
       line-height: 1.5;
-      color: ${COLORS.neutral[400]};
+      color: var(--color-neutral-400);
     }
     
     /*

@@ -1,4 +1,4 @@
-import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
+import { Heading, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
 import Breadcrumb from './breadcrumb';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -8,7 +8,7 @@ export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
     <header
       css={{
         [MEDIA_QUERIES.LARGESCREEN]: {
-          background: COLORS.blue['100']
+          background: 'var(--color-blue-100)'
         }
       }}
       {...rest}
