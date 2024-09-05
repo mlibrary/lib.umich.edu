@@ -216,6 +216,7 @@ const CardPanel = ({ data }) => {
                 }
                 href={getCardHref(card)}
                 subtitle={getCardSubtitle(card)}
+                headingLevel={title ? '3' : '2'}
                 title={card.title}
                 css={{
                   height: '100%'
