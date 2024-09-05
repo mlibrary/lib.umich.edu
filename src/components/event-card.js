@@ -60,7 +60,7 @@ export default function EventCard (node) {
       <div>
         <Heading
           size='S'
-          level={2}
+          level={3}
           css={{
             display: 'flex',
             flexDirection: 'column',
