@@ -1,9 +1,10 @@
-import { Heading, Icon, SPACING, TYPOGRAPHY } from '../reusable';
+/* eslint-disable camelcase */
 import {
   eventFormatWhen,
   eventFormatWhere,
   EXHIBIT_TYPES
 } from '../utils/events';
+import { Heading, Icon, SPACING, TYPOGRAPHY } from '../reusable';
 import CardImage from '../reusable/card-image';
 import icons from '../reusable/icons';
 import Link from './link';
@@ -17,7 +18,8 @@ export default function EventCard (node) {
     relationships,
     body,
     fields,
-    field_event_date_s_: fieldEventDateS,
+    fieldEventDateS,
+    field_event_date_s_,
     hasBorder = true
   } = node;
   const image
@@ -26,8 +28,8 @@ export default function EventCard (node) {
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
-  const start = fieldEventDateS[0].value;
-  const end = fieldEventDateS[0].end_value;
+  const start = fieldEventDateS ? fieldEventDateS[0].value : field_event_date_s_[0].value;
+  const end = fieldEventDateS ? fieldEventDateS[0].end_value : field_event_date_s_[0].end_value;
   const type = relationships.field_event_type.name;
   const isAnExhibit = EXHIBIT_TYPES.includes(type);
   const useBorder = hasBorder;
@@ -42,7 +44,7 @@ export default function EventCard (node) {
     node
   });
   const to = fields.slug;
-
+  // Console.log(when);
   return (
     <section
       css={{
