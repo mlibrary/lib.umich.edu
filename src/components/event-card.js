@@ -44,7 +44,6 @@ export default function EventCard (node) {
     node
   });
   const to = fields.slug;
-  // Console.log(when);
   return (
     <section
       css={{
