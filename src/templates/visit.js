@@ -33,7 +33,7 @@ export default function VisitTemplate ({ data, ...rest }) {
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
   return (
     <Layout drupalNid={drupalInternalNid}>
-      <header aria-label='Location description'>
+      <header>
         <PageHeader
           breadcrumb={fields.breadcrumb}
           title={title}
