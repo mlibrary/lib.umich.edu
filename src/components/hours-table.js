@@ -80,17 +80,15 @@ export default function HoursTableResponsive ({ data, dayOfWeek = false, locatio
                     Today
                   </span>
                 )}
-                <abbr aria-label={item + 1 === todayIndex ? `Today, ${label}` : label}>
-                  <span
-                    className='alternative'
-                    css={{
-                      display: 'block'
-                    }}
-                  >
-                    {text}
-                  </span>
-                  <span css={{ color: 'var(--color-neutral-300)' }}>{subtext}</span>
-                </abbr>
+                <span
+                  className='alternative'
+                  css={{
+                    display: 'block'
+                  }}
+                >
+                  {text}
+                </span>
+                <span css={{ color: 'var(--color-neutral-300)' }}>{subtext}</span>
               </th>
             );
           })}
@@ -186,14 +184,13 @@ export default function HoursTableResponsive ({ data, dayOfWeek = false, locatio
                                 {data.headings[colIndex - 1].subtext}
                               </span>
                             </div>
-                            <abbr
-                              aria-label={col.label}
+                            <span
                               css={{
                                 gridColumn: `2 / span ${colIndex === todayIndex ? '1' : '2'}`
                               }}
                             >
                               {col.text}
-                            </abbr>
+                            </span>
                             {colIndex === todayIndex && (
                               <span
                                 aria-hidden
