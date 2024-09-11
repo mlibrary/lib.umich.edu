@@ -62,6 +62,7 @@ export default function HoursTableResponsive ({ data, dayOfWeek = false, locatio
                 css={{
                   verticalAlign: 'bottom'
                 }}
+                aria-label={label}
               >
                 {item + 1 === todayIndex && (
                   <span
@@ -88,7 +89,11 @@ export default function HoursTableResponsive ({ data, dayOfWeek = false, locatio
                 >
                   {text}
                 </span>
-                <span css={{ color: 'var(--color-neutral-300)' }}>{subtext}</span>
+                <span
+                  css={{ color: 'var(--color-neutral-300)' }}
+                >
+                  {subtext}
+                </span>
               </th>
             );
           })}
