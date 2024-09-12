@@ -188,8 +188,13 @@ export const sortEventsByStartDate = ({ events, onlyTodayOrAfter = false }) => {
   });
 
   const compareStartDate = (compareLeft, compareRight) => {
-    const startA = compareLeft.field_event_date_s_[0].value;
-    const startB = compareRight.field_event_date_s_[0].value;
+    const startA = compareLeft.fieldEventDateS
+      ? compareLeft.fieldEventDateS[0].value
+      : compareLeft.field_event_date_s_[0].value;
+
+    const startB = compareRight.fieldEventDateS
+      ? compareRight.fieldEventDateS[0].value
+      : compareRight.field_event_date_s_[0].value;
 
     if (new Date(startA) < new Date(startB)) {
       return -1;
