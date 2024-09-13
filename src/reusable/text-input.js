@@ -1,4 +1,4 @@
-import { COLORS, Icon, Input } from '../reusable';
+import { Icon, Input } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
@@ -10,7 +10,7 @@ const StyledFormItem = styled('div')(
   },
   ({ invalid }) => {
     return {
-      borderLeft: invalid && `solid 4px ${COLORS.orange[400]}`,
+      borderLeft: invalid && `solid 4px var(--color-orange-400)`,
       paddingLeft: invalid && '1rem'
     };
   }
@@ -23,12 +23,12 @@ const StyledLabel = styled('label')({
 });
 
 const StyledFormItemDescription = styled('span')({
-  color: COLORS.neutral[400],
+  color: 'var(--color-neutral-400)',
   display: 'block'
 });
 
 const StyledFormItemErrorMessage = styled('p')({
-  color: COLORS.orange[400],
+  color: 'var(--color-orange-400)',
   fontWeight: '600',
   marginTop: '0.5rem'
 });

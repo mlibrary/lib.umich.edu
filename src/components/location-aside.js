@@ -1,4 +1,4 @@
-import { COLORS, Heading, Icon, SPACING, Text } from '../reusable';
+import { Heading, Icon, SPACING, Text } from '../reusable';
 import Address from './address';
 import Hours from './todays-hours';
 import icons from '../reusable/icons';
@@ -27,9 +27,9 @@ const LayoutWithIcon = ({
         <span
           css={{
             alignItems: 'center',
-            background: COLORS[palette][100],
+            background: `var(--color-${palette}-100)`,
             borderRadius: '50%',
-            color: COLORS[palette][300],
+            color: `var(--color-${palette}-300)`,
             display: 'flex',
             height: '2.5rem',
             justifyContent: 'center',

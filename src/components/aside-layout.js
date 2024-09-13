@@ -1,4 +1,4 @@
-import { COLORS, Margins, SPACING } from '../reusable';
+import { Margins, SPACING } from '../reusable';
 import MEDIA_QUERIES from '../reusable/media-queries';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -53,11 +53,11 @@ export const TemplateSide = ({ children, ...rest }) => {
         css={{
           [MEDIA_QUERIES.XL]: {
             borderBottom: 'none',
-            borderLeft: `solid 1px ${COLORS.neutral['100']}`,
+            borderLeft: `solid 1px var(--color-neutral-100)`,
             paddingBottom: 0,
             paddingLeft: SPACING['3XL']
           },
-          borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+          borderBottom: `solid 1px var(--color-neutral-100)`,
           marginBottom: SPACING['2XL'],
           paddingBottom: SPACING['2XL']
         }}

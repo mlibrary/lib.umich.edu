@@ -1,5 +1,4 @@
 import {
-  COLORS,
   LargeScreen,
   Margins,
   MEDIA_QUERIES,
@@ -18,8 +17,8 @@ export default function HorizontalNavigation ({ items, ...rest }) {
   return (
     <nav
       css={{
-        background: COLORS.blue['100'],
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+        background: 'var(--color-blue-100)',
+        borderBottom: `solid 1px var(--color-neutral-100)`,
         marginBottom: SPACING.XL,
         zIndex: '1'
       }}
@@ -40,7 +39,7 @@ export default function HorizontalNavigation ({ items, ...rest }) {
               <li
                 key={iterator + to}
                 css={{
-                  borderTop: `solid 1px ${COLORS.neutral['100']}`,
+                  borderTop: `solid 1px var(--color-neutral-100)`,
                   [MEDIA_QUERIES.LARGESCREEN]: {
                     border: 'none',
                     display: 'inline-block',
@@ -56,7 +55,7 @@ export default function HorizontalNavigation ({ items, ...rest }) {
                       paddingTop: SPACING.L
                     }}
                     activeStyle={{
-                      borderBottom: `solid 4px ${COLORS.teal['400']}`,
+                      borderBottom: `solid 4px var(--color-teal-400)`,
                       fontWeight: '700'
                     }}
                     to={to}
@@ -73,9 +72,9 @@ export default function HorizontalNavigation ({ items, ...rest }) {
                       paddingTop: SPACING.M
                     }}
                     activeStyle={{
-                      background: COLORS.teal['100'],
-                      borderLeft: `solid 4px ${COLORS.teal['400']}`,
-                      color: COLORS.teal['400'],
+                      background: 'var(--color-teal-100)',
+                      borderLeft: `solid 4px var(--color-teal-400)`,
+                      color: 'var(--color-teal-400)',
                       fontWeight: '700'
                     }}
                     to={to}

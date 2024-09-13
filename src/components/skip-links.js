@@ -1,4 +1,4 @@
-import { COLORS, Margins, SPACING } from '../reusable';
+import { Margins, SPACING } from '../reusable';
 import { Link as GatsbyLink } from 'gatsby';
 import React from 'react';
 
@@ -28,7 +28,7 @@ export default function SkipLinks () {
           },
           width: 'auto'
         },
-        background: COLORS.blue['400'],
+        background: 'var(--color-blue-400)',
         height: '1px',
         left: '-10000px',
         overflow: 'hidden',

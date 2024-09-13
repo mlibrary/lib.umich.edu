@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { COLORS, Heading, Margins, SPACING } from '../reusable';
+import { Heading, Margins, SPACING } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -133,8 +133,8 @@ const CollectingAreaTemplate = ({ data }) => {
               {imageCaption && (
                 <figcaption
                   css={{
-                    borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-                    color: COLORS.neutral['300'],
+                    borderBottom: `solid 1px var(--color-neutral-100)`,
+                    color: 'var(--color-neutral-300)',
                     marginBottom: SPACING.XL,
                     paddingBottom: SPACING.XL,
                     paddingTop: SPACING.S

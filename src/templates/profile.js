@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import { COLORS, Heading, Icon, LargeScreen, List, Margins, MEDIA_QUERIES, SmallScreen, SPACING, Text, TYPOGRAPHY } from '../reusable';
 import { Content, Side, Template, Top } from '../components/page-layout';
+import { Heading, Icon, LargeScreen, List, Margins, MEDIA_QUERIES, SmallScreen, SPACING, Text, TYPOGRAPHY } from '../reusable';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import { graphql } from 'gatsby';
@@ -145,7 +145,7 @@ const ProfileTemplate = ({ data }) => {
                 '> h2': {
                   marginTop: SPACING.M
                 },
-                background: COLORS.blue['100'],
+                background: 'var(--color-blue-100)',
                 margin: `0 -${SPACING.M}`,
                 marginBottom: SPACING['2XL'],
                 padding: SPACING.M,
@@ -539,7 +539,7 @@ const SocialLink = ({ to, icon, label }) => {
     <a
       href={to}
       css={{
-        color: COLORS.neutral['300']
+        color: 'var(--color-neutral-300)'
       }}
     >
       <Icon icon={icon} size={24} />

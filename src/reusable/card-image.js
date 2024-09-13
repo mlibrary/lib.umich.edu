@@ -1,7 +1,7 @@
-import { COLORS, SPACING } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { SPACING } from '../reusable';
 
 export default function CardImage ({ image }) {
   return (
@@ -10,7 +10,7 @@ export default function CardImage ({ image }) {
       alt={image.alt || ''}
       css={{
         aspectRatio: '3 / 2',
-        backgroundColor: COLORS.blue['100'],
+        backgroundColor: 'var(--color-blue-100)',
         borderRadius: '4px',
         marginBottom: SPACING.S,
         overflow: 'hidden',

@@ -1,5 +1,5 @@
 /* eslint-disable no-invalid-this */
-import { Alert, Button, COLORS, Heading, Margins, SPACING, TextInput } from '../reusable';
+import { Alert, Button, Heading, Margins, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import { navigate, useLocation } from '@reach/router';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
@@ -474,7 +474,7 @@ const SpecialistsResults = () => {
         <thead
           css={{
             borderBottom: borderStyle,
-            color: COLORS.neutral['300'],
+            color: 'var(--color-neutral-300)',
             [tableBreakpoint]: {
               clip: 'rect(1px, 1px, 1px, 1px)',
               clipPath: 'inset(50%)',

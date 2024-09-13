@@ -1,6 +1,5 @@
 import {
   Button,
-  COLORS,
   Icon,
   Input,
   Margins,
@@ -51,7 +50,7 @@ export default function HeroSearchBox ({ data }) {
           ':hover': {
             textDecorationThickness: '2px'
           },
-          color: COLORS.neutral['400'],
+          color: 'var(--color-neutral-400)',
           textDecoration: 'underline'
         },
         'a, span': {
@@ -208,7 +207,7 @@ const BackgroundSection = ({ data, children, ...rest }) => {
   return (
     <section
       css={{
-        backgroundColor: COLORS.neutral['100'],
+        backgroundColor: 'var(--color-neutral-100)',
         backgroundImage: `url('${screenImage('vertical')}')`,
         backgroundPosition: 'center top 33%',
         [MEDIAQUERIES.M]: {

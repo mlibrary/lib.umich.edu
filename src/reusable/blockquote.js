@@ -1,4 +1,4 @@
-import { COLORS, SPACING, TYPOGRAPHY } from '../reusable';
+import { SPACING, TYPOGRAPHY } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -7,7 +7,7 @@ export default function Blockquote ({ children }) {
     <blockquote
       css={{
         ...TYPOGRAPHY.XS,
-        borderLeft: `solid 4px ${COLORS.teal['400']}`,
+        borderLeft: `solid 4px var(--color-teal-400)`,
         fontStyle: 'italic',
         margin: `${SPACING.XL}!important`,
         maxWidth: '38rem',
