@@ -1,4 +1,4 @@
-import { COLORS, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
+import { Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
 import Panels from './index';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -46,10 +46,10 @@ const PanelGroup50Container = ({ children }) => {
             }
           },
           '> *:not(:last-child)': {
-            borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+            borderBottom: `solid 1px var(--color-neutral-100)`,
             [MEDIAQUERIES.L]: {
               border: 'none',
-              borderRight: `solid 1px ${COLORS.neutral[100]}`,
+              borderRight: `solid 1px var(--color-neutral-100)`,
               paddingRight: SPACING['3XL']
             }
           },

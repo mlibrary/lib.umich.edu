@@ -1,13 +1,12 @@
 /* eslint-disable no-underscore-dangle */
+import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
 import {
-  COLORS,
   Expandable,
   ExpandableButton,
   ExpandableChildren,
   Heading,
   SPACING
 } from '../../reusable';
-import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
 import { graphql, useStaticQuery } from 'gatsby';
 import React, { useEffect, useState } from 'react';
 import {
@@ -167,7 +166,7 @@ export default function EventsAndExhibitsPanel () {
         >
           <div
             css={{
-              background: COLORS.blue['100'],
+              background: 'var(--color-blue-100)',
               borderRadius: '4px',
               padding: SPACING.M
             }}
@@ -199,7 +198,7 @@ export default function EventsAndExhibitsPanel () {
 
           <h2
             css={{
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              borderTop: `solid 1px var(--color-neutral-100)`,
               fontWeight: '700',
               marginTop: SPACING.L,
               paddingTop: SPACING.M

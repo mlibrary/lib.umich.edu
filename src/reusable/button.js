@@ -1,16 +1,16 @@
-import { COLORS, lightOrDark, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { SPACING } from '../reusable';
 
-const getButtonColor = (kind) => {
+const getButtonBackground = (kind) => {
   switch (kind) {
     case 'primary':
-      return COLORS.maize;
+      return 'var(--color-maize-';
     case 'secondary':
     case 'tertiary':
-      return COLORS.teal;
+      return 'var(--color-teal-';
     default:
-      return COLORS.blue;
+      return 'var(--color-blue-';
   }
 };
 
@@ -19,29 +19,29 @@ const getButtonKindCSS = (kind, color) => {
     case 'tertiary':
       return {
         ':hover': {
-          outline: `solid 1px ${color['400']}`,
+          outline: `solid 1px ${color}400)`,
           outlineOffset: '-2px'
         },
         background: 'white',
-        border: `solid 1px ${color['400']}`,
-        color: color['400'],
+        border: `solid 1px ${color}400)`,
+        color: `${color}400)`,
         padding: `calc(${SPACING.XS} - 1px) calc(${SPACING.M} - 1px)`
       };
     case 'subtle':
       return {
         ':hover': {
-          background: COLORS.blue['200']
+          background: 'var(--color-blue-200)'
         },
-        background: COLORS.neutral['100']
+        background: 'var(--color-neutral-100)'
       };
     case 'reset':
       return {};
     default:
       return {
         ':hover': {
-          background: color['500']
+          background: `${color}500)`
         },
-        background: color['400']
+        background: `${color}400)`
       };
   }
 };
@@ -59,26 +59,22 @@ const getDisabledCSS = (disabled) => {
 };
 
 const getButtonCSS = (kind, disabled) => {
-  const color = getButtonColor(kind);
+  const color = getButtonBackground(kind);
 
   if (kind === 'reset') {
     return {};
   }
-
   return {
     alignItems: 'center',
     borderRadius: '2px',
-    color:
-      lightOrDark(color['400']) === 'light' || kind === 'subtle'
-        ? 'inherit'
-        : 'white',
+    color: ['tertiary', 'primary', 'subtle'].includes(kind) ? 'inherit' : 'white',
     display: 'flex',
     fontWeight: '800',
     minHeight: '2.5rem',
     padding: `${SPACING.XS} ${SPACING.M}`,
     ...getButtonKindCSS(kind, color, disabled),
     ':focus': {
-      boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px ${COLORS.neutral['400']}`,
+      boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px var(--color-neutral-400)`,
       outline: 'none'
     },
     ...getDisabledCSS(disabled)

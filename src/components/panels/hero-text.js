@@ -1,4 +1,4 @@
-import { COLORS, Heading, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
+import { Heading, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
 import Html from '../html';
 import Link from '../link';
 import PropTypes from 'prop-types';
@@ -110,7 +110,7 @@ export default function HeroText ({ data }) {
                     ':focus, :hover': {
                       textDecorationThickness: '4px'
                     },
-                    textDecorationColor: COLORS.maize['400'],
+                    textDecorationColor: 'var(--color-maize-400)',
                     textDecorationThickness: '2px'
                   },
                   fontSize: '1.25rem',
@@ -154,7 +154,7 @@ const BackgroundSection = ({ data, children, ...rest }) => {
   return (
     <section
       css={{
-        backgroundColor: COLORS.blue['300'],
+        backgroundColor: 'var(--color-blue-300)',
         backgroundImage: `url('${sources[1].images.fallback.src}')`,
         backgroundPosition: 'center',
         [MEDIA_QUERIES.LARGESCREEN]: {

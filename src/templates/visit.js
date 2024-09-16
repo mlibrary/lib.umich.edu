@@ -1,4 +1,4 @@
-import { COLORS, Heading, List } from '../reusable';
+import { Heading, List } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import getNode from '../utils/get-node';
 import { graphql } from 'gatsby';
@@ -133,7 +133,7 @@ export default function VisitTemplate ({ data, ...rest }) {
       <div
         css={{
           'section:nth-of-type(odd)': {
-            background: COLORS.blue['100']
+            background: 'var(--color-blue-100)'
           }
         }}
       >

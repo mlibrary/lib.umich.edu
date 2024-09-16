@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Alert, Button, COLORS, Heading, Margins, SPACING, TextInput } from '../reusable';
+import { Alert, Button, Heading, Margins, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
@@ -448,7 +448,7 @@ const StaffPhoto = ({ mid, staffImages }) => {
       image={img.childImageSharp.gatsbyImageData}
       alt={img.alt}
       css={{
-        backgroundColor: COLORS.blue['100'],
+        backgroundColor: 'var(--color-blue-100)',
         borderRadius: '2px',
         overflow: 'hidden'
       }}
@@ -588,7 +588,7 @@ const StaffDirectoryResults = ({
       <thead
         css={{
           borderBottom: borderStyle,
-          color: COLORS.neutral['300'],
+          color: 'var(--color-neutral-300)',
           [tableBreakpoint]: {
             clip: 'rect(1px, 1px, 1px, 1px)',
             clipPath: 'inset(50%)',
@@ -641,7 +641,7 @@ const StaffDirectoryResults = ({
                       ':hover': {
                         textDecorationThickness: '2px'
                       },
-                      color: COLORS.teal['400'],
+                      color: 'var(--color-teal-400)',
                       textDecoration: 'underline'
                     }}
                     to={`/users/${uniqname}`}
