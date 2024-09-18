@@ -315,7 +315,7 @@ const StaffDirectory = React.memo(({
 }) => {
   const [show, setShow] = useState(20);
   const staffInView = results.slice(0, show);
-  let resultsSummary = (<div><span aria-live='assertive'>No results</span></div>);
+  let resultsSummary = <></>;
   if (results.length > 0) {
     resultsSummary = (<span>{results.length} {results.length > 1 ? 'results' : 'result'}</span>);
     if (show < results.length) {
@@ -335,6 +335,9 @@ const StaffDirectory = React.memo(({
         {resultsSummary} in <strong style={{ fontWeight: '800' }}>{activeFilters.department}</strong>
       </>
     );
+  }
+  if (results.length === 0) {
+    resultsSummary = (<div><span aria-live='assertive'>No results for {resultsSummary}</span></div>);
   }
   const showMoreText
     = show < results.length
@@ -553,7 +556,6 @@ export const query = graphql`
 const StaffDirectoryResults = ({
   results,
   staffImages,
-  resultsSummary,
   staffInView
 }) => {
   const tableBreakpoint = `@media only screen and (max-width: 820px)`;
@@ -738,7 +740,6 @@ StaffDirectoryResults.propTypes = {
   results: PropTypes.shape({
     length: PropTypes.number
   }),
-  resultsSummary: PropTypes.any,
   staffImages: PropTypes.any,
   staffInView: PropTypes.shape({
     map: PropTypes.func

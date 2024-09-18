@@ -417,21 +417,39 @@ const SpecialistsResults = () => {
     results
   });
   const resultsShown = resultsFiltered.slice(0, show);
-  let resultsSummary = `No results`;
+  let resultsSummary = <></>;
   if (results.length > 0) {
     resultsSummary = `${resultsFiltered.length} results`;
-    if (show < results.length) {
-      resultsSummary = `Showing ${show} of ${results.length} results`;
+    if (results.length > 0) {
+      resultsSummary = (<span>{results.length} {results.length > 1 ? 'results' : 'result'}</span>);
+      if (show < results.length) {
+        resultsSummary = (<span>Showing {show} of {results.length} results</span>);
+      }
     }
   }
   if (query) {
-    resultsSummary += ` for "${query}"`;
+    resultsSummary = (
+      <>
+        {resultsSummary} for <strong style={{ fontWeight: '800' }}>{query}</strong>
+      </>
+    );
   }
   if (category) {
-    resultsSummary += ` in "${category}"`;
+    resultsSummary = (
+      <>
+        {resultsSummary} in <strong style={{ fontWeight: '800' }}>{category}</strong>
+      </>
+    );
   }
   if (healthSciencesOnly) {
-    resultsSummary += ' with the "Show Health Sciences Only" filter active';
+    resultsSummary = (
+      <>
+        {resultsSummary} with the <strong style={{ fontWeight: '800' }}>Show Health Sciences Only</strong> filter active
+      </>
+    );
+  }
+  if (results.length === 0) {
+    resultsSummary = (<div><span aria-live='assertive'>No results for {resultsSummary}</span></div>);
   }
   const showMoreText
     = show < resultsFiltered.length
@@ -443,8 +461,24 @@ const SpecialistsResults = () => {
   const tableBreakpoint = `@media only screen and (max-width: 720px)`;
   const borderStyle = '1px solid var(--color-neutral-100)';
 
+  if (resultsFiltered.length === 0) {
+    return (
+      <>
+        {resultsSummary}
+        <NoResults>Consider searching with different keywords.</NoResults>
+      </>
+    );
+  }
   return (
     <React.Fragment>
+      <div
+        css={{
+          textAlign: 'left'
+        }}
+        aria-live='polite'
+      >
+        {resultsSummary}
+      </div>
       <table
         css={{
           tableLayout: 'fixed',
@@ -468,9 +502,6 @@ const SpecialistsResults = () => {
         }}
         aria-live='polite'
       >
-        <caption>
-          <Alert>{resultsSummary}</Alert>
-        </caption>
         <thead
           css={{
             borderBottom: borderStyle,
@@ -554,9 +585,6 @@ const SpecialistsResults = () => {
         </>
       )}
 
-      {!resultsFiltered.length && (
-        <NoResults>Consider searching with different keywords.</NoResults>
-      )}
     </React.Fragment>
   );
 };
