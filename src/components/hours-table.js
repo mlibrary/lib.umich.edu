@@ -63,6 +63,7 @@ export default function HoursTableResponsive ({ data, dayOfWeek = false, locatio
                   verticalAlign: 'bottom'
                 }}
               >
+                <span className='visually-hidden'>{label}</span>
                 {item + 1 === todayIndex && (
                   <span
                     aria-hidden
@@ -81,6 +82,7 @@ export default function HoursTableResponsive ({ data, dayOfWeek = false, locatio
                   </span>
                 )}
                 <span
+                  aria-hidden='true'
                   className='alternative'
                   css={{
                     display: 'block'
@@ -89,6 +91,7 @@ export default function HoursTableResponsive ({ data, dayOfWeek = false, locatio
                   {text}
                 </span>
                 <span
+                  aria-hidden='true'
                   css={{ color: 'var(--color-neutral-300)' }}
                 >
                   {subtext}
