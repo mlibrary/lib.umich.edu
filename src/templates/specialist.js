@@ -444,7 +444,7 @@ const SpecialistsResults = () => {
       </>
     );
   }
-  if (results.length === 0) {
+  if (resultsFiltered.length === 0) {
     resultsSummary = (<div><span aria-live='assertive'>No results for {resultsSummary}</span></div>);
   }
   const showMoreText
