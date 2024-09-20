@@ -111,7 +111,6 @@ export default function HoursLitePanel ({ data }) {
                       fontWeight: '700',
                       textTransform: 'uppercase'
                     }}
-                    aria-label={hour.subLabel}
                   >
                     {hour.subText}
                   </span>
