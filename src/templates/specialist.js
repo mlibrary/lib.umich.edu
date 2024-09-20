@@ -404,7 +404,6 @@ const filterResults = ({ results, healthSciencesOnly, category }) => {
       }
     );
   }
-
   return filteredResults;
 };
 
@@ -418,13 +417,10 @@ const SpecialistsResults = () => {
   });
   const resultsShown = resultsFiltered.slice(0, show);
   let resultsSummary = <></>;
-  if (results.length > 0) {
-    resultsSummary = `${resultsFiltered.length} results`;
-    if (results.length > 0) {
-      resultsSummary = (<span>{results.length} {results.length > 1 ? 'results' : 'result'}</span>);
-      if (show < results.length) {
-        resultsSummary = (<span>Showing {show} of {results.length} results</span>);
-      }
+  if (resultsFiltered.length > 0) {
+    resultsSummary = (<span>{resultsFiltered.length} {resultsFiltered.length > 1 ? 'results' : 'result'}</span>);
+    if (show < results.length) {
+      resultsSummary = (<span>Showing {show} of {resultsFiltered.length} results</span>);
     }
   }
   if (query) {
