@@ -14,7 +14,7 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
-  const imageAlt = image.field_media_image?.field_media_image?.alt || '';
+  const imageAlt = image?.field_media_image?.field_media_image?.alt || '';
 
   return (
     <div
