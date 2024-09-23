@@ -28,6 +28,7 @@ export default function VisitTemplate ({ data, ...rest }) {
     field_access: fieldAccess
   } = node;
   const [parentNode] = relationships.field_parent_page;
+  const imageAlt = relationships.field_media_image?.field_media_image?.alt;
   const isRootPage = Boolean(fieldRootPage);
   const { field_visit: fieldVisit, field_amenities: fieldAmenities } = relationships;
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
