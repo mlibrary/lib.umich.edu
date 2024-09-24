@@ -21,6 +21,9 @@ export const query = graphql`
         ...textPanelFragment
       }
       field_media_image {
+        field_media_image {
+          alt
+        }
         field_image_caption {
           processed
         }

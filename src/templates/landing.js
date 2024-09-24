@@ -29,7 +29,7 @@ export default function LandingTemplate ({ data }) {
         summary={body ? body.summary : null}
         image={
           relationships.field_media_image
-          && relationships.field_media_image.relationships.field_media_image
+          && relationships.field_media_image
         }
       />
       <Margins>
