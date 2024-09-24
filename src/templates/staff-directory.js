@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Alert, Button, Heading, Margins, SPACING, TextInput } from '../reusable';
+import { Button, Heading, Margins, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
@@ -316,37 +316,40 @@ const StaffDirectory = React.memo(({
   const [show, setShow] = useState(20);
   const staffInView = results.slice(0, show);
   let resultsSummary = <></>;
+  let showMoreText = null;
   if (results.length > 0) {
-    resultsSummary = (<span>{results.length} {results.length > 1 ? 'results' : 'result'}</span>);
+    resultsSummary = (<>{results.length} result{results.length > 1 && 's'}</>);
     if (show < results.length) {
-      resultsSummary = (<span>Showing {show} of {results.length} results</span>);
+      resultsSummary = (<>Showing {show} of {results.length} results</>);
+      const showMore = () => {
+        setShow(results.length);
+      };
+      showMoreText = (
+        <>
+          <p
+            css={{
+              marginBottom: SPACING.L
+            }}
+          >
+            {resultsSummary}
+          </p>
+          <Button onClick={showMore}>Show all</Button>
+        </>
+      );
     }
   }
-  if (query) {
-    resultsSummary = (
-      <>
-        {resultsSummary} for <strong style={{ fontWeight: '800' }}>{query}</strong>
-      </>
-    );
-  }
-  if (activeFilters.department) {
-    resultsSummary = (
-      <>
-        {resultsSummary} in <strong style={{ fontWeight: '800' }}>{activeFilters.department}</strong>
-      </>
-    );
-  }
+  [query, activeFilters.department].forEach((param) => {
+    if (param) {
+      resultsSummary = (
+        <>
+          {resultsSummary} {param === query ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
+        </>
+      );
+    }
+  });
   if (results.length === 0) {
-    resultsSummary = (<div><span aria-live='assertive'>No results for {resultsSummary}</span></div>);
+    resultsSummary = (<div><span aria-live='assertive'>No results {resultsSummary}</span></div>);
   }
-  const showMoreText
-    = show < results.length
-      ? `Showing ${show} of ${results.length} results`
-      : null;
-
-  const showMore = () => {
-    setShow(results.length);
-  };
 
   return (
     <React.Fragment>
@@ -398,35 +401,14 @@ const StaffDirectory = React.memo(({
           Clear
         </Button>
       </div>
-      <div
-        css={{
-          textAlign: 'left'
-        }}
-        aria-live='polite'
-      >
-        {resultsSummary}
-      </div>
       <StaffDirectoryResults
         results={results}
         staffImages={staffImages}
         resultsSummary={resultsSummary}
         staffInView={staffInView}
       />
-
-      {showMoreText && (
-        <>
-          <p
-            css={{
-              marginBottom: SPACING.L
-            }}
-          >
-            {showMoreText}
-          </p>
-          <Button onClick={showMore}>Show all</Button>
-        </>
-      )}
-
-      {!results.length && query.length > 0 && (
+      {showMoreText}
+      {!results.length && (
         <NoResults>
           Consider searching with different keywords or using the department or
           division filter to browse.
@@ -555,6 +537,7 @@ export const query = graphql`
 
 const StaffDirectoryResults = ({
   results,
+  resultsSummary,
   staffImages,
   staffInView
 }) => {
@@ -562,14 +545,13 @@ const StaffDirectoryResults = ({
   const borderStyle = '1px solid var(--color-neutral-100)';
 
   if (results.length < 1) {
-    return null;
+    return resultsSummary;
   }
 
   return (
     <table
       css={{
         tableLayout: 'fixed',
-
         textAlign: 'left',
         'tr > *': {
           '& + *': {
@@ -595,7 +577,9 @@ const StaffDirectoryResults = ({
         width: '100%'
       }}
     >
-
+      <caption css={{ textAlign: 'left' }}>
+        {resultsSummary}
+      </caption>
       <colgroup>
         <col
           span='1'
@@ -740,6 +724,7 @@ StaffDirectoryResults.propTypes = {
   results: PropTypes.shape({
     length: PropTypes.number
   }),
+  resultsSummary: PropTypes.any,
   staffImages: PropTypes.any,
   staffInView: PropTypes.shape({
     map: PropTypes.func

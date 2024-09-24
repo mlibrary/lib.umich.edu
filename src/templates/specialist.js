@@ -1,5 +1,5 @@
 /* eslint-disable no-invalid-this */
-import { Alert, Button, Heading, Margins, SPACING, TextInput } from '../reusable';
+import { Button, Heading, Margins, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import { navigate, useLocation } from '@reach/router';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
@@ -417,26 +417,37 @@ const SpecialistsResults = () => {
   });
   const resultsShown = resultsFiltered.slice(0, show);
   let resultsSummary = <></>;
+  let showMoreText = null;
   if (resultsFiltered.length > 0) {
-    resultsSummary = (<span>{resultsFiltered.length} {resultsFiltered.length > 1 ? 'results' : 'result'}</span>);
-    if (show < results.length) {
-      resultsSummary = (<span>Showing {show} of {resultsFiltered.length} results</span>);
+    resultsSummary = (<>{resultsFiltered.length} result{resultsFiltered.length > 1 && 's'}</>);
+    if (show < resultsFiltered.length) {
+      resultsSummary = (<>Showing {show} of {resultsFiltered.length} results</>);
+      const showMore = () => {
+        setShow(results.length);
+      };
+      showMoreText = (
+        <>
+          <p
+            css={{
+              marginBottom: SPACING.M
+            }}
+          >
+            {resultsSummary}
+          </p>
+          <Button onClick={showMore}>Show all</Button>
+        </>
+      );
     }
   }
-  if (query) {
-    resultsSummary = (
-      <>
-        {resultsSummary} for <strong style={{ fontWeight: '800' }}>{query}</strong>
-      </>
-    );
-  }
-  if (category) {
-    resultsSummary = (
-      <>
-        {resultsSummary} in <strong style={{ fontWeight: '800' }}>{category}</strong>
-      </>
-    );
-  }
+  [query, category].forEach((param) => {
+    if (param) {
+      resultsSummary = (
+        <>
+          {resultsSummary} {param === query ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
+        </>
+      );
+    }
+  });
   if (healthSciencesOnly) {
     resultsSummary = (
       <>
@@ -445,15 +456,8 @@ const SpecialistsResults = () => {
     );
   }
   if (resultsFiltered.length === 0) {
-    resultsSummary = (<div><span aria-live='assertive'>No results for {resultsSummary}</span></div>);
+    resultsSummary = (<div><span aria-live='assertive'>No results {resultsSummary}</span></div>);
   }
-  const showMoreText
-    = show < resultsFiltered.length
-      ? `Showing ${show} of ${resultsFiltered.length} results`
-      : null;
-  const showMore = () => {
-    setShow(results.length);
-  };
   const tableBreakpoint = `@media only screen and (max-width: 720px)`;
   const borderStyle = '1px solid var(--color-neutral-100)';
 
@@ -467,14 +471,6 @@ const SpecialistsResults = () => {
   }
   return (
     <React.Fragment>
-      <div
-        css={{
-          textAlign: 'left'
-        }}
-        aria-live='polite'
-      >
-        {resultsSummary}
-      </div>
       <table
         css={{
           tableLayout: 'fixed',
@@ -498,6 +494,9 @@ const SpecialistsResults = () => {
         }}
         aria-live='polite'
       >
+        <caption css={{ textAlign: 'left' }}>
+          {resultsSummary}
+        </caption>
         <thead
           css={{
             borderBottom: borderStyle,
@@ -568,18 +567,7 @@ const SpecialistsResults = () => {
         </tbody>
       </table>
 
-      {showMoreText && (
-        <>
-          <p
-            css={{
-              marginBottom: SPACING.M
-            }}
-          >
-            {showMoreText}
-          </p>
-          <Button onClick={showMore}>Show all</Button>
-        </>
-      )}
+      {showMoreText}
 
     </React.Fragment>
   );
