@@ -33,6 +33,7 @@ export default function NoResults ({ children }) {
         css={{
           margin: 'auto 0'
         }}
+        aria-live='assertive'
       >
         <Heading size='L' level={2}>
           We couldn&rsquo;t find any results
