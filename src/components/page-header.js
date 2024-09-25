@@ -1,4 +1,5 @@
 import {
+  BREAKPOINTS,
   Heading,
   Margins,
   MEDIA_QUERIES,
@@ -15,8 +16,7 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
     ? image.relationships.field_media_image.localFile.childImageSharp.gatsbyImageData
     : null;
 
-  const imageAlt = image?.field_media_image.alt;
-
+  const imageAlt = image?.field_media_image?.alt || '';
   return (
     <div
       css={{
@@ -59,25 +59,14 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
           </div>
           {imageData && (
             <React.Fragment>
-              <div
-                css={{
-                  backgroundImage: `url('${imageData.images.fallback.src}')`,
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: 'cover',
-                  display: 'none',
-                  [MEDIA_QUERIES.LARGESCREEN]: {
-                    display: 'block'
-                  },
-                  flex: '0 1 50%'
-                }}
-              />
               <GatsbyImage
                 image={imageData}
                 css={{
+                  flex: '0 1 50%',
                   margin: `0 -${SPACING.M}`,
                   [MEDIA_QUERIES.LARGESCREEN]: {
-                    display: 'none'
+                    margin: 0,
+                    maxHeight: '350px'
                   }
                 }}
                 alt={imageAlt}
