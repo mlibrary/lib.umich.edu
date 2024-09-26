@@ -37,6 +37,9 @@ export const query = graphql`
     field_hours_different_from_build
     relationships {
       field_media_image {
+        field_media_image {
+          alt
+        }
         relationships {
           field_media_image {
             localFile {
