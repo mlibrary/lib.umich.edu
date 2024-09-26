@@ -26,6 +26,7 @@ const NewsTemplate = ({ data }) => {
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
+  const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
   const imageCaption
     = relationships.field_media_image
     && relationships.field_media_image.field_image_caption
@@ -88,7 +89,7 @@ const NewsTemplate = ({ data }) => {
                   borderRadius: '2px',
                   width: '100%'
                 }}
-                alt=''
+                alt={imageAlt}
               />
               {imageCaption && (
                 <figcaption
