@@ -36,6 +36,7 @@ const DestinationTemplate = ({ data }) => {
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
+  const imageAlt = relationships.field_media_image?.field_media_image?.alt || '';
 
   return (
     <TemplateLayout node={node}>
@@ -94,7 +95,7 @@ const DestinationTemplate = ({ data }) => {
                   marginBottom: SPACING['2XL'],
                   width: '100%'
                 }}
-                alt=''
+                alt={imageAlt}
               />
             </div>
 
