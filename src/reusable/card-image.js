@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { SPACING } from '../reusable';
 
-export default function CardImage ({ image, alt }) {
+export default function CardImage ({ image, alt = '' }) {
   return (
     <GatsbyImage
       image={image}
-      alt={alt || ''}
+      alt={alt}
       css={{
         aspectRatio: '3 / 2',
         backgroundColor: 'var(--color-blue-100)',
