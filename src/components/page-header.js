@@ -64,8 +64,7 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
                   flex: '0 1 50%',
                   margin: `0 -${SPACING.M}`,
                   [MEDIA_QUERIES.LARGESCREEN]: {
-                    margin: 0,
-                    maxHeight: '350px'
+                    margin: 0
                   }
                 }}
                 alt={imageAlt}
