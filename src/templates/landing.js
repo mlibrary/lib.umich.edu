@@ -27,10 +27,7 @@ export default function LandingTemplate ({ data }) {
         breadcrumb={fields.breadcrumb}
         title={field_title_context}
         summary={body ? body.summary : null}
-        image={
-          relationships.field_media_image
-          && relationships.field_media_image
-        }
+        image={relationships.field_media_image || null}
       />
       <Margins>
         {body && <Html html={body.processed} />} <Panels data={bodyPanels} />
