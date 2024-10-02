@@ -211,9 +211,8 @@ export const sortEventsByStartDate = ({ events, onlyTodayOrAfter = false }) => {
 
   if (onlyTodayOrAfter) {
     const eventEndTimeIsAfterNow = (event) => {
-      const eventEndTime = new Date(event.field_event_date_s_[0].end_value);
-      const now = new Date(new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }));
-
+      const eventEndTime = new Date(event.fieldEventDateS ? event.fieldEventDateS[0].end_value : event.field_event_date_s_[0].end_value);
+      const now = new Date(new Date().toLocaleString('en', { timeZone: 'America/New_York' }));
       const result = eventEndTime > now;
 
       return result;
