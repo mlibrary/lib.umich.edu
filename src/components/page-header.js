@@ -1,5 +1,4 @@
 import {
-  BREAKPOINTS,
   Heading,
   Margins,
   MEDIA_QUERIES,
