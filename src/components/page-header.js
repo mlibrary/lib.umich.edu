@@ -1,4 +1,5 @@
 import {
+  BREAKPOINTS,
   Heading,
   Margins,
   MEDIA_QUERIES,
@@ -64,6 +65,9 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
                   flex: '0 1 50%',
                   margin: `0 -${SPACING.M}`,
                   [MEDIA_QUERIES.LARGESCREEN]: {
+                    'div:first-child > img': {
+                      position: 'absolute !important'
+                    },
                     margin: 0
                   }
                 }}
