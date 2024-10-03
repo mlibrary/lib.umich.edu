@@ -71,11 +71,10 @@ export default function EventsAndExhibitsPanel () {
     // Only process todaysEvents if it hasn't been done already.
     if (events && todaysEvents === null) {
       // UseEffects are only client side, so we can use now here.
-
       // Get Today's events.
       const getTodaysEvents = events.filter((event) => {
-        const start = new Date(event.field_event_date_s_[0].value);
-        const end = new Date(event.field_event_date_s_[0].end_value);
+        const start = new Date(event.fieldEventDateS ? event.fieldEventDateS[0].value : event.field_event_date_s_[0].value);
+        const end = new Date(event.fieldEventDateS ? event.fieldEventDateS[0].end_value : event.field_event_date_s_[0].end_value);
         const type = event.relationships.field_event_type.name;
         // We don't want exhibits in the events area.
         if (EXHIBIT_TYPES.includes(type)) {
@@ -96,7 +95,7 @@ export default function EventsAndExhibitsPanel () {
 
       // Get upcoming events.
       const getUpcomingEvents = events.filter((event) => {
-        const start = new Date(event.field_event_date_s_[0].value);
+        const start = new Date(event.fieldEventDateS ? event.fieldEventDateS[0].value : event.field_event_date_s_[0].value);
         const type = event.relationships.field_event_type.name;
 
         // We don't want exhibits in the events area.
