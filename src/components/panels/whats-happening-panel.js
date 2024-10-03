@@ -67,8 +67,10 @@ export default function WhatsHappening () {
       );
 
       const sortedEvents = sortEventsByStartDate({
-        events: joinedEvents
+        events: joinedEvents,
+        onlyTodayOrAfter: true
       });
+
       // Only keep 3
       setEvents(sortedEvents.slice(0, 3));
     }
