@@ -18,6 +18,7 @@ const EventTemplate = ({ data }) => {
   const { slug } = fields;
   const image
     = relationships?.field_media_image?.relationships.field_media_image;
+  const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
@@ -25,7 +26,6 @@ const EventTemplate = ({ data }) => {
     = relationships?.field_media_image?.field_image_caption?.processed;
   const contact = relationships?.field_library_contact;
   const eventContacts = relationships?.field_non_library_event_contact;
-
   return (
     <TemplateLayout node={node}>
       <Margins>
@@ -66,7 +66,7 @@ const EventTemplate = ({ data }) => {
                   borderRadius: '2px',
                   width: '100%'
                 }}
-                alt=''
+                alt={imageAlt}
               />
               {imageCaptionHTML && (
                 <figcaption

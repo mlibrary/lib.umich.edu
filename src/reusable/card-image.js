@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { SPACING } from '../reusable';
 
-export default function CardImage ({ image }) {
+export default function CardImage ({ image, alt = '' }) {
   return (
     <GatsbyImage
       image={image}
-      alt={image.alt || ''}
+      alt={alt}
       css={{
         aspectRatio: '3 / 2',
         backgroundColor: 'var(--color-blue-100)',
@@ -21,7 +21,6 @@ export default function CardImage ({ image }) {
 }
 
 CardImage.propTypes = {
-  image: PropTypes.shape({
-    alt: PropTypes.string
-  })
+  alt: PropTypes.string,
+  image: PropTypes.object
 };

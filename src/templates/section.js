@@ -43,7 +43,7 @@ const SectionTemplate = ({ data, ...rest }) => {
   const isRootPage = Boolean(fieldRootPage);
   const pageHeaderImage
     = relationships.field_media_image
-    && relationships.field_media_image.relationships.field_media_image;
+    && relationships.field_media_image;
   const hasBody = body && body.processed && body.processed.length;
   /*
    *Use the parent page if not the root

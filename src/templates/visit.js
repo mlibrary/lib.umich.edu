@@ -39,7 +39,7 @@ export default function VisitTemplate ({ data, ...rest }) {
           title={title}
           summary={body ? body.summary : null}
           image={
-            relationships.field_media_image.relationships.field_media_image
+            relationships.field_media_image
           }
         />
       </header>
