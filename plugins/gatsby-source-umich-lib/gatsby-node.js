@@ -653,6 +653,8 @@ exports.createPages = ({ actions, graphql }) => {
         const { profiles } = result.data;
 
         profiles.edges.forEach(({ node }) => {
+          console.log(JSON.stringify(node, null, 2));
+
           const profileTemplate = path.resolve(`src/templates/profile.js`);
 
           createPage({
