@@ -18,7 +18,7 @@
     "gatsby-source-drupal": "^6.13.1",
     "gatsby-source-filesystem": "^5.13.1",
     "gatsby-transformer-sharp": "^5.13.1",
-    "highlight-words-core": "^1.2.2",
+    "highlight-words-core": "^1.2.3",
     "isomorphic-fetch": "^3.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -51,17 +51,17 @@
     "url": "https://github.com/mlibrary/lib.umich.edu"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.0.3",
-    "@eslint/js": "^9.9.0",
-    "@stylistic/eslint-plugin": "^2.8.0",
+    "@eslint/compat": "^1.2.0",
+    "@eslint/js": "^9.12.0",
+    "@stylistic/eslint-plugin": "^2.9.0",
     "bottleneck": "^2.19.5",
     "entities": "^5.0.0",
-    "eslint": "^9.10.0",
-    "eslint-plugin-react": "^7.36.1",
+    "eslint": "^9.12.0",
+    "eslint-plugin-react": "^7.37.1",
     "fetch-retry": "^6.0.0",
     "gatsby-plugin-netlify": "^5.1.1",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
-    "globals": "^15.8.0"
+    "globals": "^15.10.0"
   },
   "overrides": {
     "eslint-plugin-react": {
