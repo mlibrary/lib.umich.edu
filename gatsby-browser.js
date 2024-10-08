@@ -1,20 +1,9 @@
 import React from 'react';
 import SkipLinks from './src/components/skip-links';
 
-export const onClientEntry = () => {
-  const {
-    applyPolyfills,
-    defineCustomElements,
-  } = require('@umich-lib/web/loader');
-
-  applyPolyfills().then(() => {
-    defineCustomElements(window);
-  });
-};
-
 export const wrapPageElement = ({ element }) => {
-  // props provide same data to Layout as Page element will get
-  // including location, data, etc - you don't need to pass it
+  // Props provide same data to Layout as Page element will get
+  // Including location, data, etc - you don't need to pass it
   return (
     <React.Fragment>
       <div
@@ -22,7 +11,7 @@ export const wrapPageElement = ({ element }) => {
           minHeight: '100%',
           display: 'grid',
           gridTemplateRows: 'auto auto 1fr',
-          gridTemplateColumns: '100%',
+          gridTemplateColumns: '100%'
         }}
       >
         <div>
@@ -31,7 +20,7 @@ export const wrapPageElement = ({ element }) => {
         </div>
         {element}
       </div>
-      <m-chat id="chat"></m-chat>
+      <m-chat id='chat'></m-chat>
     </React.Fragment>
   );
 };
@@ -72,7 +61,7 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
       window.scrollTo({
         top: element.offsetTop,
         behavior: 'smooth'
-      })
+      });
     }
   }
 };
