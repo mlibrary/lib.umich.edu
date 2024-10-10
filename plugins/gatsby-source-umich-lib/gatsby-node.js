@@ -478,13 +478,12 @@ exports.createPages = ({ actions, graphql }) => {
                 }
               }
             }
-            profiles: allUserUser(
-              filter: { field_make_profile_public: { eq: true } }
+           profiles: allUserUser(
+              filter: {name: {ne: null}}
             ) {
               edges {
                 node {
                   __typename
-                  field_make_profile_public
                   field_user_display_name
                   field_user_work_title
                   name

@@ -1,5 +1,5 @@
 import { Breadcrumb, BreadcrumbItem } from './breadcrumb';
-import { BREAKPOINTS, GlobalStyleSheet, INTENT_COLORS, LargeScreen, lightOrDark, LINK_STYLES, Margins, MEDIA_QUERIES, SmallScreen, SPACING, TYPOGRAPHY, Z_SPACE } from './utils';
+import { BREAKPOINTS, GlobalStyleSheet, INTENT_COLORS, LargeScreen, LINK_STYLES, Margins, MEDIA_QUERIES, SmallScreen, SPACING, TYPOGRAPHY, Z_SPACE } from './utils';
 import { Expandable, ExpandableButton, ExpandableChildren, ExpandableProvider } from './expandable/index';
 import Icon, { icons } from './icon';
 import Alert from './alert';
@@ -22,7 +22,6 @@ export {
   TYPOGRAPHY,
   LINK_STYLES,
   GlobalStyleSheet,
-  lightOrDark,
   Alert,
   Margins,
   LargeScreen,
