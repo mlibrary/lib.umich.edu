@@ -1,4 +1,3 @@
-import React from 'react';
 export { wrapPageElement } from './gatsby-shared';
 
 export const onRenderBody = ({ setHtmlAttributes, setHeadComponents }) => {
