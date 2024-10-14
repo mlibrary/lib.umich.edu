@@ -9,7 +9,7 @@ export const wrapPageElement = ({ element }) => {
       <Script
         type='module'
         src='https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js'
-        strategy='post-hydrate'
+        strategy='onLoad'
         onLoad={() => {
           return console.log('success');
         }}
