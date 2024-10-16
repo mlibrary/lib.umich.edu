@@ -6,13 +6,13 @@ export const wrapPageElement = ({ element }) => {
   return (
     <>
       <Script src='https://umich.edu/apis/umalerts/umalerts.js' />
-      <Script src='https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js' />
+      <Script type='module' src='https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js' />
       <div
         css={{
-          minHeight: '100%',
           display: 'grid',
+          gridTemplateColumns: '100%',
           gridTemplateRows: 'auto auto 1fr',
-          gridTemplateColumns: '100%'
+          minHeight: '100%'
         }}
       >
         <div>
