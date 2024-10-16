@@ -90,10 +90,6 @@ export const eventFormatWhen = ({ start, end, kind, type }) => {
 };
 
 export const eventFormatWhere = ({ node, kind }, includeLink = false) => {
-  node.field_event_online = true;
-  node.field_online_event_link = { uri: 'google.com', title: 'test' };
-
-  console.log(node);
   const where = [];
 
   if (node.field_event_online) {
