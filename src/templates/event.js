@@ -200,7 +200,7 @@ const EventMetadata = ({ data }) => {
       type: eventType
     });
   });
-
+  console.log(eventFormatWhere);
   const where = eventFormatWhere(
     {
       kind: 'full',
