@@ -293,7 +293,7 @@ export default function HoursPanelContainer ({ data }) {
       <HoursPanelNextPrev location={title} />
       <Margins>
         <Heading
-          level={3}
+          level={2}
           size='L'
           css={{
             fontWeight: '700',
