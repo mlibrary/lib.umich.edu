@@ -263,7 +263,6 @@ const EventMetadata = ({ data }) => {
               }}
             >
               {where.map(({ label, href, className }, index) => {
-                console.log(where);
                 if (href) {
                   return (
                     <p key={index} className={className}>
