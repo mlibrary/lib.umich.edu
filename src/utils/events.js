@@ -99,9 +99,17 @@ export const eventFormatWhere = ({ kind, node }) => {
 
   // Online events
   if (field_event_online) {
-    where.push({ label: hasLocation ? 'Hybrid ' : 'Online ' });
+    let label = 'Online';
+
+    if (hasLocation) {
+      label = isBrief ? 'Hybrid; ' : 'Hybrid';
+    }
+
+    where.push({ label });
 
     if (field_online_event_link && !isBrief) {
+      where[0].label += (': ');
+      where[0].css = { display: 'inline' };
       where.push({
         href: field_online_event_link.uri,
         label: field_online_event_link.title

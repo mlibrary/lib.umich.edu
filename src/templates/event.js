@@ -262,18 +262,16 @@ const EventMetadata = ({ data }) => {
                 }
               }}
             >
-              {where.map(({ label, href, className }, index) => {
+              {where.map(({ label, href, className, css }, index) => {
                 if (href) {
                   return (
-                    <p key={index} className={className}>
+                    <span key={index} className={className}>
                       <Link to={href}>{label}</Link>
-                    </p>
+                    </span>
                   );
                 }
                 return (
-                  <span key={index}>
-                    <span css={{ display: 'block' }}>{label}</span>
-                  </span>
+                  <div css={css} key={index} className={className}>{label}</div>
                 );
               })}
               {where.map(({ locality }, index) => {
@@ -286,7 +284,7 @@ const EventMetadata = ({ data }) => {
                         query: locality
                       })}
                     >
-                      View Directions
+                      View directions
                     </Link>
                   );
                 }
