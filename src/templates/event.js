@@ -195,8 +195,6 @@ const EventMetadata = ({ data }) => {
     const start = new Date(date.value);
     const end = new Date(date.end_value);
 
-    // Const floorPlan = useFloorPlan(bid, fid);
-
     return eventFormatWhen({
       end,
       kind: 'full',
@@ -265,6 +263,7 @@ const EventMetadata = ({ data }) => {
               }}
             >
               {where.map(({ label, href, className }, index) => {
+                console.log(where);
                 if (href) {
                   return (
                     <p key={index} className={className}>

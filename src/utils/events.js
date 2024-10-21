@@ -185,11 +185,16 @@ export const eventFormatWhere = ({ kind, node }) => {
   if (hasLocation) {
     const roomName = field_event_room?.title;
     const buildingName = field_event_building?.title;
+    const floorName = field_event_room?.relationships?.field_floor?.name?.split(' - ').pop();
+    const roomNumber = field_event_room?.field_room_number ? `Room ${field_event_room.field_room_number}` : null;
+    const { organization, address_line1, locality, administrative_area, postal_code } = field_non_library_location_addre;
+    const stateZip = [administrative_area, postal_code].filter(Boolean).join(' ');
+
+    const fullAddress = [address_line1, locality, stateZip].filter(Boolean).join(', ');
 
     // Library locations
     if (roomName) {
-      const floorName = field_event_room?.relationships?.field_floor?.name?.split(' - ').pop();
-      const roomNumber = field_event_room?.field_room_number ? `Room ${field_event_room.field_room_number}` : null;
+      const locationLabel = [buildingName, floorName, roomNumber].filter(Boolean).join(', ');
 
       if (isBrief) {
         where.push({ label: [roomName, buildingName].filter(Boolean).join(', ') });
@@ -197,19 +202,17 @@ export const eventFormatWhere = ({ kind, node }) => {
         where.push({ label: roomName });
         where.push({
           className: 'margin-top-none',
-          label: [buildingName, floorName, roomNumber].filter(Boolean).join(', ')
+          label: locationLabel,
+          locality: fullAddress
         });
       }
     } else {
       // Non-library locations
-      const { organization, address_line1, locality, administrative_area, postal_code } = field_non_library_location_addre;
-      const stateZip = [administrative_area, postal_code].filter(Boolean).join(' ');
-
       where.push({ label: organization });
       where.push({
         className: 'margin-top-none',
-        label: [address_line1, locality, stateZip].filter(Boolean).join(', '),
-        locality
+        label: fullAddress,
+        locality: fullAddress
       });
     }
   }
