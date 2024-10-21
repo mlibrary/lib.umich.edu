@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Script } from 'gatsby';
 import SkipLinks from './src/components/skip-links';
 
-export const wrapPageElement = ({ element }) => {
+const PageWrapper = ({ element }) => {
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
   return (
     <>
       <Script src='https://umich.edu/apis/umalerts/umalerts.js' />
@@ -17,6 +23,15 @@ export const wrapPageElement = ({ element }) => {
       >
         <div>
           <SkipLinks />
+          {!hydrated && (
+            <div
+              css={{
+                backgroundColor: 'var(--color-blue-100)',
+                height: '37px'
+              }}
+            >
+            </div>
+          )}
           <m-universal-header></m-universal-header>
         </div>
         {element}
@@ -24,4 +39,8 @@ export const wrapPageElement = ({ element }) => {
       <m-chat id='chat'></m-chat>
     </>
   );
+};
+
+export const wrapPageElement = ({ element }) => {
+  return <PageWrapper element={element} />;
 };
