@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 
 /*
@@ -89,7 +90,8 @@ export const eventFormatWhen = ({ start, end, kind, type }) => {
   return `${dateFormat(startDate, 'weekday')} · ${endTime} - ${dateFormat(endDate, 'weekday', 'year')} · ${endTime}`;
 };
 
-export const eventFormatWhere = ({ node, kind }, includeLink = false) => {
+/*
+Export const eventFormatWhere = ({ node, kind }, includeLink = false) => {
   const where = [];
 
   if (node.field_event_online) {
@@ -105,11 +107,10 @@ export const eventFormatWhere = ({ node, kind }, includeLink = false) => {
     });
   }
 
-  let hasLocation = false;
+  const hasLocation = Boolean(node.field_non_library_location_addre.organization) || Boolean(node.relationships.field_event_building);
 
   if (Boolean(node.field_event_in_non_library_locat) && Boolean(node.field_non_library_location_addre)) {
     if (node.field_non_library_location_addre.organization) {
-      hasLocation = true;
       where.push({
         label: node.field_non_library_location_addre.organization
       });
@@ -134,18 +135,83 @@ export const eventFormatWhere = ({ node, kind }, includeLink = false) => {
     }
   }
 
+  const roomName = node.relationships.field_event_room?.title;
+
   const building = node.relationships.field_event_building?.title;
-  const room = node.relationships.field_event_room?.title;
+  let floor = node.relationships.field_event_room?.relationships.field_floor?.name;
+  if (floor) {
+    const floorSplit = floor.split(' - ');
+    floor = floorSplit[floorSplit.length - 1];
+  }
+  const roomNumber = node.relationships.field_event_room?.field_room_number ? `Room ${node.relationships.field_event_room?.field_room_number}` : null;
 
   if (building) {
-    hasLocation = true;
     where.push({
-      label: [room, building].join(', ')
+      label: roomName
+    });
+    where.push({
+      label: [building, floor, roomNumber].join(', ')
     });
   }
 
   if (node.field_event_online && hasLocation) {
     where[0].label = 'Hybrid';
+  }
+
+  return where;
+};
+*/
+
+export const eventFormatWhere = ({ kind, node }) => {
+  const where = [];
+  const { field_event_online, field_online_event_link, field_non_library_location_addre, relationships } = node;
+  const { field_event_building, field_event_room } = relationships || {};
+  const hasLocation = Boolean(field_non_library_location_addre?.organization || field_event_building);
+  const isBrief = kind === 'brief';
+
+  // Online events
+  if (field_event_online) {
+    where.push({ label: hasLocation ? 'Hybrid' : 'Online' });
+
+    if (field_online_event_link) {
+      where.push({
+        href: field_online_event_link.uri,
+        label: field_online_event_link.title
+      });
+    }
+  }
+
+  // Handle location details
+  if (hasLocation) {
+    const roomName = field_event_room?.title;
+    const buildingName = field_event_building?.title;
+
+    // Library locations
+    if (roomName) {
+      const floorName = field_event_room?.relationships?.field_floor?.name?.split(' - ').pop();
+      const roomNumber = field_event_room?.field_room_number ? `Room ${field_event_room.field_room_number}` : null;
+
+      if (isBrief) {
+        where.push({ label: [roomName, buildingName].filter(Boolean).join(', ') });
+      } else {
+        where.push({ label: roomName });
+        where.push({
+          className: 'margin-top-none',
+          label: [buildingName, floorName, roomNumber].filter(Boolean).join(', ')
+        });
+      }
+    } else {
+      // Non-library locations
+      const { organization, address_line1, locality, administrative_area, postal_code } = field_non_library_location_addre;
+      const stateZip = [administrative_area, postal_code].filter(Boolean).join(' ');
+
+      where.push({ label: organization });
+      where.push({
+        className: 'margin-top-none',
+        label: [address_line1, locality, stateZip].filter(Boolean).join(', '),
+        locality
+      });
+    }
   }
 
   return where;
