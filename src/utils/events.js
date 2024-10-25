@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export const EXHIBIT_TYPES = ['Exhibit', 'Exhibition'];
 
 /*
@@ -89,63 +90,67 @@ export const eventFormatWhen = ({ start, end, kind, type }) => {
   return `${dateFormat(startDate, 'weekday')} · ${endTime} - ${dateFormat(endDate, 'weekday', 'year')} · ${endTime}`;
 };
 
-export const eventFormatWhere = ({ node, kind }, includeLink = false) => {
+export const eventFormatWhere = ({ kind, node }) => {
   const where = [];
+  const { field_event_online, field_online_event_link, field_non_library_location_addre, relationships } = node;
+  const { field_event_building, field_event_room } = relationships || {};
+  const hasLocation = Boolean(field_non_library_location_addre?.organization || field_event_building);
+  const isBrief = kind === 'brief';
 
-  if (node.field_event_online) {
-    where.push({
-      label: 'Online'
-    });
-  }
+  // Online events
+  if (field_event_online) {
+    let label = 'Online';
 
-  if (includeLink && node.field_online_event_link) {
-    where.push({
-      href: node.field_online_event_link.uri,
-      label: node.field_online_event_link.title
-    });
-  }
+    if (hasLocation) {
+      label = isBrief ? 'Hybrid; ' : 'Hybrid';
+    }
 
-  let hasLocation = false;
+    where.push({ label });
 
-  if (Boolean(node.field_event_in_non_library_locat) && Boolean(node.field_non_library_location_addre)) {
-    if (node.field_non_library_location_addre.organization) {
-      hasLocation = true;
+    if (field_online_event_link && !isBrief) {
+      where[0].label += (': ');
+      where[0].css = { display: 'inline' };
       where.push({
-        label: node.field_non_library_location_addre.organization
+        href: field_online_event_link.uri,
+        label: field_online_event_link.title
       });
     }
-    if (kind !== 'brief') {
-      const stateZip = [
-        node.field_non_library_location_addre.administrative_area,
-        node.field_non_library_location_addre.postal_code
-      ].filter((field) => {
-        return field;
-      }).join(' ');
+  }
+
+  // Handle location details
+  if (hasLocation) {
+    const roomName = field_event_room?.title;
+    const buildingName = field_event_building?.title;
+    const floorName = field_event_room?.relationships?.field_floor?.name?.split(' - ').pop();
+    const roomNumber = field_event_room?.field_room_number ? `Room ${field_event_room.field_room_number}` : null;
+    const { organization, address_line1, locality, administrative_area, postal_code } = field_non_library_location_addre;
+    const stateZip = [administrative_area, postal_code].filter(Boolean).join(' ');
+
+    const fullAddress = [address_line1, locality, stateZip].filter(Boolean).join(', ');
+
+    // Library locations
+    if (roomName) {
+      const locationLabel = [buildingName, floorName, roomNumber].filter(Boolean).join(', ');
+
+      if (isBrief) {
+        where.push({ label: [roomName, buildingName].filter(Boolean).join(', ') });
+      } else {
+        where.push({ label: roomName });
+        where.push({
+          className: 'margin-top-none',
+          label: locationLabel,
+          locality: fullAddress
+        });
+      }
+    } else {
+      // Non-library locations
+      where.push({ label: organization });
       where.push({
         className: 'margin-top-none',
-        label: [
-          node.field_non_library_location_addre.address_line1,
-          node.field_non_library_location_addre.locality,
-          stateZip
-        ].filter((field) => {
-          return field;
-        }).join(', ')
+        label: fullAddress,
+        locality: fullAddress
       });
     }
-  }
-
-  const building = node.relationships.field_event_building?.title;
-  const room = node.relationships.field_event_room?.title;
-
-  if (building) {
-    hasLocation = true;
-    where.push({
-      label: [room, building].join(', ')
-    });
-  }
-
-  if (node.field_event_online && hasLocation) {
-    where[0].label = 'Hybrid';
   }
 
   return where;
