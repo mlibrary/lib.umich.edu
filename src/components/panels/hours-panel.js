@@ -7,11 +7,11 @@ import {
   MEDIA_QUERIES,
   SPACING
 } from '../../reusable';
+import React, { useState } from 'react';
 import { displayHours } from '../../utils/hours';
 import HoursTable from '../hours-table';
 import Html from '../html';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { useStateValue } from '../use-state';
 
 const dateFormat = (string, abbreviated = false) => {
@@ -27,6 +27,215 @@ const dateFormat = (string, abbreviated = false) => {
     weekday: 'long',
     year: 'numeric'
   });
+};
+
+const CalendarView = () => {
+  const [currentBrowseDate, setCurrentDate] = useState(new Date());
+  const [, dispatch] = useStateValue();
+
+  const handleNextMonth = () => {
+    const nextMonth = new Date(currentBrowseDate.setMonth(currentBrowseDate.getMonth() + 1));
+    setCurrentDate(new Date(nextMonth.setDate(1)));
+  };
+
+  const handlePreviousMonth = () => {
+    const prevMonth = new Date(currentBrowseDate.setMonth(currentBrowseDate.getMonth() - 1));
+    setCurrentDate(new Date(prevMonth.setDate(1)));
+  };
+
+  const getColorBasedOnDate = (date1) => {
+    const currentDate = new Date();
+    const startOfDay = (date) => {
+      const newDate = new Date(date);
+      newDate.setHours(0, 0, 0, 0);
+      return newDate;
+    };
+
+    const startOfWeek = (date) => {
+      const dayOfWeek = date.getDay(); // 0 for Sunday, 1 for Monday, etc.
+      const newDate = new Date(date);
+      newDate.setDate(date.getDate() - dayOfWeek);
+      newDate.setHours(0, 0, 0, 0);
+      return newDate;
+    };
+
+    const day1 = startOfDay(date1);
+    const day2 = startOfDay(currentDate);
+
+    // Check if it's the same day
+    if (day1.getTime() === day2.getTime()) {
+      return 'var(--color-maize-400)';
+    }
+
+    // Check if it's the same week
+    const weekStart1 = startOfWeek(date1);
+    const weekStart2 = startOfWeek(currentDate);
+
+    if (weekStart1.getTime() === weekStart2.getTime()) {
+      return 'var(--color-maize-100)';
+    }
+
+    return 'var(--color-blue-100)';
+  };
+
+  const getDaysInMonth = (date) => {
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const days = [];
+
+    const currentDayIterator = new Date(startOfMonth);
+    while (currentDayIterator <= endOfMonth) {
+      days.push(new Date(currentDayIterator));
+      currentDayIterator.setDate(currentDayIterator.getDate() + 1);
+    }
+
+    return days;
+  };
+
+  const getCalendarDays = () => {
+    const days = getDaysInMonth(currentBrowseDate);
+    const firstDayOfMonth = new Date(days[0]);
+    const lastDayOfMonth = new Date(days[days.length - 1]);
+
+    const daysBefore = Array.from(
+      { length: firstDayOfMonth.getDay() },
+      (_, i) => {
+        return new Date(firstDayOfMonth.getFullYear(), firstDayOfMonth.getMonth(), i - firstDayOfMonth.getDay() + 1);
+      }
+    );
+
+    const daysAfter = Array.from(
+      { length: 6 - lastDayOfMonth.getDay() },
+      (_, i) => {
+        return new Date(lastDayOfMonth.getFullYear(), lastDayOfMonth.getMonth(), lastDayOfMonth.getDate() + i + 1);
+      }
+    );
+
+    return [...daysBefore, ...days, ...daysAfter];
+  };
+
+  const calendarDays = getCalendarDays();
+  const monthYear = currentBrowseDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+  const weeks = [];
+  for (let i = 0; i < calendarDays.length; i += 7) {
+    weeks.push(calendarDays.slice(i, i + 7));
+  }
+
+  return (
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '16px',
+        maxWidth: '400px',
+        margin: '0 auto'
+      }}
+    >
+      <div
+        css={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%'
+        }}
+      >
+        <button
+          onClick={handlePreviousMonth}
+          css={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '1.5em'
+          }}
+        >
+          ◀
+        </button>
+        <h2 css={{ margin: 0, fontSize: '1.5em' }}>{monthYear}</h2>
+        <button
+          onClick={handleNextMonth}
+          css={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '1.5em'
+          }}
+        >
+          ▶
+        </button>
+      </div>
+      <div
+        css={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          marginTop: '8px',
+          fontWeight: 'bold'
+        }}
+      >
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => {
+          return (
+            <div
+              css={{
+                paddingLeft: '10px',
+                paddingRight: '10px'
+              }}
+              key={day}
+            >
+              {day}
+            </div>
+          );
+        })}
+      </div>
+      <div
+        css={{
+          display: 'grid',
+          gridTemplateRows: `repeat(${weeks.length}, auto)`,
+          gap: '4px',
+          marginTop: '8px'
+        }}
+      >
+        {weeks.map((week, weekIndex) => {
+          return (
+            <a
+              onClick={(e) => {
+                e.preventDefault();
+                dispatch({
+                  type: 'setWeekOffset',
+                  weekOffset: weekIndex
+                });
+              }}
+              key={weekIndex}
+              css={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(7, 1fr)',
+                gap: '4px',
+                textDecoration: 'none',
+                border: `2px solid var(--color-maize-400)`
+              }}
+            >
+              {week.map((day, dayIndex) => {
+                return (
+                  <div
+                    key={dayIndex}
+                    css={{
+                      padding: '14px',
+                      textAlign: 'center',
+                      backgroundColor: getColorBasedOnDate(day),
+                      borderRadius: '4px',
+                      color: day.getMonth() !== currentBrowseDate.getMonth() ? '#999' : 'inherit'
+                    }}
+                  >
+                    {day.getDate()}
+                  </div>
+                );
+              })}
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export const HoursPanelNextPrev = ({ location }) => {
@@ -204,21 +413,6 @@ const getRow = (node, nowWithWeekOffset, isParent) => {
 const transformTableData = ({ node, now }) => {
   const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;
 
-  /*
-   *[
-   *  {
-   *    text: 'Sun',
-   *    subtext: 'Apr 15',
-   *    label: 'Sunday, April 15th'
-   *  },
-   *  ...
-   *  {
-   *    text: 'Sat',
-   *    subtext: 'Apr 21',
-   *    label: 'Saturday, April 21th'
-   *  },
-   *]
-   */
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const currentDate = new Date(now);
   // Set to Sunday
@@ -290,6 +484,7 @@ export default function HoursPanelContainer ({ data }) {
         marginBottom: SPACING['4XL']
       }}
     >
+      <CalendarView></CalendarView>
       <HoursPanelNextPrev location={title} />
       <Margins>
         <Heading
