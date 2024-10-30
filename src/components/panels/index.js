@@ -434,6 +434,11 @@ const TextPanel = ({ data }) => {
                 ':not(:last-of-type)': {
                   marginBottom: SPACING.L,
                   paddingBottom: SPACING.M
+                },
+                ':last-of-type': {
+                  '.gatsby-image-wrapper': {
+                    marginBottom: 0
+                  }
                 }
               }}
             >
