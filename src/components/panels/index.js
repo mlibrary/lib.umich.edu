@@ -431,8 +431,15 @@ const TextPanel = ({ data }) => {
               css={{
                 borderBottom: item === items.length - 1 ? 'none' : `solid 1px var(--color-neutral-100)`,
                 display: 'flex',
-                marginBottom: SPACING.L,
-                paddingBottom: SPACING.M
+                ':not(:last-of-type)': {
+                  marginBottom: SPACING.L,
+                  paddingBottom: SPACING.M
+                },
+                ':last-of-type': {
+                  '.gatsby-image-wrapper': {
+                    marginBottom: 0
+                  }
+                }
               }}
             >
               <div
