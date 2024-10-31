@@ -429,17 +429,17 @@ const TextPanel = ({ data }) => {
             <section
               key={item + html}
               css={{
-                borderBottom: item === items.length - 1 ? 'none' : `solid 1px var(--color-neutral-100)`,
-                display: 'flex',
-                ':not(:last-of-type)': {
-                  marginBottom: SPACING.L,
-                  paddingBottom: SPACING.M
-                },
                 ':last-of-type': {
                   '.gatsby-image-wrapper': {
                     marginBottom: 0
                   }
-                }
+                },
+                ':not(:last-of-type)': {
+                  marginBottom: SPACING.L,
+                  paddingBottom: SPACING.M
+                },
+                borderBottom: item === items.length - 1 ? 'none' : `solid 1px var(--color-neutral-100)`,
+                display: 'flex'
               }}
             >
               <div
