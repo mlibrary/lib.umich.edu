@@ -2,6 +2,7 @@ import { eventFormatWhen, eventFormatWhere } from '../utils/events';
 import { Heading, Margins, SPACING, TYPOGRAPHY } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
+import createGoogleMapsURL from '../components/utilities/create-google-maps-url';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import { graphql } from 'gatsby';
 import Html from '../components/html';
@@ -11,6 +12,7 @@ import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import Share from '../components/share';
 import TemplateLayout from './template-layout';
+import useFloorPlan from '../hooks/use-floor-plan';
 
 const EventTemplate = ({ data }) => {
   const node = data.event;
@@ -200,14 +202,12 @@ const EventMetadata = ({ data }) => {
       type: eventType
     });
   });
+  const where = eventFormatWhere({ node: data });
 
-  const where = eventFormatWhere(
-    {
-      kind: 'full',
-      node: data
-    },
-    true
-  );
+  const buildingId = data.relationships.field_event_building?.id;
+  const floorId = data.relationships.field_event_room?.relationships.field_floor?.id;
+
+  const floorPlan = useFloorPlan(buildingId && floorId ? buildingId : null, floorId && buildingId ? floorId : null);
 
   return (
     <table
@@ -262,17 +262,39 @@ const EventMetadata = ({ data }) => {
                 }
               }}
             >
-              {where.map(({ label, href, className }, index) => {
+              {where.map(({ label, href, className, css }, index) => {
                 if (href) {
                   return (
-                    <p key={index} className={className}>
+                    <span key={index} className={className}>
                       <Link to={href}>{label}</Link>
-                    </p>
+                    </span>
                   );
                 }
-
-                return <p key={index} className={className}>{label}</p>;
+                return (
+                  <div css={css} key={index} className={className}>{label}</div>
+                );
               })}
+              {where.map(({ locality }, index) => {
+                if (locality) {
+                  return (
+                    <Link
+                      key={index}
+                      to={createGoogleMapsURL({
+                        placeId: null,
+                        query: locality
+                      })}
+                    >
+                      View directions
+                    </Link>
+                  );
+                }
+                return null;
+              })}
+              {floorPlan && floorPlan.fields && (
+                <span css={{ display: 'block' }}>
+                  <Link to={floorPlan.fields.slug}>View floorplan</Link>
+                </span>
+              )}
             </td>
           </tr>
         )}
