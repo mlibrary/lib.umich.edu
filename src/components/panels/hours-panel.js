@@ -29,7 +29,7 @@ const dateFormat = (string, abbreviated = false) => {
   });
 };
 
-const CalendarView = () => {
+const CalendarView = ({ isVisible }) => {
   const [currentBrowseDate, setCurrentDate] = useState(new Date());
   const [, dispatch] = useStateValue();
 
@@ -52,7 +52,7 @@ const CalendarView = () => {
     };
 
     const startOfWeek = (date) => {
-      const dayOfWeek = date.getDay(); // 0 for Sunday, 1 for Monday, etc.
+      const dayOfWeek = date.getDay();
       const newDate = new Date(date);
       newDate.setDate(date.getDate() - dayOfWeek);
       newDate.setHours(0, 0, 0, 0);
@@ -62,12 +62,10 @@ const CalendarView = () => {
     const day1 = startOfDay(date1);
     const day2 = startOfDay(currentDate);
 
-    // Check if it's the same day
     if (day1.getTime() === day2.getTime()) {
       return 'var(--color-maize-400)';
     }
 
-    // Check if it's the same week
     const weekStart1 = startOfWeek(date1);
     const weekStart2 = startOfWeek(currentDate);
 
@@ -97,19 +95,13 @@ const CalendarView = () => {
     const firstDayOfMonth = new Date(days[0]);
     const lastDayOfMonth = new Date(days[days.length - 1]);
 
-    const daysBefore = Array.from(
-      { length: firstDayOfMonth.getDay() },
-      (_, i) => {
-        return new Date(firstDayOfMonth.getFullYear(), firstDayOfMonth.getMonth(), i - firstDayOfMonth.getDay() + 1);
-      }
-    );
+    const daysBefore = Array.from({ length: firstDayOfMonth.getDay() }, (_, i) => {
+      return new Date(firstDayOfMonth.getFullYear(), firstDayOfMonth.getMonth(), i - firstDayOfMonth.getDay() + 1);
+    });
 
-    const daysAfter = Array.from(
-      { length: 6 - lastDayOfMonth.getDay() },
-      (_, i) => {
-        return new Date(lastDayOfMonth.getFullYear(), lastDayOfMonth.getMonth(), lastDayOfMonth.getDate() + i + 1);
-      }
-    );
+    const daysAfter = Array.from({ length: 6 - lastDayOfMonth.getDay() }, (_, i) => {
+      return new Date(lastDayOfMonth.getFullYear(), lastDayOfMonth.getMonth(), lastDayOfMonth.getDate() + i + 1);
+    });
 
     return [...daysBefore, ...days, ...daysAfter];
   };
@@ -130,7 +122,10 @@ const CalendarView = () => {
         alignItems: 'center',
         padding: '16px',
         maxWidth: '400px',
-        margin: '0 auto'
+        margin: '0 auto',
+        transition: 'height 0.3s ease',
+        height: isVisible ? 'auto' : '0',
+        overflow: 'hidden'
       }}
     >
       <div
@@ -152,7 +147,14 @@ const CalendarView = () => {
         >
           ◀
         </button>
-        <h2 css={{ margin: 0, fontSize: '1.5em' }}>{monthYear}</h2>
+        <h2
+          css={{
+            margin: 0,
+            fontSize: '1.5em'
+          }}
+        >
+          {monthYear}
+        </h2>
         <button
           onClick={handleNextMonth}
           css={{
@@ -165,88 +167,94 @@ const CalendarView = () => {
           ▶
         </button>
       </div>
-      <div
-        css={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          marginTop: '8px',
-          fontWeight: 'bold'
-        }}
-      >
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => {
-          return (
-            <div
-              css={{
-                paddingLeft: '10px',
-                paddingRight: '10px'
-              }}
-              key={day}
-            >
-              {day}
-            </div>
-          );
-        })}
-      </div>
-      <div
-        css={{
-          display: 'grid',
-          gridTemplateRows: `repeat(${weeks.length}, auto)`,
-          gap: '4px',
-          marginTop: '8px'
-        }}
-      >
-        {weeks.map((week, weekIndex) => {
-          return (
-            <a
-              onClick={(e) => {
-                e.preventDefault();
-                dispatch({
-                  type: 'setWeekOffset',
-                  weekOffset: weekIndex
-                });
-              }}
-              key={weekIndex}
-              css={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(7, 1fr)',
-                gap: '4px',
-                textDecoration: 'none',
-                border: `2px solid var(--color-maize-400)`
-              }}
-            >
-              {week.map((day, dayIndex) => {
-                return (
-                  <div
-                    key={dayIndex}
-                    css={{
-                      padding: '14px',
-                      textAlign: 'center',
-                      backgroundColor: getColorBasedOnDate(day),
-                      borderRadius: '4px',
-                      color: day.getMonth() !== currentBrowseDate.getMonth() ? '#999' : 'inherit'
-                    }}
-                  >
-                    {day.getDate()}
-                  </div>
-                );
-              })}
-            </a>
-          );
-        })}
-      </div>
+      {isVisible && (
+        <>
+          <div
+            css={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(7, 1fr)',
+              marginTop: '8px',
+              fontWeight: 'bold'
+            }}
+          >
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => {
+              return (
+                <div
+                  css={{
+                    paddingLeft: '10px',
+                    paddingRight: '10px'
+                  }}
+                  key={day}
+                >
+                  {day}
+                </div>
+              );
+            })}
+          </div>
+          <div
+            css={{
+              display: 'grid',
+              gridTemplateRows: `repeat(${weeks.length}, auto)`,
+              gap: '4px',
+              marginTop: '8px'
+            }}
+          >
+            {weeks.map((week, weekIndex) => {
+              return (
+                <a
+                  onClick={(e) => {
+                    e.preventDefault();
+                    dispatch({
+                      type: 'setWeekOffset',
+                      weekOffset: weekIndex
+                    });
+                  }}
+                  key={weekIndex}
+                  css={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, 1fr)',
+                    gap: '4px',
+                    textDecoration: 'none',
+                    border: `2px solid var(--color-maize-400)`
+                  }}
+                >
+                  {week.map((day, dayIndex) => {
+                    return (
+                      <div
+                        key={dayIndex}
+                        css={{
+                          padding: '14px',
+                          textAlign: 'center',
+                          backgroundColor: getColorBasedOnDate(day),
+                          borderRadius: '4px',
+                          color: day.getMonth() !== currentBrowseDate.getMonth() ? '#999' : 'inherit'
+                        }}
+                      >
+                        {day.getDate()}
+                      </div>
+                    );
+                  })}
+                </a>
+              );
+            })}
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-export const HoursPanelNextPrev = ({ location }) => {
+// Your remaining component definition stays the same...
+
+const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisible }) => {
   const [{ weekOffset }, dispatch] = useStateValue();
   const date = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
 
   const fromDate = new Date(date);
-  fromDate.setDate(date.getDate() + (weekOffset * 7) - date.getDay());
+  fromDate.setDate(date.getDate() + weekOffset * 7 - date.getDay());
 
   const toDate = new Date(date);
-  toDate.setDate(date.getDate() + (weekOffset * 7) + (6 - date.getDay()));
+  toDate.setDate(date.getDate() + weekOffset * 7 + (6 - date.getDay()));
 
   const hoursRange = {
     label: `Showing hours for ${location} from ${dateFormat(fromDate)} to ${dateFormat(toDate)}`,
@@ -282,8 +290,10 @@ export const HoursPanelNextPrev = ({ location }) => {
           aria-atomic='true'
           level={2}
           size='S'
+          onClick={toggleCalendarVisibility}
           css={{
-            fontWeight: '700'
+            fontWeight: '700',
+            cursor: 'pointer'
           }}
         >
           <span className='visually-hidden'>
@@ -305,12 +315,17 @@ export const HoursPanelNextPrev = ({ location }) => {
           Next week
         </PreviousNextWeekButton>
       </div>
+      {isCalendarVisible && (
+        <CalendarView />
+      )}
     </Margins>
   );
 };
 
 HoursPanelNextPrev.propTypes = {
-  location: PropTypes.string
+  location: PropTypes.string.isRequired,
+  toggleCalendarVisibility: PropTypes.func.isRequired,
+  isCalendarVisible: PropTypes.bool.isRequired
 };
 
 const IconWrapper = (props) => {
@@ -469,12 +484,17 @@ const transformTableData = ({ node, now }) => {
 export default function HoursPanelContainer ({ data }) {
   const [{ weekOffset }] = useStateValue();
   const { relationships, field_body: fieldBody } = data;
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   if (relationships.field_parent_card.length === 0) {
     return null;
   }
 
   const [{ title }] = relationships.field_parent_card;
+
+  const toggleCalendarVisibility = () => {
+    setIsCalendarVisible(!isCalendarVisible);
+  };
 
   return (
     <section
@@ -484,8 +504,12 @@ export default function HoursPanelContainer ({ data }) {
         marginBottom: SPACING['4XL']
       }}
     >
-      <CalendarView></CalendarView>
-      <HoursPanelNextPrev location={title} />
+      <CalendarView isVisible={isCalendarVisible} />
+      <HoursPanelNextPrev
+        location={title}
+        toggleCalendarVisibility={toggleCalendarVisibility}
+        isCalendarVisible={isCalendarVisible}
+      />
       <Margins>
         <Heading
           level={2}
@@ -509,7 +533,7 @@ export default function HoursPanelContainer ({ data }) {
       </Margins>
     </section>
   );
-}
+};
 
 HoursPanelContainer.propTypes = {
   data: PropTypes.object
