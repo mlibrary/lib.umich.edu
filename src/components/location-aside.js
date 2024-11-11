@@ -10,6 +10,7 @@ import React from 'react';
 const LayoutWithIcon = ({
   // eslint-disable-next-line react/prop-types
   d: data,
+  color,
   palette,
   children
 }) => {
@@ -29,7 +30,7 @@ const LayoutWithIcon = ({
             alignItems: 'center',
             background: `var(--color-${palette}-100)`,
             borderRadius: '50%',
-            color: `var(--color-${palette}-300)`,
+            color: `var(--color-${palette}-${color})`,
             display: 'flex',
             height: '2.5rem',
             justifyContent: 'center',
@@ -46,6 +47,7 @@ const LayoutWithIcon = ({
 
 LayoutWithIcon.propTypes = {
   children: PropTypes.node,
+  color: PropTypes.string,
   data: PropTypes.string,
   palette: PropTypes.string
 };
@@ -65,7 +67,7 @@ export default function LocationAside ({ node }) {
           marginBottom: SPACING['3XL']
         }}
       >
-        <LayoutWithIcon d={icons.clock} palette='indigo'>
+        <LayoutWithIcon d={icons.clock} palette='indigo' color='400'>
           <Heading
             level={2}
             size='M'
@@ -91,7 +93,7 @@ export default function LocationAside ({ node }) {
           }
         }}
       >
-        <LayoutWithIcon d={icons.address} palette='orange'>
+        <LayoutWithIcon d={icons.address} palette='orange' color='500'>
           <Heading
             level={2}
             size='M'
@@ -105,7 +107,7 @@ export default function LocationAside ({ node }) {
           <Address node={node} directions={true} kind='full' />
         </LayoutWithIcon>
 
-        <LayoutWithIcon d={icons.phone} palette='green'>
+        <LayoutWithIcon d={icons.phone} palette='green' color='500'>
           <Heading
             level={2}
             size='M'
