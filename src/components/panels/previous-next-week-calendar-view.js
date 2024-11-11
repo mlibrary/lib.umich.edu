@@ -42,9 +42,9 @@ export default function HoursPanelDateViewer () {
     <div
       css={{
          position: 'sticky',
-          top: 0,
+          top: "-1px",
           zIndex: 1, // Ensure it stays on top of other elements when sticky
-          background: 'var(--color-maize-300)'
+          background: 'var(--color-maize-400)'
       }}
     >
         <HoursPanelNextPrev
