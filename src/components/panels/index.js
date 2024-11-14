@@ -430,10 +430,12 @@ const TextPanel = ({ data }) => {
             <section
               key={item + html}
               css={{
-                borderBottom: item === items.length - 1 ? 'none' : `solid 1px var(--color-neutral-100)`,
-                display: 'flex',
-                marginBottom: SPACING.L,
-                paddingBottom: SPACING.M
+                '& + &': {
+                  borderTop: 'solid 1px var(--color-neutral-100)',
+                  marginTop: SPACING.M,
+                  paddingTop: SPACING.L
+                },
+                display: 'flex'
               }}
             >
               <div
