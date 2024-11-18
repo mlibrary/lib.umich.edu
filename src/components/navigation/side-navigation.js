@@ -95,7 +95,7 @@ const SideNavLink = ({ path, item, children, ...rest }) => {
         {hasChildren && (
           <span
             css={{
-              color: 'var(--color-neutral-400)',
+              color: isActive ? 'var(--color-teal-400)' : 'var(--color-neutral-400)',
               lineHeight: '1',
               paddingLeft: SPACING.XS
             }}
