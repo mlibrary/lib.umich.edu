@@ -145,11 +145,12 @@ const CalendarView = ({ isVisible }) => {
       css={{
         position: 'absolute',
         top: '-25px',
-        left: '32%',
+        left: '50%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         maxWidth: '320px',
+        marginLeft: '-160px',
         width: '100%',
         backgroundColor: 'var(--color-neutral-100)',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
