@@ -149,7 +149,7 @@ const CalendarView = ({ isVisible }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        maxWidth: '400px',
+        maxWidth: '320px',
         width: '100%',
         backgroundColor: 'var(--color-neutral-100)',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -178,7 +178,10 @@ const CalendarView = ({ isVisible }) => {
             fontSize: '1.5em'
           }}
         >
-          ◀
+          <Icon
+              icon='navigate_before'
+              css={{ marginLeft: SPACING['M'] }}
+            />
         </button>
         <h2
           css={{
@@ -197,7 +200,10 @@ const CalendarView = ({ isVisible }) => {
             fontSize: '1.5em'
           }}
         >
-          ▶
+          <Icon
+              icon='navigate_next'
+              css={{ marginRight: SPACING['M'] }}
+            />
         </button>
       </div>
       {isVisible && (
@@ -214,8 +220,8 @@ const CalendarView = ({ isVisible }) => {
               return (
                 <div
                   css={{
-                    paddingLeft: '10px',
-                    paddingRight: '10px'
+                    paddingLeft: '8px',
+                    paddingRight: '8px'
                   }}
                   key={day}
                 >
@@ -229,6 +235,7 @@ const CalendarView = ({ isVisible }) => {
               display: 'grid',
               gridTemplateRows: `repeat(${weeks.length}, auto)`,
               gap: '4px',
+              marginBottom: '8px',
               marginTop: '8px'
             }}
           >
@@ -256,7 +263,7 @@ const CalendarView = ({ isVisible }) => {
                       <div
                         key={dayIndex}
                         css={{
-                          padding: '14px',
+                          padding: '10px',
                           textAlign: 'center',
                           backgroundColor: getColorBasedOnDate(day),
                           borderRadius: '4px',
@@ -336,7 +343,9 @@ const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisi
           <span aria-hidden>
             {hoursRange.text}
           </span>
-          ▼
+          <Icon
+              icon='arrow_drop_down'
+            />
         </Heading>
         
         <PreviousNextWeekButton
