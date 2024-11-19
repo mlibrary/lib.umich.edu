@@ -213,13 +213,14 @@ export default function EventsAndExhibitsPanel () {
             size='M'
             css={{
               borderTop: `solid 1px var(--color-neutral-100)`,
+              marginBottom: SPACING.S,
               marginTop: SPACING.L,
               paddingTop: SPACING.M
             }}
           >
             Workshops
           </Heading>
-          We offer workshops on a range of topics.
+          We offer workshops on a range of topics. See our
           {' '}
           <Link to='https://ttc.iss.lsa.umich.edu/ttc/sessions/upcoming/sponsor/university-library/'>
             list of current offerings
