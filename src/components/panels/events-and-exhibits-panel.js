@@ -208,6 +208,24 @@ export default function EventsAndExhibitsPanel () {
           <Link to='https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D'>
             Sign up for email updates
           </Link>
+          <Heading
+            level={2}
+            size='M'
+            css={{
+              borderTop: `solid 1px var(--color-neutral-100)`,
+              marginBottom: SPACING.S,
+              marginTop: SPACING.L,
+              paddingTop: SPACING.M
+            }}
+          >
+            Workshops
+          </Heading>
+          We offer workshops on a range of topics. See our
+          {' '}
+          <Link to='https://ttc.iss.lsa.umich.edu/ttc/sessions/upcoming/sponsor/university-library/'>
+            list of current offerings
+          </Link>
+          . U-M authentication is required to register.
         </TemplateSide>
       </Template>
     </div>
