@@ -79,11 +79,13 @@ const SideNavLink = ({ path, item, children, ...rest }) => {
             textDecoration: 'underline'
           },
           alignItems: 'center',
+          borderLeft: isActive ? 'solid 4px var(--color-teal-400)' : 'none',
           color: isActive ? 'var(--color-teal-400)' : 'inherit',
           display: 'flex',
           fontWeight: isActive ? '700' : 'inherit',
           justifyContent: 'space-between',
-          paddingBottom: renderChildren ? SPACING.XS : SPACING.M,
+          paddingBottom: SPACING.M,
+          paddingLeft: isActive ? SPACING.S : SPACING.M,
           paddingRight: SPACING.S,
           paddingTop: SPACING.M
         }}
@@ -93,7 +95,7 @@ const SideNavLink = ({ path, item, children, ...rest }) => {
         {hasChildren && (
           <span
             css={{
-              color: 'var(--color-neutral-400)',
+              color: isActive ? 'var(--color-teal-400)' : 'var(--color-neutral-400)',
               lineHeight: '1',
               paddingLeft: SPACING.XS
             }}
@@ -117,8 +119,9 @@ const SideNavLink = ({ path, item, children, ...rest }) => {
                   path={path}
                   item={child}
                   css={{
-                    padding: `${SPACING.XS} 0`,
-                    paddingLeft: SPACING.M
+                    marginLeft: SPACING.M,
+                    paddingBottom: SPACING.XS,
+                    paddingTop: SPACING.XS
                   }}
                 >
                   {child.text}
