@@ -412,17 +412,32 @@ LibrarySearchScopeOption.propTypes = {
 const ResultContent = ({ query, result }) => {
   return (
     <React.Fragment>
-      <p
-        data-title
-        css={{
-          ...TYPOGRAPHY.XS,
-          mark: {
-            background: `var(--color-maize-200)!important`,
-            fontWeight: '700'
-          }
-        }}
-      >
-        <HighlightText query={query} text={result.title} />
+      <p>
+        <span
+          data-title
+          css={{
+            ...TYPOGRAPHY.XS,
+            mark: {
+              background: `var(--color-maize-200)!important`,
+              fontWeight: '700'
+            }
+          }}
+        >
+          <HighlightText query={query} text={result.title} />
+        </span>
+        {result.isDepartment && (
+          <span
+            css={{
+              color: 'var(--color-neutral-300)',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              letterSpacing: '1.25px',
+              marginLeft: SPACING.XS
+            }}
+          >
+            ● DEPARTMENT
+          </span>
+        )}
       </p>
       {result.summary && (
         <p

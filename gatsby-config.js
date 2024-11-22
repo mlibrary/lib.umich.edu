@@ -9,13 +9,13 @@ console.log(`DRUPAL_REQUEST_TIMEOUT=${DRUPAL_REQUEST_TIMEOUT}`);
 
 const siteMetadata = {
   title: 'University of Michigan Library',
-  siteUrl: 'https://www.lib.umich.edu',
+  siteUrl: 'https://www.lib.umich.edu'
 };
 
 module.exports = {
   flags: {
-    DEV_SSR: false, // Watches gatsby-ssr.js while developing
-  },    
+    DEV_SSR: false // Watches gatsby-ssr.js while developing
+  },
   siteMetadata,
   plugins: [
     'gatsby-plugin-netlify', // Netlify recommends this plugin on top of Essential Gatsby (Version 2): https://github.com/netlify/netlify-plugin-gatsby#install-the-gatsby-plugin
@@ -25,15 +25,15 @@ module.exports = {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'images',
-        path: `${__dirname}/src/images/`,
-      },
+        path: `${__dirname}/src/images/`
+      }
     },
     'gatsby-plugin-sitemap',
     {
       resolve: 'gatsby-plugin-robots-txt',
       options: {
         host: siteMetadata.siteUrl,
-        sitemap: siteMetadata.siteUrl + '/sitemap-index.xml',
+        sitemap: `${siteMetadata.siteUrl}/sitemap-index.xml`,
         resolveEnv: () => {
           /**
            *
@@ -59,9 +59,9 @@ module.exports = {
             policy: [
               {
                 userAgent: '*',
-                allow: '/',
-              },
-            ],
+                allow: '/'
+              }
+            ]
           },
           development: {
             policy: [
@@ -69,20 +69,20 @@ module.exports = {
                 userAgent: '*',
                 disallow: ['/'],
                 host: null,
-                sitemap: null,
-              },
-            ],
-          },
-        },
-      },
+                sitemap: null
+              }
+            ]
+          }
+        }
+      }
     },
     'gatsby-plugin-image',
     {
       resolve: 'gatsby-plugin-sharp',
       options: {
         stripMetadata: true,
-        defaultQuality: 75,
-      },
+        defaultQuality: 75
+      }
     },
     'gatsby-transformer-sharp',
     {
@@ -97,16 +97,16 @@ module.exports = {
             throwing an error when a 404 is returned from a file
             that does not exist.
           */
-          'file--file': 'filter[status][value]=1',
+          'file--file': 'filter[status][value]=1'
         },
         requestTimeoutMS: DRUPAL_REQUEST_TIMEOUT
-      },
+      }
     },
     {
       resolve: 'gatsby-source-umich-lib',
       options: {
-        baseUrl: DRUPAL_URL,
-      },
+        baseUrl: DRUPAL_URL
+      }
     },
     'gatsby-plugin-remove-serviceworker',
     'gatsby-plugin-emotion',
@@ -119,8 +119,8 @@ module.exports = {
         background_color: '#00274C',
         theme_color: '#FFCB05',
         display: 'minimal-ui',
-        icon: 'src/images/icon.png', // This path is relative to the root of the site.
-      },
+        icon: 'src/images/icon.png' // This path is relative to the root of the site.
+      }
     },
     {
       resolve: 'gatsby-plugin-lunr',
@@ -130,32 +130,47 @@ module.exports = {
           {
             name: 'title',
             store: true,
-            attributes: { boost: 9 },
+            attributes: { boost: 9 }
           },
           {
             name: 'summary',
             store: true,
-            attributes: { boost: 3 },
+            attributes: { boost: 3 }
           },
           {
             name: 'keywords',
-            store: true,
+            store: true
+          },
+          {
+            name: 'isDepartment',
+            store: true
           },
           {
             name: 'uniqname',
-            store: true,
-          },
+            store: true
+          }
         ],
         resolvers: {
           SitePage: {
-            uniqname: (node) => (node.context ? node.context.uniqname : null),
-            title: (node) => (node.context ? node.context.title : null),
-            summary: (node) => (node.context ? node.context.summary : null),
-            keywords: (node) => (node.context ? node.context.keywords : null),
-          },
-        },
-      },
-    },
+            uniqname: (node) => {
+              return (node.context ? node.context.uniqname : null);
+            },
+            title: (node) => {
+              return (node.context ? node.context.title : null);
+            },
+            isDepartment: (node) => {
+              return (node.context ? node.context.isDepartment : null);
+            },
+            summary: (node) => {
+              return (node.context ? node.context.summary : null);
+            },
+            keywords: (node) => {
+              return (node.context ? node.context.keywords : null);
+            }
+          }
+        }
+      }
+    }
   ],
-  trailingSlash: 'never',
+  trailingSlash: 'never'
 };
