@@ -293,6 +293,16 @@ exports.createPages = ({ actions, graphql }) => {
       }
     };
 
+    const getTag = (node, template) => {
+      if (template === path.resolve('src/templates/department.js')) {
+        return 'department';
+      }
+      if (template === path.resolve('src/templates/news.js')) {
+        return 'news';
+      }
+      return null;
+    };
+
     // Query for nodes to use in creating pages.
     resolve(
       graphql(
@@ -628,7 +638,7 @@ exports.createPages = ({ actions, graphql }) => {
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node);
-          const isDepartment = template === path.resolve('src/templates/department.js');
+          const tag = getTag(node, template);
           const summary = node.body ? node.body.summary : null;
           const keywords = node.field_seo_keywords
             ? node.field_seo_keywords
@@ -641,9 +651,9 @@ exports.createPages = ({ actions, graphql }) => {
                 ...node.fields,
                 // eslint-disable-next-line camelcase
                 drupal_nid: node.drupal_internal__nid,
-                isDepartment,
                 keywords,
                 summary,
+                tag,
                 title: node.title
               },
               path: node.fields.slug

@@ -142,7 +142,7 @@ module.exports = {
             store: true
           },
           {
-            name: 'isDepartment',
+            name: 'tag',
             store: true
           },
           {

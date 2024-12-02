@@ -425,7 +425,21 @@ const ResultContent = ({ query, result }) => {
         >
           <HighlightText query={query} text={result.title} />
         </span>
-        {result.isDepartment && (
+        {result.tag && (
+          <span
+            css={{
+              color: 'var(--color-neutral-300)',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              letterSpacing: '1.25px',
+              marginLeft: SPACING.XS,
+              textTransform: 'uppercase'
+            }}
+          >
+            ● {result.tag}
+          </span>
+        )}
+        {result.isNews && (
           <span
             css={{
               color: 'var(--color-neutral-300)',
@@ -435,7 +449,7 @@ const ResultContent = ({ query, result }) => {
               marginLeft: SPACING.XS
             }}
           >
-            ● DEPARTMENT
+            ● NEWS
           </span>
         )}
       </p>
