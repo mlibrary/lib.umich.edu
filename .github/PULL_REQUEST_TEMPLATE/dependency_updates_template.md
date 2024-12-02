@@ -12,6 +12,7 @@ These dependencies have been updated to their latest versions:
 - `entities`
 - `eslint-plugin-react`
 - `eslint`
+- `eslint-plugin-react`
 - `fetch-retry`
 - `gatsby-plugin-emotion`
 - `gatsby-plugin-image`
