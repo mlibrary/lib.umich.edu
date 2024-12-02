@@ -2,7 +2,7 @@
   "name": "lib.umich.edu",
   "version": "1.0.0",
   "dependencies": {
-    "@emotion/react": "^11.13.3",
+    "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.11.5",
     "gatsby": "^5.13.7",
     "gatsby-plugin-emotion": "^8.13.1",
