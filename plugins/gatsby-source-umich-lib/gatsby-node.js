@@ -294,6 +294,7 @@ exports.createPages = ({ actions, graphql }) => {
     };
 
     const getTag = (node, template) => {
+      console.log(node);
       if (template === path.resolve('src/templates/department.js')) {
         return 'department';
       }

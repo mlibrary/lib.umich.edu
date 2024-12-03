@@ -410,7 +410,6 @@ LibrarySearchScopeOption.propTypes = {
 };
 
 const ResultContent = ({ query, result }) => {
-  console.log(result.tag);
   return (
     <React.Fragment>
       <p>

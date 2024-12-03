@@ -159,7 +159,6 @@ module.exports = {
               return (node.context ? node.context.title : null);
             },
             tag: (node) => {
-              console.log(node.context);
               return (node.context ? node.context.tag : null);
             },
             summary: (node) => {
