@@ -19,16 +19,15 @@ export default function usePageContextByDrupalNodeID () {
     const { pageContext } = edge.node;
 
     if (pageContext) {
-      const { title, drupal_nid: drupalNid, slug, isDepartment } = pageContext;
-
+      const { title, drupal_nid: drupalNid, slug, tag } = pageContext;
       if (drupalNid) {
         return {
           ...memo,
           [drupalNid]: {
-            isDepartment,
             // eslint-disable-next-line camelcase
             drupal_nid: drupalNid,
             slug,
+            tag,
             title
           }
         };

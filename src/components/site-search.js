@@ -410,6 +410,7 @@ LibrarySearchScopeOption.propTypes = {
 };
 
 const ResultContent = ({ query, result }) => {
+  console.log(result.tag);
   return (
     <React.Fragment>
       <p>
@@ -429,6 +430,7 @@ const ResultContent = ({ query, result }) => {
           <span
             css={{
               color: 'var(--color-neutral-300)',
+              display: 'inline-block',
               fontSize: '14px',
               fontWeight: 'bold',
               letterSpacing: '1.25px',

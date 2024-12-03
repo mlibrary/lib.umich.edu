@@ -158,8 +158,9 @@ module.exports = {
             title: (node) => {
               return (node.context ? node.context.title : null);
             },
-            isDepartment: (node) => {
-              return (node.context ? node.context.isDepartment : null);
+            tag: (node) => {
+              console.log(node.context);
+              return (node.context ? node.context.tag : null);
             },
             summary: (node) => {
               return (node.context ? node.context.summary : null);
