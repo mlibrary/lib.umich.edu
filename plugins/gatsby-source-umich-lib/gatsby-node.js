@@ -300,6 +300,9 @@ exports.createPages = ({ actions, graphql }) => {
       if (template === path.resolve('src/templates/news.js')) {
         return 'news';
       }
+      if (node.relationships.field_event_type) {
+        return node.relationships.field_event_type.name === 'Exhibit' ? 'exhibit' : 'event';
+      }
       return null;
     };
 
@@ -601,6 +604,9 @@ exports.createPages = ({ actions, graphql }) => {
                   relationships {
                     field_design_template {
                       field_machine_name
+                    }
+                    field_event_type{
+                      name
                     }
                   }
                 }
