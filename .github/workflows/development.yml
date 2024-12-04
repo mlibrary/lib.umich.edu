@@ -48,7 +48,7 @@ jobs:
       - run: npm run build
       # Deploy to Netlify using our staging secrets
       - name: Deploy to netlify
-        run: npx netlify-cli deploy --dir=public --prod --alias deploy-preview-${{ env.SHORT_SHA }}
+        run: npx netlify-cli deploy --dir=public --alias deploy-preview-${{ env.SHORT_SHA }}
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
