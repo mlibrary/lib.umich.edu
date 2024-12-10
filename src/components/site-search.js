@@ -440,19 +440,6 @@ const ResultContent = ({ query, result }) => {
             ● {result.tag}
           </span>
         )}
-        {result.isNews && (
-          <span
-            css={{
-              color: 'var(--color-neutral-300)',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              letterSpacing: '1.25px',
-              marginLeft: SPACING.XS
-            }}
-          >
-            ● NEWS
-          </span>
-        )}
       </p>
       {result.summary && (
         <p
