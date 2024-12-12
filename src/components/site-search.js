@@ -430,9 +430,9 @@ const ResultContent = ({ query, result }) => {
             css={{
               color: 'var(--color-neutral-300)',
               display: 'inline-block',
-              fontSize: '14px',
+              fontSize: '0.875rem',
               fontWeight: 'bold',
-              letterSpacing: '1.25px',
+              letterSpacing: '0.0875em',
               marginLeft: SPACING.XS,
               textTransform: 'uppercase'
             }}
