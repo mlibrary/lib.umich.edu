@@ -1,5 +1,5 @@
-import { Button, Heading, Icon, Link, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
-import React, { useState } from 'react';
+import { Heading, Icon, Link, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useStateValue } from '../use-state';
 
@@ -62,6 +62,12 @@ export default function HoursPanelDateViewer () {
 const CalendarView = ({ isVisible, weekOffset }) => {
   const [currentBrowseDate, setCurrentDate] = useState(new Date());
   const [, dispatch] = useStateValue();
+  useEffect(() => {
+  // Calculate the new currentBrowseDate based on weekOffset
+    const today = new Date();
+    const newBrowseDate = new Date(today.setDate(today.getDate() + weekOffset * 7));
+    setCurrentDate(newBrowseDate);
+  }, [weekOffset]);
 
   const handleNextMonth = () => {
     const nextMonth = new Date(currentBrowseDate.setMonth(currentBrowseDate.getMonth() + 1));
@@ -249,9 +255,17 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                 <a
                   onClick={(event) => {
                     event.preventDefault();
+
+                    const today = new Date();
+                    const currentWeekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+                    const selectedWeekStart = new Date(week[0]);
+
+                    const diffInWeeks = Math.round(
+                      (selectedWeekStart.getTime() - currentWeekStart.getTime()) / (7 * 24 * 60 * 60 * 1000)
+                    );
                     dispatch({
                       type: 'setWeekOffset',
-                      weekOffset: weekIndex - 1
+                      weekOffset: diffInWeeks
                     });
                   }}
                   key={weekIndex}
@@ -299,7 +313,8 @@ const CalendarView = ({ isVisible, weekOffset }) => {
 };
 
 CalendarView.propTypes = {
-  isVisible: PropTypes.bool
+  isVisible: PropTypes.bool,
+  weekOffset: PropTypes.number
 };
 
 const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisible }) => {
