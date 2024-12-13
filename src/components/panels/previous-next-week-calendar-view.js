@@ -1,7 +1,6 @@
-/* eslint-disable */
-import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
+import { Button, Heading, Icon, Link, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
 import { useStateValue } from '../use-state';
 
 const dateFormat = (string, abbreviated = false) => {
@@ -41,21 +40,26 @@ export default function HoursPanelDateViewer () {
   return (
     <div
       css={{
-         position: 'sticky',
-          top: "-1px",
-          zIndex: 1, // Ensure it stays on top of other elements when sticky
-          background: 'var(--color-maize-400)'
+        background: 'var(--color-teal-100)',
+        borderBottom: '1px solid var(--color-neutral-100)',
+        borderTop: '1px solid var(--color-neutral-100)',
+        marginBottom: SPACING.L,
+        marginTop: SPACING.L,
+        padding: SPACING['2XS'],
+        position: 'sticky',
+        top: '-1px',
+        zIndex: 1
       }}
     >
-        <HoursPanelNextPrev
-            toggleCalendarVisibility={toggleCalendarVisibility}
-            isCalendarVisible={isCalendarVisible}
-        />
+      <HoursPanelNextPrev
+        toggleCalendarVisibility={toggleCalendarVisibility}
+        isCalendarVisible={isCalendarVisible}
+      />
     </div>
   );
 }
 
-const CalendarView = ({ isVisible }) => {
+const CalendarView = ({ isVisible, weekOffset }) => {
   const [currentBrowseDate, setCurrentDate] = useState(new Date());
   const [, dispatch] = useStateValue();
 
@@ -69,13 +73,14 @@ const CalendarView = ({ isVisible }) => {
     setCurrentDate(new Date(prevMonth.setDate(1)));
   };
 
+  const startOfDay = (date) => {
+    const newDate = new Date(date);
+    newDate.setHours(0, 0, 0, 0);
+    return newDate;
+  };
+
   const getColorBasedOnDate = (date1) => {
     const currentDate = new Date();
-    const startOfDay = (date) => {
-      const newDate = new Date(date);
-      newDate.setHours(0, 0, 0, 0);
-      return newDate;
-    };
 
     const startOfWeek = (date) => {
       const dayOfWeek = date.getDay();
@@ -143,31 +148,30 @@ const CalendarView = ({ isVisible }) => {
   return (
     <div
       css={{
-        position: 'absolute',
-        top: '-25px',
-        left: '50%',
-        display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
-        maxWidth: '320px',
-        marginLeft: '-160px',
-        width: '100%',
-        backgroundColor: 'var(--color-neutral-100)',
+        backgroundColor: 'var(--color-teal-100)',
+        border: `1px solid var(--color-neutral-100)`,
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        zIndex: 1,
-        transition: 'height 0.3s ease',
-        height: isVisible ? 'auto' : '0',
+        display: isVisible ? 'flex' : 'none',
+        flexDirection: 'column',
+        height: 'auto',
+        left: '50%',
+        marginLeft: '-160px',
+        maxWidth: '320px',
         overflow: 'hidden',
-        
+        position: 'absolute',
+        transition: 'height 0.3s ease',
+        width: '100%',
+        zIndex: 1
       }}
     >
       <div
         css={{
+          alignItems: 'center',
           display: 'flex ',
           justifyContent: 'space-between',
-          alignItems: 'center',
-          width: '100%',
           paddingTop: '15px',
+          width: '100%'
         }}
       >
         <button
@@ -180,14 +184,14 @@ const CalendarView = ({ isVisible }) => {
           }}
         >
           <Icon
-              icon='navigate_before'
-              css={{ marginLeft: SPACING['M'] }}
-            />
+            icon='navigate_before'
+            css={{ marginLeft: SPACING.M }}
+          />
         </button>
         <h2
           css={{
-            margin: 0,
-            fontSize: '1.5em'
+            fontSize: '1.5em',
+            margin: 0
           }}
         >
           {monthYear}
@@ -202,9 +206,9 @@ const CalendarView = ({ isVisible }) => {
           }}
         >
           <Icon
-              icon='navigate_next'
-              css={{ marginRight: SPACING['M'] }}
-            />
+            icon='navigate_next'
+            css={{ marginRight: SPACING.M }}
+          />
         </button>
       </div>
       {isVisible && (
@@ -212,9 +216,9 @@ const CalendarView = ({ isVisible }) => {
           <div
             css={{
               display: 'grid',
+              fontWeight: 'bold',
               gridTemplateColumns: 'repeat(7, 1fr)',
-              marginTop: '8px',
-              fontWeight: 'bold'
+              marginTop: '8px'
             }}
           >
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => {
@@ -234,8 +238,8 @@ const CalendarView = ({ isVisible }) => {
           <div
             css={{
               display: 'grid',
-              gridTemplateRows: `repeat(${weeks.length}, auto)`,
               gap: '4px',
+              gridTemplateRows: `repeat(${weeks.length}, auto)`,
               marginBottom: '8px',
               marginTop: '8px'
             }}
@@ -243,20 +247,29 @@ const CalendarView = ({ isVisible }) => {
             {weeks.map((week, weekIndex) => {
               return (
                 <a
-                  onClick={(e) => {
-                    e.preventDefault();
+                  onClick={(event) => {
+                    event.preventDefault();
                     dispatch({
                       type: 'setWeekOffset',
-                      weekOffset: weekIndex
+                      weekOffset: weekIndex - 1
                     });
                   }}
                   key={weekIndex}
                   css={{
+                    border: week.some((day) => {
+                      const viewedWeekStart = new Date(new Date().setDate(
+                        new Date().getDate() + weekOffset * 7 - new Date().getDay()
+                      ));
+                      const weekStartDay = startOfDay(day);
+                      const viewedWeekStartDay = startOfDay(viewedWeekStart);
+                      return weekStartDay.getTime() === viewedWeekStartDay.getTime();
+                    })
+                      ? `2px solid var(--color-maize-400)`
+                      : `2px solid rgba(0,0,0,0)`,
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(7, 1fr)',
                     gap: '4px',
-                    textDecoration: 'none',
-                    border: `2px solid var(--color-maize-400)`
+                    gridTemplateColumns: 'repeat(7, 1fr)',
+                    textDecoration: 'none'
                   }}
                 >
                   {week.map((day, dayIndex) => {
@@ -264,11 +277,11 @@ const CalendarView = ({ isVisible }) => {
                       <div
                         key={dayIndex}
                         css={{
-                          padding: '10px',
-                          textAlign: 'center',
                           backgroundColor: getColorBasedOnDate(day),
                           borderRadius: '4px',
-                          color: day.getMonth() !== currentBrowseDate.getMonth() ? '#999' : 'inherit'
+                          color: day.getMonth() === currentBrowseDate.getMonth() ? 'inherit' : '#999',
+                          padding: '10px',
+                          textAlign: 'center'
                         }}
                       >
                         {day.getDate()}
@@ -283,6 +296,10 @@ const CalendarView = ({ isVisible }) => {
       )}
     </div>
   );
+};
+
+CalendarView.propTypes = {
+  isVisible: PropTypes.bool
 };
 
 const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisible }) => {
@@ -311,9 +328,8 @@ const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisi
         css={{
           alignItems: 'baseline',
           display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: SPACING.L,
-          marginTop: SPACING.L
+          justifyContent: 'space-between'
+
         }}
       >
         <PreviousNextWeekButton
@@ -334,8 +350,8 @@ const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisi
           size='S'
           onClick={toggleCalendarVisibility}
           css={{
-            fontWeight: '700',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            fontWeight: '700'
           }}
         >
           <span className='visually-hidden'>
@@ -345,10 +361,15 @@ const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisi
             {hoursRange.text}
           </span>
           <Icon
-              icon='arrow_drop_down'
-            />
+            width='32px'
+            height='24px'
+            css={{
+              color: `var(--color-teal-400)`
+            }}
+            icon='calendar_month'
+          />
         </Heading>
-        
+
         <PreviousNextWeekButton
           onClick={() => {
             return dispatch({
@@ -366,26 +387,30 @@ const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisi
           position: 'relative'
         }}
       >
-        <CalendarView isVisible={isCalendarVisible} />
+        <CalendarView isVisible={isCalendarVisible} weekOffset={weekOffset} />
       </div>
     </Margins>
   );
 };
 
 HoursPanelNextPrev.propTypes = {
+  isCalendarVisible: PropTypes.bool.isRequired,
   location: PropTypes.string.isRequired,
-  toggleCalendarVisibility: PropTypes.func.isRequired,
-  isCalendarVisible: PropTypes.bool.isRequired
+  toggleCalendarVisibility: PropTypes.func.isRequired
 };
 
 const PreviousNextWeekButton = ({ type, children, ...rest }) => {
   return (
     <>
-      <Button
+      <Link
         {...rest}
-        kind='primary'
         css={{
+          backgroundColor: 'rgba(0,0,0,0)',
+          boxShadow: 'none',
+          color: 'var(--color-teal-400)',
           display: 'none',
+          fontWeight: 'bold',
+          margin: '.5rem 0',
           [MEDIA_QUERIES.LARGESCREEN]: {
             display: 'flex'
           }
@@ -405,12 +430,16 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
             <Icon icon='navigate_next' css={{ marginLeft: SPACING['2XS'] }} />
           </IconWrapper>
         )}
-      </Button>
-      <Button
+      </Link>
+      <Link
         {...rest}
-        kind='subtle'
         css={{
+          backgroundColor: 'rgba(0,0,0,0)',
+          boxShadow: 'none',
+          color: 'var(--color-teal-400)',
           display: 'flex',
+          fontWeight: 'bold',
+          margin: '.5rem 0',
           [MEDIA_QUERIES.LARGESCREEN]: {
             display: 'none'
           }
@@ -420,7 +449,7 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
           <Icon icon={type === 'previous' ? 'navigate_before' : 'navigate_next'} />
         </IconWrapper>
         <span className='visually-hidden'>{children}</span>
-      </Button>
+      </Link>
     </>
   );
 };
