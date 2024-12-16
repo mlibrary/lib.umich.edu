@@ -213,6 +213,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
           />
         </button>
         <h2
+          aria-live='polite'
           css={{
             fontSize: '1.5em',
             margin: 0
@@ -236,7 +237,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
         </button>
       </div>
       {isVisible && (
-        <table css={{ borderCollapse: 'collapse', width: '100%' }}>
+        <>
           <div
             css={{
               display: 'grid',
@@ -327,7 +328,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
               );
             })}
           </div>
-        </table>
+        </>
       )}
     </div>
   );
