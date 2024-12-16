@@ -17,7 +17,7 @@ import HeroPanel from './hero-panel';
 import Hours from '../todays-hours';
 import HoursLitePanel from './hours-lite-panel';
 import HoursPanel from './hours-panel';
-import HoursPanelDateViewer from './previous-next-week-calendar-view';
+import HoursPanelDateViewer from './hours-panel-date-viewer';
 import Html from '../html';
 import icons from '../../reusable/icons';
 import Image from '../image';
@@ -483,6 +483,7 @@ export default function Panels ({ data }) {
     return null;
   }
   const hoursPanel = data.find((panel) => {
+    // eslint-disable-next-line no-underscore-dangle
     return panel.__typename === 'paragraph__hours_panel';
   });
 

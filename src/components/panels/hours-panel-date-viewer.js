@@ -32,9 +32,13 @@ const IconWrapper = (props) => {
 
 export default function HoursPanelDateViewer () {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+  const [calendarStatus, setCalendarStatus] = useState('');
 
   const toggleCalendarVisibility = () => {
     setIsCalendarVisible(!isCalendarVisible);
+    setCalendarStatus(
+      isCalendarVisible ? 'Calendar closed' : 'Calendar open'
+    );
   };
 
   return (
@@ -51,6 +55,21 @@ export default function HoursPanelDateViewer () {
         zIndex: 1
       }}
     >
+      <div
+        aria-live='polite'
+        aria-atomic='true'
+        style={{
+          clip: 'rect(0 0 0 0)',
+          clipPath: 'inset(50%)',
+          height: '1px',
+          overflow: 'hidden',
+          position: 'absolute',
+          whiteSpace: 'nowrap',
+          width: '1px'
+        }}
+      >
+        {calendarStatus}
+      </div>
       <HoursPanelNextPrev
         toggleCalendarVisibility={toggleCalendarVisibility}
         isCalendarVisible={isCalendarVisible}
@@ -63,7 +82,6 @@ const CalendarView = ({ isVisible, weekOffset }) => {
   const [currentBrowseDate, setCurrentDate] = useState(new Date());
   const [, dispatch] = useStateValue();
   useEffect(() => {
-  // Calculate the new currentBrowseDate based on weekOffset
     const today = new Date();
     const newBrowseDate = new Date(today.setDate(today.getDate() + weekOffset * 7));
     setCurrentDate(newBrowseDate);
@@ -118,10 +136,10 @@ const CalendarView = ({ isVisible, weekOffset }) => {
     const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     const days = [];
 
-    const currentDayIterator = new Date(startOfMonth);
+    let currentDayIterator = new Date(startOfMonth);
     while (currentDayIterator <= endOfMonth) {
       days.push(new Date(currentDayIterator));
-      currentDayIterator.setDate(currentDayIterator.getDate() + 1);
+      currentDayIterator = new Date(currentDayIterator.setDate(currentDayIterator.getDate() + 1));
     }
 
     return days;
@@ -132,12 +150,12 @@ const CalendarView = ({ isVisible, weekOffset }) => {
     const firstDayOfMonth = new Date(days[0]);
     const lastDayOfMonth = new Date(days[days.length - 1]);
 
-    const daysBefore = Array.from({ length: firstDayOfMonth.getDay() }, (_, i) => {
-      return new Date(firstDayOfMonth.getFullYear(), firstDayOfMonth.getMonth(), i - firstDayOfMonth.getDay() + 1);
+    const daysBefore = Array.from({ length: firstDayOfMonth.getDay() }, (skip, iterator) => {
+      return new Date(firstDayOfMonth.getFullYear(), firstDayOfMonth.getMonth(), iterator - firstDayOfMonth.getDay() + 1);
     });
 
-    const daysAfter = Array.from({ length: 6 - lastDayOfMonth.getDay() }, (_, i) => {
-      return new Date(lastDayOfMonth.getFullYear(), lastDayOfMonth.getMonth(), lastDayOfMonth.getDate() + i + 1);
+    const daysAfter = Array.from({ length: 6 - lastDayOfMonth.getDay() }, (skip, iterator) => {
+      return new Date(lastDayOfMonth.getFullYear(), lastDayOfMonth.getMonth(), lastDayOfMonth.getDate() + iterator + 1);
     });
 
     return [...daysBefore, ...days, ...daysAfter];
@@ -147,8 +165,8 @@ const CalendarView = ({ isVisible, weekOffset }) => {
   const monthYear = currentBrowseDate.toLocaleString('default', { month: 'long', year: 'numeric' });
 
   const weeks = [];
-  for (let i = 0; i < calendarDays.length; i += 7) {
-    weeks.push(calendarDays.slice(i, i + 7));
+  for (let iterator = 0; iterator < calendarDays.length; iterator += 7) {
+    weeks.push(calendarDays.slice(iterator, iterator + 7));
   }
 
   return (
@@ -218,21 +236,24 @@ const CalendarView = ({ isVisible, weekOffset }) => {
         </button>
       </div>
       {isVisible && (
-        <>
+        <table css={{ borderCollapse: 'collapse', width: '100%' }}>
           <div
             css={{
               display: 'grid',
               fontWeight: 'bold',
+              gap: '4px',
               gridTemplateColumns: 'repeat(7, 1fr)',
-              marginTop: '8px'
+              marginTop: '8px',
+              paddingLeft: '12px',
+              paddingRight: '12px',
+              textAlign: 'center',
+              width: '100%'
             }}
           >
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => {
               return (
                 <div
                   css={{
-                    paddingLeft: '8px',
-                    paddingRight: '8px'
                   }}
                   key={day}
                 >
@@ -306,7 +327,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
               );
             })}
           </div>
-        </>
+        </table>
       )}
     </div>
   );
@@ -317,7 +338,7 @@ CalendarView.propTypes = {
   weekOffset: PropTypes.number
 };
 
-const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisible }) => {
+const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => {
   const [{ weekOffset }, dispatch] = useStateValue();
   const date = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
 
@@ -328,8 +349,14 @@ const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisi
   toDate.setDate(date.getDate() + weekOffset * 7 + (6 - date.getDay()));
 
   const hoursRange = {
-    label: `Showing hours for ${location} from ${dateFormat(fromDate)} to ${dateFormat(toDate)}`,
+    label: `Showing hours from ${dateFormat(fromDate)} to ${dateFormat(toDate)}`,
     text: `${dateFormat(fromDate, true)} - ${dateFormat(toDate, true)}`
+  };
+
+  const handleKeyDown = (event, action) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      action();
+    }
   };
 
   return (
@@ -354,7 +381,13 @@ const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisi
               weekOffset: weekOffset - 1
             });
           }}
+          onKeyDown={(event) => {
+            return handleKeyDown(event, () => {
+              return dispatch({ type: 'setWeekOffset', weekOffset: weekOffset - 1 });
+            });
+          }}
           type='previous'
+          tabIndex={0}
         >
           Previous week
         </PreviousNextWeekButton>
@@ -364,10 +397,14 @@ const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisi
           level={2}
           size='S'
           onClick={toggleCalendarVisibility}
+          onKeyDown={(event) => {
+            return handleKeyDown(event, toggleCalendarVisibility);
+          }}
           css={{
             cursor: 'pointer',
             fontWeight: '700'
           }}
+          tabIndex={0}
         >
           <span className='visually-hidden'>
             {hoursRange.label}
@@ -392,7 +429,14 @@ const HoursPanelNextPrev = ({ location, toggleCalendarVisibility, isCalendarVisi
               weekOffset: weekOffset + 1
             });
           }}
+          onKeyDown={(event) => {
+            return handleKeyDown(event, () => {
+              return dispatch({ type: 'setWeekOffset', weekOffset: weekOffset + 1 });
+            });
+          }}
+
           type='next'
+          tabIndex={0}
         >
           Next week
         </PreviousNextWeekButton>
