@@ -1,4 +1,4 @@
-import { Heading, Icon, Link, Margins, MEDIA_QUERIES, SPACING } from '../../reusable';
+import { Heading, Icon, Link, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../../reusable';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useStateValue } from '../use-state';
@@ -28,6 +28,43 @@ const IconWrapper = (props) => {
       {...props}
     />
   );
+};
+
+const updateWeekOffset = ({
+  dispatch,
+  weekOffset,
+  event = null,
+  week = null,
+  relativeOffset = null
+}) => {
+  if (
+    !event
+    || event.type === 'click'
+    || (event.type === 'keydown' && (event.key === 'Enter' || event.key === ' '))
+  ) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    let newOffset;
+
+    if (relativeOffset !== null) {
+      newOffset = weekOffset + relativeOffset;
+    } else if (week) {
+      const today = new Date();
+      const currentWeekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+      const selectedWeekStart = new Date(week[0]);
+
+      newOffset = Math.round(
+        (selectedWeekStart.getTime() - currentWeekStart.getTime()) / (7 * 24 * 60 * 60 * 1000)
+      );
+    }
+
+    dispatch({
+      type: 'setWeekOffset',
+      weekOffset: newOffset
+    });
+  }
 };
 
 export default function HoursPanelDateViewer () {
@@ -201,10 +238,10 @@ const CalendarView = ({ isVisible, weekOffset }) => {
         <button
           onClick={handlePreviousMonth}
           css={{
+            ...TYPOGRAPHY.M,
             background: 'none',
             border: 'none',
-            cursor: 'pointer',
-            fontSize: '1.5em'
+            cursor: 'pointer'
           }}
         >
           <Icon
@@ -215,7 +252,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
         <h2
           aria-live='polite'
           css={{
-            fontSize: '1.5em',
+            ...TYPOGRAPHY.M,
             margin: 0
           }}
         >
@@ -224,10 +261,10 @@ const CalendarView = ({ isVisible, weekOffset }) => {
         <button
           onClick={handleNextMonth}
           css={{
+            ...TYPOGRAPHY.M,
             background: 'none',
             border: 'none',
-            cursor: 'pointer',
-            fontSize: '1.5em'
+            cursor: 'pointer'
           }}
         >
           <Icon
@@ -276,19 +313,10 @@ const CalendarView = ({ isVisible, weekOffset }) => {
               return (
                 <a
                   onClick={(event) => {
-                    event.preventDefault();
-
-                    const today = new Date();
-                    const currentWeekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-                    const selectedWeekStart = new Date(week[0]);
-
-                    const diffInWeeks = Math.round(
-                      (selectedWeekStart.getTime() - currentWeekStart.getTime()) / (7 * 24 * 60 * 60 * 1000)
-                    );
-                    dispatch({
-                      type: 'setWeekOffset',
-                      weekOffset: diffInWeeks
-                    });
+                    return updateWeekOffset({ dispatch, event, week, weekOffset });
+                  }}
+                  onKeyDown={(event) => {
+                    return updateWeekOffset({ dispatch, event, week, weekOffset });
                   }}
                   tabIndex={0}
                   key={weekIndex}
@@ -355,20 +383,10 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
     text: `${dateFormat(fromDate, true)} - ${dateFormat(toDate, true)}`
   };
 
-  const handleKeyDown = (event, action) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+  const handleInteraction = (event, action) => {
+    if (event.type === 'click' || (event.type === 'keydown' && (event.key === 'Enter' || event.key === ' '))) {
+      event.preventDefault();
       action();
-    }
-  };
-
-  const handlePreviousWeek = (event) => {
-  // Handle keydown specifically for Enter or Space keys
-    if (!event.type || event.type === 'click'
-      || (event.type === 'keydown' && (event.key === 'Enter' || event.key === ' '))) {
-      dispatch({
-        type: 'setWeekOffset',
-        weekOffset: weekOffset - 1
-      });
     }
   };
 
@@ -388,8 +406,12 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
         }}
       >
         <PreviousNextWeekButton
-          onClick={handlePreviousWeek}
-          onKeyDown={handlePreviousWeek}
+          onClick={(event) => {
+            return updateWeekOffset({ dispatch, event, relativeOffset: -1, weekOffset });
+          }}
+          onKeyDown={(event) => {
+            return updateWeekOffset({ dispatch, event, relativeOffset: -1, weekOffset });
+          }}
           type='previous'
           tabIndex={0}
         >
@@ -400,9 +422,11 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
           aria-atomic='true'
           level={2}
           size='S'
-          onClick={toggleCalendarVisibility}
+          onClick={(event) => {
+            return handleInteraction(event, toggleCalendarVisibility);
+          }}
           onKeyDown={(event) => {
-            return handleKeyDown(event, toggleCalendarVisibility);
+            return handleInteraction(event, toggleCalendarVisibility);
           }}
           css={{
             cursor: 'pointer',
@@ -427,18 +451,12 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
         </Heading>
 
         <PreviousNextWeekButton
-          onClick={() => {
-            return dispatch({
-              type: 'setWeekOffset',
-              weekOffset: weekOffset + 1
-            });
+          onClick={(event) => {
+            return updateWeekOffset({ dispatch, event, relativeOffset: 1, weekOffset });
           }}
           onKeyDown={(event) => {
-            return handleKeyDown(event, () => {
-              return dispatch({ type: 'setWeekOffset', weekOffset: weekOffset + 1 });
-            });
+            return updateWeekOffset({ dispatch, event, relativeOffset: 1, weekOffset });
           }}
-
           type='next'
           tabIndex={0}
         >
@@ -468,7 +486,6 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
       <Link
         {...rest}
         css={{
-          backgroundColor: 'rgba(0,0,0,0)',
           boxShadow: 'none',
           color: 'var(--color-teal-400)',
           display: 'none',
@@ -497,7 +514,6 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
       <Link
         {...rest}
         css={{
-          backgroundColor: 'rgba(0,0,0,0)',
           boxShadow: 'none',
           color: 'var(--color-teal-400)',
           display: 'flex',
