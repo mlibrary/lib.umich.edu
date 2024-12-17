@@ -173,8 +173,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
     <div
       css={{
         alignItems: 'center',
-        backgroundColor: 'var(--color-teal-100)',
-        border: `1px solid var(--color-neutral-100)`,
+        backgroundColor: 'var(--color-neutral-100)',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         display: isVisible ? 'flex' : 'none',
         flexDirection: 'column',
@@ -184,6 +183,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
         maxWidth: '320px',
         overflow: 'hidden',
         position: 'absolute',
+        top: '5px',
         transition: 'height 0.3s ease',
         width: '100%',
         zIndex: 1
@@ -290,6 +290,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                       weekOffset: diffInWeeks
                     });
                   }}
+                  tabIndex={0}
                   key={weekIndex}
                   css={{
                     border: week.some((day) => {
@@ -360,6 +361,17 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
     }
   };
 
+  const handlePreviousWeek = (event) => {
+  // Handle keydown specifically for Enter or Space keys
+    if (!event.type || event.type === 'click'
+      || (event.type === 'keydown' && (event.key === 'Enter' || event.key === ' '))) {
+      dispatch({
+        type: 'setWeekOffset',
+        weekOffset: weekOffset - 1
+      });
+    }
+  };
+
   return (
     <Margins
       data-hours-panel-next-previous
@@ -376,17 +388,8 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
         }}
       >
         <PreviousNextWeekButton
-          onClick={() => {
-            return dispatch({
-              type: 'setWeekOffset',
-              weekOffset: weekOffset - 1
-            });
-          }}
-          onKeyDown={(event) => {
-            return handleKeyDown(event, () => {
-              return dispatch({ type: 'setWeekOffset', weekOffset: weekOffset - 1 });
-            });
-          }}
+          onClick={handlePreviousWeek}
+          onKeyDown={handlePreviousWeek}
           type='previous'
           tabIndex={0}
         >
