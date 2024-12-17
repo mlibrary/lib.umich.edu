@@ -46,7 +46,7 @@ const updateWeekOffset = ({
       event.preventDefault();
     }
 
-    let newOffset;
+    let newOffset = weekOffset;
 
     if (relativeOffset !== null) {
       newOffset = weekOffset + relativeOffset;
@@ -70,6 +70,20 @@ const updateWeekOffset = ({
 export default function HoursPanelDateViewer () {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [calendarStatus, setCalendarStatus] = useState('');
+
+  const handleKeydown = (event) => {
+    if (event.keyCode === 27) {
+      setIsCalendarVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      document.addEventListener('keydown', handleKeydown);
+    };
+  });
 
   const toggleCalendarVisibility = () => {
     setIsCalendarVisible(!isCalendarVisible);
@@ -357,9 +371,27 @@ const CalendarView = ({ isVisible, weekOffset }) => {
               );
             })}
           </div>
+          <p css={{ color: `var(--color-neutral-300);` }}>
+            <span css={{ background: 'white',
+              border: `solid 1px var(--color-neutral-200)`,
+              borderRadius: '4px',
+              boxShadow: `0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;`,
+              display: 'inline-block',
+              fontFamily: 'monospace',
+              fontSize: '0.85rem',
+              marginBottom: SPACING.S,
+              padding: `0 ${SPACING['2XS']}` }}
+            >
+              esc
+            </span>
+            {' '}
+            to
+            close
+          </p>
         </>
       )}
     </div>
+
   );
 };
 
