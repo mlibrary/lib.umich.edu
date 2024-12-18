@@ -2,6 +2,7 @@
 import { Heading, List, Text } from '../reusable';
 import Blockquote from '../reusable/blockquote';
 import Callout from '../reusable/callout';
+import CallToAction from '../reusable/call-to-action';
 import DrupalEntity from './drupal-entity';
 import Link from './link';
 import PropTypes from 'prop-types';
@@ -144,6 +145,9 @@ const renderHast = new rehypeReact({
             {children}
           </Callout>
         );
+      }
+      if (className === 'umich-lib-cta') {
+        return <CallToAction>{children}</CallToAction>;
       }
 
       return <Text>{children}</Text>;
