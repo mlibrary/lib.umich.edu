@@ -220,7 +220,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
     weeks.push(calendarDays.slice(iterator, iterator + 7));
   }
 
-  return (
+  return isVisible ? (
     <div
       css={{
         alignItems: 'center',
@@ -287,7 +287,6 @@ const CalendarView = ({ isVisible, weekOffset }) => {
           />
         </button>
       </div>
-      {isVisible && (
         <>
           <div
             css={{
@@ -389,7 +388,6 @@ const CalendarView = ({ isVisible, weekOffset }) => {
             close
           </p>
         </>
-      )}
     </div>
 
   );
