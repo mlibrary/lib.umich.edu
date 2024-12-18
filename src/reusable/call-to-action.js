@@ -9,9 +9,10 @@ export default function CallToAction ({ children, ...rest }) {
         backgroundColor: 'var(--color-indigo-100)',
         border: '1px solid var(--color-neutral-100)',
         borderRadius: '4px',
-        display: 'inline-block',
+        fontWeight: 'bold',
         maxWidth: '38rem',
-        padding: SPACING.M
+        padding: SPACING.M,
+        width: 'fit-content'
       }}
       data-umich-cta
       {...rest}
