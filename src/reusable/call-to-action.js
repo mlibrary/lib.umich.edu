@@ -10,6 +10,7 @@ export default function CallToAction ({ children, ...rest }) {
         border: '1px solid var(--color-neutral-100)',
         borderRadius: '4px',
         display: 'inline-block',
+        maxWidth: '38rem',
         padding: SPACING.M
       }}
       data-umich-cta
