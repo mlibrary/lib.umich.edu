@@ -11,7 +11,7 @@ export default function CallToAction ({ children, ...rest }) {
         borderRadius: '4px',
         fontWeight: 'bold',
         maxWidth: '38rem',
-        padding: SPACING.M,
+        padding: '1rem, 1.5rem, 1rem, 1rem',
         width: 'fit-content'
       }}
       data-umich-cta
