@@ -8,7 +8,6 @@ const StyledLink = styled('a')((props) => {
 });
 
 export default function Link ({ children, kind = 'default', as = 'a', ...other }) {
-  console.log({ children, kind, as, ...other });
   return <StyledLink as={as} kind={kind} {...other}>{children}</StyledLink>;
 }
 
