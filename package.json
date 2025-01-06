@@ -54,7 +54,7 @@
     "@eslint/js": "^9.17.0",
     "@stylistic/eslint-plugin": "^2.12.1",
     "bottleneck": "^2.19.5",
-    "entities": "^5.0.0",
+    "entities": "^6.0.0",
     "eslint": "^9.17.0",
     "eslint-plugin-react": "^7.37.3",
     "fetch-retry": "^6.0.0",
