@@ -214,183 +214,193 @@ const CalendarView = ({ isVisible, weekOffset }) => {
 
   const calendarDays = getCalendarDays();
   const monthYear = currentBrowseDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+  const month = currentBrowseDate.toLocaleString('default', { month: 'long' });
+
+  const getMonthLong = (date) => {
+    return date.toLocaleString('default', { month: 'long' });
+  };
 
   const weeks = [];
   for (let iterator = 0; iterator < calendarDays.length; iterator += 7) {
     weeks.push(calendarDays.slice(iterator, iterator + 7));
   }
 
-  return isVisible ? (
-    <div
-      css={{
-        alignItems: 'center',
-        backgroundColor: 'var(--color-neutral-100)',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        display: isVisible ? 'flex' : 'none',
-        flexDirection: 'column',
-        height: 'auto',
-        left: '50%',
-        marginLeft: '-160px',
-        maxWidth: '320px',
-        overflow: 'hidden',
-        position: 'absolute',
-        top: '5px',
-        transition: 'height 0.3s ease',
-        width: '100%',
-        zIndex: 1
-      }}
-    >
-      <div
-        css={{
-          alignItems: 'center',
-          display: 'flex ',
-          justifyContent: 'space-between',
-          paddingTop: '15px',
-          width: '100%'
-        }}
-      >
-        <button
-          onClick={handlePreviousMonth}
+  return isVisible
+    ? (
+        <div
           css={{
-            ...TYPOGRAPHY.M,
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer'
+            alignItems: 'center',
+            backgroundColor: 'var(--color-neutral-100)',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            display: isVisible ? 'flex' : 'none',
+            flexDirection: 'column',
+            height: 'auto',
+            left: '50%',
+            marginLeft: '-160px',
+            maxWidth: '320px',
+            overflow: 'hidden',
+            position: 'absolute',
+            top: '5px',
+            transition: 'height 0.3s ease',
+            width: '100%',
+            zIndex: 1
           }}
         >
-          <Icon
-            icon='navigate_before'
-            css={{ marginLeft: SPACING.M }}
-          />
-        </button>
-        <h2
-          aria-live='polite'
-          css={{
-            ...TYPOGRAPHY.M,
-            margin: 0
-          }}
-        >
-          {monthYear}
-        </h2>
-        <button
-          onClick={handleNextMonth}
-          css={{
-            ...TYPOGRAPHY.M,
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer'
-          }}
-        >
-          <Icon
-            icon='navigate_next'
-            css={{ marginRight: SPACING.M }}
-          />
-        </button>
-      </div>
-        <>
           <div
             css={{
-              display: 'grid',
-              fontWeight: 'bold',
-              gap: '4px',
-              gridTemplateColumns: 'repeat(7, 1fr)',
-              marginTop: '8px',
-              paddingLeft: '12px',
-              paddingRight: '12px',
-              textAlign: 'center',
+              alignItems: 'center',
+              display: 'flex ',
+              justifyContent: 'space-between',
+              paddingTop: '15px',
               width: '100%'
             }}
           >
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => {
-              return (
-                <div
-                  css={{
-                  }}
-                  key={day}
-                >
-                  {day}
-                </div>
-              );
-            })}
-          </div>
-          <div
-            css={{
-              display: 'grid',
-              gap: '4px',
-              gridTemplateRows: `repeat(${weeks.length}, auto)`,
-              marginBottom: '8px',
-              marginTop: '8px'
-            }}
-          >
-            {weeks.map((week, weekIndex) => {
-              return (
-                <a
-                  onClick={(event) => {
-                    return updateWeekOffset({ dispatch, event, week, weekOffset });
-                  }}
-                  onKeyDown={(event) => {
-                    return updateWeekOffset({ dispatch, event, week, weekOffset });
-                  }}
-                  tabIndex={0}
-                  key={weekIndex}
-                  css={{
-                    border: week.some((day) => {
-                      const viewedWeekStart = new Date(new Date().setDate(
-                        new Date().getDate() + weekOffset * 7 - new Date().getDay()
-                      ));
-                      const weekStartDay = startOfDay(day);
-                      const viewedWeekStartDay = startOfDay(viewedWeekStart);
-                      return weekStartDay.getTime() === viewedWeekStartDay.getTime();
-                    })
-                      ? `2px solid var(--color-maize-400)`
-                      : `2px solid rgba(0,0,0,0)`,
-                    display: 'grid',
-                    gap: '4px',
-                    gridTemplateColumns: 'repeat(7, 1fr)',
-                    textDecoration: 'none'
-                  }}
-                >
-                  {week.map((day, dayIndex) => {
-                    return (
-                      <div
-                        key={dayIndex}
-                        css={{
-                          backgroundColor: getColorBasedOnDate(day),
-                          borderRadius: '4px',
-                          color: day.getMonth() === currentBrowseDate.getMonth() ? 'inherit' : '#999',
-                          padding: '10px',
-                          textAlign: 'center'
-                        }}
-                      >
-                        {day.getDate()}
-                      </div>
-                    );
-                  })}
-                </a>
-              );
-            })}
-          </div>
-          <p css={{ color: `var(--color-neutral-300);` }}>
-            <span css={{ background: 'white',
-              border: `solid 1px var(--color-neutral-200)`,
-              borderRadius: '4px',
-              boxShadow: `0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;`,
-              display: 'inline-block',
-              fontFamily: 'monospace',
-              fontSize: '0.85rem',
-              marginBottom: SPACING.S,
-              padding: `0 ${SPACING['2XS']}` }}
+            <button
+              onClick={handlePreviousMonth}
+              css={{
+                ...TYPOGRAPHY.M,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              aria-label='previous month'
             >
-              esc
-            </span>
-            {' '}
-            to
-            close
-          </p>
-        </>
-    </div>
-
-  );
+              <Icon
+                icon='navigate_before'
+                css={{ marginLeft: SPACING.M }}
+              />
+            </button>
+            <h2
+              aria-live='polite'
+              css={{
+                ...TYPOGRAPHY.M,
+                margin: 0
+              }}
+            >
+              {monthYear}
+            </h2>
+            <button
+              onClick={handleNextMonth}
+              css={{
+                ...TYPOGRAPHY.M,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              aria-label='Next month'
+            >
+              <Icon
+                icon='navigate_next'
+                css={{ marginRight: SPACING.M }}
+              />
+            </button>
+          </div>
+          <>
+            <div
+              css={{
+                display: 'grid',
+                fontWeight: 'bold',
+                gap: '4px',
+                gridTemplateColumns: 'repeat(7, 1fr)',
+                marginTop: '8px',
+                paddingLeft: '12px',
+                paddingRight: '12px',
+                textAlign: 'center',
+                width: '100%'
+              }}
+            >
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => {
+                return (
+                  <div
+                    css={{
+                    }}
+                    key={day}
+                  >
+                    {day}
+                  </div>
+                );
+              })}
+            </div>
+            <div
+              css={{
+                display: 'grid',
+                gap: '4px',
+                gridTemplateRows: `repeat(${weeks.length}, auto)`,
+                marginBottom: '8px',
+                marginTop: '8px'
+              }}
+            >
+              {weeks.map((week, weekIndex) => {
+                const currentWeek = week.some((day) => {
+                  const viewedWeekStart = new Date(new Date().setDate(
+                    new Date().getDate() + weekOffset * 7 - new Date().getDay()
+                  ));
+                  const weekStartDay = startOfDay(day);
+                  const viewedWeekStartDay = startOfDay(viewedWeekStart);
+                  return weekStartDay.getTime() === viewedWeekStartDay.getTime();
+                });
+                return (
+                  <a
+                    onClick={(event) => {
+                      return updateWeekOffset({ dispatch, event, week, weekOffset });
+                    }}
+                    onKeyDown={(event) => {
+                      return updateWeekOffset({ dispatch, event, week, weekOffset });
+                    }}
+                    tabIndex={0}
+                    key={weekIndex}
+                    aria-label={`${currentWeek ? 'This is the currently selected week.' : 'View '} week ${weekIndex + 1} in ${month} from ${getMonthLong(week[0])} ${week[0].getDate()} to ${getMonthLong(week[week.length - 1])} ${week[week.length - 1].getDate()}`}
+                    css={{
+                      border: currentWeek
+                        ? `2px solid var(--color-maize-400)`
+                        : `2px solid rgba(0,0,0,0)`,
+                      display: 'grid',
+                      gap: '4px',
+                      gridTemplateColumns: 'repeat(7, 1fr)',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    {week.map((day, dayIndex) => {
+                      return (
+                        <div
+                          key={dayIndex}
+                          css={{
+                            backgroundColor: getColorBasedOnDate(day),
+                            borderRadius: '4px',
+                            color: day.getMonth() === currentBrowseDate.getMonth() ? 'inherit' : '#999',
+                            padding: '10px',
+                            textAlign: 'center'
+                          }}
+                        >
+                          {day.getDate()}
+                        </div>
+                      );
+                    })}
+                  </a>
+                );
+              })}
+            </div>
+            <p css={{ color: `var(--color-neutral-300);` }}>
+              <span css={{ background: 'white',
+                border: `solid 1px var(--color-neutral-200)`,
+                borderRadius: '4px',
+                boxShadow: `0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;`,
+                display: 'inline-block',
+                fontFamily: 'monospace',
+                fontSize: '0.85rem',
+                marginBottom: SPACING.S,
+                padding: `0 ${SPACING['2XS']}` }}
+              >
+                esc
+              </span>
+              {' '}
+              to
+              close
+            </p>
+          </>
+        </div>
+      )
+    : null;
 };
 
 CalendarView.propTypes = {
@@ -459,8 +469,10 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
             return handleInteraction(event, toggleCalendarVisibility);
           }}
           css={{
+            color: 'var(--color-teal-400)',
             cursor: 'pointer',
-            fontWeight: '700'
+            fontWeight: '700',
+            textDecoration: 'underline'
           }}
           tabIndex={0}
         >
