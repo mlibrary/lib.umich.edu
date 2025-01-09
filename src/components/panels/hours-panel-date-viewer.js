@@ -149,36 +149,25 @@ const CalendarView = ({ isVisible, weekOffset }) => {
   };
 
   const startOfDay = (date) => {
-    const newDate = new Date(date);
-    newDate.setHours(0, 0, 0, 0);
+    return new Date(date.setHours(0, 0, 0, 0));
+  };
+
+  const startOfWeek = (date) => {
+    const newDate = startOfDay(new Date(date));
+    newDate.setDate(newDate.getDate() - newDate.getDay());
     return newDate;
   };
 
-  const getColorBasedOnDate = (date1) => {
-    const currentDate = new Date();
+  const getColorBasedOnDate = (date) => {
+    const today = startOfDay(new Date());
+    const targetDay = startOfDay(date);
 
-    const startOfWeek = (date) => {
-      const dayOfWeek = date.getDay();
-      const newDate = new Date(date);
-      newDate.setDate(date.getDate() - dayOfWeek);
-      newDate.setHours(0, 0, 0, 0);
-      return newDate;
-    };
-
-    const day1 = startOfDay(date1);
-    const day2 = startOfDay(currentDate);
-
-    if (day1.getTime() === day2.getTime()) {
+    if (targetDay.getTime() === today.getTime()) {
       return 'var(--color-maize-400)';
     }
-
-    const weekStart1 = startOfWeek(date1);
-    const weekStart2 = startOfWeek(currentDate);
-
-    if (weekStart1.getTime() === weekStart2.getTime()) {
+    if (startOfWeek(targetDay).getTime() === startOfWeek(today).getTime()) {
       return 'var(--color-maize-100)';
     }
-
     return 'var(--color-blue-100)';
   };
 
@@ -214,7 +203,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
 
   const calendarDays = getCalendarDays();
   const monthYear = currentBrowseDate.toLocaleString('default', { month: 'long', year: 'numeric' });
-  const month = currentBrowseDate.toLocaleString('default', { month: 'long' });
+  const [month] = monthYear.split(' ');
 
   const getMonthLong = (date) => {
     return date.toLocaleString('default', { month: 'long' });
@@ -349,7 +338,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                     }}
                     tabIndex={0}
                     key={weekIndex}
-                    aria-label={`${currentWeek ? 'This is the currently selected week.' : 'View '} week ${weekIndex + 1} in ${month} from ${getMonthLong(week[0])} ${week[0].getDate()} to ${getMonthLong(week[week.length - 1])} ${week[week.length - 1].getDate()}`}
+                    aria-label={`${currentWeek ? 'This is the currently selected week.' : 'View'} week ${weekIndex + 1} in ${month} from ${getMonthLong(week[0])} ${week[0].getDate()} to ${getMonthLong(week[week.length - 1])} ${week[week.length - 1].getDate()}`}
                     css={{
                       border: currentWeek
                         ? `2px solid var(--color-maize-400)`
