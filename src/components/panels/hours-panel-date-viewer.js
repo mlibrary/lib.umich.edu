@@ -138,14 +138,9 @@ const CalendarView = ({ isVisible, weekOffset }) => {
     setCurrentDate(newBrowseDate);
   }, [weekOffset]);
 
-  const handleNextMonth = () => {
-    const nextMonth = new Date(currentBrowseDate.setMonth(currentBrowseDate.getMonth() + 1));
-    setCurrentDate(new Date(nextMonth.setDate(1)));
-  };
-
-  const handlePreviousMonth = () => {
-    const prevMonth = new Date(currentBrowseDate.setMonth(currentBrowseDate.getMonth() - 1));
-    setCurrentDate(new Date(prevMonth.setDate(1)));
+  const handleMonthChange = (direction) => {
+    const setMonth = new Date(currentBrowseDate.setMonth(currentBrowseDate.getMonth() + direction));
+    setCurrentDate(new Date(setMonth.setDate(1)));
   };
 
   const startOfDay = (date) => {
@@ -229,7 +224,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
             maxWidth: '320px',
             overflow: 'hidden',
             position: 'absolute',
-            top: '5px',
+            top: '47px',
             transition: 'height 0.3s ease',
             width: '100%',
             zIndex: 1
@@ -245,7 +240,9 @@ const CalendarView = ({ isVisible, weekOffset }) => {
             }}
           >
             <button
-              onClick={handlePreviousMonth}
+              onClick={() => {
+                return handleMonthChange(-1);
+              }}
               css={{
                 ...TYPOGRAPHY.M,
                 background: 'none',
@@ -269,7 +266,9 @@ const CalendarView = ({ isVisible, weekOffset }) => {
               {monthYear}
             </h2>
             <button
-              onClick={handleNextMonth}
+              onClick={() => {
+                return handleMonthChange(1);
+              }}
               css={{
                 ...TYPOGRAPHY.M,
                 background: 'none',
@@ -320,7 +319,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
               }}
             >
               {weeks.map((week, weekIndex) => {
-                const currentWeek = week.some((day) => {
+                const currentlySelectedWeek = week.some((day) => {
                   const viewedWeekStart = new Date(new Date().setDate(
                     new Date().getDate() + weekOffset * 7 - new Date().getDay()
                   ));
@@ -338,9 +337,9 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                     }}
                     tabIndex={0}
                     key={weekIndex}
-                    aria-label={`${currentWeek ? 'This is the currently selected week.' : 'View'} week ${weekIndex + 1} in ${month} from ${getMonthLong(week[0])} ${week[0].getDate()} to ${getMonthLong(week[week.length - 1])} ${week[week.length - 1].getDate()}`}
+                    aria-label={`${currentlySelectedWeek ? 'This is the currently selected week.' : 'View'} week ${weekIndex + 1} in ${month} from ${getMonthLong(week[0])} ${week[0].getDate()} to ${getMonthLong(week[week.length - 1])} ${week[week.length - 1].getDate()}`}
                     css={{
-                      border: currentWeek
+                      border: currentlySelectedWeek
                         ? `2px solid var(--color-maize-400)`
                         : `2px solid rgba(0,0,0,0)`,
                       display: 'grid',
@@ -457,12 +456,12 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
           onKeyDown={(event) => {
             return handleInteraction(event, toggleCalendarVisibility);
           }}
-          css={{
-            color: 'var(--color-teal-400)',
-            cursor: 'pointer',
-            fontWeight: '700',
-            textDecoration: 'underline'
-          }}
+          css={isCalendarVisible
+            ? {
+                boxShadow: 'inset 0 -2px var(--color-teal-400)',
+                color: 'var(--color-teal-400)'
+              }
+            : null}
           tabIndex={0}
         >
           <span className='visually-hidden'>
@@ -480,6 +479,7 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
             icon='calendar_month'
           />
         </Heading>
+        <CalendarView isVisible={isCalendarVisible} weekOffset={weekOffset} />
 
         <PreviousNextWeekButton
           onClick={(event) => {
@@ -499,7 +499,6 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
           position: 'relative'
         }}
       >
-        <CalendarView isVisible={isCalendarVisible} weekOffset={weekOffset} />
       </div>
     </Margins>
   );
