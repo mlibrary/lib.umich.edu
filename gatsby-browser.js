@@ -39,6 +39,13 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
         top: element.offsetTop - headerHeight,
         behavior: 'smooth'
       });
+      // Ensure the element is focusable
+      element.setAttribute('tabindex', '0');
+      element.style.outline = 'none';
+
+      // Focus the element for proper tab order
+      element.focus({ preventScroll: true });
+      element.removeAttribute('tabindex');
     }
   }
 };
