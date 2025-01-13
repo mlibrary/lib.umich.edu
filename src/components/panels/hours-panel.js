@@ -123,6 +123,9 @@ export default function HoursPanelContainer ({ data }) {
           level={2}
           size='L'
           css={{
+            ':target': {
+              scrollMarginTop: '350px'
+            },
             fontWeight: '700',
             marginBottom: SPACING['2XS']
           }}

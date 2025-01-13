@@ -105,6 +105,7 @@ export default function HoursPanelDateViewer () {
         top: '-1px',
         zIndex: 1
       }}
+      id='dateViewerBar'
     >
       <div
         aria-live='polite'
@@ -200,8 +201,14 @@ const CalendarView = ({ isVisible, weekOffset }) => {
   const monthYear = currentBrowseDate.toLocaleString('default', { month: 'long', year: 'numeric' });
   const [month] = monthYear.split(' ');
 
-  const getMonthLong = (date) => {
-    return date.toLocaleString('default', { month: 'long' });
+  const getFormattedDate = (date) => {
+    /* eslint-disable sort-keys */
+    return date.toLocaleString('default', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    });
+    /* eslint-enable sort-keys */
   };
 
   const weeks = [];
@@ -229,6 +236,8 @@ const CalendarView = ({ isVisible, weekOffset }) => {
             width: '100%',
             zIndex: 1
           }}
+          role='region'
+          aria-label='calendar navigation '
         >
           <div
             css={{
@@ -337,7 +346,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                     }}
                     tabIndex={0}
                     key={weekIndex}
-                    aria-label={`${currentlySelectedWeek ? 'This is the currently selected week.' : 'View'} week ${weekIndex + 1} in ${month} from ${getMonthLong(week[0])} ${week[0].getDate()} to ${getMonthLong(week[week.length - 1])} ${week[week.length - 1].getDate()}`}
+                    aria-label={`${currentlySelectedWeek ? 'This is the currently selected week.' : 'View'} week ${weekIndex + 1} in ${month} from ${getFormattedDate(week[0])} to ${getFormattedDate(week[week.length - 1])}`}
                     css={{
                       border: currentlySelectedWeek
                         ? `2px solid var(--color-maize-400)`
@@ -445,40 +454,35 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
         >
           Previous week
         </PreviousNextWeekButton>
-        <Heading
-          aria-live='polite'
-          aria-atomic='true'
-          level={2}
-          size='S'
-          onClick={(event) => {
-            return handleInteraction(event, toggleCalendarVisibility);
-          }}
-          onKeyDown={(event) => {
-            return handleInteraction(event, toggleCalendarVisibility);
-          }}
-          css={isCalendarVisible
-            ? {
-                boxShadow: 'inset 0 -2px var(--color-teal-400)',
-                color: 'var(--color-teal-400)'
-              }
-            : null}
-          tabIndex={0}
-        >
-          <span className='visually-hidden'>
-            {hoursRange.label}
-          </span>
-          <span aria-hidden>
-            {hoursRange.text}
-          </span>
-          <Icon
-            width='32px'
-            height='24px'
-            css={{
-              color: `var(--color-teal-400)`
+        <Link css={isCalendarVisible ? { color: 'inherit' } : { boxShadow: 'none', color: 'inherit' }}>
+          <Heading
+            level={2}
+            size='S'
+            onClick={(event) => {
+              return handleInteraction(event, toggleCalendarVisibility);
             }}
-            icon='calendar_month'
-          />
-        </Heading>
+            onKeyDown={(event) => {
+              return handleInteraction(event, toggleCalendarVisibility);
+            }}
+            tabIndex={0}
+          >
+            <span className='visually-hidden'>
+              {hoursRange.label}
+            </span>
+            <span aria-hidden>
+              {hoursRange.text}
+            </span>
+            <Icon
+              width='32px'
+              height='24px'
+              css={{
+                color: `var(--color-teal-400)`
+              }}
+              icon='calendar_month'
+            />
+          </Heading>
+        </Link>
+
         <CalendarView isVisible={isCalendarVisible} weekOffset={weekOffset} />
 
         <PreviousNextWeekButton
