@@ -36,16 +36,9 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
       const stickyHeader = document.querySelector('#dateViewerBar');
       const headerHeight = stickyHeader ? stickyHeader.offsetHeight : 0;
       window.scrollTo({
-        top: element.offsetTop - headerHeight,
-        behavior: 'smooth'
+        behavior: 'smooth',
+        top: element.offsetTop - headerHeight
       });
-      // Ensure the element is focusable
-      element.setAttribute('tabindex', '0');
-      element.style.outline = 'none';
-
-      // Focus the element for proper tab order
-      element.focus({ preventScroll: true });
-      element.removeAttribute('tabindex');
     }
   }
 };
