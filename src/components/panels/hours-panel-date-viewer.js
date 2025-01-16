@@ -439,7 +439,6 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
           alignItems: 'baseline',
           display: 'flex',
           justifyContent: 'space-between'
-
         }}
       >
         <PreviousNextWeekButton
@@ -450,11 +449,23 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
             return updateWeekOffset({ dispatch, event, relativeOffset: -1, weekOffset });
           }}
           type='previous'
-          tabIndex={0}
+
         >
           Previous week
         </PreviousNextWeekButton>
-        <Link css={isCalendarVisible ? { color: 'inherit' } : { boxShadow: 'none', color: 'inherit' }}>
+        <button css={isCalendarVisible
+          ? {
+              boxShadow: 'inset 0 -2px var(--color-teal-400);',
+              color: 'inherit'
+            }
+          : {
+              '&:hover': {
+                boxShadow: 'inset 0 -2px var(--color-teal-400);'
+              },
+              boxShadow: 'none',
+              color: 'inherit'
+            }}
+        >
           <Heading
             level={2}
             size='S'
@@ -464,7 +475,6 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
             onKeyDown={(event) => {
               return handleInteraction(event, toggleCalendarVisibility);
             }}
-            tabIndex={0}
           >
             <span className='visually-hidden'>
               {hoursRange.label}
@@ -481,7 +491,7 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
               icon='calendar_month'
             />
           </Heading>
-        </Link>
+        </button>
 
         <CalendarView isVisible={isCalendarVisible} weekOffset={weekOffset} />
 
@@ -493,7 +503,6 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
             return updateWeekOffset({ dispatch, event, relativeOffset: 1, weekOffset });
           }}
           type='next'
-          tabIndex={0}
         >
           Next week
         </PreviousNextWeekButton>
@@ -517,9 +526,12 @@ HoursPanelNextPrev.propTypes = {
 const PreviousNextWeekButton = ({ type, children, ...rest }) => {
   return (
     <>
-      <Link
+      <button
         {...rest}
         css={{
+          '&:hover': {
+            boxShadow: 'inset 0 -2px var(--color-teal-400);'
+          },
           boxShadow: 'none',
           color: 'var(--color-teal-400)',
           display: 'none',
@@ -544,8 +556,8 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
             <Icon icon='navigate_next' css={{ marginLeft: SPACING['2XS'] }} />
           </IconWrapper>
         )}
-      </Link>
-      <Link
+      </button>
+      <button
         {...rest}
         css={{
           boxShadow: 'none',
@@ -562,7 +574,7 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
           <Icon icon={type === 'previous' ? 'navigate_before' : 'navigate_next'} />
         </IconWrapper>
         <span className='visually-hidden'>{children}</span>
-      </Link>
+      </button>
     </>
   );
 };
