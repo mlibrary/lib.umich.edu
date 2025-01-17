@@ -453,28 +453,29 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
         >
           Previous week
         </PreviousNextWeekButton>
-        <button css={isCalendarVisible
-          ? {
-              boxShadow: 'inset 0 -2px var(--color-teal-400);',
-              color: 'inherit'
-            }
-          : {
-              '&:hover': {
-                boxShadow: 'inset 0 -2px var(--color-teal-400);'
-              },
-              boxShadow: 'none',
-              color: 'inherit'
-            }}
+        <button
+          css={isCalendarVisible
+            ? {
+                boxShadow: 'inset 0 -2px var(--color-teal-400);',
+                color: 'inherit'
+              }
+            : {
+                '&:hover': {
+                  boxShadow: 'inset 0 -2px var(--color-teal-400);'
+                },
+                boxShadow: 'none',
+                color: 'inherit'
+              }}
+          onClick={(event) => {
+            return handleInteraction(event, toggleCalendarVisibility);
+          }}
+          onKeyDown={(event) => {
+            return handleInteraction(event, toggleCalendarVisibility);
+          }}
         >
           <Heading
             level={2}
             size='S'
-            onClick={(event) => {
-              return handleInteraction(event, toggleCalendarVisibility);
-            }}
-            onKeyDown={(event) => {
-              return handleInteraction(event, toggleCalendarVisibility);
-            }}
           >
             <span className='visually-hidden'>
               {hoursRange.label}
