@@ -1,5 +1,4 @@
 import {
-  COLORS,
   Heading,
   Icon,
   LargeScreen,
@@ -39,7 +38,7 @@ export default function SideNavigation ({ to, branch }) {
         <ol
           css={{
             '> li:not(:last-of-type)': {
-              borderBottom: `solid 1px ${COLORS.neutral['100']}`
+              borderBottom: `solid 1px var(--color-neutral-100)`
             },
             marginBottom: SPACING.M,
             marginTop: SPACING.XS
@@ -80,11 +79,13 @@ const SideNavLink = ({ path, item, children, ...rest }) => {
             textDecoration: 'underline'
           },
           alignItems: 'center',
-          color: isActive ? COLORS.teal['400'] : 'inherit',
+          borderLeft: isActive ? 'solid 4px var(--color-teal-400)' : 'none',
+          color: isActive ? 'var(--color-teal-400)' : 'inherit',
           display: 'flex',
           fontWeight: isActive ? '700' : 'inherit',
           justifyContent: 'space-between',
-          paddingBottom: renderChildren ? SPACING.XS : SPACING.M,
+          paddingBottom: SPACING.M,
+          paddingLeft: isActive ? SPACING.S : SPACING.M,
           paddingRight: SPACING.S,
           paddingTop: SPACING.M
         }}
@@ -94,7 +95,7 @@ const SideNavLink = ({ path, item, children, ...rest }) => {
         {hasChildren && (
           <span
             css={{
-              color: COLORS.neutral['400'],
+              color: isActive ? 'var(--color-teal-400)' : 'var(--color-neutral-400)',
               lineHeight: '1',
               paddingLeft: SPACING.XS
             }}
@@ -118,8 +119,9 @@ const SideNavLink = ({ path, item, children, ...rest }) => {
                   path={path}
                   item={child}
                   css={{
-                    padding: `${SPACING.XS} 0`,
-                    paddingLeft: SPACING.M
+                    marginLeft: SPACING.M,
+                    paddingBottom: SPACING.XS,
+                    paddingTop: SPACING.XS
                   }}
                 >
                   {child.text}

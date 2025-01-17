@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Alert, COLORS, Icon, SPACING, TYPOGRAPHY, Z_SPACE } from '../reusable';
+import { Alert, Icon, SPACING, TYPOGRAPHY, Z_SPACE } from '../reusable';
 import React, { useEffect, useState } from 'react';
 import { findAll } from 'highlight-words-core';
 import { Link as GatsbyLink } from 'gatsby';
@@ -119,7 +119,7 @@ export default function SiteSearch ({ label }) {
         size={20}
         data-site-search-icon
         css={{
-          color: COLORS.neutral['300'],
+          color: 'var(--color-neutral-300)',
           left: SPACING.XS,
           position: 'absolute'
         }}
@@ -143,13 +143,13 @@ export default function SiteSearch ({ label }) {
           autoComplete='off'
           css={{
             '::placeholder': {
-              color: COLORS.neutral['300'],
+              color: 'var(--color-neutral-300)',
               opacity: 1
             },
             alignItems: 'center',
             appearance: 'textfield',
             background: 'none',
-            border: `solid 1px ${COLORS.neutral['300']}`,
+            border: `solid 1px var(--color-neutral-300)`,
             borderRadius: '2px',
             boxShadow: `inset 0 1px 4px rgba(0,0,0,0.1)`,
             boxSizing: 'border-box',
@@ -251,12 +251,12 @@ const ResultsList = ({ searching, noResults, results, query, error }) => {
     <Popover error={error}>
       <p
         css={{
-          background: COLORS.blue['100'],
-          borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-          color: COLORS.neutral['300'],
+          background: 'var(--color-blue-100)',
+          borderBottom: `solid 1px var(--color-neutral-100)`,
+          color: 'var(--color-neutral-300)',
           kbd: {
             background: 'white',
-            border: `solid 1px ${COLORS.neutral['200']}`,
+            border: `solid 1px var(--color-neutral-200)`,
             borderRadius: '4px',
             boxShadow: `0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;`,
             display: 'inline-block',
@@ -282,7 +282,7 @@ const ResultsList = ({ searching, noResults, results, query, error }) => {
               value={result.title}
               css={{
                 ':not(:last-child)': {
-                  borderBottom: `solid 1px ${COLORS.neutral['100']}`
+                  borderBottom: `solid 1px var(--color-neutral-100)`
                 }
               }}
             >
@@ -293,8 +293,8 @@ const ResultsList = ({ searching, noResults, results, query, error }) => {
                     '[data-title]': {
                       textDecoration: 'underline'
                     },
-                    background: COLORS.teal['100'],
-                    borderLeft: `solid 4px ${COLORS.teal['400']}`,
+                    background: 'var(--color-teal-100)',
+                    borderLeft: `solid 4px var(--color-teal-400)`,
                     outline: 'none',
                     paddingLeft: `calc(${SPACING.L} - 4px)`
                   },
@@ -351,13 +351,13 @@ const LibrarySearchScopeOption = ({ query }) => {
           '[data-title]': {
             textDecoration: 'underline'
           },
-          background: COLORS.teal['100'],
-          borderLeft: `solid 4px ${COLORS.teal['400']}`,
+          background: 'var(--color-teal-100)',
+          borderLeft: `solid 4px var(--color-teal-400)`,
           outline: 'none',
           paddingLeft: `calc(${SPACING.L} - 4px)`
         },
         alignItems: 'center',
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`,
+        borderBottom: `solid 1px var(--color-neutral-100)`,
         display: 'grid',
         gridGap: SPACING.S,
         gridTemplateColumns: 'auto 1fr auto',
@@ -369,7 +369,7 @@ const LibrarySearchScopeOption = ({ query }) => {
         size={24}
         data-site-search-icon
         css={{
-          color: COLORS.neutral['300'],
+          color: 'var(--color-neutral-300)',
           left: SPACING.XS
         }}
       />
@@ -378,7 +378,7 @@ const LibrarySearchScopeOption = ({ query }) => {
         css={{
           ...TYPOGRAPHY.XS,
           mark: {
-            background: `${COLORS.maize['200']}!important`,
+            background: `var(--color-maize-200)!important`,
             fontWeight: '700'
           },
           overflow: 'hidden',
@@ -393,8 +393,8 @@ const LibrarySearchScopeOption = ({ query }) => {
         css={{
           display: 'inline-block',
           ...TYPOGRAPHY['3XS'],
-          background: COLORS.blue['100'],
-          border: `solid 1px ${COLORS.neutral['100']}`,
+          background: 'var(--color-blue-100)',
+          border: `solid 1px var(--color-neutral-100)`,
           borderRadius: '4px',
           padding: `0 ${SPACING['2XS']}`
         }}
@@ -412,24 +412,41 @@ LibrarySearchScopeOption.propTypes = {
 const ResultContent = ({ query, result }) => {
   return (
     <React.Fragment>
-      <p
-        data-title
-        css={{
-          ...TYPOGRAPHY.XS,
-          mark: {
-            background: `${COLORS.maize['200']}!important`,
-            fontWeight: '700'
-          }
-        }}
-      >
-        <HighlightText query={query} text={result.title} />
+      <p>
+        <span
+          data-title
+          css={{
+            ...TYPOGRAPHY.XS,
+            mark: {
+              background: `var(--color-maize-200)!important`,
+              fontWeight: '700'
+            }
+          }}
+        >
+          <HighlightText query={query} text={result.title} />
+        </span>
+        {result.tag && (
+          <span
+            css={{
+              color: 'var(--color-neutral-300)',
+              display: 'inline-block',
+              fontSize: '0.875rem',
+              fontWeight: 'bold',
+              letterSpacing: '0.0875em',
+              marginLeft: SPACING.XS,
+              textTransform: 'uppercase'
+            }}
+          >
+            ● {result.tag}
+          </span>
+        )}
       </p>
       {result.summary && (
         <p
           css={{
             WebkitBoxOrient: 'vertical',
             WebkitLineClamp: 2,
-            color: COLORS.neutral['300'],
+            color: 'var(--color-neutral-300)',
             display: '-webkit-box',
             mark: {
               background: 'none',
@@ -483,13 +500,13 @@ const NoResults = ({ query }) => {
   return (
     <p
       css={{
-        color: COLORS.neutral['300'],
+        color: 'var(--color-neutral-300)',
         padding: SPACING.L
       }}
     >
       <span
         css={{
-          color: COLORS.neutral['400'],
+          color: 'var(--color-neutral-400)',
           display: 'block',
           ...TYPOGRAPHY.XS
         }}
@@ -531,7 +548,7 @@ const Popover = ({ children, error }) => {
       css={{
         ...Z_SPACE['16'],
         background: 'white',
-        border: `solid 1px ${COLORS.neutral['100']}`,
+        border: `solid 1px var(--color-neutral-100)`,
         borderRadius: '2px',
         maxHeight: '70vh',
         overflow: 'hidden',
@@ -549,7 +566,7 @@ const Popover = ({ children, error }) => {
       <div
         css={{
           borderBottom: `solid 1px`,
-          borderBottomColor: COLORS.neutral['100']
+          borderBottomColor: 'var(--color-neutral-100)'
         }}
       >
         {error && <Alert intent='error'>{error.error.message}</Alert>}

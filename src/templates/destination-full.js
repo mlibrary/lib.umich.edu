@@ -20,6 +20,7 @@ const DestinationTemplate = ({ data }) => {
   const imageData
     = relationships?.field_media_image?.relationships?.field_media_image
       ?.localFile?.childImageSharp?.gatsbyImageData;
+  const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
 
   return (
     <TemplateLayout node={node}>
@@ -77,7 +78,7 @@ const DestinationTemplate = ({ data }) => {
                 borderRadius: '2px',
                 width: '100%'
               }}
-              alt=''
+              alt={imageAlt}
             />
           )}
 

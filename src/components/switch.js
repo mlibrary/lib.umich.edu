@@ -1,4 +1,4 @@
-import { COLORS, SPACING, TYPOGRAPHY } from '../reusable';
+import { SPACING, TYPOGRAPHY } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -9,11 +9,11 @@ export default function Switch ({ on, children, ...rest }) {
       aria-checked={on}
       css={{
         ':focus [data-switch-track]': {
-          boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px ${COLORS.neutral['400']}`,
+          boxShadow: `0 0 0 3px #ffffff, 0 0 0 4px var(--color-neutral-400)`,
           outline: 'none'
         },
         ':hover [data-switch-track]': {
-          boxShadow: `0 0 0 4px ${COLORS.neutral['100']}`
+          boxShadow: `0 0 0 4px var(--color-neutral-100)`
         },
         alignItems: 'center',
         display: 'flex',
@@ -48,9 +48,9 @@ export default function Switch ({ on, children, ...rest }) {
             right: on ? 'auto' : '5px',
             top: '2px'
           },
-          background: on ? COLORS.green['500'] : COLORS.neutral['300'],
+          background: on ? 'var(--color-green-500)' : 'var(--color-neutral-300)',
           border: `solid 2px`,
-          borderColor: on ? COLORS.green['500'] : COLORS.neutral['300'],
+          borderColor: on ? 'var(--color-green-500)' : 'var(--color-neutral-300)',
           borderRadius: '16px',
           display: 'inline-block',
           height: '24px',

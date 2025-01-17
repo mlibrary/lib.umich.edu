@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Alert, Button, COLORS, Heading, Margins, SPACING, TextInput } from '../reusable';
+import { Button, Heading, Margins, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
@@ -315,23 +315,41 @@ const StaffDirectory = React.memo(({
 }) => {
   const [show, setShow] = useState(20);
   const staffInView = results.slice(0, show);
-  let resultsSummary = results.length
-    ? `${results.length} results`
-    : `No results`;
-  if (query) {
-    resultsSummary += ` for ${query}`;
+  let resultsSummary = <></>;
+  let showMoreText = null;
+  if (results.length > 0) {
+    resultsSummary = (<>{results.length} result{results.length > 1 && 's'}</>);
+    if (show < results.length) {
+      resultsSummary = (<>Showing {show} of {results.length} results</>);
+      const showMore = () => {
+        setShow(results.length);
+      };
+      showMoreText = (
+        <>
+          <p
+            css={{
+              marginBottom: SPACING.L
+            }}
+          >
+            {resultsSummary}
+          </p>
+          <Button onClick={showMore}>Show all</Button>
+        </>
+      );
+    }
   }
-  if (activeFilters.department) {
-    resultsSummary += ` in ${activeFilters.department}`;
+  [query, activeFilters.department].forEach((param) => {
+    if (param) {
+      resultsSummary = (
+        <>
+          {resultsSummary} {param === query ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
+        </>
+      );
+    }
+  });
+  if (results.length === 0) {
+    resultsSummary = (<div><span aria-live='assertive'>No results {resultsSummary}</span></div>);
   }
-  const showMoreText
-    = show < results.length
-      ? `Showing ${show} of ${results.length} results`
-      : null;
-
-  const showMore = () => {
-    setShow(results.length);
-  };
 
   return (
     <React.Fragment>
@@ -383,28 +401,14 @@ const StaffDirectory = React.memo(({
           Clear
         </Button>
       </div>
-
       <StaffDirectoryResults
         results={results}
         staffImages={staffImages}
         resultsSummary={resultsSummary}
         staffInView={staffInView}
       />
-
-      {showMoreText && (
-        <>
-          <p
-            css={{
-              marginBottom: SPACING.L
-            }}
-          >
-            {showMoreText}
-          </p>
-          <Button onClick={showMore}>Show all</Button>
-        </>
-      )}
-
-      {!results.length && query.length > 0 && (
+      {showMoreText}
+      {!results.length && (
         <NoResults>
           Consider searching with different keywords or using the department or
           division filter to browse.
@@ -448,7 +452,7 @@ const StaffPhoto = ({ mid, staffImages }) => {
       image={img.childImageSharp.gatsbyImageData}
       alt={img.alt}
       css={{
-        backgroundColor: COLORS.blue['100'],
+        backgroundColor: 'var(--color-blue-100)',
         borderRadius: '2px',
         overflow: 'hidden'
       }}
@@ -533,22 +537,21 @@ export const query = graphql`
 
 const StaffDirectoryResults = ({
   results,
-  staffImages,
   resultsSummary,
+  staffImages,
   staffInView
 }) => {
   const tableBreakpoint = `@media only screen and (max-width: 820px)`;
   const borderStyle = '1px solid var(--color-neutral-100)';
 
   if (results.length < 1) {
-    return null;
+    return resultsSummary;
   }
 
   return (
     <table
       css={{
         tableLayout: 'fixed',
-
         textAlign: 'left',
         'tr > *': {
           '& + *': {
@@ -574,8 +577,8 @@ const StaffDirectoryResults = ({
         width: '100%'
       }}
     >
-      <caption className='visually-hidden'>
-        <Alert>{resultsSummary}</Alert>
+      <caption css={{ textAlign: 'left' }}>
+        {resultsSummary}
       </caption>
       <colgroup>
         <col
@@ -588,7 +591,7 @@ const StaffDirectoryResults = ({
       <thead
         css={{
           borderBottom: borderStyle,
-          color: COLORS.neutral['300'],
+          color: 'var(--color-neutral-300)',
           [tableBreakpoint]: {
             clip: 'rect(1px, 1px, 1px, 1px)',
             clipPath: 'inset(50%)',
@@ -601,10 +604,10 @@ const StaffDirectoryResults = ({
         }}
       >
         <tr>
-          <th className='visually-hidden'>Photo</th>
-          <th colSpan='3'>Name and title</th>
-          <th colSpan='2'>Contact info</th>
-          <th colSpan='3'>Department</th>
+          <th scope='col' className='visually-hidden'>Photo</th>
+          <th scope='colgroup' colSpan='3'>Name and title</th>
+          <th scope='colgroup' colSpan='2'>Contact info</th>
+          <th scope='colgroup' colSpan='3'>Department</th>
         </tr>
       </thead>
       <tbody>
@@ -625,6 +628,7 @@ const StaffDirectoryResults = ({
                 css={{
                   borderTop: borderStyle
                 }}
+                scope='row'
               >
                 <td
                   css={{
@@ -641,7 +645,7 @@ const StaffDirectoryResults = ({
                       ':hover': {
                         textDecorationThickness: '2px'
                       },
-                      color: COLORS.teal['400'],
+                      color: 'var(--color-teal-400)',
                       textDecoration: 'underline'
                     }}
                     to={`/users/${uniqname}`}

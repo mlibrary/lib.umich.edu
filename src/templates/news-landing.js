@@ -85,6 +85,7 @@ const NewsLandingTemplate = ({ data }) => {
                           }}
                         >
                           <Card
+                            headingLevel={2}
                             href={item.href}
                             title={item.title}
                             subtitle={item.subtitle}

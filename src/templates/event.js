@@ -1,7 +1,8 @@
-import { COLORS, Heading, Margins, SPACING, TYPOGRAPHY } from '../reusable';
 import { eventFormatWhen, eventFormatWhere } from '../utils/events';
+import { Heading, Margins, SPACING, TYPOGRAPHY } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
+import createGoogleMapsURL from '../components/utilities/create-google-maps-url';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import { graphql } from 'gatsby';
 import Html from '../components/html';
@@ -11,6 +12,7 @@ import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import Share from '../components/share';
 import TemplateLayout from './template-layout';
+import useFloorPlan from '../hooks/use-floor-plan';
 
 const EventTemplate = ({ data }) => {
   const node = data.event;
@@ -18,6 +20,7 @@ const EventTemplate = ({ data }) => {
   const { slug } = fields;
   const image
     = relationships?.field_media_image?.relationships.field_media_image;
+  const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
@@ -25,7 +28,6 @@ const EventTemplate = ({ data }) => {
     = relationships?.field_media_image?.field_image_caption?.processed;
   const contact = relationships?.field_library_contact;
   const eventContacts = relationships?.field_non_library_event_contact;
-
   return (
     <TemplateLayout node={node}>
       <Margins>
@@ -66,12 +68,12 @@ const EventTemplate = ({ data }) => {
                   borderRadius: '2px',
                   width: '100%'
                 }}
-                alt=''
+                alt={imageAlt}
               />
               {imageCaptionHTML && (
                 <figcaption
                   css={{
-                    color: COLORS.neutral['300'],
+                    color: 'var(--color-neutral-300)',
                     paddingTop: SPACING.S
                   }}
                 >
@@ -90,7 +92,7 @@ const EventTemplate = ({ data }) => {
             <>
               <h2
                 css={{
-                  borderTop: `solid 1px ${COLORS.neutral['100']}`,
+                  borderTop: `solid 1px var(--color-neutral-100)`,
                   fontSize: '1rem',
                   fontWeight: '600',
                   marginBottom: SPACING['2XS'],
@@ -150,7 +152,7 @@ const EventTemplate = ({ data }) => {
 
           <p
             css={{
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              borderTop: `solid 1px var(--color-neutral-100)`,
               marginTop: SPACING.L,
               paddingTop: SPACING.L
             }}
@@ -200,14 +202,12 @@ const EventMetadata = ({ data }) => {
       type: eventType
     });
   });
+  const where = eventFormatWhere({ node: data });
 
-  const where = eventFormatWhere(
-    {
-      kind: 'full',
-      node: data
-    },
-    true
-  );
+  const buildingId = data.relationships.field_event_building?.id;
+  const floorId = data.relationships.field_event_room?.relationships.field_floor?.id;
+
+  const floorPlan = useFloorPlan(buildingId && floorId ? buildingId : null, floorId && buildingId ? floorId : null);
 
   return (
     <table
@@ -223,7 +223,7 @@ const EventMetadata = ({ data }) => {
           ...TYPOGRAPHY['3XS']
         },
         'th, td': {
-          borderBottom: `solid 1px ${COLORS.neutral[100]}`,
+          borderBottom: `solid 1px var(--color-neutral-100)`,
           padding: SPACING.M,
           paddingLeft: '0'
         },
@@ -262,17 +262,39 @@ const EventMetadata = ({ data }) => {
                 }
               }}
             >
-              {where.map(({ label, href, className }, index) => {
+              {where.map(({ label, href, className, css }, index) => {
                 if (href) {
                   return (
-                    <p key={index} className={className}>
+                    <span key={index} className={className}>
                       <Link to={href}>{label}</Link>
-                    </p>
+                    </span>
                   );
                 }
-
-                return <p key={index} className={className}>{label}</p>;
+                return (
+                  <div css={css} key={index} className={className}>{label}</div>
+                );
               })}
+              {where.map(({ locality }, index) => {
+                if (locality) {
+                  return (
+                    <Link
+                      key={index}
+                      to={createGoogleMapsURL({
+                        placeId: null,
+                        query: locality
+                      })}
+                    >
+                      View directions
+                    </Link>
+                  );
+                }
+                return null;
+              })}
+              {floorPlan && floorPlan.fields && (
+                <span css={{ display: 'block' }}>
+                  <Link to={floorPlan.fields.slug}>View floorplan</Link>
+                </span>
+              )}
             </td>
           </tr>
         )}

@@ -1,5 +1,5 @@
 /* eslint-disable id-length */
-import { COLORS, Heading, SPACING } from '../reusable';
+import { Heading, SPACING } from '../reusable';
 import IconText from './icon-text';
 import PlainLink from './plain-link';
 import PropTypes from 'prop-types';
@@ -65,7 +65,7 @@ export default function Share ({ url, title }) {
                   display: 'inline-block',
                   padding: `${SPACING.XS} 0`,
                   svg: {
-                    color: COLORS.neutral['300']
+                    color: 'var(--color-neutral-300)'
                   }
                 }}
               >

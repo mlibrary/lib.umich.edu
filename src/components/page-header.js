@@ -1,5 +1,4 @@
 import {
-  COLORS,
   Heading,
   Margins,
   MEDIA_QUERIES,
@@ -13,13 +12,14 @@ import React from 'react';
 
 export default function PageHeader ({ breadcrumb, title, summary, image, ...rest }) {
   const imageData = image
-    ? image.localFile.childImageSharp.gatsbyImageData
+    ? image.relationships.field_media_image.localFile.childImageSharp.gatsbyImageData
     : null;
 
+  const imageAlt = image?.field_media_image?.alt || '';
   return (
     <div
       css={{
-        borderBottom: `solid 1px ${COLORS.neutral['100']}`
+        borderBottom: `solid 1px var(--color-neutral-100)`
       }}
     >
       <Margins>
@@ -58,28 +58,19 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
           </div>
           {imageData && (
             <React.Fragment>
-              <div
-                css={{
-                  backgroundImage: `url('${imageData.images.fallback.src}')`,
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: 'cover',
-                  display: 'none',
-                  [MEDIA_QUERIES.LARGESCREEN]: {
-                    display: 'block'
-                  },
-                  flex: '0 1 50%'
-                }}
-              />
               <GatsbyImage
                 image={imageData}
                 css={{
+                  flex: '0 1 50%',
                   margin: `0 -${SPACING.M}`,
                   [MEDIA_QUERIES.LARGESCREEN]: {
-                    display: 'none'
+                    'div:first-child > img': {
+                      position: 'absolute !important'
+                    },
+                    margin: 0
                   }
                 }}
-                alt=''
+                alt={imageAlt}
               />
             </React.Fragment>
           )}
@@ -92,6 +83,7 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
 PageHeader.propTypes = {
   breadcrumb: PropTypes.string,
   image: PropTypes.object,
+  imageAlt: PropTypes.string,
   summary: PropTypes.string,
   title: PropTypes.string
 };

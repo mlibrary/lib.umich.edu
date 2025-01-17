@@ -1,5 +1,5 @@
-import { COLORS, Heading, List, Margins, SPACING, Text } from '../reusable';
 import { graphql, useStaticQuery } from 'gatsby';
+import { Heading, List, Margins, SPACING, Text } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import Layout from '../components/layout';
 import Link from '../components/link';
@@ -23,7 +23,7 @@ const NotFoundPage = () => {
         <Heading size='3XL' level={1} css={{ marginBottom: SPACING.M }}>
           <span
             css={{
-              color: COLORS.orange['400'],
+              color: 'var(--color-orange-400)',
               display: 'block',
               fontSize: '60%'
             }}

@@ -5,11 +5,14 @@ Monthly dependency update to help maintain lib.umich.edu.
 These dependencies have been updated to their latest versions:
 - `@emotion/react`
 - `@emotion/styled`
-- `@umich-lib/web`
+- `@eslint/compat`
+- `@eslint/js`
+- `@stylistic/eslint-plugin`
 - `bottleneck`
 - `entities`
+- `eslint-plugin-react`
+- `eslint`
 - `fetch-retry`
-- `gatsby`
 - `gatsby-plugin-emotion`
 - `gatsby-plugin-image`
 - `gatsby-plugin-lunr`
@@ -24,14 +27,13 @@ These dependencies have been updated to their latest versions:
 - `gatsby-source-drupal`
 - `gatsby-source-filesystem`
 - `gatsby-transformer-sharp`
+- `gatsby`
+- `globals`
 - `highlight-words-core`
 - `isomorphic-fetch`
-- `moment`
-- `patch-package`
-- `prettier`
-- `react`
 - `react-dom`
 - `react-player`
+- `react`
 - `rehype-parse`
 - `rehype-react`
 - `unified`
@@ -44,5 +46,5 @@ These dependencies have been updated to their latest versions:
 - Make sure the PR is consistent in these browsers:
   - [x] Chrome
   - [x] Firefox
-  - [x] Safari
-  - [ ] Edge (the assignee was not able to test the pull request in this browser)
+  - [ ] Safari (the assignee was not able to test the pull request in this browser)
+  - [x] Edge

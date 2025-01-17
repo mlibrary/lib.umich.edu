@@ -1,6 +1,7 @@
 import { COLORS, Heading, List, Text } from '../reusable';
 import Blockquote from '../reusable/blockquote';
 import Callout from '../reusable/callout';
+import CallToAction from '../reusable/call-to-action';
 import DrupalEntity from './drupal-entity';
 import Link from './link';
 import PropTypes from 'prop-types';
@@ -43,7 +44,7 @@ const Heading4 = ({ children, ...other }) => {
     <Heading
       level={4}
       size='3XS'
-      style={{ color: COLORS.neutral['300'] }}
+      style={{ color: 'var(--color-neutral-300)' }}
       {...other}
     >
       {children}
@@ -169,8 +170,12 @@ const renderHast = () => {
 
     // A workaround to replace the container div created by rehype-react with a React fragment.
     createElement: (component, props = {}, children = []) => {
+      const { className } = props;
       if (props['data-entity-uuid']) {
         return <DrupalEntity {...props} />;
+      }
+      if (className === 'umich-lib-cta') {
+        return <CallToAction>{children}</CallToAction>;
       }
 
       if (component === 'div') {

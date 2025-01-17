@@ -1,4 +1,4 @@
-import { COLORS, Heading, Icon, SPACING, Text } from '../reusable';
+import { Heading, Icon, SPACING, Text } from '../reusable';
 import Address from './address';
 import Hours from './todays-hours';
 import icons from '../reusable/icons';
@@ -10,6 +10,7 @@ import React from 'react';
 const LayoutWithIcon = ({
   // eslint-disable-next-line react/prop-types
   d: data,
+  color,
   palette,
   children
 }) => {
@@ -27,9 +28,9 @@ const LayoutWithIcon = ({
         <span
           css={{
             alignItems: 'center',
-            background: COLORS[palette][100],
+            background: `var(--color-${palette}-100)`,
             borderRadius: '50%',
-            color: COLORS[palette][300],
+            color: `var(--color-${palette}-${color})`,
             display: 'flex',
             height: '2.5rem',
             justifyContent: 'center',
@@ -46,6 +47,7 @@ const LayoutWithIcon = ({
 
 LayoutWithIcon.propTypes = {
   children: PropTypes.node,
+  color: PropTypes.string,
   data: PropTypes.string,
   palette: PropTypes.string
 };
@@ -65,7 +67,7 @@ export default function LocationAside ({ node }) {
           marginBottom: SPACING['3XL']
         }}
       >
-        <LayoutWithIcon d={icons.clock} palette='indigo'>
+        <LayoutWithIcon d={icons.clock} palette='indigo' color='400'>
           <Heading
             level={2}
             size='M'
@@ -91,7 +93,7 @@ export default function LocationAside ({ node }) {
           }
         }}
       >
-        <LayoutWithIcon d={icons.address} palette='orange'>
+        <LayoutWithIcon d={icons.address} palette='orange' color='500'>
           <Heading
             level={2}
             size='M'
@@ -105,7 +107,7 @@ export default function LocationAside ({ node }) {
           <Address node={node} directions={true} kind='full' />
         </LayoutWithIcon>
 
-        <LayoutWithIcon d={icons.phone} palette='maize'>
+        <LayoutWithIcon d={icons.phone} palette='green' color='500'>
           <Heading
             level={2}
             size='M'

@@ -1,4 +1,4 @@
-import { COLORS, Heading, Icon, SPACING, TYPOGRAPHY } from '../../reusable';
+import { Heading, Icon, SPACING, TYPOGRAPHY } from '../../reusable';
 import React, { useEffect, useState } from 'react';
 import { displayHours } from '../../utils/hours';
 import { Link as GatsbyLink } from 'gatsby';
@@ -25,6 +25,7 @@ const processHoursData = (data, initialized) => {
     };
 
     return {
+      isOpen: hoursData.isOpen,
       subLabel: `TODAY: ${label}`,
       subText: `TODAY: ${text}`,
       text: node.title,
@@ -65,7 +66,7 @@ export default function HoursLitePanel ({ data }) {
             >
               <span
                 css={{
-                  color: COLORS.maize['500'],
+                  color: 'var(--color-indigo-300)',
                   display: 'inline',
                   flexShrink: '0',
                   width: '1.5rem'
@@ -105,12 +106,11 @@ export default function HoursLitePanel ({ data }) {
                         marginTop: '0'
                       },
                       ...TYPOGRAPHY['3XS'],
-                      color: COLORS.neutral['300'],
+                      color: 'var(--color-neutral-300)',
                       fontSize: '0.875rem',
                       fontWeight: '700',
                       textTransform: 'uppercase'
                     }}
-                    aria-label={hour.subLabel}
                   >
                     {hour.subText}
                   </span>

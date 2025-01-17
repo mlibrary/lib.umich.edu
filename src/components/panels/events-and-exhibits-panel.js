@@ -1,13 +1,12 @@
 /* eslint-disable no-underscore-dangle */
+import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
 import {
-  COLORS,
   Expandable,
   ExpandableButton,
   ExpandableChildren,
   Heading,
   SPACING
 } from '../../reusable';
-import { EXHIBIT_TYPES, sortEventsByStartDate } from '../../utils/events';
 import { graphql, useStaticQuery } from 'gatsby';
 import React, { useEffect, useState } from 'react';
 import {
@@ -72,11 +71,10 @@ export default function EventsAndExhibitsPanel () {
     // Only process todaysEvents if it hasn't been done already.
     if (events && todaysEvents === null) {
       // UseEffects are only client side, so we can use now here.
-
       // Get Today's events.
       const getTodaysEvents = events.filter((event) => {
-        const start = new Date(event.field_event_date_s_[0].value);
-        const end = new Date(event.field_event_date_s_[0].end_value);
+        const start = new Date(event.fieldEventDateS ? event.fieldEventDateS[0].value : event.field_event_date_s_[0].value);
+        const end = new Date(event.fieldEventDateS ? event.fieldEventDateS[0].end_value : event.field_event_date_s_[0].end_value);
         const type = event.relationships.field_event_type.name;
         // We don't want exhibits in the events area.
         if (EXHIBIT_TYPES.includes(type)) {
@@ -97,7 +95,7 @@ export default function EventsAndExhibitsPanel () {
 
       // Get upcoming events.
       const getUpcomingEvents = events.filter((event) => {
-        const start = new Date(event.field_event_date_s_[0].value);
+        const start = new Date(event.fieldEventDateS ? event.fieldEventDateS[0].value : event.field_event_date_s_[0].value);
         const type = event.relationships.field_event_type.name;
 
         // We don't want exhibits in the events area.
@@ -167,7 +165,7 @@ export default function EventsAndExhibitsPanel () {
         >
           <div
             css={{
-              background: COLORS.blue['100'],
+              background: 'var(--color-blue-100)',
               borderRadius: '4px',
               padding: SPACING.M
             }}
@@ -199,7 +197,7 @@ export default function EventsAndExhibitsPanel () {
 
           <h2
             css={{
-              borderTop: `solid 1px ${COLORS.neutral['100']}`,
+              borderTop: `solid 1px var(--color-neutral-100)`,
               fontWeight: '700',
               marginTop: SPACING.L,
               paddingTop: SPACING.M
@@ -210,6 +208,24 @@ export default function EventsAndExhibitsPanel () {
           <Link to='https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D'>
             Sign up for email updates
           </Link>
+          <Heading
+            level={2}
+            size='M'
+            css={{
+              borderTop: `solid 1px var(--color-neutral-100)`,
+              marginBottom: SPACING.S,
+              marginTop: SPACING.L,
+              paddingTop: SPACING.M
+            }}
+          >
+            Workshops
+          </Heading>
+          We offer workshops on a range of topics. See our
+          {' '}
+          <Link to='https://ttc.iss.lsa.umich.edu/ttc/sessions/upcoming/sponsor/university-library/'>
+            list of current offerings
+          </Link>
+          . U-M authentication is required to register.
         </TemplateSide>
       </Template>
     </div>

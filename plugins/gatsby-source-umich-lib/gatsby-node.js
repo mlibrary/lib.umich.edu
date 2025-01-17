@@ -293,6 +293,19 @@ exports.createPages = ({ actions, graphql }) => {
       }
     };
 
+    const getTag = (node, template) => {
+      if (template === path.resolve('src/templates/department.js')) {
+        return 'department';
+      }
+      if (template === path.resolve('src/templates/news.js')) {
+        return 'news';
+      }
+      if (node.relationships.field_event_type) {
+        return node.relationships.field_event_type.name === 'Exhibit' ? 'exhibit' : 'event';
+      }
+      return null;
+    };
+
     // Query for nodes to use in creating pages.
     resolve(
       graphql(
@@ -478,13 +491,12 @@ exports.createPages = ({ actions, graphql }) => {
                 }
               }
             }
-            profiles: allUserUser(
-              filter: { field_make_profile_public: { eq: true } }
+           profiles: allUserUser(
+              filter: {name: {ne: null}}
             ) {
               edges {
                 node {
                   __typename
-                  field_make_profile_public
                   field_user_display_name
                   field_user_work_title
                   name
@@ -593,6 +605,9 @@ exports.createPages = ({ actions, graphql }) => {
                     field_design_template {
                       field_machine_name
                     }
+                    field_event_type{
+                      name
+                    }
                   }
                 }
               }
@@ -629,6 +644,7 @@ exports.createPages = ({ actions, graphql }) => {
 
         edges.forEach(({ node }) => {
           const template = getTemplate(node);
+          const tag = getTag(node, template);
           const summary = node.body ? node.body.summary : null;
           const keywords = node.field_seo_keywords
             ? node.field_seo_keywords
@@ -643,6 +659,7 @@ exports.createPages = ({ actions, graphql }) => {
                 drupal_nid: node.drupal_internal__nid,
                 keywords,
                 summary,
+                tag,
                 title: node.title
               },
               path: node.fields.slug

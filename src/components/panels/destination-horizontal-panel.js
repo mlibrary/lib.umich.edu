@@ -1,5 +1,5 @@
-import { COLORS, Heading, SPACING, TYPOGRAPHY } from '../../reusable';
 import { getFloor, getImage, getParentTitle, getRoom } from '../../utils';
+import { Heading, SPACING, TYPOGRAPHY } from '../../reusable';
 import CardImage from '../../reusable/card-image';
 import Html from '../html';
 import Link from '../link';
@@ -14,11 +14,11 @@ export default function DestinationHorizontalPanel ({ data }) {
     const floor = getFloor({ node: card });
     const imageData = getImage({ node: card });
     const room = getRoom({ node: card });
-
     return {
       bid: card.relationships.field_room_building.id,
       content: <Html html={card.body.processed} />,
-      image: imageData.localFile.childImageSharp.gatsbyImageData,
+      image: imageData.relationships.field_media_image.localFile.childImageSharp.gatsbyImageData,
+      imageAlt: imageData.field_media_image?.alt,
       linkDestText: `${parentTitle} ${floor}`,
       rid: card.relationships.field_floor.id,
       subtitle: `${parentTitle}, ${floor}, ${room}`,
@@ -60,7 +60,7 @@ const DestinationCard = ({ card }) => {
         }
       }}
     >
-      <CardImage image={card.image} />
+      <CardImage image={card.image} alt={card.imageAlt} />
       <div>
         <Heading
           size='S'
@@ -72,7 +72,7 @@ const DestinationCard = ({ card }) => {
           {card.title}
           <span
             css={{
-              color: COLORS.neutral['300'],
+              color: 'var(--color-neutral-300)',
               display: 'block',
               marginTop: SPACING['3XS'],
               ...TYPOGRAPHY['3XS']

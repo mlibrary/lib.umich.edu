@@ -1,5 +1,5 @@
 /* eslint-disable no-invalid-this */
-import { Alert, Button, COLORS, Heading, Margins, SPACING, TextInput } from '../reusable';
+import { Button, Heading, Margins, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import { navigate, useLocation } from '@reach/router';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
@@ -404,7 +404,6 @@ const filterResults = ({ results, healthSciencesOnly, category }) => {
       }
     );
   }
-
   return filteredResults;
 };
 
@@ -417,25 +416,59 @@ const SpecialistsResults = () => {
     results
   });
   const resultsShown = resultsFiltered.slice(0, show);
-  let resultsSummary = results.length
-    ? `${resultsFiltered.length} results`
-    : `No results`;
-  if (query) {
-    resultsSummary += ` for ${query}`;
+  let resultsSummary = <></>;
+  let showMoreText = null;
+  if (resultsFiltered.length > 0) {
+    resultsSummary = (<>{resultsFiltered.length} result{resultsFiltered.length > 1 && 's'}</>);
+    if (show < resultsFiltered.length) {
+      resultsSummary = (<>Showing {show} of {resultsFiltered.length} results</>);
+      const showMore = () => {
+        setShow(results.length);
+      };
+      showMoreText = (
+        <>
+          <p
+            css={{
+              marginBottom: SPACING.M
+            }}
+          >
+            {resultsSummary}
+          </p>
+          <Button onClick={showMore}>Show all</Button>
+        </>
+      );
+    }
   }
-  if (category) {
-    resultsSummary += ` in ${category}`;
+  [query, category].forEach((param) => {
+    if (param) {
+      resultsSummary = (
+        <>
+          {resultsSummary} {param === query ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
+        </>
+      );
+    }
+  });
+  if (healthSciencesOnly) {
+    resultsSummary = (
+      <>
+        {resultsSummary} with the <strong style={{ fontWeight: '800' }}>Show Health Sciences Only</strong> filter active
+      </>
+    );
   }
-  const showMoreText
-    = show < resultsFiltered.length
-      ? `Showing ${show} of ${resultsFiltered.length} results`
-      : null;
-  const showMore = () => {
-    setShow(results.length);
-  };
+  if (resultsFiltered.length === 0) {
+    resultsSummary = (<div><span aria-live='assertive'>No results {resultsSummary}</span></div>);
+  }
   const tableBreakpoint = `@media only screen and (max-width: 720px)`;
   const borderStyle = '1px solid var(--color-neutral-100)';
 
+  if (resultsFiltered.length === 0) {
+    return (
+      <>
+        {resultsSummary}
+        <NoResults>Consider searching with different keywords.</NoResults>
+      </>
+    );
+  }
   return (
     <React.Fragment>
       <table
@@ -459,14 +492,15 @@ const SpecialistsResults = () => {
           width: '100%'
 
         }}
+        aria-live='polite'
       >
-        <caption className='visually-hidden'>
-          <Alert>{resultsSummary}</Alert>
+        <caption css={{ textAlign: 'left' }}>
+          {resultsSummary}
         </caption>
         <thead
           css={{
             borderBottom: borderStyle,
-            color: COLORS.neutral['300'],
+            color: 'var(--color-neutral-300)',
             [tableBreakpoint]: {
               clip: 'rect(1px, 1px, 1px, 1px)',
               clipPath: 'inset(50%)',
@@ -480,7 +514,7 @@ const SpecialistsResults = () => {
         >
           <tr>
             <th scope='col'>Subjects and specialties</th>
-            <th colSpan='2' scope='col'>Contact</th>
+            <th colSpan='2' scope='colgroup'>Contact</th>
             {healthSciencesOnly && <th scope='col'>Category</th>}
           </tr>
         </thead>
@@ -533,22 +567,8 @@ const SpecialistsResults = () => {
         </tbody>
       </table>
 
-      {showMoreText && (
-        <>
-          <p
-            css={{
-              marginBottom: SPACING.M
-            }}
-          >
-            {showMoreText}
-          </p>
-          <Button onClick={showMore}>Show all</Button>
-        </>
-      )}
+      {showMoreText}
 
-      {!resultsFiltered.length && (
-        <NoResults>Consider searching with different keywords.</NoResults>
-      )}
     </React.Fragment>
   );
 };

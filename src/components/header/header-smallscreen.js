@@ -1,5 +1,4 @@
 import {
-  COLORS,
   Icon,
   LINK_STYLES,
   Margins,
@@ -73,7 +72,7 @@ const SmallScreenHeader = ({ primary, secondary }) => {
           '@media only screen and (min-width: 1129px)': {
             display: 'none'
           },
-          borderBottom: `solid 2px ${COLORS.neutral['100']}`,
+          borderBottom: `solid 2px var(--color-neutral-100)`,
           display: 'block'
         }}
       >
@@ -231,7 +230,7 @@ const NavDropdown = ({ children, toggleNavNode }) => {
     <div
       css={{
         background: 'white',
-        borderTop: `solid 1px ${COLORS.neutral[100]}`,
+        borderTop: `solid 1px var(--color-neutral-100)`,
         boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
         maxWidth: '84vw',
         position: 'absolute',
@@ -254,8 +253,8 @@ NavDropdown.propTypes = {
 
 const navItemStyles = {
   alignItems: 'center',
-  borderBottom: `solid 1px ${COLORS.neutral['100']}`,
-  color: COLORS.neutral['400'],
+  borderBottom: `solid 1px var(--color-neutral-100)`,
+  color: 'var(--color-neutral-400)',
   cursor: 'pointer',
   display: 'flex',
   padding: SPACING.M,
@@ -275,8 +274,8 @@ const NavSecondary = ({ items }) => {
               css={{
                 ...navItemStyles,
                 ...TYPOGRAPHY['3XS'],
-                background: COLORS.blue['100'],
-                color: COLORS.neutral['300']
+                background: 'var(--color-blue-100)',
+                color: 'var(--color-neutral-300)'
               }}
             >
               {icon && (

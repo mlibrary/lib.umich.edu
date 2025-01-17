@@ -1,4 +1,4 @@
-import { COLORS, Heading, List } from '../reusable';
+import { Heading, List } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import getNode from '../utils/get-node';
 import { graphql } from 'gatsby';
@@ -33,13 +33,13 @@ export default function VisitTemplate ({ data, ...rest }) {
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
   return (
     <Layout drupalNid={drupalInternalNid}>
-      <header aria-label='Location description'>
+      <header>
         <PageHeader
           breadcrumb={fields.breadcrumb}
           title={title}
           summary={body ? body.summary : null}
           image={
-            relationships.field_media_image.relationships.field_media_image
+            relationships.field_media_image
           }
         />
       </header>
@@ -133,7 +133,7 @@ export default function VisitTemplate ({ data, ...rest }) {
       <div
         css={{
           'section:nth-of-type(odd)': {
-            background: COLORS.blue['100']
+            background: 'var(--color-blue-100)'
           }
         }}
       >

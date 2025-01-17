@@ -1,16 +1,16 @@
-import { COLORS, SPACING } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { SPACING } from '../reusable';
 
-export default function CardImage ({ image }) {
+export default function CardImage ({ image, alt = '' }) {
   return (
     <GatsbyImage
       image={image}
-      alt={image.alt || ''}
+      alt={alt}
       css={{
         aspectRatio: '3 / 2',
-        backgroundColor: COLORS.blue['100'],
+        backgroundColor: 'var(--color-blue-100)',
         borderRadius: '4px',
         marginBottom: SPACING.S,
         overflow: 'hidden',
@@ -21,7 +21,6 @@ export default function CardImage ({ image }) {
 }
 
 CardImage.propTypes = {
-  image: PropTypes.shape({
-    alt: PropTypes.string
-  })
+  alt: PropTypes.string,
+  image: PropTypes.object
 };

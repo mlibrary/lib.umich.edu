@@ -1,13 +1,13 @@
-import { COLORS, Heading, SPACING, Z_SPACE } from '../reusable';
+import { Heading, SPACING, Z_SPACE } from '../reusable';
 import React from 'react';
 
 export default function ChatIframe () {
   return (
     <div
       css={{
-        border: `solid 1px ${COLORS.neutral['100']}`,
+        border: `solid 1px var(--color-neutral-100)`,
         borderRadius: '4px',
-        borderTop: `solid 2px ${COLORS.maize['400']}`,
+        borderTop: `solid 2px var(--color-maize-400)`,
         marginTop: SPACING.S,
         maxWidth: '20rem',
         ...Z_SPACE['8']
