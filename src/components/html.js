@@ -1,6 +1,6 @@
 import * as prod from 'react/jsx-runtime';
-import { Heading, List, Text } from '../reusable';
 import { createElement, Fragment, React, useEffect, useState } from 'react';
+import { Heading, List, Text } from '../reusable';
 import Blockquote from '../reusable/blockquote';
 import Callout from '../reusable/callout';
 import DrupalEntity from './drupal-entity';
