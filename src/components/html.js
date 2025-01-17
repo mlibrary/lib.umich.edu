@@ -1,20 +1,16 @@
-import { COLORS, Heading, List, Text } from '../reusable';
+import * as prod from 'react/jsx-runtime';
+import { Heading, List, Text } from '../reusable';
+import { createElement, Fragment, React, useEffect, useState } from 'react';
 import Blockquote from '../reusable/blockquote';
 import Callout from '../reusable/callout';
-import CallToAction from '../reusable/call-to-action';
 import DrupalEntity from './drupal-entity';
 import Link from './link';
-import PropTypes from 'prop-types';
 import Prose from './prose';
-import React from 'react';
-import rehype from 'rehype-parse';
-import RehypeReact from 'rehype-react';
+import rehypeParse from 'rehype-parse';
+import rehypeReact from 'rehype-react';
 import Table from './table';
 import { unified } from 'unified';
 
-/**
- *Headings
- */
 const Heading2 = ({ children, ...other }) => {
   return (
     <Heading level={2} size='M' {...other}>
@@ -23,20 +19,12 @@ const Heading2 = ({ children, ...other }) => {
   );
 };
 
-Heading2.propTypes = {
-  children: PropTypes.node
-};
-
 const Heading3 = ({ children, ...other }) => {
   return (
     <Heading level={3} size='S' {...other}>
       {children}
     </Heading>
   );
-};
-
-Heading3.propTypes = {
-  children: PropTypes.node
 };
 
 const Heading4 = ({ children, ...other }) => {
@@ -52,20 +40,12 @@ const Heading4 = ({ children, ...other }) => {
   );
 };
 
-Heading4.propTypes = {
-  children: PropTypes.node
-};
-
 const Heading5 = ({ children, ...other }) => {
   return (
     <Heading level={5} size='3XS' {...other}>
       {children}
     </Heading>
   );
-};
-
-Heading5.propTypes = {
-  children: PropTypes.node
 };
 
 const Heading6 = ({ children, ...other }) => {
@@ -76,126 +56,117 @@ const Heading6 = ({ children, ...other }) => {
   );
 };
 
-Heading6.propTypes = {
-  children: PropTypes.node
-};
-
-const renderHast = () => {
-  /* eslint-disable id-length */
-  // Disable eslint id-length for things like "a".
-  return new RehypeReact({
-    components: {
-      a: ({ children, href }) => {
-        if (!children || !href) {
-        // Don't render links without a label or href
-          return null;
-        }
-        return <Link to={href}>{children}</Link>;
-      },
-      article: () => {
-        return null;
-      },
-      blockquote: (props) => {
-        return <Blockquote {...props} />;
-      },
-      br: () => {
-        return <br />;
-      },
-      'drupal-entity': (props) => {
-        return <DrupalEntity {...props} />;
-      },
-      em: (props) => {
-        return <em {...props} css={{ fontStyle: 'italic' }} />;
-      },
-      figcaption: (props) => {
-        return (
-          <figcaption
-            {...props}
-            css={{
-              color: COLORS.neutral['300']
-            }}
-          />
-        );
-      },
-      figure: (props) => {
-        return <figure {...props} css={{ maxWidth: '38rem' }} />;
-      },
-      h2: Heading2,
-      h3: Heading3,
-      h4: Heading4,
-      h5: Heading5,
-      h6: Heading6,
-      iframe: () => {
-        return null;
-      },
-      lede: ({ children, ...other }) => {
-        return (
-          <Text lede {...other}>
-            {children}
-          </Text>
-        );
-      },
-      ol: ({ children }) => {
-        return <List type='numbered'>{children}</List>;
-      },
-      p: ({ children, className }) => {
-        if (className === 'umich-lib-callout') {
-          return <Callout>{children}</Callout>;
-        }
-
-        if (className === 'umich-lib-alert') {
-          return (
-            <Callout intent='warning' alert={true}>
-              {children}
-            </Callout>
-          );
-        }
-
-        return <Text>{children}</Text>;
-      },
-      strong: ({ children }) => {
-        return (
-          <strong css={{ fontWeight: '800' }}>{children}</strong>
-        );
-      },
-      table: Table,
-      text: Text,
-      u: ({ children }) => {
-        return children;
-      },
-      ul: ({ children }) => {
-        return <List type='bulleted'>{children}</List>;
-      }
-    },
-
-    // A workaround to replace the container div created by rehype-react with a React fragment.
-    createElement: (component, props = {}, children = []) => {
-      const { className } = props;
-      if (props['data-entity-uuid']) {
-        return <DrupalEntity {...props} />;
-      }
-      if (className === 'umich-lib-cta') {
-        return <CallToAction>{children}</CallToAction>;
-      }
-
-      if (component === 'div') {
-        return <React.Fragment {...props}>{children}</React.Fragment>;
-      }
-
-      return React.createElement(component, props, children);
+// @ts-expect-error: the react types are missing.
+const production = { Fragment: prod.Fragment, jsx: prod.jsx, jsxs: prod.jsxs, components: {
+  a: ({ children, href }) => {
+    if (!children || !href) {
+      // Don't render links without a label or href
+      return null;
     }
-  }).Compiler;
-  /* eslint-enable id-length */
+    return <Link to={href}>{children}</Link>;
+  },
+  article: () => {
+    return null;
+  },
+  blockquote: (props) => {
+    return <Blockquote {...props} />;
+  },
+  br: () => {
+    return <br />;
+  },
+  'drupal-entity': (props) => {
+    return <DrupalEntity {...props} />;
+  },
+  em: (props) => {
+    return <em {...props} css={{ fontStyle: 'italic' }} />;
+  },
+  figcaption: (props) => {
+    return (
+      <figcaption
+        {...props}
+        css={{
+          color: 'var(--color-neutral-300)'
+        }}
+      />
+    );
+  },
+  figure: (props) => {
+    return <figure {...props} css={{ maxWidth: '38rem' }} />;
+  },
+  h2: Heading2,
+  h3: Heading3,
+  h4: Heading4,
+  h5: Heading5,
+  h6: Heading6,
+  iframe: () => {
+    return null;
+  },
+  lede: ({ children, ...other }) => {
+    return (
+      <Text lede {...other}>
+        {children}
+      </Text>
+    );
+  },
+  ol: ({ children }) => {
+    return <List type='numbered'>{children}</List>;
+  },
+  p: ({ children, className }) => {
+    if (className === 'umich-lib-callout') {
+      return <Callout>{children}</Callout>;
+    }
+
+    if (className === 'umich-lib-alert') {
+      return (
+        <Callout intent='warning' alert={true}>
+          {children}
+        </Callout>
+      );
+    }
+
+    return <Text>{children}</Text>;
+  },
+  strong: ({ children }) => {
+    return (
+      <strong css={{ fontWeight: '800' }}>{children}</strong>
+    );
+  },
+  table: Table,
+  text: Text,
+  u: ({ children }) => {
+    return children;
+  },
+  ul: ({ children }) => {
+    return <List type='bulleted'>{children}</List>;
+  }
+} };
+
+/**
+ * @param {string} text
+ * @returns {JSX.Element}
+ */
+const useProcessor = (text) => {
+  const [Content, setContent] = useState(createElement(Fragment));
+
+  useEffect(
+    () => {
+      ;(async function () {
+        const file = await unified()
+          .use(rehypeParse, { fragment: true })
+          .use(rehypeReact, production)
+          .process(text);
+
+        setContent(file.result);
+      })();
+    },
+    [text]
+  );
+
+  return Content;
 };
 
 const Html = ({ html, ...rest }) => {
-  const tree = unified().use(rehype, { fragment: true }).parse(html);
-
-  return <Prose {...rest}>{renderHast(tree)}</Prose>;
-};
-
-Html.propTypes = {
-  html: PropTypes.string
+  return <Prose {...rest}>{useProcessor(html)}</Prose>;
 };
 
 export default Html;
