@@ -56,7 +56,8 @@ const Heading6 = ({ children, ...other }) => {
   );
 };
 
-// @ts-expect-error: the react types are missing.
+/* eslint-disable id-length */
+// eslint-disable-next-line sort-keys
 const production = { Fragment: prod.Fragment, jsx: prod.jsx, jsxs: prod.jsxs, components: {
   a: ({ children, href }) => {
     if (!children || !href) {
@@ -140,6 +141,7 @@ const production = { Fragment: prod.Fragment, jsx: prod.jsx, jsxs: prod.jsxs, co
     return <List type='bulleted'>{children}</List>;
   }
 } };
+/* eslint-enable id-length */
 
 /**
  * @param {string} text
