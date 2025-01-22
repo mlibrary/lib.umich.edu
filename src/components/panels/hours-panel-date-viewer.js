@@ -337,9 +337,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                     key={weekIndex}
                     aria-label={`${currentlySelectedWeek ? 'This is the currently selected week.' : 'View'} week ${weekIndex + 1} in ${month} from ${getFormattedDate(week[0])} to ${getFormattedDate(week[week.length - 1])}`}
                     css={{
-                      border: currentlySelectedWeek
-                        ? `2px solid var(--color-maize-400)`
-                        : `2px solid rgba(0,0,0,0)`,
+                      border: `2px solid ${currentlySelectedWeek ? 'var(--color-maize-400)' : 'transparent'}`,
                       display: 'grid',
                       gap: '4px',
                       gridTemplateColumns: 'repeat(7, 1fr)',
