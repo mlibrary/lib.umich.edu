@@ -301,11 +301,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
             >
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => {
                 return (
-                  <div
-                    css={{
-                    }}
-                    key={day}
-                  >
+                  <div key={day}>
                     {day}
                   </div>
                 );
