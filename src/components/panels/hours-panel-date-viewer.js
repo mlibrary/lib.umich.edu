@@ -3,19 +3,14 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useStateValue } from '../use-state';
 
-const dateFormat = (string, abbreviated = false) => {
-  if (abbreviated) {
-    return string.toLocaleString('en-US', {
-      day: 'numeric',
-      month: 'short'
-    });
-  }
-  return string.toLocaleString('en-US', {
+const dateFormat = (date, abbreviated = false) => {
+  const options = {
     day: 'numeric',
-    month: 'long',
-    weekday: 'long',
-    year: 'numeric'
-  });
+    month: abbreviated ? 'short' : 'long',
+    ...(abbreviated ? {} : { weekday: 'long', year: 'numeric' })
+  };
+  
+  return date.toLocaleString('en-US', options);
 };
 
 const IconWrapper = (props) => {
