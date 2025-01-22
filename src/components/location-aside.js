@@ -6,6 +6,7 @@ import Link from './link';
 import LocationAnchoredLink from './location-anchored-link';
 import PropTypes from 'prop-types';
 import React from 'react';
+import useFloorPlan from '../hooks/use-floor-plan';
 
 const LayoutWithIcon = ({
   // eslint-disable-next-line react/prop-types
@@ -53,7 +54,16 @@ LayoutWithIcon.propTypes = {
 };
 
 export default function LocationAside ({ node }) {
-  const { field_phone_number: fieldPhoneNumber, field_email: fieldEmail, relationships } = node;
+  const { field_phone_number: fieldPhoneNumber, field_email: fieldEmail, field_floor_plan: fieldFloorPlan, relationships } = node;
+  console.log(node);
+  const nids = fieldFloorPlan.map((plan) => {
+    return plan.drupal_internal__target_id;
+  });
+  console.log(nids);
+  // Fetch floor plans for all nids
+  const floorPlans = useFloorPlan(null, null, nids);
+  console.log(floorPlans);
+
   const buildingNode = relationships?.field_room_building;
   const parentLocationNode
     = relationships?.field_parent_location?.relationships?.field_parent_location;
@@ -133,7 +143,30 @@ export default function LocationAside ({ node }) {
             )}
           </div>
         </LayoutWithIcon>
+
       </address>
+      {fieldFloorPlan && (
+        <LayoutWithIcon
+          css={{
+            marginTop: SPACING['3XL']
+          }}
+          d={icons.phone}
+          palette='green'
+          color='500'
+        >
+          {floorPlans.length > 0
+          && floorPlans.map((floorPlan, index) => {
+            return floorPlan && floorPlan.fields
+              ? (
+                  <span key={index} css={{ display: 'block' }}>
+                    <Link to={floorPlan.fields.slug}>View floorplan</Link>
+                  </span>
+                )
+              : null;
+          }
+          )}
+        </LayoutWithIcon>
+      )}
     </React.Fragment>
   );
 }

@@ -10,6 +10,9 @@ export const query = graphql`
     field_root_page_
     field_phone_number
     field_email
+    field_floor_plan {
+      drupal_internal__target_id
+    }
     field_hours_different_from_build
     field_local_navigation
     field_is_location_
