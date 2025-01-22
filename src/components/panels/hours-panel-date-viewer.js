@@ -1,4 +1,4 @@
-import { Heading, Icon, Link, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../../reusable';
+import { Heading, Icon, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../../reusable';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useStateValue } from '../use-state';
