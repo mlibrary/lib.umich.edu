@@ -9,20 +9,8 @@ const dateFormat = (date, abbreviated = false) => {
     month: abbreviated ? 'short' : 'long',
     ...(abbreviated ? {} : { weekday: 'long', year: 'numeric' })
   };
-  
-  return date.toLocaleString('en-US', options);
-};
 
-const IconWrapper = (props) => {
-  return (
-    <span
-      css={{
-        display: 'inline-block',
-        marginTop: '-2px'
-      }}
-      {...props}
-    />
-  );
+  return date.toLocaleString('en-US', options);
 };
 
 const updateWeekOffset = ({
@@ -442,18 +430,18 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
         </PreviousNextWeekButton>
         <button
           css={{
-  boxShadow: 'none',
-  color: 'inherit',
-  ...(isCalendarVisible
-    ? {
-        boxShadow: 'inset 0 -2px var(--color-teal-400)'
-      }
-    : {
-        '&:hover': {
-          boxShadow: 'inset 0 -2px var(--color-teal-400)'
-        }
-      })
-}}
+            boxShadow: 'none',
+            color: 'inherit',
+            ...(isCalendarVisible
+              ? {
+                  boxShadow: 'inset 0 -2px var(--color-teal-400)'
+                }
+              : {
+                  '&:hover': {
+                    boxShadow: 'inset 0 -2px var(--color-teal-400)'
+                  }
+                })
+          }}
           onClick={(event) => {
             return handleInteraction(event, toggleCalendarVisibility);
           }}
@@ -521,10 +509,12 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
           '&:hover': {
             boxShadow: 'inset 0 -2px var(--color-teal-400);'
           },
+          alignItems: 'center',
           boxShadow: 'none',
           color: 'var(--color-teal-400)',
           display: 'none',
           fontWeight: 'bold',
+          gap: SPACING['2XS'],
           margin: '.5rem 0',
           [MEDIA_QUERIES.LARGESCREEN]: {
             display: 'flex'
@@ -532,36 +522,31 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
         }}
       >
         {type === 'previous' && (
-          <IconWrapper>
-            <Icon
-              icon='navigate_before'
-              css={{ marginRight: SPACING['2XS'] }}
-            />
-          </IconWrapper>
+          <Icon
+            icon='navigate_before'
+          />
         )}
         {children}
         {type === 'next' && (
-          <IconWrapper>
-            <Icon icon='navigate_next' css={{ marginLeft: SPACING['2XS'] }} />
-          </IconWrapper>
+          <Icon icon='navigate_next' />
         )}
       </button>
       <button
         {...rest}
         css={{
+          alignItems: 'center',
           boxShadow: 'none',
           color: 'var(--color-teal-400)',
           display: 'flex',
           fontWeight: 'bold',
+          gap: SPACING['2XS'],
           margin: '.5rem 0',
           [MEDIA_QUERIES.LARGESCREEN]: {
             display: 'none'
           }
         }}
       >
-        <IconWrapper>
-          <Icon icon={type === 'previous' ? 'navigate_before' : 'navigate_next'} />
-        </IconWrapper>
+        <Icon icon={type === 'previous' ? 'navigate_before' : 'navigate_next'} />
         <span className='visually-hidden'>{children}</span>
       </button>
     </>
