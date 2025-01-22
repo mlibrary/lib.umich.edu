@@ -82,9 +82,7 @@ export default function HoursPanelDateViewer () {
 
   const toggleCalendarVisibility = () => {
     setIsCalendarVisible(!isCalendarVisible);
-    setCalendarStatus(
-      isCalendarVisible ? 'Calendar closed' : 'Calendar open'
-    );
+    setCalendarStatus(`Calendar ${isCalendarVisible ? 'closed' : 'open'}`);
   };
 
   return (
