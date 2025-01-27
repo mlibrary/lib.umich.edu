@@ -38,7 +38,6 @@ const DestinationLocationInfo = ({ node }) => {
     ? fieldRoomBuilding.id
     : fieldParentLocation?.id;
   const fid = node.relationships.field_floor?.id;
-  console.log(node);
   const floorPlan = useFloorPlan(bid, fid);
   // eslint-disable-next-line no-underscore-dangle
   const shouldDisplayHours = node.field_display_hours_;
@@ -87,7 +86,7 @@ const DestinationLocationInfo = ({ node }) => {
             <span>
               {locationSummary}
               <span css={{ display: 'block' }}>
-                {askLibrarian ? ('Online') : (<Link to={floorPlan.fields.slug}>View floorplan</Link>)}
+                {askLibrarian ? ('Online') : (<Link to={floorPlan.fields.slug}>View floor plan</Link>)}
               </span>
             </span>
           </IconText>

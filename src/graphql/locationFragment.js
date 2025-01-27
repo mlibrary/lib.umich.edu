@@ -43,6 +43,12 @@ export const query = graphql`
             title
           }
         }
+        ... on node__floor_plan {
+          fields {
+            slug
+            title
+          }
+        }
       }
       field_media_image {
         field_media_image {
