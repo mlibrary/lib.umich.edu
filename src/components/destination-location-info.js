@@ -86,7 +86,7 @@ const DestinationLocationInfo = ({ node }) => {
             <span>
               {locationSummary}
               <span css={{ display: 'block' }}>
-                {askLibrarian ? ('Online') : (<Link to={floorPlan.fields.slug}>View floorplan</Link>)}
+                {askLibrarian ? ('Online') : (<Link to={floorPlan.fields.slug}>View floor plan</Link>)}
               </span>
             </span>
           </IconText>
