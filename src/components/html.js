@@ -56,97 +56,112 @@ const Heading6 = ({ children, ...other }) => {
   );
 };
 
-/* eslint-disable id-length */
-// eslint-disable-next-line sort-keys
-const production = { Fragment: prod.Fragment, jsx: prod.jsx, jsxs: prod.jsxs, components: {
-  a: ({ children, href }) => {
-    if (!children || !href) {
-      // Don't render links without a label or href
-      return null;
-    }
-    return <Link to={href}>{children}</Link>;
-  },
-  article: () => {
-    return null;
-  },
-  blockquote: (props) => {
-    return <Blockquote {...props} />;
-  },
-  br: () => {
-    return <br />;
-  },
-  'drupal-entity': (props) => {
+const createElementWithCustomLogic = (component, props = {}, children = []) => {
+  if (props['data-entity-uuid']) {
     return <DrupalEntity {...props} />;
-  },
-  em: (props) => {
-    return <em {...props} css={{ fontStyle: 'italic' }} />;
-  },
-  figcaption: (props) => {
-    return (
-      <figcaption
-        {...props}
-        css={{
-          color: 'var(--color-neutral-300)'
-        }}
-      />
-    );
-  },
-  figure: (props) => {
-    return <figure {...props} css={{ maxWidth: '38rem' }} />;
-  },
-  h2: Heading2,
-  h3: Heading3,
-  h4: Heading4,
-  h5: Heading5,
-  h6: Heading6,
-  iframe: () => {
-    return null;
-  },
-  lede: ({ children, ...other }) => {
-    return (
-      <Text lede {...other}>
-        {children}
-      </Text>
-    );
-  },
-  ol: ({ children }) => {
-    return <List type='numbered'>{children}</List>;
-  },
-  p: ({ children, className }) => {
-    if (className === 'umich-lib-callout') {
-      return <Callout>{children}</Callout>;
-    }
-
-    if (className === 'umich-lib-alert') {
-      return (
-        <Callout intent='warning' alert={true}>
-          {children}
-        </Callout>
-      );
-    }
-
-    return <Text>{children}</Text>;
-  },
-  strong: ({ children }) => {
-    return (
-      <strong css={{ fontWeight: '800' }}>{children}</strong>
-    );
-  },
-  table: Table,
-  text: Text,
-  u: ({ children }) => {
-    return children;
-  },
-  ul: ({ children }) => {
-    return <List type='bulleted'>{children}</List>;
   }
-} };
+
+  if (component === 'div') {
+    return <Fragment {...props}>{children}</Fragment>;
+  }
+
+  return React.createElement(component, props, children);
+};
+
+/* eslint-disable id-length */
+
+const production = {
+  Fragment: prod.Fragment,
+  jsx: prod.jsx,
+  jsxs: prod.jsxs,
+  components: {
+    a: ({ children, href }) => {
+      console.log(href);
+      if (!children || !href) {
+      // Don't render links without a label or href
+        return null;
+      }
+      return <Link to={href}>{children}</Link>;
+    },
+    article: () => {
+      return null;
+    },
+    blockquote: (props) => {
+      return <Blockquote {...props} />;
+    },
+    br: () => {
+      return <br />;
+    },
+    'drupal-entity': (props) => {
+      return <DrupalEntity {...props} />;
+    },
+    em: (props) => {
+      return <em {...props} css={{ fontStyle: 'italic' }} />;
+    },
+    figcaption: (props) => {
+      return (
+        <figcaption
+          {...props}
+          css={{
+            color: 'var(--color-neutral-300)'
+          }}
+        />
+      );
+    },
+    figure: (props) => {
+      return <figure {...props} css={{ maxWidth: '38rem' }} />;
+    },
+    h2: Heading2,
+    h3: Heading3,
+    h4: Heading4,
+    h5: Heading5,
+    h6: Heading6,
+    iframe: () => {
+      return null;
+    },
+    lede: ({ children, ...other }) => {
+      return (
+        <Text lede {...other}>
+          {children}
+        </Text>
+      );
+    },
+    ol: ({ children }) => {
+      return <List type='numbered'>{children}</List>;
+    },
+    p: ({ children, className }) => {
+      if (className === 'umich-lib-callout') {
+        return <Callout>{children}</Callout>;
+      }
+
+      if (className === 'umich-lib-alert') {
+        return (
+          <Callout intent='warning' alert={true}>
+            {children}
+          </Callout>
+        );
+      }
+
+      return <Text>{children}</Text>;
+    },
+    strong: ({ children }) => {
+      return (
+        <strong css={{ fontWeight: '800' }}>{children}</strong>
+      );
+    },
+    table: Table,
+    text: Text,
+    u: ({ children }) => {
+      return children;
+    },
+    ul: ({ children }) => {
+      return <List type='bulleted'>{children}</List>;
+    }
+  },
+  createElement: createElementWithCustomLogic
+};
 /* eslint-enable id-length */
 
-/**
- * @param {string} text
- * @returns {JSX.Element}
- */
 const useProcessor = (text) => {
   const [Content, setContent] = useState(createElement(Fragment));
 
@@ -157,7 +172,6 @@ const useProcessor = (text) => {
           .use(rehypeParse, { fragment: true })
           .use(rehypeReact, production)
           .process(text);
-
         setContent(file.result);
       })();
     },
