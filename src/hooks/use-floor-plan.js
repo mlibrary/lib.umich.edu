@@ -1,6 +1,6 @@
 import { graphql, useStaticQuery } from 'gatsby';
 
-export default function useFloorPlan (bid, fid, nids) {
+export default function useFloorPlan (bid, fid) {
   const data = useStaticQuery(
     graphql`
       query {
@@ -15,30 +15,17 @@ export default function useFloorPlan (bid, fid, nids) {
     `
   );
 
-  if (!bid && !fid && (!nids || nids.length === 0)) {
+  if (!bid && !fid) {
     return null;
   }
 
-  const plans = data.allNodeFloorPlan.edges.map(({ node }) => {
-    return node;
+  // eslint-disable-next-line no-shadow
+  const { node } = data.allNodeFloorPlan.edges.find(({ node }) => {
+    const { field_room_building: fieldRoomBuilding, field_floor: fieldFloor } = node.relationships;
+
+    // The floor plan node matches when building and floor id both match.
+    return fieldRoomBuilding.id === bid && fieldFloor.id === fid;
   });
 
-  // Match floor plans by buildingId and floorId
-  if (bid && fid) {
-    return plans.find(
-      (node) => {
-        return node.relationships.field_room_building.id === bid
-          && node.relationships.field_floor.id === fid;
-      }
-    );
-  }
-
-  // Match floor plans by an array of drupal_internal__nid
-  if (nids && nids.length > 0) {
-    return plans.filter((node) => {
-      return nids.includes(node.drupal_internal__nid);
-    });
-  }
-
-  return null;
+  return node;
 }

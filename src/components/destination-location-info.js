@@ -38,6 +38,7 @@ const DestinationLocationInfo = ({ node }) => {
     ? fieldRoomBuilding.id
     : fieldParentLocation?.id;
   const fid = node.relationships.field_floor?.id;
+  console.log(node);
   const floorPlan = useFloorPlan(bid, fid);
   // eslint-disable-next-line no-underscore-dangle
   const shouldDisplayHours = node.field_display_hours_;

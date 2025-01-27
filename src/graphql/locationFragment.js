@@ -10,9 +10,6 @@ export const query = graphql`
     field_root_page_
     field_phone_number
     field_email
-    field_floor_plan {
-      drupal_internal__target_id
-    }
     field_address_is_different_from_
     field_local_navigation
     body {
@@ -39,6 +36,14 @@ export const query = graphql`
     field_display_hours_
     field_hours_different_from_build
     relationships {
+      field_floor_plan {
+        ... on node__page {
+          fields {
+            slug
+            title
+          }
+        }
+      }
       field_media_image {
         field_media_image {
           alt

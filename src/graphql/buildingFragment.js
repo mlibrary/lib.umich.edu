@@ -33,6 +33,14 @@ export const query = graphql`
     field_display_hours_
     field_hours_different_from_build
     relationships {
+      field_floor_plan {
+        ... on node__page {
+          fields {
+            slug
+            title
+          }
+        }
+      }
       field_media_image {
         field_media_image {
           alt
