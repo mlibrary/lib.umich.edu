@@ -8,6 +8,7 @@ import Card from './card';
 import createSlug from './create-slug';
 import Heading from './heading';
 import Input from './input';
+import Kbd from './kbd';
 import Link from './link';
 import List from './list';
 import Text from './text';
@@ -34,6 +35,7 @@ export {
   List,
   Icon,
   icons,
+  Kbd,
   Text,
   Link,
   TextInput,

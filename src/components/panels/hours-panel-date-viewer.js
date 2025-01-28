@@ -1,4 +1,4 @@
-import { Heading, Icon, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../../reusable';
+import { Heading, Icon, Kbd, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../../reusable';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useStateValue } from '../use-state';
@@ -345,18 +345,9 @@ const CalendarView = ({ isVisible, weekOffset }) => {
               })}
             </div>
             <p css={{ color: `var(--color-neutral-300);` }}>
-              <span css={{ background: 'white',
-                border: `solid 1px var(--color-neutral-200)`,
-                borderRadius: '4px',
-                boxShadow: `0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;`,
-                display: 'inline-block',
-                fontFamily: 'monospace',
-                fontSize: '0.85rem',
-                marginBottom: SPACING.S,
-                padding: `0 ${SPACING['2XS']}` }}
-              >
+              <Kbd>
                 esc
-              </span>
+              </Kbd>
               {' '}
               to
               close
