@@ -148,7 +148,7 @@ export default function LocationAside ({ node }) {
                 paddingTop: SPACING['2XS']
               }}
             >
-              Floor Plan{floorPlans?.length > 1 && 's'}
+              Floor plans
             </Heading>
             <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
               {floorPlans.map((floorPlan, index) => {
