@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Alert, Icon, SPACING, TYPOGRAPHY, Z_SPACE } from '../reusable';
+import { Alert, Icon, Kbd, SPACING, TYPOGRAPHY, Z_SPACE } from '../reusable';
 import React, { useEffect, useState } from 'react';
 import { findAll } from 'highlight-words-core';
 import { Link as GatsbyLink } from 'gatsby';
@@ -254,16 +254,6 @@ const ResultsList = ({ searching, noResults, results, query, error }) => {
           background: 'var(--color-blue-100)',
           borderBottom: `solid 1px var(--color-neutral-100)`,
           color: 'var(--color-neutral-300)',
-          kbd: {
-            background: 'white',
-            border: `solid 1px var(--color-neutral-200)`,
-            borderRadius: '4px',
-            boxShadow: `0 1px 1px rgba(0, 0, 0, .2), 0 2px 0 0 rgba(255, 255, 255, .7) inset;`,
-            display: 'inline-block',
-            fontFamily: 'monospace',
-            fontSize: '0.85rem',
-            padding: `0 ${SPACING['2XS']}`
-          },
           padding: `${SPACING.S} ${SPACING.L}`
         }}
         aria-hidden='true'
@@ -328,13 +318,13 @@ ResultsList.propTypes = {
 const KeyboardControlIntructions = () => {
   return (
     <React.Fragment>
-      <kbd>tab</kbd>
+      <Kbd>tab</Kbd>
       {' '}
       to navigate,
-      <kbd>enter</kbd>
+      <Kbd>enter</Kbd>
       {' '}
       to select,
-      <kbd>esc</kbd>
+      <Kbd>esc</Kbd>
       {' '}
       to
       dismiss
