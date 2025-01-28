@@ -13,6 +13,10 @@ const dateFormat = (date, abbreviated = false) => {
   return date.toLocaleString('en-US', options);
 };
 
+const isEnterOrSpace = (event) => {
+  return event.key === 'Enter' || event.key === ' ';
+};
+
 const updateWeekOffset = ({
   dispatch,
   weekOffset,
@@ -20,11 +24,7 @@ const updateWeekOffset = ({
   week = null,
   relativeOffset = null
 }) => {
-  if (
-    !event
-    || event.type === 'click'
-    || (event.type === 'keydown' && (event.key === 'Enter' || event.key === ' '))
-  ) {
+  if (!event || event.type === 'click' || (event.type === 'keydown' && isEnterOrSpace)) {
     if (event) {
       event.preventDefault();
     }
@@ -379,7 +379,7 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
   };
 
   const handleInteraction = (event, action) => {
-    if (event.type === 'click' || (event.type === 'keydown' && (event.key === 'Enter' || event.key === ' '))) {
+    if (event.type === 'click' || (event.type === 'keydown' && isEnterOrSpace)) {
       event.preventDefault();
       action();
     }
