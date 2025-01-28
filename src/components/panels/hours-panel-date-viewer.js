@@ -204,7 +204,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
             maxWidth: '320px',
             overflow: 'hidden',
             position: 'absolute',
-            top: '47px',
+            top: '45px',
             transition: 'height 0.3s ease',
             width: '100%',
             zIndex: 1
@@ -234,6 +234,8 @@ const CalendarView = ({ isVisible, weekOffset }) => {
               aria-label='previous month'
             >
               <Icon
+                width='24px'
+                height='24px'
                 icon='navigate_before'
                 css={{ marginLeft: SPACING.M }}
               />
@@ -260,6 +262,8 @@ const CalendarView = ({ isVisible, weekOffset }) => {
               aria-label='Next month'
             >
               <Icon
+                width='24px'
+                height='24px'
                 icon='navigate_next'
                 css={{ marginRight: SPACING.M }}
               />
@@ -331,7 +335,6 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                           css={{
                             backgroundColor: getColorBasedOnDate(day),
                             borderRadius: '4px',
-                            color: day.getMonth() === currentBrowseDate.getMonth() ? 'inherit' : '#999',
                             padding: '10px',
                             textAlign: 'center'
                           }}
@@ -394,7 +397,7 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
     >
       <div
         css={{
-          alignItems: 'baseline',
+          alignItems: 'center',
           display: 'flex',
           justifyContent: 'space-between'
         }}
@@ -492,7 +495,6 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
           '&:hover': {
             boxShadow: 'inset 0 -2px var(--color-teal-400);'
           },
-          alignItems: 'center',
           boxShadow: 'none',
           color: 'var(--color-teal-400)',
           display: 'none',
@@ -506,18 +508,23 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
       >
         {type === 'previous' && (
           <Icon
+            width='24px'
+            height='24px'
             icon='navigate_before'
           />
         )}
         {children}
         {type === 'next' && (
-          <Icon icon='navigate_next' />
+          <Icon
+            width='24px'
+            height='24px'
+            icon='navigate_next'
+          />
         )}
       </button>
       <button
         {...rest}
         css={{
-          alignItems: 'center',
           boxShadow: 'none',
           color: 'var(--color-teal-400)',
           display: 'flex',
@@ -529,7 +536,11 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
           }
         }}
       >
-        <Icon icon={type === 'previous' ? 'navigate_before' : 'navigate_next'} />
+        <Icon
+          width='24px'
+          height='24px'
+          icon={type === 'previous' ? 'navigate_before' : 'navigate_next'}
+        />
         <span className='visually-hidden'>{children}</span>
       </button>
     </>
