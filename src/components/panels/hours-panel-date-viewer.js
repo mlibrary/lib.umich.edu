@@ -24,7 +24,7 @@ const updateWeekOffset = ({
   week = null,
   relativeOffset = null
 }) => {
-  if (!event || event.type === 'click' || (event.type === 'keydown' && isEnterOrSpace)) {
+  if (!event || event.type === 'click' || (event.type === 'keydown' && isEnterOrSpace(event))) {
     if (event) {
       event.preventDefault();
     }
@@ -382,7 +382,7 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
   };
 
   const handleInteraction = (event, action) => {
-    if (event.type === 'click' || (event.type === 'keydown' && isEnterOrSpace)) {
+    if (event.type === 'click' || (event.type === 'keydown' && isEnterOrSpace(event))) {
       event.preventDefault();
       action();
     }
