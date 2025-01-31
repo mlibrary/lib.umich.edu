@@ -316,7 +316,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                   return weekStartDay.getTime() === viewedWeekStartDay.getTime();
                 });
                 return (
-                  <a
+                  <button
                     onClick={(event) => {
                       return updateWeekOffset({ dispatch, event, week, weekOffset });
                     }}
@@ -349,7 +349,7 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                         </div>
                       );
                     })}
-                  </a>
+                  </button>
                 );
               })}
             </div>
