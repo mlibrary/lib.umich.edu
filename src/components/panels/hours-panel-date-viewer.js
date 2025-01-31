@@ -439,7 +439,7 @@ const HoursPanelNextPrev = ({ toggleCalendarVisibility, isCalendarVisible }) => 
             level={2}
             size='S'
           >
-            <span className='visually-hidden'>
+            <span className='visually-hidden' aria-live='polite'>
               {hoursRange.label}
             </span>
             <span aria-hidden>
