@@ -54,24 +54,30 @@ export default function HoursPanelDateViewer () {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [calendarStatus, setCalendarStatus] = useState('');
 
-  const handleKeydown = (event) => {
-    if (event.keyCode === 27) {
-      setIsCalendarVisible(false);
+  const toggleCalendarVisibility = (event) => {
+    if (event?.key && event.key !== 'Escape') {
+      return;
     }
+
+    setIsCalendarVisible((prev) => {
+      const newState = !prev;
+      setCalendarStatus(`Calendar ${newState ? 'open' : 'closed'}`);
+      return newState;
+    });
+
+    event?.preventDefault();
   };
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeydown);
-
-    return () => {
-      document.addEventListener('keydown', handleKeydown);
+    const handleKeydown = (event) => {
+      return toggleCalendarVisibility(event);
     };
-  });
 
-  const toggleCalendarVisibility = () => {
-    setIsCalendarVisible(!isCalendarVisible);
-    setCalendarStatus(`Calendar ${isCalendarVisible ? 'closed' : 'open'}`);
-  };
+    document.addEventListener('keydown', handleKeydown);
+    return () => {
+      return document.removeEventListener('keydown', handleKeydown);
+    };
+  }, []);
 
   return (
     <div
@@ -347,13 +353,17 @@ const CalendarView = ({ isVisible, weekOffset }) => {
                 );
               })}
             </div>
-            <p css={{ color: `var(--color-neutral-300);` }}>
-              <Kbd>
-                esc
-              </Kbd>
-              {' '}
-              to
-              close
+            <p>
+              <span css={{ color: `var(--color-neutral-300);` }}>
+                <Kbd>
+                  esc
+                </Kbd>
+              </span>
+              <span>
+                {' '}
+                to
+                close
+              </span>
             </p>
           </>
         </div>
