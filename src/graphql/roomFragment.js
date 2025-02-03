@@ -32,6 +32,12 @@ export const query = graphql`
       uri
     }
     relationships {
+      field_floor_plan {
+        fields {
+          slug
+          title
+        }
+      }
       field_room_building {
         id
         title
