@@ -292,7 +292,7 @@ const EventMetadata = ({ data }) => {
               })}
               {floorPlan && floorPlan.fields && (
                 <span css={{ display: 'block' }}>
-                  <Link to={floorPlan.fields.slug}>View floor plan</Link>
+                  <Link to={floorPlan.fields.slug}>View floorplan</Link>
                 </span>
               )}
             </td>
