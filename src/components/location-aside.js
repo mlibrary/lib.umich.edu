@@ -53,11 +53,16 @@ LayoutWithIcon.propTypes = {
 };
 
 export default function LocationAside ({ node }) {
-  const { field_phone_number: fieldPhoneNumber, field_email: fieldEmail, relationships } = node;
+  const {
+    field_phone_number: fieldPhoneNumber,
+    field_email: fieldEmail,
+    relationships
+  } = node;
+
   const buildingNode = relationships?.field_room_building;
-  const parentLocationNode
-    = relationships?.field_parent_location?.relationships?.field_parent_location;
+  const parentLocationNode = relationships?.field_parent_location?.relationships?.field_parent_location;
   const locationNode = buildingNode ?? parentLocationNode ?? node;
+  const floorPlans = relationships?.field_floor_plan;
 
   return (
     <React.Fragment>
@@ -133,6 +138,31 @@ export default function LocationAside ({ node }) {
             )}
           </div>
         </LayoutWithIcon>
+        {floorPlans?.length > 0 && (
+          <LayoutWithIcon d={icons.map} palette='teal' color='500'>
+            <Heading
+              level={2}
+              size='M'
+              css={{
+                paddingBottom: SPACING['2XS'],
+                paddingTop: SPACING['2XS']
+              }}
+            >
+              Floor plans
+            </Heading>
+            <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
+              {floorPlans.map((floorPlan, index) => {
+                return (
+                  <li key={index}>
+                    <Link to={floorPlan.fields.slug}>
+                      {floorPlan.fields.title}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </LayoutWithIcon>
+        )}
       </address>
     </React.Fragment>
   );
@@ -144,6 +174,7 @@ LocationAside.propTypes = {
     field_email: PropTypes.any,
     field_phone_number: PropTypes.any,
     relationships: PropTypes.shape({
+      field_floor_plan: PropTypes.array,
       field_parent_location: PropTypes.shape({
         relationships: PropTypes.shape({
           field_parent_location: PropTypes.any
