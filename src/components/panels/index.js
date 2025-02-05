@@ -190,6 +190,48 @@ const CardPanel = ({ data }) => {
 
     return null;
   };
+  if (template === 'highlights') {
+    return (
+      <Margins>
+        <PanelTemplate title={title} css={{ backgroundColor: 'var(--color-maize-200)', padding: 0 }}>
+          <PanelList>
+            {cards.map((card, item) => {
+              return (
+                <li
+                  key={item + card.title}
+                  css={{
+                    ':first-of-type': {
+                      marginTop: 0
+                    },
+                    background: '#fff',
+                    border: '1px solid #000',
+                    borderRadius: '4px',
+                    marginTop: SPACING.XL,
+                    padding: SPACING.M,
+                    [MEDIA_QUERIES.LARGESCREEN]: {
+                      margin: '0'
+                    }
+                  }}
+                >
+                  <Card
+                    href={getCardHref(card)}
+                    subtitle={getCardSubtitle(card)}
+                    headingLevel={title ? '3' : '2'}
+                    title={card.title}
+                    css={{
+                      height: '100%'
+                    }}
+                  >
+                    {useSummary ? getSummary(card.body) : renderCardChildren(card)}
+                  </Card>
+                </li>
+              );
+            })}
+          </PanelList>
+        </PanelTemplate>
+      </Margins>
+    );
+  }
 
   return (
     <PanelTemplate title={title}>
@@ -477,7 +519,7 @@ TextPanel.propTypes = {
   data: PropTypes.object
 };
 
-export default function Panels ({ data }) {
+export default function Panels({ data }) {
   if (!data) {
     return null;
   }
