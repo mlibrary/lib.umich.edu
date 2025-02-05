@@ -10,7 +10,7 @@ import CardImage from './card-image';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function Card ({
+export default function Card({
   title,
   subtitle,
   headingLevel = '3',
@@ -19,24 +19,26 @@ export default function Card ({
   renderAnchor,
   children,
   horizontal,
+  anchorStyleAddition = {},
   ...rest
 }) {
   const horizontalStyles = horizontal
     ? {
-        [MEDIA_QUERIES.LARGESCREEN]: {
-          '[data-card-image]': {
-            marginBottom: '0'
-          },
-          display: 'grid',
-          gridGap: SPACING.M,
-          gridTemplateColumns: `18.75rem 1fr `
-        }
+      [MEDIA_QUERIES.LARGESCREEN]: {
+        '[data-card-image]': {
+          marginBottom: '0'
+        },
+        display: 'grid',
+        gridGap: SPACING.M,
+        gridTemplateColumns: `18.75rem 1fr `
       }
+    }
     : {};
 
   const anchorStyles = {
     display: 'block',
     ...horizontalStyles,
+    ...anchorStyleAddition,
     ':hover': {
       '[data-card-image]': {
         ...Z_SPACE[8]

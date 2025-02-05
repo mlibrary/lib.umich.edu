@@ -71,12 +71,12 @@ PanelTemplate.propTypes = {
   title: PropTypes.string
 };
 
-const PanelList = ({ children, twoColumns, ...rest }) => {
+const PanelList = ({ children, twoColumns, gridTemplateColumns, ...rest }) => {
   const panelListGridStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
       display: 'grid',
       gridGap: `${SPACING.XL} ${SPACING.M}`,
-      gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
+      gridTemplateColumns: gridTemplateColumns || 'repeat(auto-fill, minmax(320px, 1fr))'
     }
   };
   const panelListColumnStyles = {
@@ -106,6 +106,7 @@ const PanelList = ({ children, twoColumns, ...rest }) => {
 
 PanelList.propTypes = {
   children: PropTypes.any,
+  gridTemplateColumns: PropTypes.string,
   twoColumns: PropTypes.bool
 };
 
@@ -194,23 +195,18 @@ const CardPanel = ({ data }) => {
     return (
       <Margins>
         <PanelTemplate title={title} css={{ backgroundColor: 'var(--color-maize-200)', padding: 0 }}>
-          <PanelList>
+          <PanelList gridTemplateColumns='repeat(12, auto)'>
             {cards.map((card, item) => {
+              const columnGaps = [6, 5, 1, 5, 6];
               return (
                 <li
                   key={item + card.title}
                   css={{
-                    ':first-of-type': {
-                      marginTop: 0
-                    },
                     background: '#fff',
-                    border: '1px solid #000',
+                    border: '1px solid var(--color-blue-200)',
                     borderRadius: '4px',
-                    marginTop: SPACING.XL,
-                    padding: SPACING.M,
-                    [MEDIA_QUERIES.LARGESCREEN]: {
-                      margin: '0'
-                    }
+                    gridColumn: `span ${columnGaps[item]}`,
+                    ...(item === 2 && { gridRow: 'span 2' })
                   }}
                 >
                   <Card
@@ -220,6 +216,10 @@ const CardPanel = ({ data }) => {
                     title={card.title}
                     css={{
                       height: '100%'
+                    }}
+                    anchorStyleAddition={{
+                      height: '100%',
+                      padding: SPACING.M
                     }}
                   >
                     {useSummary ? getSummary(card.body) : renderCardChildren(card)}
