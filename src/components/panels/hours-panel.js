@@ -1,10 +1,7 @@
 import {
-  Button,
   createSlug,
   Heading,
-  Icon,
   Margins,
-  MEDIA_QUERIES,
   SPACING
 } from '../../reusable';
 import { displayHours } from '../../utils/hours';
@@ -13,160 +10,6 @@ import Html from '../html';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useStateValue } from '../use-state';
-
-const dateFormat = (string, abbreviated = false) => {
-  if (abbreviated) {
-    return string.toLocaleString('en-US', {
-      day: 'numeric',
-      month: 'short'
-    });
-  }
-  return string.toLocaleString('en-US', {
-    day: 'numeric',
-    month: 'long',
-    weekday: 'long',
-    year: 'numeric'
-  });
-};
-
-export const HoursPanelNextPrev = ({ location }) => {
-  const [{ weekOffset }, dispatch] = useStateValue();
-  const date = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
-
-  const fromDate = new Date(date);
-  fromDate.setDate(date.getDate() + (weekOffset * 7) - date.getDay());
-
-  const toDate = new Date(date);
-  toDate.setDate(date.getDate() + (weekOffset * 7) + (6 - date.getDay()));
-
-  const hoursRange = {
-    label: `Showing hours for ${location} from ${dateFormat(fromDate)} to ${dateFormat(toDate)}`,
-    text: `${dateFormat(fromDate, true)} - ${dateFormat(toDate, true)}`
-  };
-
-  return (
-    <Margins data-hours-panel-next-previous>
-      <div
-        css={{
-          alignItems: 'baseline',
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: SPACING.L,
-          marginTop: SPACING.L,
-          position: 'sticky',
-          top: 0
-        }}
-      >
-        <PreviousNextWeekButton
-          onClick={() => {
-            return dispatch({
-              type: 'setWeekOffset',
-              weekOffset: weekOffset - 1
-            });
-          }}
-          type='previous'
-        >
-          Previous week
-        </PreviousNextWeekButton>
-        <Heading
-          aria-live='polite'
-          aria-atomic='true'
-          level={2}
-          size='S'
-          css={{
-            fontWeight: '700'
-          }}
-        >
-          <span className='visually-hidden'>
-            {hoursRange.label}
-          </span>
-          <span aria-hidden>
-            {hoursRange.text}
-          </span>
-        </Heading>
-        <PreviousNextWeekButton
-          onClick={() => {
-            return dispatch({
-              type: 'setWeekOffset',
-              weekOffset: weekOffset + 1
-            });
-          }}
-          type='next'
-        >
-          Next week
-        </PreviousNextWeekButton>
-      </div>
-    </Margins>
-  );
-};
-
-HoursPanelNextPrev.propTypes = {
-  location: PropTypes.string
-};
-
-const IconWrapper = (props) => {
-  return (
-    <span
-      css={{
-        display: 'inline-block',
-        marginTop: '-2px'
-      }}
-      {...props}
-    />
-  );
-};
-
-const PreviousNextWeekButton = ({ type, children, ...rest }) => {
-  return (
-    <>
-      <Button
-        {...rest}
-        kind='subtle'
-        css={{
-          display: 'none',
-          [MEDIA_QUERIES.LARGESCREEN]: {
-            display: 'flex'
-          }
-        }}
-      >
-        {type === 'previous' && (
-          <IconWrapper>
-            <Icon
-              icon='navigate_before'
-              css={{ marginRight: SPACING['2XS'] }}
-            />
-          </IconWrapper>
-        )}
-        {children}
-        {type === 'next' && (
-          <IconWrapper>
-            <Icon icon='navigate_next' css={{ marginLeft: SPACING['2XS'] }} />
-          </IconWrapper>
-        )}
-      </Button>
-      <Button
-        {...rest}
-        kind='subtle'
-        css={{
-          display: 'flex',
-          [MEDIA_QUERIES.LARGESCREEN]: {
-            display: 'none'
-          }
-        }}
-      >
-        <IconWrapper>
-          <Icon icon={type === 'previous' ? 'navigate_before' : 'navigate_next'} />
-        </IconWrapper>
-        <span className='visually-hidden'>{children}</span>
-      </Button>
-    </>
-  );
-};
-
-PreviousNextWeekButton.propTypes = {
-  children: PropTypes.string,
-  type: PropTypes.string
-};
 
 /*
  *Return
@@ -204,21 +47,6 @@ const getRow = (node, nowWithWeekOffset, isParent) => {
 const transformTableData = ({ node, now }) => {
   const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;
 
-  /*
-   *[
-   *  {
-   *    text: 'Sun',
-   *    subtext: 'Apr 15',
-   *    label: 'Sunday, April 15th'
-   *  },
-   *  ...
-   *  {
-   *    text: 'Sat',
-   *    subtext: 'Apr 21',
-   *    label: 'Saturday, April 21th'
-   *  },
-   *]
-   */
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const currentDate = new Date(now);
   // Set to Sunday
@@ -290,12 +118,14 @@ export default function HoursPanelContainer ({ data }) {
         marginBottom: SPACING['4XL']
       }}
     >
-      <HoursPanelNextPrev location={title} />
       <Margins>
         <Heading
-          level={3}
+          level={2}
           size='L'
           css={{
+            ':target': {
+              scrollMarginTop: '350px'
+            },
             fontWeight: '700',
             marginBottom: SPACING['2XS']
           }}
@@ -314,7 +144,7 @@ export default function HoursPanelContainer ({ data }) {
       </Margins>
     </section>
   );
-}
+};
 
 HoursPanelContainer.propTypes = {
   data: PropTypes.object
