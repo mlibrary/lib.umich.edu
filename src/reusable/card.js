@@ -74,7 +74,6 @@ export default function Card ({
   const content = (
     <React.Fragment>
       {image && <CardImage image={image} />}
-
       <div>
         <Heading level={headingLevel} style={{ marginTop: '0' }}>
           {subtitle && (
@@ -116,6 +115,11 @@ export default function Card ({
 }
 
 Card.propTypes = {
+  /*
+  * Additional styles for the link
+  *
+  */
+  anchorStyleAddition: PropTypes.object,
 
   /*
   * Regular React element.
