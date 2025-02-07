@@ -10,10 +10,10 @@ import CardImage from './card-image';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function Card({
+export default function Card ({
   title,
   subtitle,
-  headingLevel = '3',
+  headingLevel = 3,
   image,
   href,
   renderAnchor,
@@ -24,15 +24,15 @@ export default function Card({
 }) {
   const horizontalStyles = horizontal
     ? {
-      [MEDIA_QUERIES.LARGESCREEN]: {
-        '[data-card-image]': {
-          marginBottom: '0'
-        },
-        display: 'grid',
-        gridGap: SPACING.M,
-        gridTemplateColumns: `18.75rem 1fr `
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          '[data-card-image]': {
+            marginBottom: '0'
+          },
+          display: 'grid',
+          gridGap: SPACING.M,
+          gridTemplateColumns: `18.75rem 1fr `
+        }
       }
-    }
     : {};
 
   const anchorStyles = {
@@ -127,7 +127,7 @@ Card.propTypes = {
    * Determine the heading level to render to ensure proper hierarchy on each page.
    *
    */
-  headingLevel: PropTypes.oneOf(['h3', 'h2']),
+  headingLevel: PropTypes.oneOf([3, 2]),
 
   /*
    * Let the Card know if it can go horizontal on large screens.

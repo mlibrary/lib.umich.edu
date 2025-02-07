@@ -27,7 +27,7 @@ import React from 'react';
 
 import { StateProvider } from '../use-state';
 
-const PanelTemplate = ({ title, children, shaded, ...rest }) => {
+const PanelTemplate = ({ title, children, shaded, headingCss, ...rest }) => {
   return (
     <section
       data-can-be-shaded={shaded}
@@ -53,7 +53,8 @@ const PanelTemplate = ({ title, children, shaded, ...rest }) => {
             level={2}
             size='M'
             css={{
-              marginBottom: SPACING.XL
+              marginBottom: SPACING.XL,
+              ...headingCss
             }}
           >
             {title}
@@ -67,13 +68,14 @@ const PanelTemplate = ({ title, children, shaded, ...rest }) => {
 
 PanelTemplate.propTypes = {
   children: PropTypes.any,
+  headingCss: PropTypes.object,
   shaded: PropTypes.bool,
   title: PropTypes.string
 };
 
-const PanelList = ({ children, twoColumns, gridTemplateColumns, mediumBreakPoint = false, ...rest }) => {
+const PanelList = ({ children, twoColumns, gridTemplateColumns, ...rest }) => {
   const panelListGridStyles = {
-    [mediumBreakPoint ? MEDIA_QUERIESREUSABLE.L : MEDIA_QUERIES.LARGESCREEN]: {
+    [MEDIA_QUERIES.LARGESCREEN]: {
       display: 'grid',
       gridGap: `${SPACING.XL} ${SPACING.M}`,
       gridTemplateColumns: gridTemplateColumns || 'repeat(auto-fill, minmax(320px, 1fr))'
@@ -195,8 +197,26 @@ const CardPanel = ({ data }) => {
   if (template === 'highlights') {
     return (
       <Margins>
-        <PanelTemplate title={title} css={{ backgroundColor: 'var(--color-maize-200)', padding: 0 }}>
-          <PanelList gridTemplateColumns='repeat(12, auto)' mediumBreakPoint={true}>
+        <PanelTemplate
+          title={title}
+          css={{ backgroundColor: 'var(--color-maize-200)', padding: 0 }}
+          headingCss={{
+            fontFamily: 'Crimson Text',
+            fontSize: '2.25rem',
+            fontWeight: '300'
+          }}
+        >
+          <PanelList
+            gridTemplateColumns='repeat(12, auto)'
+            css={{
+              [MEDIA_QUERIESREUSABLE.L]: {
+                display: 'grid',
+                gridGap: `${SPACING.M}`,
+                gridTemplateColumns: 'repeat(12, auto)'
+              }
+            }}
+
+          >
             {cards.map((card, item) => {
               const columnGaps = [6, 5, 1, 5, 6];
               return (
@@ -205,7 +225,7 @@ const CardPanel = ({ data }) => {
                   css={{
                     background: '#fff',
                     border: '1px solid var(--color-blue-200)',
-                    borderRadius: '4px',
+                    borderRadius: '10px',
                     gridColumn: `span ${columnGaps[item]}`,
                     ...(item === 2 && { gridRow: 'span 2' })
                   }}
@@ -213,7 +233,7 @@ const CardPanel = ({ data }) => {
                   <Card
                     href={getCardHref(card)}
                     subtitle={getCardSubtitle(card)}
-                    headingLevel={title ? '3' : '2'}
+                    headingLevel={title ? 3 : 2}
                     title={card.title}
                     css={{
                       height: '100%'
@@ -259,7 +279,7 @@ const CardPanel = ({ data }) => {
                 }
                 href={getCardHref(card)}
                 subtitle={getCardSubtitle(card)}
-                headingLevel={title ? '3' : '2'}
+                headingLevel={title ? 3 : 2}
                 title={card.title}
                 css={{
                   height: '100%'
@@ -520,7 +540,7 @@ TextPanel.propTypes = {
   data: PropTypes.object
 };
 
-export default function Panels({ data }) {
+export default function Panels ({ data }) {
   if (!data) {
     return null;
   }
