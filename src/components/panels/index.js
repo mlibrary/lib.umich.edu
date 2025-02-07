@@ -5,7 +5,6 @@ import {
   MEDIA_QUERIES,
   SPACING
 } from '../../reusable';
-
 import Address from '../address';
 import Callout from '../../reusable/callout';
 import Card from '../card';
@@ -22,6 +21,7 @@ import icons from '../../reusable/icons';
 import Image from '../image';
 import Link from '../link';
 import LinkPanel from './link-panel';
+import MEDIA_QUERIESREUSABLE from '../../reusable/media-queries';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -71,9 +71,9 @@ PanelTemplate.propTypes = {
   title: PropTypes.string
 };
 
-const PanelList = ({ children, twoColumns, gridTemplateColumns, ...rest }) => {
+const PanelList = ({ children, twoColumns, gridTemplateColumns, mediumBreakPoint = false, ...rest }) => {
   const panelListGridStyles = {
-    [MEDIA_QUERIES.LARGESCREEN]: {
+    [mediumBreakPoint ? MEDIA_QUERIESREUSABLE.L : MEDIA_QUERIES.LARGESCREEN]: {
       display: 'grid',
       gridGap: `${SPACING.XL} ${SPACING.M}`,
       gridTemplateColumns: gridTemplateColumns || 'repeat(auto-fill, minmax(320px, 1fr))'
@@ -107,6 +107,7 @@ const PanelList = ({ children, twoColumns, gridTemplateColumns, ...rest }) => {
 PanelList.propTypes = {
   children: PropTypes.any,
   gridTemplateColumns: PropTypes.string,
+  mediumBreakPoint: PropTypes.bool,
   twoColumns: PropTypes.bool
 };
 
@@ -195,7 +196,7 @@ const CardPanel = ({ data }) => {
     return (
       <Margins>
         <PanelTemplate title={title} css={{ backgroundColor: 'var(--color-maize-200)', padding: 0 }}>
-          <PanelList gridTemplateColumns='repeat(12, auto)'>
+          <PanelList gridTemplateColumns='repeat(12, auto)' mediumBreakPoint={true}>
             {cards.map((card, item) => {
               const columnGaps = [6, 5, 1, 5, 6];
               return (
