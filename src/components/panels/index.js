@@ -73,14 +73,16 @@ PanelTemplate.propTypes = {
   title: PropTypes.string
 };
 
-const PanelList = ({ children, twoColumns, gridTemplateColumns, ...rest }) => {
-  const panelListGridStyles = {
-    [MEDIA_QUERIES.LARGESCREEN]: {
-      display: 'grid',
-      gridGap: `${SPACING.XL} ${SPACING.M}`,
-      gridTemplateColumns: gridTemplateColumns || 'repeat(auto-fill, minmax(320px, 1fr))'
-    }
-  };
+const PanelList = ({ children, twoColumns, gridTemplateColumns, disableLargeScreenStyles = false, ...rest }) => {
+  const panelListGridStyles = disableLargeScreenStyles
+    ? {}
+    : {
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          display: 'grid',
+          gridGap: `${SPACING.XL} ${SPACING.M}`,
+          gridTemplateColumns: gridTemplateColumns || 'repeat(auto-fill, minmax(320px, 1fr))'
+        }
+      };
   const panelListColumnStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
       columnGap: SPACING['3XL'],
@@ -108,6 +110,7 @@ const PanelList = ({ children, twoColumns, gridTemplateColumns, ...rest }) => {
 
 PanelList.propTypes = {
   children: PropTypes.any,
+  disableLargeScreenStyles: PropTypes.bool,
   gridTemplateColumns: PropTypes.string,
   mediumBreakPoint: PropTypes.bool,
   twoColumns: PropTypes.bool
@@ -199,7 +202,13 @@ const CardPanel = ({ data }) => {
       <Margins>
         <PanelTemplate
           title={title}
-          css={{ backgroundColor: 'var(--color-maize-200)', padding: 0 }}
+          css={{
+            backgroundColor: 'var(--color-maize-200)',
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              paddingBottom: `${SPACING.L}`,
+              paddingTop: `${SPACING.L}`
+            }
+          }}
           headingCss={{
             fontFamily: 'Crimson Text',
             fontSize: '2.25rem',
@@ -207,6 +216,7 @@ const CardPanel = ({ data }) => {
           }}
         >
           <PanelList
+            disableLargeScreenStyles={true}
             gridTemplateColumns='repeat(12, auto)'
             css={{
               [MEDIA_QUERIESREUSABLE.L]: {
@@ -215,7 +225,6 @@ const CardPanel = ({ data }) => {
                 gridTemplateColumns: 'repeat(12, auto)'
               }
             }}
-
           >
             {cards.map((card, item) => {
               const columnGaps = [6, 5, 1, 5, 6];
@@ -227,7 +236,10 @@ const CardPanel = ({ data }) => {
                     border: '1px solid var(--color-blue-200)',
                     borderRadius: '10px',
                     gridColumn: `span ${columnGaps[item]}`,
-                    ...(item === 2 && { gridRow: 'span 2' })
+                    ...(item === 2 && { gridRow: 'span 2' }),
+                    '@media only screen and (max-width: 920px)': {
+                      marginBottom: SPACING.L
+                    }
                   }}
                 >
                   <Card
