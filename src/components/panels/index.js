@@ -221,7 +221,10 @@ const CardPanel = ({ data }) => {
                 src={Dotz}
                 alt=''
                 css={{
-                  display: 'inline',
+                  [MEDIA_QUERIESREUSABLE.L]: {
+                    display: 'inline'
+                  },
+                  display: 'none',
                   height: '2.5rem',
                   marginLeft: '-30px'
                 }}
@@ -231,12 +234,13 @@ const CardPanel = ({ data }) => {
                 size='M'
                 css={{
                   [MEDIA_QUERIESREUSABLE.L]: {
+                    marginLeft: '1rem'
                   },
-                  marginLeft: '1rem',
                   display: 'inline',
                   fontFamily: 'Crimson Text',
                   fontSize: '2.5rem',
-                  fontWeight: '300'
+                  fontWeight: '300',
+                  marginLeft: '0'
                 }}
               >
                 {title}
