@@ -19,6 +19,7 @@ import HoursPanel from './hours-panel';
 import Html from '../html';
 import icons from '../../reusable/icons';
 import Image from '../image';
+import Dotz from '../../images/dotz.png';
 import Link from '../link';
 import LinkPanel from './link-panel';
 import MEDIA_QUERIESREUSABLE from '../../reusable/media-queries';
@@ -73,14 +74,13 @@ PanelTemplate.propTypes = {
   title: PropTypes.string
 };
 
-const PanelList = ({ children, twoColumns, gridTemplateColumns, disableLargeScreenStyles = false, ...rest }) => {
+const PanelList = ({ children, twoColumns, disableLargeScreenStyles = false, ...rest }) => {
   const panelListGridStyles = disableLargeScreenStyles
     ? {}
     : {
         [MEDIA_QUERIES.LARGESCREEN]: {
           display: 'grid',
-          gridGap: `${SPACING.XL} ${SPACING.M}`,
-          gridTemplateColumns: gridTemplateColumns || 'repeat(auto-fill, minmax(320px, 1fr))'
+          gridGap: `${SPACING.XL} ${SPACING.M}`
         }
       };
   const panelListColumnStyles = {
@@ -111,7 +111,6 @@ const PanelList = ({ children, twoColumns, gridTemplateColumns, disableLargeScre
 PanelList.propTypes = {
   children: PropTypes.any,
   disableLargeScreenStyles: PropTypes.bool,
-  gridTemplateColumns: PropTypes.string,
   mediumBreakPoint: PropTypes.bool,
   twoColumns: PropTypes.bool
 };
@@ -203,43 +202,67 @@ const CardPanel = ({ data }) => {
         <PanelTemplate
           title={title}
           css={{
-            backgroundColor: 'var(--color-maize-200)',
+            backgroundColor: 'var(--color-maize-300)',
             [MEDIA_QUERIES.LARGESCREEN]: {
               paddingBottom: `${SPACING.L}`,
               paddingTop: `${SPACING.L}`
             }
           }}
           headingCss={{
+            [MEDIA_QUERIESREUSABLE.L]: {
+              marginLeft: '77px'
+            },
             fontFamily: 'Crimson Text',
-            fontSize: '2.25rem',
-            fontWeight: '300'
+            fontSize: '2.5rem',
+            fontWeight: '300',
+            marginBottom: '1rem'
           }}
         >
           <PanelList
             disableLargeScreenStyles={true}
-            gridTemplateColumns='repeat(12, auto)'
             css={{
               [MEDIA_QUERIESREUSABLE.L]: {
                 display: 'grid',
                 gridGap: `${SPACING.M}`,
-                gridTemplateColumns: 'repeat(12, auto)'
+                gridTemplateColumns: 'repeat(11, auto)'
               }
             }}
           >
+            <img
+              src={Dotz}
+              alt=''
+              css={{
+                [MEDIA_QUERIESREUSABLE.L]: {
+                  display: 'inline',
+                  gridColumn: 'span 1',
+                  gridRow: 'span 2',
+                  height: '100%',
+                  maxWidth: '56px',
+                  objectFit: 'contain'
+                },
+                display: 'none'
+              }}
+            />
+
             {cards.map((card, item) => {
-              const columnGaps = [6, 5, 1, 5, 6];
+              const columnGaps = [5, 4, 1, 4, 5];
               return (
                 <li
                   key={item + card.title}
                   css={{
+                    [MEDIA_QUERIESREUSABLE.L]: {
+                      gridColumn: `span ${columnGaps[item]}`,
+                      ...(item === 2 && { gridRow: 'span 2' }),
+                      ...(item === 2 && { columnGap: '0' }),
+                      marginBottom: '0',
+                      minHeight: '150px'
+
+                    },
                     background: '#fff',
                     border: '1px solid var(--color-blue-200)',
                     borderRadius: '10px',
-                    gridColumn: `span ${columnGaps[item]}`,
-                    ...(item === 2 && { gridRow: 'span 2' }),
-                    '@media only screen and (max-width: 920px)': {
-                      marginBottom: SPACING.L
-                    }
+                    marginBottom: SPACING.L,
+                    minHeight: '0'
                   }}
                 >
                   <Card
