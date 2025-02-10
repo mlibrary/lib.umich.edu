@@ -19,7 +19,7 @@ import HoursPanel from './hours-panel';
 import Html from '../html';
 import icons from '../../reusable/icons';
 import Image from '../image';
-import Dotz from '../../images/dotz.png';
+import Dotz from '../../images/dotz2.png';
 import Link from '../link';
 import LinkPanel from './link-panel';
 import MEDIA_QUERIESREUSABLE from '../../reusable/media-queries';
@@ -199,92 +199,102 @@ const CardPanel = ({ data }) => {
   if (template === 'highlights') {
     return (
       <Margins>
-        <PanelTemplate
-          title={title}
+        <section
           css={{
             backgroundColor: 'var(--color-maize-300)',
+            paddingBottom: SPACING.XL,
+            paddingTop: SPACING.XL,
             [MEDIA_QUERIES.LARGESCREEN]: {
               paddingBottom: `${SPACING.L}`,
               paddingTop: `${SPACING.L}`
             }
           }}
-          headingCss={{
-            [MEDIA_QUERIESREUSABLE.L]: {
-              marginLeft: '77px'
-            },
-            fontFamily: 'Crimson Text',
-            fontSize: '2.5rem',
-            fontWeight: '300',
-            marginBottom: '1rem'
-          }}
         >
-          <PanelList
-            disableLargeScreenStyles={true}
-            css={{
-              [MEDIA_QUERIESREUSABLE.L]: {
-                display: 'grid',
-                gridGap: `${SPACING.M}`,
-                gridTemplateColumns: 'repeat(11, auto)'
-              }
+          <Margins data-panel-margins>
+            <div css={{
+              alignItems: 'center',
+              display: 'flex',
+              marginBottom: `${SPACING.L}`
             }}
-          >
-            <img
-              src={Dotz}
-              alt=''
+            >
+              <img
+                src={Dotz}
+                alt=''
+                css={{
+                  display: 'inline',
+                  height: '2.5rem',
+                  marginLeft: '-30px'
+                }}
+              />
+              <Heading
+                level={2}
+                size='M'
+                css={{
+                  [MEDIA_QUERIESREUSABLE.L]: {
+                  },
+                  marginLeft: '1rem',
+                  display: 'inline',
+                  fontFamily: 'Crimson Text',
+                  fontSize: '2.5rem',
+                  fontWeight: '300'
+                }}
+              >
+                {title}
+              </Heading>
+            </div>
+            <PanelList
+              disableLargeScreenStyles={true}
               css={{
                 [MEDIA_QUERIESREUSABLE.L]: {
-                  display: 'inline',
-                  gridColumn: 'span 1',
-                  gridRow: 'span 2',
-                  height: '100%',
-                  maxWidth: '56px',
-                  objectFit: 'contain'
-                },
-                display: 'none'
+                  display: 'grid',
+                  gridGap: `${SPACING.M}`,
+                  gridTemplateColumns: 'repeat(10, auto)'
+                }
               }}
-            />
+            >
 
-            {cards.map((card, item) => {
-              const columnGaps = [5, 4, 1, 4, 5];
-              return (
-                <li
-                  key={item + card.title}
-                  css={{
-                    [MEDIA_QUERIESREUSABLE.L]: {
-                      gridColumn: `span ${columnGaps[item]}`,
-                      ...(item === 2 && { gridRow: 'span 2' }),
-                      ...(item === 2 && { columnGap: '0' }),
-                      marginBottom: '0',
-                      minHeight: '150px'
-
-                    },
-                    background: '#fff',
-                    border: '1px solid var(--color-blue-200)',
-                    borderRadius: '10px',
-                    marginBottom: SPACING.L,
-                    minHeight: '0'
-                  }}
-                >
-                  <Card
-                    href={getCardHref(card)}
-                    subtitle={getCardSubtitle(card)}
-                    headingLevel={title ? 3 : 2}
-                    title={card.title}
+              {cards.map((card, item) => {
+                const columnGaps = [5, 4, 1, 4, 5];
+                return (
+                  <li
+                    key={item + card.title}
                     css={{
-                      height: '100%'
-                    }}
-                    anchorStyleAddition={{
-                      height: '100%',
-                      padding: SPACING.M
+                      [MEDIA_QUERIESREUSABLE.L]: {
+                        gridColumn: `span ${columnGaps[item]}`,
+                        ...(item === 2 && { gridRow: 'span 2' }),
+                        ...(item === 2 && { columnGap: '0' }),
+                        marginBottom: '0',
+                        minHeight: '150px'
+
+                      },
+                      background: '#fff',
+                      border: '1px solid var(--color-blue-200)',
+                      borderRadius: '10px',
+                      marginBottom: SPACING.L,
+                      minHeight: '0'
                     }}
                   >
-                    {useSummary ? getSummary(card.body) : renderCardChildren(card)}
-                  </Card>
-                </li>
-              );
-            })}
-          </PanelList>
-        </PanelTemplate>
+                    <Card
+                      href={getCardHref(card)}
+                      subtitle={getCardSubtitle(card)}
+                      headingLevel={title ? 3 : 2}
+                      title={card.title}
+                      css={{
+                        height: '100%'
+                      }}
+                      anchorStyleAddition={{
+                        height: '100%',
+                        padding: SPACING.M
+                      }}
+                    >
+                      {useSummary ? getSummary(card.body) : renderCardChildren(card)}
+                    </Card>
+                  </li>
+                );
+              })}
+            </PanelList>
+          </Margins>
+        </section>
       </Margins>
     );
   }
