@@ -30,7 +30,7 @@ Heading.propTypes = {
    *Avoid skipping heading levels: always start the page from level 1, next use level 2 and so on. Avoid using level 1 more than once on a page.
    */
   level: PropTypes.oneOf([1, 2, 3, 4, 5, 6]),
-  size: PropTypes.oneOf(Object.keys(TYPOGRAPHY)).isRequired
+  size: PropTypes.oneOf(Object.keys(TYPOGRAPHY))
 };
 
 export default Heading;

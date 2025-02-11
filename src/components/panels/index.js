@@ -5,7 +5,6 @@ import {
   MEDIA_QUERIES,
   SPACING
 } from '../../reusable';
-
 import Address from '../address';
 import Callout from '../../reusable/callout';
 import Card from '../card';
@@ -21,14 +20,16 @@ import HoursPanelDateViewer from './hours-panel-date-viewer';
 import Html from '../html';
 import icons from '../../reusable/icons';
 import Image from '../image';
+import Dotz from '../../images/dotz2.png';
 import Link from '../link';
 import LinkPanel from './link-panel';
+import MEDIA_QUERIESREUSABLE from '../../reusable/media-queries';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { StateProvider } from '../use-state';
 
-const PanelTemplate = ({ title, children, shaded, ...rest }) => {
+const PanelTemplate = ({ title, children, shaded, headingCss, ...rest }) => {
   return (
     <section
       data-can-be-shaded={shaded}
@@ -54,7 +55,8 @@ const PanelTemplate = ({ title, children, shaded, ...rest }) => {
             level={2}
             size='M'
             css={{
-              marginBottom: SPACING.XL
+              marginBottom: SPACING.XL,
+              ...headingCss
             }}
           >
             {title}
@@ -68,18 +70,20 @@ const PanelTemplate = ({ title, children, shaded, ...rest }) => {
 
 PanelTemplate.propTypes = {
   children: PropTypes.any,
+  headingCss: PropTypes.object,
   shaded: PropTypes.bool,
   title: PropTypes.string
 };
 
-const PanelList = ({ children, twoColumns, ...rest }) => {
-  const panelListGridStyles = {
-    [MEDIA_QUERIES.LARGESCREEN]: {
-      display: 'grid',
-      gridGap: `${SPACING.XL} ${SPACING.M}`,
-      gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
-    }
-  };
+const PanelList = ({ children, twoColumns, disableLargeScreenStyles = false, ...rest }) => {
+  const panelListGridStyles = disableLargeScreenStyles
+    ? {}
+    : {
+        [MEDIA_QUERIES.LARGESCREEN]: {
+          display: 'grid',
+          gridGap: `${SPACING.XL} ${SPACING.M}`
+        }
+      };
   const panelListColumnStyles = {
     [MEDIA_QUERIES.LARGESCREEN]: {
       columnGap: SPACING['3XL'],
@@ -107,6 +111,8 @@ const PanelList = ({ children, twoColumns, ...rest }) => {
 
 PanelList.propTypes = {
   children: PropTypes.any,
+  disableLargeScreenStyles: PropTypes.bool,
+  mediumBreakPoint: PropTypes.bool,
   twoColumns: PropTypes.bool
 };
 
@@ -191,6 +197,110 @@ const CardPanel = ({ data }) => {
 
     return null;
   };
+  if (template === 'highlights') {
+    return (
+      <Margins>
+        <section
+          css={{
+            backgroundColor: 'var(--color-maize-300)',
+            paddingBottom: SPACING.XL,
+            paddingTop: SPACING.XL,
+            [MEDIA_QUERIES.LARGESCREEN]: {
+              paddingBottom: `${SPACING['2XL']}`,
+              paddingTop: `${SPACING.L}`
+            }
+          }}
+        >
+          <Margins data-panel-margins>
+            <div css={{
+              alignItems: 'center',
+              display: 'flex',
+              marginBottom: `${SPACING.L}`
+            }}
+            >
+              <img
+                src={Dotz}
+                alt=''
+                css={{
+                  [MEDIA_QUERIESREUSABLE.L]: {
+                    display: 'inline'
+                  },
+                  display: 'none',
+                  height: '2.5rem',
+                  marginLeft: '-30px'
+                }}
+              />
+              <Heading
+                level={2}
+                size='M'
+                css={{
+                  [MEDIA_QUERIESREUSABLE.L]: {
+                    marginLeft: '1rem'
+                  },
+                  display: 'inline',
+                  fontFamily: 'Crimson Text',
+                  fontSize: '2.5rem',
+                  fontWeight: '300',
+                  marginLeft: '0'
+                }}
+              >
+                {title}
+              </Heading>
+            </div>
+            <PanelList
+              disableLargeScreenStyles={true}
+              css={{
+                [MEDIA_QUERIESREUSABLE.L]: {
+                  display: 'grid',
+                  gridGap: `${SPACING.M}`,
+                  gridTemplateColumns: 'repeat(10, auto)'
+                }
+              }}
+            >
+
+              {cards.map((card, item) => {
+                const columnGaps = [5, 4, 1, 4, 5];
+                return (
+                  <li
+                    key={item + card.title}
+                    css={{
+                      [MEDIA_QUERIESREUSABLE.L]: {
+                        gridColumn: `span ${columnGaps[item]}`,
+                        ...(item === 2 && { gridRow: 'span 2' }),
+                        ...(item === 2 && { columnGap: '0' }),
+                        marginBottom: '0'
+                      },
+                      background: '#fff',
+                      border: '1px solid var(--color-blue-200)',
+                      borderRadius: '10px',
+                      marginBottom: SPACING.L,
+                      minHeight: '0'
+                    }}
+                  >
+                    <Card
+                      href={getCardHref(card)}
+                      subtitle={getCardSubtitle(card)}
+                      headingLevel={title ? 3 : 2}
+                      title={card.title}
+                      css={{
+                        height: '100%'
+                      }}
+                      anchorStyleAddition={{
+                        height: '100%',
+                        padding: SPACING.M
+                      }}
+                    >
+                      {useSummary ? getSummary(card.body) : renderCardChildren(card)}
+                    </Card>
+                  </li>
+                );
+              })}
+            </PanelList>
+          </Margins>
+        </section>
+      </Margins>
+    );
+  }
 
   return (
     <PanelTemplate title={title}>
@@ -217,7 +327,7 @@ const CardPanel = ({ data }) => {
                 }
                 href={getCardHref(card)}
                 subtitle={getCardSubtitle(card)}
-                headingLevel={title ? '3' : '2'}
+                headingLevel={title ? 3 : 2}
                 title={card.title}
                 css={{
                   height: '100%'
