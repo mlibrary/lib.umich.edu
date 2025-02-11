@@ -201,7 +201,7 @@ const CardPanel = ({ data }) => {
       <Margins>
         <section
           css={{
-            backgroundColor: 'var(--color-maize-300)',
+            backgroundColor: 'var(--color-blue-300)',
             paddingBottom: SPACING.XL,
             paddingTop: SPACING.XL,
             [MEDIA_QUERIES.LARGESCREEN]: {
@@ -217,25 +217,11 @@ const CardPanel = ({ data }) => {
               marginBottom: `${SPACING.L}`
             }}
             >
-              <img
-                src={Dotz}
-                alt=''
-                css={{
-                  [MEDIA_QUERIESREUSABLE.L]: {
-                    display: 'inline'
-                  },
-                  display: 'none',
-                  height: '2.5rem',
-                  marginLeft: '-30px'
-                }}
-              />
               <Heading
                 level={2}
                 size='M'
                 css={{
-                  [MEDIA_QUERIESREUSABLE.L]: {
-                    marginLeft: '1rem'
-                  },
+                  color: 'white',
                   display: 'inline',
                   fontFamily: 'Crimson Text',
                   fontSize: '2.5rem',
@@ -252,13 +238,13 @@ const CardPanel = ({ data }) => {
                 [MEDIA_QUERIESREUSABLE.L]: {
                   display: 'grid',
                   gridGap: `${SPACING.M}`,
-                  gridTemplateColumns: 'repeat(10, auto)'
+                  gridTemplateColumns: 'repeat(11, auto)'
                 }
               }}
             >
 
               {cards.map((card, item) => {
-                const columnGaps = [5, 4, 1, 4, 5];
+                const columnGaps = [5, 5, 1, 5, 5];
                 return (
                   <li
                     key={item + card.title}
