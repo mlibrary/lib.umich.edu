@@ -205,33 +205,26 @@ const CardPanel = ({ data }) => {
             paddingBottom: SPACING.XL,
             paddingTop: SPACING.XL,
             [MEDIA_QUERIES.LARGESCREEN]: {
-              paddingBottom: `${SPACING.L}`,
+              paddingBottom: `${SPACING['2XL']}`,
               paddingTop: `${SPACING.L}`
             }
           }}
         >
           <Margins data-panel-margins>
-            <div css={{
-              alignItems: 'center',
-              display: 'flex',
-              marginBottom: `${SPACING.L}`
-            }}
+
+            <Heading
+              level={2}
+              size='M'
+              css={{
+                color: 'white',
+                fontFamily: 'Crimson Text',
+                fontSize: '2.5rem',
+                fontWeight: '300',
+                marginBottom: `${SPACING.L}`
+              }}
             >
-              <Heading
-                level={2}
-                size='M'
-                css={{
-                  color: 'white',
-                  display: 'inline',
-                  fontFamily: 'Crimson Text',
-                  fontSize: '2.5rem',
-                  fontWeight: '300',
-                  marginLeft: '0'
-                }}
-              >
-                {title}
-              </Heading>
-            </div>
+              {title}
+            </Heading>
             <PanelList
               disableLargeScreenStyles={true}
               css={{
