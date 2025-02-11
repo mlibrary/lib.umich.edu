@@ -205,7 +205,7 @@ const CardPanel = ({ data }) => {
             paddingBottom: SPACING.XL,
             paddingTop: SPACING.XL,
             [MEDIA_QUERIES.LARGESCREEN]: {
-              paddingBottom: `${SPACING.L}`,
+              paddingBottom: `${SPACING['2XL']}`,
               paddingTop: `${SPACING.L}`
             }
           }}
@@ -267,9 +267,7 @@ const CardPanel = ({ data }) => {
                         gridColumn: `span ${columnGaps[item]}`,
                         ...(item === 2 && { gridRow: 'span 2' }),
                         ...(item === 2 && { columnGap: '0' }),
-                        marginBottom: '0',
-                        minHeight: '150px'
-
+                        marginBottom: '0'
                       },
                       background: '#fff',
                       border: '1px solid var(--color-blue-200)',
