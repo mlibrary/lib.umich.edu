@@ -19,7 +19,7 @@ import HoursPanel from './hours-panel';
 import Html from '../html';
 import icons from '../../reusable/icons';
 import Image from '../image';
-import Dotz from '../../images/dotz2.png';
+import Dotz from '../../images/dotz3.png';
 import Link from '../link';
 import LinkPanel from './link-panel';
 import MEDIA_QUERIESREUSABLE from '../../reusable/media-queries';
@@ -211,33 +211,56 @@ const CardPanel = ({ data }) => {
           }}
         >
           <Margins data-panel-margins>
-
-            <Heading
-              level={2}
-              size='M'
-              css={{
-                color: 'white',
-                fontFamily: 'Crimson Text',
-                fontSize: '2.5rem',
-                fontWeight: '300',
-                marginBottom: `${SPACING.L}`
-              }}
+            <div css={{
+              alignItems: 'center',
+              display: 'flex',
+              marginBottom: `${SPACING.L}`
+            }}
             >
-              {title}
-            </Heading>
+              <img
+                src={Dotz}
+                alt=''
+                css={{
+                  [MEDIA_QUERIESREUSABLE.L]: {
+                    display: 'inline'
+                  },
+                  display: 'block',
+                  height: '2.5rem',
+                  marginLeft: '-30px'
+                }}
+              />
+              <Heading
+                level={2}
+                size='M'
+                css={{
+                  [MEDIA_QUERIESREUSABLE.L]: {
+                    display: 'inline',
+                    marginLeft: '1rem'
+                  },
+                  color: 'white',
+                  display: 'block',
+                  fontFamily: 'Crimson Text',
+                  fontSize: '2.5rem',
+                  fontWeight: '300',
+                  marginLeft: '0'
+                }}
+              >
+                {title}
+              </Heading>
+            </div>
             <PanelList
               disableLargeScreenStyles={true}
               css={{
                 [MEDIA_QUERIESREUSABLE.L]: {
                   display: 'grid',
                   gridGap: `${SPACING.M}`,
-                  gridTemplateColumns: 'repeat(11, auto)'
+                  gridTemplateColumns: 'repeat(10, auto)'
                 }
               }}
             >
 
               {cards.map((card, item) => {
-                const columnGaps = [5, 5, 1, 5, 5];
+                const columnGaps = [5, 4, 1, 4, 5];
                 return (
                   <li
                     key={item + card.title}
