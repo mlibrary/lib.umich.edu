@@ -10,6 +10,7 @@ import Callout from '../../reusable/callout';
 import Card from '../card';
 import CustomPanel from './custom-panel';
 import DestinationHorizontalPanel from './destination-horizontal-panel';
+import DotsSvg from '../dots-svg';
 import getParentTitle from '../../utils/get-parent-title';
 import GroupPanel from './group-panel';
 import HeroPanel from './hero-panel';
@@ -19,7 +20,6 @@ import HoursPanel from './hours-panel';
 import Html from '../html';
 import icons from '../../reusable/icons';
 import Image from '../image';
-import Dotz from '../../images/dotz3.png';
 import Link from '../link';
 import LinkPanel from './link-panel';
 import MEDIA_QUERIESREUSABLE from '../../reusable/media-queries';
@@ -80,7 +80,8 @@ const PanelList = ({ children, twoColumns, disableLargeScreenStyles = false, ...
     : {
         [MEDIA_QUERIES.LARGESCREEN]: {
           display: 'grid',
-          gridGap: `${SPACING.XL} ${SPACING.M}`
+          gridGap: `${SPACING.XL} ${SPACING.M}`,
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
         }
       };
   const panelListColumnStyles = {
@@ -212,37 +213,38 @@ const CardPanel = ({ data }) => {
         >
           <Margins data-panel-margins>
             <div css={{
-              alignItems: 'center',
+              [MEDIA_QUERIESREUSABLE.L]: {
+                alignItems: 'center',
+                flexDirection: 'row'
+              },
               display: 'flex',
+              flexDirection: 'column',
               marginBottom: `${SPACING.L}`
             }}
             >
-              <img
-                src={Dotz}
-                alt=''
-                css={{
-                  [MEDIA_QUERIESREUSABLE.L]: {
-                    display: 'inline'
-                  },
-                  display: 'block',
+              <div css={{
+                [MEDIA_QUERIESREUSABLE.L]: {
+                  display: 'flex',
                   height: '2.5rem',
-                  marginLeft: '-30px'
-                }}
-              />
+                  marginLeft: '-30px',
+                  maxWidth: '144px'
+                },
+                display: 'none'
+              }}
+              >
+                <DotsSvg />
+              </div>
               <Heading
                 level={2}
                 size='M'
                 css={{
                   [MEDIA_QUERIESREUSABLE.L]: {
-                    display: 'inline',
                     marginLeft: '1rem'
                   },
                   color: 'white',
-                  display: 'block',
                   fontFamily: 'Crimson Text',
                   fontSize: '2.5rem',
-                  fontWeight: '300',
-                  marginLeft: '0'
+                  fontWeight: '300'
                 }}
               >
                 {title}
@@ -273,7 +275,7 @@ const CardPanel = ({ data }) => {
                       },
                       background: '#fff',
                       border: '1px solid var(--color-blue-200)',
-                      borderRadius: '10px',
+                      borderRadius: '8px',
                       marginBottom: SPACING.L,
                       minHeight: '0'
                     }}
