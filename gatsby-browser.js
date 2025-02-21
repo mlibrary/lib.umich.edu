@@ -33,9 +33,11 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
     const element = document.querySelector(`${location.hash}`);
 
     if (element) {
+      const stickyHeader = document.querySelector('#dateViewerBar');
+      const headerHeight = stickyHeader ? stickyHeader.offsetHeight : 0;
       window.scrollTo({
-        top: element.offsetTop,
-        behavior: 'smooth'
+        behavior: 'smooth',
+        top: element.offsetTop - headerHeight
       });
     }
   }
