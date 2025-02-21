@@ -35,7 +35,7 @@ const Layout = styled.div({
     [content-start] repeat(11, 1fr)
     1fr [content-end]
   `,
-  [MEDIA_QUERIES.LARGESCREEN]: {
+  [MEDIA_QUERIES.S]: {
     gridGap: SPACING.L
   }
 });
@@ -153,7 +153,7 @@ export default function FeaturedAndLatestNews () {
         <div
           css={{
             gridColumn: 'content-start / content-end',
-            [MEDIA_QUERIES.LARGESCREEN]: {
+            [MEDIA_QUERIES.S]: {
               gridColumn: 'content-start / span 6'
             }
           }}
@@ -169,7 +169,7 @@ export default function FeaturedAndLatestNews () {
           </Heading>
           <div
             css={{
-              [MEDIA_QUERIES.LARGESCREEN]: {
+              [MEDIA_QUERIES.S]: {
                 borderRight: `solid 1px var(--color-neutral-100)`,
                 paddingRight: SPACING.XL
               }
@@ -189,7 +189,7 @@ export default function FeaturedAndLatestNews () {
         <div
           css={{
             gridColumn: 'content-start / content-end',
-            [MEDIA_QUERIES.LARGESCREEN]: {
+            [MEDIA_QUERIES.S]: {
               gridColumn: 'span 6'
             }
           }}
@@ -200,7 +200,7 @@ export default function FeaturedAndLatestNews () {
             css={{
               marginBottom: SPACING.L,
               marginTop: SPACING.XL,
-              [MEDIA_QUERIES.LARGESCREEN]: {
+              [MEDIA_QUERIES.S]: {
                 marginTop: 0
               }
             }}

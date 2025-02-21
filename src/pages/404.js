@@ -1,9 +1,8 @@
 import { graphql, useStaticQuery } from 'gatsby';
-import { Heading, List, Margins, SPACING, Text } from '../reusable';
+import { Heading, List, Margins, MEDIA_QUERIES, SPACING, Text } from '../reusable';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import Layout from '../components/layout';
 import Link from '../components/link';
-import MEDIA_QUERIES from '../reusable/media-queries';
 import Prose from '../components/prose';
 import React from 'react';
 import SearchEngineOptimization from '../components/seo';

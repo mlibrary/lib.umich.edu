@@ -100,7 +100,7 @@ const SectionTemplate = ({ data, ...rest }) => {
                 <TemplateSide
                   css={{
                     display: 'none',
-                    [MEDIA_QUERIES.LARGESCREEN]: {
+                    [MEDIA_QUERIES.S]: {
                       display: 'block'
                     }
                   }}

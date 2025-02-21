@@ -5,15 +5,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import usePageContextByDrupalNodeID from '../../hooks/use-page-context-by-drupal-node-id';
 
-/* eslint-disable id-length, sort-keys */
-const MEDIAQUERIES = {
-  XL: '@media only screen and (min-width: 1200px)',
-  L: '@media only screen and (min-width:920px)',
-  M: '@media only screen and (min-width: 720px)',
-  S: MEDIA_QUERIES.LARGESCREEN
-};
-/* eslint-enable id-length, sort-keys */
-
 const getNIDFromURI = ({ uri }) => {
   if (uri.includes('entity:node/')) {
     return uri.split('/')[1];
@@ -47,13 +38,13 @@ export default function HeroText ({ data }) {
     <Margins
       css={{
         padding: '0',
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           padding: '0'
         },
-        [MEDIAQUERIES.M]: {
+        [MEDIA_QUERIES.M]: {
           padding: '0'
         },
-        [MEDIAQUERIES.L]: {
+        [MEDIA_QUERIES.L]: {
           padding: `0 ${SPACING['2XL']}`
         }
       }}
@@ -64,7 +55,7 @@ export default function HeroText ({ data }) {
             display: 'flex',
             justifyContent: 'center',
             padding: `${SPACING['2XL']} ${SPACING.M}`,
-            [MEDIA_QUERIES.LARGESCREEN]: {
+            [MEDIA_QUERIES.S]: {
               padding: `${SPACING['4XL']} ${SPACING.S}`
             }
           }}
@@ -157,7 +148,7 @@ const BackgroundSection = ({ data, children, ...rest }) => {
         backgroundColor: 'var(--color-blue-300)',
         backgroundImage: `url('${sources[1].images.fallback.src}')`,
         backgroundPosition: 'center',
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           backgroundSize: 'cover'
         },
         position: 'relative'

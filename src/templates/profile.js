@@ -149,7 +149,7 @@ const ProfileTemplate = ({ data }) => {
                 margin: `0 -${SPACING.M}`,
                 marginBottom: SPACING['2XL'],
                 padding: SPACING.M,
-                [MEDIA_QUERIES.LARGESCREEN]: {
+                [MEDIA_QUERIES.S]: {
                   margin: 0
                 }
               }}

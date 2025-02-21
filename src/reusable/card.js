@@ -24,7 +24,7 @@ export default function Card ({
 }) {
   const horizontalStyles = horizontal
     ? {
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           '[data-card-image]': {
             marginBottom: '0'
           },

@@ -4,11 +4,10 @@ import {
   eventFormatWhere,
   EXHIBIT_TYPES
 } from '../utils/events';
-import { Heading, Icon, SPACING, TYPOGRAPHY } from '../reusable';
+import { Heading, Icon, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
 import CardImage from '../reusable/card-image';
 import icons from '../reusable/icons';
 import Link from './link';
-import MEDIA_QUERIES from '../reusable/media-queries';
 import React from 'react';
 
 export default function EventCard (node) {
@@ -24,7 +23,7 @@ export default function EventCard (node) {
   } = node;
   const image
     = relationships.field_media_image
-    && relationships.field_media_image.relationships.field_media_image;
+      && relationships.field_media_image.relationships.field_media_image;
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;

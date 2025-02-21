@@ -11,18 +11,9 @@ import Html from '../html';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-/* eslint-disable id-length, sort-keys */
-const MEDIAQUERIES = {
-  XL: '@media only screen and (min-width: 1200px)',
-  L: '@media only screen and (min-width:920px)',
-  M: '@media only screen and (min-width: 720px)',
-  S: MEDIA_QUERIES.LARGESCREEN
-};
-/* eslint-enable id-length, sort-keys */
-
 const heroHeightCSS = {
   minHeight: '16rem',
-  [MEDIAQUERIES.L]: {
+  [MEDIA_QUERIES.L]: {
     minHeight: '25rem'
   }
 };
@@ -58,13 +49,13 @@ export default function HeroSearchBox ({ data }) {
           boxShadow: 'none'
         },
         padding: '0',
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           padding: '0'
         },
-        [MEDIAQUERIES.M]: {
+        [MEDIA_QUERIES.M]: {
           padding: '0'
         },
-        [MEDIAQUERIES.L]: {
+        [MEDIA_QUERIES.L]: {
           padding: `0 ${SPACING['2XL']}`
         }
       }}
@@ -78,8 +69,8 @@ export default function HeroSearchBox ({ data }) {
         <div
           css={{
             ...heroHeightCSS,
-            [MEDIAQUERIES.M]: {
-              ...heroHeightCSS[MEDIAQUERIES.M],
+            [MEDIA_QUERIES.M]: {
+              ...heroHeightCSS[MEDIA_QUERIES.M],
               alignItems: 'center',
               display: 'flex'
             }
@@ -90,10 +81,10 @@ export default function HeroSearchBox ({ data }) {
               margin: '0 auto',
               maxWidth: '28rem',
               padding: SPACING.M,
-              [MEDIA_QUERIES.LARGESCREEN]: {
+              [MEDIA_QUERIES.S]: {
                 padding: SPACING.L
               },
-              [MEDIAQUERIES.M]: {
+              [MEDIA_QUERIES.M]: {
                 borderRadius: '2px',
                 margin: 0,
                 marginLeft: SPACING['2XL'],
@@ -112,13 +103,13 @@ export default function HeroSearchBox ({ data }) {
                 ...TYPOGRAPHY.M,
                 fontWeight: '700',
                 textAlign: 'center',
-                [MEDIAQUERIES.M]: {
+                [MEDIA_QUERIES.M]: {
                   maxWidth: '100%',
                   padding: '0',
                   ...TYPOGRAPHY.XL,
                   textAlign: 'left'
                 },
-                [MEDIAQUERIES.L]: {
+                [MEDIA_QUERIES.L]: {
                   fontSize: '2.25rem'
                 }
               }}
@@ -210,7 +201,7 @@ const BackgroundSection = ({ data, children, ...rest }) => {
         backgroundColor: 'var(--color-neutral-100)',
         backgroundImage: `url('${screenImage('vertical')}')`,
         backgroundPosition: 'center top 33%',
-        [MEDIAQUERIES.M]: {
+        [MEDIA_QUERIES.M]: {
           backgroundImage: `url('${screenImage('horizontal')}')`,
           backgroundPosition: 'center left 20%'
         },
@@ -238,7 +229,7 @@ const Search = ({ labelId }) => {
       method='get'
       css={{
         textAlign: 'center',
-        [MEDIAQUERIES.M]: {
+        [MEDIA_QUERIES.M]: {
           textAlign: 'left'
         }
       }}

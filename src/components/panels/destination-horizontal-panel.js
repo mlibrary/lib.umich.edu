@@ -1,9 +1,8 @@
 import { getFloor, getImage, getParentTitle, getRoom } from '../../utils';
-import { Heading, SPACING, TYPOGRAPHY } from '../../reusable';
+import { Heading, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../../reusable';
 import CardImage from '../../reusable/card-image';
 import Html from '../html';
 import Link from '../link';
-import MEDIA_QUERIES from '../../reusable/media-queries';
 import PropTypes from 'prop-types';
 import React from 'react';
 import useFloorPlan from '../../hooks/use-floor-plan';

@@ -26,7 +26,7 @@ export default function SideNavigation ({ to, branch }) {
       <nav
         css={{
           display: 'none',
-          [MEDIA_QUERIES.LARGESCREEN]: {
+          [MEDIA_QUERIES.S]: {
             display: 'block'
           }
         }}

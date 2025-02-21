@@ -18,12 +18,17 @@ export const SPACING = {
 };
 
 export const BREAKPOINTS = {
-  LARGESCREEN: 641,
-  SMALLSCREEN: 320
+  EXTRALARGESCREEN: 1200,
+  LARGESCREEN: 920,
+  MEDIUMSCREEN: 720,
+  SMALLSCREEN: 641
 };
 
 export const MEDIA_QUERIES = {
-  LARGESCREEN: `@media only screen and (min-width: ${BREAKPOINTS.LARGESCREEN}px)`,
+  XL: `@media only screen and (min-width: ${BREAKPOINTS.EXTRALARGESCREEN}px)`,
+  L: `@media only screen and (min-width: ${BREAKPOINTS.LARGESCREEN}px)`,
+  M: `@media only screen and (min-width: ${BREAKPOINTS.MEDIUMSCREEN}px)`,
+  S: `@media only screen and (min-width: ${BREAKPOINTS.SMALLSCREEN}px)`,
   PRINT: '@media print'
 };
 
@@ -45,7 +50,7 @@ export const Z_SPACE = {
 export const TYPOGRAPHY = {
   '3XL': {
     ...TYPE_2XL,
-    [MEDIA_QUERIES.LARGESCREEN]: {
+    [MEDIA_QUERIES.S]: {
       fontFamily: 'Crimson Text',
       fontSize: '3.5rem',
       lineHeight: '1.125'
@@ -98,14 +103,14 @@ export const Margins = styled('div')({
   maxWidth: '1280px',
   padding: `0 ${SPACING.M}`,
   width: '100%',
-  [MEDIA_QUERIES.LARGESCREEN]: {
+  [MEDIA_QUERIES.S]: {
     padding: `0 ${SPACING['2XL']}`
   }
 });
 
 export const LargeScreen = styled('div')({
   display: 'none',
-  [MEDIA_QUERIES.LARGESCREEN]: {
+  [MEDIA_QUERIES.S]: {
     display: 'block'
   }
 });
@@ -191,7 +196,7 @@ export const LINK_STYLES = {
 
 export const SmallScreen = styled('div')({
   display: 'block',
-  [MEDIA_QUERIES.LARGESCREEN]: {
+  [MEDIA_QUERIES.S]: {
     display: 'none'
   }
 });

@@ -3,15 +3,6 @@ import Panels from './index';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-/* eslint-disable id-length, sort-keys */
-const MEDIAQUERIES = {
-  XL: '@media only screen and (min-width: 1200px)',
-  L: '@media only screen and (min-width:920px)',
-  M: '@media only screen and (min-width: 720px)',
-  S: MEDIA_QUERIES.LARGESCREEN
-};
-/* eslint-enable id-length, sort-keys */
-
 export default function GroupPanel ({ data }) {
   const { field_panel_group_layout: fieldPanelGroupLayout, relationships } = data;
 
@@ -40,21 +31,21 @@ const PanelGroup50Container = ({ children }) => {
           '> *': {
             marginBottom: SPACING.XL,
             paddingBottom: SPACING.XL,
-            [MEDIAQUERIES.L]: {
+            [MEDIA_QUERIES.L]: {
               marginBottom: SPACING['2XL'],
               paddingBottom: SPACING['2XL']
             }
           },
           '> *:not(:last-child)': {
             borderBottom: `solid 1px var(--color-neutral-100)`,
-            [MEDIAQUERIES.L]: {
+            [MEDIA_QUERIES.L]: {
               border: 'none',
               borderRight: `solid 1px var(--color-neutral-100)`,
               paddingRight: SPACING['3XL']
             }
           },
           display: 'grid',
-          [MEDIAQUERIES.L]: {
+          [MEDIA_QUERIES.L]: {
             gridGap: SPACING['3XL'],
             gridTemplateColumns: '1fr 1fr'
           },
