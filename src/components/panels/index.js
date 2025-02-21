@@ -17,6 +17,7 @@ import HeroPanel from './hero-panel';
 import Hours from '../todays-hours';
 import HoursLitePanel from './hours-lite-panel';
 import HoursPanel from './hours-panel';
+import HoursPanelDateViewer from './hours-panel-date-viewer';
 import Html from '../html';
 import icons from '../../reusable/icons';
 import Image from '../image';
@@ -595,9 +596,14 @@ export default function Panels ({ data }) {
   if (!data) {
     return null;
   }
+  const hoursPanel = data.find((panel) => {
+    // eslint-disable-next-line no-underscore-dangle
+    return panel.__typename === 'paragraph__hours_panel';
+  });
 
   return (
     <PanelStateWrapper>
+      {hoursPanel && <HoursPanelDateViewer data={hoursPanel} key={hoursPanel.id} />}
       {data.map((panel) => {
         // eslint-disable-next-line no-underscore-dangle
         const type = panel.__typename;
