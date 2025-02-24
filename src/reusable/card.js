@@ -13,12 +13,13 @@ import React from 'react';
 export default function Card ({
   title,
   subtitle,
-  headingLevel = '3',
+  headingLevel = 3,
   image,
   href,
   renderAnchor,
   children,
   horizontal,
+  anchorStyleAddition = {},
   ...rest
 }) {
   const horizontalStyles = horizontal
@@ -37,6 +38,7 @@ export default function Card ({
   const anchorStyles = {
     display: 'block',
     ...horizontalStyles,
+    ...anchorStyleAddition,
     ':hover': {
       '[data-card-image]': {
         ...Z_SPACE[8]
@@ -72,7 +74,6 @@ export default function Card ({
   const content = (
     <React.Fragment>
       {image && <CardImage image={image} />}
-
       <div>
         <Heading level={headingLevel} style={{ marginTop: '0' }}>
           {subtitle && (
@@ -114,6 +115,11 @@ export default function Card ({
 }
 
 Card.propTypes = {
+  /*
+  * Additional styles for the link
+  *
+  */
+  anchorStyleAddition: PropTypes.object,
 
   /*
   * Regular React element.
@@ -125,7 +131,7 @@ Card.propTypes = {
    * Determine the heading level to render to ensure proper hierarchy on each page.
    *
    */
-  headingLevel: PropTypes.oneOf(['h3', 'h2']),
+  headingLevel: PropTypes.oneOf([3, 2]),
 
   /*
    * Let the Card know if it can go horizontal on large screens.
