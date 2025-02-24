@@ -6,7 +6,7 @@ import {
 } from '../utils/events';
 import { Heading, Icon, SPACING, TYPOGRAPHY } from '../reusable';
 import CardImage from '../reusable/card-image';
-import icons from '../reusable/icons';
+import icon from '../reusable/icon';
 import Link from './link';
 import MEDIA_QUERIES from '../reusable/media-queries';
 import React from 'react';
@@ -105,7 +105,7 @@ export default function EventCard (node) {
               marginRight: SPACING.L
             }}
           >
-            <Icon d={icons.address} />
+            <Icon icon='address' />
             <span
               css={{
                 marginLeft: SPACING.XS

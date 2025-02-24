@@ -1,6 +1,5 @@
 import { getFloor } from '../utils';
 import Hours from '../components/todays-hours';
-import icons from '../reusable/icons';
 import IconText from '../components/icon-text';
 import Link from '../components/link';
 import LocationAnchoredLink from '../components/location-anchored-link';
@@ -82,7 +81,7 @@ const DestinationLocationInfo = ({ node }) => {
       )}
       {(floorPlan || askLibrarian) && (
         <p>
-          <IconText d={icons.address}>
+          <IconText icon='address'>
             <span>
               {locationSummary}
               <span css={{ display: 'block' }}>
@@ -94,7 +93,7 @@ const DestinationLocationInfo = ({ node }) => {
       )}
       {phoneNumber && (
         <p>
-          <IconText d={icons.phone}>
+          <IconText icon='phone'>
             <Link to={`tel:+1-${phoneNumber}`}>{phoneNumber}</Link>
           </IconText>
         </p>
