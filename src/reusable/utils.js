@@ -17,18 +17,11 @@ export const SPACING = {
   '5XL': '6rem'
 };
 
-export const BREAKPOINTS = {
-  EXTRALARGESCREEN: 1200,
-  LARGESCREEN: 920,
-  MEDIUMSCREEN: 720,
-  SMALLSCREEN: 641
-};
-
 export const MEDIA_QUERIES = {
-  XL: `@media only screen and (min-width: ${BREAKPOINTS.EXTRALARGESCREEN}px)`,
-  L: `@media only screen and (min-width: ${BREAKPOINTS.LARGESCREEN}px)`,
-  M: `@media only screen and (min-width: ${BREAKPOINTS.MEDIUMSCREEN}px)`,
-  S: `@media only screen and (min-width: ${BREAKPOINTS.SMALLSCREEN}px)`,
+  XL: `@media only screen and (min-width: 1200px)`,
+  L: `@media only screen and (min-width: 920px)`,
+  M: `@media only screen and (min-width: 720px)`,
+  S: `@media only screen and (min-width: 641px)`,
   PRINT: '@media print'
 };
 
