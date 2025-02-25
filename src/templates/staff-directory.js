@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Button, Heading, Margins, SPACING, TextInput } from '../reusable';
+import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
@@ -7,7 +7,6 @@ import { GatsbyImage } from 'gatsby-plugin-image';
 import { graphql } from 'gatsby';
 import Html from '../components/html';
 import Link from '../components/link';
-import MEDIA_QUERIES from '../reusable/media-queries';
 import { navigate } from '@reach/router';
 import NoResults from '../components/no-results';
 import PlainLink from '../components/plain-link';

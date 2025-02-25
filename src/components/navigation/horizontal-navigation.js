@@ -28,7 +28,7 @@ export default function HorizontalNavigation ({ items, ...rest }) {
       <Margins
         css={{
           padding: '0',
-          [MEDIA_QUERIES.LARGESCREEN]: {
+          [MEDIA_QUERIES.S]: {
             padding: `0 ${SPACING['2XL']}`
           }
         }}
@@ -40,7 +40,7 @@ export default function HorizontalNavigation ({ items, ...rest }) {
                 key={iterator + to}
                 css={{
                   borderTop: `solid 1px var(--color-neutral-100)`,
-                  [MEDIA_QUERIES.LARGESCREEN]: {
+                  [MEDIA_QUERIES.S]: {
                     border: 'none',
                     display: 'inline-block',
                     marginRight: SPACING.L

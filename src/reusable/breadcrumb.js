@@ -18,7 +18,7 @@ const Breadcrumb = ({ children, ...rest }) => {
       css={{
         paddingBottom: SPACING.M,
         paddingTop: SPACING.M,
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           paddingBottom: SPACING.XL,
           paddingTop: SPACING['2XL']
         }
@@ -26,7 +26,7 @@ const Breadcrumb = ({ children, ...rest }) => {
     >
       <ol
         css={{
-          [MEDIA_QUERIES.LARGESCREEN]: {
+          [MEDIA_QUERIES.S]: {
             '> li': {
               display: 'inline-block',
               marginRight: SPACING['2XS']
@@ -40,7 +40,7 @@ const Breadcrumb = ({ children, ...rest }) => {
               key={`breadcrumb-${index}`}
               css={{
                 display: isParent(index) ? 'block' : 'none',
-                [MEDIA_QUERIES.LARGESCREEN]: {
+                [MEDIA_QUERIES.S]: {
                   display: 'block'
                 }
               }}
@@ -55,7 +55,7 @@ const Breadcrumb = ({ children, ...rest }) => {
                   icon='navigate_next'
                   css={{
                     display: 'none',
-                    [MEDIA_QUERIES.LARGESCREEN]: {
+                    [MEDIA_QUERIES.S]: {
                       display: index === 0 ? 'none' : 'inline-block'
                     }
                   }}
@@ -64,7 +64,7 @@ const Breadcrumb = ({ children, ...rest }) => {
                   icon='navigate_before'
                   css={{
                     display: 'inline-block',
-                    [MEDIA_QUERIES.LARGESCREEN]: {
+                    [MEDIA_QUERIES.S]: {
                       display: 'none'
                     }
                   }}

@@ -511,7 +511,7 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
           fontWeight: 'bold',
           gap: SPACING['2XS'],
           margin: '.5rem 0',
-          [MEDIA_QUERIES.LARGESCREEN]: {
+          [MEDIA_QUERIES.S]: {
             display: 'flex'
           }
         }}
@@ -541,7 +541,7 @@ const PreviousNextWeekButton = ({ type, children, ...rest }) => {
           fontWeight: 'bold',
           gap: SPACING['2XS'],
           margin: '.5rem 0',
-          [MEDIA_QUERIES.LARGESCREEN]: {
+          [MEDIA_QUERIES.S]: {
             display: 'none'
           }
         }}

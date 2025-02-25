@@ -6,7 +6,7 @@ export const Template = ({ children, ...rest }) => {
   return (
     <div
       css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           display: 'grid',
           gridTemplateAreas: `
             "top top"
@@ -51,7 +51,7 @@ export const Side = ({ children, ...rest }) => {
   return (
     <section
       css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           gridArea: 'side',
           marginRight: SPACING['3XL']
         }

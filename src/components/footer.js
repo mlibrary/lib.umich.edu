@@ -116,7 +116,7 @@ const Footer = () => {
             },
             paddingBottom: SPACING.L,
             paddingTop: SPACING['2XL'],
-            [MEDIA_QUERIES.LARGESCREEN]: {
+            [MEDIA_QUERIES.S]: {
               '& section': {
                 breakInside: 'avoid',
                 marginBottom: '0'
@@ -170,7 +170,7 @@ const Footer = () => {
               },
               borderTop: `solid 1px var(--color-blue-300)`,
               paddingTop: SPACING.XL,
-              [MEDIA_QUERIES.LARGESCREEN]: {
+              [MEDIA_QUERIES.S]: {
                 border: '0',
                 borderLeft: `solid 1px var(--color-blue-300)`,
                 marginLeft: `-${SPACING['2XL']}`,
