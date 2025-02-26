@@ -1,7 +1,6 @@
 import { Heading, Icon, SPACING, Text } from '../reusable';
 import Address from './address';
 import Hours from './todays-hours';
-import icons from '../reusable/icons';
 import Link from './link';
 import LocationAnchoredLink from './location-anchored-link';
 import PropTypes from 'prop-types';
@@ -9,7 +8,7 @@ import React from 'react';
 
 const LayoutWithIcon = ({
   // eslint-disable-next-line react/prop-types
-  d: data,
+  icon,
   color,
   palette,
   children
@@ -37,7 +36,7 @@ const LayoutWithIcon = ({
             width: '2.5rem'
           }}
         >
-          <Icon d={data} size={24} />
+          <Icon icon={icon} size={24} />
         </span>
       </div>
       <div>{children}</div>
@@ -68,7 +67,7 @@ export default function LocationAside ({ node }) {
           marginBottom: SPACING['3XL']
         }}
       >
-        <LayoutWithIcon d={icons.clock} palette='indigo' color='400'>
+        <LayoutWithIcon icon='clock' palette='indigo' color='400'>
           <Heading
             level={2}
             size='M'
@@ -94,7 +93,7 @@ export default function LocationAside ({ node }) {
           }
         }}
       >
-        <LayoutWithIcon d={icons.address} palette='orange' color='500'>
+        <LayoutWithIcon icon='address' palette='orange' color='500'>
           <Heading
             level={2}
             size='M'
@@ -108,7 +107,7 @@ export default function LocationAside ({ node }) {
           <Address node={node} directions={true} kind='full' />
         </LayoutWithIcon>
 
-        <LayoutWithIcon d={icons.phone} palette='green' color='500'>
+        <LayoutWithIcon icon='phone' palette='green' color='500'>
           <Heading
             level={2}
             size='M'
@@ -135,7 +134,7 @@ export default function LocationAside ({ node }) {
           </div>
         </LayoutWithIcon>
         {floorPlans?.length > 0 && (
-          <LayoutWithIcon d={icons.map} palette='teal' color='500'>
+          <LayoutWithIcon icon='map' palette='teal' color='500'>
             <Heading
               level={2}
               size='M'

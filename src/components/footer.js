@@ -1,7 +1,7 @@
 import { Heading, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
 import createGoogleMapsUrl from './utilities/create-google-maps-url';
 import fdlp from '../images/fdlp.png';
-import icons from '../reusable/icons';
+import icon from '../reusable/icon';
 import IconText from './icon-text';
 import PlainLink from './plain-link';
 import React from 'react';
@@ -16,7 +16,7 @@ const links = [
     heading: 'University of Michigan Library',
     links: [
       {
-        data: icons.address,
+        icon: 'address',
         text: (
           <>
             913 S. University Avenue
@@ -27,7 +27,7 @@ const links = [
         to: locationURL
       },
       {
-        data: icons.phone,
+        icon: 'phone',
         text: '(734) 764-0401',
         to: 'tel:+1-734-764-0401'
       },

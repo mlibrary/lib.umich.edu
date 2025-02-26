@@ -6,7 +6,6 @@ import {
 } from '../utils/events';
 import { Heading, Icon, SPACING, TYPOGRAPHY } from '../reusable';
 import CardImage from '../reusable/card-image';
-import icon from '../reusable/icon';
 import Link from './link';
 import MEDIA_QUERIES from '../reusable/media-queries';
 import React from 'react';
@@ -24,7 +23,7 @@ export default function EventCard (node) {
   } = node;
   const image
     = relationships.field_media_image
-    && relationships.field_media_image.relationships.field_media_image;
+      && relationships.field_media_image.relationships.field_media_image;
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
