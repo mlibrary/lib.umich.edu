@@ -7,7 +7,7 @@ import styled from '@emotion/styled';
 const StyledHeroContainer = styled('div')({
   minHeight: '20rem',
   position: 'relative',
-  [MEDIA_QUERIES.LARGESCREEN]: {
+  [MEDIA_QUERIES.S]: {
     height: '33vh'
   }
 });

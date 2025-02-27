@@ -1,5 +1,4 @@
-import { Margins, SPACING } from '../reusable';
-import MEDIA_QUERIES from '../reusable/media-queries';
+import { Margins, MEDIA_QUERIES, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
 

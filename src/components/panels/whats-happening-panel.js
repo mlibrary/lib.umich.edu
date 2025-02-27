@@ -95,7 +95,7 @@ export default function WhatsHappening () {
 
         <div
           css={{
-            [MEDIA_QUERIES.LARGESCREEN]: {
+            [MEDIA_QUERIES.S]: {
               display: 'grid',
               gridGap: `${SPACING.XL} ${SPACING.M}`,
               gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'

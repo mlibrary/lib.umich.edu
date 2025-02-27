@@ -25,7 +25,7 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
       <Margins>
         <header
           css={{
-            [MEDIA_QUERIES.LARGESCREEN]: {
+            [MEDIA_QUERIES.S]: {
               alignItems: 'stretch',
               display: 'flex',
               minHeight: '350px'
@@ -35,7 +35,7 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
         >
           <div
             css={{
-              [MEDIA_QUERIES.LARGESCREEN]: {
+              [MEDIA_QUERIES.S]: {
                 flex: '1 1 0'
               },
               paddingBottom: SPACING.L,
@@ -63,7 +63,7 @@ export default function PageHeader ({ breadcrumb, title, summary, image, ...rest
                 css={{
                   flex: '0 1 50%',
                   margin: `0 -${SPACING.M}`,
-                  [MEDIA_QUERIES.LARGESCREEN]: {
+                  [MEDIA_QUERIES.S]: {
                     'div:first-child > img': {
                       position: 'absolute !important'
                     },

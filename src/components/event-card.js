@@ -4,10 +4,9 @@ import {
   eventFormatWhere,
   EXHIBIT_TYPES
 } from '../utils/events';
-import { Heading, Icon, SPACING, TYPOGRAPHY } from '../reusable';
+import { Heading, Icon, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
 import CardImage from '../reusable/card-image';
 import Link from './link';
-import MEDIA_QUERIES from '../reusable/media-queries';
 import React from 'react';
 
 export default function EventCard (node) {

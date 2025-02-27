@@ -1,9 +1,8 @@
-import { Heading, Icon, SPACING, TYPOGRAPHY } from '../../reusable';
+import { Heading, Icon, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../../reusable';
 import React, { useEffect, useState } from 'react';
 import { displayHours } from '../../utils/hours';
 import { Link as GatsbyLink } from 'gatsby';
 import Link from '../link';
-import MEDIA_QUERIES from '../../reusable/media-queries.js';
 import PropTypes from 'prop-types';
 
 const processHoursData = (data, initialized) => {

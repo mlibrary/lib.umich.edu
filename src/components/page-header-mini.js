@@ -7,7 +7,7 @@ export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
   return (
     <header
       css={{
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           background: 'var(--color-blue-100)'
         }
       }}
@@ -16,7 +16,7 @@ export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
       <Margins>
         <div
           css={{
-            [MEDIA_QUERIES.LARGESCREEN]: {
+            [MEDIA_QUERIES.S]: {
               flex: '1 1 0'
             },
             paddingLeft: '0',
@@ -27,7 +27,7 @@ export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
           <Breadcrumb
             data={breadcrumb}
             css={{
-              [MEDIA_QUERIES.LARGESCREEN]: {
+              [MEDIA_QUERIES.S]: {
                 paddingBottom: SPACING.L,
                 paddingTop: SPACING.L
               }
@@ -38,7 +38,7 @@ export default function PageHeaderMini ({ breadcrumb, title, ...rest }) {
             level={1}
             css={{
               paddingBottom: SPACING.L,
-              [MEDIA_QUERIES.LARGESCREEN]: {
+              [MEDIA_QUERIES.S]: {
                 marginTop: SPACING.S,
                 padding: '0'
               }

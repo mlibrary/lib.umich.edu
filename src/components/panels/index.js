@@ -22,7 +22,6 @@ import Html from '../html';
 import Image from '../image';
 import Link from '../link';
 import LinkPanel from './link-panel';
-import MEDIA_QUERIESREUSABLE from '../../reusable/media-queries';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -41,7 +40,7 @@ const PanelTemplate = ({ title, children, shaded, headingCss, ...rest }) => {
         background: shaded ? 'var(--color-blue-100)' : '',
         paddingBottom: SPACING.XL,
         paddingTop: SPACING.XL,
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           paddingBottom: SPACING['3XL'],
           paddingTop: SPACING['3XL']
         }
@@ -78,14 +77,14 @@ const PanelList = ({ children, twoColumns, disableLargeScreenStyles = false, ...
   const panelListGridStyles = disableLargeScreenStyles
     ? {}
     : {
-        [MEDIA_QUERIES.LARGESCREEN]: {
+        [MEDIA_QUERIES.S]: {
           display: 'grid',
           gridGap: `${SPACING.XL} ${SPACING.M}`,
           gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
         }
       };
   const panelListColumnStyles = {
-    [MEDIA_QUERIES.LARGESCREEN]: {
+    [MEDIA_QUERIES.S]: {
       columnGap: SPACING['3XL'],
       columns: '2'
     },
@@ -205,7 +204,7 @@ const CardPanel = ({ data }) => {
             backgroundColor: 'var(--color-blue-300)',
             paddingBottom: SPACING.XL,
             paddingTop: SPACING.XL,
-            [MEDIA_QUERIES.LARGESCREEN]: {
+            [MEDIA_QUERIES.S]: {
               paddingBottom: `${SPACING['2XL']}`,
               paddingTop: `${SPACING.L}`
             }
@@ -213,7 +212,7 @@ const CardPanel = ({ data }) => {
         >
           <Margins data-panel-margins>
             <div css={{
-              [MEDIA_QUERIESREUSABLE.L]: {
+              [MEDIA_QUERIES.L]: {
                 alignItems: 'center',
                 flexDirection: 'row'
               },
@@ -223,7 +222,7 @@ const CardPanel = ({ data }) => {
             }}
             >
               <div css={{
-                [MEDIA_QUERIESREUSABLE.L]: {
+                [MEDIA_QUERIES.L]: {
                   display: 'flex',
                   height: '2.5rem',
                   marginLeft: '-30px',
@@ -238,7 +237,7 @@ const CardPanel = ({ data }) => {
                 level={2}
                 size='M'
                 css={{
-                  [MEDIA_QUERIESREUSABLE.L]: {
+                  [MEDIA_QUERIES.L]: {
                     marginLeft: '1rem'
                   },
                   color: 'white',
@@ -253,7 +252,7 @@ const CardPanel = ({ data }) => {
             <PanelList
               disableLargeScreenStyles={true}
               css={{
-                [MEDIA_QUERIESREUSABLE.L]: {
+                [MEDIA_QUERIES.L]: {
                   display: 'grid',
                   gridGap: `${SPACING.M}`,
                   gridTemplateColumns: 'repeat(10, auto)'
@@ -267,7 +266,7 @@ const CardPanel = ({ data }) => {
                   <li
                     key={item + card.title}
                     css={{
-                      [MEDIA_QUERIESREUSABLE.L]: {
+                      [MEDIA_QUERIES.L]: {
                         gridColumn: `span ${columnGaps[item]}`,
                         ...(item === 2 && { gridRow: 'span 2' }),
                         ...(item === 2 && { columnGap: '0' }),
@@ -317,7 +316,7 @@ const CardPanel = ({ data }) => {
                   marginTop: 0
                 },
                 marginTop: SPACING.XL,
-                [MEDIA_QUERIES.LARGESCREEN]: {
+                [MEDIA_QUERIES.S]: {
                   margin: '0'
                 }
               }}
@@ -451,7 +450,7 @@ const TextPanel = ({ data }) => {
         css={{
           paddingBottom: SPACING['3XL'],
           paddingTop: SPACING['3XL'],
-          [MEDIA_QUERIES.LARGESCREEN]: {
+          [MEDIA_QUERIES.S]: {
             paddingBottom: SPACING['4XL'],
             paddingTop: SPACING['4XL']
           }
@@ -497,7 +496,7 @@ const TextPanel = ({ data }) => {
                 key={item + fieldTitle}
                 css={{
                   marginBottom: SPACING.XL,
-                  [MEDIA_QUERIES.LARGESCREEN]: {
+                  [MEDIA_QUERIES.S]: {
                     margin: '0'
                   }
                 }}
