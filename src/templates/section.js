@@ -41,9 +41,7 @@ const SectionTemplate = ({ data, ...rest }) => {
   const [parentNode] = relationships.field_parent_page;
   const { breadcrumb } = fields;
   const isRootPage = Boolean(fieldRootPage);
-  const pageHeaderImage
-    = relationships.field_media_image
-    && relationships.field_media_image;
+  const pageHeaderImage = relationships.field_media_image && relationships.field_media_image;
   const hasBody = body && body.processed && body.processed.length;
   /*
    *Use the parent page if not the root
@@ -94,9 +92,7 @@ const SectionTemplate = ({ data, ...rest }) => {
 
                 <Panels data={bodyPanels} />
               </TemplateContent>
-              {relationships.field_design_template.field_machine_name
-              === 'section_locaside'
-              && parentNode && (
+              {relationships.field_design_template.field_machine_name === 'section_locaside' && parentNode && (
                 <TemplateSide
                   css={{
                     display: 'none',

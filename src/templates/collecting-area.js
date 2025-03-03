@@ -75,14 +75,14 @@ const CollectingAreaTemplate = ({ data }) => {
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
   const image
     = relationships.field_media_image
-    && relationships.field_media_image.relationships.field_media_image;
+      && relationships.field_media_image.relationships.field_media_image;
   const imageAlt = relationships.field_media_image?.field_media_image?.alt;
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;
   const imageCaption
     = relationships.field_media_image
-    && relationships.field_media_image.field_image_caption
+      && relationships.field_media_image.field_image_caption
       ? relationships.field_media_image.field_image_caption.processed
       : null;
   const contacts = processContacts(

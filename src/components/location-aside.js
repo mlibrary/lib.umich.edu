@@ -170,9 +170,9 @@ LocationAside.propTypes = {
     field_email: PropTypes.any,
     field_phone_number: PropTypes.any,
     relationships: PropTypes.shape({
+      field_floor_plan: PropTypes.array,
       field_parent_location: PropTypes.shape({
         relationships: PropTypes.shape({
-          field_floor_plan: PropTypes.array,
           field_parent_location: PropTypes.any
         })
       }),
