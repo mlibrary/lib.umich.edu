@@ -195,8 +195,8 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
       const sanitizedData = sanitizeDrupalView(data);
       const value = sanitizedData
         ? sanitizedData.map(({ uuid }) => {
-          return uuid;
-        })
+            return uuid;
+          })
         : [`no-${name}`];
 
       createNodeField({
@@ -616,6 +616,7 @@ exports.createPages = ({ actions, graphql }) => {
         `
       ).then((result) => {
         if (result.errors) {
+          console.error('GraphQL query error:', result.errors);
           reject(result.errors);
         }
         /*

@@ -39,11 +39,6 @@ export default function StaffDirectoryWrapper ({ data, location }) {
   });
   const staffImages = allStaffImages.edges.reduce((acc, { node: staffImagesNode }) => {
     const img = staffImagesNode.relationships.field_media_image;
-    console.log(img);
-    if (!img || !img.localFile) {
-      console.error('Missing image:', img);
-      return null;
-    }
     return {
       ...acc,
       [img.drupal_internal__mid]: {
