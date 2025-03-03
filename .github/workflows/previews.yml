@@ -49,14 +49,14 @@ jobs:
           output: |
             {"summary":"${{ env.DEPLOY_URL }}" }
       ## Notify Slack if build fails
-      - name: Send custom JSON data to Slack workflow
-        if: ${{ failure() }}
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: |
-            {
-              "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-              "message": "${{ vars.NAME }} build and deploy failed"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
+      # - name: Send custom JSON data to Slack workflow
+      #   if: ${{ failure() }}
+      #   uses: slackapi/slack-github-action@v1.25.0
+      #   with:
+      #     payload: |
+      #       {
+      #         "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+      #         "message": "${{ vars.NAME }} build and deploy failed"
+      #       }
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
