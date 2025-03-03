@@ -616,7 +616,6 @@ exports.createPages = ({ actions, graphql }) => {
         `
       ).then((result) => {
         if (result.errors) {
-          console.error('GraphQL query error:', result.errors);
           reject(result.errors);
         }
         /*
