@@ -67,7 +67,7 @@ export default function LocationAside ({ node }) {
           marginBottom: SPACING['3XL']
         }}
       >
-        <LayoutWithIcon icon='clock' palette='indigo' color='400'>
+        <LayoutWithIcon icon='access_time' palette='indigo' color='400'>
           <Heading
             level={2}
             size='M'

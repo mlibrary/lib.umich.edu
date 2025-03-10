@@ -70,7 +70,7 @@ export default function HoursLitePanel ({ data }) {
                   width: '1.5rem'
                 }}
               >
-                <Icon icon='clock' />
+                <Icon icon='access_time' />
               </span>
               <GatsbyLink
                 to={hour.to}

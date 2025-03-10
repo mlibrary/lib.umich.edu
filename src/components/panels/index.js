@@ -186,7 +186,7 @@ const CardPanel = ({ data }) => {
                 marginRight: SPACING.XS
               }}
             >
-              <Icon icon='clock' />
+              <Icon icon='access_time' />
             </span>
             <Hours node={dataRenderCardChildren} />
           </div>
