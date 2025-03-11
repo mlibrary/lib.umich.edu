@@ -140,7 +140,7 @@ const Footer = () => {
                       paddingTop: SPACING.S
                     }}
                   >
-                    {section.links.map(({ text, to, data: d, icon }, index) => {
+                    {section.links.map(({ text, to, icon }, index) => {
                       return (
                         <li key={index + to + text}>
                           <PlainLink
@@ -150,7 +150,7 @@ const Footer = () => {
                               padding: `${SPACING.XS} 0`
                             }}
                           >
-                            <IconText icon={icon} d={d}>
+                            <IconText icon={icon}>
                               {text}
                             </IconText>
                           </PlainLink>
