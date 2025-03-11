@@ -1,7 +1,6 @@
 import { Heading, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
 import createGoogleMapsUrl from './utilities/create-google-maps-url';
 import fdlp from '../images/fdlp.png';
-import icon from '../reusable/icon';
 import IconText from './icon-text';
 import PlainLink from './plain-link';
 import React from 'react';
