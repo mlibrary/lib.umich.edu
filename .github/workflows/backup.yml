@@ -3,20 +3,18 @@ name: Backup workflow
 
 # When workflow is triggered
 on:
-  push:
-    branches:
-      - master
+  workflow_run:
+    workflows: ["Staging Workflow"]
+    types:
+      - completed
   # schedule:
     # - cron: '0 11 * * MON-FRI'
   repository_dispatch:
-    types: [ publish_production ]
+    types: 
+      - publish_production
+      - staging_complete
   workflow_dispatch:
 
-# Don't run all three workflows at the same time when merging to master
-concurrency:
-  group: production-deploy
-  cancel-in-progress: true
-  
 # Jobs to carry out
 jobs:
   build:
