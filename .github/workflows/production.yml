@@ -16,6 +16,11 @@ on:
         description: tag
         required: false
 
+# Don't run all three workflows at the same time
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
 # Jobs to carry out
 jobs:
   build:

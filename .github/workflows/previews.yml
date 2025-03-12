@@ -10,6 +10,10 @@ jobs:
   build:
     # Operating system to run job on
     runs-on: ubuntu-latest
+    # Queues workflow runs in the event of multiple pushes to a PR
+    concurrency:
+      group: previews-group
+      cancel-in-progress: true
     # Environment to run job on
     environment: previews
     # Environment variables

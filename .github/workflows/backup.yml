@@ -12,6 +12,11 @@ on:
     types: [ publish_production ]
   workflow_dispatch:
 
+# Don't run all three workflows at the same time when merging to master
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+  
 # Jobs to carry out
 jobs:
   build:
