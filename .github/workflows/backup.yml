@@ -3,13 +3,12 @@ name: Backup workflow
 
 # When workflow is triggered
 on:
-  push:
-    branches:
-      - master
   # schedule:
     # - cron: '0 11 * * MON-FRI'
   repository_dispatch:
-    types: [ publish_production ]
+    types: 
+      - publish_production
+      - staging_complete
   workflow_dispatch:
 
 # Jobs to carry out
