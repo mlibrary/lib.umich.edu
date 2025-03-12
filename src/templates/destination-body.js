@@ -32,7 +32,7 @@ const DestinationTemplate = ({ data }) => {
     : null;
   const image
     = relationships.field_media_image
-    && relationships.field_media_image.relationships.field_media_image;
+      && relationships.field_media_image.relationships.field_media_image;
   const imageData = image
     ? image.localFile.childImageSharp.gatsbyImageData
     : null;

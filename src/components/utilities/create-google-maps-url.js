@@ -4,6 +4,6 @@ export default function createGoogleMapsURL ({ place_id: placeId, query }) {
   return (
     `https://www.google.com/maps/dir/?api=1`
     + `&destination=${query}${
-    placeQuery}`
+      placeQuery}`
   );
 }
