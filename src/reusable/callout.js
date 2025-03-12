@@ -26,7 +26,7 @@ export default function Callout ({ title, children, intent, alert, ...rest }) {
       >
         {intent === 'warning' && (
           <Icon
-            d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'
+            icon='error'
             size={24}
             css={{
               color: 'var(--color-maize-500)',

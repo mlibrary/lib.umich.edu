@@ -19,7 +19,6 @@ import HoursLitePanel from './hours-lite-panel';
 import HoursPanel from './hours-panel';
 import HoursPanelDateViewer from './hours-panel-date-viewer';
 import Html from '../html';
-import icons from '../../reusable/icons';
 import Image from '../image';
 import Link from '../link';
 import LinkPanel from './link-panel';
@@ -171,7 +170,7 @@ const CardPanel = ({ data }) => {
                 marginRight: SPACING.XS
               }}
             >
-              <Icon d={icons.address} />
+              <Icon icon='address' />
             </span>
             <Address node={dataRenderCardChildren} />
           </div>
@@ -187,7 +186,7 @@ const CardPanel = ({ data }) => {
                 marginRight: SPACING.XS
               }}
             >
-              <Icon d={icons.clock} />
+              <Icon icon='access_time' />
             </span>
             <Hours node={dataRenderCardChildren} />
           </div>

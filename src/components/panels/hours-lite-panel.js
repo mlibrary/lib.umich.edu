@@ -2,7 +2,6 @@ import { Heading, Icon, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../../reusabl
 import React, { useEffect, useState } from 'react';
 import { displayHours } from '../../utils/hours';
 import { Link as GatsbyLink } from 'gatsby';
-import icons from '../../reusable/icons';
 import Link from '../link';
 import PropTypes from 'prop-types';
 
@@ -71,7 +70,7 @@ export default function HoursLitePanel ({ data }) {
                   width: '1.5rem'
                 }}
               >
-                <Icon d={icons.clock} />
+                <Icon icon='access_time' />
               </span>
               <GatsbyLink
                 to={hour.to}
