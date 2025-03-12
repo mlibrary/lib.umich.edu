@@ -65,7 +65,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
       # Trigger Backup Workflow (if production was triggered by push to master and staging is successful)
       - name: Checking workflow method and triggering next workflow if needed
-        if: ${{ success() && github.event_name == 'workflow_run' && github.workflow == 'Production Workflow' && github.event.workflow_run.conclusion == 'success' }}
+        if: ${{ github.event_name == 'workflow_run' && github.workflow == 'Production Workflow' && github.event.workflow_run.conclusion == 'success' }}
         run: |
           curl -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \

@@ -3,10 +3,6 @@ name: Backup workflow
 
 # When workflow is triggered
 on:
-  workflow_run:
-    workflows: ["Staging Workflow"]
-    types:
-      - completed
   # schedule:
     # - cron: '0 11 * * MON-FRI'
   repository_dispatch:
