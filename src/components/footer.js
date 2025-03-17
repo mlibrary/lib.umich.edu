@@ -71,6 +71,11 @@ const links = [
         to: 'https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559'
       },
       {
+        icon: 'bluesky',
+        text: 'Bluesky',
+        to: 'https://bsky.app/profile/umichlibrary.bsky.social'
+      },
+      {
         icon: 'twitter',
         text: 'X (formerly Twitter)',
         to: 'https://twitter.com/umichlibrary'

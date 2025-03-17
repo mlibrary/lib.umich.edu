@@ -13,14 +13,18 @@ export default function Share ({ url, title }) {
     subject: title
   });
 
-  const twitterProps = qs.stringify({
-    text: `${title} @UMichLibrary`,
-    url
-  });
-
   const fbProps = qs.stringify({
     t: title,
     u: url
+  });
+
+  const blueskyProps = qs.stringify({
+    text: `${title} @umichlibrary.bsky.social ${url}`
+  });
+
+  const twitterProps = qs.stringify({
+    text: `${title} @UMichLibrary`,
+    url
   });
 
   const options = [
@@ -28,6 +32,11 @@ export default function Share ({ url, title }) {
       icon: 'facebook',
       text: 'Facebook',
       to: `http://www.facebook.com/sharer/sharer.php?${fbProps}`
+    },
+    {
+      icon: 'bluesky',
+      text: 'Bluesky',
+      to: `https://bsky.app/intent/compose?${blueskyProps}`
     },
     {
       icon: 'twitter',
@@ -40,6 +49,8 @@ export default function Share ({ url, title }) {
       to: `mailto:?${emailProps}`
     }
   ];
+  console.log(options[1].to);
+  console.log(blueskyProps);
 
   return (
     <>
