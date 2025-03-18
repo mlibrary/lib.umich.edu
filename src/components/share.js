@@ -49,8 +49,6 @@ export default function Share ({ url, title }) {
       to: `mailto:?${emailProps}`
     }
   ];
-  console.log(options[1].to);
-  console.log(blueskyProps);
 
   return (
     <>
