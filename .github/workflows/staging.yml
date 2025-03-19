@@ -4,7 +4,7 @@ name: Staging workflow
 # When workflow is triggered
 on:
   repository_dispatch:
-    types: [production_complete]
+    types: [backup_complete]
   workflow_dispatch:
 
 # Jobs to carry out
@@ -63,10 +63,10 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
-      # Trigger Backup Workflow (if production was triggered by push to master and staging is successful)
+      # Trigger Production Workflow (if production was triggered by push to master and staging is successful)
       - name: Checking workflow method and triggering next workflow if needed
         if: ${{ github.event_name == 'workflow_run' && github.workflow == 'Production Workflow' && github.event.workflow_run.conclusion == 'success' }}
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: production_complete
+          event-type: staging_complete
