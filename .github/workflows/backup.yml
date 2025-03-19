@@ -5,6 +5,9 @@ name: Backup workflow
 on:
   # schedule:
     # - cron: '0 11 * * MON-FRI'
+  push:
+    branches:
+      - master
   repository_dispatch:
     types: 
       [publish_production]
