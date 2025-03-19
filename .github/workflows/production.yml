@@ -3,9 +3,6 @@ name: Production workflow
 
 # When workflow is triggered
 on:
-  push:
-    branches:
-      - master
   # schedule:
     # - cron: '0 11 * * MON-FRI'
   repository_dispatch:
