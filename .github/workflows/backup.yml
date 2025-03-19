@@ -9,7 +9,8 @@ on:
   # schedule:
     # - cron: '0 11 * * MON-FRI'
   repository_dispatch:
-    types: [ publish_production ]
+    types: 
+      [publish_production]
   workflow_dispatch:
 
 # Jobs to carry out
@@ -71,3 +72,10 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
+      # Trigger staging workflow if this workflow was triggered by push to master
+      - name: Checking workflow method and triggering next workflow if needed
+        if: ${{ success() && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: backup_complete
