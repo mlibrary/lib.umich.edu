@@ -63,7 +63,7 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
-      # Trigger Production Workflow if this workflow was triggered by push to master and staging is successful
+      # Trigger Production Workflow if this workflow was triggered by push to master and build is successful
       - name: Checking workflow method and triggering next workflow if needed
         if: ${{ success() && github.event_name == 'repository_dispatch' && github.event.action == 'backup_complete' }}
         uses: peter-evans/repository-dispatch@v3
