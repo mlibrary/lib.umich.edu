@@ -3,8 +3,6 @@ name: Backup workflow
 
 # When workflow is triggered
 on:
-  # schedule:
-    # - cron: '0 11 * * MON-FRI'
   push:
     branches:
       - master
