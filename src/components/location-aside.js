@@ -1,5 +1,6 @@
 import { Heading, Icon, SPACING, Text } from '../reusable';
 import Address from './address';
+import { getFloor } from '../utils';
 import Hours from './todays-hours';
 import Link from './link';
 import LocationAnchoredLink from './location-anchored-link';
@@ -174,6 +175,88 @@ LocationAside.propTypes = {
         relationships: PropTypes.shape({
           field_parent_location: PropTypes.any
         })
+      }),
+      field_room_building: PropTypes.any
+    })
+  })
+};
+
+export const LocationAsideStudySpace = ({ node }) => {
+  const { field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
+  const locationNode = relationships?.field_room_building
+    ?? relationships?.field_parent_location?.relationships?.field_parent_location
+    ?? node;
+  const floor = getFloor({ node });
+  const locationTitle = relationships?.field_parent_location.title;
+  const floorPlans = relationships?.field_floor_plan;
+
+  return (
+    <>
+      <section aria-labelledby='location' css={{ marginBottom: SPACING['3XL'] }}>
+        <LayoutWithIcon icon='address' palette='orange' color='500'>
+          <Heading level={2} size='M' id='location' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+            Location
+          </Heading>
+          <Text>
+            {locationTitle}, {floor}
+          </Text>
+          <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
+            {floorPlans.map((floorPlan, index) => {
+              return (
+                <li key={index}>
+                  <Link to={floorPlan.fields.slug}>
+                    {floorPlan.fields.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </LayoutWithIcon>
+      </section>
+      <section aria-labelledby='todays-hours' css={{ marginBottom: SPACING['3XL'] }}>
+        <LayoutWithIcon icon='access_time' palette='indigo' color='400'>
+          <Heading level={2} size='M' id='todays-hours' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+            Hours
+          </Heading>
+          <Text>
+            <Hours node={node} />
+          </Text>
+          <LocationAnchoredLink node={locationNode} />
+        </LayoutWithIcon>
+      </section>
+      <section aria-labelledby='noise-level' css={{ marginBottom: SPACING['3XL'] }}>
+        <LayoutWithIcon icon='volume_up' palette='green' color='500'>
+          <Heading level={2} size='M' id='noise-level' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+            Noise Level
+          </Heading>
+          <Text css={{ textTransform: 'capitalize' }}>{noiseLevel || 'Not specified'}</Text>
+        </LayoutWithIcon>
+      </section>
+      <section aria-labelledby='features' css={{ marginBottom: SPACING['3XL'] }}>
+        <LayoutWithIcon icon='info_outline' palette='teal' color='500'>
+          <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+            Features
+          </Heading>
+          <Text>{spaceFeatures}</Text>
+        </LayoutWithIcon>
+      </section>
+    </>
+  );
+};
+
+LocationAsideStudySpace.propTypes = {
+  node: PropTypes.shape({
+    field_noise_level: PropTypes.string,
+    field_space_features: PropTypes.any,
+    relationships: PropTypes.shape({
+      field_floor_plan: PropTypes.shape({
+        map: PropTypes.func
+      }),
+      field_parent_location: PropTypes.shape({
+        relationships: PropTypes.shape({
+          field_parent_location: PropTypes.any
+        }),
+        title: PropTypes.any
       }),
       field_room_building: PropTypes.any
     })
