@@ -9,6 +9,7 @@ import DrupalEntity from './drupal-entity';
 import Link from './link';
 import PropTypes from 'prop-types';
 import Prose from './prose';
+import rehypeDrupalEntity from '../utils/rehype-drupal-entity';
 import rehypeParse from 'rehype-parse';
 import rehypeReact from 'rehype-react';
 import Table from './table';
@@ -166,10 +167,10 @@ const components = {
   }
 };
 
-// Define your custom render logic
 const processor = (text) => {
   return unified()
     .use(rehypeParse, { fragment: true })
+    .use(rehypeDrupalEntity)
     .use(rehypeReact, {
       Fragment: prod.Fragment,
       components,
@@ -178,7 +179,6 @@ const processor = (text) => {
           return <DrupalEntity {...props} />;
         }
 
-        // Optional: unwrap <div>s that are inside <p>
         if (component === 'div') {
           return <Fragment {...props}>{children}</Fragment>;
         }
@@ -200,7 +200,6 @@ export default function Html ({ html, ...rest }) {
       setContent(file.result);
     })();
   }, [html]);
-  console.log(content);
   return <Prose {...rest}>{content}</Prose>;
 }
 

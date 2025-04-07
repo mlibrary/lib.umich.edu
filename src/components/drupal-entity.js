@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 export default function DrupalEntity (props) {
+  console.log('DrupalEntity props:', props);
   const data = useStaticQuery(
     graphql`
       {
