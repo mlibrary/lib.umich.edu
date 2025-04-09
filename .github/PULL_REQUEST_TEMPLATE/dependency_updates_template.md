@@ -10,8 +10,8 @@ These dependencies have been updated to their latest versions:
 - `@stylistic/eslint-plugin`
 - `bottleneck`
 - `entities`
-- `eslint-plugin-react`
 - `eslint`
+- `eslint-plugin-react`
 - `fetch-retry`
 - `gatsby-plugin-emotion`
 - `gatsby-plugin-image`
