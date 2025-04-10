@@ -36,7 +36,7 @@ export default [
     }
   },
   ...fixupConfigRules(pluginReactConfig),
-  stylistic.configs['recommended-flat'],
+  stylistic.configs.recommended,
   {
     rules: {
       '@stylistic/brace-style': ['error', '1tbs'],
@@ -60,6 +60,15 @@ export default [
       'one-var': ['error', { initialized: 'never' }],
       'react/no-unknown-property': ['error', { ignore: ['css'] }],
       'sort-imports': ['error', { ignoreCase: true }]
+    }
+  },
+  {
+    files: ['gatsby-config.js'],
+    rules: {
+      camelcase: 'off',
+      'no-console': 'off',
+      'no-inline-comments': 'off',
+      radix: 'off'
     }
   }
 ];

@@ -8,32 +8,49 @@ console.log(`DRUPAL_CONCURRENT_FILE_REQUESTS=${DRUPAL_CONCURRENT_FILE_REQUESTS}`
 console.log(`DRUPAL_REQUEST_TIMEOUT=${DRUPAL_REQUEST_TIMEOUT}`);
 
 const siteMetadata = {
-  title: 'University of Michigan Library',
-  siteUrl: 'https://www.lib.umich.edu'
+  siteUrl: 'https://www.lib.umich.edu',
+  title: 'University of Michigan Library'
 };
 
 module.exports = {
   flags: {
     DEV_SSR: false // Watches gatsby-ssr.js while developing
   },
-  siteMetadata,
   plugins: [
     'gatsby-plugin-netlify', // Netlify recommends this plugin on top of Essential Gatsby (Version 2): https://github.com/netlify/netlify-plugin-gatsby#install-the-gatsby-plugin
     'gatsby-plugin-meta-redirect',
     'gatsby-plugin-remove-fingerprints', // Why? Read why Netlify recommends: https://github.com/gatsbyjs/gatsby/issues/11961#issuecomment-492893594
     {
-      resolve: 'gatsby-source-filesystem',
       options: {
         name: 'images',
         path: `${__dirname}/src/images/`
-      }
+      },
+      resolve: 'gatsby-source-filesystem'
     },
     'gatsby-plugin-sitemap',
     {
-      resolve: 'gatsby-plugin-robots-txt',
       options: {
+        env: {
+          development: {
+            policy: [
+              {
+                disallow: ['/'],
+                host: null,
+                sitemap: null,
+                userAgent: '*'
+              }
+            ]
+          },
+          production: {
+            policy: [
+              {
+                allow: '/',
+                userAgent: '*'
+              }
+            ]
+          }
+        },
         host: siteMetadata.siteUrl,
-        sitemap: `${siteMetadata.siteUrl}/sitemap-index.xml`,
         resolveEnv: () => {
           /**
            *
@@ -54,42 +71,23 @@ module.exports = {
 
           return mode;
         },
-        env: {
-          production: {
-            policy: [
-              {
-                userAgent: '*',
-                allow: '/'
-              }
-            ]
-          },
-          development: {
-            policy: [
-              {
-                userAgent: '*',
-                disallow: ['/'],
-                host: null,
-                sitemap: null
-              }
-            ]
-          }
-        }
-      }
+        sitemap: `${siteMetadata.siteUrl}/sitemap-index.xml`
+      },
+      resolve: 'gatsby-plugin-robots-txt'
     },
     'gatsby-plugin-image',
     {
-      resolve: 'gatsby-plugin-sharp',
       options: {
-        stripMetadata: true,
-        defaultQuality: 75
-      }
+        defaultQuality: 75,
+        stripMetadata: true
+      },
+      resolve: 'gatsby-plugin-sharp'
     },
     'gatsby-transformer-sharp',
     {
-      resolve: 'gatsby-source-drupal',
       options: {
-        baseUrl: DRUPAL_URL,
         apiBase: 'jsonapi',
+        baseUrl: DRUPAL_URL,
         concurrentFileRequests: DRUPAL_CONCURRENT_FILE_REQUESTS,
         filters: {
           /*
@@ -100,42 +98,41 @@ module.exports = {
           'file--file': 'filter[status][value]=1'
         },
         requestTimeoutMS: DRUPAL_REQUEST_TIMEOUT
-      }
+      },
+      resolve: 'gatsby-source-drupal'
     },
     {
-      resolve: 'gatsby-source-umich-lib',
       options: {
         baseUrl: DRUPAL_URL
-      }
+      },
+      resolve: 'gatsby-source-umich-lib'
     },
     'gatsby-plugin-remove-serviceworker',
     'gatsby-plugin-emotion',
     {
-      resolve: 'gatsby-plugin-manifest',
       options: {
+        background_color: '#00274C',
+        display: 'minimal-ui',
+        icon: 'src/images/icon.png', // This path is relative to the root of the site.
         name: 'University of Michigan Library',
         short_name: 'U-M Library',
         start_url: '/',
-        background_color: '#00274C',
-        theme_color: '#FFCB05',
-        display: 'minimal-ui',
-        icon: 'src/images/icon.png' // This path is relative to the root of the site.
-      }
+        theme_color: '#FFCB05'
+      },
+      resolve: 'gatsby-plugin-manifest'
     },
     {
-      resolve: 'gatsby-plugin-lunr',
       options: {
-        languages: [{ name: 'en' }],
         fields: [
           {
+            attributes: { boost: 9 },
             name: 'title',
-            store: true,
-            attributes: { boost: 9 }
+            store: true
           },
           {
+            attributes: { boost: 3 },
             name: 'summary',
-            store: true,
-            attributes: { boost: 3 }
+            store: true
           },
           {
             name: 'keywords',
@@ -150,27 +147,30 @@ module.exports = {
             store: true
           }
         ],
+        languages: [{ name: 'en' }],
         resolvers: {
           SitePage: {
-            uniqname: (node) => {
-              return (node.context ? node.context.uniqname : null);
-            },
-            title: (node) => {
-              return (node.context ? node.context.title : null);
-            },
-            tag: (node) => {
-              return (node.context ? node.context.tag : null);
+            keywords: (node) => {
+              return (node.context ? node.context.keywords : null);
             },
             summary: (node) => {
               return (node.context ? node.context.summary : null);
             },
-            keywords: (node) => {
-              return (node.context ? node.context.keywords : null);
+            tag: (node) => {
+              return (node.context ? node.context.tag : null);
+            },
+            title: (node) => {
+              return (node.context ? node.context.title : null);
+            },
+            uniqname: (node) => {
+              return (node.context ? node.context.uniqname : null);
             }
           }
         }
-      }
+      },
+      resolve: 'gatsby-plugin-lunr'
     }
   ],
+  siteMetadata,
   trailingSlash: 'never'
 };

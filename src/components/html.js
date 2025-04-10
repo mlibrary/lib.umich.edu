@@ -195,7 +195,7 @@ export default function Html ({ html, ...rest }) {
   const [content, setContent] = useState(<></>);
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       const file = await processor(html);
       setContent(file.result);
     })();
