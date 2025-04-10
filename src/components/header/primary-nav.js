@@ -165,14 +165,14 @@ const NavDropdown = ({ items, primaryNode }) => {
   const [, dispatch] = useStateValue();
   const dropdownNode = useRef();
 
-  const closeDropdown = () => {
-    dispatch({
-      open: null,
-      type: 'setOpen'
-    });
-  };
-
   useEffect(() => {
+    const closeDropdown = () => {
+      dispatch({
+        open: null,
+        type: 'setOpen'
+      });
+    };
+
     const handleClick = (event) => {
       /*
        *Double check the node is current.
@@ -210,12 +210,11 @@ const NavDropdown = ({ items, primaryNode }) => {
 
     document.addEventListener('mouseup', handleClick);
     document.addEventListener('keydown', handleKeydown);
-
     return () => {
       document.removeEventListener('mouseup', handleClick);
       document.removeEventListener('keydown', handleKeydown);
     };
-  }, []);
+  }, [dispatch, primaryNode]);
 
   return (
     <div
