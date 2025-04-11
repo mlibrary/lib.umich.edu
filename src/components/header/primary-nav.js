@@ -165,57 +165,56 @@ const NavDropdown = ({ items, primaryNode }) => {
   const [, dispatch] = useStateValue();
   const dropdownNode = useRef();
 
-  const closeDropdown = () => {
-    dispatch({
-      open: null,
-      type: 'setOpen'
-    });
-  };
+  useEffect(() => {
+    const closeDropdown = () => {
+      dispatch({
+        open: null,
+        type: 'setOpen'
+      });
+    };
 
-  const handleClick = (event) => {
-    /*
-     *Double check the node is current.
-     */
-    if (dropdownNode.current) {
+    const handleClick = (event) => {
       /*
-       *If the user is clicking the primary nav button
-       *then they're clicking outside, but this button
-       *will handle closing for us. No need to close it
-       *from here.
+       *Double check the node is current.
        */
-      if (primaryNode.current.contains(event.target)) {
-        return;
+      if (dropdownNode.current) {
+        /*
+         *If the user is clicking the primary nav button
+         *then they're clicking outside, but this button
+         *will handle closing for us. No need to close it
+         *from here.
+         */
+        if (primaryNode.current.contains(event.target)) {
+          return;
+        }
+
+        /*
+         *If the click is outside of the dropdown then
+         *close the dropdown.
+         *
+         *Except if they're click on the primary nav button,
+         *but this case is caught above.
+         */
+        if (!dropdownNode.current.contains(event.target)) {
+          closeDropdown();
+        }
       }
+    };
 
-      /*
-       *If the click is outside of the dropdown then
-       *close the dropdown.
-       *
-       *Except if they're click on the primary nav button,
-       *but this case is caught above.
-       */
-      if (!dropdownNode.current.contains(event.target)) {
+    const handleKeydown = (event) => {
+      if (event.keyCode === 27) {
+        // ESC key
         closeDropdown();
       }
-    }
-  };
+    };
 
-  const handleKeydown = (event) => {
-    if (event.keyCode === 27) {
-      // ESC key
-      closeDropdown();
-    }
-  };
-
-  useEffect(() => {
     document.addEventListener('mouseup', handleClick);
     document.addEventListener('keydown', handleKeydown);
-
     return () => {
       document.removeEventListener('mouseup', handleClick);
-      document.addEventListener('keydown', handleKeydown);
+      document.removeEventListener('keydown', handleKeydown);
     };
-  }, []);
+  }, [dispatch, primaryNode]);
 
   return (
     <div
