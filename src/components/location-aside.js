@@ -52,204 +52,132 @@ LayoutWithIcon.propTypes = {
   palette: PropTypes.string
 };
 
-export default function LocationAside ({ node }) {
-  const { field_phone_number: fieldPhoneNumber, field_email: fieldEmail, relationships } = node;
+export default function LocationAside ({ node, isStudySpaceAside = false }) {
+  const { field_phone_number: fieldPhoneNumber, field_email: fieldEmail, field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
   const buildingNode = relationships?.field_room_building;
-  const parentLocationNode
-    = relationships?.field_parent_location?.relationships?.field_parent_location;
+  const parentLocationNode = relationships?.field_parent_location?.relationships?.field_parent_location;
   const locationNode = buildingNode ?? parentLocationNode ?? node;
   const floorPlans = relationships?.field_floor_plan;
+  const locationTitle = relationships?.field_parent_location?.title;
+  const floor = getFloor({ node });
 
   return (
     <React.Fragment>
-      <section
-        aria-labelledby='todays-hours'
-        css={{
-          marginBottom: SPACING['3XL']
-        }}
-      >
-        <LayoutWithIcon icon='access_time' palette='indigo' color='400'>
-          <Heading
-            level={2}
-            size='M'
-            id='todays-hours'
-            css={{
-              paddingBottom: SPACING['2XS'],
-              paddingTop: SPACING['2XS']
-            }}
-          >
-            Hours
-          </Heading>
-          <Text>
-            <Hours node={node} />
-          </Text>
-          <LocationAnchoredLink node={locationNode} />
-        </LayoutWithIcon>
-      </section>
-      <address
-        aria-label='Address and contact information'
-        css={{
-          '> *:not(:last-child)': {
-            marginBottom: SPACING['3XL']
-          }
-        }}
-      >
-        <LayoutWithIcon icon='address' palette='orange' color='500'>
-          <Heading
-            level={2}
-            size='M'
-            css={{
-              paddingBottom: SPACING['2XS'],
-              paddingTop: SPACING['2XS']
-            }}
-          >
-            Address
-          </Heading>
-          <Address node={node} directions={true} kind='full' />
-        </LayoutWithIcon>
+      {isStudySpaceAside
+        ? (
+            <>
+              <section aria-labelledby='location' css={{ marginBottom: SPACING['3XL'] }}>
+                <LayoutWithIcon icon='address' palette='orange' color='500'>
+                  <Heading level={2} size='M' id='location' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+                    Location
+                  </Heading>
+                  <Text>
+                    {locationTitle}, {floor}
+                  </Text>
+                  <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
+                    {floorPlans.map((floorPlan, index) => {
+                      return (
+                        <li key={index}>
+                          <Link to={floorPlan.fields.slug}>{floorPlan.fields.title}</Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </LayoutWithIcon>
+              </section>
 
-        <LayoutWithIcon icon='phone' palette='green' color='500'>
-          <Heading
-            level={2}
-            size='M'
-            css={{
-              paddingBottom: SPACING['2XS'],
-              paddingTop: SPACING['2XS']
-            }}
-          >
-            Contact
-          </Heading>
-          <div css={{ '> p': { marginBottom: SPACING['2XS'] } }}>
-            {fieldPhoneNumber && (
-              <p>
-                <Link to={`tel:${fieldPhoneNumber}`}>
-                  {fieldPhoneNumber}
-                </Link>
-              </p>
-            )}
-            {fieldEmail && (
-              <p>
-                <Link to={`mailto:${fieldEmail}`}>{fieldEmail}</Link>
-              </p>
-            )}
-          </div>
-        </LayoutWithIcon>
-        {floorPlans?.length > 0 && (
-          <LayoutWithIcon icon='map' palette='teal' color='500'>
-            <Heading
-              level={2}
-              size='M'
-              css={{
-                paddingBottom: SPACING['2XS'],
-                paddingTop: SPACING['2XS']
-              }}
-            >
-              Floor plans
-            </Heading>
-            <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
-              {floorPlans.map((floorPlan, index) => {
-                return (
-                  <li key={index}>
-                    <Link to={floorPlan.fields.slug}>
-                      {floorPlan.fields.title}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </LayoutWithIcon>
-        )}
-      </address>
+              <HoursSection node={node} locationNode={locationNode} />
+
+              <section aria-labelledby='noise-level' css={{ marginBottom: SPACING['3XL'] }}>
+                <LayoutWithIcon icon='volume_up' palette='green' color='500'>
+                  <Heading level={2} size='M' id='noise-level' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+                    Noise Level
+                  </Heading>
+                  <Text css={{ textTransform: 'capitalize' }}>{noiseLevel || 'Not specified'}</Text>
+                </LayoutWithIcon>
+              </section>
+
+              <section aria-labelledby='features' css={{ marginBottom: SPACING['3XL'] }}>
+                <LayoutWithIcon icon='info_outline' palette='teal' color='500'>
+                  <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+                    Features
+                  </Heading>
+                  <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
+                </LayoutWithIcon>
+              </section>
+            </>
+          )
+        : (
+            <>
+              <HoursSection node={node} locationNode={locationNode} />
+
+              <address
+                aria-label='Address and contact information'
+                css={{
+                  '> *:not(:last-child)': {
+                    marginBottom: SPACING['3XL']
+                  }
+                }}
+              >
+                <LayoutWithIcon icon='address' palette='orange' color='500'>
+                  <Heading level={2} size='M' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+                    Address
+                  </Heading>
+                  <Address node={node} directions={true} kind='full' />
+                </LayoutWithIcon>
+
+                <LayoutWithIcon icon='phone' palette='green' color='500'>
+                  <Heading level={2} size='M' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+                    Contact
+                  </Heading>
+                  <div css={{ '> p': { marginBottom: SPACING['2XS'] } }}>
+                    {fieldPhoneNumber && (
+                      <p>
+                        <Link to={`tel:${fieldPhoneNumber}`}>{fieldPhoneNumber}</Link>
+                      </p>
+                    )}
+                    {fieldEmail && (
+                      <p>
+                        <Link to={`mailto:${fieldEmail}`}>{fieldEmail}</Link>
+                      </p>
+                    )}
+                  </div>
+                </LayoutWithIcon>
+
+                {floorPlans?.length > 0 && (
+                  <LayoutWithIcon icon='map' palette='teal' color='500'>
+                    <Heading level={2} size='M' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+                      Floor plans
+                    </Heading>
+                    <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
+                      {floorPlans.map((floorPlan, index) => {
+                        return (
+                          <li key={index}>
+                            <Link to={floorPlan.fields.slug}>{floorPlan.fields.title}</Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </LayoutWithIcon>
+                )}
+              </address>
+            </>
+          )}
     </React.Fragment>
   );
 }
 
 /* eslint-disable camelcase */
 LocationAside.propTypes = {
+  isStudySpaceAside: PropTypes.bool,
   node: PropTypes.shape({
     field_email: PropTypes.any,
-    field_phone_number: PropTypes.any,
-    relationships: PropTypes.shape({
-      field_floor_plan: PropTypes.array,
-      field_parent_location: PropTypes.shape({
-        relationships: PropTypes.shape({
-          field_parent_location: PropTypes.any
-        })
-      }),
-      field_room_building: PropTypes.any
-    })
-  })
-};
-
-export const LocationAsideStudySpace = ({ node }) => {
-  const { field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
-  const locationNode = relationships?.field_room_building
-    ?? relationships?.field_parent_location?.relationships?.field_parent_location
-    ?? node;
-  const floor = getFloor({ node });
-  const locationTitle = relationships?.field_parent_location.title;
-  const floorPlans = relationships?.field_floor_plan;
-
-  return (
-    <>
-      <section aria-labelledby='location' css={{ marginBottom: SPACING['3XL'] }}>
-        <LayoutWithIcon icon='address' palette='orange' color='500'>
-          <Heading level={2} size='M' id='location' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-            Location
-          </Heading>
-          <Text>
-            {locationTitle}, {floor}
-          </Text>
-          <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
-            {floorPlans.map((floorPlan, index) => {
-              return (
-                <li key={index}>
-                  <Link to={floorPlan.fields.slug}>
-                    {floorPlan.fields.title}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </LayoutWithIcon>
-      </section>
-      <section aria-labelledby='todays-hours' css={{ marginBottom: SPACING['3XL'] }}>
-        <LayoutWithIcon icon='access_time' palette='indigo' color='400'>
-          <Heading level={2} size='M' id='todays-hours' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-            Hours
-          </Heading>
-          <Text>
-            <Hours node={node} />
-          </Text>
-          <LocationAnchoredLink node={locationNode} />
-        </LayoutWithIcon>
-      </section>
-      <section aria-labelledby='noise-level' css={{ marginBottom: SPACING['3XL'] }}>
-        <LayoutWithIcon icon='volume_up' palette='green' color='500'>
-          <Heading level={2} size='M' id='noise-level' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-            Noise Level
-          </Heading>
-          <Text css={{ textTransform: 'capitalize' }}>{noiseLevel || 'Not specified'}</Text>
-        </LayoutWithIcon>
-      </section>
-      <section aria-labelledby='features' css={{ marginBottom: SPACING['3XL'] }}>
-        <LayoutWithIcon icon='info_outline' palette='teal' color='500'>
-          <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-            Features
-          </Heading>
-          <Text>{spaceFeatures}</Text>
-        </LayoutWithIcon>
-      </section>
-    </>
-  );
-};
-
-LocationAsideStudySpace.propTypes = {
-  node: PropTypes.shape({
     field_noise_level: PropTypes.string,
+    field_phone_number: PropTypes.any,
     field_space_features: PropTypes.any,
     relationships: PropTypes.shape({
       field_floor_plan: PropTypes.shape({
+        length: PropTypes.number,
         map: PropTypes.func
       }),
       field_parent_location: PropTypes.shape({
@@ -261,4 +189,83 @@ LocationAsideStudySpace.propTypes = {
       field_room_building: PropTypes.any
     })
   })
+};
+
+const SpaceFeatures = ({ spaceFeatures }) => {
+  const iconMap = {
+    all_gender_restroom_on_floor: 'person_half_dress',
+    external_monitors: 'desktop_windows',
+    natural_light: 'sunny',
+    wheelchair_accessible: 'wheelchair',
+    whiteboards: 'stylus_note'
+  };
+
+  return (
+    <ul css={{
+      listStyle: 'none',
+      margin: `${[SPACING.XS]} 0`
+    }}
+    >
+      {spaceFeatures.map((feature, index) => {
+        const icon = iconMap[feature];
+        if (!icon) {
+          return null;
+        }
+
+        return (
+          <li
+            key={index}
+            css={{
+              alignItems: 'center',
+              display: 'flex',
+              gap: [SPACING.XS],
+              margin: `${[SPACING.XS]} 0`
+            }}
+          >
+            <Icon icon={icon} size={24} title={feature.replace(/_/ug, ' ')} />
+            <span>
+              {feature.replace(/_/ug, ' ').replace(/^./u, (str) => {
+                return str.toUpperCase();
+              })}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
+SpaceFeatures.propTypes = {
+  spaceFeatures: PropTypes.shape({
+    map: PropTypes.func
+  })
+};
+
+const HoursSection = ({ node, locationNode }) => {
+  return (
+    <section aria-labelledby='todays-hours' css={{ marginBottom: SPACING['3XL'] }}>
+      <LayoutWithIcon icon='access_time' palette='indigo' color='400'>
+        <Heading
+          level={2}
+          size='M'
+          id='todays-hours'
+          css={{
+            paddingBottom: SPACING['2XS'],
+            paddingTop: SPACING['2XS']
+          }}
+        >
+          Hours
+        </Heading>
+        <Text>
+          <Hours node={node} />
+        </Text>
+        <LocationAnchoredLink node={locationNode} />
+      </LayoutWithIcon>
+    </section>
+  );
+};
+
+HoursSection.propTypes = {
+  locationNode: PropTypes.any,
+  node: PropTypes.any
 };

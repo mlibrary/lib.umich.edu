@@ -5,7 +5,7 @@ import { GatsbyImage } from 'gatsby-plugin-image';
 import getNode from '../utils/get-node';
 import { graphql } from 'gatsby';
 import Html from '../components/html';
-import { LocationAsideStudySpace } from '../components/location-aside';
+import LocationAside from '../components/location-aside';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SearchEngineOptimization from '../components/seo';
@@ -79,7 +79,7 @@ const StudyTemplate = ({ data }) => {
       </Margins>
       <Template asideWidth='50rem'>
         <TemplateContent>
-          <LocationAsideStudySpace node={node} />
+          <LocationAside node={node} isStudySpaceAside={true} />
         </TemplateContent>
         <TemplateSide>
           {body && <Html html={body.processed} />}
