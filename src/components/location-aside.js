@@ -54,140 +54,42 @@ LayoutWithIcon.propTypes = {
 };
 
 export default function LocationAside ({ node, isStudySpaceAside = false }) {
-  const { field_phone_number: fieldPhoneNumber, field_parent_location: fieldParentLocation, field_room_building: fieldRoomBuilding, field_email: fieldEmail, field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
-  const buildingNode = node.relationships?.field_room_building;
-  const fid = node.relationships?.field_floor?.id;
+  const { field_phone_number: fieldPhoneNumber, field_email: fieldEmail, field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
+  const buildingNode = relationships?.field_room_building;
   const parentLocationNode = relationships?.field_parent_location?.relationships?.field_parent_location;
   const locationNode = buildingNode ?? parentLocationNode ?? node;
   const locationTitle = relationships?.field_parent_location?.title;
+  const floor = getFloor({ node });
+  const fid = node.relationships?.field_floor?.id;
   const maybeFloorPlan = useFloorPlan(buildingNode?.id, fid);
   let floorPlans = relationships?.field_floor_plan;
-  const floor = getFloor({ node });
   if (floor && floorPlans.length === 0) {
     floorPlans = maybeFloorPlan;
   }
-  const normalizedFloorPlans = Array.isArray(floorPlans)
-    ? floorPlans
-    : floorPlans
-      ? [floorPlans]
-      : [];
+  let normalizedFloorPlans = [];
+  if (Array.isArray(floorPlans)) {
+    normalizedFloorPlans = floorPlans;
+  } else if (floorPlans) {
+    normalizedFloorPlans = [floorPlans];
+  }
+
+  if (isStudySpaceAside) {
+    return (
+      <>
+        <StudySpaceLocationSection locationTitle={locationTitle} floor={floor} normalizedFloorPlans={normalizedFloorPlans} maybeFloorPlan={maybeFloorPlan} />
+        <HoursSection node={node} locationNode={locationNode} />
+        <NoiseLevelSection noiseLevel={noiseLevel} spaceFeatures={spaceFeatures} />
+        {spaceFeatures?.length > 0 && <SpaceFeaturesSection spaceFeatures={spaceFeatures} />}
+      </>
+    );
+  }
 
   return (
-    <React.Fragment>
-      {isStudySpaceAside
-        ? (
-            <>
-              <section aria-labelledby='location' css={{ marginBottom: SPACING['3XL'] }}>
-                <LayoutWithIcon icon='address' palette='orange' color='500'>
-                  <Heading level={2} size='M' id='location' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-                    Location
-                  </Heading>
-                  <Text>
-                    {locationTitle && <>{locationTitle}{floor && ', '}</>}
-                    {floor}
-                  </Text>
-                  <ul>
-                    {normalizedFloorPlans.map((floorPlan, index) => {
-                      return (
-                        <li key={index}>
-                          <Link to={floorPlan.fields.slug}>
-                            {maybeFloorPlan ? 'View floor plan' : floorPlan.fields.title}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </LayoutWithIcon>
-              </section>
-
-              <HoursSection node={node} locationNode={locationNode} />
-
-              <section
-                aria-labelledby='noise-level'
-                css={{
-                  marginBottom: spaceFeatures?.length > 0 ? SPACING['3XL'] : '0'
-                }}
-              >
-                <LayoutWithIcon icon='volume_up' palette='green' color='500'>
-                  <Heading level={2} size='M' id='noise-level' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-                    Noise Level
-                  </Heading>
-                  <Text>
-                    {noiseLevel.replace(/_/ug, ' ').replace(/^./u, (str) => {
-                      return str.toUpperCase();
-                    })}
-                  </Text>
-                </LayoutWithIcon>
-              </section>
-              {spaceFeatures?.length > 0 && (
-                <section aria-labelledby='features'>
-                  <LayoutWithIcon icon='info_outline' palette='teal' color='500'>
-                    <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-                      Features
-                    </Heading>
-                    <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
-                  </LayoutWithIcon>
-                </section>
-              )}
-            </>
-          )
-        : (
-            <>
-              <HoursSection node={node} locationNode={locationNode} />
-
-              <address
-                aria-label='Address and contact information'
-                css={{
-                  '> *:not(:last-child)': {
-                    marginBottom: SPACING['3XL']
-                  }
-                }}
-              >
-                <LayoutWithIcon icon='address' palette='orange' color='500'>
-                  <Heading level={2} size='M' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-                    Address
-                  </Heading>
-                  <Address node={node} directions={true} kind='full' />
-                </LayoutWithIcon>
-
-                <LayoutWithIcon icon='phone' palette='green' color='500'>
-                  <Heading level={2} size='M' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-                    Contact
-                  </Heading>
-                  <div css={{ '> p': { marginBottom: SPACING['2XS'] } }}>
-                    {fieldPhoneNumber && (
-                      <p>
-                        <Link to={`tel:${fieldPhoneNumber}`}>{fieldPhoneNumber}</Link>
-                      </p>
-                    )}
-                    {fieldEmail && (
-                      <p>
-                        <Link to={`mailto:${fieldEmail}`}>{fieldEmail}</Link>
-                      </p>
-                    )}
-                  </div>
-                </LayoutWithIcon>
-
-                {floorPlans?.length > 0 && (
-                  <LayoutWithIcon icon='map' palette='teal' color='500'>
-                    <Heading level={2} size='M' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-                      Floor plans
-                    </Heading>
-                    <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
-                      {floorPlans.map((floorPlan, index) => {
-                        return (
-                          <li key={index}>
-                            <Link to={floorPlan.fields.slug}>{floorPlan.fields.title}</Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </LayoutWithIcon>
-                )}
-              </address>
-            </>
-          )}
-    </React.Fragment>
+    <>
+      <HoursSection node={node} locationNode={locationNode} />
+      <AddressSection node={node} fieldPhoneNumber={fieldPhoneNumber} fieldEmail={fieldEmail}></AddressSection>
+      <FloorPlanSection floorPlans={normalizedFloorPlans} />
+    </>
   );
 }
 
@@ -196,13 +98,17 @@ LocationAside.propTypes = {
   isStudySpaceAside: PropTypes.bool,
   node: PropTypes.shape({
     field_email: PropTypes.any,
-    field_noise_level: PropTypes.string,
+    field_noise_level: PropTypes.any,
     field_phone_number: PropTypes.any,
-    field_space_features: PropTypes.any,
+    field_space_features: PropTypes.shape({
+      length: PropTypes.number
+    }),
     relationships: PropTypes.shape({
+      field_floor: PropTypes.shape({
+        id: PropTypes.any
+      }),
       field_floor_plan: PropTypes.shape({
-        length: PropTypes.number,
-        map: PropTypes.func
+        length: PropTypes.number
       }),
       field_parent_location: PropTypes.shape({
         relationships: PropTypes.shape({
@@ -210,12 +116,189 @@ LocationAside.propTypes = {
         }),
         title: PropTypes.any
       }),
-      field_room_building: PropTypes.any
+      field_room_building: PropTypes.shape({
+        id: PropTypes.any
+      })
     })
+  })
+};
+/* eslint-enable camelcase */
+
+const AddressSection = ({ node, fieldPhoneNumber, fieldEmail }) => {
+  return (
+    <>
+      <address
+        aria-label='Address and contact information'
+      >
+        <div css={{
+          marginBottom: SPACING['3XL']
+        }}
+        >
+          <LayoutWithIcon icon='address' palette='orange' color='500'>
+            <Heading level={2} size='M' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+              Address
+            </Heading>
+            <Address node={node} directions={true} kind='full' />
+          </LayoutWithIcon>
+        </div>
+
+        <div css={{
+          marginBottom: SPACING['3XL']
+        }}
+        >
+          <LayoutWithIcon icon='phone' palette='green' color='500'>
+            <Heading level={2} size='M' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+              Contact
+            </Heading>
+            <div css={{ '> p': { marginBottom: SPACING['2XS'] } }}>
+              {fieldPhoneNumber && (
+                <p>
+                  <Link to={`tel:${fieldPhoneNumber}`}>{fieldPhoneNumber}</Link>
+                </p>
+              )}
+              {fieldEmail && (
+                <p>
+                  <Link to={`mailto:${fieldEmail}`}>{fieldEmail}</Link>
+                </p>
+              )}
+            </div>
+          </LayoutWithIcon>
+        </div>
+      </address>
+    </>
+  );
+};
+
+AddressSection.propTypes = {
+  fieldEmail: PropTypes.any,
+  fieldPhoneNumber: PropTypes.any,
+  node: PropTypes.any
+};
+
+const FloorPlanSection = ({ floorPlans }) => {
+  return (
+    <section aria-label='floor plans'>
+      <LayoutWithIcon icon='map' palette='teal' color='500'>
+        <Heading level={2} size='M' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+          Floor plans
+        </Heading>
+        <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
+          {floorPlans.map((floorPlan, index) => {
+            return (
+              <li key={index}>
+                <Link to={floorPlan.fields.slug}>{floorPlan.fields.title}</Link>
+              </li>
+            );
+          })}
+        </ul>
+      </LayoutWithIcon>
+    </section>
+  );
+};
+
+FloorPlanSection.propTypes = {
+  floorPlans: PropTypes.shape({
+    map: PropTypes.func
+  }),
+  showGenericTitle: PropTypes.bool
+};
+
+const SpaceFeaturesSection = ({ spaceFeatures }) => {
+  if (!spaceFeatures?.length) {
+    return null;
+  }
+  return (
+    <section aria-labelledby='features'>
+      <LayoutWithIcon icon='info_outline' palette='teal' color='500'>
+        <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+          Features
+        </Heading>
+        <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
+      </LayoutWithIcon>
+    </section>
+  );
+};
+
+SpaceFeaturesSection.propTypes = {
+  spaceFeatures: PropTypes.shape({
+    length: PropTypes.any
+  })
+};
+
+const NoiseLevelSection = ({ noiseLevel, spaceFeatures }) => {
+  return (
+    <section
+      aria-labelledby='noise-level'
+      css={{
+        marginBottom: spaceFeatures?.length > 0 ? SPACING['3XL'] : '0'
+      }}
+    >
+      <LayoutWithIcon icon='volume_up' palette='green' color='500'>
+        <Heading level={2} size='M' id='noise-level' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+          Noise Level
+        </Heading>
+        <Text>
+          {noiseLevel.replace(/_/ug, ' ').replace(/^./u, (str) => {
+            return str.toUpperCase();
+          })}
+        </Text>
+      </LayoutWithIcon>
+    </section>
+  );
+};
+
+NoiseLevelSection.propTypes = {
+  noiseLevel: PropTypes.shape({
+    replace: PropTypes.func
+  }),
+  spaceFeatures: PropTypes.shape({
+    length: PropTypes.number
+  })
+};
+
+const StudySpaceLocationSection = ({ locationTitle, floor, normalizedFloorPlans, maybeFloorPlan }) => {
+  if (!locationTitle && !floor && !normalizedFloorPlans?.length) {
+    return null;
+  }
+
+  return (
+    <section aria-labelledby='location' css={{ marginBottom: SPACING['3XL'] }}>
+      <LayoutWithIcon icon='address' palette='orange' color='500'>
+        <Heading level={2} size='M' id='location' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+          Location
+        </Heading>
+        <Text>
+          {locationTitle && <>{locationTitle}{floor && ', '}</>}
+          {floor}
+        </Text>
+        <ul>
+          {normalizedFloorPlans.map((floorPlan, index) => {
+            return (
+              <li key={index}>
+                <Link to={floorPlan.fields.slug}>
+                  {maybeFloorPlan ? 'View floor plan' : floorPlan.fields.title}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </LayoutWithIcon>
+    </section>
+  );
+};
+
+StudySpaceLocationSection.propTypes = {
+  floor: PropTypes.string,
+  locationTitle: PropTypes.any,
+  maybeFloorPlan: PropTypes.any,
+  normalizedFloorPlans: PropTypes.shape({
+    length: PropTypes.any,
+    map: PropTypes.func
   })
 };
 
 const SpaceFeatures = ({ spaceFeatures }) => {
+  /* eslint-disable camelcase */
   const iconMap = {
     all_gender_restroom_on_floor: 'person_half_dress',
     external_monitors: 'desktop_windows',
@@ -223,6 +306,7 @@ const SpaceFeatures = ({ spaceFeatures }) => {
     wheelchair_accessible: 'wheelchair',
     whiteboards: 'stylus_note'
   };
+  /* eslint-enable camelcase */
 
   return (
     <ul css={{

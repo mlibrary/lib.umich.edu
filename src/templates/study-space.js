@@ -20,7 +20,6 @@ const StudyTemplate = ({ data }) => {
   const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
 
   return (
-
     <TemplateLayout node={node}>
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />

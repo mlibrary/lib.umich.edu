@@ -64,8 +64,7 @@ export const TemplateSide = ({ children, contentSide = 'left', ...rest }) => {
                   paddingLeft: SPACING['3XL']
                 }
               : {
-                  borderRight: 'solid 1px var(--color-neutral-100)',
-                  paddingRight: SPACING['3XL']
+                  borderRight: 'solid 1px var(--color-neutral-100)'
                 }),
             paddingBottom: 0
           },
