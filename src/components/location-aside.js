@@ -72,7 +72,8 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
                     Location
                   </Heading>
                   <Text>
-                    {locationTitle}, {floor}
+                    {locationTitle && <>{locationTitle}{floor && ', '}</>}
+                    {floor}
                   </Text>
                   <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
                     {floorPlans.map((floorPlan, index) => {
@@ -96,15 +97,16 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
                   <Text css={{ textTransform: 'capitalize' }}>{noiseLevel || 'Not specified'}</Text>
                 </LayoutWithIcon>
               </section>
-
-              <section aria-labelledby='features' css={{ marginBottom: SPACING['3XL'] }}>
-                <LayoutWithIcon icon='info_outline' palette='teal' color='500'>
-                  <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
-                    Features
-                  </Heading>
-                  <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
-                </LayoutWithIcon>
-              </section>
+              {floorPlans?.length > 0 && (
+                <section aria-labelledby='features' css={{ marginBottom: SPACING['3XL'] }}>
+                  <LayoutWithIcon icon='info_outline' palette='teal' color='500'>
+                    <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
+                      Features
+                    </Heading>
+                    <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
+                  </LayoutWithIcon>
+                </section>
+              )}
             </>
           )
         : (

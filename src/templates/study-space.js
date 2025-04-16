@@ -1,4 +1,4 @@
-import { Heading, Margins, SPACING, Text } from '../reusable';
+import { Heading, Margins, MEDIA_QUERIES, SPACING, Text } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -20,39 +20,48 @@ const StudyTemplate = ({ data }) => {
   const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
 
   return (
+
     <TemplateLayout node={node}>
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
-        <div css={{
-          display: 'flex',
-          gap: '1rem',
-          marginBottom: SPACING['3XL']
-        }}
+        <header
+          css={{
+            [MEDIA_QUERIES.S]: {
+              alignItems: 'stretch',
+              display: 'flex',
+              flexDirection: 'row',
+              minHeight: '350px'
+            },
+            flexDirection: 'column-reverse',
+            marginBottom: SPACING['3XL']
+          }}
         >
+          {imageData && (
+            <GatsbyImage
+              image={imageData}
+              css={{
+                flex: '0 1 50%',
+                margin: `0 -${SPACING.M}`,
+                [MEDIA_QUERIES.S]: {
+                  'div:first-child > img': {
+                    position: 'absolute !important'
+                  },
+                  margin: 0,
+                  maxWidth: '450px'
+                }
+              }}
+              alt={imageAlt}
+            />
+          )}
           <div
             css={{
-              '> div': {
-                border: 'none',
-                marginRight: '1rem',
-                maxWidth: '35rem',
-                paddingLeft: '0'
-              }
-            }}
-          >
-            {imageData && (
-              <GatsbyImage
-                image={imageData}
-                css={{
-                  borderRadius: '2px',
-                  width: '100%'
-                }}
-                alt={imageAlt}
-              />
-            )}
-          </div>
-          <div
-            css={{
-              marginLeft: '1rem'
+              [MEDIA_QUERIES.S]: {
+                flex: '1 1 0',
+                marginLeft: '1rem',
+                marginTop: '0',
+                paddingLeft: '1rem'
+              },
+              marginTop: SPACING.L
             }}
           >
             <Heading
@@ -75,15 +84,31 @@ const StudyTemplate = ({ data }) => {
               </Text>
             )}
           </div>
-        </div>
+        </header>
+
       </Margins>
-      <Template asideWidth='50rem'>
-        <TemplateContent>
-          <LocationAside node={node} isStudySpaceAside={true} />
-        </TemplateContent>
-        <TemplateSide>
-          {body && <Html html={body.processed} />}
+      <Template asideWidth='50rem' contentSide='right'>
+        <TemplateSide
+          contentSide='right'
+        >
+          <LocationAside
+            css={{
+              [MEDIA_QUERIES.S]: {
+                marginBottom: 0
+              }
+            }}
+            node={node}
+            isStudySpaceAside={true}
+          />
         </TemplateSide>
+        <TemplateContent css={{
+          [MEDIA_QUERIES.M]: {
+            marginLeft: SPACING['3XL']
+          }
+        }}
+        >
+          {body && <Html html={body.processed} />}
+        </TemplateContent>
       </Template>
     </TemplateLayout>
   );
