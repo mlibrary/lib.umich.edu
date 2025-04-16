@@ -89,7 +89,12 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
 
               <HoursSection node={node} locationNode={locationNode} />
 
-              <section aria-labelledby='noise-level' css={{ marginBottom: SPACING['3XL'] }}>
+              <section
+                aria-labelledby='noise-level'
+                css={{
+                  marginBottom: spaceFeatures?.length > 0 ? SPACING['3XL'] : '0'
+                }}
+              >
                 <LayoutWithIcon icon='volume_up' palette='green' color='500'>
                   <Heading level={2} size='M' id='noise-level' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
                     Noise Level
@@ -97,8 +102,8 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
                   <Text css={{ textTransform: 'capitalize' }}>{noiseLevel || 'Not specified'}</Text>
                 </LayoutWithIcon>
               </section>
-              {floorPlans?.length > 0 && (
-                <section aria-labelledby='features' css={{ marginBottom: SPACING['3XL'] }}>
+              {spaceFeatures?.length > 0 && (
+                <section aria-labelledby='features'>
                   <LayoutWithIcon icon='info_outline' palette='teal' color='500'>
                     <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
                       Features
