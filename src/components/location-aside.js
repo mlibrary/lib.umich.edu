@@ -99,7 +99,11 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
                   <Heading level={2} size='M' id='noise-level' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
                     Noise Level
                   </Heading>
-                  <Text css={{ textTransform: 'capitalize' }}>{noiseLevel || 'Not specified'}</Text>
+                  <Text>
+                    {noiseLevel.replace(/_/ug, ' ').replace(/^./u, (str) => {
+                      return str.toUpperCase();
+                    })}
+                  </Text>
                 </LayoutWithIcon>
               </section>
               {spaceFeatures?.length > 0 && (
