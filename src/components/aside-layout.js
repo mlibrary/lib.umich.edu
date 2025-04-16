@@ -39,8 +39,9 @@ export const Template = ({
 };
 
 Template.propTypes = {
-  asideWidth: PropTypes.string,
-  children: PropTypes.array
+  asideWidth: PropTypes.any,
+  children: PropTypes.any,
+  contentSide: PropTypes.string
 };
 
 export const TemplateSide = ({ children, contentSide = 'left', ...rest }) => {
@@ -80,7 +81,8 @@ export const TemplateSide = ({ children, contentSide = 'left', ...rest }) => {
 };
 
 TemplateSide.propTypes = {
-  children: PropTypes.any
+  children: PropTypes.any,
+  contentSide: PropTypes.string
 };
 
 export const TemplateContent = ({ children, ...rest }) => {
