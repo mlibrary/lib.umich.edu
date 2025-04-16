@@ -6,6 +6,7 @@ import Link from './link';
 import LocationAnchoredLink from './location-anchored-link';
 import PropTypes from 'prop-types';
 import React from 'react';
+import useFloorPlan from '../hooks/use-floor-plan';
 
 const LayoutWithIcon = ({
   // eslint-disable-next-line react/prop-types
@@ -53,13 +54,23 @@ LayoutWithIcon.propTypes = {
 };
 
 export default function LocationAside ({ node, isStudySpaceAside = false }) {
-  const { field_phone_number: fieldPhoneNumber, field_email: fieldEmail, field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
-  const buildingNode = relationships?.field_room_building;
+  const { field_phone_number: fieldPhoneNumber, field_parent_location: fieldParentLocation, field_room_building: fieldRoomBuilding, field_email: fieldEmail, field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
+  const buildingNode = node.relationships?.field_room_building;
+  const fid = node.relationships?.field_floor?.id;
   const parentLocationNode = relationships?.field_parent_location?.relationships?.field_parent_location;
   const locationNode = buildingNode ?? parentLocationNode ?? node;
-  const floorPlans = relationships?.field_floor_plan;
   const locationTitle = relationships?.field_parent_location?.title;
+  const maybeFloorPlan = useFloorPlan(buildingNode?.id, fid);
+  let floorPlans = relationships?.field_floor_plan;
   const floor = getFloor({ node });
+  if (floor && floorPlans.length === 0) {
+    floorPlans = maybeFloorPlan;
+  }
+  const normalizedFloorPlans = Array.isArray(floorPlans)
+    ? floorPlans
+    : floorPlans
+      ? [floorPlans]
+      : [];
 
   return (
     <React.Fragment>
@@ -75,11 +86,13 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
                     {locationTitle && <>{locationTitle}{floor && ', '}</>}
                     {floor}
                   </Text>
-                  <ul css={{ '> li': { marginBottom: SPACING['2XS'] } }}>
-                    {floorPlans.map((floorPlan, index) => {
+                  <ul>
+                    {normalizedFloorPlans.map((floorPlan, index) => {
                       return (
                         <li key={index}>
-                          <Link to={floorPlan.fields.slug}>{floorPlan.fields.title}</Link>
+                          <Link to={floorPlan.fields.slug}>
+                            {maybeFloorPlan ? 'View floor plan' : floorPlan.fields.title}
+                          </Link>
                         </li>
                       );
                     })}
