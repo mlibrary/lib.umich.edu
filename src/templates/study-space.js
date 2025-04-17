@@ -27,10 +27,10 @@ const StudyTemplate = ({ data }) => {
           css={{
             [MEDIA_QUERIES.S]: {
               alignItems: 'stretch',
-              display: 'flex',
               flexDirection: 'row',
               minHeight: '350px'
             },
+            display: 'flex',
             flexDirection: 'column-reverse',
             marginBottom: SPACING['3XL']
           }}
@@ -86,7 +86,7 @@ const StudyTemplate = ({ data }) => {
         </header>
 
       </Margins>
-      <Template asideWidth='50rem' contentSide='right'>
+      <Template asideWidth='47rem' contentSide='right'>
         <TemplateSide
           contentSide='right'
         >
@@ -101,8 +101,8 @@ const StudyTemplate = ({ data }) => {
           />
         </TemplateSide>
         <TemplateContent css={{
-          [MEDIA_QUERIES.M]: {
-            marginLeft: SPACING['3XL']
+          [MEDIA_QUERIES.XL]: {
+            paddingLeft: SPACING['5XL']
           }
         }}
         >
