@@ -54,14 +54,14 @@ LayoutWithIcon.propTypes = {
 };
 
 export default function LocationAside ({ node, isStudySpaceAside = false }) {
-  const { field_phone_number: fieldPhoneNumber, field_email: fieldEmail, field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
+  const { field_phone_number: fieldPhoneNumber, field_room_number: fieldRoomNumber, field_email: fieldEmail, field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
   const buildingNode = relationships?.field_room_building;
-  const parentLocationNode = relationships?.field_parent_location?.relationships?.field_parent_location;
-  const locationNode = buildingNode ?? parentLocationNode ?? node;
-  const locationTitle = relationships?.field_parent_location?.title;
+  const parentLocationNode = relationships?.field_parent_location;
+  const locationNode = buildingNode ?? parentLocationNode?.relationships?.field_parent_location ?? node;
+  const locationTitle = buildingNode?.title ?? parentLocationNode?.title;
   const floor = getFloor({ node });
   const fid = node.relationships?.field_floor?.id;
-  const maybeFloorPlan = useFloorPlan(buildingNode?.id, fid);
+  const maybeFloorPlan = useFloorPlan(buildingNode?.id ?? parentLocationNode?.id, fid);
   let floorPlans = relationships?.field_floor_plan;
   if (floor && floorPlans.length === 0) {
     floorPlans = maybeFloorPlan;
@@ -76,7 +76,7 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
   if (isStudySpaceAside) {
     return (
       <>
-        <StudySpaceLocationSection locationTitle={locationTitle} floor={floor} normalizedFloorPlans={normalizedFloorPlans} maybeFloorPlan={maybeFloorPlan} />
+        <StudySpaceLocationSection locationTitle={locationTitle} floor={floor} roomNumber={fieldRoomNumber} normalizedFloorPlans={normalizedFloorPlans} maybeFloorPlan={maybeFloorPlan} />
         <HoursSection node={node} locationNode={locationNode} />
         <NoiseLevelSection noiseLevel={noiseLevel} spaceFeatures={spaceFeatures} />
         {spaceFeatures?.length > 0 && <SpaceFeaturesSection spaceFeatures={spaceFeatures} />}
@@ -100,6 +100,7 @@ LocationAside.propTypes = {
     field_email: PropTypes.any,
     field_noise_level: PropTypes.any,
     field_phone_number: PropTypes.any,
+    field_room_number: PropTypes.any,
     field_space_features: PropTypes.shape({
       length: PropTypes.number
     }),
@@ -117,7 +118,8 @@ LocationAside.propTypes = {
         title: PropTypes.any
       }),
       field_room_building: PropTypes.shape({
-        id: PropTypes.any
+        id: PropTypes.any,
+        title: PropTypes.any
       })
     })
   })
@@ -226,6 +228,10 @@ SpaceFeaturesSection.propTypes = {
 };
 
 const NoiseLevelSection = ({ noiseLevel, spaceFeatures }) => {
+  if (!noiseLevel) {
+    return null;
+  }
+
   return (
     <section
       aria-labelledby='noise-level'
@@ -256,7 +262,7 @@ NoiseLevelSection.propTypes = {
   })
 };
 
-const StudySpaceLocationSection = ({ locationTitle, floor, normalizedFloorPlans, maybeFloorPlan }) => {
+const StudySpaceLocationSection = ({ locationTitle, floor, roomNumber, normalizedFloorPlans, maybeFloorPlan }) => {
   if (!locationTitle && !floor && !normalizedFloorPlans?.length) {
     return null;
   }
@@ -268,8 +274,7 @@ const StudySpaceLocationSection = ({ locationTitle, floor, normalizedFloorPlans,
           Location
         </Heading>
         <Text>
-          {locationTitle && <>{locationTitle}{floor && ', '}</>}
-          {floor}
+          {[locationTitle, floor, roomNumber].filter(Boolean).join(', ')}
         </Text>
         <ul>
           {normalizedFloorPlans.map((floorPlan, index) => {
@@ -288,13 +293,14 @@ const StudySpaceLocationSection = ({ locationTitle, floor, normalizedFloorPlans,
 };
 
 StudySpaceLocationSection.propTypes = {
-  floor: PropTypes.string,
+  floor: PropTypes.any,
   locationTitle: PropTypes.any,
   maybeFloorPlan: PropTypes.any,
   normalizedFloorPlans: PropTypes.shape({
     length: PropTypes.any,
     map: PropTypes.func
-  })
+  }),
+  roomNumber: PropTypes.any
 };
 
 const SpaceFeatures = ({ spaceFeatures }) => {
@@ -350,6 +356,10 @@ SpaceFeatures.propTypes = {
 };
 
 const HoursSection = ({ node, locationNode }) => {
+  if (!locationNode) {
+    return null;
+  }
+
   return (
     <section aria-labelledby='todays-hours' css={{ marginBottom: SPACING['3XL'] }}>
       <LayoutWithIcon icon='access_time' palette='indigo' color='400'>
