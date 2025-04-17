@@ -9,6 +9,8 @@ export const query = graphql`
     drupal_internal__nid
     field_root_page_
     field_phone_number
+    field_noise_level
+    field_space_features
     field_email
     field_address_is_different_from_
     field_local_navigation

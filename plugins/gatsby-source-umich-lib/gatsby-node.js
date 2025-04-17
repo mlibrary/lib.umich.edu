@@ -195,8 +195,8 @@ exports.onCreateNode = async ({ node, actions }, { baseUrl }) => {
       const sanitizedData = sanitizeDrupalView(data);
       const value = sanitizedData
         ? sanitizedData.map(({ uuid }) => {
-          return uuid;
-        })
+            return uuid;
+          })
         : [`no-${name}`];
 
       createNodeField({
@@ -236,6 +236,7 @@ exports.createPages = ({ actions, graphql }) => {
       `src/templates/staff-directory.js`
     );
     const specialistTemplate = path.resolve(`src/templates/specialist.js`);
+    const studySpaceTemplate = path.resolve('src/templates/study-space.js');
     const collectingAreaTemplate = path.resolve(
       `src/templates/collecting-area.js`
     );
@@ -253,7 +254,6 @@ exports.createPages = ({ actions, graphql }) => {
 
     const getTemplate = (node) => {
       const { field_machine_name: fieldMachineName } = node.relationships.field_design_template;
-
       switch (fieldMachineName) {
         case 'basic':
           return basicTemplate;
@@ -280,6 +280,8 @@ exports.createPages = ({ actions, graphql }) => {
           return collectingAreaTemplate;
         case 'specialist':
           return specialistTemplate;
+        case 'study_space':
+          return studySpaceTemplate;
         case 'department':
           return departmentTemplate;
         case 'news_landing':
@@ -425,6 +427,7 @@ exports.createPages = ({ actions, graphql }) => {
                       in: [
                         "visit"
                         "basic"
+                        "study_space"
                         "destination_body"
                         "destination_full"
                       ]
@@ -462,6 +465,7 @@ exports.createPages = ({ actions, graphql }) => {
                       in: [
                         "visit"
                         "full_width"
+                        "study_space"
                         "destination_body"
                         "destination_full"
                       ]
@@ -649,7 +653,9 @@ exports.createPages = ({ actions, graphql }) => {
           const keywords = node.field_seo_keywords
             ? node.field_seo_keywords
             : '';
-
+          if (template === 'visit') {
+            console.log(node.title);
+          }
           if (template) {
             createPage({
               component: template,
