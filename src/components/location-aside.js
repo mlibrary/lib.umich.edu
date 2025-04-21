@@ -178,6 +178,9 @@ AddressSection.propTypes = {
 };
 
 const FloorPlanSection = ({ floorPlans }) => {
+  if (!floorPlans || floorPlans.length === 0) {
+    return null;
+  }
   return (
     <section aria-label='floor plans'>
       <LayoutWithIcon icon='map' palette='teal' color='500'>
@@ -200,9 +203,9 @@ const FloorPlanSection = ({ floorPlans }) => {
 
 FloorPlanSection.propTypes = {
   floorPlans: PropTypes.shape({
+    length: PropTypes.number,
     map: PropTypes.func
-  }),
-  showGenericTitle: PropTypes.bool
+  })
 };
 
 const SpaceFeaturesSection = ({ spaceFeatures }) => {
