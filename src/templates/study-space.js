@@ -86,7 +86,7 @@ const StudyTemplate = ({ data }) => {
         </header>
 
       </Margins>
-      <Template asideWidth='47rem' contentSide='right'>
+      <Template asideWidth='24rem' contentSide='right'>
         <TemplateSide
           contentSide='right'
         >

@@ -54,7 +54,13 @@ LayoutWithIcon.propTypes = {
 };
 
 export default function LocationAside ({ node, isStudySpaceAside = false }) {
-  const { field_phone_number: fieldPhoneNumber, field_room_number: fieldRoomNumber, field_email: fieldEmail, field_noise_level: noiseLevel, field_space_features: spaceFeatures, relationships } = node;
+  const {
+    field_phone_number: fieldPhoneNumber,
+    field_room_number: fieldRoomNumber,
+    field_email: fieldEmail,
+    field_noise_level: noiseLevel,
+    field_space_features: spaceFeatures,
+    relationships } = node;
   const buildingNode = relationships?.field_room_building;
   const parentLocationNode = relationships?.field_parent_location;
   const locationNode = buildingNode ?? parentLocationNode?.relationships?.field_parent_location ?? node;
@@ -76,7 +82,13 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
   if (isStudySpaceAside) {
     return (
       <>
-        <StudySpaceLocationSection locationTitle={locationTitle} floor={floor} roomNumber={fieldRoomNumber} normalizedFloorPlans={normalizedFloorPlans} maybeFloorPlan={maybeFloorPlan} />
+        <StudySpaceLocationSection
+          locationTitle={locationTitle}
+          floor={floor}
+          roomNumber={fieldRoomNumber}
+          normalizedFloorPlans={normalizedFloorPlans}
+          maybeFloorPlan={maybeFloorPlan}
+        />
         <HoursSection node={node} locationNode={locationNode} />
         <NoiseLevelSection noiseLevel={noiseLevel} spaceFeatures={spaceFeatures} />
         {spaceFeatures?.length > 0 && <SpaceFeaturesSection spaceFeatures={spaceFeatures} />}

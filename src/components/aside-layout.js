@@ -23,10 +23,15 @@ export const Template = ({
           paddingBottom: SPACING.XL,
           [MEDIA_QUERIES.XL]: {
             display: 'grid',
-            gridTemplateAreas: contentSide === 'left'
-              ? `"content side"`
-              : `"side content"`,
-            gridTemplateColumns: `1fr calc(${asWidth} + ${SPACING['4XL']}) `,
+            ...(contentSide === 'left'
+              ? {
+                  gridTemplateAreas: `"content side"`,
+                  gridTemplateColumns: `1fr calc(${asWidth} + ${SPACING['4XL']}) `
+                }
+              : {
+                  gridTemplateAreas: `"side content"`,
+                  gridTemplateColumns: `calc(${asWidth}) 1fr`
+                }),
             paddingBottom: SPACING['3XL']
           }
         }}
