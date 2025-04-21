@@ -15,8 +15,8 @@ const StudyTemplate = ({ data }) => {
   const node = getNode(data);
   const { field_title_context: fieldTitleContext, fields, body, relationships } = node;
   const imageData
-        = relationships?.field_media_image?.relationships?.field_media_image
-          ?.localFile?.childImageSharp?.gatsbyImageData;
+    = relationships?.field_media_image?.relationships?.field_media_image
+      ?.localFile?.childImageSharp?.gatsbyImageData;
   const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
 
   return (
@@ -28,7 +28,7 @@ const StudyTemplate = ({ data }) => {
             [MEDIA_QUERIES.S]: {
               alignItems: 'stretch',
               flexDirection: 'row',
-              minHeight: '350px'
+              minHeight: '263px'
             },
             display: 'flex',
             flexDirection: 'column-reverse',
@@ -90,15 +90,23 @@ const StudyTemplate = ({ data }) => {
         <TemplateSide
           contentSide='right'
         >
-          <LocationAside
-            css={{
-              [MEDIA_QUERIES.S]: {
-                marginBottom: 0
-              }
-            }}
-            node={node}
-            isStudySpaceAside={true}
-          />
+          <div css={{
+            [MEDIA_QUERIES.S]: {
+              paddingRight: SPACING['3XL']
+            },
+            paddingRight: 0
+          }}
+          >
+            <LocationAside
+              css={{
+                [MEDIA_QUERIES.S]: {
+                  marginBottom: 0
+                }
+              }}
+              node={node}
+              isStudySpaceAside={true}
+            />
+          </div>
         </TemplateSide>
         <TemplateContent css={{
           [MEDIA_QUERIES.XL]: {
