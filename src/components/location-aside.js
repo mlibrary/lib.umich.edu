@@ -277,6 +277,42 @@ NoiseLevelSection.propTypes = {
   })
 };
 
+const getFloorPlanContent = (normalizedFloorPlans, maybeFloorPlan) => {
+  if (!normalizedFloorPlans?.length && !maybeFloorPlan) {
+    return null;
+  }
+
+  if (maybeFloorPlan) {
+    return (
+      <Link to={normalizedFloorPlans[0].fields.slug}>
+        View floor plan
+      </Link>
+    );
+  }
+
+  if (normalizedFloorPlans.length === 1) {
+    return (
+      <Link to={normalizedFloorPlans[0].fields.slug}>
+        {normalizedFloorPlans[0].fields.title}
+      </Link>
+    );
+  }
+
+  return (
+    <ul>
+      {normalizedFloorPlans.map((floorPlan, index) => {
+        return (
+          <li key={index}>
+            <Link to={floorPlan.fields.slug}>
+              {floorPlan.fields.title}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
 const StudySpaceLocationSection = ({ locationTitle, floor, roomNumber, normalizedFloorPlans, maybeFloorPlan }) => {
   if (!locationTitle && !floor && !normalizedFloorPlans?.length) {
     return null;
@@ -291,17 +327,7 @@ const StudySpaceLocationSection = ({ locationTitle, floor, roomNumber, normalize
         <Text>
           {[locationTitle, floor, roomNumber].filter(Boolean).join(', ')}
         </Text>
-        <ul>
-          {normalizedFloorPlans.map((floorPlan, index) => {
-            return (
-              <li key={index}>
-                <Link to={floorPlan.fields.slug}>
-                  {maybeFloorPlan ? 'View floor plan' : floorPlan.fields.title}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        {getFloorPlanContent(normalizedFloorPlans, maybeFloorPlan)}
       </LayoutWithIcon>
     </section>
   );
