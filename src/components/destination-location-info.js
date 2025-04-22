@@ -32,7 +32,6 @@ const resolveLocationFromNode = (node) => {
 };
 
 const DestinationLocationInfo = ({ node }) => {
-  console.log(node);
   const { field_parent_location: fieldParentLocation, field_room_building: fieldRoomBuilding } = node.relationships;
   const bid = fieldRoomBuilding
     ? fieldRoomBuilding.id

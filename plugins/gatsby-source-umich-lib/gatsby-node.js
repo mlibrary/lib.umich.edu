@@ -653,9 +653,6 @@ exports.createPages = ({ actions, graphql }) => {
           const keywords = node.field_seo_keywords
             ? node.field_seo_keywords
             : '';
-          if (template === 'visit') {
-            console.log(node.title);
-          }
           if (template) {
             createPage({
               component: template,
