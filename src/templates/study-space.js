@@ -114,6 +114,15 @@ const StudyTemplate = ({ data }) => {
           }
         }}
         >
+          <Heading
+            level={2}
+            size='M'
+            css={{
+              marginBottom: SPACING.M
+            }}
+          >
+            About the space
+          </Heading>
           {body && <Html html={body.processed} />}
         </TemplateContent>
       </Template>
