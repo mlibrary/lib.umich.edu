@@ -487,14 +487,14 @@ const SocialLinks = ({
   field_linkedin,
   field_facebook,
   field_instagram,
-  field_slideshare,
+  field_bluesky,
   field_twitter
 }) => {
   const links = [
     field_linkedin,
     field_facebook,
     field_instagram,
-    field_slideshare,
+    field_bluesky,
     field_twitter
   ].filter((linkItem) => {
     return linkItem && linkItem.uri;
@@ -527,10 +527,10 @@ const SocialLinks = ({
 };
 
 SocialLinks.propTypes = {
+  field_bluesky: PropTypes.any,
   field_facebook: PropTypes.any,
   field_instagram: PropTypes.any,
   field_linkedin: PropTypes.any,
-  field_slideshare: PropTypes.any,
   field_twitter: PropTypes.any
 };
 
