@@ -82,13 +82,13 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
   if (isStudySpaceAside) {
     return (
       <>
-        <StudySpaceLocationSection
-          locationTitle={locationTitle}
-          floor={floor}
-          roomNumber={fieldRoomNumber}
-          normalizedFloorPlans={normalizedFloorPlans}
-          maybeFloorPlan={maybeFloorPlan}
-        />
+        <StudySpaceLocationSection {...{
+          floor,
+          locationTitle,
+          maybeFloorPlan,
+          normalizedFloorPlans,
+          roomNumber: fieldRoomNumber
+        }}  />
         <HoursSection node={node} locationNode={locationNode} />
         <NoiseLevelSection noiseLevel={noiseLevel} spaceFeatures={spaceFeatures} />
         {spaceFeatures?.length > 0 && <SpaceFeaturesSection spaceFeatures={spaceFeatures} />}
