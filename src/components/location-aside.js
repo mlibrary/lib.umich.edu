@@ -282,34 +282,26 @@ const getFloorPlanContent = (normalizedFloorPlans, maybeFloorPlan) => {
     return null;
   }
 
-  if (maybeFloorPlan) {
+  if (normalizedFloorPlans.length > 1) {
     return (
-      <Link to={normalizedFloorPlans[0].fields.slug}>
-        View floor plan
-      </Link>
-    );
-  }
-
-  if (normalizedFloorPlans.length === 1) {
-    return (
-      <Link to={normalizedFloorPlans[0].fields.slug}>
-        {normalizedFloorPlans[0].fields.title}
-      </Link>
+      <ul>
+        {normalizedFloorPlans.map((floorPlan, index) => {
+          return (
+            <li key={index}>
+              <Link to={floorPlan.fields.slug}>
+                {floorPlan.fields.title}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     );
   }
 
   return (
-    <ul>
-      {normalizedFloorPlans.map((floorPlan, index) => {
-        return (
-          <li key={index}>
-            <Link to={floorPlan.fields.slug}>
-              {floorPlan.fields.title}
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
+    <Link to={normalizedFloorPlans[0].fields.slug}>
+      {maybeFloorPlan ? 'View floor plan' : normalizedFloorPlans[0].fields.title}
+    </Link>
   );
 };
 
