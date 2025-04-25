@@ -88,7 +88,8 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
           maybeFloorPlan,
           normalizedFloorPlans,
           roomNumber: fieldRoomNumber
-        }}  />
+        }}
+        />
         <HoursSection node={node} locationNode={locationNode} />
         <NoiseLevelSection noiseLevel={noiseLevel} spaceFeatures={spaceFeatures} />
         {spaceFeatures?.length > 0 && <SpaceFeaturesSection spaceFeatures={spaceFeatures} />}
@@ -113,16 +114,12 @@ LocationAside.propTypes = {
     field_noise_level: PropTypes.any,
     field_phone_number: PropTypes.any,
     field_room_number: PropTypes.any,
-    field_space_features: PropTypes.shape({
-      length: PropTypes.number
-    }),
+    field_space_features: PropTypes.array,
     relationships: PropTypes.shape({
       field_floor: PropTypes.shape({
         id: PropTypes.any
       }),
-      field_floor_plan: PropTypes.shape({
-        length: PropTypes.number
-      }),
+      field_floor_plan: PropTypes.array,
       field_parent_location: PropTypes.shape({
         relationships: PropTypes.shape({
           field_parent_location: PropTypes.any
@@ -237,9 +234,7 @@ const SpaceFeaturesSection = ({ spaceFeatures }) => {
 };
 
 SpaceFeaturesSection.propTypes = {
-  spaceFeatures: PropTypes.shape({
-    length: PropTypes.any
-  })
+  spaceFeatures: PropTypes.array
 };
 
 const NoiseLevelSection = ({ noiseLevel, spaceFeatures }) => {
@@ -269,12 +264,8 @@ const NoiseLevelSection = ({ noiseLevel, spaceFeatures }) => {
 };
 
 NoiseLevelSection.propTypes = {
-  noiseLevel: PropTypes.shape({
-    replace: PropTypes.func
-  }),
-  spaceFeatures: PropTypes.shape({
-    length: PropTypes.number
-  })
+  noiseLevel: PropTypes.string,
+  spaceFeatures: PropTypes.array
 };
 
 const getFloorPlanContent = (normalizedFloorPlans, maybeFloorPlan) => {
@@ -329,10 +320,7 @@ StudySpaceLocationSection.propTypes = {
   floor: PropTypes.any,
   locationTitle: PropTypes.any,
   maybeFloorPlan: PropTypes.any,
-  normalizedFloorPlans: PropTypes.shape({
-    length: PropTypes.any,
-    map: PropTypes.func
-  }),
+  normalizedFloorPlans: PropTypes.array,
   roomNumber: PropTypes.any
 };
 
@@ -383,9 +371,7 @@ const SpaceFeatures = ({ spaceFeatures }) => {
 };
 
 SpaceFeatures.propTypes = {
-  spaceFeatures: PropTypes.shape({
-    map: PropTypes.func
-  })
+  spaceFeatures: PropTypes.array
 };
 
 const HoursSection = ({ node, locationNode }) => {
