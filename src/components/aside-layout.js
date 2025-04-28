@@ -2,7 +2,12 @@ import { Margins, MEDIA_QUERIES, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export const Template = ({ children, asideWidth, ...rest }) => {
+export const Template = ({
+  children,
+  asideWidth,
+  contentSide = 'left',
+  ...rest
+}) => {
   const asWidth = asideWidth ? asideWidth : '21rem';
 
   return (
@@ -18,10 +23,15 @@ export const Template = ({ children, asideWidth, ...rest }) => {
           paddingBottom: SPACING.XL,
           [MEDIA_QUERIES.XL]: {
             display: 'grid',
-            gridTemplateAreas: `
-            "content side"
-            `,
-            gridTemplateColumns: `1fr calc(${asWidth} + ${SPACING['4XL']}) `,
+            ...(contentSide === 'left'
+              ? {
+                  gridTemplateAreas: `"content side"`,
+                  gridTemplateColumns: `1fr calc(${asWidth} + ${SPACING['4XL']}) `
+                }
+              : {
+                  gridTemplateAreas: `"side content"`,
+                  gridTemplateColumns: `calc(${asWidth}) 1fr`
+                }),
             paddingBottom: SPACING['3XL']
           }
         }}
@@ -34,11 +44,12 @@ export const Template = ({ children, asideWidth, ...rest }) => {
 };
 
 Template.propTypes = {
-  asideWidth: PropTypes.string,
-  children: PropTypes.array
+  asideWidth: PropTypes.any,
+  children: PropTypes.any,
+  contentSide: PropTypes.string
 };
 
-export const TemplateSide = ({ children, ...rest }) => {
+export const TemplateSide = ({ children, contentSide = 'left', ...rest }) => {
   return (
     <section
       css={{
@@ -52,9 +63,15 @@ export const TemplateSide = ({ children, ...rest }) => {
         css={{
           [MEDIA_QUERIES.XL]: {
             borderBottom: 'none',
-            borderLeft: `solid 1px var(--color-neutral-100)`,
-            paddingBottom: 0,
-            paddingLeft: SPACING['3XL']
+            ...(contentSide === 'left'
+              ? {
+                  borderLeft: 'solid 1px var(--color-neutral-100)',
+                  paddingLeft: SPACING['3XL']
+                }
+              : {
+                  borderRight: 'solid 1px var(--color-neutral-100)'
+                }),
+            paddingBottom: 0
           },
           borderBottom: `solid 1px var(--color-neutral-100)`,
           marginBottom: SPACING['2XL'],
@@ -68,7 +85,8 @@ export const TemplateSide = ({ children, ...rest }) => {
 };
 
 TemplateSide.propTypes = {
-  children: PropTypes.any
+  children: PropTypes.any,
+  contentSide: PropTypes.string
 };
 
 export const TemplateContent = ({ children, ...rest }) => {
