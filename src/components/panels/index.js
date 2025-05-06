@@ -90,9 +90,9 @@ const PanelList = ({ children, twoColumns, disableLargeScreenStyles = false, ...
     },
     '> li': {
       breakInside: 'avoid',
+      display: 'inline-block',
       marginBottom: 0,
-      marginTop: SPACING.XL,
-      overflow: 'hidden'
+      marginTop: SPACING.XL
     },
     '> li:first-of-type': {
       marginTop: 0
