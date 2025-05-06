@@ -61,8 +61,11 @@ const NewsLandingTemplate = ({ data }) => {
               <Heading level={2} size='L'>m-banner</Heading>
               <m-banner variant='info'></m-banner>
               <m-banner variant='warning'></m-banner>
+              <m-banner>No variant specified</m-banner>
+              <m-banner>With a <a href='#'>link</a></m-banner>
+
               <Heading level={2} size='L'css={{ marginTop: SPACING.L }}>m-callout</Heading>
-              <m-callout variant='success' label='This is the success content.' dismissible></m-callout>
+              <m-callout variant='success' label='This is the success content. This should also be dismissable.' dismissible></m-callout>
               <m-callout variant='warning' label='This is the warning content.'></m-callout>
               <m-callout variant='critical' label='This is the critical content.'></m-callout>
               <m-callout variant='info' label='This is the info content.'></m-callout>
