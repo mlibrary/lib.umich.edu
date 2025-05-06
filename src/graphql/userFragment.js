@@ -32,6 +32,10 @@ export const query = graphql`
       title
       uri
     }
+    field_bluesky {
+      __typename
+      uri
+    }
     field_linkedin {
       __typename
       uri
@@ -41,10 +45,6 @@ export const query = graphql`
       uri
     }
     field_instagram {
-      __typename
-      uri
-    }
-    field_slideshare {
       __typename
       uri
     }

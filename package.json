@@ -50,12 +50,12 @@
     "url": "https://github.com/mlibrary/lib.umich.edu"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.2.8",
-    "@eslint/js": "^9.24.0",
+    "@eslint/compat": "^1.2.9",
+    "@eslint/js": "^9.26.0",
     "@stylistic/eslint-plugin": "^4.2.0",
     "bottleneck": "^2.19.5",
     "entities": "^6.0.0",
-    "eslint": "^9.24.0",
+    "eslint": "^9.26.0",
     "eslint-plugin-react": "^7.37.5",
     "fetch-retry": "^6.0.0",
     "gatsby-plugin-netlify": "^5.1.1",
