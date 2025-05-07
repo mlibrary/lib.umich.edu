@@ -20,9 +20,7 @@ import { unified } from 'unified';
 */
 const Heading2 = ({ children, ...other }) => {
   return (
-    <Heading level={2} size='M' {...other}>
-      {children}
-    </Heading>
+    <Heading level={2} size='M' {...other}>{children}</Heading>
   );
 };
 
@@ -32,47 +30,37 @@ Heading2.propTypes = {
 
 const Heading3 = ({ children, ...other }) => {
   return (
-    <Heading level={3} size='S' {...other}>
-      {children}
-    </Heading>
+    <Heading level={3} size='S' {...other}>{children}</Heading>
   );
 };
 
 Heading3.propTypes = {
   children: PropTypes.any
 };
+
 const Heading4 = ({ children, ...other }) => {
   return (
-    <Heading
-      level={4}
-      size='3XS'
-      style={{ color: 'var(--color-neutral-300)' }}
-      {...other}
-    >
-      {children}
-    </Heading>
+    <Heading level={4} size='3XS' style={{ color: 'var(--color-neutral-300)' }} {...other}>{children}</Heading>
   );
 };
 
 Heading4.propTypes = {
   children: PropTypes.any
 };
+
 const Heading5 = ({ children, ...other }) => {
   return (
-    <Heading level={5} size='3XS' {...other}>
-      {children}
-    </Heading>
+    <Heading level={5} size='3XS' {...other}>{children}</Heading>
   );
 };
 
 Heading5.propTypes = {
   children: PropTypes.any
 };
+
 const Heading6 = ({ children, ...other }) => {
   return (
-    <Heading level={6} size='3XS' {...other}>
-      {children}
-    </Heading>
+    <Heading level={6} size='3XS' {...other}>{children}</Heading>
   );
 };
 
@@ -82,10 +70,7 @@ Heading6.propTypes = {
 
 const components = {
   a: ({ children, href }) => {
-    if (!children || !href) {
-      return null;
-    }
-    return <Link to={href}>{children}</Link>;
+    return (children && href ? <Link to={href}>{children}</Link> : null);
   },
   article: () => {
     return null;
@@ -103,14 +88,7 @@ const components = {
     return <em {...props} css={{ fontStyle: 'italic' }} />;
   },
   figcaption: (props) => {
-    return (
-      <figcaption
-        {...props}
-        css={{
-          color: 'var(--color-neutral-300)'
-        }}
-      />
-    );
+    return <figcaption {...props} css={{ color: 'var(--color-neutral-300)' }} />;
   },
   figure: (props) => {
     return <figure {...props} css={{ maxWidth: '38rem' }} />;
@@ -127,11 +105,7 @@ const components = {
     return <img {...props} />;
   },
   lede: ({ children, ...other }) => {
-    return (
-      <Text lede {...other}>
-        {children}
-      </Text>
-    );
+    return <Text lede {...other}>{children}</Text>;
   },
   ol: ({ children }) => {
     return <List type='numbered'>{children}</List>;
@@ -141,11 +115,7 @@ const components = {
       return <Callout>{children}</Callout>;
     }
     if (className === 'umich-lib-alert') {
-      return (
-        <Callout intent='warning' alert={true}>
-          {children}
-        </Callout>
-      );
+      return <Callout intent='warning' alert>{children}</Callout>;
     }
     if (className === 'umich-lib-cta') {
       return <CallToAction>{children}</CallToAction>;
@@ -153,9 +123,7 @@ const components = {
     return <Text>{children}</Text>;
   },
   strong: ({ children }) => {
-    return (
-      <strong css={{ fontWeight: '800' }}>{children}</strong>
-    );
+    return <strong css={{ fontWeight: '800' }}>{children}</strong>;
   },
   table: Table,
   text: Text,
@@ -167,39 +135,35 @@ const components = {
   }
 };
 
-const processor = (text) => {
-  return unified()
-    .use(rehypeParse, { fragment: true })
-    .use(rehypeDrupalEntity)
-    .use(rehypeReact, {
-      Fragment: prod.Fragment,
-      components,
-      createElement: (component, props = {}, children = []) => {
-        if (props['data-entity-uuid']) {
-          return <DrupalEntity {...props} />;
-        }
-
-        if (component === 'div') {
-          return <Fragment {...props}>{children}</Fragment>;
-        }
-
-        return createElement(component, props, children);
-      },
-      jsx: prod.jsx,
-      jsxs: prod.jsxs
-    })
-    .process(text);
-};
+const processor = unified()
+  .use(rehypeParse, { fragment: true })
+  .use(rehypeDrupalEntity)
+  .use(rehypeReact, {
+    Fragment: prod.Fragment,
+    components,
+    createElement: (component, props = {}, children = []) => {
+      if (props['data-entity-uuid']) {
+        return <DrupalEntity {...props} />;
+      }
+      if (component === 'div') {
+        return <Fragment {...props}>{children}</Fragment>;
+      }
+      return createElement(component, props, children);
+    },
+    jsx: prod.jsx,
+    jsxs: prod.jsxs
+  });
 
 export default function Html ({ html, ...rest }) {
   const [content, setContent] = useState(<></>);
 
   useEffect(() => {
     (async () => {
-      const file = await processor(html);
+      const file = await processor.process(html);
       setContent(file.result);
     })();
   }, [html]);
+
   return <Prose {...rest}>{content}</Prose>;
 }
 
