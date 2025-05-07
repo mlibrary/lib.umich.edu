@@ -101,6 +101,13 @@ export const query = graphql`
           processed
         }
       }
+      field_amenities {
+        weight
+        name
+        description {
+          processed
+        }
+      }
       field_panels {
         ...linkPanelFragment
         ...cardPanelFragment
