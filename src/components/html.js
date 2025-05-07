@@ -1,7 +1,7 @@
 /* eslint-disable id-length */
 import * as prod from 'react/jsx-runtime';
 import { Heading, List, Text } from '../reusable';
-import React, { createElement, Fragment, useEffect, useState } from 'react';
+import React, { createElement, Fragment } from 'react';
 import Blockquote from '../reusable/blockquote';
 import Callout from '../reusable/callout';
 import CallToAction from '../reusable/call-to-action';
@@ -155,17 +155,9 @@ const processor = unified()
   });
 
 export default function Html ({ html, ...rest }) {
-  const [content, setContent] = useState(<></>);
-
-  useEffect(() => {
-    (async () => {
-      const file = await processor.process(html);
-      setContent(file.result);
-    })();
-  }, [html]);
-
-  return <Prose {...rest}>{content}</Prose>;
-}
+  const file = processor.processSync(html);
+  return <Prose {...rest}>{file.result}</Prose>;
+};
 
 Html.propTypes = {
   html: PropTypes.any
