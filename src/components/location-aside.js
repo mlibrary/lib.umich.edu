@@ -211,10 +211,12 @@ const FloorPlanSection = ({ floorPlans }) => {
 };
 
 FloorPlanSection.propTypes = {
-  floorPlans: PropTypes.shape({
-    length: PropTypes.number,
-    map: PropTypes.func
-  })
+  floorPlans: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string
+    })
+  )
 };
 
 const SpaceFeaturesSection = ({ spaceFeatures }) => {
