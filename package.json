@@ -55,12 +55,12 @@
     "@stylistic/eslint-plugin": "^4.2.0",
     "bottleneck": "^2.19.5",
     "entities": "^6.0.0",
-    "eslint": "^9.26.0",
+    "eslint": "^9.27.0",
     "eslint-plugin-react": "^7.37.5",
     "fetch-retry": "^6.0.0",
     "gatsby-plugin-netlify": "^5.1.1",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
-    "globals": "^16.0.0"
+    "globals": "^16.1.0"
   },
   "overrides": {
     "eslint-plugin-react": {
