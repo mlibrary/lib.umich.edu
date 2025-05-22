@@ -220,6 +220,7 @@ exports.createPages = ({ actions, graphql }) => {
 
   return new Promise((resolve, reject) => {
     const basicTemplate = path.resolve(`src/templates/basic.js`);
+    const findStudySpaceTemplate = path.resolve('src/templates/find-study-space.js');
     const fullWidthTemplate = path.resolve(`src/templates/fullwidth.js`);
     const landingTemplate = path.resolve(`src/templates/landing.js`);
     const sectionTemplate = path.resolve(`src/templates/section.js`);
@@ -274,6 +275,8 @@ exports.createPages = ({ actions, graphql }) => {
           return destinationFullTemplate;
         case 'staff_directory':
           return staffDirectoryTemplate;
+        case 'find_study_space':
+          return findStudySpaceTemplate;
         case 'floor_plan':
           return floorPlanTemplate;
         case 'collecting_area':
@@ -322,6 +325,7 @@ exports.createPages = ({ actions, graphql }) => {
                       in: [
                         "landing_page"
                         "basic"
+                        "find_study_space"
                         "full_width"
                         "homepage"
                         "destination_body"
