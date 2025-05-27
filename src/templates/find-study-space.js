@@ -1,4 +1,5 @@
-import { Heading, Margins, SPACING } from '../reusable';
+import { Heading, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
+import CardImage from '../reusable/card-image';
 import Card from '../components/Card';
 import Breadcrumb from '../components/breadcrumb';
 import Collapsible from '../components/collapsible';
@@ -12,8 +13,20 @@ import { Template, TemplateContent, TemplateSide } from '../components/aside-lay
 import transformNodePanels from '../utils/transform-node-panels';
 
 const FindStudySpaceTemplate = ({ data }) => {
-  const allStudySpaces = data.page.relationships.field_panels[0].relationships.field_cards;
-  console.log(allStudySpaces);
+  // Get all study spaces from locations and rooms, combine them, then sort them alphabetically
+  const allStudySpaces = data.locations.edges.concat(data.rooms.edges);
+  allStudySpaces.sort((a, b) => {
+    const titleA = a.node.title.toLowerCase();
+    const titleB = b.node.title.toLowerCase();
+
+    if (titleA < titleB) {
+      return -1;
+    }
+    if (titleA > titleB) {
+      return 1;
+    }
+    return 0;
+  });
   let node = null;
   if (data.page) {
     node = data.page;
@@ -636,10 +649,50 @@ const FindStudySpaceTemplate = ({ data }) => {
           marginRight: '0 !important'
         }}
         >
-          <FindStudySpaceResults>
-
-          </FindStudySpaceResults>
-
+          <section
+            css={{
+              marginBottom: SPACING.XL,
+              [MEDIA_QUERIES.L]: {
+                display: 'grid',
+                gridGap: SPACING.M,
+                gridTemplateColumns: `18.75rem 1fr `
+              }
+            }}
+          >
+            {allStudySpaces.map((edge, index) => {
+              const cardImage = edge.node.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp.gatsbyImageData;
+              const cardAlt = edge.node.relationships?.field_media_image?.field_media_image?.alt;
+              const cardTitle = edge.node.fields.title;
+              const cardSummary = edge.node.body.summary;
+              return (
+                <div key={index}>
+                  <CardImage image={cardImage} alt={cardAlt} />
+                  <div>
+                    <Heading
+                      size='S'
+                      level={2}
+                      css={{
+                        marginBottom: SPACING['2XS']
+                      }}
+                    >
+                      {cardTitle}
+                      <span
+                        css={{
+                          color: 'var(--color-neutral-300)',
+                          display: 'block',
+                          marginTop: SPACING['3XS'],
+                          ...TYPOGRAPHY['3XS']
+                        }}
+                      >
+                        {cardSummary}
+                      </span>
+                    </Heading>
+                    {cardSummary}
+                  </div>
+                </div>
+              );
+            })}
+          </section>
         </TemplateContent>
       </Template>
     </TemplateLayout>
@@ -674,49 +727,92 @@ export const query = graphql`
     page: nodePage(fields: { slug: { eq: $slug } }) {
       ...pageFragment
     }
-    allNodeRoom {
+    rooms: allNodeRoom(
+      filter: {relationships: {field_design_template: {field_machine_name: {in: ["study_space"]}}}}
+    ) {
       edges {
         node {
-          ...roomFragment
+          title
+          fields {
+            slug
+            title
+            children
+            parents
+          }
+          drupal_internal__nid
+          body {
+            summary
+          }
           relationships {
+            field_design_template {
+              field_machine_name
+            }
+            field_media_image {
+              relationships {
+                field_media_image {
+                  localFile {
+                    childImageSharp {
+                      gatsbyImageData
+                    }
+                  }
+                }
+              }
+              field_media_image {
+                alt
+              }
+            }
             field_room_building {
-              ...buildingFragment
+              relationships {
+                field_building_campus {
+                  field_campus_official_name
+                }
+              }
             }
           }
         }
       }
     }
-    allNodeBuilding {
+    locations: allNodeLocation(
+      filter: {relationships: {field_design_template: {field_machine_name: {in: ["study_space"]}}}}
+    ) {
       edges {
         node {
-          ...buildingFragment
-          relationships{
-            field_building_campus {
-              field_campus_official_name
-            }
+          title
+          fields {
+            slug
+            title
+            children
+            parents
           }
-        }
-      }
-    }
-    allNodeLocation {
-      edges {
-        node {
+          drupal_internal__nid
+          body {
+            summary
+          }
           relationships {
+            field_design_template {
+              field_machine_name
+            }
             field_parent_location {
-              ...buildingFragment
+              relationships {
+                field_building_campus {
+                  field_campus_official_name
+                }
+              }
+            }
+            field_media_image {
+              field_media_image {
+                alt
+              }
             }
           }
+          field_space_features
+          field_noise_level
         }
       }
     }
   }
 `;
 
-export const FindStudySpaceResults = () => {
-  return (
-    <div>
-      <Heading size='L' level={2}>Results</Heading>
-      <p>Results will appear here...</p>
-    </div>
-  );
+const FindStudySpaceResults = ({ allStudySpaces }) => {
+  console.log(allStudySpaces);
 };
