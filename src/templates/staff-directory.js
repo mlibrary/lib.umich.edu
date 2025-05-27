@@ -627,7 +627,6 @@ const StaffDirectoryResults = ({
                 css={{
                   borderTop: borderStyle
                 }}
-                scope='row'
               >
                 <td
                   css={{
