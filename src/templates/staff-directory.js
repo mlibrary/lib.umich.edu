@@ -145,7 +145,7 @@ const StaffDirectoryQueryContainer = ({
       replace: true,
       state: { preserveScroll: true }
     });
-  }, [stateString]);
+  }, [stateString, staffDirectoryNavigate]);
 
   useEffect(() => {
     if (!window.__SDI__) {
@@ -196,7 +196,7 @@ const StaffDirectoryQueryContainer = ({
     } catch {
       // Intentionally left blank
     }
-  }, [query, activeFilters]);
+  }, [query, activeFilters, staff]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;

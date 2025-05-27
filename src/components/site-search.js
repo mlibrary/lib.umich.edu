@@ -82,7 +82,7 @@ export default function SiteSearch ({ label }) {
         console.warn('Site search error', catchError);
       }
     }
-  }, [query]);
+  }, [query, openResults]);
 
   const handleKeydown = (event) => {
     if (event.keyCode === 27) {
