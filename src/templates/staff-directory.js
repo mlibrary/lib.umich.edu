@@ -637,7 +637,7 @@ const StaffDirectoryResults = ({
                 >
                   <StaffPhoto mid={imageMid} staffImages={staffImages} />
                 </td>
-                <td colSpan='3'>
+                <th scope='row' colSpan='3'>
                   <PlainLink
                     css={{
                       ':hover': {
@@ -651,7 +651,7 @@ const StaffDirectoryResults = ({
                     {name}
                   </PlainLink>
                   <span css={{ display: 'block' }}>{title}</span>
-                </td>
+                </th>
                 <td
                   colSpan='2'
                   css={{
