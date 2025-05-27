@@ -120,7 +120,7 @@ export default function EventsAndExhibitsPanel () {
 
       setExhibits(getExhibits);
     }
-  }, [events]);
+  }, [data.events.edges, events, exhibits, todaysEvents, upcomingEvents]);
 
   return (
     <div

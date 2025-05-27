@@ -102,7 +102,8 @@ const components = {
     return null;
   },
   img: (props) => {
-    return <img {...props} />;
+    const { alt = '', ...rest } = props;
+    return <img alt={alt} {...rest} />;
   },
   lede: ({ children, ...other }) => {
     return <Text lede {...other}>{children}</Text>;

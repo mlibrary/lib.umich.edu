@@ -220,7 +220,7 @@ const SpecialistsURLState = () => {
      */
     const to = stateString.length > 0 ? `?${stateString}` : location.pathname;
     navigate(to, { replace: true, state: { preserveScroll: true } });
-  }, [stateString]);
+  }, [stateString, location.pathname]);
 
   return null;
 };
@@ -275,7 +275,7 @@ const SpecialistsSearchIndex = () => {
     } catch {
       // No action needed; intentionally empty block
     }
-  }, [query]);
+  }, [query, dispatch, specialists]);
 
   return null;
 };
