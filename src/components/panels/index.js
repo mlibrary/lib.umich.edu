@@ -90,9 +90,11 @@ const PanelList = ({ children, twoColumns, disableLargeScreenStyles = false, ...
     },
     '> li': {
       breakInside: 'avoid',
-      display: 'inline-block',
-      marginTop: 0,
-      paddingTop: SPACING.XL
+      marginBottom: 0,
+      marginTop: SPACING.XL
+    },
+    '> li:first-of-type': {
+      marginTop: 0
     }
   };
 
@@ -303,7 +305,7 @@ const CardPanel = ({ data }) => {
   }
 
   return (
-    <PanelTemplate title={title} headingCss={{ marginBottom: 0 }}>
+    <PanelTemplate title={title}>
       <PanelList twoColumns={noImage}>
         {cards.map((card, item) => {
           return (
@@ -486,7 +488,7 @@ const TextPanel = ({ data }) => {
 
   if (template === 'grid_text_template_with_linked_title') {
     return (
-      <PanelTemplate title={title} headingCss={{ marginBottom: 0 }}>
+      <PanelTemplate title={title}>
         <PanelList twoColumns>
           {cards.map(({ field_title: fieldTitle, field_body: fieldBody, field_link: fieldLink }, item) => {
             return (
