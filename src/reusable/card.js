@@ -61,7 +61,6 @@ export default function Card ({
 
     const styles = {
       color: 'var(--color-neutral-300)',
-      display: 'inline-block',
       marginTop: SPACING.XS
     };
 
