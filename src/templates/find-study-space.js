@@ -1,4 +1,4 @@
-import { Heading, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
+import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
 import CardImage from '../reusable/card-image';
 import Card from '../components/Card';
 import Breadcrumb from '../components/breadcrumb';
@@ -54,7 +54,6 @@ const getCampusAndBuilding = (edge) => {
   return { campus, building };
 };
 
-// CheckboxGroup component for parent/child and single-level checkboxes
 const CheckboxGroup = ({
   label,
   options,
@@ -64,18 +63,41 @@ const CheckboxGroup = ({
   childrenKey = 'buildings',
   isNested = false
 }) => {
+  const getParentState = (parent) => {
+    const children = parent[childrenKey];
+    const checkedChildren = children.filter(
+      (child) => {
+        return selected[`${parent.campus}:${child}`];
+      }
+    ).length;
+    if (checkedChildren === 0) {
+      return 'unchecked';
+    }
+    if (checkedChildren === children.length) {
+      return 'checked';
+    }
+    return 'mixed';
+  };
+
   return (
     <div>
       {isNested
         ? options.map((parent) => {
+            const parentState = getParentState(parent);
             return (
               <div key={parent.campus} style={{ marginBottom: 8 }}>
                 <label>
                   <input
                     type='checkbox'
-                    checked={selected[parent.campus] || false}
+                    checked={parentState === 'checked'}
+                    ref={(el) => {
+                      if (el) {
+                        el.indeterminate = parentState === 'mixed';
+                      }
+                    }}
                     onChange={() => {
-                      return onChange(parent.campus, null);
+                      const shouldCheck = parentState !== 'checked';
+                      onChange(parent.campus, null, shouldCheck);
                     }}
                   />
                   {parent.campus}
@@ -88,7 +110,7 @@ const CheckboxGroup = ({
                           type='checkbox'
                           checked={selected[`${parent.campus}:${child}`] || false}
                           onChange={() => {
-                            return onChange(parent.campus, child);
+                            onChange(parent.campus, child);
                           }}
                         />
                         {child}
@@ -106,7 +128,7 @@ const CheckboxGroup = ({
                   type='checkbox'
                   checked={selected[option] || false}
                   onChange={() => {
-                    return onChange(option);
+                    onChange(option);
                   }}
                 />
                 {option}
@@ -141,7 +163,6 @@ const FindStudySpaceTemplate = ({ data }) => {
 
   const { field_title_context: fieldTitleContext, body, fields } = node;
 
-  // Build nested campus/building structure
   const campusBuildingMap = {};
   allStudySpaces.forEach((edge) => {
     const { campus, building } = getCampusAndBuilding(edge);
@@ -165,22 +186,34 @@ const FindStudySpaceTemplate = ({ data }) => {
     new Set(allStudySpaces.map(getSpaceFeatures).filter(Boolean))
   );
 
-  // --- Checkbox state ---
   const [bookableOnly, setBookableOnly] = useState(false);
+  const [show, setShow] = useState(6);
   const [selectedCampuses, setSelectedCampuses] = useState({});
   const [selectedFeatures, setSelectedFeatures] = useState({});
 
-  // Handlers for checkboxes
   const handleBookableChange = () => {
     return setBookableOnly((b) => {
       return !b;
     });
   };
 
-  const handleCampusChange = (campus, building) => {
+  const handleCampusChange = (campus, building, setAll = null) => {
     setSelectedCampuses((prev) => {
-      const key = building ? `${campus}:${building}` : campus;
-      return { ...prev, [key]: !prev[key] };
+      const updated = { ...prev };
+      const campusObj = campusesWithBuildings.find((c) => {
+        return c.campus === campus;
+      });
+
+      if (building === null) {
+        campusObj.buildings.forEach((b) => {
+          updated[`${campus}:${b}`] = setAll;
+        });
+      } else {
+        const key = `${campus}:${building}`;
+        updated[key] = !prev[key];
+      }
+
+      return updated;
     });
   };
 
@@ -193,14 +226,11 @@ const FindStudySpaceTemplate = ({ data }) => {
     });
   };
 
-  // --- Filtering logic ---
   const filteredStudySpaces = allStudySpaces.filter((edge) => {
-    // Bookable filter (example: assumes edge.node.field_is_bookable is boolean)
     if (bookableOnly && !edge.node.field_is_bookable) {
       return false;
     }
 
-    // Campus/building filter
     if (Object.values(selectedCampuses).some(Boolean)) {
       const { campus, building } = getCampusAndBuilding(edge);
       const campusChecked = selectedCampuses[campus];
@@ -210,7 +240,6 @@ const FindStudySpaceTemplate = ({ data }) => {
       }
     }
 
-    // Features filter
     if (Object.values(selectedFeatures).some(Boolean)) {
       const features = getSpaceFeatures(edge);
       const hasFeature = Object.entries(selectedFeatures).some(
@@ -225,6 +254,46 @@ const FindStudySpaceTemplate = ({ data }) => {
 
     return true;
   });
+
+  let resultsSummary = null;
+  let showMoreOrLessButton = null;
+
+  if (filteredStudySpaces.length > 0) {
+    if (filteredStudySpaces.length > 6) {
+      resultsSummary = (
+        <p>
+          Showing {Math.min(show, filteredStudySpaces.length)} of {filteredStudySpaces.length}
+        </p>
+      );
+    } else {
+      resultsSummary = (
+        <p>
+          Showing {filteredStudySpaces.length} result{filteredStudySpaces.length > 1 ? 's' : ''}
+        </p>
+      );
+    }
+  }
+
+  if (filteredStudySpaces.length > 6) {
+    const showMore = () => {
+      return setShow(filteredStudySpaces.length);
+    };
+    const showLess = () => {
+      return setShow(6);
+    };
+
+    showMoreOrLessButton = (
+      <>
+        {show < filteredStudySpaces.length
+          ? (
+              <Button onClick={showMore}>Show all</Button>
+            )
+          : (
+              <Button onClick={showLess}>Show less</Button>
+            )}
+      </>
+    );
+  }
 
   return (
     <TemplateLayout node={node}>
@@ -259,7 +328,6 @@ const FindStudySpaceTemplate = ({ data }) => {
           >
             FILTER BY
           </div>
-          {/* Bookable spaces */}
           <div
             css={{
               display: 'flex',
@@ -292,7 +360,6 @@ const FindStudySpaceTemplate = ({ data }) => {
               Bookable spaces only
             </label>
           </div>
-          {/* Campus/Building nested checkboxes */}
           <Collapsible title='Locations'>
             <CheckboxGroup
               options={campusesWithBuildings}
@@ -311,7 +378,6 @@ const FindStudySpaceTemplate = ({ data }) => {
               padding: 0
             }}
           />
-          {/* Features checkboxes */}
           <Collapsible title='Features'>
             <CheckboxGroup
               options={allSpaceFeaturesList}
@@ -327,7 +393,7 @@ const FindStudySpaceTemplate = ({ data }) => {
             marginRight: '0 !important'
           }}
         >
-          <p>showing {filteredStudySpaces.length} of {allStudySpaces.length}</p>
+          {resultsSummary}
           <ol
             css={{
               [MEDIA_QUERIES.S]: {
@@ -337,7 +403,7 @@ const FindStudySpaceTemplate = ({ data }) => {
               }
             }}
           >
-            {filteredStudySpaces.map((edge, index) => {
+            {filteredStudySpaces.slice(0, show).map((edge, index) => {
               const cardImage = edge.node.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
               const cardAlt = edge.node.relationships?.field_media_image?.field_media_image?.alt;
               const cardTitle = edge.node.title;
@@ -371,6 +437,8 @@ const FindStudySpaceTemplate = ({ data }) => {
               );
             })}
           </ol>
+          {resultsSummary}
+          {showMoreOrLessButton}
         </TemplateContent>
       </Template>
     </TemplateLayout>
