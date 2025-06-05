@@ -8,7 +8,7 @@ const StyledSvg = styled.svg`
   }}
 `;
 
-const DotsSvg = ({ width = '100%', height = 'auto' }) => {
+const DotsSvg = ({ width = '100%', height = '100%' }) => {
   return (
     <StyledSvg
       xmlns='http://www.w3.org/2000/svg'

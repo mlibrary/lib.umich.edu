@@ -71,7 +71,7 @@ export default function UserCard ({ name, to, image, title, phone, email }) {
 
 UserCard.propTypes = {
   email: PropTypes.string,
-  image: PropTypes.string,
+  image: PropTypes.object,
   name: PropTypes.string,
   phone: PropTypes.string,
   title: PropTypes.string,
