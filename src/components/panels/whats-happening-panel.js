@@ -74,7 +74,7 @@ export default function WhatsHappening () {
       // Only keep 3
       setEvents(sortedEvents.slice(0, 3));
     }
-  }, [events]);
+  }, [events, data.otherEvents.nodes, data.priorityEvents.nodes]);
 
   // Make sure there are events to render.
   if (!events || events.length === 0) {
