@@ -1,33 +1,15 @@
 import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
-import CardImage from '../reusable/card-image';
-import Card from '../components/Card';
+import React, { useState } from 'react';
+import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
+import Card from '../components/Card';
+import Checkbox from '../components/checkbox';
 import Collapsible from '../components/collapsible';
 import { graphql } from 'gatsby';
 import Html from '../components/html';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
-import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
-import transformNodePanels from '../utils/transform-node-panels';
-import { PanelList } from '../components/panels';
-
-const getCampusOfficialName = (edge) => {
-  if (edge.node.__typename === 'node__location') {
-    return (
-      edge.node.relationships?.field_parent_location?.relationships?.field_building_campus
-        ?.field_campus_official_name || ''
-    );
-  }
-  if (edge.node.__typename === 'node__room') {
-    return (
-      edge.node.relationships?.field_room_building?.relationships?.field_building_campus
-        ?.field_campus_official_name || ''
-    );
-  }
-  return '';
-};
 
 const getBuildingName = (edge) => {
   return (
@@ -38,7 +20,7 @@ const getBuildingName = (edge) => {
 };
 
 const getSpaceFeatures = (edge) => {
-  return edge.node.field_space_features?.processed || '';
+  return edge.node.field_space_features || '';
 };
 
 const getCampusAndBuilding = (edge) => {
@@ -51,15 +33,17 @@ const getCampusAndBuilding = (edge) => {
     campus = edge.node.relationships?.field_room_building?.relationships?.field_building_campus?.field_campus_official_name || '';
     building = edge.node.relationships?.field_room_building?.title || '';
   }
-  return { campus, building };
+  return { building, campus };
+};
+
+const getNoiseLevel = (edge) => {
+  return edge.node.field_noise_level || '';
 };
 
 const CheckboxGroup = ({
-  label,
   options,
   selected,
   onChange,
-  parentKey = '',
   childrenKey = 'buildings',
   isNested = false
 }) => {
@@ -84,37 +68,33 @@ const CheckboxGroup = ({
       {isNested
         ? options.map((parent) => {
             const parentState = getParentState(parent);
+            const parentId = `parent-${parent.campus}`;
             return (
-              <div key={parent.campus} style={{ marginBottom: 8 }}>
-                <label>
-                  <input
-                    type='checkbox'
-                    checked={parentState === 'checked'}
-                    ref={(el) => {
-                      if (el) {
-                        el.indeterminate = parentState === 'mixed';
-                      }
-                    }}
-                    onChange={() => {
-                      const shouldCheck = parentState !== 'checked';
-                      onChange(parent.campus, null, shouldCheck);
-                    }}
-                  />
-                  {parent.campus}
-                </label>
-                <div style={{ marginLeft: 24 }}>
+              <div key={parent.campus} css={{ marginBottom: SPACING.M }}>
+                <Checkbox
+                  id={parentId}
+                  checked={parentState === 'checked'}
+                  indeterminate={parentState === 'mixed'}
+                  onChange={() => {
+                    const shouldCheck = parentState !== 'checked';
+                    onChange(parent.campus, null, shouldCheck);
+                  }}
+                  label={parent.campus}
+                  isParent={true}
+                />
+                <div css={{ marginLeft: SPACING.L }}>
                   {parent[childrenKey].map((child) => {
+                    const childId = `child-${parent.campus}-${child}`;
                     return (
-                      <label key={child} style={{ display: 'block' }}>
-                        <input
-                          type='checkbox'
-                          checked={selected[`${parent.campus}:${child}`] || false}
-                          onChange={() => {
-                            onChange(parent.campus, child);
-                          }}
-                        />
-                        {child}
-                      </label>
+                      <Checkbox
+                        key={child}
+                        id={childId}
+                        checked={selected[`${parent.campus}:${child}`] || false}
+                        onChange={() => {
+                          onChange(parent.campus, child);
+                        }}
+                        label={child}
+                      />
                     );
                   })}
                 </div>
@@ -122,17 +102,18 @@ const CheckboxGroup = ({
             );
           })
         : options.map((option) => {
+            const optionId = `option-${option}`;
             return (
-              <label key={option} style={{ display: 'block' }}>
-                <input
-                  type='checkbox'
-                  checked={selected[option] || false}
-                  onChange={() => {
-                    onChange(option);
-                  }}
-                />
-                {option}
-              </label>
+              <Checkbox
+                key={option}
+                id={optionId}
+                checked={selected[option] || false}
+                onChange={() => {
+                  onChange(option);
+                }}
+                style={{ fontWeight: 'bold' }}
+                label={option}
+              />
             );
           })}
     </div>
@@ -142,9 +123,9 @@ const CheckboxGroup = ({
 const FindStudySpaceTemplate = ({ data }) => {
   const allStudySpaces = data.locations.edges.concat(data.rooms.edges);
 
-  allStudySpaces.sort((a, b) => {
-    const titleA = a.node.title.toLowerCase();
-    const titleB = b.node.title.toLowerCase();
+  allStudySpaces.sort((left, right) => {
+    const titleA = left.node.title.toLowerCase();
+    const titleB = right.node.title.toLowerCase();
     if (titleA < titleB) {
       return -1;
     }
@@ -173,40 +154,46 @@ const FindStudySpaceTemplate = ({ data }) => {
       campusBuildingMap[campus].add(building);
     }
   });
+
   const campusesWithBuildings = Object.entries(campusBuildingMap).map(
     ([campus, buildingsSet]) => {
       return {
-        campus,
-        buildings: Array.from(buildingsSet).sort()
+        buildings: Array.from(buildingsSet).sort(),
+        campus
       };
     }
   );
 
   const allSpaceFeaturesList = Array.from(
-    new Set(allStudySpaces.map(getSpaceFeatures).filter(Boolean))
+    new Set(allStudySpaces.flatMap(getSpaceFeatures).filter(Boolean))
+  );
+
+  const allNoiseLevels = Array.from(
+    new Set(allStudySpaces.map(getNoiseLevel).filter(Boolean))
   );
 
   const [bookableOnly, setBookableOnly] = useState(false);
   const [show, setShow] = useState(6);
   const [selectedCampuses, setSelectedCampuses] = useState({});
   const [selectedFeatures, setSelectedFeatures] = useState({});
+  const [selectedNoiseLevels, setSelectedNoiseLevels] = useState({});
 
   const handleBookableChange = () => {
-    return setBookableOnly((b) => {
-      return !b;
+    return setBookableOnly((isBookable) => {
+      return !isBookable;
     });
   };
 
   const handleCampusChange = (campus, building, setAll = null) => {
     setSelectedCampuses((prev) => {
       const updated = { ...prev };
-      const campusObj = campusesWithBuildings.find((c) => {
-        return c.campus === campus;
+      const campusObj = campusesWithBuildings.find((campusNode) => {
+        return campusNode.campus === campus;
       });
 
       if (building === null) {
-        campusObj.buildings.forEach((b) => {
-          updated[`${campus}:${b}`] = setAll;
+        campusObj.buildings.forEach((buildingNode) => {
+          updated[`${campus}:${buildingNode}`] = setAll;
         });
       } else {
         const key = `${campus}:${building}`;
@@ -222,6 +209,15 @@ const FindStudySpaceTemplate = ({ data }) => {
       return {
         ...prev,
         [feature]: !prev[feature]
+      };
+    });
+  };
+
+  const handleNoiseLevelChange = (level) => {
+    setSelectedNoiseLevels((prev) => {
+      return {
+        ...prev,
+        [level]: !prev[level]
       };
     });
   };
@@ -248,6 +244,13 @@ const FindStudySpaceTemplate = ({ data }) => {
         }
       );
       if (!hasFeature) {
+        return false;
+      }
+    }
+
+    if (Object.values(selectedNoiseLevels).some(Boolean)) {
+      const noiseLevel = getNoiseLevel(edge);
+      if (!selectedNoiseLevels[noiseLevel]) {
         return false;
       }
     }
@@ -330,8 +333,9 @@ const FindStudySpaceTemplate = ({ data }) => {
           </div>
           <div
             css={{
-              display: 'flex',
               alignItems: 'center',
+              display: 'flex',
+              flexFlow: 'row wrap',
               marginBottom: SPACING.M
             }}
           >
@@ -339,9 +343,9 @@ const FindStudySpaceTemplate = ({ data }) => {
               css={{
                 accentColor: 'var(--color-teal-400)',
                 height: '18px',
+                marginLeft: 0,
                 marginRight: '0.75rem',
-                width: '18px',
-                marginLeft: 0
+                width: '18px'
               }}
               type='checkbox'
               id='bookableSpacesOnly'
@@ -370,18 +374,26 @@ const FindStudySpaceTemplate = ({ data }) => {
           </Collapsible>
           <hr
             css={{
-              display: 'block',
-              height: '1px',
               border: 0,
               borderTop: '1px solid var(--color-neutral-100)',
+              display: 'block',
+              height: '1px',
               margin: '1em 0',
               padding: 0
             }}
           />
+          <Collapsible title='Noise Level'>
+            <CheckboxGroup
+              options={allNoiseLevels}
+              selected={selectedNoiseLevels}
+              onChange={handleNoiseLevelChange}
+              isNested={false}
+            />
+          </Collapsible>
           <Collapsible title='Features'>
             <CheckboxGroup
               options={allSpaceFeaturesList}
-              selected={selectedFeatures}
+              selected={setSelectedFeatures}
               onChange={handleFeatureChange}
               isNested={false}
             />
