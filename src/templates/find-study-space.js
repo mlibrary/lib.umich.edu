@@ -133,6 +133,7 @@ const FindStudySpaceTemplate = ({ data }) => {
   );
 
   const [bookableOnly, setBookableOnly] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const [show, setShow] = useState(6);
   const [selectedCampuses, setSelectedCampuses] = useState({});
   const [selectedFeatures, setSelectedFeatures] = useState({});
@@ -229,19 +230,28 @@ const FindStudySpaceTemplate = ({ data }) => {
     return true;
   });
 
+  // When filters change, if showAll is true, always show all results
+  useEffect(() => {
+    if (showAll) {
+      setShow(filteredStudySpaces.length);
+    } else {
+      setShow(6);
+    }
+  }, [filteredStudySpaces.length, showAll]);
+
   let resultsSummary = null;
   let showMoreOrLessButton = null;
 
   if (filteredStudySpaces.length > 0) {
     if (filteredStudySpaces.length > 6) {
       resultsSummary = (
-        <p>
-          Showing {Math.min(show, filteredStudySpaces.length)} of {filteredStudySpaces.length}
+        <p css={{ marginBottom: SPACING.M }}>
+          Showing {showAll ? filteredStudySpaces.length : Math.min(show, filteredStudySpaces.length)} of {filteredStudySpaces.length}
         </p>
       );
     } else {
       resultsSummary = (
-        <p>
+        <p css={{ marginBottom: SPACING.M }}>
           Showing {filteredStudySpaces.length} result{filteredStudySpaces.length > 1 ? 's' : ''}
         </p>
       );
@@ -250,15 +260,17 @@ const FindStudySpaceTemplate = ({ data }) => {
 
   if (filteredStudySpaces.length > 6) {
     const showMore = () => {
-      return setShow(filteredStudySpaces.length);
+      setShowAll(true);
+      setShow(filteredStudySpaces.length);
     };
     const showLess = () => {
-      return setShow(6);
+      setShowAll(false);
+      setShow(6);
     };
 
     showMoreOrLessButton = (
       <>
-        {show < filteredStudySpaces.length
+        {(!showAll && show < filteredStudySpaces.length)
           ? (
               <Button onClick={showMore}>Show all</Button>
             )
@@ -519,7 +531,7 @@ const FindStudySpaceTemplate = ({ data }) => {
                         }
                       }}
                     >
-                      {filteredStudySpaces.slice(0, show).map((edge) => {
+                      {filteredStudySpaces.slice(0, showAll ? filteredStudySpaces.length : show).map((edge, index) => {
                         const { slug } = edge.node.fields;
                         const cardImage = edge.node.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
                         const cardAlt = edge.node.relationships?.field_media_image?.field_media_image?.alt;
