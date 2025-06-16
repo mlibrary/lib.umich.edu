@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { SPACING } from '../reusable';
 
 const Checkbox = ({
@@ -55,6 +56,16 @@ const Checkbox = ({
       </label>
     </div>
   );
+};
+
+Checkbox.propTypes = {
+  checked: PropTypes.any,
+  id: PropTypes.any,
+  indeterminate: PropTypes.bool,
+  isParent: PropTypes.bool,
+  label: PropTypes.any,
+  onChange: PropTypes.any,
+  style: PropTypes.object
 };
 
 export default Checkbox;

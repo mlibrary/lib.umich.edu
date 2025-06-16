@@ -1,5 +1,6 @@
-import React from 'react';
 import Checkbox from './checkbox';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const CheckboxGroup = ({
   options,
@@ -91,6 +92,17 @@ const CheckboxGroup = ({
           })}
     </div>
   );
+};
+
+CheckboxGroup.propTypes = {
+  getChildKey: PropTypes.func,
+  getChildren: PropTypes.func,
+  getParentKey: PropTypes.func,
+  isNested: PropTypes.bool,
+  labelRenderer: PropTypes.func,
+  onChange: PropTypes.func,
+  options: PropTypes.array,
+  selected: PropTypes.any
 };
 
 export default CheckboxGroup;

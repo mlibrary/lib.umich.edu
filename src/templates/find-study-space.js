@@ -44,39 +44,38 @@ const getNoiseLevel = (edge) => {
 
 const Badge = ({ label, onDismiss }) => {
   return (
-    <span
-      style={{
-        display: 'inline-flex',
+    <button
+      css={{
+        '&:active': {
+          background: 'var(--color-teal-400)',
+          color: 'white',
+          border: 'solid 2px var(--color-teal-400)'
+        },
+        '&:hover': {
+          border: 'solid 2px var(--color-teal-400)'
+        },
+        display: 'flex',
+        cursor: 'pointer',
         alignItems: 'center',
+        gap: '2px',
         background: 'var(--color-teal-100)',
-        color: 'var(--color-teal-700)',
-        borderRadius: '1em',
-        padding: '0.25em 0.75em',
+        color: 'var(--color-neutral-400)',
+        border: '2px solid var(--color-teal-200)',
+        borderRadius: '1rem',
+        padding: '0.25rem 0.75rem',
         marginRight: 8,
         marginBottom: 8,
-        fontSize: '0.95em',
+        fontSize: '0.9rem',
         fontWeight: 500
       }}
+      onClick={onDismiss}
     >
       {label}
-      <button
-        onClick={onDismiss}
-        style={{
-          background: 'none',
-          border: 'none',
-          color: 'inherit',
-          marginLeft: 6,
-          cursor: 'pointer',
-          fontWeight: 'bold',
-          fontSize: '1em',
-          lineHeight: 1
-        }}
-        aria-label={`Remove filter ${label}`}
-        type='button'
-      >
-        ×
-      </button>
-    </span>
+      <svg role='img' aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='#212B36'>
+        <path d='M0 0h24v24H0z' fill='none'></path>
+        <path d='M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z'></path>
+      </svg>
+    </button>
   );
 };
 
@@ -165,7 +164,6 @@ const FindStudySpaceTemplate = ({ data }) => {
   };
 
   const handleFeatureChange = (feature) => {
-    console.log('hi');
     setSelectedFeatures((prev) => {
       return {
         ...prev,
@@ -206,14 +204,18 @@ const FindStudySpaceTemplate = ({ data }) => {
 
     if (Object.values(selectedFeatures).some(Boolean)) {
       const features = getSpaceFeatures(edge);
-      const hasFeature = Object.entries(selectedFeatures).some(
-        ([feature, checked]) => {
-          return checked && features.includes(feature);
+      if (Object.values(selectedFeatures).some(Boolean)) {
+        const hasSelectedFeature = Object.entries(selectedFeatures).some(
+          ([feature, checked]) => {
+            return checked && features.includes(feature);
+          }
+        );
+        if (!hasSelectedFeature) {
+          return false;
         }
-      );
-      if (!hasFeature) {
-        return false;
       }
+
+      return true;
     }
 
     if (Object.values(selectedNoiseLevels).some(Boolean)) {
@@ -459,7 +461,7 @@ const FindStudySpaceTemplate = ({ data }) => {
           <Collapsible title='Features'>
             <CheckboxGroup
               options={allSpaceFeaturesList}
-              selected={setSelectedFeatures}
+              selected={selectedFeatures}
               onChange={handleFeatureChange}
               isNested={false}
               labelRenderer={(val) => {
@@ -476,11 +478,13 @@ const FindStudySpaceTemplate = ({ data }) => {
         >
           {activeBadges.length > 0 && (
             <div style={{ marginBottom: 16 }}>
-              {activeBadges.map((badge) => {
-                return (
-                  <Badge key={badge.key} label={badge.label} onDismiss={badge.onDismiss} />
-                );
-              })}
+              <div css={{ display: 'flex', gap: '2rem' }}>
+                {activeBadges.map((badge) => {
+                  return (
+                    <Badge key={badge.key} label={badge.label} onDismiss={badge.onDismiss} />
+                  );
+                })}
+              </div>
               <button
                 type='button'
                 onClick={clearAllFilters}
