@@ -1,5 +1,5 @@
 import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
-import { graphql, Link, useStaticQuery } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import React, { useCallback, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
@@ -10,8 +10,8 @@ import { GatsbyImage } from 'gatsby-plugin-image';
 import Html from '../components/html';
 import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
-import TemplateLayout from './template-layout';
 import { sentenceCase } from 'change-case';
+import TemplateLayout from './template-layout';
 
 const getBuildingName = (edge) => {
   return (
