@@ -11,7 +11,7 @@ import Html from '../components/html';
 import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
-import NoResults from '../components/no-results';
+import { sentenceCase } from 'change-case';
 
 const getBuildingName = (edge) => {
   return (
@@ -42,7 +42,7 @@ const getNoiseLevel = (edge) => {
   return edge.node.field_noise_level || '';
 };
 
-const Badge = ({ label, onDismiss }) => {
+const Tag = ({ label, onDismiss }) => {
   return (
     <button
       css={{
@@ -268,11 +268,11 @@ const FindStudySpaceTemplate = ({ data }) => {
     );
   }
 
-  const getActiveBadges = useCallback(() => {
-    const badges = [];
+  const getActiveFilterTags = useCallback(() => {
+    const tags = [];
 
     if (bookableOnly) {
-      badges.push({
+      tags.push({
         key: 'bookableOnly',
         label: 'Bookable spaces only',
         onDismiss: () => {
@@ -285,7 +285,7 @@ const FindStudySpaceTemplate = ({ data }) => {
       if (checked) {
         const [campus, building] = key.split(':');
         if (building) {
-          badges.push({
+          tags.push({
             key: `building-${key}`,
             label: `${building} (${campus})`,
             onDismiss: () => {
@@ -295,7 +295,7 @@ const FindStudySpaceTemplate = ({ data }) => {
             }
           });
         } else {
-          badges.push({
+          tags.push({
             key: `campus-${key}`,
             label: campus,
             onDismiss: () => {
@@ -310,7 +310,7 @@ const FindStudySpaceTemplate = ({ data }) => {
 
     Object.entries(selectedFeatures).forEach(([feature, checked]) => {
       if (checked) {
-        badges.push({
+        tags.push({
           key: `feature-${feature}`,
           label: feature,
           onDismiss: () => {
@@ -324,7 +324,7 @@ const FindStudySpaceTemplate = ({ data }) => {
 
     Object.entries(selectedNoiseLevels).forEach(([level, checked]) => {
       if (checked) {
-        badges.push({
+        tags.push({
           key: `noise-${level}`,
           label: level,
           onDismiss: () => {
@@ -336,10 +336,10 @@ const FindStudySpaceTemplate = ({ data }) => {
       }
     });
 
-    return badges;
+    return tags;
   }, [bookableOnly, selectedCampuses, selectedFeatures, selectedNoiseLevels]);
 
-  const activeBadges = getActiveBadges();
+  const activeFilterTags = getActiveFilterTags();
 
   return (
     <TemplateLayout node={node}>
@@ -443,9 +443,7 @@ const FindStudySpaceTemplate = ({ data }) => {
               selected={selectedNoiseLevels}
               onChange={handleNoiseLevelChange}
               isNested={false}
-              labelRenderer={(val) => {
-                return val;
-              }}
+              labelRenderer={sentenceCase}
             />
           </Collapsible>
           <hr
@@ -464,9 +462,7 @@ const FindStudySpaceTemplate = ({ data }) => {
               selected={selectedFeatures}
               onChange={handleFeatureChange}
               isNested={false}
-              labelRenderer={(val) => {
-                return val;
-              }}
+              labelRenderer={sentenceCase}
             />
           </Collapsible>
         </TemplateSide>
@@ -476,12 +472,12 @@ const FindStudySpaceTemplate = ({ data }) => {
             marginRight: '0 !important'
           }}
         >
-          {activeBadges.length > 0 && (
-            <div style={{ marginBottom: 16 }}>
-              <div css={{ display: 'flex', gap: '2rem' }}>
-                {activeBadges.map((badge) => {
+          {activeFilterTags.length > 0 && (
+            <div style={{ marginBottom: SPACING.L }}>
+              <div css={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
+                {activeFilterTags.map((tag) => {
                   return (
-                    <Badge key={badge.key} label={badge.label} onDismiss={badge.onDismiss} />
+                    <Tag key={tag.key} label={sentenceCase(tag.label)} onDismiss={tag.onDismiss} />
                   );
                 })}
               </div>
@@ -490,14 +486,11 @@ const FindStudySpaceTemplate = ({ data }) => {
                 onClick={clearAllFilters}
                 style={{
                   background: 'none',
-                  display: 'block',
                   border: 'none',
-                  color: 'var(--color-teal-700)',
-                  marginLeft: 8,
+                  color: 'var(--color-neutral-300)',
                   cursor: 'pointer',
-                  textDecoration: 'underline',
-                  fontSize: '1em',
-                  fontWeight: 500
+                  display: 'block',
+                  textDecoration: 'underline'
                 }}
               >
                 Clear all active filters
@@ -510,7 +503,6 @@ const FindStudySpaceTemplate = ({ data }) => {
                   image={data.fassNoResults.childImageSharp.gatsbyImageData}
                   alt='No study spaces found'
                 >
-
                 </NoFassResults>
               )
             : (
