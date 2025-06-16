@@ -1,6 +1,6 @@
 import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
 import { graphql, Link } from 'gatsby';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/Card';
@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
 import { sentenceCase } from 'change-case';
 import TemplateLayout from './template-layout';
+import { AnimatePresence, motion } from 'motion/react';
 
 const getBuildingName = (edge) => {
   return (
@@ -341,6 +342,87 @@ const FindStudySpaceTemplate = ({ data }) => {
 
   const activeFilterTags = getActiveFilterTags();
 
+  // --- AnimatePresence-like state ---
+  const [renderedCards, setRenderedCards] = useState([]);
+  const prevFilteredSlugs = useRef([]);
+
+  // Get the filtered slugs for the current filter
+  const filteredSlugs = filteredStudySpaces.slice(0, show).map((edge) => {
+    return edge.node.fields.slug;
+  });
+
+  // Update renderedCards on filter change
+  useEffect(() => {
+    setRenderedCards((prev) => {
+      // Cards to keep (present or entering)
+      const keep = [];
+      // Cards to add (newly filtered in)
+      const toAdd = [];
+      // Cards to exit (filtered out)
+      const toExit = [];
+
+      // Build a map for quick lookup
+      const prevMap = new Map(prev.map((card) => {
+        return [card.slug, card];
+      }));
+
+      // Find cards to keep or add
+      filteredSlugs.forEach((slug) => {
+        if (prevMap.has(slug)) {
+          // If was exiting, bring back as entering
+          const prevCard = prevMap.get(slug);
+          if (prevCard.status === 'exiting') {
+            toAdd.push({ slug, status: 'entering' });
+          } else {
+            keep.push(prevCard);
+          }
+        } else {
+          toAdd.push({ slug, status: 'entering' });
+        }
+      });
+
+      // Find cards to exit
+      prev.forEach((card) => {
+        if (!filteredSlugs.includes(card.slug) && card.status !== 'exiting') {
+          toExit.push({ ...card, status: 'exiting' });
+        }
+      });
+
+      return [
+        ...keep,
+        ...toAdd,
+        ...toExit
+      ];
+    });
+    prevFilteredSlugs.current = filteredSlugs;
+  }, [filteredSlugs.join(',')]);
+
+  // Handle animation end
+  const handleAnimationEnd = (slug, status) => {
+    setRenderedCards((prev) => {
+      return prev
+        .map((card) => {
+          if (card.slug === slug) {
+            if (status === 'entering') {
+              return { ...card, status: 'present' };
+            }
+            if (status === 'exiting') {
+              return null;
+            }
+          }
+          return card;
+        })
+        .filter(Boolean);
+    }
+    );
+  };
+
+  // Helper to get edge by slug
+  const edgeBySlug = {};
+  allStudySpaces.forEach((edge) => {
+    edgeBySlug[edge.node.fields.slug] = edge;
+  });
+
   return (
     <TemplateLayout node={node}>
       <Margins css={{ marginBottom: SPACING['2XL'] }}>
@@ -472,15 +554,15 @@ const FindStudySpaceTemplate = ({ data }) => {
             marginRight: '0 !important'
           }}
         >
-          {activeFilterTags.length > 0 && (
-            <div style={{ marginBottom: SPACING.L }}>
-              <div css={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
-                {activeFilterTags.map((tag) => {
-                  return (
-                    <Tag key={tag.key} label={sentenceCase(tag.label)} onDismiss={tag.onDismiss} />
-                  );
-                })}
-              </div>
+          <div style={{ marginBottom: SPACING.L }}>
+            <div css={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
+              {activeFilterTags.map((tag) => {
+                return (
+                  <Tag key={tag.key} label={sentenceCase(tag.label)} onDismiss={tag.onDismiss} />
+                );
+              })}
+            </div>
+            {activeFilterTags.length > 0 && (
               <button
                 type='button'
                 onClick={clearAllFilters}
@@ -495,8 +577,8 @@ const FindStudySpaceTemplate = ({ data }) => {
               >
                 Clear all active filters
               </button>
-            </div>
-          )}
+            )}
+          </div>
           {filteredStudySpaces.length === 0
             ? (
                 <NoFassResults
@@ -507,50 +589,59 @@ const FindStudySpaceTemplate = ({ data }) => {
               )
             : (
                 <>
-                  { resultsSummary }
-                  <ol
-                    css={{
-                      [MEDIA_QUERIES.S]: {
-                        display: 'grid',
-                        gridGap: `${SPACING.XL} ${SPACING.M}`,
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
-                      }
-                    }}
-                  >
-                    {filteredStudySpaces.slice(0, show).map((edge, index) => {
-                      const cardImage = edge.node.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
-                      const cardAlt = edge.node.relationships?.field_media_image?.field_media_image?.alt;
-                      const cardTitle = edge.node.title;
-                      const cardSummary = edge.node.body.summary;
-                      const buildingName = getBuildingName(edge);
-                      return (
-                        <li key={index}>
-                          <Card image={cardImage} alt={cardAlt} href={edge.node.fields.slug}>
-                            <span
-                              css={{
-                                color: 'var(--color-neutral-300)',
-                                display: 'block',
-                                marginTop: SPACING['3XS'],
-                                ...TYPOGRAPHY['3XS']
-                              }}
-                            >
-                              {buildingName}
-                            </span>
-                            <Heading
-                              size='S'
-                              level={2}
-                              css={{
-                                marginBottom: SPACING['2XS']
-                              }}
-                            >
-                              {cardTitle}
-                            </Heading>
-                            {cardSummary}
-                          </Card>
-                        </li>
-                      );
-                    })}
-                  </ol>
+                  <AnimatePresence>
+                    {resultsSummary}
+                    <ol
+                      css={{
+                        [MEDIA_QUERIES.S]: {
+                          display: 'grid',
+                          gridGap: `${SPACING.XL} ${SPACING.M}`,
+                          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
+                        }
+                      }}
+                    >
+                      {filteredStudySpaces.slice(0, show).map((edge) => {
+                        const { slug } = edge.node.fields;
+                        const cardImage = edge.node.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
+                        const cardAlt = edge.node.relationships?.field_media_image?.field_media_image?.alt;
+                        const cardTitle = edge.node.title;
+                        const cardSummary = edge.node.body.summary;
+                        const buildingName = getBuildingName(edge);
+                        return (
+                          <motion.li
+                            key={slug}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                          >
+                            <Card image={cardImage} alt={cardAlt} href={slug}>
+                              <span
+                                css={{
+                                  color: 'var(--color-neutral-300)',
+                                  display: 'block',
+                                  marginTop: SPACING['3XS'],
+                                  ...TYPOGRAPHY['3XS']
+                                }}
+                              >
+                                {buildingName}
+                              </span>
+                              <Heading
+                                size='S'
+                                level={2}
+                                css={{
+                                  marginBottom: SPACING['2XS']
+                                }}
+                              >
+                                {cardTitle}
+                              </Heading>
+                              {cardSummary}
+                            </Card>
+                          </motion.li>
+                        );
+                      })}
+                    </ol>
+                  </AnimatePresence>
                   {showMoreOrLessButton}
                 </>
               )}
