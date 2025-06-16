@@ -4,6 +4,7 @@ import { Template, TemplateContent, TemplateSide } from '../components/aside-lay
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/Card';
 import Checkbox from '../components/checkbox';
+import CheckboxGroup from '../components/checkbox-group';
 import Collapsible from '../components/collapsible';
 import { graphql } from 'gatsby';
 import Html from '../components/html';
@@ -38,86 +39,6 @@ const getCampusAndBuilding = (edge) => {
 
 const getNoiseLevel = (edge) => {
   return edge.node.field_noise_level || '';
-};
-
-const CheckboxGroup = ({
-  options,
-  selected,
-  onChange,
-  childrenKey = 'buildings',
-  isNested = false
-}) => {
-  const getParentState = (parent) => {
-    const children = parent[childrenKey];
-    const checkedChildren = children.filter(
-      (child) => {
-        return selected[`${parent.campus}:${child}`];
-      }
-    ).length;
-    if (checkedChildren === 0) {
-      return 'unchecked';
-    }
-    if (checkedChildren === children.length) {
-      return 'checked';
-    }
-    return 'mixed';
-  };
-
-  return (
-    <div>
-      {isNested
-        ? options.map((parent) => {
-            const parentState = getParentState(parent);
-            const parentId = `parent-${parent.campus}`;
-            return (
-              <div key={parent.campus} css={{ marginBottom: SPACING.M }}>
-                <Checkbox
-                  id={parentId}
-                  checked={parentState === 'checked'}
-                  indeterminate={parentState === 'mixed'}
-                  onChange={() => {
-                    const shouldCheck = parentState !== 'checked';
-                    onChange(parent.campus, null, shouldCheck);
-                  }}
-                  label={parent.campus}
-                  isParent={true}
-                />
-                <div css={{ marginLeft: SPACING.L }}>
-                  {parent[childrenKey].map((child) => {
-                    const childId = `child-${parent.campus}-${child}`;
-                    return (
-                      <Checkbox
-                        key={child}
-                        id={childId}
-                        checked={selected[`${parent.campus}:${child}`] || false}
-                        onChange={() => {
-                          onChange(parent.campus, child);
-                        }}
-                        label={child}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })
-        : options.map((option) => {
-            const optionId = `option-${option}`;
-            return (
-              <Checkbox
-                key={option}
-                id={optionId}
-                checked={selected[option] || false}
-                onChange={() => {
-                  onChange(option);
-                }}
-                style={{ fontWeight: 'bold' }}
-                label={option}
-              />
-            );
-          })}
-    </div>
-  );
 };
 
 const FindStudySpaceTemplate = ({ data }) => {
@@ -205,6 +126,7 @@ const FindStudySpaceTemplate = ({ data }) => {
   };
 
   const handleFeatureChange = (feature) => {
+    console.log('hi');
     setSelectedFeatures((prev) => {
       return {
         ...prev,
@@ -223,7 +145,7 @@ const FindStudySpaceTemplate = ({ data }) => {
   };
 
   const filteredStudySpaces = allStudySpaces.filter((edge) => {
-    if (bookableOnly && !edge.node.field_is_bookable) {
+    if (bookableOnly && !edge.node.field_bookable_study_space) {
       return false;
     }
 
@@ -370,6 +292,18 @@ const FindStudySpaceTemplate = ({ data }) => {
               selected={selectedCampuses}
               onChange={handleCampusChange}
               isNested={true}
+              getParentKey={(parent) => {
+                return parent.campus;
+              }}
+              getChildren={(parent) => {
+                return parent.buildings;
+              }}
+              getChildKey={(child, parent) => {
+                return `${parent.campus}:${child}`;
+              }}
+              labelRenderer={(val) => {
+                return typeof val === 'string' ? val : val.campus;
+              }}
             />
           </Collapsible>
           <hr
@@ -388,14 +322,30 @@ const FindStudySpaceTemplate = ({ data }) => {
               selected={selectedNoiseLevels}
               onChange={handleNoiseLevelChange}
               isNested={false}
+              labelRenderer={(val) => {
+                return val;
+              }}
             />
           </Collapsible>
+          <hr
+            css={{
+              border: 0,
+              borderTop: '1px solid var(--color-neutral-100)',
+              display: 'block',
+              height: '1px',
+              margin: '1em 0',
+              padding: 0
+            }}
+          />
           <Collapsible title='Features'>
             <CheckboxGroup
               options={allSpaceFeaturesList}
               selected={setSelectedFeatures}
               onChange={handleFeatureChange}
               isNested={false}
+              labelRenderer={(val) => {
+                return val;
+              }}
             />
           </Collapsible>
         </TemplateSide>
