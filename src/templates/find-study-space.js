@@ -1,16 +1,17 @@
 import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
-import React, { useState } from 'react';
+import { graphql, Link, useStaticQuery } from 'gatsby';
+import React, { useCallback, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/Card';
-import Checkbox from '../components/checkbox';
 import CheckboxGroup from '../components/checkbox-group';
 import Collapsible from '../components/collapsible';
-import { graphql } from 'gatsby';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import Html from '../components/html';
 import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
+import NoResults from '../components/no-results';
 
 const getBuildingName = (edge) => {
   return (
@@ -39,6 +40,44 @@ const getCampusAndBuilding = (edge) => {
 
 const getNoiseLevel = (edge) => {
   return edge.node.field_noise_level || '';
+};
+
+const Badge = ({ label, onDismiss }) => {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        background: 'var(--color-teal-100)',
+        color: 'var(--color-teal-700)',
+        borderRadius: '1em',
+        padding: '0.25em 0.75em',
+        marginRight: 8,
+        marginBottom: 8,
+        fontSize: '0.95em',
+        fontWeight: 500
+      }}
+    >
+      {label}
+      <button
+        onClick={onDismiss}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: 'inherit',
+          marginLeft: 6,
+          cursor: 'pointer',
+          fontWeight: 'bold',
+          fontSize: '1em',
+          lineHeight: 1
+        }}
+        aria-label={`Remove filter ${label}`}
+        type='button'
+      >
+        ×
+      </button>
+    </span>
+  );
 };
 
 const FindStudySpaceTemplate = ({ data }) => {
@@ -144,6 +183,13 @@ const FindStudySpaceTemplate = ({ data }) => {
     });
   };
 
+  const clearAllFilters = () => {
+    setBookableOnly(false);
+    setSelectedCampuses({});
+    setSelectedFeatures({});
+    setSelectedNoiseLevels({});
+  };
+
   const filteredStudySpaces = allStudySpaces.filter((edge) => {
     if (bookableOnly && !edge.node.field_bookable_study_space) {
       return false;
@@ -219,6 +265,79 @@ const FindStudySpaceTemplate = ({ data }) => {
       </>
     );
   }
+
+  const getActiveBadges = useCallback(() => {
+    const badges = [];
+
+    if (bookableOnly) {
+      badges.push({
+        key: 'bookableOnly',
+        label: 'Bookable spaces only',
+        onDismiss: () => {
+          return setBookableOnly(false);
+        }
+      });
+    }
+
+    Object.entries(selectedCampuses).forEach(([key, checked]) => {
+      if (checked) {
+        const [campus, building] = key.split(':');
+        if (building) {
+          badges.push({
+            key: `building-${key}`,
+            label: `${building} (${campus})`,
+            onDismiss: () => {
+              return setSelectedCampuses((prev) => {
+                return { ...prev, [key]: false };
+              });
+            }
+          });
+        } else {
+          badges.push({
+            key: `campus-${key}`,
+            label: campus,
+            onDismiss: () => {
+              return setSelectedCampuses((prev) => {
+                return { ...prev, [key]: false };
+              });
+            }
+          });
+        }
+      }
+    });
+
+    Object.entries(selectedFeatures).forEach(([feature, checked]) => {
+      if (checked) {
+        badges.push({
+          key: `feature-${feature}`,
+          label: feature,
+          onDismiss: () => {
+            return setSelectedFeatures((prev) => {
+              return { ...prev, [feature]: false };
+            });
+          }
+        });
+      }
+    });
+
+    Object.entries(selectedNoiseLevels).forEach(([level, checked]) => {
+      if (checked) {
+        badges.push({
+          key: `noise-${level}`,
+          label: level,
+          onDismiss: () => {
+            return setSelectedNoiseLevels((prev) => {
+              return { ...prev, [level]: false };
+            });
+          }
+        });
+      }
+    });
+
+    return badges;
+  }, [bookableOnly, selectedCampuses, selectedFeatures, selectedNoiseLevels]);
+
+  const activeBadges = getActiveBadges();
 
   return (
     <TemplateLayout node={node}>
@@ -355,52 +474,90 @@ const FindStudySpaceTemplate = ({ data }) => {
             marginRight: '0 !important'
           }}
         >
-          {resultsSummary}
-          <ol
-            css={{
-              [MEDIA_QUERIES.S]: {
-                display: 'grid',
-                gridGap: `${SPACING.XL} ${SPACING.M}`,
-                gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
-              }
-            }}
-          >
-            {filteredStudySpaces.slice(0, show).map((edge, index) => {
-              const cardImage = edge.node.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
-              const cardAlt = edge.node.relationships?.field_media_image?.field_media_image?.alt;
-              const cardTitle = edge.node.title;
-              const cardSummary = edge.node.body.summary;
-              const buildingName = getBuildingName(edge);
-              return (
-                <li key={index}>
-                  <Card image={cardImage} alt={cardAlt} href={edge.node.fields.slug}>
-                    <span
-                      css={{
-                        color: 'var(--color-neutral-300)',
-                        display: 'block',
-                        marginTop: SPACING['3XS'],
-                        ...TYPOGRAPHY['3XS']
-                      }}
-                    >
-                      {buildingName}
-                    </span>
-                    <Heading
-                      size='S'
-                      level={2}
-                      css={{
-                        marginBottom: SPACING['2XS']
-                      }}
-                    >
-                      {cardTitle}
-                    </Heading>
-                    {cardSummary}
-                  </Card>
-                </li>
-              );
-            })}
-          </ol>
-          {resultsSummary}
-          {showMoreOrLessButton}
+          {activeBadges.length > 0 && (
+            <div style={{ marginBottom: 16 }}>
+              {activeBadges.map((badge) => {
+                return (
+                  <Badge key={badge.key} label={badge.label} onDismiss={badge.onDismiss} />
+                );
+              })}
+              <button
+                type='button'
+                onClick={clearAllFilters}
+                style={{
+                  background: 'none',
+                  display: 'block',
+                  border: 'none',
+                  color: 'var(--color-teal-700)',
+                  marginLeft: 8,
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  fontSize: '1em',
+                  fontWeight: 500
+                }}
+              >
+                Clear all active filters
+              </button>
+            </div>
+          )}
+          {filteredStudySpaces.length === 0
+            ? (
+                <NoFassResults
+                  image={data.fassNoResults.childImageSharp.gatsbyImageData}
+                  alt='No study spaces found'
+                >
+
+                </NoFassResults>
+              )
+            : (
+                <>
+                  { resultsSummary }
+                  <ol
+                    css={{
+                      [MEDIA_QUERIES.S]: {
+                        display: 'grid',
+                        gridGap: `${SPACING.XL} ${SPACING.M}`,
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
+                      }
+                    }}
+                  >
+                    {filteredStudySpaces.slice(0, show).map((edge, index) => {
+                      const cardImage = edge.node.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
+                      const cardAlt = edge.node.relationships?.field_media_image?.field_media_image?.alt;
+                      const cardTitle = edge.node.title;
+                      const cardSummary = edge.node.body.summary;
+                      const buildingName = getBuildingName(edge);
+                      return (
+                        <li key={index}>
+                          <Card image={cardImage} alt={cardAlt} href={edge.node.fields.slug}>
+                            <span
+                              css={{
+                                color: 'var(--color-neutral-300)',
+                                display: 'block',
+                                marginTop: SPACING['3XS'],
+                                ...TYPOGRAPHY['3XS']
+                              }}
+                            >
+                              {buildingName}
+                            </span>
+                            <Heading
+                              size='S'
+                              level={2}
+                              css={{
+                                marginBottom: SPACING['2XS']
+                              }}
+                            >
+                              {cardTitle}
+                            </Heading>
+                            {cardSummary}
+                          </Card>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                  {showMoreOrLessButton}
+                </>
+              )}
         </TemplateContent>
       </Template>
     </TemplateLayout>
@@ -415,6 +572,37 @@ FindStudySpaceTemplate.propTypes = {
 };
 
 export default FindStudySpaceTemplate;
+
+const NoFassResults = ({ image, alt, children }) => {
+  return (
+    <div style={{ margin: '2rem 0' }}>
+      <div>
+        <Heading level={2} size='L' style={{ marginBottom: '1rem' }}>
+          We couldn&apos;t find what you&apos;re looking for.
+        </Heading>
+        We couldn&apos;t find any results that match your chosen filters. Try removing a filter or find information about other library spaces with cafes, computing resources, and more.
+        <ol>
+          <li>
+            <Link to='/library-spaces'>Computing and Technology</Link>
+          </li>
+          <li>
+            <Link to='/library-spaces'>Cafes</Link>
+          </li>
+          <li>
+            <Link to='/library-spaces'>Study Rooms</Link>
+          </li>
+        </ol>
+      </div>
+      {image && (
+        <GatsbyImage
+          image={image}
+          alt={alt}
+          style={{ margin: '1.5rem auto' }}
+        />
+      )}
+    </div>
+  );
+};
 
 /* eslint-disable react/prop-types */
 export const Head = ({ data }) => {
@@ -451,6 +639,11 @@ export const query = graphql`
         node {
           ...locationFragment
         }
+      }
+    }
+    fassNoResults: file(relativePath: { eq: "fass-no-results.png" }) {
+      childImageSharp {
+        gatsbyImageData(width: 920, placeholder: NONE, layout: CONSTRAINED)
       }
     }
   }
