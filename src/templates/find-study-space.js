@@ -3,7 +3,7 @@ import { graphql, Link } from 'gatsby';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
-import Card from '../components/Card';
+import Card from '../components/card';
 import CheckboxGroup from '../components/checkbox-group';
 import Collapsible from '../components/collapsible';
 import { GatsbyImage } from 'gatsby-plugin-image';
