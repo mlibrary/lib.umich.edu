@@ -306,7 +306,7 @@ const FindStudySpaceTemplate = ({ data }) => {
           building = titleCase(building);
           tags.push({
             key: `building-${key}`,
-            label: `${building}`,
+            label: `${campus}, ${building}`,
             onDismiss: () => {
               return setSelectedCampuses((prev) => {
                 return { ...prev, [key]: false };
@@ -378,10 +378,13 @@ const FindStudySpaceTemplate = ({ data }) => {
           </div>
         )}
       </Margins>
-      <Template contentSide='right'>
+      <Template css={{ gap: '2rem' }}contentSide='right'>
         <TemplateSide
           css={{
-            'div:first-of-type': { border: 'none !important' }
+            'div:first-of-type': {
+              border: 'none !important',
+              paddingBottom: '0'
+            }
           }}
           contentSide='right'
         >
@@ -488,36 +491,37 @@ const FindStudySpaceTemplate = ({ data }) => {
         </TemplateSide>
         <TemplateContent
           css={{
-            marginLeft: SPACING['2XL'],
             marginRight: '0 !important'
           }}
         >
-          <div style={{ marginBottom: SPACING.L }}>
-            <div css={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
-              {activeFilterTags.map((tag) => {
-                let { label } = tag;
-                console.log(tag);
-                if (tag.key && tag.key.startsWith('campus-')) {
-                  const campus = tag.label;
-                  const hasBuildingSelected = activeFilterTags.some((buildingSelectedTag) => {
-                    return buildingSelectedTag.key && buildingSelectedTag.key.startsWith('building-') && buildingSelectedTag.label.endsWith(`(${campus})`);
-                  });
-                  if (!hasBuildingSelected) {
+          {activeFilterTags.length > 0 && (
+            <div style={{ marginBottom: SPACING.L }}>
+              <div css={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
+                {activeFilterTags.map((tag) => {
+                  let { label } = tag;
+                  if (tag.key && tag.key.startsWith('campus-')) {
+                    if (selectedCampuses[tag.label]) {
+                      label = `Location: ${titleCase(label)}`;
+                    } else {
+                      return null;
+                    }
+                  } else if (tag.key && tag.key.startsWith('building-')) {
+                    const match = tag.key.match(/^building-([^:]+):(.+)$/);
+                    const campus = match ? match[1] : null;
+                    if (campus && selectedCampuses[campus]) {
+                      return null;
+                    }
                     label = `Location: ${titleCase(label)}`;
-                  } else {
-                    return null;
+                  } else if (tag.key && tag.key.startsWith('feature-')) {
+                    label = `Feature: ${sentenceCase(label)}`;
+                  } else if (tag.key && tag.key.startsWith('noise-')) {
+                    label = `Noise level: ${sentenceCase(label)}`;
                   }
-                } else if (tag.key && tag.key.startsWith('building-')) {
-                  label = `Location: ${titleCase(label)}`;
-                } else {
-                  label = sentenceCase(label);
-                }
-                return (
-                  <Tag key={tag.key} label={label} onDismiss={tag.onDismiss} />
-                );
-              })}
-            </div>
-            {activeFilterTags.length > 0 && (
+                  return (
+                    <Tag key={tag.key} label={label} onDismiss={tag.onDismiss} />
+                  );
+                })}
+              </div>
               <button
                 type='button'
                 onClick={clearAllFilters}
@@ -532,8 +536,8 @@ const FindStudySpaceTemplate = ({ data }) => {
               >
                 Clear all active filters
               </button>
-            )}
-          </div>
+            </div>
+          )}
           {filteredStudySpaces.length === 0
             ? (
                 <NoFassResults
