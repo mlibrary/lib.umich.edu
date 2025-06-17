@@ -11,8 +11,9 @@ import Html from '../components/html';
 import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
 import { sentenceCase } from 'change-case';
+import { titleCase } from 'title-case';
 import TemplateLayout from './template-layout';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 const getBuildingName = (edge) => {
   return (
@@ -230,7 +231,6 @@ const FindStudySpaceTemplate = ({ data }) => {
     return true;
   });
 
-  // When filters change, if showAll is true, always show all results
   useEffect(() => {
     if (showAll) {
       setShow(filteredStudySpaces.length);
@@ -272,14 +272,16 @@ const FindStudySpaceTemplate = ({ data }) => {
       <>
         {(!showAll && show < filteredStudySpaces.length)
           ? (
-              <Button onClick={showMore}>Show all</Button>
+              <Button css={{ marginTop: SPACING.L }} onClick={showMore}>Show all</Button>
             )
           : (
-              <Button onClick={showLess}>Show less</Button>
+              <Button css={{ marginTop: SPACING.L }} onClick={showLess}>Show less</Button>
             )}
       </>
     );
   }
+
+  const shouldReduceMotion = useReducedMotion();
 
   const getActiveFilterTags = useCallback(() => {
     const tags = [];
@@ -296,11 +298,13 @@ const FindStudySpaceTemplate = ({ data }) => {
 
     Object.entries(selectedCampuses).forEach(([key, checked]) => {
       if (checked) {
-        const [campus, building] = key.split(':');
+        let [campus, building] = key.split(':');
+        building = titleCase(building);
+        campus = titleCase(campus);
         if (building) {
           tags.push({
             key: `building-${key}`,
-            label: `${building} (${campus})`,
+            label: `${building}`,
             onDismiss: () => {
               return setSelectedCampuses((prev) => {
                 return { ...prev, [key]: false };
@@ -310,7 +314,7 @@ const FindStudySpaceTemplate = ({ data }) => {
         } else {
           tags.push({
             key: `campus-${key}`,
-            label: campus,
+            label: `${campus}`,
             onDismiss: () => {
               return setSelectedCampuses((prev) => {
                 return { ...prev, [key]: false };
@@ -488,8 +492,25 @@ const FindStudySpaceTemplate = ({ data }) => {
           <div style={{ marginBottom: SPACING.L }}>
             <div css={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
               {activeFilterTags.map((tag) => {
+                let { label } = tag;
+                if (tag.key && tag.key.startsWith('campus-')) {
+                  const campus = tag.label;
+                  const hasBuildingSelected = activeFilterTags.some((t) => {
+                    return t.key && t.key.startsWith('building-') && t.label.endsWith(`(${campus})`);
+                  });
+                  console.log(hasBuildingSelected);
+                  if (!hasBuildingSelected) {
+                    label = `Location: ${titleCase(label)}`;
+                  } else {
+                    return null;
+                  }
+                } else if (tag.key && tag.key.startsWith('building-')) {
+                  label = `Location: ${titleCase(label)}`;
+                } else {
+                  label = sentenceCase(label);
+                }
                 return (
-                  <Tag key={tag.key} label={sentenceCase(tag.label)} onDismiss={tag.onDismiss} />
+                  <Tag key={tag.key} label={label} onDismiss={tag.onDismiss} />
                 );
               })}
             </div>
@@ -531,46 +552,49 @@ const FindStudySpaceTemplate = ({ data }) => {
                         }
                       }}
                     >
-                      {filteredStudySpaces.slice(0, showAll ? filteredStudySpaces.length : show).map((edge, index) => {
-                        const { slug } = edge.node.fields;
-                        const cardImage = edge.node.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
-                        const cardAlt = edge.node.relationships?.field_media_image?.field_media_image?.alt;
-                        const cardTitle = edge.node.title;
-                        const cardSummary = edge.node.body.summary;
-                        const buildingName = getBuildingName(edge);
-                        return (
-                          <motion.li
-                            key={slug}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.5 }}
-                          >
-                            <Card image={cardImage} alt={cardAlt} href={slug}>
-                              <span
-                                css={{
-                                  color: 'var(--color-neutral-300)',
-                                  display: 'block',
-                                  marginTop: SPACING['3XS'],
-                                  ...TYPOGRAPHY['3XS']
-                                }}
-                              >
-                                {buildingName}
-                              </span>
-                              <Heading
-                                size='S'
-                                level={2}
-                                css={{
-                                  marginBottom: SPACING['2XS']
-                                }}
-                              >
-                                {cardTitle}
-                              </Heading>
-                              {cardSummary}
-                            </Card>
-                          </motion.li>
-                        );
-                      })}
+                      <AnimatePresence>
+                        {filteredStudySpaces.slice(0, showAll ? filteredStudySpaces.length : show).map((edge) => {
+                          const { slug } = edge.node.fields;
+                          const cardImage = edge.node.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
+                          const cardAlt = edge.node.relationships?.field_media_image?.field_media_image?.alt;
+                          const cardTitle = edge.node.title;
+                          const cardSummary = edge.node.body.summary;
+                          const buildingName = getBuildingName(edge);
+                          return (
+                            <motion.li
+                              key={slug}
+                              initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={shouldReduceMotion ? false : { opacity: 0, scale: 0.95 }}
+                              transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.4 }}
+                              style={{ listStyle: 'none' }}
+                            >
+                              <Card image={cardImage} alt={cardAlt} href={slug}>
+                                <span
+                                  css={{
+                                    color: 'var(--color-neutral-300)',
+                                    display: 'block',
+                                    marginTop: SPACING['3XS'],
+                                    ...TYPOGRAPHY['3XS']
+                                  }}
+                                >
+                                  {buildingName}
+                                </span>
+                                <Heading
+                                  size='S'
+                                  level={2}
+                                  css={{
+                                    marginBottom: SPACING['2XS']
+                                  }}
+                                >
+                                  {cardTitle}
+                                </Heading>
+                                {cardSummary}
+                              </Card>
+                            </motion.li>
+                          );
+                        })}
+                      </AnimatePresence>
                     </ol>
                   </AnimatePresence>
                   {showMoreOrLessButton}
