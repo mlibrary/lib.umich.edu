@@ -4,7 +4,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "gatsby": "^5.14.3",
+    "gatsby": "^5.14.4",
     "gatsby-plugin-emotion": "^8.14.0",
     "gatsby-plugin-image": "^3.14.0",
     "gatsby-plugin-lunr": "^1.5.2",
@@ -25,7 +25,7 @@
     "rehype-parse": "^9.0.1",
     "rehype-react": "^8.0.0",
     "unified": "^11.0.5",
-    "use-debounce": "^10.0.3",
+    "use-debounce": "^10.0.5",
     "whatwg-url": "^14.1.1"
   },
   "keywords": [
@@ -55,12 +55,12 @@
     "@stylistic/eslint-plugin": "^4.2.0",
     "bottleneck": "^2.19.5",
     "entities": "^6.0.0",
-    "eslint": "^9.27.0",
+    "eslint": "^9.28.0",
     "eslint-plugin-react": "^7.37.5",
     "fetch-retry": "^6.0.0",
     "gatsby-plugin-netlify": "^5.1.1",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
-    "globals": "^16.1.0"
+    "globals": "^16.2.0"
   },
   "overrides": {
     "eslint-plugin-react": {
