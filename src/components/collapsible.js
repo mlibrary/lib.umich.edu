@@ -21,24 +21,24 @@ const Collapsible = ({ title, children, defaultExpanded = true }) => {
           },
           alignItems: 'center',
           background: 'none',
-          borderLeft: `solid 4px var(--color-teal-400)`,
-          color: 'var(--color-teal-400)',
+          borderLeft: `${isExpanded ? 'solid 4px var(--color-teal-400)' : 'none'}`,
+          color: `${isExpanded ? 'var(--color-teal-400)' : 'var(--color-neutral-400)'}`,
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'space-between',
-          marginLeft: '-4px',
+          marginLeft: `${isExpanded ? '-4px' : '0'}`,
           padding: `${SPACING.S} 0 ${SPACING.S} ${SPACING.M}`,
           width: '100%'
 
         }}
       >
-        <span css={{ fontSize: '1.1rem', fontWeight: 'bold' }}>{title}</span>
+        <span css={{ fontSize: '1.1rem', fontWeight: `${isExpanded ? 'bold' : 'normal'}` }}>{title}</span>
         <span css={{
           transform: isExpanded ? 'rotate(0)' : 'rotate(180deg)',
           transition: 'transform 0.2s ease-in-out'
         }}
         >
-          <Icon icon='expand_more'></Icon>
+          <Icon css={{ color: 'var(--color-teal-400)' }} icon='expand_more'></Icon>
         </span>
       </button>
       {isExpanded && (
