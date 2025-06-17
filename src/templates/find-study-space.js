@@ -1,4 +1,4 @@
-import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
+import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
 import { graphql, Link } from 'gatsby';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
@@ -25,6 +25,76 @@ const getBuildingName = (edge) => {
 
 const getSpaceFeatures = (edge) => {
   return edge.node.field_space_features || '';
+};
+
+const SpaceFeatures = ({ spaceFeatures }) => {
+  /* eslint-disable camelcase */
+  const iconMap = {
+    all_gender_restroom_on_floor: 'person_half_dress',
+    external_monitors: 'desktop_windows',
+    natural_light: 'sunny',
+    wheelchair_accessible: 'wheelchair',
+    whiteboards: 'stylus_note'
+  };
+  /* eslint-enable camelcase */
+
+  return (
+    <ul css={{
+      listStyle: 'none',
+      marginTop: `${[SPACING.XS]}`
+    }}
+    >
+      {spaceFeatures.map((feature, index) => {
+        const icon = iconMap[feature];
+        if (!icon) {
+          return null;
+        }
+
+        return (
+          <li
+            key={index}
+            css={{
+              alignItems: 'center',
+              display: 'inline-flex',
+              flexDirection: 'row',
+              gap: [SPACING.XS],
+              margin: `0 ${[SPACING.XS]} ${[SPACING.XS]} 0`
+            }}
+          >
+            <Icon icon={icon} size={18} css={{ color: 'var(--color-teal-400)' }} />
+            <span css={{ color: 'var(--color-neutral-400)' }}>
+              {feature.replace(/_/ug, ' ').replace(/^./u, (str) => {
+                return str.toUpperCase();
+              })}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
+SpaceFeatures.propTypes = {
+  spaceFeatures: PropTypes.array
+};
+
+const NoiseLevel = ({ noiseLevel }) => {
+  if (noiseLevel === '') {
+    return null;
+  }
+  return (
+    <div css={{
+      alignItems: 'center',
+      color: 'var(--color-neutral-300)',
+      display: 'flex',
+      gap: [SPACING.XS] }}
+    >
+      <Icon icon='volume_up' size={18} />
+      <span css={{ fontWeight: 'bold' }}>
+        Noise Level: {sentenceCase(noiseLevel)}
+      </span>
+    </div>
+  );
 };
 
 const getCampusAndBuilding = (edge) => {
@@ -567,6 +637,8 @@ const FindStudySpaceTemplate = ({ data }) => {
                           const cardTitle = edge.node.title;
                           const cardSummary = edge.node.body.summary;
                           const buildingName = getBuildingName(edge);
+                          const spaceFeatures = getSpaceFeatures(edge);
+                          const noiseLevel = getNoiseLevel(edge);
                           return (
                             <motion.li
                               key={slug}
@@ -576,27 +648,10 @@ const FindStudySpaceTemplate = ({ data }) => {
                               transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.4 }}
                               style={{ listStyle: 'none' }}
                             >
-                              <Card image={cardImage} alt={cardAlt} href={slug}>
-                                <span
-                                  css={{
-                                    color: 'var(--color-neutral-300)',
-                                    display: 'block',
-                                    marginTop: SPACING['3XS'],
-                                    ...TYPOGRAPHY['3XS']
-                                  }}
-                                >
-                                  {buildingName}
-                                </span>
-                                <Heading
-                                  size='S'
-                                  level={2}
-                                  css={{
-                                    marginBottom: SPACING['2XS']
-                                  }}
-                                >
-                                  {cardTitle}
-                                </Heading>
+                              <Card image={cardImage} alt={cardAlt} href={slug} title={cardTitle} subtitle={buildingName}>
                                 {cardSummary}
+                                <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
+                                <NoiseLevel noiseLevel={noiseLevel}></NoiseLevel>
                               </Card>
                             </motion.li>
                           );
