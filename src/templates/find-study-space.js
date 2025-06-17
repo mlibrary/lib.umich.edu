@@ -152,16 +152,19 @@ const FindStudySpaceTemplate = ({ data }) => {
       const campusObj = campusesWithBuildings.find((campusNode) => {
         return campusNode.campus === campus;
       });
-
       if (building === null) {
         campusObj.buildings.forEach((buildingNode) => {
           updated[`${campus}:${buildingNode}`] = setAll;
         });
+        updated[campus] = setAll;
       } else {
         const key = `${campus}:${building}`;
         updated[key] = !prev[key];
+        const allChecked = campusObj.buildings.every((b) => {
+          return updated[`${campus}:${b}`];
+        });
+        updated[campus] = allChecked;
       }
-
       return updated;
     });
   };
@@ -299,9 +302,8 @@ const FindStudySpaceTemplate = ({ data }) => {
     Object.entries(selectedCampuses).forEach(([key, checked]) => {
       if (checked) {
         let [campus, building] = key.split(':');
-        building = titleCase(building);
-        campus = titleCase(campus);
         if (building) {
+          building = titleCase(building);
           tags.push({
             key: `building-${key}`,
             label: `${building}`,
@@ -312,6 +314,7 @@ const FindStudySpaceTemplate = ({ data }) => {
             }
           });
         } else {
+          campus = titleCase(campus);
           tags.push({
             key: `campus-${key}`,
             label: `${campus}`,
@@ -493,10 +496,11 @@ const FindStudySpaceTemplate = ({ data }) => {
             <div css={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
               {activeFilterTags.map((tag) => {
                 let { label } = tag;
+                console.log(tag);
                 if (tag.key && tag.key.startsWith('campus-')) {
                   const campus = tag.label;
-                  const hasBuildingSelected = activeFilterTags.some((t) => {
-                    return t.key && t.key.startsWith('building-') && t.label.endsWith(`(${campus})`);
+                  const hasBuildingSelected = activeFilterTags.some((buildingSelectedTag) => {
+                    return buildingSelectedTag.key && buildingSelectedTag.key.startsWith('building-') && buildingSelectedTag.label.endsWith(`(${campus})`);
                   });
                   if (!hasBuildingSelected) {
                     label = `Location: ${titleCase(label)}`;
