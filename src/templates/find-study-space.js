@@ -498,7 +498,6 @@ const FindStudySpaceTemplate = ({ data }) => {
                   const hasBuildingSelected = activeFilterTags.some((t) => {
                     return t.key && t.key.startsWith('building-') && t.label.endsWith(`(${campus})`);
                   });
-                  console.log(hasBuildingSelected);
                   if (!hasBuildingSelected) {
                     label = `Location: ${titleCase(label)}`;
                   } else {
