@@ -291,18 +291,14 @@ const FindStudySpaceTemplate = ({ data }) => {
 
     if (Object.values(selectedFeatures).some(Boolean)) {
       const features = getSpaceFeatures(edge);
-      if (Object.values(selectedFeatures).some(Boolean)) {
-        const hasSelectedFeature = Object.entries(selectedFeatures).some(
-          ([feature, checked]) => {
-            return checked && features.includes(feature);
-          }
-        );
-        if (!hasSelectedFeature) {
-          return false;
+      const hasSelectedFeature = Object.entries(selectedFeatures).some(
+        ([feature, checked]) => {
+          return checked && features.includes(feature);
         }
+      );
+      if (!hasSelectedFeature) {
+        return false;
       }
-
-      return true;
     }
 
     if (Object.values(selectedNoiseLevels).some(Boolean)) {
