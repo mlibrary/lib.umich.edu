@@ -27,17 +27,26 @@ const getSpaceFeatures = (edge) => {
   return edge.node.field_space_features || '';
 };
 
-const SpaceFeatures = ({ spaceFeatures }) => {
-  /* eslint-disable camelcase */
-  const iconMap = {
-    all_gender_restroom_on_floor: 'person_half_dress',
-    external_monitors: 'desktop_windows',
-    natural_light: 'sunny',
-    wheelchair_accessible: 'wheelchair',
-    whiteboards: 'stylus_note'
-  };
-  /* eslint-enable camelcase */
+/* eslint-disable camelcase */
+const iconMap = {
+  all_gender_restroom_on_floor: 'person_half_dress',
+  external_monitors: 'desktop_windows',
+  natural_light: 'sunny',
+  wheelchair_accessible: 'wheelchair',
+  whiteboards: 'stylus_note'
+};
+/* eslint-enable camelcase */
 
+const featureLabelRenderer = (featureKey) => {
+  return (
+    <>
+      <Icon css={{ color: 'var(--color-teal-400)' }} icon={iconMap[featureKey]} style={{ marginRight: 8 }} />
+      {sentenceCase(featureKey)}
+    </>
+  );
+};
+
+const SpaceFeatures = ({ spaceFeatures }) => {
   return (
     <ul css={{
       listStyle: 'none',
@@ -555,7 +564,7 @@ const FindStudySpaceTemplate = ({ data }) => {
               selected={selectedFeatures}
               onChange={handleFeatureChange}
               isNested={false}
-              labelRenderer={sentenceCase}
+              labelRenderer={featureLabelRenderer}
             />
           </Collapsible>
         </TemplateSide>

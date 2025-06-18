@@ -1,9 +1,11 @@
 import { Icon, SPACING } from '../reusable';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 const Collapsible = ({ title, children, defaultExpanded = true }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <div>
@@ -11,6 +13,8 @@ const Collapsible = ({ title, children, defaultExpanded = true }) => {
         onClick={() => {
           return setIsExpanded(!isExpanded);
         }}
+        aria-expanded={isExpanded}
+        aria-controls={`expandable-${title}`}
         css={{
           ':hover': {
             '[data-title]': {
@@ -26,29 +30,53 @@ const Collapsible = ({ title, children, defaultExpanded = true }) => {
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'space-between',
-          marginLeft: `${isExpanded ? '-4px' : '0'}`,
-          padding: `${SPACING.S} 0 ${SPACING.S} ${SPACING.M}`,
+          padding: `${SPACING.S}`,
           width: '100%'
 
         }}
       >
-        <span css={{ fontSize: '1.1rem', fontWeight: `${isExpanded ? 'bold' : 'normal'}` }}>{title}</span>
+        <span
+          css={{
+            fontSize: '1.1rem',
+            fontWeight: `${isExpanded ? 'bold' : 'normal'}`,
+            marginLeft: `${isExpanded ? '-4px' : '0'}`
+          }}
+          id={`expandable-${title}`}
+        >
+          {title}
+        </span>
         <span css={{
           transform: isExpanded ? 'rotate(0)' : 'rotate(180deg)',
+          transformOrigin: 'center 13px',
           transition: 'transform 0.2s ease-in-out'
         }}
         >
-          <Icon css={{ color: 'var(--color-teal-400)' }} icon='expand_more'></Icon>
+          <Icon size='20' css={{ color: 'var(--color-teal-400)' }} icon='expand_more'></Icon>
         </span>
       </button>
-      {isExpanded && (
-        <div css={{
-          padding: `${SPACING.M} 0`
-        }}
-        >
-          {children}
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            key='content'
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={shouldReduceMotion ? { duration: 0, ease: 'easeInOut' } : { duration: 0.2, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
+            aria-hidden={!isExpanded}
+            id='collapsible-content'
+          >
+            <div
+              css={{
+                display: isExpanded ? 'block' : 'none',
+                padding: `${SPACING.M} 0`
+              }}
+            >
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
