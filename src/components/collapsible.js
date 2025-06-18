@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 const Collapsible = ({ title, children, defaultExpanded = true }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const shouldReduceMotion = useReducedMotion();
+  const id = title.replace(/[\s,]+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '').toLowerCase();
 
   return (
     <div>
@@ -14,7 +15,7 @@ const Collapsible = ({ title, children, defaultExpanded = true }) => {
           return setIsExpanded(!isExpanded);
         }}
         aria-expanded={isExpanded}
-        aria-controls={`expandable-${title}`}
+        aria-controls={`expandable-${id}`}
         css={{
           ':hover': {
             '[data-title]': {
@@ -41,7 +42,6 @@ const Collapsible = ({ title, children, defaultExpanded = true }) => {
             fontWeight: `${isExpanded ? 'bold' : 'normal'}`,
             marginLeft: `${isExpanded ? '-4px' : '0'}`
           }}
-          id={`expandable-${title}`}
         >
           {title}
         </span>
@@ -64,7 +64,7 @@ const Collapsible = ({ title, children, defaultExpanded = true }) => {
             transition={shouldReduceMotion ? { duration: 0, ease: 'easeInOut' } : { duration: 0.2, ease: 'easeInOut' }}
             style={{ overflow: 'hidden' }}
             aria-hidden={!isExpanded}
-            id='collapsible-content'
+            id={`expandable-${id}`}
           >
             <div
               css={{

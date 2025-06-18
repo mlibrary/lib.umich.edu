@@ -14,6 +14,7 @@ import { sentenceCase } from 'change-case';
 import { titleCase } from 'title-case';
 import TemplateLayout from './template-layout';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import PlainLink from '../components/plain-link';
 
 const getBuildingName = (edge) => {
   return (
@@ -686,6 +687,9 @@ const FindStudySpaceTemplate = ({ data }) => {
                       </AnimatePresence>
                     </ol>
                   </AnimatePresence>
+                  <div css={{ marginTop: SPACING['2XL'] }}>
+                    {resultsSummary}
+                  </div>
                   {showMoreOrLessButton}
                 </>
               )}
@@ -704,25 +708,54 @@ FindStudySpaceTemplate.propTypes = {
 
 export default FindStudySpaceTemplate;
 
-const NoFassResults = ({ image, alt, children }) => {
+const NoFassResults = ({ image, alt }) => {
   return (
     <div style={{ margin: '2rem 0' }}>
       <div>
-        <Heading level={2} size='L' style={{ marginBottom: '1rem' }}>
+        <Heading level={2} size='L' style={{ marginBottom: SPACING.XL }}>
           We couldn&apos;t find what you&apos;re looking for.
         </Heading>
         We couldn&apos;t find any results that match your chosen filters. Try removing a filter or find information about other library spaces with cafes, computing resources, and more.
-        <ol>
+        <ul css={{
+          listStyle: 'disc',
+          marginLeft: SPACING.L,
+          marginTop: SPACING.XL
+        }}
+        >
           <li>
-            <Link to='/library-spaces'>Computing and Technology</Link>
+            <PlainLink
+              to='/visit-and-study/computing-and-technology'
+              css={{
+                color: 'var(--color-teal-400)',
+                textDecoration: 'underline'
+              }}
+            >
+              Computing and Technology
+            </PlainLink>
           </li>
           <li>
-            <Link to='/library-spaces'>Cafes</Link>
+            <PlainLink
+              to='/visit-and-study/cafes-and-wellbeing'
+              css={{
+                color: 'var(--color-teal-400)',
+                textDecoration: 'underline'
+              }}
+            >
+              Cafes
+            </PlainLink>
           </li>
           <li>
-            <Link to='/library-spaces'>Study Rooms</Link>
+            <PlainLink
+              to='/visit-and-study/study-spaces/student-parent-and-caregiver-study-room'
+              css={{
+                color: 'var(--color-teal-400)',
+                textDecoration: 'underline'
+              }}
+            >
+              Student Parent and Caregiver Room
+            </PlainLink>
           </li>
-        </ol>
+        </ul>
       </div>
       {image && (
         <GatsbyImage

@@ -18,6 +18,9 @@ const CheckboxGroup = ({
   },
   labelRenderer = (val) => {
     return val;
+  },
+  formatId = (val) => {
+    return val.replace(/[\s,]+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '').toLowerCase();
   }
 }) => {
   const getParentState = (parent) => {
@@ -42,7 +45,7 @@ const CheckboxGroup = ({
         ? options.map((parent) => {
             const parentKey = getParentKey(parent);
             const parentState = getParentState(parent);
-            const parentId = `parent-${parentKey}`;
+            const parentId = `parent-${formatId(parentKey)}`;
             return (
               <div key={parentKey} style={{ marginBottom: 16 }}>
                 <Checkbox
@@ -59,7 +62,7 @@ const CheckboxGroup = ({
                 <div style={{ marginLeft: 24 }}>
                   {getChildren(parent).map((child) => {
                     const childKey = getChildKey(child, parent);
-                    const childId = `child-${parentKey}-${child}`;
+                    const childId = `child-${formatId(parentKey)}-${formatId(child)}`;
                     return (
                       <Checkbox
                         key={childKey}
