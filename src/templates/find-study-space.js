@@ -150,6 +150,7 @@ const Tag = ({ label, onDismiss }) => {
         fontWeight: 500
       }}
       onClick={onDismiss}
+      aria-label={`Select to remove filter: ${label}`}
     >
       {label}
       <svg role='img' aria-hidden='true' focusable='false' xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='#212B36'>
@@ -327,13 +328,13 @@ const FindStudySpaceTemplate = ({ data }) => {
   if (filteredStudySpaces.length > 0) {
     if (filteredStudySpaces.length > 6) {
       resultsSummary = (
-        <p css={{ marginBottom: SPACING.M }}>
-          Showing {showAll ? filteredStudySpaces.length : Math.min(show, filteredStudySpaces.length)} of {filteredStudySpaces.length}
+        <p aria-live='polite' css={{ marginBottom: SPACING.M }}>
+          Showing {showAll ? filteredStudySpaces.length : Math.min(show, filteredStudySpaces.length)} of {filteredStudySpaces.length} results
         </p>
       );
     } else {
       resultsSummary = (
-        <p css={{ marginBottom: SPACING.M }}>
+        <p aria-live='polite' css={{ marginBottom: SPACING.M }}>
           Showing {filteredStudySpaces.length} result{filteredStudySpaces.length > 1 ? 's' : ''}
         </p>
       );
@@ -617,13 +618,30 @@ const FindStudySpaceTemplate = ({ data }) => {
               </button>
             </div>
           )}
+          <div
+            aria-live='polite'
+            style={{
+              position: 'absolute',
+              width: '1px',
+              height: '1px',
+              padding: 0,
+              margin: '-1px',
+              overflow: 'hidden',
+              clip: 'rect(0,0,0,0)',
+              border: 0
+            }}
+          >
+            {filteredStudySpaces.length === 0 ? 'No results found matching your selected filters.' : ''}
+          </div>
           {filteredStudySpaces.length === 0
             ? (
-                <NoFassResults
-                  image={data.fassNoResults.childImageSharp.gatsbyImageData}
-                  alt='No study spaces found'
-                >
-                </NoFassResults>
+                <>
+                  <NoFassResults
+                    image={data.fassNoResults.childImageSharp.gatsbyImageData}
+                    alt='No study spaces found'
+                  >
+                  </NoFassResults>
+                </>
               )
             : (
                 <>
