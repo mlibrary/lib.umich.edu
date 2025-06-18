@@ -359,7 +359,7 @@ const SpaceFeatures = ({ spaceFeatures }) => {
               margin: `${[SPACING.XS]} 0`
             }}
           >
-            <Icon icon={icon} size={18} />
+            <Icon icon={icon} size={18} css={{ color: 'var(--color-teal-400)' }} />
             <span>
               {feature.replace(/_/ug, ' ').replace(/^./u, (str) => {
                 return str.toUpperCase();
