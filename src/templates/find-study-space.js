@@ -672,7 +672,7 @@ const FindStudySpaceTemplate = ({ data }) => {
                               transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.2 }}
                               style={{ listStyle: 'none' }}
                             >
-                              <Card image={cardImage} alt={cardAlt} href={slug} title={cardTitle} subtitle={buildingName}>
+                              <Card css={{ marginBottom: SPACING.XL }} image={cardImage} alt={cardAlt} href={slug} title={cardTitle} subtitle={buildingName}>
                                 {cardSummary}
                                 <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
                                 <NoiseLevel noiseLevel={noiseLevel}></NoiseLevel>
