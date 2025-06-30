@@ -8,21 +8,23 @@ const useIsMobile = (breakpoint = 1200) => {
     if (typeof window !== 'undefined') {
       return window.innerWidth < breakpoint;
     }
-    // Default to false (desktop) during SSR
     return false;
   });
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
     const handler = () => {
-      if (typeof window !== 'undefined') {
-        setIsMobile(window.innerWidth < breakpoint);
-      }
+      return setIsMobile(window.innerWidth < breakpoint);
     };
     window.addEventListener('resize', handler);
+
+    // This is a cleanup function to remove the event listener during unmount
+    // Or when the breakpoint changes.
+    // eslint-disable-next-line consistent-return
     return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('resize', handler);
-      }
+      window.removeEventListener('resize', handler);
     };
   }, [breakpoint]);
 
