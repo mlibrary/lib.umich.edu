@@ -24,12 +24,12 @@ const useIsMobile = (breakpoint = 1200) => {
 const Collapsible = ({ title, children, defaultExpanded }) => {
   const isMobile = useIsMobile();
   const [isExpanded, setIsExpanded] = useState(
-    defaultExpanded !== undefined ? defaultExpanded : !isMobile
+    typeof defaultExpanded === 'undefined' ? isMobile === false : defaultExpanded
   );
   const shouldReduceMotion = useReducedMotion();
-  const id = title.replace(/[\s,]+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '').toLowerCase();
+  const id = title.replace(/[\s,]+/gu, '-').replace(/[^a-zA-Z0-9-_]/gu, '').toLowerCase();
   useEffect(() => {
-    if (defaultExpanded === undefined) {
+    if (!defaultExpanded) {
       setIsExpanded(!isMobile);
     }
   }, [isMobile, defaultExpanded]);
