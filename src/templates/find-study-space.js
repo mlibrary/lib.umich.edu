@@ -1,20 +1,20 @@
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
-import { graphql, Link } from 'gatsby';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/card';
 import CheckboxGroup from '../components/checkbox-group';
 import Collapsible from '../components/collapsible';
 import { GatsbyImage } from 'gatsby-plugin-image';
+import { graphql } from 'gatsby';
 import Html from '../components/html';
+import PlainLink from '../components/plain-link';
 import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
 import { sentenceCase } from 'change-case';
-import { titleCase } from 'title-case';
 import TemplateLayout from './template-layout';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import PlainLink from '../components/plain-link';
+import { titleCase } from 'title-case';
 
 const getBuildingName = (edge) => {
   return (
@@ -130,25 +130,25 @@ const Tag = ({ label, onDismiss }) => {
       css={{
         '&:active': {
           background: 'var(--color-teal-400)',
-          color: 'white',
-          border: 'solid 2px var(--color-teal-400)'
+          border: 'solid 2px var(--color-teal-400)',
+          color: 'white'
         },
         '&:hover': {
           border: 'solid 2px var(--color-teal-400)'
         },
-        display: 'flex',
-        cursor: 'pointer',
         alignItems: 'center',
-        gap: '2px',
         background: 'var(--color-teal-100)',
-        color: 'var(--color-neutral-400)',
         border: '2px solid var(--color-teal-200)',
         borderRadius: '1rem',
-        padding: '0.25rem 0.75rem',
-        marginRight: 8,
-        marginBottom: 8,
+        color: 'var(--color-neutral-400)',
+        cursor: 'pointer',
+        display: 'flex',
         fontSize: '0.9rem',
-        fontWeight: 500
+        fontWeight: 500,
+        gap: '2px',
+        marginBottom: 8,
+        marginRight: 8,
+        padding: '0.25rem 0.75rem'
       }}
       onClick={onDismiss}
       aria-label={`Select to remove filter: ${label}`}
@@ -241,8 +241,8 @@ const FindStudySpaceTemplate = ({ data }) => {
       } else {
         const key = `${campus}:${building}`;
         updated[key] = !prev[key];
-        const allChecked = campusObj.buildings.every((b) => {
-          return updated[`${campus}:${b}`];
+        const allChecked = campusObj.buildings.every((buildingName) => {
+          return updated[`${campus}:${buildingName}`];
         });
         updated[campus] = allChecked;
       }

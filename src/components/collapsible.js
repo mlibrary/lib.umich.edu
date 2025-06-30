@@ -1,20 +1,28 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { Icon, MEDIA_QUERIES, SPACING } from '../reusable';
+import { Icon, SPACING } from '../reusable';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const useIsMobile = (breakpoint = 1200) => {
   const [isMobile, setIsMobile] = useState(() => {
-    return window.innerWidth < breakpoint;
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < breakpoint;
+    }
+    // Default to false (desktop) during SSR
+    return false;
   });
 
   useEffect(() => {
     const handler = () => {
-      return setIsMobile(window.innerWidth < breakpoint);
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < breakpoint);
+      }
     };
     window.addEventListener('resize', handler);
     return () => {
-      return window.removeEventListener('resize', handler);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handler);
+      }
     };
   }, [breakpoint]);
 
