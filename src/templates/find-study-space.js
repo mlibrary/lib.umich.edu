@@ -618,14 +618,14 @@ const FindStudySpaceTemplate = ({ data }) => {
           <div
             aria-live='polite'
             style={{
-              position: 'absolute',
-              width: '1px',
+              border: 0,
+              clip: 'rect(0,0,0,0)',
               height: '1px',
-              padding: 0,
               margin: '-1px',
               overflow: 'hidden',
-              clip: 'rect(0,0,0,0)',
-              border: 0
+              padding: 0,
+              position: 'absolute',
+              width: '1px'
             }}
           >
             {filteredStudySpaces.length === 0 ? 'No results found matching your selected filters.' : ''}
@@ -762,6 +762,11 @@ const NoFassResults = ({ image, alt }) => {
       )}
     </div>
   );
+};
+
+NoFassResults.propTypes = {
+  alt: PropTypes.any,
+  image: PropTypes.any
 };
 
 /* eslint-disable react/prop-types */

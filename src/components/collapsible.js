@@ -51,7 +51,7 @@ const Collapsible = ({ title, children, defaultExpanded = true }) => {
           transition: 'transform 0.2s ease-in-out'
         }}
         >
-          <Icon size='20' css={{ color: 'var(--color-teal-400)' }} icon='expand_more'></Icon>
+          <Icon size={20} css={{ color: 'var(--color-teal-400)' }} icon='expand_more'></Icon>
         </span>
       </button>
       <AnimatePresence initial={false}>
