@@ -646,10 +646,11 @@ const FindStudySpaceTemplate = ({ data }) => {
                     {resultsSummary}
                     <ol
                       css={{
-                        [MEDIA_QUERIES.S]: {
-                          display: 'grid',
-                          gridGap: `${SPACING.XL} ${SPACING.M}`,
-                          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
+                        display: 'grid',
+                        gridGap: `${SPACING.XL} ${SPACING.M}`,
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                        [MEDIA_QUERIES.M]: {
+                          gridTemplateColumns: 'repeat(2, minmax(320px, 1fr))'
                         }
                       }}
                     >

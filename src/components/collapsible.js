@@ -4,29 +4,12 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const useIsMobile = (breakpoint = 1200) => {
-  const [isMobile, setIsMobile] = useState(() => {
+  const [isMobile] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.innerWidth < breakpoint;
     }
     return false;
   });
-
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-    const handler = () => {
-      return setIsMobile(window.innerWidth < breakpoint);
-    };
-    window.addEventListener('resize', handler);
-
-    // This is a cleanup function to remove the event listener during unmount
-    // Or when the breakpoint changes.
-    // eslint-disable-next-line consistent-return
-    return () => {
-      window.removeEventListener('resize', handler);
-    };
-  }, [breakpoint]);
 
   return isMobile;
 };
