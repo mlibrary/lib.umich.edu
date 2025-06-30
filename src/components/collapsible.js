@@ -1,13 +1,38 @@
-import { Icon, SPACING } from '../reusable';
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { Icon, MEDIA_QUERIES, SPACING } from '../reusable';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
-const Collapsible = ({ title, children, defaultExpanded = true }) => {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+const useIsMobile = (breakpoint = 1200) => {
+  const [isMobile, setIsMobile] = useState(() => {
+    return window.innerWidth < breakpoint;
+  });
+
+  useEffect(() => {
+    const handler = () => {
+      return setIsMobile(window.innerWidth < breakpoint);
+    };
+    window.addEventListener('resize', handler);
+    return () => {
+      return window.removeEventListener('resize', handler);
+    };
+  }, [breakpoint]);
+
+  return isMobile;
+};
+
+const Collapsible = ({ title, children, defaultExpanded }) => {
+  const isMobile = useIsMobile();
+  const [isExpanded, setIsExpanded] = useState(
+    defaultExpanded !== undefined ? defaultExpanded : !isMobile
+  );
   const shouldReduceMotion = useReducedMotion();
   const id = title.replace(/[\s,]+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '').toLowerCase();
-
+  useEffect(() => {
+    if (defaultExpanded === undefined) {
+      setIsExpanded(!isMobile);
+    }
+  }, [isMobile, defaultExpanded]);
   return (
     <div>
       <button
