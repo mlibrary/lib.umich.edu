@@ -213,6 +213,11 @@ const FindStudySpaceTemplate = ({ data }) => {
     }
   );
 
+  const campusToBuildings = {};
+  campusesWithBuildings.forEach(({ campus, buildings }) => {
+    campusToBuildings[campus] = buildings;
+  });
+
   const allSpaceFeaturesList = Array.from(
     new Set(allStudySpaces.flatMap(getSpaceFeatures).filter(Boolean))
   );
@@ -402,45 +407,43 @@ const FindStudySpaceTemplate = ({ data }) => {
   const getActiveFilterTags = useCallback(() => {
     const tags = [];
 
-    if (bookableOnly) {
-      tags.push({
-        key: 'bookableOnly',
-        label: 'Bookable spaces only',
-        onDismiss: () => {
-          return setBookableOnly(false);
+    Object.entries(campusToBuildings).forEach(([campus, buildings]) => {
+      const allBuildingsSelected = buildings.every(
+        (building) => {
+          return selectedCampuses[`${campus}:${building}`];
         }
-      });
-    }
-
-    Object.entries(selectedCampuses).forEach(([key, checked]) => {
-      if (checked) {
-        let [campus, building] = key.split(':');
-        if (building) {
-          building = titleCase(building);
-          tags.push({
-            key: `building-${key}`,
-            label: `${campus}, ${building}`,
-            onDismiss: () => {
-              return setSelectedCampuses((prev) => {
-                return { ...prev, [key]: false };
-              });
-            }
-          });
-        } else {
-          campus = titleCase(campus);
-          tags.push({
-            key: `campus-${key}`,
-            label: `${campus}`,
-            onDismiss: () => {
-              return setSelectedCampuses((prev) => {
-                return { ...prev, [key]: false };
-              });
-            }
-          });
-        }
+      );
+      if (selectedCampuses[campus] && allBuildingsSelected) {
+        tags.push({
+          key: `campus-${campus}`,
+          label: campus,
+          onDismiss: () => {
+            return setSelectedCampuses((prev) => {
+              return { ...prev, [campus]: false };
+            });
+          }
+        });
+      } else {
+        buildings.forEach((building) => {
+          if (selectedCampuses[`${campus}:${building}`]) {
+            tags.push({
+              key: `building-${campus}:${building}`,
+              label: `${campus}, ${building}`,
+              onDismiss: () => {
+                return setSelectedCampuses((prev) => {
+                  return {
+                    ...prev,
+                    [`${campus}:${building}`]: false
+                  };
+                });
+              }
+            });
+          }
+        });
       }
     });
 
+    // Features
     Object.entries(selectedFeatures).forEach(([feature, checked]) => {
       if (checked) {
         tags.push({
@@ -455,6 +458,7 @@ const FindStudySpaceTemplate = ({ data }) => {
       }
     });
 
+    // Noise levels
     Object.entries(selectedNoiseLevels).forEach(([level, checked]) => {
       if (checked) {
         tags.push({
@@ -469,8 +473,19 @@ const FindStudySpaceTemplate = ({ data }) => {
       }
     });
 
+    // Bookable
+    if (bookableOnly) {
+      tags.push({
+        key: 'bookableOnly',
+        label: 'Bookable spaces only',
+        onDismiss: () => {
+          return setBookableOnly(false);
+        }
+      });
+    }
+
     return tags;
-  }, [bookableOnly, selectedCampuses, selectedFeatures, selectedNoiseLevels]);
+  }, [selectedCampuses, selectedFeatures, selectedNoiseLevels, bookableOnly, campusToBuildings]);
 
   const activeFilterTags = getActiveFilterTags();
 
