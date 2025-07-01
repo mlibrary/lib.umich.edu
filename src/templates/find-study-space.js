@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import Card from '../components/card';
@@ -474,9 +474,11 @@ const FindStudySpaceTemplate = ({ data }) => {
 
   const activeFilterTags = getActiveFilterTags();
 
-  // Update the URL with the current filters
   useEffect(() => {
     if (!isBrowser) {
+      return;
+    }
+    if (!didInit.current) {
       return;
     }
     const stateObj = {};
@@ -529,6 +531,7 @@ const FindStudySpaceTemplate = ({ data }) => {
   }, [bookableOnly, selectedCampuses, selectedFeatures, selectedNoiseLevels, showAll]);
 
   // Back / forward button to keep active filters (do we need this?)
+  const didInit = useRef(false);
   useEffect(() => {
     if (!isBrowser) {
       return;
@@ -553,6 +556,12 @@ const FindStudySpaceTemplate = ({ data }) => {
         }, {})
       );
     };
+
+    if (!didInit.current) {
+      onPopState();
+      didInit.current = true;
+    }
+
     window.addEventListener('popstate', onPopState);
     return () => {
       return window.removeEventListener('popstate', onPopState);
