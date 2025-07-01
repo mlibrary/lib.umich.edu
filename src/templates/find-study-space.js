@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
+import getUrlState, { stringifyState } from '../utils/get-url-state';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
@@ -162,6 +163,11 @@ const Tag = ({ label, onDismiss }) => {
   );
 };
 
+const FILTER_KEYS = ['bookable', 'campuses', 'features', 'noise', 'showAll'];
+const isBrowser = typeof window !== 'undefined';
+const locationSearch = isBrowser ? window.location.search : '';
+const urlState = getUrlState(locationSearch, FILTER_KEYS);
+
 const FindStudySpaceTemplate = ({ data }) => {
   const allStudySpaces = data.locations.edges.concat(data.rooms.edges);
 
@@ -214,12 +220,24 @@ const FindStudySpaceTemplate = ({ data }) => {
     new Set(allStudySpaces.map(getNoiseLevel).filter(Boolean))
   );
 
-  const [bookableOnly, setBookableOnly] = useState(false);
-  const [showAll, setShowAll] = useState(false);
+  const [bookableOnly, setBookableOnly] = useState(Boolean(urlState.bookable));
+  const [showAll, setShowAll] = useState(Boolean(urlState.showAll));
   const [show, setShow] = useState(6);
-  const [selectedCampuses, setSelectedCampuses] = useState({});
-  const [selectedFeatures, setSelectedFeatures] = useState({});
-  const [selectedNoiseLevels, setSelectedNoiseLevels] = useState({});
+  const [selectedCampuses, setSelectedCampuses] = useState(
+    (urlState.campuses || []).reduce((acc, k) => {
+      return { ...acc, [k]: true };
+    }, {})
+  );
+  const [selectedFeatures, setSelectedFeatures] = useState(
+    (urlState.features || []).reduce((acc, k) => {
+      return { ...acc, [k]: true };
+    }, {})
+  );
+  const [selectedNoiseLevels, setSelectedNoiseLevels] = useState(
+    (urlState.noise || []).reduce((acc, k) => {
+      return { ...acc, [k]: true };
+    }, {})
+  );
 
   const handleBookableChange = () => {
     return setBookableOnly((isBookable) => {
@@ -311,6 +329,7 @@ const FindStudySpaceTemplate = ({ data }) => {
     return true;
   });
 
+  // Show all / show 6 button
   useEffect(() => {
     if (showAll) {
       setShow(filteredStudySpaces.length);
@@ -437,6 +456,65 @@ const FindStudySpaceTemplate = ({ data }) => {
   }, [bookableOnly, selectedCampuses, selectedFeatures, selectedNoiseLevels]);
 
   const activeFilterTags = getActiveFilterTags();
+
+  // Update the URL with the current filters
+  useEffect(() => {
+    if (!isBrowser) {
+      return;
+    }
+    const stateString = stringifyState({
+      bookable: bookableOnly ? 1 : null,
+      campuses: Object.entries(selectedCampuses).filter(([, value]) => {
+        return value;
+      }).map(([key]) => {
+        return key;
+      }),
+      features: Object.entries(selectedFeatures).filter(([, value]) => {
+        return value;
+      }).map(([key]) => {
+        return key;
+      }),
+      noise: Object.entries(selectedNoiseLevels).filter(([, value]) => {
+        return value;
+      }).map(([key]) => {
+        return key;
+      }),
+      showAll: showAll ? 1 : null
+    });
+    const to = stateString.length > 0 ? `?${stateString}` : window.location.pathname;
+    window.history.replaceState({}, '', to);
+  }, [bookableOnly, selectedCampuses, selectedFeatures, selectedNoiseLevels, showAll]);
+
+  // Back / forward button to keep active filters (do we need this?)
+  useEffect(() => {
+    if (!isBrowser) {
+      return;
+    }
+    const onPopState = () => {
+      const newUrlState = getUrlState(window.location.search, FILTER_KEYS);
+      setBookableOnly(Boolean(newUrlState.bookable));
+      setShowAll(Boolean(newUrlState.showAll));
+      setSelectedCampuses(
+        (newUrlState.campuses || []).reduce((acc, key) => {
+          return { ...acc, [key]: true };
+        }, {})
+      );
+      setSelectedFeatures(
+        (newUrlState.features || []).reduce((acc, key) => {
+          return { ...acc, [key]: true };
+        }, {})
+      );
+      setSelectedNoiseLevels(
+        (newUrlState.noise || []).reduce((acc, key) => {
+          return { ...acc, [key]: true };
+        }, {})
+      );
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => {
+      return window.removeEventListener('popstate', onPopState);
+    };
+  }, []);
 
   return (
     <TemplateLayout node={node}>
@@ -583,7 +661,7 @@ const FindStudySpaceTemplate = ({ data }) => {
                       return null;
                     }
                   } else if (tag.key && tag.key.startsWith('building-')) {
-                    const match = tag.key.match(/^building-([^:]+):(.+)$/);
+                    const match = tag.key.match(/^building-(?:[^:]+):(?:.+)$/u);
                     const campus = match ? match[1] : null;
                     if (campus && selectedCampuses[campus]) {
                       return null;
