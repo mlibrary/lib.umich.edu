@@ -3,13 +3,13 @@ import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function Card ({ href, ...rest }) {
+export default function Card ({ href, state, ...rest }) {
   if (href.startsWith('/')) {
     return (
       <CoreCard
         renderAnchor={({ anchorStyles, children }) => {
           return (
-            <Link css={anchorStyles} to={href}>
+            <Link css={anchorStyles} to={href} state={state}>
               {children}
             </Link>
           );
@@ -23,5 +23,6 @@ export default function Card ({ href, ...rest }) {
 }
 
 Card.propTypes = {
-  href: PropTypes.string
+  href: PropTypes.string,
+  state: PropTypes.object
 };

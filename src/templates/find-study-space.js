@@ -16,6 +16,7 @@ import SearchEngineOptimization from '../components/seo';
 import { sentenceCase } from 'change-case';
 import TemplateLayout from './template-layout';
 import { titleCase } from 'title-case';
+import { useLocation } from '@reach/router';
 
 const getBuildingName = (edge) => {
   return (
@@ -224,20 +225,36 @@ const FindStudySpaceTemplate = ({ data }) => {
   const [showAll, setShowAll] = useState(Boolean(urlState.showAll));
   const [show, setShow] = useState(6);
   const [selectedCampuses, setSelectedCampuses] = useState(
-    (urlState.campuses || []).reduce((acc, k) => {
-      return { ...acc, [k]: true };
+    (urlState.campuses || []).reduce((acc, key) => {
+      return { ...acc, [key]: true };
     }, {})
   );
   const [selectedFeatures, setSelectedFeatures] = useState(
-    (urlState.features || []).reduce((acc, k) => {
-      return { ...acc, [k]: true };
+    (urlState.features || []).reduce((acc, key) => {
+      return { ...acc, [key]: true };
     }, {})
   );
   const [selectedNoiseLevels, setSelectedNoiseLevels] = useState(
-    (urlState.noise || []).reduce((acc, k) => {
-      return { ...acc, [k]: true };
+    (urlState.noise || []).reduce((acc, key) => {
+      return { ...acc, [key]: true };
     }, {})
   );
+
+  const location = useLocation();
+
+  const [queryString, setQueryString] = useState(location.search);
+
+  const CardWithLocation = (props) => {
+    return (
+      <Card
+        {...props}
+        state={{
+          findStudySpaceQuery: queryString,
+          fromFindStudySpace: true
+        }}
+      />
+    );
+  };
 
   const handleBookableChange = () => {
     return setBookableOnly((isBookable) => {
@@ -462,27 +479,53 @@ const FindStudySpaceTemplate = ({ data }) => {
     if (!isBrowser) {
       return;
     }
-    const stateString = stringifyState({
-      bookable: bookableOnly ? 1 : null,
-      campuses: Object.entries(selectedCampuses).filter(([, value]) => {
+    const stateObj = {};
+
+    if (bookableOnly) {
+      stateObj.bookable = 1;
+    }
+
+    const campuses = Object.entries(selectedCampuses)
+      .filter(([, value]) => {
         return value;
-      }).map(([key]) => {
+      })
+      .map(([key]) => {
         return key;
-      }),
-      features: Object.entries(selectedFeatures).filter(([, value]) => {
+      });
+    if (campuses.length) {
+      stateObj.campuses = campuses;
+    }
+
+    const features = Object.entries(selectedFeatures)
+      .filter(([, value]) => {
         return value;
-      }).map(([key]) => {
+      })
+      .map(([key]) => {
         return key;
-      }),
-      noise: Object.entries(selectedNoiseLevels).filter(([, value]) => {
+      });
+    if (features.length) {
+      stateObj.features = features;
+    }
+
+    const noise = Object.entries(selectedNoiseLevels)
+      .filter(([, value]) => {
         return value;
-      }).map(([key]) => {
+      })
+      .map(([key]) => {
         return key;
-      }),
-      showAll: showAll ? 1 : null
-    });
+      });
+    if (noise.length) {
+      stateObj.noise = noise;
+    }
+
+    if (showAll) {
+      stateObj.showAll = 1;
+    }
+
+    const stateString = stringifyState(stateObj);
     const to = stateString.length > 0 ? `?${stateString}` : window.location.pathname;
     window.history.replaceState({}, '', to);
+    setQueryString(stateString.length > 0 ? `?${stateString}` : '');
   }, [bookableOnly, selectedCampuses, selectedFeatures, selectedNoiseLevels, showAll]);
 
   // Back / forward button to keep active filters (do we need this?)
@@ -751,11 +794,18 @@ const FindStudySpaceTemplate = ({ data }) => {
                               transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.2 }}
                               style={{ listStyle: 'none' }}
                             >
-                              <Card css={{ marginBottom: SPACING.XL }} image={cardImage} alt={cardAlt} href={slug} title={cardTitle} subtitle={buildingName}>
+                              <CardWithLocation
+                                css={{ marginBottom: SPACING.XL }}
+                                image={cardImage}
+                                alt={cardAlt}
+                                href={slug}
+                                title={cardTitle}
+                                subtitle={buildingName}
+                              >
                                 {cardSummary}
                                 <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
                                 <NoiseLevel noiseLevel={noiseLevel}></NoiseLevel>
-                              </Card>
+                              </CardWithLocation>
                             </motion.li>
                           );
                         })}

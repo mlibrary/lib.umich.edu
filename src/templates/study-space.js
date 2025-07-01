@@ -7,9 +7,10 @@ import { graphql } from 'gatsby';
 import Html from '../components/html';
 import LocationAside from '../components/location-aside';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
+import { navigate, useLocation } from '@reach/router';
 
 const StudyTemplate = ({ data }) => {
   const node = getNode(data);
@@ -19,10 +20,32 @@ const StudyTemplate = ({ data }) => {
       ?.localFile?.childImageSharp?.gatsbyImageData;
   const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
 
+  const location = useLocation();
+  const fromFindStudySpace = location.state && location.state.fromFindStudySpace;
+  const findStudySpaceQuery = location.state && location.state.findStudySpaceQuery;
+
+  console.log({ findStudySpaceQuery });
+
   return (
     <TemplateLayout node={node}>
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
+        {fromFindStudySpace && (
+          <button
+            onClick={() => {
+              navigate(`/visit-and-study/study-spaces/find-study-space-pt${findStudySpaceQuery || ''}`);
+            }}
+            style={{
+              display: 'inline-block',
+              marginBottom: '1rem',
+              color: 'var(--color-teal-400)',
+              textDecoration: 'underline',
+              fontWeight: 'bold'
+            }}
+          >
+            ← Return to Find a Study Space
+          </button>
+        )}
         <header
           css={{
             [MEDIA_QUERIES.S]: {
