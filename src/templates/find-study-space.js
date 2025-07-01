@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING } from '../reusable';
+import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
@@ -109,6 +109,10 @@ const NoiseLevel = ({ noiseLevel }) => {
   );
 };
 
+NoiseLevel.propTypes = {
+  noiseLevel: PropTypes.string
+};
+
 const getCampusAndBuilding = (edge) => {
   let campus = '';
   let building = '';
@@ -147,7 +151,7 @@ const Tag = ({ label, onDismiss }) => {
         display: 'flex',
         fontSize: '0.9rem',
         fontWeight: 500,
-        gap: '2px',
+        gap: '4px',
         marginBottom: 8,
         marginRight: 8,
         padding: '0.25rem 0.75rem'
@@ -162,6 +166,11 @@ const Tag = ({ label, onDismiss }) => {
       </svg>
     </button>
   );
+};
+
+Tag.propTypes = {
+  label: PropTypes.any,
+  onDismiss: PropTypes.any
 };
 
 const FILTER_KEYS = ['bookable', 'campuses', 'features', 'noise', 'showAll'];
@@ -419,7 +428,14 @@ const FindStudySpaceTemplate = ({ data }) => {
           label: campus,
           onDismiss: () => {
             return setSelectedCampuses((prev) => {
-              return { ...prev, [campus]: false };
+            // Remove campus and all buildings when campus tag is cancelled / dismissed
+              const updated = { ...prev, [campus]: false };
+              campusToBuildings[campus].forEach(
+                (building) => {
+                  updated[`${campus}:${building}`] = false;
+                }
+              );
+              return updated;
             });
           }
         });
@@ -606,14 +622,15 @@ const FindStudySpaceTemplate = ({ data }) => {
             'div:first-of-type': {
               border: 'none !important',
               paddingBottom: '0'
-            }
+            },
+            maxWidth: '25rem'
           }}
           contentSide='right'
         >
           <div
             css={{
+              ...TYPOGRAPHY['3XS'],
               color: 'var(--color-neutral-300)',
-              fontWeight: 'bold',
               marginBottom: SPACING.M
             }}
           >
@@ -682,7 +699,7 @@ const FindStudySpaceTemplate = ({ data }) => {
               padding: 0
             }}
           />
-          <Collapsible title='Noise Level'>
+          <Collapsible title='Noise Levels'>
             <CheckboxGroup
               options={allNoiseLevels}
               selected={selectedNoiseLevels}
