@@ -1,4 +1,4 @@
-import { Heading, Margins, MEDIA_QUERIES, SPACING, Text } from '../reusable';
+import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, Text } from '../reusable';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -30,22 +30,7 @@ const StudyTemplate = ({ data }) => {
     <TemplateLayout node={node}>
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
-        {fromFindStudySpace && (
-          <button
-            onClick={() => {
-              navigate(`/visit-and-study/study-spaces/find-study-space-pt${findStudySpaceQuery || ''}`);
-            }}
-            style={{
-              display: 'inline-block',
-              marginBottom: '1rem',
-              color: 'var(--color-teal-400)',
-              textDecoration: 'underline',
-              fontWeight: 'bold'
-            }}
-          >
-            ← Return to Find a Study Space
-          </button>
-        )}
+
         <header
           css={{
             [MEDIA_QUERIES.S]: {
@@ -147,6 +132,16 @@ const StudyTemplate = ({ data }) => {
             About the space
           </Heading>
           {body && <Html html={body.processed} />}
+          <Button
+            onClick={() => {
+              navigate(`/visit-and-study/study-spaces/find-study-space-pt${fromFindStudySpace ? findStudySpaceQuery : '' || ''}`);
+            }}
+            css={{
+              marginTop: SPACING.L
+            }}
+          >
+            {fromFindStudySpace ? 'Return to Find a Study Space' : 'Find another study space'}
+          </Button>
         </TemplateContent>
       </Template>
     </TemplateLayout>
