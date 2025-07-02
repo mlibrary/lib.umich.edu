@@ -51,7 +51,6 @@ const Collapsible = ({ title, children, defaultExpanded }) => {
           justifyContent: 'space-between',
           padding: `${SPACING.S}`,
           width: '100%'
-
         }}
       >
         <span
@@ -80,7 +79,6 @@ const Collapsible = ({ title, children, defaultExpanded }) => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={shouldReduceMotion ? { duration: 0, ease: 'easeInOut' } : { duration: 0.2, ease: 'easeInOut' }}
-            style={{ overflow: 'hidden' }}
             aria-hidden={!isExpanded}
             id={`expandable-${id}`}
           >
