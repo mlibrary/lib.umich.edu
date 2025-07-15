@@ -28,7 +28,23 @@ const StudyTemplate = ({ data }) => {
     <TemplateLayout node={node}>
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
-
+        {fromFindStudySpace
+          ? (
+              <div
+                style={{
+                  marginBottom: SPACING.XL
+                }}
+              >
+                <Link
+                  onClick={() => {
+                    navigate(`/visit-and-study/study-spaces/find-study-space-pt${fromFindStudySpace ? findStudySpaceQuery : '' || ''}`);
+                  }}
+                >
+                  <Icon style={{ color: 'var(--color-teal-400)', marginRight: SPACING['2XS'], transform: 'rotate(180deg)' }} icon='arrow_forward' /> Return to Find a Study Space
+                </Link>
+              </div>
+            )
+          : null}
         <header
           css={{
             [MEDIA_QUERIES.S]: {
