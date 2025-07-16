@@ -340,7 +340,7 @@ const FindStudySpaceTemplate = ({ data }) => {
 
     if (Object.values(selectedFeatures).some(Boolean)) {
       const features = getSpaceFeatures(edge);
-      const hasSelectedFeature = Object.entries(selectedFeatures).some(
+      const hasSelectedFeature = Object.entries(selectedFeatures).every(
         ([feature, checked]) => {
           return checked && features.includes(feature);
         }
