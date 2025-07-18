@@ -7,6 +7,7 @@ import LocationAnchoredLink from './location-anchored-link';
 import PropTypes from 'prop-types';
 import React from 'react';
 import useFloorPlan from '../hooks/use-floor-plan';
+import SpaceFeaturesList from './space-features-list';
 
 const LayoutWithIcon = ({
   // eslint-disable-next-line react/prop-types
@@ -229,7 +230,7 @@ const SpaceFeaturesSection = ({ spaceFeatures }) => {
         <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
           Features
         </Heading>
-        <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
+        <SpaceFeaturesList spaceFeatures={spaceFeatures} />
       </LayoutWithIcon>
     </section>
   );
@@ -327,49 +328,7 @@ StudySpaceLocationSection.propTypes = {
 };
 
 const SpaceFeatures = ({ spaceFeatures }) => {
-  /* eslint-disable camelcase */
-  const iconMap = {
-    all_gender_restroom_on_floor: 'person_half_dress',
-    external_monitors: 'desktop_windows',
-    natural_light: 'sunny',
-    wheelchair_accessible: 'wheelchair',
-    whiteboards: 'stylus_note'
-  };
-  /* eslint-enable camelcase */
-
-  return (
-    <ul css={{
-      listStyle: 'none',
-      margin: `${[SPACING.XS]} 0`
-    }}
-    >
-      {spaceFeatures.map((feature, index) => {
-        const icon = iconMap[feature];
-        if (!icon) {
-          return null;
-        }
-
-        return (
-          <li
-            key={index}
-            css={{
-              alignItems: 'center',
-              display: 'flex',
-              gap: [SPACING.XS],
-              margin: `${[SPACING.XS]} 0`
-            }}
-          >
-            <Icon icon={icon} size={18} css={{ color: 'var(--color-teal-400)' }} />
-            <span>
-              {feature.replace(/_/ug, ' ').replace(/^./u, (str) => {
-                return str.toUpperCase();
-              })}
-            </span>
-          </li>
-        );
-      })}
-    </ul>
-  );
+  return <SpaceFeaturesList spaceFeatures={spaceFeatures} />;
 };
 
 SpaceFeatures.propTypes = {

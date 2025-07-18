@@ -14,6 +14,7 @@ import PlainLink from '../components/plain-link';
 import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
 import { sentenceCase } from 'change-case';
+import SpaceFeaturesList from '../components/space-features-list';
 import TemplateLayout from './template-layout';
 import { titleCase } from 'title-case';
 import { useLocation } from '@reach/router';
@@ -50,40 +51,7 @@ const featureLabelRenderer = (featureKey) => {
 };
 
 const SpaceFeatures = ({ spaceFeatures }) => {
-  return (
-    <ul css={{
-      listStyle: 'none',
-      marginTop: `${[SPACING.XS]}`
-    }}
-    >
-      {spaceFeatures.map((feature, index) => {
-        const icon = iconMap[feature];
-        if (!icon) {
-          return null;
-        }
-
-        return (
-          <li
-            key={index}
-            css={{
-              alignItems: 'center',
-              display: 'inline-flex',
-              flexDirection: 'row',
-              gap: [SPACING.XS],
-              margin: `0 ${[SPACING.XS]} ${[SPACING.XS]} 0`
-            }}
-          >
-            <Icon icon={icon} size={18} css={{ color: 'var(--color-teal-400)' }} />
-            <span css={{ color: 'var(--color-neutral-400)' }}>
-              {feature.replace(/_/ug, ' ').replace(/^./u, (str) => {
-                return str.toUpperCase();
-              })}
-            </span>
-          </li>
-        );
-      })}
-    </ul>
-  );
+  return <SpaceFeaturesList spaceFeatures={spaceFeatures} inline />;
 };
 
 SpaceFeatures.propTypes = {
@@ -430,7 +398,6 @@ const FindStudySpaceTemplate = ({ data }) => {
           label: campus,
           onDismiss: () => {
             return setSelectedCampuses((prev) => {
-            // Remove campus and all buildings when campus tag is cancelled / dismissed
               const updated = { ...prev, [campus]: false };
               campusToBuildings[campus].forEach(
                 (building) => {
