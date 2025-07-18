@@ -196,10 +196,19 @@ const FindStudySpaceTemplate = ({ data }) => {
     campusToBuildings[campus] = buildings;
   });
 
-  const allSpaceFeaturesList = Array.from(
-    new Set(allStudySpaces.flatMap(getSpaceFeatures).filter(Boolean))
-  );
-  console.log(allStudySpaces);
+  const orderedSpaceFeatures = [
+    'bookable',
+    'natural_light',
+    'whiteboards',
+    'external_monitors',
+    'wheelchair_accessible',
+    'all_gender_restroom_on_floor'
+  ];
+
+  const existingFeatures = new Set(allStudySpaces.flatMap(getSpaceFeatures).filter(Boolean));
+  const allSpaceFeaturesList = orderedSpaceFeatures.filter((feature) => {
+    return existingFeatures.has(feature);
+  });
 
   const allNoiseLevels = Array.from(
     new Set(allStudySpaces.map(getNoiseLevel).filter(Boolean))
