@@ -141,7 +141,7 @@ Tag.propTypes = {
   onDismiss: PropTypes.any
 };
 
-const FILTER_KEYS = ['bookable', 'campuses', 'features', 'noise', 'showAll'];
+const FILTER_KEYS = ['campuses', 'features', 'noise', 'showAll'];
 const isBrowser = typeof window !== 'undefined';
 const locationSearch = isBrowser ? window.location.search : '';
 const urlState = getUrlState(locationSearch, FILTER_KEYS);
@@ -203,7 +203,6 @@ const FindStudySpaceTemplate = ({ data }) => {
     new Set(allStudySpaces.map(getNoiseLevel).filter(Boolean))
   );
 
-  const [bookableOnly, setBookableOnly] = useState(Boolean(urlState.bookable));
   const [showAll, setShowAll] = useState(Boolean(urlState.showAll));
   const [show, setShow] = useState(6);
   const [selectedCampuses, setSelectedCampuses] = useState(
@@ -236,12 +235,6 @@ const FindStudySpaceTemplate = ({ data }) => {
         }}
       />
     );
-  };
-
-  const handleBookableChange = () => {
-    return setBookableOnly((isBookable) => {
-      return !isBookable;
-    });
   };
 
   const handleCampusChange = (campus, building, setAll = null) => {
@@ -286,17 +279,12 @@ const FindStudySpaceTemplate = ({ data }) => {
   };
 
   const clearAllFilters = () => {
-    setBookableOnly(false);
     setSelectedCampuses({});
     setSelectedFeatures({});
     setSelectedNoiseLevels({});
   };
 
   const filteredStudySpaces = allStudySpaces.filter((edge) => {
-    if (bookableOnly && !edge.node.field_bookable_study_space) {
-      return false;
-    }
-
     if (Object.values(selectedCampuses).some(Boolean)) {
       const { campus, building } = getCampusAndBuilding(edge);
       const campusChecked = selectedCampuses[campus];
@@ -458,19 +446,8 @@ const FindStudySpaceTemplate = ({ data }) => {
       }
     });
 
-    // Bookable
-    if (bookableOnly) {
-      tags.push({
-        key: 'bookableOnly',
-        label: 'Bookable spaces only',
-        onDismiss: () => {
-          return setBookableOnly(false);
-        }
-      });
-    }
-
     return tags;
-  }, [selectedCampuses, selectedFeatures, selectedNoiseLevels, bookableOnly, campusToBuildings]);
+  }, [selectedCampuses, selectedFeatures, selectedNoiseLevels, campusToBuildings]);
 
   const activeFilterTags = getActiveFilterTags();
 
@@ -482,10 +459,6 @@ const FindStudySpaceTemplate = ({ data }) => {
       return;
     }
     const stateObj = {};
-
-    if (bookableOnly) {
-      stateObj.bookable = 1;
-    }
 
     const campuses = Object.entries(selectedCampuses)
       .filter(([, value]) => {
@@ -528,7 +501,7 @@ const FindStudySpaceTemplate = ({ data }) => {
     const to = stateString.length > 0 ? `?${stateString}` : window.location.pathname;
     window.history.replaceState({}, '', to);
     setQueryString(stateString.length > 0 ? `?${stateString}` : '');
-  }, [bookableOnly, selectedCampuses, selectedFeatures, selectedNoiseLevels, showAll]);
+  }, [selectedCampuses, selectedFeatures, selectedNoiseLevels, showAll]);
 
   // Back / forward button to keep active filters (do we need this?)
   const didInit = useRef(false);
@@ -538,7 +511,6 @@ const FindStudySpaceTemplate = ({ data }) => {
     }
     const onPopState = () => {
       const newUrlState = getUrlState(window.location.search, FILTER_KEYS);
-      setBookableOnly(Boolean(newUrlState.bookable));
       setShowAll(Boolean(newUrlState.showAll));
       setSelectedCampuses(
         (newUrlState.campuses || []).reduce((acc, key) => {
@@ -604,39 +576,6 @@ const FindStudySpaceTemplate = ({ data }) => {
             }}
           >
             FILTER BY
-          </div>
-          <div
-            css={{
-              alignItems: 'center',
-              display: 'flex',
-              flexFlow: 'row wrap',
-              marginBottom: SPACING.M
-            }}
-          >
-            <input
-              css={{
-                accentColor: 'var(--color-teal-400)',
-                height: '18px',
-                marginLeft: 0,
-                marginRight: '0.75rem',
-                width: '18px'
-              }}
-              type='checkbox'
-              id='bookableSpacesOnly'
-              name='bookableSpaceOnly'
-              checked={bookableOnly}
-              onChange={handleBookableChange}
-            />
-            <label
-              css={{
-                color: 'var(--color-neutral-400)',
-                fontSize: '1rem',
-                fontWeight: 'normal'
-              }}
-              htmlFor='bookableSpacesOnly'
-            >
-              Bookable spaces only
-            </label>
           </div>
           <Collapsible title='Locations'>
             <CheckboxGroup
