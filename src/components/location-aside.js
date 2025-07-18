@@ -230,7 +230,7 @@ const SpaceFeaturesSection = ({ spaceFeatures }) => {
         <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
           Features
         </Heading>
-        <SpaceFeaturesList spaceFeatures={spaceFeatures} />
+        <SpaceFeaturesList spaceFeatures={spaceFeatures} inline={false} />
       </LayoutWithIcon>
     </section>
   );
