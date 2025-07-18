@@ -6,8 +6,8 @@ import Link from './link';
 import LocationAnchoredLink from './location-anchored-link';
 import PropTypes from 'prop-types';
 import React from 'react';
+import SpaceFeaturesIcons from './space-features-list';
 import useFloorPlan from '../hooks/use-floor-plan';
-import SpaceFeaturesList from './space-features-list';
 
 const LayoutWithIcon = ({
   // eslint-disable-next-line react/prop-types
@@ -230,7 +230,7 @@ const SpaceFeaturesSection = ({ spaceFeatures }) => {
         <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
           Features
         </Heading>
-        <SpaceFeaturesList spaceFeatures={spaceFeatures} inline={false} />
+        <SpaceFeaturesIcons spaceFeatures={spaceFeatures} inline={false} />
       </LayoutWithIcon>
     </section>
   );
@@ -328,7 +328,7 @@ StudySpaceLocationSection.propTypes = {
 };
 
 const SpaceFeatures = ({ spaceFeatures }) => {
-  return <SpaceFeaturesList spaceFeatures={spaceFeatures} />;
+  return <SpaceFeaturesIcons spaceFeatures={spaceFeatures} />;
 };
 
 SpaceFeatures.propTypes = {

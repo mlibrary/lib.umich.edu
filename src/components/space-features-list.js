@@ -1,9 +1,10 @@
+import { Icon, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Icon, SPACING } from '../reusable';
 
 const iconMap = {
   all_gender_restroom_on_floor: 'person_half_dress',
+  bookable: 'calendar_month',
   external_monitors: 'desktop_windows',
   natural_light: 'sunny',
   wheelchair_accessible: 'wheelchair',
@@ -18,7 +19,7 @@ function formatFeatureLabel (feature) {
     });
 }
 
-const SpaceFeaturesList = ({ spaceFeatures, inline }) => {
+const SpaceFeaturesIcons = ({ spaceFeatures, inline }) => {
   return (
     <ul
       css={{
@@ -60,9 +61,9 @@ const SpaceFeaturesList = ({ spaceFeatures, inline }) => {
   );
 };
 
-SpaceFeaturesList.propTypes = {
+SpaceFeaturesIcons.propTypes = {
   inline: PropTypes.bool,
   spaceFeatures: PropTypes.array.isRequired
 };
 
-export default SpaceFeaturesList;
+export default SpaceFeaturesIcons;

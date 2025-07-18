@@ -14,7 +14,7 @@ import PlainLink from '../components/plain-link';
 import PropTypes from 'prop-types';
 import SearchEngineOptimization from '../components/seo';
 import { sentenceCase } from 'change-case';
-import SpaceFeaturesList from '../components/space-features-list';
+import SpaceFeaturesIcons from '../components/space-features-list';
 import TemplateLayout from './template-layout';
 import { titleCase } from 'title-case';
 import { useLocation } from '@reach/router';
@@ -34,6 +34,7 @@ const getSpaceFeatures = (edge) => {
 /* eslint-disable camelcase */
 const iconMap = {
   all_gender_restroom_on_floor: 'person_half_dress',
+  bookable: 'calendar_month',
   external_monitors: 'desktop_windows',
   natural_light: 'sunny',
   wheelchair_accessible: 'wheelchair',
@@ -51,7 +52,7 @@ const featureLabelRenderer = (featureKey) => {
 };
 
 const SpaceFeatures = ({ spaceFeatures }) => {
-  return <SpaceFeaturesList spaceFeatures={spaceFeatures} inline />;
+  return <SpaceFeaturesIcons spaceFeatures={spaceFeatures} inline />;
 };
 
 SpaceFeatures.propTypes = {
@@ -198,6 +199,7 @@ const FindStudySpaceTemplate = ({ data }) => {
   const allSpaceFeaturesList = Array.from(
     new Set(allStudySpaces.flatMap(getSpaceFeatures).filter(Boolean))
   );
+  console.log(allStudySpaces);
 
   const allNoiseLevels = Array.from(
     new Set(allStudySpaces.map(getNoiseLevel).filter(Boolean))
