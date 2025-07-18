@@ -198,9 +198,9 @@ const FindStudySpaceTemplate = ({ data }) => {
 
   const orderedSpaceFeatures = [
     'bookable',
-    'natural_light',
     'whiteboards',
     'external_monitors',
+    'natural_light',
     'wheelchair_accessible',
     'all_gender_restroom_on_floor'
   ];
