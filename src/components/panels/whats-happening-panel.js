@@ -76,11 +76,6 @@ export default function WhatsHappening () {
     }
   }, [events, data.otherEvents.nodes, data.priorityEvents.nodes]);
 
-  // Make sure there are events to render.
-  if (!events || events.length === 0) {
-    return null;
-  }
-
   return (
     <div
       css={{
@@ -93,30 +88,38 @@ export default function WhatsHappening () {
           What&rsquo;s happening?
         </Heading>
 
-        <div
-          css={{
-            [MEDIA_QUERIES.S]: {
-              display: 'grid',
-              gridGap: `${SPACING.XL} ${SPACING.M}`,
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
-            }
-          }}
-        >
-          {events.map((event, index) => {
-            return (
-              <EventCard
-                {...event}
-                displayImage={false}
-                hasBorder={false}
-                key={index}
-              />
-            );
-          })}
-        </div>
+        {(!events || events.length === 0)
+          ? (
+              <p css={{ marginTop: SPACING.L, marginBottom: SPACING['2XL'] }}>We don&rsquo;t currently have any upcoming events scheduled or exhibits on display.</p>
+            )
+          : (
+              <>
+                <div
+                  css={{
+                    [MEDIA_QUERIES.S]: {
+                      display: 'grid',
+                      gridGap: `${SPACING.XL} ${SPACING.M}`,
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
+                    }
+                  }}
+                >
+                  {events.map((event, index) => {
+                    return (
+                      <EventCard
+                        {...event}
+                        displayImage={false}
+                        hasBorder={false}
+                        key={index}
+                      />
+                    );
+                  })}
+                </div>
 
-        <Link to='/visit-and-study/events-and-exhibits/today-and-upcoming'>
-          View all events
-        </Link>
+                <Link to='/visit-and-study/events-and-exhibits/today-and-upcoming'>
+                  View all events
+                </Link>
+              </>
+            )}
       </Margins>
     </div>
   );
