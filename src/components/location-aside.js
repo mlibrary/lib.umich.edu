@@ -1,6 +1,6 @@
+import { getBuildingSlug, getFloor } from '../utils';
 import { Heading, Icon, SPACING, Text } from '../reusable';
 import Address from './address';
-import { getFloor } from '../utils';
 import Hours from './todays-hours';
 import Link from './link';
 import LocationAnchoredLink from './location-anchored-link';
@@ -64,7 +64,7 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
     relationships } = node;
   const buildingNode = relationships?.field_room_building;
   const parentLocationNode = relationships?.field_parent_location;
-  const buildingSlug = parentLocationNode?.relationships?.field_parent_location?.fields.slug ?? buildingNode?.relationships?.field_parent_location?.fields.slug ?? parentLocationNode?.fields?.slug ?? buildingNode?.fields?.slug;
+  const buildingSlug = getBuildingSlug({ node });
   const locationNode = buildingNode ?? parentLocationNode?.relationships?.field_parent_location ?? node;
   const locationTitle = buildingNode?.title ?? parentLocationNode?.title;
   const floor = getFloor({ node });
