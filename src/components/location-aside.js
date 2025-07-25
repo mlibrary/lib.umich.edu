@@ -65,7 +65,6 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
   const buildingNode = relationships?.field_room_building;
   const parentLocationNode = relationships?.field_parent_location;
   const buildingSlug = parentLocationNode?.relationships?.field_parent_location?.fields.slug ?? buildingNode?.relationships?.field_parent_location?.fields.slug ?? parentLocationNode?.fields?.slug ?? buildingNode?.fields?.slug;
-  console.log(node);
   const locationNode = buildingNode ?? parentLocationNode?.relationships?.field_parent_location ?? node;
   const locationTitle = buildingNode?.title ?? parentLocationNode?.title;
   const floor = getFloor({ node });
