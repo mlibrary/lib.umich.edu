@@ -44,6 +44,9 @@ export const query = graphql`
       field_room_building {
         id
         title
+        fields {
+          slug
+        }
         field_building_address {
           locality
           address_line1
@@ -60,6 +63,9 @@ export const query = graphql`
           }
           field_parent_location {
             title
+            fields {
+              slug
+            }
             field_display_hours_
             relationships {
               field_hours_open {

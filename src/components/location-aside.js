@@ -64,6 +64,8 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
     relationships } = node;
   const buildingNode = relationships?.field_room_building;
   const parentLocationNode = relationships?.field_parent_location;
+  const buildingSlug = parentLocationNode?.relationships?.field_parent_location?.fields.slug ?? buildingNode?.relationships?.field_parent_location?.fields.slug ?? parentLocationNode?.fields?.slug ?? buildingNode?.fields?.slug;
+  console.log(node);
   const locationNode = buildingNode ?? parentLocationNode?.relationships?.field_parent_location ?? node;
   const locationTitle = buildingNode?.title ?? parentLocationNode?.title;
   const floor = getFloor({ node });
@@ -84,6 +86,7 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
     return (
       <>
         <StudySpaceLocationSection {...{
+          buildingSlug,
           floor,
           locationTitle,
           maybeFloorPlan,
@@ -299,7 +302,7 @@ const getFloorPlanContent = (normalizedFloorPlans, maybeFloorPlan) => {
   );
 };
 
-const StudySpaceLocationSection = ({ locationTitle, floor, roomNumber, normalizedFloorPlans, maybeFloorPlan }) => {
+const StudySpaceLocationSection = ({ buildingSlug, locationTitle, floor, roomNumber, normalizedFloorPlans, maybeFloorPlan }) => {
   if (!locationTitle && !floor && !normalizedFloorPlans?.length) {
     return null;
   }
@@ -313,6 +316,13 @@ const StudySpaceLocationSection = ({ locationTitle, floor, roomNumber, normalize
         <Text>
           {[locationTitle, floor, roomNumber].filter(Boolean).join(', ')}
         </Text>
+        {buildingSlug && (
+          <Text>
+            <Link to={`${buildingSlug}`}>
+              View building information
+            </Link>
+          </Text>
+        )}
         {getFloorPlanContent(normalizedFloorPlans, maybeFloorPlan)}
       </LayoutWithIcon>
     </section>
@@ -320,6 +330,7 @@ const StudySpaceLocationSection = ({ locationTitle, floor, roomNumber, normalize
 };
 
 StudySpaceLocationSection.propTypes = {
+  buildingSlug: PropTypes.string,
   floor: PropTypes.any,
   locationTitle: PropTypes.any,
   maybeFloorPlan: PropTypes.any,
