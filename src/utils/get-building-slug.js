@@ -3,7 +3,6 @@
     Uses a cascading fallback pattern to find the most appropriate slug.
  */
 export default function getBuildingSlug ({ node }) {
-  console.log('getBuildingSlug called with node:', node);
   if (!node?.relationships) {
     return null;
   }
