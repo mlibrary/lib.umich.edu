@@ -3,17 +3,49 @@ import {
   SPACING,
   Z_SPACE
 } from '../../reusable';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import SiteSearch from '../site-search';
 
 const SiteSearchModal = () => {
+  const dialogRef = useRef();
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+
+    const handleDialogClick = (event) => {
+      if (event.target === dialog) {
+        dialog.close();
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        dialog.close();
+      }
+    };
+
+    dialog.addEventListener('click', handleDialogClick);
+    dialog.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      dialog.removeEventListener('click', handleDialogClick);
+      dialog.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const openDialog = () => {
+    document.body.classList.add('stop-scroll');
+    dialogRef.current.showModal();
+  };
+
+  const closeDialog = () => {
+    document.body.classList.remove('stop-scroll');
+  };
+
   return (
     <>
       <button
-        onClick={() => {
-          document.querySelector('body').classList.add('stop-scroll');
-          document.getElementById('dialog').showModal();
-        }}
+        onClick={openDialog}
         css={{
           padding: `${SPACING.M} ${SPACING.XS}`
         }}
@@ -22,23 +54,10 @@ const SiteSearchModal = () => {
         <span className='visually-hidden'>Search this site</span>
       </button>
       <dialog
+        aria-modal='true'
         id='dialog'
-        onClick={() => {
-          const dialog = document.getElementById('dialog');
-          dialog.addEventListener('click', (event) => {
-            if (event.target === dialog) {
-              event.target.close();
-            }
-          });
-        }}
-        onKeyDown={(event) => {
-          if (event.key === 'Escape') {
-            document.getElementById('dialog').close();
-          }
-        }}
-        onClose={() => {
-          document.querySelector('body').classList.remove('stop-scroll');
-        }}
+        ref={dialogRef}
+        onClose={closeDialog}
         css={{
           border: '0',
           borderRadius: '2px',
