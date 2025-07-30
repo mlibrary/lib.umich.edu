@@ -22,7 +22,6 @@ const formatFeatureLabel = (feature) => {
 };
 
 const SpaceFeaturesIcons = ({ spaceFeatures, inline }) => {
-  console.log(spaceFeatures);
   return (
     <ul
       css={{

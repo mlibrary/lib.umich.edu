@@ -222,7 +222,6 @@ FloorPlanSection.propTypes = {
 };
 
 const SpaceFeaturesSection = ({ spaceFeatures }) => {
-  console.log(spaceFeatures);
   if (!spaceFeatures?.length) {
     return null;
   }

@@ -11,29 +11,12 @@ export default function getBuildingSlug ({ node }) {
   const buildingNode = relationships?.field_room_building;
   const parentLocationNode = relationships?.field_parent_location;
 
-  // Try to get slug from parent location's parent location first
-  const parentLocationParentSlug = parentLocationNode?.relationships?.field_parent_location?.fields?.slug;
-  if (parentLocationParentSlug) {
-    return parentLocationParentSlug;
-  }
+  const slugCandidates = [
+    parentLocationNode?.relationships?.field_parent_location?.fields?.slug,
+    buildingNode?.relationships?.field_parent_location?.fields?.slug,
+    parentLocationNode?.fields?.slug,
+    buildingNode?.fields?.slug
+  ];
 
-  // Try to get slug from building node's parent location
-  const buildingParentSlug = buildingNode?.relationships?.field_parent_location?.fields?.slug;
-  if (buildingParentSlug) {
-    return buildingParentSlug;
-  }
-
-  // Try to get slug directly from parent location node
-  const parentLocationSlug = parentLocationNode?.fields?.slug;
-  if (parentLocationSlug) {
-    return parentLocationSlug;
-  }
-
-  // Finally, try to get slug directly from building node
-  const buildingSlug = buildingNode?.fields?.slug;
-  if (buildingSlug) {
-    return buildingSlug;
-  }
-
-  return null;
+  return slugCandidates.find(Boolean) || null;
 }
