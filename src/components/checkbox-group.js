@@ -20,7 +20,7 @@ const CheckboxGroup = ({
     return val;
   },
   formatId = (val) => {
-    return val.replace(/[\s,]+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '').toLowerCase();
+    return val.replace(/[\s,]+/gu, '-').replace(/[^a-zA-Z0-9-_]/gu, '').toLowerCase();
   }
 }) => {
   const getParentState = (parent) => {
@@ -98,6 +98,7 @@ const CheckboxGroup = ({
 };
 
 CheckboxGroup.propTypes = {
+  formatId: PropTypes.func,
   getChildKey: PropTypes.func,
   getChildren: PropTypes.func,
   getParentKey: PropTypes.func,

@@ -1,4 +1,5 @@
 import { Heading, Icon, Link, Margins, MEDIA_QUERIES, SPACING, Text } from '../reusable';
+import { navigate, useLocation } from '@reach/router';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -10,7 +11,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
-import { navigate, useLocation } from '@reach/router';
 
 const StudyTemplate = ({ data }) => {
   const node = getNode(data);

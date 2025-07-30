@@ -85,13 +85,16 @@ NoiseLevel.propTypes = {
 const getCampusAndBuilding = (edge) => {
   let campus = '';
   let building = '';
+  // eslint-disable-next-line no-underscore-dangle
   if (edge.node.__typename === 'node__location') {
     campus = edge.node.relationships?.field_parent_location?.relationships?.field_building_campus?.field_campus_official_name || '';
     building = edge.node.relationships?.field_parent_location?.title || '';
+    // eslint-disable-next-line no-underscore-dangle
   } else if (edge.node.__typename === 'node__room') {
     campus = edge.node.relationships?.field_room_building?.relationships?.field_building_campus?.field_campus_official_name || '';
     building = edge.node.relationships?.field_room_building?.title || '';
   }
+
   return { building, campus };
 };
 
@@ -462,6 +465,9 @@ const FindStudySpaceTemplate = ({ data }) => {
 
   const activeFilterTags = getActiveFilterTags();
 
+  // Back / forward button to keep active filters (do we need this?)
+  const didInit = useRef(false);
+
   useEffect(() => {
     if (!isBrowser) {
       return;
@@ -514,8 +520,6 @@ const FindStudySpaceTemplate = ({ data }) => {
     setQueryString(stateString.length > 0 ? `?${stateString}` : '');
   }, [selectedCampuses, selectedFeatures, selectedNoiseLevels, showAll]);
 
-  // Back / forward button to keep active filters (do we need this?)
-  const didInit = useRef(false);
   useEffect(() => {
     if (!isBrowser) {
       return;
@@ -546,9 +550,7 @@ const FindStudySpaceTemplate = ({ data }) => {
     }
 
     window.addEventListener('popstate', onPopState);
-    return () => {
-      return window.removeEventListener('popstate', onPopState);
-    };
+    window.removeEventListener('popstate', onPopState);
   }, []);
 
   return (
@@ -786,8 +788,19 @@ const FindStudySpaceTemplate = ({ data }) => {
 
 FindStudySpaceTemplate.propTypes = {
   data: PropTypes.shape({
+    fassNoResults: PropTypes.shape({
+      childImageSharp: PropTypes.shape({
+        gatsbyImageData: PropTypes.any
+      })
+    }),
+    locations: PropTypes.shape({
+      edges: PropTypes.array
+    }),
     page: PropTypes.any,
-    room: PropTypes.any
+    room: PropTypes.any,
+    rooms: PropTypes.shape({
+      edges: PropTypes.array
+    })
   })
 };
 

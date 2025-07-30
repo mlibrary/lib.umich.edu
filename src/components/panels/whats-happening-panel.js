@@ -90,7 +90,7 @@ export default function WhatsHappening () {
 
         {(!events || events.length === 0)
           ? (
-              <p css={{ marginTop: SPACING.L, marginBottom: SPACING['2XL'] }}>We don&rsquo;t currently have any upcoming events scheduled or exhibits on display.</p>
+              <p css={{ marginBottom: SPACING['2XL'], marginTop: SPACING.L }}>We don&rsquo;t currently have any upcoming events scheduled or exhibits on display.</p>
             )
           : (
               <>

@@ -3,21 +3,21 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const iconMap = {
-  all_gender_restroom_on_floor: 'person_half_dress',
+  allGenderRestroomOnFloor: 'person_half_dress',
   bookable: 'calendar_month',
-  external_monitors: 'desktop_windows',
-  natural_light: 'sunny',
-  wheelchair_accessible: 'wheelchair',
+  externalMonitors: 'desktop_windows',
+  naturalLight: 'sunny',
+  wheelchairAccessible: 'wheelchair',
   whiteboards: 'stylus_note'
 };
 
-function formatFeatureLabel (feature) {
+const formatFeatureLabel = (feature) => {
   return feature
     .replace(/_/ug, ' ')
     .replace(/^./u, (str) => {
       return str.toUpperCase();
     });
-}
+};
 
 const SpaceFeaturesIcons = ({ spaceFeatures, inline }) => {
   return (
