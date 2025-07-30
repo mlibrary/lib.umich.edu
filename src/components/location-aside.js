@@ -80,7 +80,6 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
   } else if (floorPlans) {
     normalizedFloorPlans = [floorPlans];
   }
-
   if (isStudySpaceAside) {
     return (
       <>
@@ -223,6 +222,7 @@ FloorPlanSection.propTypes = {
 };
 
 const SpaceFeaturesSection = ({ spaceFeatures }) => {
+  console.log(spaceFeatures);
   if (!spaceFeatures?.length) {
     return null;
   }

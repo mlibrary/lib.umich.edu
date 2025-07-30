@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const iconMap = {
-  allGenderRestroomOnFloor: 'person_half_dress',
+  /* eslint-disable camelcase */
+  all_gender_restroom_on_floor: 'person_half_dress',
   bookable: 'calendar_month',
-  externalMonitors: 'desktop_windows',
-  naturalLight: 'sunny',
-  wheelchairAccessible: 'wheelchair',
+  external_monitors: 'desktop_windows',
+  natural_light: 'sunny',
+  wheelchair_accessible: 'wheelchair',
   whiteboards: 'stylus_note'
+  /* eslint-enable camelcase */
 };
 
 const formatFeatureLabel = (feature) => {
@@ -20,6 +22,7 @@ const formatFeatureLabel = (feature) => {
 };
 
 const SpaceFeaturesIcons = ({ spaceFeatures, inline }) => {
+  console.log(spaceFeatures);
   return (
     <ul
       css={{
@@ -42,12 +45,10 @@ const SpaceFeaturesIcons = ({ spaceFeatures, inline }) => {
                 ? {
                     display: 'inline-flex',
                     flexDirection: 'row',
-                    gap: SPACING.XS,
                     margin: `0 ${[SPACING.XS]} ${[SPACING.XS]} 0`
                   }
                 : {
                     display: 'flex',
-                    gap: [SPACING.XS],
                     margin: `${SPACING.XS} 0`
                   })
             }}

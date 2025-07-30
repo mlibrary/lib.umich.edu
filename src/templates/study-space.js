@@ -22,7 +22,7 @@ const StudyTemplate = ({ data }) => {
 
   const location = useLocation();
   const fromFindStudySpace = location.state && location.state.fromFindStudySpace;
-  const findStudySpaceQuery = location.state && location.state.findStudySpaceQuery;
+  const findStudySpaceQuery = (location.state && location.state.findStudySpaceQuery) || '';
   const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
 
   return (
@@ -38,7 +38,7 @@ const StudyTemplate = ({ data }) => {
               >
                 <Link
                   onClick={() => {
-                    navigate(`${findStudySpaceURL}${fromFindStudySpace ? findStudySpaceQuery : '' || ''}`);
+                    navigate(`${findStudySpaceURL}${findStudySpaceQuery}`);
                   }}
                 >
                   <Icon style={{ color: 'var(--color-teal-400)', marginRight: SPACING['2XS'], transform: 'rotate(180deg)' }} icon='arrow_forward' /> Return to Find a Study Space
@@ -162,7 +162,7 @@ const StudyTemplate = ({ data }) => {
             {fromFindStudySpace ? <Icon style={{ color: 'var(--color-teal-400)', marginRight: SPACING['2XS'], transform: 'rotate(180deg)' }} icon='arrow_forward' /> : null}
             <Link
               onClick={() => {
-                navigate(`${findStudySpaceURL}${fromFindStudySpace ? findStudySpaceQuery : '' || ''}`);
+                navigate(`${findStudySpaceURL}${findStudySpaceQuery}`);
               }}
               style={{
                 marginTop: SPACING.M
