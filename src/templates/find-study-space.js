@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
+import { ORDERED_SPACE_FEATURES, SPACE_FEATURES_ICON_MAP } from '../constants/space-features';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
@@ -31,21 +32,10 @@ const getSpaceFeatures = (edge) => {
   return edge.node.field_space_features || '';
 };
 
-/* eslint-disable camelcase */
-const iconMap = {
-  all_gender_restroom_on_floor: 'person_half_dress',
-  bookable: 'calendar_month',
-  external_monitors: 'desktop_windows',
-  natural_light: 'sunny',
-  wheelchair_accessible: 'wheelchair',
-  whiteboards: 'stylus_note'
-};
-/* eslint-enable camelcase */
-
 const featureLabelRenderer = (featureKey) => {
   return (
     <>
-      <Icon css={{ color: 'var(--color-teal-400)' }} icon={iconMap[featureKey]} style={{ marginRight: 8 }} />
+      <Icon css={{ color: 'var(--color-teal-400)' }} icon={SPACE_FEATURES_ICON_MAP[featureKey]} style={{ marginRight: 8 }} />
       {sentenceCase(featureKey)}
     </>
   );
@@ -199,17 +189,8 @@ const FindStudySpaceTemplate = ({ data }) => {
     campusToBuildings[campus] = buildings;
   });
 
-  const orderedSpaceFeatures = [
-    'bookable',
-    'whiteboards',
-    'external_monitors',
-    'natural_light',
-    'wheelchair_accessible',
-    'all_gender_restroom_on_floor'
-  ];
-
   const existingFeatures = new Set(allStudySpaces.flatMap(getSpaceFeatures).filter(Boolean));
-  const allSpaceFeaturesList = orderedSpaceFeatures.filter((feature) => {
+  const allSpaceFeaturesList = ORDERED_SPACE_FEATURES.filter((feature) => {
     return existingFeatures.has(feature);
   });
 

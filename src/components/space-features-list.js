@@ -1,17 +1,7 @@
 import { Icon, SPACING } from '../reusable';
 import PropTypes from 'prop-types';
 import React from 'react';
-
-const iconMap = {
-  /* eslint-disable camelcase */
-  all_gender_restroom_on_floor: 'person_half_dress',
-  bookable: 'calendar_month',
-  external_monitors: 'desktop_windows',
-  natural_light: 'sunny',
-  wheelchair_accessible: 'wheelchair',
-  whiteboards: 'stylus_note'
-  /* eslint-enable camelcase */
-};
+import { SPACE_FEATURES_ICON_MAP } from '../constants/space-features';
 
 const formatFeatureLabel = (feature) => {
   return feature
@@ -30,7 +20,7 @@ const SpaceFeaturesIcons = ({ spaceFeatures, inline }) => {
       }}
     >
       {spaceFeatures.map((feature, index) => {
-        const icon = iconMap[feature];
+        const icon = SPACE_FEATURES_ICON_MAP[feature];
         if (!icon) {
           return null;
         }
