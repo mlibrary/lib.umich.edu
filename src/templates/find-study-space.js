@@ -60,19 +60,21 @@ SpaceFeatures.propTypes = {
 };
 
 const NoiseLevel = ({ noiseLevel }) => {
-  return noiseLevel === '' ? null : (
-    <div css={{
-      alignItems: 'center',
-      color: 'var(--color-neutral-300)',
-      display: 'flex',
-      gap: [SPACING.XS] }}
-    >
-      <Icon icon='volume_up' size={18} />
-      <span css={{ fontWeight: 'bold' }}>
-        Noise Level: {sentenceCase(noiseLevel)}
-      </span>
-    </div>
-  );
+  return noiseLevel === ''
+    ? null
+    : (
+        <div css={{
+          alignItems: 'center',
+          color: 'var(--color-neutral-300)',
+          display: 'flex',
+          gap: [SPACING.XS] }}
+        >
+          <Icon icon='volume_up' size={18} />
+          <span css={{ fontWeight: 'bold' }}>
+            Noise Level: {sentenceCase(noiseLevel)}
+          </span>
+        </div>
+      );
 };
 
 NoiseLevel.propTypes = {
@@ -80,19 +82,20 @@ NoiseLevel.propTypes = {
 };
 
 const getCampusAndBuilding = (edge) => {
-  let campus = '';
-  let building = '';
-  // eslint-disable-next-line no-underscore-dangle
-  if (edge.node.__typename === 'node__location') {
-    campus = edge.node.relationships?.field_parent_location?.relationships?.field_building_campus?.field_campus_official_name || '';
-    building = edge.node.relationships?.field_parent_location?.title || '';
-    // eslint-disable-next-line no-underscore-dangle
-  } else if (edge.node.__typename === 'node__room') {
-    campus = edge.node.relationships?.field_room_building?.relationships?.field_building_campus?.field_campus_official_name || '';
-    building = edge.node.relationships?.field_room_building?.title || '';
+  let location = null;
+  const { __typename: typeName } = edge.node;
+  const { field_parent_location: fieldParentLocation, field_room_building: fieldRoomBuilding } = edge.node.relationships || {};
+
+  if (typeName === 'node__location') {
+    location = fieldParentLocation;
+  } else if (typeName === 'node__room') {
+    location = fieldRoomBuilding;
   }
 
-  return { building, campus };
+  return {
+    building: location?.title || '',
+    campus: location?.relationships?.field_building_campus?.field_campus_official_name || ''
+  };
 };
 
 const getNoiseLevel = (edge) => {
