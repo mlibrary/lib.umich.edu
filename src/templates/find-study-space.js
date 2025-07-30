@@ -315,11 +315,7 @@ const FindStudySpaceTemplate = ({ data }) => {
 
   // Show all / show 6 button
   useEffect(() => {
-    if (showAll) {
-      setShow(filteredStudySpaces.length);
-    } else {
-      setShow(6);
-    }
+    setShow(showAll ? filteredStudySpaces.length : 6);
   }, [filteredStudySpaces.length, showAll]);
 
   let resultsSummary = null;
