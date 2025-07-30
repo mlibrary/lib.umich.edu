@@ -60,10 +60,7 @@ SpaceFeatures.propTypes = {
 };
 
 const NoiseLevel = ({ noiseLevel }) => {
-  if (noiseLevel === '') {
-    return null;
-  }
-  return (
+  return noiseLevel === '' ? null : (
     <div css={{
       alignItems: 'center',
       color: 'var(--color-neutral-300)',
