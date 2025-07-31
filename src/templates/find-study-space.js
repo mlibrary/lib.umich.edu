@@ -621,7 +621,8 @@ const FindStudySpaceTemplate = ({ data }) => {
             <div style={{ marginBottom: SPACING.L }}>
               <div css={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
                 {activeFilterTags.map((tag) => {
-                  const { key: tagKey, label } = tag;
+                  const { key: tagKey } = tag;
+                  let { label } = tag;
                   if (tagKey?.startsWith('campus-')) {
                     if (selectedCampuses[label]) {
                       label = `Location: ${titleCase(label)}`;
