@@ -343,16 +343,9 @@ const FindStudySpaceTemplate = ({ data }) => {
       setShow(6);
     };
 
+    const canShowMore = !showAll && show < filteredStudySpaces.length;
     showMoreOrLessButton = (
-      <>
-        {(!showAll && show < filteredStudySpaces.length)
-          ? (
-              <Button css={{ marginTop: SPACING.L }} onClick={showMore}>Show all</Button>
-            )
-          : (
-              <Button css={{ marginTop: SPACING.L }} onClick={showLess}>Show less</Button>
-            )}
-      </>
+      <Button css={{ marginTop: SPACING.L }} onClick={canShowMore ? showMore : showLess}>Show {canShowMore ? 'all' : 'less'}</Button>
     );
   }
 
@@ -442,10 +435,7 @@ const FindStudySpaceTemplate = ({ data }) => {
   const didInit = useRef(false);
 
   useEffect(() => {
-    if (!isBrowser) {
-      return;
-    }
-    if (!didInit.current) {
+    if (!isBrowser || !didInit.current) {
       return;
     }
     const stateObj = {};
