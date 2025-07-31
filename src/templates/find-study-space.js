@@ -621,23 +621,23 @@ const FindStudySpaceTemplate = ({ data }) => {
             <div style={{ marginBottom: SPACING.L }}>
               <div css={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
                 {activeFilterTags.map((tag) => {
-                  let { label } = tag;
-                  if (tag.key && tag.key.startsWith('campus-')) {
-                    if (selectedCampuses[tag.label]) {
+                  let { key: tagKey, label } = tag;
+                  if (tagKey?.startsWith('campus-')) {
+                    if (selectedCampuses[label]) {
                       label = `Location: ${titleCase(label)}`;
                     } else {
                       return null;
                     }
-                  } else if (tag.key && tag.key.startsWith('building-')) {
-                    const match = tag.key.match(/^building-(?:[^:]+):(?:.+)$/u);
+                  } else if (tagKey?.startsWith('building-')) {
+                    const match = tagKey?.match(/^building-(?:[^:]+):(?:.+)$/u);
                     const campus = match ? match[1] : null;
                     if (campus && selectedCampuses[campus]) {
                       return null;
                     }
                     label = `Location: ${titleCase(label)}`;
-                  } else if (tag.key && tag.key.startsWith('feature-')) {
+                  } else if (tagKey?.startsWith('feature-')) {
                     label = `Feature: ${sentenceCase(label)}`;
-                  } else if (tag.key && tag.key.startsWith('noise-')) {
+                  } else if (tagKey?.startsWith('noise-')) {
                     label = `Noise level: ${sentenceCase(label)}`;
                   }
                   return (
