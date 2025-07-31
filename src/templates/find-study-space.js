@@ -322,19 +322,15 @@ const FindStudySpaceTemplate = ({ data }) => {
   let showMoreOrLessButton = null;
 
   if (filteredStudySpaces.length > 0) {
+    let resultsSummaryText = `${filteredStudySpaces.length} result${filteredStudySpaces.length > 1 ? 's' : ''}`;
     if (filteredStudySpaces.length > 6) {
-      resultsSummary = (
-        <p aria-live='polite' css={{ marginBottom: SPACING.M }}>
-          Showing {showAll ? filteredStudySpaces.length : Math.min(show, filteredStudySpaces.length)} of {filteredStudySpaces.length} results
-        </p>
-      );
-    } else {
-      resultsSummary = (
-        <p aria-live='polite' css={{ marginBottom: SPACING.M }}>
-          Showing {filteredStudySpaces.length} result{filteredStudySpaces.length > 1 ? 's' : ''}
-        </p>
-      );
+      resultsSummaryText = `${showAll ? filteredStudySpaces.length : Math.min(show, filteredStudySpaces.length)} of ${filteredStudySpaces.length} results`;
     }
+    resultsSummary = (
+      <p aria-live='polite' css={{ marginBottom: SPACING.M }}>
+        Showing {resultsSummaryText}
+      </p>
+    );
   }
 
   if (filteredStudySpaces.length > 6) {
