@@ -13,6 +13,7 @@ const siteMetadata = {
 };
 
 module.exports = {
+  adapter: require('gatsby-adapter-netlify')(),
   flags: {
     DEV_SSR: false // Watches gatsby-ssr.js while developing
   },
