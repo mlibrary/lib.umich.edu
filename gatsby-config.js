@@ -2,6 +2,8 @@ const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/';
 const DRUPAL_CONCURRENT_FILE_REQUESTS = parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 20;
 const DRUPAL_REQUEST_TIMEOUT = parseInt(process.env.DRUPAL_REQUEST_TIMEOUT) || 6000000;
 
+const adapter = require('gatsby-adapter-netlify').default;
+
 console.log('[gatsby-config] ENV VARs');
 console.log(`DRUPAL_URL='${DRUPAL_URL}'`);
 console.log(`DRUPAL_CONCURRENT_FILE_REQUESTS=${DRUPAL_CONCURRENT_FILE_REQUESTS}`);
@@ -13,13 +15,13 @@ const siteMetadata = {
 };
 
 module.exports = {
-  adapter: require('gatsby-adapter-netlify')(),
+  adapter: adapter({
+    excludeDatastoreFromEngineFunction: false
+  }),
   flags: {
     DEV_SSR: false // Watches gatsby-ssr.js while developing
   },
   plugins: [
-    'gatsby-plugin-netlify', // Netlify recommends this plugin on top of Essential Gatsby (Version 2): https://github.com/netlify/netlify-plugin-gatsby#install-the-gatsby-plugin
-    'gatsby-plugin-meta-redirect',
     'gatsby-plugin-remove-fingerprints', // Why? Read why Netlify recommends: https://github.com/gatsbyjs/gatsby/issues/11961#issuecomment-492893594
     {
       options: {
@@ -108,7 +110,6 @@ module.exports = {
       },
       resolve: 'gatsby-source-umich-lib'
     },
-    'gatsby-plugin-remove-serviceworker',
     'gatsby-plugin-emotion',
     {
       options: {
