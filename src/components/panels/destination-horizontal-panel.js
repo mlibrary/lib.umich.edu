@@ -1,4 +1,4 @@
-import { getFloor, getImage, getParentTitle, getRoom } from '../../utils';
+import { getBuildingSlug, getFloor, getImage, getParentTitle, getRoom } from '../../utils';
 import { Heading, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../../reusable';
 import CardImage from '../../reusable/card-image';
 import Html from '../html';
@@ -9,12 +9,14 @@ import useFloorPlan from '../../hooks/use-floor-plan';
 
 export default function DestinationHorizontalPanel ({ data }) {
   const cards = data.relationships.field_cards.map((card) => {
+    const buildingSlug = getBuildingSlug({ node: card });
     const parentTitle = getParentTitle({ node: card });
     const floor = getFloor({ node: card });
     const imageData = getImage({ node: card });
     const room = getRoom({ node: card });
     return {
       bid: card.relationships.field_room_building.id,
+      buildingSlug,
       content: <Html html={card.body.processed} />,
       image: imageData.relationships.field_media_image.localFile.childImageSharp.gatsbyImageData,
       imageAlt: imageData.field_media_image?.alt,
@@ -46,7 +48,6 @@ DestinationHorizontalPanel.propTypes = {
 
 const DestinationCard = ({ card }) => {
   const floorPlan = useFloorPlan(card.bid, card.rid);
-  const floorPlanLinkText = `View the floor plan for ${card.linkDestText}`;
 
   return (
     <section
@@ -81,12 +82,21 @@ const DestinationCard = ({ card }) => {
           </span>
         </Heading>
         {card.content}
+        {card.buildingSlug && (
+          <p
+            css={{
+              marginTop: SPACING.M
+            }}
+          >
+            <Link to={card.buildingSlug}>View building information</Link>
+          </p>
+        )}
         <p
           css={{
-            marginTop: SPACING.M
+            marginTop: card.buildingSlug ? 0 : SPACING.M
           }}
         >
-          <Link to={floorPlan.fields.slug}>{floorPlanLinkText}</Link>
+          <Link to={floorPlan.fields.slug}>View the floor plan for {card.linkDestText}</Link>
         </p>
       </div>
     </section>

@@ -91,7 +91,6 @@ const Button = ({ kind = 'secondary', disabled, ...rest }) => {
 Button.propTypes = {
   disabled: PropTypes.bool,
   kind: PropTypes.oneOf(['primary', 'secondary', 'tertiary', 'subtle', 'reset'])
-    .isRequired
 };
 
 export default Button;

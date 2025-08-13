@@ -30,6 +30,9 @@ export const query = graphql`
     field_display_hours_
     field_hours_different_from_build
     relationships {
+      field_building_campus {
+        field_campus_official_name
+      }
       field_media_image {
         field_media_image {
           alt
@@ -54,6 +57,9 @@ export const query = graphql`
       field_parent_location {
         ... on node__location {
           title
+          fields {
+            slug
+          }
           field_display_hours_
           relationships {
             field_hours_open {
