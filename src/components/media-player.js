@@ -15,7 +15,7 @@ export default function MediaPlayer ({ url }) {
       }}
     >
       <ReactPlayer
-        url={url}
+        src={url}
         width='100%'
         height='100%'
         controls={true}
