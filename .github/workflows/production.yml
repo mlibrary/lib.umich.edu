@@ -6,7 +6,7 @@ on:
   # schedule:
     # - cron: '0 11 * * MON-FRI'
   repository_dispatch:
-    types: [staging_complete]
+    types: [backup_complete]
   workflow_dispatch:
     inputs:
       tag:
