@@ -1,4 +1,5 @@
-import { Heading, Margins, MEDIA_QUERIES, SPACING, Text } from '../reusable';
+import { Heading, Icon, Link, Margins, MEDIA_QUERIES, SPACING, Text } from '../reusable';
+import { navigate, useLocation } from '@reach/router';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -19,10 +20,32 @@ const StudyTemplate = ({ data }) => {
       ?.localFile?.childImageSharp?.gatsbyImageData;
   const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
 
+  const location = useLocation();
+  const fromFindStudySpace = location.state && location.state.fromFindStudySpace;
+  const findStudySpaceQuery = (location.state && location.state.findStudySpaceQuery) || '';
+  const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
+
   return (
     <TemplateLayout node={node}>
       <Margins>
         <Breadcrumb data={fields.breadcrumb} />
+        {fromFindStudySpace
+          ? (
+              <div
+                style={{
+                  marginBottom: SPACING.XL
+                }}
+              >
+                <Link
+                  onClick={() => {
+                    navigate(`${findStudySpaceURL}${findStudySpaceQuery}`);
+                  }}
+                >
+                  <Icon style={{ color: 'var(--color-teal-400)', marginRight: SPACING['2XS'], transform: 'rotate(180deg)' }} icon='arrow_forward' /> Return to Find a Study Space
+                </Link>
+              </div>
+            )
+          : null}
         <header
           css={{
             [MEDIA_QUERIES.S]: {
@@ -111,7 +134,10 @@ const StudyTemplate = ({ data }) => {
         <TemplateContent css={{
           [MEDIA_QUERIES.XL]: {
             paddingLeft: SPACING['5XL']
-          }
+          },
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%'
         }}
         >
           <Heading
@@ -124,6 +150,29 @@ const StudyTemplate = ({ data }) => {
             About the space
           </Heading>
           {body && <Html html={body.processed} />}
+          <div
+            css={{
+              '@media only screen and (min-width: 1200px)': {
+                marginBottom: SPACING['2XL'],
+                marginTop: 'auto'
+              },
+              marginTop: SPACING.L
+            }}
+          >
+            {fromFindStudySpace ? <Icon style={{ color: 'var(--color-teal-400)', marginRight: SPACING['2XS'], transform: 'rotate(180deg)' }} icon='arrow_forward' /> : null}
+            <Link
+              onClick={() => {
+                navigate(`${findStudySpaceURL}${findStudySpaceQuery}`);
+              }}
+              style={{
+                marginTop: SPACING.M
+              }}
+            >
+              {fromFindStudySpace
+                ? 'Return to Find a Study Space'
+                : 'Find another study space'}
+            </Link>
+          </div>
         </TemplateContent>
       </Template>
     </TemplateLayout>

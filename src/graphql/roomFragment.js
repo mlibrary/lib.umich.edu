@@ -13,6 +13,7 @@ export const query = graphql`
     field_space_features
     field_email
     field_hours_different_from_build
+    field_bookable_study_space
     field_local_navigation
     field_is_location_
     field_display_hours_
@@ -43,6 +44,9 @@ export const query = graphql`
       field_room_building {
         id
         title
+        fields {
+          slug
+        }
         field_building_address {
           locality
           address_line1
@@ -51,11 +55,17 @@ export const query = graphql`
         }
         field_display_hours_
         relationships {
+          field_building_campus {
+            field_campus_official_name
+          }
           field_hours_open {
             ...hoursFragment
           }
           field_parent_location {
             title
+            fields {
+              slug
+            }
             field_display_hours_
             relationships {
               field_hours_open {

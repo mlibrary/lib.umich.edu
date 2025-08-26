@@ -1,4 +1,4 @@
-import { getFloor } from '../utils';
+import { getBuildingSlug, getFloor } from '../utils';
 import Hours from '../components/todays-hours';
 import IconText from '../components/icon-text';
 import Link from '../components/link';
@@ -32,6 +32,7 @@ const resolveLocationFromNode = (node) => {
 };
 
 const DestinationLocationInfo = ({ node }) => {
+  const buildingSlug = getBuildingSlug({ node });
   const { field_parent_location: fieldParentLocation, field_room_building: fieldRoomBuilding } = node.relationships;
   const bid = fieldRoomBuilding
     ? fieldRoomBuilding.id
@@ -84,6 +85,11 @@ const DestinationLocationInfo = ({ node }) => {
           <IconText icon='address'>
             <span>
               {locationSummary}
+              {buildingSlug && (
+                <span css={{ display: 'block' }}>
+                  <Link to={`${buildingSlug}`}>View building information</Link>
+                </span>
+              )}
               <span css={{ display: 'block' }}>
                 {askLibrarian ? ('Online') : (<Link to={floorPlan.fields.slug}>View floor plan</Link>)}
               </span>

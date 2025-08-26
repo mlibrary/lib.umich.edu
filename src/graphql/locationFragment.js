@@ -12,6 +12,7 @@ export const query = graphql`
     field_noise_level
     field_space_features
     field_email
+    field_bookable_study_space
     field_address_is_different_from_
     field_local_navigation
     body {
