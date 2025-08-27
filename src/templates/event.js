@@ -4,6 +4,7 @@ import { Template, TemplateContent, TemplateSide } from '../components/aside-lay
 import Breadcrumb from '../components/breadcrumb';
 import createGoogleMapsURL from '../components/utilities/create-google-maps-url';
 import { GatsbyImage } from 'gatsby-plugin-image';
+import { getBuildingSlug } from '../utils';
 import { graphql } from 'gatsby';
 import Html from '../components/html';
 import Link from '../components/link';
@@ -203,7 +204,7 @@ const EventMetadata = ({ data }) => {
     });
   });
   const where = eventFormatWhere({ node: data });
-
+  const buildingSlug = getBuildingSlug({ node: data.relationships.field_event_building });
   const buildingId = data.relationships.field_event_building?.id;
   const floorId = data.relationships.field_event_room?.relationships.field_floor?.id;
 
@@ -290,6 +291,11 @@ const EventMetadata = ({ data }) => {
                 }
                 return null;
               })}
+              {buildingSlug && (
+                <span css={{ display: 'block' }}>
+                  <Link to={`${buildingSlug}`}>View building information</Link>
+                </span>
+              )}
               {floorPlan && floorPlan.fields && (
                 <span css={{ display: 'block' }}>
                   <Link to={floorPlan.fields.slug}>View floor plan</Link>

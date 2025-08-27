@@ -1,11 +1,12 @@
+import { getBuildingSlug, getFloor } from '../utils';
 import { Heading, Icon, SPACING, Text } from '../reusable';
 import Address from './address';
-import { getFloor } from '../utils';
 import Hours from './todays-hours';
 import Link from './link';
 import LocationAnchoredLink from './location-anchored-link';
 import PropTypes from 'prop-types';
 import React from 'react';
+import SpaceFeaturesIcons from './space-features-list';
 import useFloorPlan from '../hooks/use-floor-plan';
 
 const LayoutWithIcon = ({
@@ -63,6 +64,7 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
     relationships } = node;
   const buildingNode = relationships?.field_room_building;
   const parentLocationNode = relationships?.field_parent_location;
+  const buildingSlug = getBuildingSlug({ node });
   const locationNode = buildingNode ?? parentLocationNode?.relationships?.field_parent_location ?? node;
   const locationTitle = buildingNode?.title ?? parentLocationNode?.title;
   const floor = getFloor({ node });
@@ -78,11 +80,11 @@ export default function LocationAside ({ node, isStudySpaceAside = false }) {
   } else if (floorPlans) {
     normalizedFloorPlans = [floorPlans];
   }
-
   if (isStudySpaceAside) {
     return (
       <>
         <StudySpaceLocationSection {...{
+          buildingSlug,
           floor,
           locationTitle,
           maybeFloorPlan,
@@ -229,7 +231,7 @@ const SpaceFeaturesSection = ({ spaceFeatures }) => {
         <Heading level={2} size='M' id='features' css={{ paddingBottom: SPACING['2XS'], paddingTop: SPACING['2XS'] }}>
           Features
         </Heading>
-        <SpaceFeatures spaceFeatures={spaceFeatures}></SpaceFeatures>
+        <SpaceFeaturesIcons spaceFeatures={spaceFeatures} inline={false} />
       </LayoutWithIcon>
     </section>
   );
@@ -298,7 +300,7 @@ const getFloorPlanContent = (normalizedFloorPlans, maybeFloorPlan) => {
   );
 };
 
-const StudySpaceLocationSection = ({ locationTitle, floor, roomNumber, normalizedFloorPlans, maybeFloorPlan }) => {
+const StudySpaceLocationSection = ({ buildingSlug, locationTitle, floor, roomNumber, normalizedFloorPlans, maybeFloorPlan }) => {
   if (!locationTitle && !floor && !normalizedFloorPlans?.length) {
     return null;
   }
@@ -312,6 +314,13 @@ const StudySpaceLocationSection = ({ locationTitle, floor, roomNumber, normalize
         <Text>
           {[locationTitle, floor, roomNumber].filter(Boolean).join(', ')}
         </Text>
+        {buildingSlug && (
+          <Text>
+            <Link to={`${buildingSlug}`}>
+              View building information
+            </Link>
+          </Text>
+        )}
         {getFloorPlanContent(normalizedFloorPlans, maybeFloorPlan)}
       </LayoutWithIcon>
     </section>
@@ -319,6 +328,7 @@ const StudySpaceLocationSection = ({ locationTitle, floor, roomNumber, normalize
 };
 
 StudySpaceLocationSection.propTypes = {
+  buildingSlug: PropTypes.string,
   floor: PropTypes.any,
   locationTitle: PropTypes.any,
   maybeFloorPlan: PropTypes.any,
@@ -327,49 +337,7 @@ StudySpaceLocationSection.propTypes = {
 };
 
 const SpaceFeatures = ({ spaceFeatures }) => {
-  /* eslint-disable camelcase */
-  const iconMap = {
-    all_gender_restroom_on_floor: 'person_half_dress',
-    external_monitors: 'desktop_windows',
-    natural_light: 'sunny',
-    wheelchair_accessible: 'wheelchair',
-    whiteboards: 'stylus_note'
-  };
-  /* eslint-enable camelcase */
-
-  return (
-    <ul css={{
-      listStyle: 'none',
-      margin: `${[SPACING.XS]} 0`
-    }}
-    >
-      {spaceFeatures.map((feature, index) => {
-        const icon = iconMap[feature];
-        if (!icon) {
-          return null;
-        }
-
-        return (
-          <li
-            key={index}
-            css={{
-              alignItems: 'center',
-              display: 'flex',
-              gap: [SPACING.XS],
-              margin: `${[SPACING.XS]} 0`
-            }}
-          >
-            <Icon icon={icon} size={18} />
-            <span>
-              {feature.replace(/_/ug, ' ').replace(/^./u, (str) => {
-                return str.toUpperCase();
-              })}
-            </span>
-          </li>
-        );
-      })}
-    </ul>
-  );
+  return <SpaceFeaturesIcons spaceFeatures={spaceFeatures} />;
 };
 
 SpaceFeatures.propTypes = {

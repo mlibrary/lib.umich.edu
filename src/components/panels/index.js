@@ -663,4 +663,4 @@ PanelStateWrapper.propTypes = {
   children: PropTypes.any
 };
 
-export { PanelTemplate, PanelList };
+export { PanelTemplate, PanelList, CardPanel };
