@@ -184,10 +184,13 @@ const FindStudySpaceTemplate = ({ data }) => {
     }
   );
 
-  const campusToBuildings = {};
-  campusesWithBuildings.forEach(({ campus, buildings }) => {
-    campusToBuildings[campus] = buildings;
-  });
+  const campusToBuildings = React.useMemo(() => {
+    const map = {};
+    campusesWithBuildings.forEach(({ campus, buildings }) => {
+      map[campus] = buildings;
+    });
+    return map;
+  }, [campusesWithBuildings]);
 
   const existingFeatures = new Set(allStudySpaces.flatMap(getSpaceFeatures).filter(Boolean));
   const allSpaceFeaturesList = ORDERED_SPACE_FEATURES.filter((feature) => {
