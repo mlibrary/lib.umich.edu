@@ -510,7 +510,14 @@ const TextPanel = ({ data }) => {
                   </Link>
                 </div>
                 <div css={{ color: 'var(--color-neutral-300)' }}>
-                  <Html html={fieldBody.processed} />
+                  <Html
+                    html={fieldBody.processed}
+                    css={{
+                      '& > p': {
+                        display: 'inline-block'
+                      }
+                    }}
+                  />
                 </div>
               </li>
             );
