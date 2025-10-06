@@ -27,7 +27,7 @@
     "rehype-react": "^8.0.0",
     "unified": "^11.0.5",
     "use-debounce": "^10.0.6",
-    "whatwg-url": "^14.1.1"
+    "whatwg-url": "^15.1.0"
   },
   "keywords": [
     "gatsby"
@@ -55,7 +55,7 @@
     "@eslint/js": "^9.37.0",
     "@stylistic/eslint-plugin": "^5.4.0",
     "bottleneck": "^2.19.5",
-    "entities": "^6.0.0",
+    "entities": "^7.0.0",
     "eslint": "^9.37.0",
     "eslint-plugin-react": "^7.37.5",
     "fetch-retry": "^6.0.0",

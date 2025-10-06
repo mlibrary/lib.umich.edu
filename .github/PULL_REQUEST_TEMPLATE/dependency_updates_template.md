@@ -31,6 +31,7 @@ These dependencies have been updated to their latest versions:
 - `globals`
 - `highlight-words-core`
 - `isomorphic-fetch`
+- `motion`
 - `react-dom`
 - `react-player`
 - `react`
