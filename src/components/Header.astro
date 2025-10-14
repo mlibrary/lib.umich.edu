@@ -1,0 +1,571 @@
+---
+/**
+ * Header Component - Pure Astro with Interactive Navigation
+ * Original: src/components/header/index.jsx
+ * 
+ * Uses vanilla JavaScript for dropdowns and mobile menu (no React)
+ */
+import { fetchPrimaryNav, fetchUtilityNav } from '../lib/drupal.js';
+
+// Fetch navigation data
+const primary = await fetchPrimaryNav();
+const secondary = await fetchUtilityNav();
+---
+
+<!-- Mobile Header -->
+<header class="header-mobile" id="header-mobile">
+  <div class="header-content-mobile">
+    <!-- Logo -->
+    <a href="/" class="logo">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="36" height="36" fill="#00274C"/>
+        <text x="18" y="24" text-anchor="middle" fill="#FFCB05" font-size="24" font-weight="bold" font-family="sans-serif">M</text>
+      </svg>
+      <span class="sr-only">University of Michigan Library</span>
+    </a>
+    
+    <!-- Mobile Menu Button -->
+    <button 
+      class="mobile-menu-btn" 
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      id="mobile-menu-btn"
+    >
+      <span class="material-icons">menu</span>
+    </button>
+  </div>
+  
+  <!-- Mobile Navigation Panel -->
+  <div class="mobile-nav-panel" id="mobile-nav-panel" hidden>
+    <nav aria-label="Mobile navigation">
+      {primary && primary.length > 0 && (
+        <ul>
+          {primary.map((item, index) => (
+            <li>
+              {item.children && item.children.length > 0 ? (
+                <>
+                  <button 
+                    class="mobile-nav-toggle"
+                    aria-expanded="false"
+                    data-nav-index={index}
+                  >
+                    {item.text}
+                    <span class="material-icons">expand_more</span>
+                  </button>
+                  <div class="mobile-subnav" hidden>
+                    <ul>
+                      {item.children.map((child) => (
+                        <li><a href={child.to}>{child.text}</a></li>
+                      ))}
+                    </ul>
+                  </div>
+                </>
+              ) : (
+                <a href={item.to}>{item.text}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      
+      {secondary && secondary.length > 0 && (
+        <div class="mobile-utility">
+          <ul>
+            {secondary.map((item) => (
+              <li>
+                <a href={item.to}>
+                  {item.icon && <span class="material-icons">{item.icon}</span>}
+                  {item.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </nav>
+  </div>
+</header>
+
+<!-- Desktop Header -->
+<header class="header-desktop" id="header-desktop">
+  <div class="header-content">
+    <!-- Logo -->
+    <a href="/" class="logo">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="36" height="36" fill="#00274C"/>
+        <text x="18" y="24" text-anchor="middle" fill="#FFCB05" font-size="24" font-weight="bold" font-family="sans-serif">M</text>
+      </svg>
+      <span class="sr-only">University of Michigan Library</span>
+    </a>
+    
+    <!-- Utility Navigation (top right) -->
+    {secondary && secondary.length > 0 && (
+      <nav class="utility-nav" aria-label="Utility">
+        <ul>
+          {secondary.map((item) => (
+            <li>
+              <a href={item.to}>
+                {item.icon && <span class="material-icons" aria-hidden="true">{item.icon}</span>}
+                {item.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+    
+    <!-- Primary Navigation with Dropdowns -->
+    {primary && primary.length > 0 && (
+      <nav class="primary-nav" aria-label="Main" aria-describedby="main-nav-description">
+        <p id="main-nav-description" class="sr-only">
+          Expand main navigation buttons to view related content groups and associated links.
+        </p>
+        <ul>
+          {primary.map((item, index) => (
+            <li>
+              {item.children && item.children.length > 0 ? (
+                <>
+                  <button 
+                    class="nav-toggle"
+                    aria-expanded="false"
+                    data-nav-index={index}
+                  >
+                    {item.text}
+                  </button>
+                  <div class="dropdown-panel" hidden data-panel-index={index}>
+                    <div class="dropdown-content">
+                      <ul>
+                        {item.children.map((child) => (
+                          <li><a href={child.to}>{child.text}</a></li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <a href={item.to} class="nav-link">{item.text}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+    
+    <!-- Search Box Placeholder -->
+    <div class="search-box">
+      <input 
+        type="search" 
+        placeholder="Search this site" 
+        aria-label="Search this site"
+        class="search-input"
+      />
+      <button class="search-btn" aria-label="Submit search">
+        <span class="material-icons">search</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileNavPanel = document.getElementById('mobile-nav-panel');
+  
+  if (mobileMenuBtn && mobileNavPanel) {
+    mobileMenuBtn.addEventListener('click', () => {
+      const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+      mobileMenuBtn.setAttribute('aria-expanded', String(!isExpanded));
+      mobileNavPanel.hidden = isExpanded;
+      
+      // Toggle icon
+      const icon = mobileMenuBtn.querySelector('.material-icons');
+      if (icon) {
+        icon.textContent = isExpanded ? 'menu' : 'close';
+      }
+    });
+  }
+  
+  // Mobile subnav toggles
+  const mobileNavToggles = document.querySelectorAll('.mobile-nav-toggle');
+  mobileNavToggles.forEach((toggle) => {
+    toggle.addEventListener('click', () => {
+      const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isExpanded));
+      
+      const subnav = toggle.nextElementSibling;
+      if (subnav) {
+        subnav.hidden = isExpanded;
+      }
+      
+      // Rotate icon
+      const icon = toggle.querySelector('.material-icons');
+      if (icon) {
+        icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+      }
+    });
+  });
+  
+  // Desktop dropdown toggles
+  const navToggles = document.querySelectorAll('.nav-toggle');
+  let currentOpenPanel: number | null = null;
+  
+  navToggles.forEach((toggle) => {
+    toggle.addEventListener('click', () => {
+      const index = toggle.getAttribute('data-nav-index');
+      const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+      const panel = document.querySelector(`[data-panel-index="${index}"]`);
+      
+      // Close currently open panel if different
+      if (currentOpenPanel !== null && currentOpenPanel !== Number(index)) {
+        const prevToggle = document.querySelector(`[data-nav-index="${currentOpenPanel}"]`);
+        const prevPanel = document.querySelector(`[data-panel-index="${currentOpenPanel}"]`);
+        if (prevToggle) prevToggle.setAttribute('aria-expanded', 'false');
+        if (prevPanel) prevPanel.hidden = true;
+      }
+      
+      // Toggle current panel
+      toggle.setAttribute('aria-expanded', String(!isExpanded));
+      if (panel) {
+        panel.hidden = isExpanded;
+      }
+      
+      currentOpenPanel = isExpanded ? null : Number(index);
+    });
+  });
+  
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.primary-nav')) {
+      navToggles.forEach((toggle) => {
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+      document.querySelectorAll('.dropdown-panel').forEach((panel) => {
+        (panel as HTMLElement).hidden = true;
+      });
+      currentOpenPanel = null;
+    }
+  });
+  
+  // Simple search handler (placeholder)
+  const searchBtn = document.querySelector('.search-btn');
+  const searchInput = document.querySelector('.search-input') as HTMLInputElement;
+  
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener('click', () => {
+      const query = searchInput.value.trim();
+      if (query) {
+        window.location.href = `/search?query=${encodeURIComponent(query)}`;
+      }
+    });
+    
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const query = searchInput.value.trim();
+        if (query) {
+          window.location.href = `/search?query=${encodeURIComponent(query)}`;
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  /* Common styles */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  .logo {
+    display: inline-block;
+    text-decoration: none;
+    line-height: 0;
+  }
+  
+  .logo svg {
+    display: block;
+  }
+  
+  .material-icons {
+    font-size: 1.125rem;
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    vertical-align: middle;
+  }
+  
+  /* Mobile Header */
+  .header-mobile {
+    display: block;
+    border-bottom: 2px solid var(--color-neutral-100, #e0e0e0);
+    background: white;
+  }
+  
+  .header-content-mobile {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .mobile-menu-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--color-blue-400, #00274C);
+  }
+  
+  .mobile-menu-btn:hover {
+    color: var(--color-teal-400, #0891B2);
+  }
+  
+  .mobile-nav-panel {
+    border-top: 1px solid var(--color-neutral-100, #e0e0e0);
+    background: white;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .mobile-nav-panel nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .mobile-nav-panel nav > ul > li {
+    border-bottom: 1px solid var(--color-neutral-100, #e0e0e0);
+  }
+  
+  .mobile-nav-panel a,
+  .mobile-nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem;
+    color: var(--color-blue-400, #00274C);
+    text-decoration: none;
+    font-weight: 600;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .mobile-nav-toggle:hover,
+  .mobile-nav-panel a:hover {
+    background: var(--color-neutral-50, #f9f9f9);
+    color: var(--color-teal-400, #0891B2);
+  }
+  
+  .mobile-nav-toggle .material-icons {
+    transition: transform 0.3s ease;
+  }
+  
+  .mobile-subnav {
+    background: var(--color-neutral-50, #f9f9f9);
+  }
+  
+  .mobile-subnav a {
+    padding-left: 2rem;
+    font-weight: normal;
+  }
+  
+  .mobile-utility {
+    border-top: 2px solid var(--color-neutral-100, #e0e0e0);
+    padding: 1rem 0;
+  }
+  
+  .mobile-utility a {
+    gap: 0.5rem;
+    font-weight: normal;
+  }
+  
+  /* Desktop Header */
+  .header-desktop {
+    display: none;
+  }
+  
+  .header-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    position: relative;
+  }
+  
+  .utility-nav {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+  
+  .utility-nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .utility-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--color-neutral-400, #666);
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+  
+  .utility-nav a:hover {
+    text-decoration: underline;
+  }
+  
+  .primary-nav {
+    margin-top: 0.5rem;
+  }
+  
+  .primary-nav ul {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .primary-nav li {
+    position: relative;
+    margin-right: 2rem;
+  }
+  
+  .nav-toggle,
+  .nav-link {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--color-blue-400, #00274C);
+    cursor: pointer;
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 1rem 0;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+  }
+  
+  .nav-toggle:hover,
+  .nav-link:hover {
+    border-bottom-color: var(--color-teal-400, #0891B2);
+  }
+  
+  .nav-toggle[aria-expanded="true"] {
+    border-bottom-color: var(--color-teal-400, #0891B2);
+  }
+  
+  .dropdown-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 20rem;
+    background: white;
+    border: 1px solid var(--color-neutral-100, #e0e0e0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    margin-top: -3px;
+  }
+  
+  .dropdown-content {
+    padding: 1rem;
+  }
+  
+  .dropdown-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .dropdown-content li {
+    margin: 0;
+  }
+  
+  .dropdown-content a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--color-blue-400, #00274C);
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  
+  .dropdown-content a:hover {
+    background: var(--color-neutral-50, #f9f9f9);
+    color: var(--color-teal-400, #0891B2);
+  }
+  
+  .search-box {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    max-width: 21rem;
+  }
+  
+  .search-input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-neutral-300, #ccc);
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+  
+  .search-input:focus {
+    outline: 2px solid var(--color-blue-400, #00274C);
+    outline-offset: 2px;
+  }
+  
+  .search-btn {
+    padding: 0.5rem 1rem;
+    background: var(--color-blue-400, #00274C);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .search-btn:hover {
+    background: var(--color-teal-400, #0891B2);
+  }
+  
+  /* Responsive: Show desktop header on large screens */
+  @media (min-width: 1129px) {
+    .header-mobile {
+      display: none;
+    }
+    
+    .header-desktop {
+      display: block;
+      border-bottom: 2px solid var(--color-neutral-100, #e0e0e0);
+      background: white;
+    }
+  }
+</style>

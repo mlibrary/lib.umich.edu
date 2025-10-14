@@ -9,3 +9,6 @@ yarn-error.log
 
 # env vars
 .env.development
+
+# Local Netlify folder
+.netlify

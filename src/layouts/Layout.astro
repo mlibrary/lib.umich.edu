@@ -1,0 +1,65 @@
+---
+/**
+ * Main Layout Component for Astro
+ * Converted from src/components/layout.js
+ * 
+ * Both Header and Footer are now pure Astro components!
+ */
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// Props from pages
+const { drupalNid, title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title || 'University of Michigan Library'}</title>
+    
+    <!-- Material Icons Font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    
+    <!-- Basic styles during migration -->
+    <style is:global>
+      * {
+        box-sizing: border-box;
+      }
+      
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      
+      *:focus {
+        outline-color: #00274C;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header - Converted to Astro -->
+    <Header />
+    
+    <!-- Main content -->
+    <main id="maincontent">
+      <slot />
+    </main>
+    
+    <!-- Footer - Converted to Astro -->
+    <Footer />
+    
+    <!-- Drupal NID for tracking -->
+    {drupalNid && (
+      <div
+        style="display: none;"
+        id="drupalNid"
+        data-drupal-nid={drupalNid}
+      />
+    )}
+  </body>
+</html>
