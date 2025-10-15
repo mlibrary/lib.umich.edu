@@ -23,6 +23,12 @@ const { drupalNid, title } = Astro.props;
     <!-- Material Icons Font -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     
+    <!-- U-M Alerts Script -->
+    <script src="https://umich.edu/apis/umalerts/umalerts.js"></script>
+    
+    <!-- U-M Library Design System Web Components -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>
+    
     <!-- Basic styles during migration -->
     <style is:global>
       * {
@@ -42,16 +48,37 @@ const { drupalNid, title } = Astro.props;
     </style>
   </head>
   <body>
-    <!-- Header - Converted to Astro -->
-    <Header />
+    <!-- Page Grid Structure -->
+    <div class="page-grid">
+      <div>
+        <section aria-label="Skip links" class="skip-links">
+          <div class="margins">
+            <ul>
+              <li><a href="#maincontent">Skip to main content</a></li>
+              <li><a href="#chat">Skip to Ask a Librarian chat</a></li>
+              <li><a href="/site-map">View site map</a></li>
+            </ul>
+          </div>
+        </section>
+        
+        <!-- U-M Universal Header -->
+        <m-universal-header></m-universal-header>
+      </div>
+      
+      <!-- Library Header - Converted to Astro -->
+      <Header />
+      
+      <!-- Main content -->
+      <main id="maincontent">
+        <slot />
+      </main>
+      
+      <!-- Footer - Converted to Astro -->
+      <Footer />
+    </div>
     
-    <!-- Main content -->
-    <main id="maincontent">
-      <slot />
-    </main>
-    
-    <!-- Footer - Converted to Astro -->
-    <Footer />
+    <!-- Ask a Librarian Chat -->
+    <m-chat id="chat"></m-chat>
     
     <!-- Drupal NID for tracking -->
     {drupalNid && (
@@ -61,5 +88,64 @@ const { drupalNid, title } = Astro.props;
         data-drupal-nid={drupalNid}
       />
     )}
+    
+    <style>
+      /* Page Grid Layout */
+      .page-grid {
+        display: grid;
+        grid-template-columns: 100%;
+        grid-template-rows: auto auto 1fr auto;
+        min-height: 100vh;
+      }
+      
+      /* Skip Links Styles */
+      .skip-links {
+        background-color: #00274C;
+      }
+      
+      .skip-links .margins {
+        max-width: 1280px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      
+      .skip-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .skip-links a {
+        position: absolute;
+        left: -10000px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        color: white;
+        text-decoration: underline;
+      }
+      
+      .skip-links a:focus {
+        position: static;
+        width: auto;
+        height: auto;
+        display: inline-block;
+        padding: 0.5rem;
+      }
+      
+      /* Universal Header Wrapper */
+      .universal-header-wrapper {
+        background-color: var(--color-blue-100, #CCE3F5);
+        min-height: 37px;
+      }
+      
+      /* Main Content */
+      main {
+        flex: 1;
+      }
+    </style>
   </body>
 </html>

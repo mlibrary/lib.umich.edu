@@ -1,0 +1,57 @@
+---
+/**
+ * HeroPanel - Hero section with search or text
+ * Converted from src/components/panels/hero-panel.js
+ * 
+ * Two types:
+ * 1. lib_search_box - Library Search interface
+ * 2. text - Heading and HTML content on an image
+ */
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+const { field_machine_name: fieldMachineName } = data.relationships.field_hero_template;
+---
+
+{fieldMachineName === 'lib_search_box' && (
+  <div class="hero-search-box">
+    <!-- TODO: Implement HeroSearchBox -->
+    <div class="hero-placeholder">
+      <h1>Hero Search Box (TODO)</h1>
+      <p>Library Search interface will go here</p>
+    </div>
+  </div>
+)}
+
+{fieldMachineName === 'text' && (
+  <div class="hero-text">
+    <!-- TODO: Implement HeroText -->
+    <div class="hero-placeholder">
+      <h1>Hero Text (TODO)</h1>
+      <p>Hero with heading and HTML content will go here</p>
+    </div>
+  </div>
+)}
+
+<style>
+  .hero-search-box,
+  .hero-text {
+    min-height: 16rem;
+  }
+  
+  .hero-placeholder {
+    padding: 2rem;
+    background: var(--color-blue-100, #e8f4f8);
+    border: 2px dashed var(--color-neutral-300, #ccc);
+    text-align: center;
+  }
+  
+  @media (min-width: 1024px) {
+    .hero-search-box,
+    .hero-text {
+      min-height: 25rem;
+    }
+  }
+</style>

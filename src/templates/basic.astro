@@ -1,0 +1,62 @@
+---
+/**
+ * Basic Page Template
+ * Converted from src/templates/basic.js
+ */
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+
+const { 
+  node,
+  title,
+  drupal_nid,
+  breadcrumb,
+  summary,
+  keywords
+} = Astro.props;
+
+// Extract hero image if available
+const heroImage = node?.relationships?.field_hero_image;
+---
+
+<Layout title={title}>
+  <PageHeader 
+    breadcrumb={breadcrumb}
+    title={title}
+    summary={summary || node?.attributes?.body?.summary}
+    image={heroImage}
+  />
+  
+  <div class="container">
+    {node?.attributes?.body?.processed && (
+      <div class="body-content" set:html={node.attributes.body.processed} />
+    )}
+    
+    {!node?.attributes?.body?.processed && (
+      <p>Content coming soon...</p>
+    )}
+    
+    <div class="meta">
+      <p><small>Drupal NID: {drupal_nid}</small></p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .body-content {
+    line-height: 1.6;
+  }
+  
+  .meta {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+    color: #666;
+  }
+</style>

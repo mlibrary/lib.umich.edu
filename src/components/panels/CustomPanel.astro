@@ -1,0 +1,27 @@
+---
+/**
+ * CustomPanel - Custom panel content
+ * Converted from src/components/panels/custom-panel.js
+ */
+import PanelTemplate from './PanelTemplate.astro';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+---
+
+<PanelTemplate title={data.field_title}>
+  <div class="custom-panel-placeholder">
+    <p><strong>CustomPanel (TODO)</strong></p>
+  </div>
+</PanelTemplate>
+
+<style>
+  .custom-panel-placeholder {
+    padding: 1rem;
+    background: var(--color-neutral-50, #f9f9f9);
+    border: 1px dashed var(--color-neutral-300, #ccc);
+  }
+</style>

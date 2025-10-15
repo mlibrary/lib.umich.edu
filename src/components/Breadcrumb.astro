@@ -1,0 +1,89 @@
+---
+/**
+ * Breadcrumb Component - Converted to Astro
+ * Original: src/components/breadcrumb.js
+ * 
+ * Displays navigation breadcrumbs
+ */
+
+interface Props {
+  data?: string;
+}
+
+const { data } = Astro.props;
+
+// Parse breadcrumb data (provided as encoded JSON)
+let parsedData: Array<{text: string, to?: string}> = [];
+
+if (data) {
+  try {
+    parsedData = JSON.parse(data);
+  } catch (e) {
+    console.error('Failed to parse breadcrumb data:', e);
+  }
+}
+
+// Don't render if no valid data
+if (!parsedData || parsedData.length === 0) {
+  return null;
+}
+---
+
+<nav aria-label="Breadcrumb" class="breadcrumb">
+  <ol class="breadcrumb-list">
+    {parsedData.map(({ text, to }, index) => (
+      <li class="breadcrumb-item">
+        {to ? (
+          <a href={to} class="breadcrumb-link">{text}</a>
+        ) : (
+          <span class="breadcrumb-text">{text}</span>
+        )}
+        {index < parsedData.length - 1 && (
+          <span class="breadcrumb-separator" aria-hidden="true">/</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb {
+    margin-bottom: 1rem;
+  }
+  
+  .breadcrumb-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0.5rem;
+  }
+  
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .breadcrumb-link {
+    color: var(--color-neutral-400, #666);
+    text-decoration: none;
+  }
+  
+  .breadcrumb-link:hover {
+    color: var(--color-blue-400, #00274C);
+    text-decoration: underline;
+  }
+  
+  .breadcrumb-text {
+    color: var(--color-neutral-400, #666);
+  }
+  
+  .breadcrumb-separator {
+    color: var(--color-neutral-300, #ccc);
+    user-select: none;
+  }
+</style>

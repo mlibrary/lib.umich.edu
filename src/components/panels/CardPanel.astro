@@ -1,0 +1,54 @@
+---
+/**
+ * CardPanel - Grid of cards with various templates
+ * Converted from src/components/panels/index.js CardPanel
+ * 
+ * Templates: destination_hor_card_template, standard_no_image, address_and_hours, etc.
+ */
+import PanelTemplate from './PanelTemplate.astro';
+import PanelList from './PanelList.astro';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+const template = data.relationships.field_card_template.field_machine_name;
+const title = data.field_title;
+const cards = Array.isArray(data.relationships.field_cards) ? data.relationships.field_cards : [];
+---
+
+<PanelTemplate title={title}>
+  <PanelList>
+    {cards.map((card: any) => (
+      <li>
+        <div class="card-placeholder">
+          <h3>{card.title}</h3>
+          <p>Template: {template}</p>
+        </div>
+      </li>
+    ))}
+  </PanelList>
+</PanelTemplate>
+
+<style>
+  .card-placeholder {
+    padding: 1rem;
+    background: white;
+    border: 1px solid var(--color-neutral-200, #ddd);
+    border-radius: 4px;
+    min-height: 10rem;
+  }
+  
+  .card-placeholder h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    color: var(--color-blue-400, #00274C);
+  }
+  
+  .card-placeholder p {
+    margin: 0;
+    color: var(--color-neutral-300, #888);
+    font-size: 0.875rem;
+  }
+</style>

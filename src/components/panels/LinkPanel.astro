@@ -1,0 +1,33 @@
+---
+/**
+ * LinkPanel - Various link list layouts
+ * Converted from src/components/panels/link-panel.js
+ * 
+ * Templates: bulleted_list, 2_column_db_link_list, related_links
+ */
+import PanelTemplate from './PanelTemplate.astro';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+const { relationships } = data;
+const { field_machine_name: fieldMachineName } = relationships.field_link_template;
+---
+
+<PanelTemplate title={data.field_title}>
+  <div class="link-panel-placeholder">
+    <p><strong>LinkPanel (TODO)</strong></p>
+    <p>Template: {fieldMachineName}</p>
+    <p>Links: {data.field_link?.length || 0}</p>
+  </div>
+</PanelTemplate>
+
+<style>
+  .link-panel-placeholder {
+    padding: 1rem;
+    background: var(--color-neutral-50, #f9f9f9);
+    border: 1px dashed var(--color-neutral-300, #ccc);
+  }
+</style>

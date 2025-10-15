@@ -1,0 +1,28 @@
+---
+/**
+ * HoursPanel - Hours display panel
+ * Converted from src/components/panels/hours-panel.js
+ */
+import PanelTemplate from './PanelTemplate.astro';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+---
+
+<PanelTemplate title={data.field_title}>
+  <div class="hours-panel-placeholder">
+    <p><strong>HoursPanel (TODO)</strong></p>
+    <p>Hours information will be displayed here</p>
+  </div>
+</PanelTemplate>
+
+<style>
+  .hours-panel-placeholder {
+    padding: 1rem;
+    background: var(--color-neutral-50, #f9f9f9);
+    border: 1px dashed var(--color-neutral-300, #ccc);
+  }
+</style>

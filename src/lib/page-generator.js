@@ -3,6 +3,13 @@
  *
  * This module helps generate dynamic pages from Drupal data
  */
+import {
+  fetchDrupalBuildings,
+  fetchDrupalEvents,
+  fetchDrupalNews,
+  fetchDrupalPages,
+  fetchDrupalSectionPages
+} from './drupal.js';
 
 /**
  * Map Drupal design template machine names to Astro template paths
@@ -88,12 +95,23 @@ export const processDrupalNode = (node, included = []) => {
           relationships[key] = relatedItem.attributes;
         }
       } else {
-        // Handle multiple relationships
+        // Handle multiple relationships (like panels)
         relationships[key] = relationship.data.map((relData) => {
           const relatedItem = included.find((item) => {
             return item.id === relData.id && item.type === relData.type;
           });
-          return relatedItem ? relatedItem.attributes : null;
+          if (relatedItem) {
+            // For panels and other array relationships, preserve the full structure
+            // With __typename for component routing
+            return {
+              id: relatedItem.id,
+              __typename: relatedItem.type,
+              ...relatedItem.attributes,
+              // Recursively process nested relationships if they exist
+              relationships: relatedItem.relationships
+            };
+          }
+          return null;
         }).filter(Boolean);
       }
     });
@@ -113,9 +131,38 @@ export const processDrupalNode = (node, included = []) => {
 
 /**
  * Get all pages that should be generated
+ * This is the Astro equivalent of your Gatsby GraphQL query + createPages
  */
-export const getPagesToGenerate = (nodes, included = []) => {
-  return nodes
+export const getPagesToGenerate = async () => {
+  // Fetch all content types from Drupal (like your GraphQL query)
+  const [pages, sections, buildings, news, events] = await Promise.all([
+    fetchDrupalPages(),
+    fetchDrupalSectionPages(),
+    fetchDrupalBuildings(),
+    fetchDrupalNews(),
+    fetchDrupalEvents()
+  ]);
+
+  // Combine all nodes (like your edges.concat in Gatsby)
+  const allNodes = [
+    ...(pages.data || []),
+    ...(sections.data || []),
+    ...(buildings.data || []),
+    ...(news.data || []),
+    ...(events.data || [])
+  ];
+
+  // Combine all included relationship data
+  const included = [
+    ...(pages.included || []),
+    ...(sections.included || []),
+    ...(buildings.included || []),
+    ...(news.included || []),
+    ...(events.included || [])
+  ];
+
+  // Process each node and generate page data
+  return allNodes
     .map((node) => {
       return processDrupalNode(node, included);
     })
@@ -127,11 +174,21 @@ export const getPagesToGenerate = (nodes, included = []) => {
       const machineName = node.relationships.field_design_template.field_machine_name;
       const template = getTemplatePath(machineName);
       const tag = getTag(node, template);
+      const summary = node.attributes.body?.summary || null;
+      const keywords = node.attributes.field_seo_keywords || '';
 
       return {
-        ...node,
+        slug: node.slug,
+        node,
         template,
-        tag
+        drupal_nid: node.drupal_internal__nid,
+        title: node.title,
+        breadcrumb: [],
+        summary,
+        keywords,
+        tag,
+        parents: [],
+        children: []
       };
     })
     .filter((page) => {

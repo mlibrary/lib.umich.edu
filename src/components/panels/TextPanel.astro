@@ -1,0 +1,35 @@
+---
+/**
+ * TextPanel - Various text content layouts
+ * Converted from src/components/panels/index.js TextPanel
+ * 
+ * Templates: callout, body_width_text, text_group, full_width_text_template, 
+ *            grid_text_template_with_linked_title, image_text_body
+ */
+import PanelTemplate from './PanelTemplate.astro';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+const title = data.field_title;
+const template = data.relationships.field_text_template.field_machine_name;
+const cards = data.relationships.field_text_card || [];
+---
+
+<PanelTemplate title={title}>
+  <div class="text-panel-placeholder">
+    <p><strong>TextPanel (TODO)</strong></p>
+    <p>Template: {template}</p>
+    <p>Cards: {cards.length}</p>
+  </div>
+</PanelTemplate>
+
+<style>
+  .text-panel-placeholder {
+    padding: 1rem;
+    background: var(--color-neutral-50, #f9f9f9);
+    border: 1px dashed var(--color-neutral-300, #ccc);
+  }
+</style>

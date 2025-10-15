@@ -1,0 +1,126 @@
+---
+/**
+ * Dynamic Route for All Drupal Pages
+ * Astro equivalent of gatsby-node.js createPages()
+ * 
+ * This file uses getStaticPaths() to generate pages from Drupal
+ * Similar to how Gatsby's createPages worked with GraphQL
+ */
+import { getPagesToGenerate } from '../lib/page-generator.js';
+import Layout from '../layouts/Layout.astro';
+
+// Import all template components
+import BasicTemplate from '../templates/basic.astro';
+import HomeTemplate from '../templates/home.astro';
+import LandingTemplate from '../templates/landing.astro';
+import SectionTemplate from '../templates/section.astro';
+import VisitTemplate from '../templates/visit.astro';
+import FullWidthTemplate from '../templates/fullwidth.astro';
+import FloorPlanTemplate from '../templates/floor-plan.astro';
+import DestinationBodyTemplate from '../templates/destination-body.astro';
+import DestinationFullTemplate from '../templates/destination-full.astro';
+import StaffDirectoryTemplate from '../templates/staff-directory.astro';
+import SpecialistTemplate from '../templates/specialist.astro';
+import FindStudySpaceTemplate from '../templates/find-study-space.astro';
+import StudySpaceTemplate from '../templates/study-space.astro';
+import CollectingAreaTemplate from '../templates/collecting-area.astro';
+import DepartmentTemplate from '../templates/department.astro';
+import NewsLandingTemplate from '../templates/news-landing.astro';
+import NewsTemplate from '../templates/news.astro';
+import EventTemplate from '../templates/event.astro';
+
+/**
+ * getStaticPaths() - Astro's equivalent to Gatsby's createPages()
+ * 
+ * This function runs at BUILD TIME and generates all pages
+ * Similar to how your gatsby-node.js Promise worked
+ */
+export async function getStaticPaths() {
+  // Fetch all pages from Drupal (like your GraphQL query)
+  const pages = await getPagesToGenerate();
+  
+  // Map each page to a route (like Gatsby's createPage)
+  return pages.map((page) => ({
+    params: { 
+      slug: page.slug === '/' ? undefined : page.slug.slice(1) // Remove leading slash
+    },
+    props: {
+      node: page.node,
+      template: page.template,
+      drupal_nid: page.drupal_nid,
+      title: page.title,
+      breadcrumb: page.breadcrumb,
+      summary: page.summary,
+      keywords: page.keywords,
+      tag: page.tag,
+      parents: page.parents,
+      children: page.children
+    }
+  }));
+}
+
+// Get the props for this specific page
+const { 
+  node, 
+  template, 
+  drupal_nid, 
+  title, 
+  breadcrumb,
+  summary,
+  keywords,
+  tag,
+  parents,
+  children
+} = Astro.props;
+
+// Map template names to components (like your getTemplate function)
+const templateComponents = {
+  'basic': BasicTemplate,
+  'home': HomeTemplate,
+  'homepage': HomeTemplate,
+  'landing': LandingTemplate,
+  'landing_page': LandingTemplate,
+  'section': SectionTemplate,
+  'section_locaside': SectionTemplate,
+  'visit': VisitTemplate,
+  'fullwidth': FullWidthTemplate,
+  'full_width': FullWidthTemplate,
+  'floor-plan': FloorPlanTemplate,
+  'destination-body': DestinationBodyTemplate,
+  'destination-full': DestinationFullTemplate,
+  'staff-directory': StaffDirectoryTemplate,
+  'specialist': SpecialistTemplate,
+  'find-study-space': FindStudySpaceTemplate,
+  'study-space': StudySpaceTemplate,
+  'collecting-area': CollectingAreaTemplate,
+  'department': DepartmentTemplate,
+  'news-landing': NewsLandingTemplate,
+  'news': NewsTemplate,
+  'event': EventTemplate
+};
+
+const TemplateComponent = templateComponents[template];
+---
+
+{TemplateComponent ? (
+  <TemplateComponent 
+    node={node}
+    drupal_nid={drupal_nid}
+    title={title}
+    breadcrumb={breadcrumb}
+    summary={summary}
+    keywords={keywords}
+    tag={tag}
+    parents={parents}
+    children={children}
+  />
+) : (
+  <Layout title={title || 'Page Not Found'}>
+    <div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+      <h1>Template Not Found</h1>
+      <p>Template "{template}" is not yet converted to Astro.</p>
+      <p><strong>Page:</strong> {title}</p>
+      <p><strong>Drupal NID:</strong> {drupal_nid}</p>
+    </div>
+  </Layout>
+)}

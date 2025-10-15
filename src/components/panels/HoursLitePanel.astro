@@ -1,0 +1,27 @@
+---
+/**
+ * HoursLitePanel - Lightweight hours display
+ * Converted from src/components/panels/hours-lite-panel.js
+ */
+import PanelTemplate from './PanelTemplate.astro';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+---
+
+<PanelTemplate title={data.field_title}>
+  <div class="hours-lite-panel-placeholder">
+    <p><strong>HoursLitePanel (TODO)</strong></p>
+  </div>
+</PanelTemplate>
+
+<style>
+  .hours-lite-panel-placeholder {
+    padding: 1rem;
+    background: var(--color-neutral-50, #f9f9f9);
+    border: 1px dashed var(--color-neutral-300, #ccc);
+  }
+</style>

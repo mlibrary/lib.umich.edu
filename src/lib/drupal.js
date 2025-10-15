@@ -138,19 +138,23 @@ export async function fetchStaff () {
  */
 export async function fetchDrupalPages () {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  const url = `${baseUrl}/jsonapi/node/page?include=field_design_template&filter[field_redirect_node][value]=0`;
+  const url = `${baseUrl}/jsonapi/node/page?include=field_design_template,field_panels&filter[field_redirect_node][value]=0`;
 
   let allData = [];
+  let allIncluded = [];
   let nextUrl = url;
 
   // Handle pagination
   while (nextUrl) {
     const response = await fetchWithRetry(nextUrl);
     allData = allData.concat(response.data);
+    if (response.included) {
+      allIncluded = allIncluded.concat(response.included);
+    }
     nextUrl = response.links?.next?.href || null;
   }
 
-  return allData;
+  return { data: allData, included: allIncluded };
 }
 
 /**
@@ -161,15 +165,19 @@ export async function fetchDrupalSectionPages () {
   const url = `${baseUrl}/jsonapi/node/section_page?include=field_design_template`;
 
   let allData = [];
+  let allIncluded = [];
   let nextUrl = url;
 
   while (nextUrl) {
     const response = await fetchWithRetry(nextUrl);
     allData = allData.concat(response.data);
+    if (response.included) {
+      allIncluded = allIncluded.concat(response.included);
+    }
     nextUrl = response.links?.next?.href || null;
   }
 
-  return allData;
+  return { data: allData, included: allIncluded };
 }
 
 /**
@@ -180,15 +188,19 @@ export async function fetchDrupalBuildings () {
   const url = `${baseUrl}/jsonapi/node/building?include=field_design_template`;
 
   let allData = [];
+  let allIncluded = [];
   let nextUrl = url;
 
   while (nextUrl) {
     const response = await fetchWithRetry(nextUrl);
     allData = allData.concat(response.data);
+    if (response.included) {
+      allIncluded = allIncluded.concat(response.included);
+    }
     nextUrl = response.links?.next?.href || null;
   }
 
-  return allData;
+  return { data: allData, included: allIncluded };
 }
 
 /**

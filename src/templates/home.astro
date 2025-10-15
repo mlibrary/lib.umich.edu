@@ -1,0 +1,29 @@
+---
+/**
+ * Home Page Template
+ * Converted from src/templates/home.js
+ */
+import Layout from '../layouts/Layout.astro';
+import Panels from '../components/panels/Panels.astro';
+
+const { node } = Astro.props;
+const { title, relationships } = node;
+const panels = relationships?.field_panels || [];
+
+// Debug: Log panel data
+console.log('Home Template - Panels data:', panels);
+console.log('Home Template - Panels length:', panels?.length);
+console.log('Home Template - First panel:', panels?.[0]);
+---
+
+<Layout title={title}>
+  <!-- Debug info -->
+  <div style="background: yellow; padding: 1rem; margin: 1rem;">
+    <strong>Debug:</strong> Found {panels?.length || 0} panels
+    {panels?.length > 0 && (
+      <div>First panel type: {panels[0]?.type || panels[0]?.__typename || 'unknown'}</div>
+    )}
+  </div>
+  
+  <Panels data={panels} />
+</Layout>
