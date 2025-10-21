@@ -252,11 +252,11 @@ export async function fetchFromDrupal (endpoint) {
 /**
  * Fetch a single node by UUID
  */
-export async function fetchDrupalNodeByUuid (nodeType, uuid) {
+export const fetchDrupalNodeByUuid = async (nodeType, uuid) => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const url = `${baseUrl}/jsonapi/node/${nodeType}/${uuid}`;
   return await fetchWithRetry(url);
-}
+};
 
 export {
   DRUPAL_URL,
