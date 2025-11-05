@@ -47,8 +47,8 @@ const hoursPanel = data.find((panel: any) => panel.__typename === 'paragraph__ho
           return <LinkPanel data={panel} key={id} />;
         case 'paragraph--group_panel':
           return <GroupPanel data={panel} key={id} />;
-        case 'paragraph--card_panel':
-          return <CardPanel data={panel} key={id} />;
+        // case 'paragraph--card_panel':
+        //   return <CardPanel data={panel} key={id} />;
         case 'paragraph--text_panel':
           return <TextPanel data={panel} key={id} />;
         case 'paragraph--hours_panel':

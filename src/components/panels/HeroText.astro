@@ -1,0 +1,17 @@
+---
+/**
+ * HeroText.astro - Placeholder for text hero panels
+ * TODO: Port from src/components/panels/hero-text.js
+ */
+type Props = {
+  data: any;
+};
+
+const { data } = Astro.props as Props;
+---
+
+<div style="background: #fff3cd; border: 2px solid #856404; padding: 1rem; margin: 1rem;">
+  <h3>HeroText (TODO)</h3>
+  <p>This component needs to be ported from hero-text.js</p>
+  <p><strong>Title:</strong> {data?.field_title || 'No title'}</p>
+</div>

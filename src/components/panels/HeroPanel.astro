@@ -1,57 +1,42 @@
 ---
 /**
- * HeroPanel - Hero section with search or text
- * Converted from src/components/panels/hero-panel.js
- * 
- * Two types:
- * 1. lib_search_box - Library Search interface
- * 2. text - Heading and HTML content on an image
+ * HeroPanel (Astro)
+ * Mirrors src/components/panels/hero-panel.js (Gatsby)
+ *
+ * Two variants by template machine name:
+ * - 'lib_search_box' => renders HeroSearchBox
+ * - 'text' => renders HeroText
  */
-interface Props {
+import HeroSearchBox from './HeroSearchBox.astro';
+import HeroText from './HeroText.astro';
+
+type Props = {
   data: any;
-}
+};
 
-const { data } = Astro.props;
-const { field_machine_name: fieldMachineName } = data.relationships.field_hero_template;
+const { data } = Astro.props as Props;
+
+const fieldMachineName: string | undefined = data?.relationships?.field_hero_template?.field_machine_name;
 ---
-
 {fieldMachineName === 'lib_search_box' && (
-  <div class="hero-search-box">
-    <!-- TODO: Implement HeroSearchBox -->
-    <div class="hero-placeholder">
-      <h1>Hero Search Box (TODO)</h1>
-      <p>Library Search interface will go here</p>
-    </div>
-  </div>
+  <HeroSearchBox data={data} />
 )}
 
 {fieldMachineName === 'text' && (
-  <div class="hero-text">
-    <!-- TODO: Implement HeroText -->
-    <div class="hero-placeholder">
-      <h1>Hero Text (TODO)</h1>
-      <p>Hero with heading and HTML content will go here</p>
-    </div>
-  </div>
+  <HeroText data={data} />
 )}
 
-<style>
-  .hero-search-box,
-  .hero-text {
-    min-height: 16rem;
-  }
-  
-  .hero-placeholder {
-    padding: 2rem;
-    background: var(--color-blue-100, #e8f4f8);
-    border: 2px dashed var(--color-neutral-300, #ccc);
-    text-align: center;
-  }
-  
-  @media (min-width: 1024px) {
-    .hero-search-box,
-    .hero-text {
-      min-height: 25rem;
-    }
-  }
-</style>
+{!fieldMachineName && (
+  <div style="background: #ffeeee; border: 2px solid #ff0000; padding: 1rem; margin: 1rem;">
+    <h3>Hero Panel Debug - No field_machine_name found</h3>
+    <p><strong>Panel type:</strong> {data?.__typename}</p>
+    <p><strong>Has field_hero_template:</strong> {data?.relationships?.field_hero_template ? 'Yes' : 'No'}</p>
+    {data?.relationships?.field_hero_template && (
+      <p><strong>field_hero_template keys:</strong> {Object.keys(data.relationships.field_hero_template).join(', ')}</p>
+    )}
+    <details>
+      <summary>field_hero_template data (click to expand)</summary>
+      <pre style="font-size: 12px; overflow: auto;">{JSON.stringify(data?.relationships?.field_hero_template, null, 2)}</pre>
+    </details>
+  </div>
+)}

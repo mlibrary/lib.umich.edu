@@ -1,0 +1,166 @@
+---
+/**
+ * FeaturedAndLatestNews (Astro)
+ * Ported from src/components/panels/featured-and-latest-news.js (Gatsby)
+ *
+ * Data expectations (pass via props):
+ * - featuredNews: { edges: { node: NewsNode }[] } | { node: NewsNode }[]
+ * - priorityNews: { edges: { node: NewsNode }[] } | { node: NewsNode }[]
+ * - recentNews: { edges: { node: NewsNode }[] } | { node: NewsNode }[]
+ * - newsLandingSlug: string (href to the news landing page)
+ *
+ * If featured/priority/recent are not provided, the component will render nothing.
+ */
+import Heading from '../../reusable/heading.astro';
+
+type Edge<T> = { node: T };
+type Edges<T> = { edges: Array<Edge<T>> } | Array<Edge<T>> | Array<T>;
+
+interface NewsNode {
+	title: string;
+	created: string;
+	body?: { summary?: string };
+	fields?: { slug?: string };
+	relationships?: {
+		field_media_image?: {
+			relationships?: {
+				field_media_image?: {
+					localFile?: {
+						childImageSharp?: { gatsbyImageData?: any };
+					};
+				};
+			};
+		};
+	};
+}
+
+interface Props {
+	featuredNews?: Edges<NewsNode>;
+	priorityNews?: Edges<NewsNode>;
+	recentNews?: Edges<NewsNode>;
+	newsLandingSlug?: string;
+}
+
+const { featuredNews, priorityNews, recentNews, newsLandingSlug }: Props = Astro.props as Props;
+
+// Normalize incoming data to an array of { node }
+const toEdges = <T,>(input?: Edges<T>): Array<Edge<T>> => {
+	if (!input) return [];
+	if (Array.isArray(input)) {
+		// Could be [{node}] or [node]
+		if (input.length > 0 && 'node' in (input[0] as any)) return input as Array<Edge<T>>;
+		return (input as Array<T>).map((n) => ({ node: n }));
+	}
+	if ('edges' in (input as any)) return (input as any).edges as Array<Edge<T>>;
+	return [];
+};
+
+const featured = toEdges<NewsNode>(featuredNews);
+const priority = toEdges<NewsNode>(priorityNews);
+const recent = toEdges<NewsNode>(recentNews);
+
+const processNewsNodeForCard = (newsNode: NewsNode) => {
+	const newsImage = newsNode?.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
+	const children = newsNode?.body?.summary;
+	const href = newsNode?.fields?.slug;
+	const subtitle = newsNode?.created
+		? new Date(newsNode.created).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+		: undefined;
+
+	return {
+		title: newsNode?.title,
+		subtitle,
+		href,
+		image: newsImage,
+		children
+	};
+};
+
+// Combine and sort like Gatsby version:
+const sortNews = (priorityEdges: Array<Edge<NewsNode>>, recentEdges: Array<Edge<NewsNode>>) => {
+	const priorityCount = priorityEdges.length;
+	if (priorityCount === 0) return recentEdges;
+	const recentSlice = recentEdges.slice(0, Math.max(0, 5 - priorityCount));
+	const all = [...priorityEdges, ...recentSlice];
+	return all.sort((a, b) => {
+		const ad = Date.parse(a.node.created || '');
+		const bd = Date.parse(b.node.created || '');
+		if (ad < bd) return 1;
+		if (ad > bd) return -1;
+		return 0;
+	});
+};
+
+const hasData = featured.length > 0 || recent.length > 0 || priority.length > 0;
+const featureNode = featured.length > 0 ? featured[0].node : undefined;
+const featureCardProps = featureNode ? processNewsNodeForCard(featureNode) : undefined;
+const recentSorted = sortNews(priority, recent);
+const recentCardProps = recentSorted.map(({ node }) => processNewsNodeForCard(node));
+const viewAllNewsHref = newsLandingSlug;
+---
+
+{hasData && featureCardProps && (
+    <div class="fan-grid">
+        <div class="fan-feature">
+            <Heading level={2} size="M">
+                Feature
+            </Heading>
+            <div class="fan-feature-inner">
+                test
+                {/* <Card title={featureCardProps.title} subtitle={featureCardProps.subtitle} href={featureCardProps.href} image={featureCardProps.image}>
+                    {featureCardProps.children}
+                </Card> */}
+            </div>
+        </div>
+
+        <div class="fan-recent">
+            <Heading level={2} size="M">
+                Recent news
+            </Heading>
+
+            <ol class="fan-recent-list">
+                {recentCardProps.map(({ title, subtitle, href }, idx) => (
+                    <li>
+                        test
+                        {/* <Card title={title} subtitle={subtitle} href={href} /> */}
+                    </li>
+                ))}
+            </ol>
+
+            {viewAllNewsHref && <a href={viewAllNewsHref}>View all news and stories</a>}
+        </div>
+    </div>
+)}
+
+<style>
+	.fan-grid {
+		display: grid;
+		grid-gap: 0.75rem; /* SPACING.S */
+		grid-template-columns: [content-start] repeat(11, 1fr) 1fr [content-end];
+		margin: 3rem 0; /* SPACING["3XL"] */
+	}
+
+	.fan-feature {
+		grid-column: content-start / content-end;
+	}
+	.fan-feature-inner {
+		/* On small+ screens add right border & padding */
+	}
+
+	.fan-recent {
+		grid-column: content-start / content-end;
+	}
+
+	.fan-recent-list > li {
+		margin-bottom: 2rem; /* SPACING.XL */
+	}
+
+	@media only screen and (min-width: 641px) { /* MEDIA_QUERIES.S */
+		.fan-grid { grid-gap: 1.5rem; /* SPACING.L */ }
+		.fan-feature { grid-column: content-start / span 6; }
+		.fan-feature-inner { border-right: solid 1px var(--color-neutral-100); padding-right: 2rem; /* SPACING.XL */ }
+		.fan-recent { grid-column: span 6; }
+		.fan-recent-heading { margin-top: 0; }
+	}
+</style>
+

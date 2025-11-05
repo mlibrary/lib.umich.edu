@@ -9,11 +9,7 @@ import Panels from '../components/panels/Panels.astro';
 const { node } = Astro.props;
 const { title, relationships } = node;
 const panels = relationships?.field_panels || [];
-
-// Debug: Log panel data
-console.log('Home Template - Panels data:', panels);
-console.log('Home Template - Panels length:', panels?.length);
-console.log('Home Template - First panel:', panels?.[0]);
+//console.log('Home page panels:', panels[0].relationships.field_hero_template);
 ---
 
 <Layout title={title}>

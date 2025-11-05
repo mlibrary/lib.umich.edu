@@ -1,0 +1,250 @@
+---
+/**
+ * Astro port of src/components/panels/hero-search-box.js
+ *
+ * Notes:
+ * - Reusable React components (Button, Icon, Input, Margins, Html) are NOT imported per request.
+ *   Their usages are replaced with native HTML and styles here. We'll migrate them later.
+ */
+
+type Props = {
+	data: any;
+};
+
+const { data } = Astro.props as Props;
+
+// Determine background style (frosted white card)
+const hasFrost = data?.field_background === 'white';
+
+// Caption and alt text
+const caption: string | null = data?.field_caption_text?.processed ?? null;
+const altText: string = data?.relationships?.field_hero_images?.[0]?.field_media_image?.alt ?? '';
+
+// Extract background images by orientation
+const fieldHeroImages = data?.relationships?.field_hero_images ?? [];
+const getSrcByOrientation = (orientation: string): string => {
+	try {
+		const node = fieldHeroImages.find((n: any) => n?.field_orientation === orientation);
+		return (
+			node?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData?.images?.fallback?.src || ''
+		);
+	} catch {
+		return '';
+	}
+};
+
+const verticalSrc = getSrcByOrientation('vertical');
+const horizontalSrc = getSrcByOrientation('horizontal');
+---
+
+<div class="margins">
+	<section
+		class="background-section"
+		style={`--bg-vertical: url('${verticalSrc}'); --bg-horizontal: url('${horizontalSrc}');`}
+	>
+		<div class="hero-inner">
+			<div class={`hero-card ${hasFrost ? 'frost' : ''}`}>
+				<h1 id="help-find" class="hero-title">What can we help you find?</h1>
+
+				{/* Search form (native elements replacing Input/Button/Icon) */}
+				<form
+					action="https://search.lib.umich.edu/everything"
+					method="get"
+					role="search"
+					aria-labelledby="help-find"
+					class="search-form"
+				>
+					<label for="library-search-query" class="search-label">
+						Search our
+						{' '}
+						<a href="https://search.lib.umich.edu/catalog?utm_source=lib-home">catalog</a>,
+						{' '}
+						<a href="https://search.lib.umich.edu/articles?utm_source=lib-home">articles</a>, and more
+					</label>
+
+					<div class="search-row">
+						<input id="library-search-query" name="query" type="search" class="search-input" />
+						<input type="hidden" name="utm_source" value="lib-home" />
+						<button type="submit" class="search-button">
+							<span aria-hidden="true">🔎</span>
+							<span class="visually-hidden">Submit</span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		{/* Caption with visually hidden image for a11y context */}
+		{caption && (
+			<div class="caption frost" aria-hidden={altText ? 'false' : 'true'}>
+				<figure>
+					{altText && (
+						<span class="visually-hidden">
+							<img alt={altText} />
+						</span>
+					)}
+					<figcaption>
+						<div set:html={caption} />
+					</figcaption>
+				</figure>
+			</div>
+		)}
+	</section>
+</div>
+
+<style>
+	/* Basic responsive margins approximate the original Margins component */
+	.margins {
+		padding: 0;
+	}
+	@media (min-width: 1024px) {
+		.margins {
+			padding-left: 2.5rem; /* ~ SPACING[2XL] */
+			padding-right: 2.5rem;
+		}
+	}
+
+	.background-section {
+		--neutral-100: var(--color-neutral-100, #f4f4f4);
+		background-color: var(--neutral-100);
+		background-image: var(--bg-vertical);
+		background-position: center top 33%;
+		background-repeat: no-repeat;
+		background-size: cover;
+		position: relative;
+		min-height: 16rem;
+	}
+	@media (min-width: 720px) {
+		.background-section {
+			background-image: var(--bg-horizontal);
+			background-position: center left 20%;
+		}
+	}
+
+	.hero-inner {
+		min-height: 16rem;
+		display: block;
+	}
+	@media (min-width: 1024px) {
+		.background-section,
+		.hero-inner {
+			min-height: 25rem;
+		}
+	}
+	@media (min-width: 720px) {
+		.hero-inner {
+			display: flex;
+			align-items: center;
+		}
+	}
+
+	.hero-card {
+		margin: 0 auto;
+		max-width: 28rem;
+		padding: 1rem; /* ~ SPACING.M */
+		background: transparent;
+	}
+	@media (min-width: 480px) { /* ~ SPACING.S breakpoint approximation */
+		.hero-card {
+			padding: 1.5rem; /* ~ SPACING.L */
+		}
+	}
+	@media (min-width: 720px) { /* ~ MEDIA_QUERIES.M */
+		.hero-card {
+			border-radius: 2px;
+			margin: 0;
+			margin-left: 2.5rem; /* ~ SPACING[2XL] */
+			max-width: 100%;
+			padding: 2rem; /* ~ SPACING.XL */
+			width: 34rem;
+		}
+	}
+
+	.frost {
+		backdrop-filter: blur(2px);
+		background: rgba(255, 255, 255, 0.8);
+	}
+
+	.hero-title {
+		margin: 0 auto 0.5rem;
+		font-weight: 700;
+		text-align: center;
+		font-size: 1.125rem; /* ~ TYPOGRAPHY.M */
+	}
+	@media (min-width: 720px) {
+		.hero-title {
+			text-align: left;
+			font-size: 1.75rem; /* ~ TYPOGRAPHY.XL */
+			line-height: 1.2;
+		}
+	}
+	@media (min-width: 1024px) {
+		.hero-title {
+			font-size: 2.25rem;
+		}
+	}
+
+	.search-form {
+		text-align: center;
+	}
+	@media (min-width: 720px) {
+		.search-form {
+			text-align: left;
+		}
+	}
+	.search-label {
+		display: block;
+		padding-bottom: 0.5rem; /* ~ SPACING.XS */
+	}
+	.search-label a {
+		color: var(--color-neutral-400, #666);
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+	}
+	.search-label a:hover {
+		text-decoration-thickness: 2px;
+	}
+
+	.search-row {
+		display: flex;
+		align-items: flex-end;
+	}
+	.search-input {
+		height: 40px;
+		flex: 1 1 auto;
+		padding: 0 0.75rem;
+		border: 1px solid var(--color-neutral-300, #ccc);
+		border-radius: 2px;
+	}
+	.search-button {
+		margin-left: 0.5rem; /* ~ SPACING.XS */
+		height: 40px;
+		padding: 0 0.75rem;
+		border: none;
+		border-radius: 2px;
+		background: var(--color-blue-600, #1967d2);
+		color: #fff;
+		cursor: pointer;
+	}
+	.search-button:hover,
+	.search-button:focus {
+		background: var(--color-blue-700, #1558b3);
+	}
+
+	.caption {
+		border-radius: 2px 0 0 0;
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		padding: 0.25rem 0.75rem; /* ~ 2XS + S */
+		max-width: min(90%, 40ch);
+	}
+
+	.visually-hidden {
+		position: absolute !important;
+		height: 1px; width: 1px;
+		overflow: hidden;
+		clip: rect(1px, 1px, 1px, 1px);
+		white-space: nowrap;
+	}
+</style>

@@ -3,7 +3,7 @@
  * CustomPanel - Custom panel content
  * Converted from src/components/panels/custom-panel.js
  */
-import PanelTemplate from './PanelTemplate.astro';
+import FeaturedAndLatestNews from './FeaturedAndLatestNews.astro';
 
 interface Props {
   data: any;
@@ -11,12 +11,21 @@ interface Props {
 
 const { data } = Astro.props;
 ---
+{data.field_machine_name == "featured_and_latest_news" && (
+  <FeaturedAndLatestNews />
+)}
+<!-- {data.field_machine_name == "ee_features" && 
+  <WhatsappeningPanel/>
+}
+{data.field_machine_name =='ee_landing' && 
+  <EventsAndExhibitsPanel />
+} -->
 
-<PanelTemplate title={data.field_title}>
+<!-- <PanelTemplate title={data.field_title}>
   <div class="custom-panel-placeholder">
     <p><strong>CustomPanel (TODO)</strong></p>
   </div>
-</PanelTemplate>
+</PanelTemplate> -->
 
 <style>
   .custom-panel-placeholder {

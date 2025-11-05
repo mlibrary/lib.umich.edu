@@ -87,32 +87,60 @@ export const processDrupalNode = (node, included = []) => {
       }
 
       // Handle single relationship
-      if (!Array.isArray(relationship.data)) {
-        const relatedItem = included.find((item) => {
-          return item.id === relationship.data.id && item.type === relationship.data.type;
-        });
-        if (relatedItem) {
-          relationships[key] = relatedItem.attributes;
-        }
-      } else {
+      if (Array.isArray(relationship.data)) {
         // Handle multiple relationships (like panels)
         relationships[key] = relationship.data.map((relData) => {
           const relatedItem = included.find((item) => {
             return item.id === relData.id && item.type === relData.type;
           });
           if (relatedItem) {
+            // Process nested relationships recursively
+            const nestedRelationships = {};
+            if (relatedItem.relationships) {
+              Object.keys(relatedItem.relationships).forEach((nestedKey) => {
+                const nestedRel = relatedItem.relationships[nestedKey];
+                if (!nestedRel || !nestedRel.data) {
+                  return;
+                }
+
+                if (Array.isArray(nestedRel.data)) {
+                  // Handle nested array relationships
+                  nestedRelationships[nestedKey] = nestedRel.data.map((nestedRelData) => {
+                    const nestedItem = included.find((item) => {
+                      return item.id === nestedRelData.id && item.type === nestedRelData.type;
+                    });
+                    return nestedItem ? { ...nestedItem.attributes, __typename: nestedItem.type } : null;
+                  }).filter(Boolean);
+                } else {
+                  // Handle single nested relationships
+                  const nestedItem = included.find((item) => {
+                    return item.id === nestedRel.data.id && item.type === nestedRel.data.type;
+                  });
+                  if (nestedItem) {
+                    nestedRelationships[nestedKey] = nestedItem.attributes;
+                  }
+                }
+              });
+            }
+
             // For panels and other array relationships, preserve the full structure
             // With __typename for component routing
             return {
-              id: relatedItem.id,
               __typename: relatedItem.type,
+              id: relatedItem.id,
               ...relatedItem.attributes,
-              // Recursively process nested relationships if they exist
-              relationships: relatedItem.relationships
+              relationships: nestedRelationships
             };
           }
           return null;
         }).filter(Boolean);
+      } else {
+        const relatedItem = included.find((item) => {
+          return item.id === relationship.data.id && item.type === relationship.data.type;
+        });
+        if (relatedItem) {
+          relationships[key] = relatedItem.attributes;
+        }
       }
     });
   }
