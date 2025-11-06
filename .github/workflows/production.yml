@@ -31,7 +31,7 @@ jobs:
     steps:
       # Get code from repo
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       # Get tag from action input
@@ -51,12 +51,12 @@ jobs:
       # Checkout tag from repo
       - name: Checkout correct repository
         if: ${{ github.event_name == 'workflow_dispatch'  && github.events.inputs.tag }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ env.tag }}
       # Install NodeJS
       - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20.x
       # Enabling cache
@@ -84,7 +84,7 @@ jobs:
       # Notify Slack if build fails
       - name: Send custom JSON data to Slack workflow
         if: ${{ failure() }}
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@v2.1.1
         with:
           payload: |
             {
