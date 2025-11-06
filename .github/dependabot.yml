@@ -23,27 +23,6 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     multi-ecosystem-group: "maintenance"
-    groups:
-      production-dependencies:
-        patterns:
-          - "*"
-        exclude-patterns:
-          - "@types/*"
-          - "eslint*"
-          - "@eslint/*"
-          - "typescript"
-        update-types:
-          - "minor"
-          - "patch"
-      development-dependencies:
-        patterns:
-          - "@types/*"
-          - "eslint*"
-          - "@eslint/*"
-          - "typescript"
-        update-types:
-          - "minor"
-          - "patch"
     ignore:
       - dependency-name: "gatsby"
         update-types: ["version-update:semver-major"]
