@@ -11,12 +11,6 @@ multi-ecosystem-groups:
       timezone: "America/Detroit"
     commit-message:
       prefix: "Monthly dependency updates: "
-    reviewers: 
-      - "erinsullivan"
-    assignees: 
-      - "SalazarJosh"
-    labels:
-      - "dependencies"
 
 updates:
   # Main project npm dependencies
