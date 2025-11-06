@@ -1,0 +1,41 @@
+# Dependabot configuration for automated dependency updates
+# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+
+multi-ecosystem-groups:
+  maintenance:
+    schedule:
+      interval: "monthly"
+      time: "06:00"
+      day: "monday"
+      timezone: "America/Detroit"
+    commit-message:
+      prefix: "Monthly dependency updates: "
+
+updates:
+  # Main project npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    multi-ecosystem-group: "maintenance"
+    ignore:
+      - dependency-name: "gatsby"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+
+  # Gatsby plugin dependencies
+  - package-ecosystem: "npm"
+    directory: "/plugins/gatsby-source-libguides"
+    multi-ecosystem-group: "maintenance"
+
+  - package-ecosystem: "npm"
+    directory: "/plugins/gatsby-source-umich-lib"
+    multi-ecosystem-group: "maintenance"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    multi-ecosystem-group: "maintenance"
