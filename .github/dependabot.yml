@@ -18,6 +18,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     multi-ecosystem-group: "maintenance"
+    patterns: ["*"]
     ignore:
       - dependency-name: "gatsby"
         update-types: ["version-update:semver-major"]
@@ -30,12 +31,15 @@ updates:
   - package-ecosystem: "npm"
     directory: "/plugins/gatsby-source-libguides"
     multi-ecosystem-group: "maintenance"
+    patterns: ["*"]
 
   - package-ecosystem: "npm"
     directory: "/plugins/gatsby-source-umich-lib"
     multi-ecosystem-group: "maintenance"
-
+    patterns: ["*"]
+    
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     multi-ecosystem-group: "maintenance"
+    patterns: ["*"]
