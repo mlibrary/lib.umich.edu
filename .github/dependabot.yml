@@ -37,6 +37,7 @@ updates:
     directory: "/plugins/gatsby-source-umich-lib"
     multi-ecosystem-group: "maintenance"
     patterns: ["*"]
+    
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
