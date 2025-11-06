@@ -5,7 +5,6 @@ const getYouTubeVideoId = (url) => {
   if (!url) {
     return null;
   }
-
   const regex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)(?<videoId>[^"&?/\s]{11})/u;
   const match = url.match(regex);
   return match ? match.groups.videoId : null;
@@ -26,18 +25,20 @@ export default function MediaPlayer ({ url }) {
     );
   }
 
-  const getOrigin = () => {
-    if (typeof window !== 'undefined') {
-      return window.location.origin;
+  const getEmbedUrl = () => {
+    const baseParams = new URLSearchParams({
+      modestbranding: '1',
+      rel: '0'
+    });
+
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+      baseParams.set('origin', window.location.origin);
     }
-    return 'https://lib.umich.edu';
+
+    return `https://www.youtube-nocookie.com/embed/${videoId}?${baseParams.toString()}`;
   };
 
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?`
-    + `origin=${encodeURIComponent(getOrigin())}&`
-    + `enablejsapi=1&`
-    + `modestbranding=1&`
-    + `rel=0`;
+  const embedUrl = getEmbedUrl();
 
   return (
     <div
@@ -51,10 +52,12 @@ export default function MediaPlayer ({ url }) {
         title='YouTube video player'
         width='100%'
         height='100%'
-        frameBorder='0'
         allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
         allowFullScreen
+        referrerPolicy='strict-origin-when-cross-origin'
+        sandbox='allow-scripts allow-same-origin allow-presentation'
         css={{
+          border: 0,
           left: '0',
           position: 'absolute',
           top: '0'
