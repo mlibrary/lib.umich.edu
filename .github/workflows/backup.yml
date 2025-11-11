@@ -31,12 +31,13 @@ jobs:
     steps:
       # Get code from repo
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       # Install NodeJS
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Install latest LTS version of Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: 20.x
+          node-version: lts/*
+          check-latest: true
       # Enabling cache
       - name: Caching Gatsby
         id: gatsby-cache-build
@@ -48,12 +49,12 @@ jobs:
           key: ${{ runner.os }}-gatsby-build-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-gatsby-build-
-      # Run npm install and build on our code
-      - run: npm install
+      # Run npm ci (clean-install) and build on our code
+      - run: npm ci
       - run: npm run build
       # Deploy to s3
       - name: Set s3 bucket credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -63,7 +64,7 @@ jobs:
       # Notify Slack if build fails
       - name: Send custom JSON data to Slack workflow
         if: ${{ failure() }}
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@v2.1.1
         with:
           payload: |
             {
@@ -75,7 +76,7 @@ jobs:
       # Trigger production workflow if this workflow was triggered by push to master
       - name: Checking workflow method and triggering next workflow if needed
         if: ${{ success() && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: backup_complete
