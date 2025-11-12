@@ -34,6 +34,7 @@ export default function MediaPlayer ({ url }) {
 
   if (!videoId) {
     console.warn(`MediaPlayer: Unable to extract video ID from URL: ${url}`);
+    return null;
   }
 
   const embedUrl = getEmbedUrl(videoId);
