@@ -6,6 +6,7 @@
 import Logo from "./Logo.astro";
 import PrimaryNav from "./PrimaryNav.astro";
 import Icon from "../Icon.astro";
+import SiteSearch from "../SiteSearch.astro";
 
 interface Props {
   primary: any[];
@@ -53,53 +54,14 @@ const { primary, secondary } = Astro.props;
         }
 
         <!-- Site Search -->
-        <div class="site-search">
-          <input
-            type="search"
-            placeholder="Search this site"
-            aria-label="Search this site"
-            class="site-search-input"
-            id="desktop-search-input"
-          />
-          <button
-            class="site-search-btn"
-            aria-label="Submit search"
-            id="desktop-search-btn"
-          >
-            <span class="material-icons">search</span>
-          </button>
-        </div>
+        <SiteSearch label="Search this site" />
       </div>
     </div>
   </div>
 </header>
 
 
-<script>
-  // Desktop search functionality
-  const desktopSearchInput = document.getElementById(
-    "desktop-search-input"
-  ) as HTMLInputElement;
-  const desktopSearchBtn = document.getElementById("desktop-search-btn");
 
-  if (desktopSearchBtn && desktopSearchInput) {
-    desktopSearchBtn.addEventListener("click", () => {
-      const query = desktopSearchInput.value.trim();
-      if (query) {
-        window.location.href = `/search?q=${encodeURIComponent(query)}`;
-      }
-    });
-
-    desktopSearchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const query = desktopSearchInput.value.trim();
-        if (query) {
-          window.location.href = `/search?q=${encodeURIComponent(query)}`;
-        }
-      }
-    });
-  }
-</script>
 
 <style>
   .header-large {
@@ -160,46 +122,7 @@ const { primary, secondary } = Astro.props;
     margin-top: -2px;
   }
 
-  /* Site search */
-  .site-search {
-    display: flex;
-    gap: 0.5rem;
-    flex-basis: 21rem;
-    margin-bottom: 1rem;
-  }
 
-  .site-search-input {
-    flex: 1;
-    padding: 0.625rem 1rem;
-    border: 1px solid var(--color-neutral-300, #ccc);
-    border-radius: 4px;
-    font-size: 0.9375rem;
-  }
-
-  .site-search-input:focus {
-    outline: 2px solid var(--color-blue-400, #00274c);
-    outline-offset: 1px;
-  }
-
-  .site-search-btn {
-    padding: 0.625rem 1rem;
-    background: var(--color-blue-400, #00274c);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .site-search-btn:hover {
-    background: var(--color-teal-400, #0891b2);
-  }
-
-  .site-search-btn .material-icons {
-    font-size: 20px;
-  }
 
   @media (min-width: 1129px) {
     .header-large {
