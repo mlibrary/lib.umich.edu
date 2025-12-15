@@ -1,0 +1,209 @@
+---
+/**
+ * Primary Navigation Component (Desktop)
+ * Displays main navigation with dropdowns
+ */
+import NavPanel from './NavPanel.astro';
+
+interface Props {
+  items: any[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav
+  aria-label="Main"
+  aria-describedby="main-nav-description"
+  class="primary-nav"
+>
+  <p id="main-nav-description" class="visually-hidden">
+    Expand main navigation buttons to view related content groups and associated
+    links.
+  </p>
+  <ul>
+    {
+      items.map((item, index) => {
+        return (
+          <li class="primary-nav-item">
+            {item.children && item.children.length > 0 ? (
+              <>
+                <button
+                  class="primary-nav-btn no-focus-styles"
+                  aria-expanded="false"
+                  data-nav-index={index}
+                >
+                  {item.text}
+                </button>
+                <div
+                  class="primary-dropdown"
+                  hidden
+                  data-dropdown-index={index}
+                >
+                  <NavPanel items={item.children} />
+                </div>
+              </>
+            ) : (
+              <a href={item.to} class="primary-nav-link">
+                {item.text}
+              </a>
+            )}
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>
+
+<script>
+  // Desktop primary nav toggles
+  const primaryNav = document.querySelector(".primary-nav");
+  const primaryNavBtns = document.querySelectorAll(".primary-nav-btn");
+  let currentOpenDropdown: number | null = null;
+
+  primaryNavBtns.forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const index = Number(btn.getAttribute("data-nav-index"));
+      const isExpanded = btn.getAttribute("aria-expanded") === "true";
+      
+      // Close all other dropdowns
+      primaryNavBtns.forEach(otherBtn => {
+        if (otherBtn !== btn) {
+          const otherIndex = Number(otherBtn.getAttribute("data-nav-index"));
+          otherBtn.setAttribute("aria-expanded", "false");
+          const otherDropdown = document.querySelector(`[data-dropdown-index="${otherIndex}"]`) as HTMLElement;
+          if (otherDropdown) otherDropdown.hidden = true;
+        }
+      });
+
+      // Toggle current dropdown
+      const dropdown = document.querySelector(
+        `[data-dropdown-index="${index}"]`
+      ) as HTMLElement;
+      
+      btn.setAttribute("aria-expanded", String(!isExpanded));
+      if (dropdown) {
+        dropdown.hidden = isExpanded;
+      }
+      
+      currentOpenDropdown = isExpanded ? null : index;
+    });
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener("click", (event) => {
+    if (primaryNav && !primaryNav.contains(event.target as Node)) {
+      primaryNavBtns.forEach((btn) => {
+        btn.setAttribute("aria-expanded", "false");
+      });
+      document.querySelectorAll(".primary-dropdown").forEach((dropdown) => {
+        (dropdown as HTMLElement).hidden = true;
+      });
+      currentOpenDropdown = null;
+    }
+  });
+
+  // Handle Escape key to close dropdown
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && currentOpenDropdown !== null) {
+      const btn = document.querySelector(`[data-nav-index="${currentOpenDropdown}"]`);
+      const dropdown = document.querySelector(`[data-dropdown-index="${currentOpenDropdown}"]`) as HTMLElement;
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+      if (dropdown) dropdown.hidden = true;
+      currentOpenDropdown = null;
+    }
+  });
+
+  // Panel logic inside dropdown
+  document.querySelectorAll('.primary-dropdown').forEach(dropdown => {
+    const panelButtons = dropdown.querySelectorAll('.nav-panel-button');
+    const panelContents = dropdown.querySelectorAll('.nav-panel-content');
+    const placeholder = dropdown.querySelector('.nav-panel-placeholder');
+    let activePanel = -1;
+
+    const updatePanels = (index) => {
+      panelButtons.forEach((btn, i) => {
+        const isExpanded = i === index;
+        btn.setAttribute('aria-expanded', String(isExpanded));
+      });
+      panelContents.forEach((content, i) => {
+        (content as HTMLElement).hidden = i !== index;
+      });
+      if (placeholder) {
+        (placeholder as HTMLElement).hidden = index !== -1;
+      }
+      activePanel = index;
+    };
+
+    panelButtons.forEach((btn, index) => {
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        updatePanels(activePanel === index ? -1 : index);
+      });
+    });
+    
+    // Set initial state
+    updatePanels(-1);
+  });
+</script>
+
+<style>
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .primary-nav ul {
+    display: flex;
+    align-items: stretch;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .primary-nav-item {
+    position: relative;
+  }
+  
+  .primary-nav-item > button {
+    margin-right: 1.5rem;
+  }
+
+  .primary-nav-btn,
+  .primary-nav-link {
+    font-size: 1.125rem;
+    border-bottom: solid 3px transparent;
+    cursor: pointer;
+    display: inline-block;
+    height: 100%;
+    padding-bottom: calc(1rem - 3px);
+    padding-top: 1rem;
+  }
+
+  .primary-nav-btn:hover,
+  .primary-nav-link:hover {
+    border-bottom-color: var(--color-teal-400, #0891b2);
+  }
+
+  .primary-nav-btn[aria-expanded="true"] {
+    border-bottom-color: var(--color-teal-400, #0891b2);
+  }
+
+  /* Primary dropdown panels */
+  .primary-dropdown {
+    position: absolute;
+    left: 0;
+    width: 100vw;
+    background: white;
+    border: 1px solid var(--color-neutral-100, #e0e0e0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    margin-top: -2px;
+  }
+</style>

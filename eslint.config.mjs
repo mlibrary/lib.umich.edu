@@ -6,13 +6,6 @@ import stylistic from '@stylistic/eslint-plugin';
 
 export default [
   {
-    settings: {
-      react: {
-        version: 'detect'
-      }
-    }
-  },
-  {
     languageOptions: {
       ecmaVersion: 2021,
       globals: {

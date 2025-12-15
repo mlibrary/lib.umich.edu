@@ -1,0 +1,211 @@
+---
+/**
+ * Large Screen (Desktop) Header Component
+ * Displays desktop navigation with search and utility nav
+ */
+import Logo from "./Logo.astro";
+import PrimaryNav from "./PrimaryNav.astro";
+import Icon from "../Icon.astro";
+
+interface Props {
+  primary: any[];
+  secondary: any[];
+}
+
+const { primary, secondary } = Astro.props;
+---
+
+<header class="header-large">
+  <div class="margins">
+    <div class="header-container">
+      <div class="logo-large-wrapper">
+        <Logo size={36} />
+      </div>
+
+      <div class="desktop-nav-container">
+        <!-- Primary Navigation -->
+        {primary && primary.length > 0 && <PrimaryNav items={primary} />}
+
+        <!-- Utility Navigation -->
+        {
+          secondary && secondary.length > 0 && (
+            <nav aria-label="Utility" class="utility-nav">
+              <ul>
+                {secondary.map((item) => {
+                  return (
+                    <li>
+                      <a href={item.to} class="no-focus-styles">
+                        {item.icon && (
+                          <Icon
+                            icon={item.icon}
+                            size={14}
+                            style="margin-top: -2px;"
+                          />
+                        )}
+                        <span>{item.text}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          )
+        }
+
+        <!-- Site Search -->
+        <div class="site-search">
+          <input
+            type="search"
+            placeholder="Search this site"
+            aria-label="Search this site"
+            class="site-search-input"
+            id="desktop-search-input"
+          />
+          <button
+            class="site-search-btn"
+            aria-label="Submit search"
+            id="desktop-search-btn"
+          >
+            <span class="material-icons">search</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<script>
+  // Desktop search functionality
+  const desktopSearchInput = document.getElementById(
+    "desktop-search-input"
+  ) as HTMLInputElement;
+  const desktopSearchBtn = document.getElementById("desktop-search-btn");
+
+  if (desktopSearchBtn && desktopSearchInput) {
+    desktopSearchBtn.addEventListener("click", () => {
+      const query = desktopSearchInput.value.trim();
+      if (query) {
+        window.location.href = `/search?q=${encodeURIComponent(query)}`;
+      }
+    });
+
+    desktopSearchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const query = desktopSearchInput.value.trim();
+        if (query) {
+          window.location.href = `/search?q=${encodeURIComponent(query)}`;
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .header-large {
+    display: none;
+  }
+
+  .header-container {
+    position: relative;
+  }
+
+  .logo-large-wrapper {
+    padding-top: 1rem;
+  }
+
+  .desktop-nav-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+
+  /* Utility nav (top right) */
+  .utility-nav {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+  }
+
+  .utility-nav ul {
+    list-style: none;
+  }
+
+  .utility-nav li {
+    display: inline-block;
+    margin-right: 1rem;
+  }
+
+  .utility-nav li:last-child {
+    margin-right: 0;
+  }
+
+  .utility-nav a {
+    color: var(--color-neutral-300, #637381);
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.25px;
+    padding: 0.75rem 0;
+  }
+
+  .utility-nav a:hover {
+    text-decoration: underline;
+  }
+
+  .utility-icon-svg {
+    margin-right: 0.25rem;
+    margin-top: -2px;
+  }
+
+  /* Site search */
+  .site-search {
+    display: flex;
+    gap: 0.5rem;
+    flex-basis: 21rem;
+    margin-bottom: 1rem;
+  }
+
+  .site-search-input {
+    flex: 1;
+    padding: 0.625rem 1rem;
+    border: 1px solid var(--color-neutral-300, #ccc);
+    border-radius: 4px;
+    font-size: 0.9375rem;
+  }
+
+  .site-search-input:focus {
+    outline: 2px solid var(--color-blue-400, #00274c);
+    outline-offset: 1px;
+  }
+
+  .site-search-btn {
+    padding: 0.625rem 1rem;
+    background: var(--color-blue-400, #00274c);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .site-search-btn:hover {
+    background: var(--color-teal-400, #0891b2);
+  }
+
+  .site-search-btn .material-icons {
+    font-size: 20px;
+  }
+
+  @media (min-width: 1129px) {
+    .header-large {
+      display: block;
+      border-bottom: 2px solid var(--color-neutral-100, #e0e0e0);
+      background: white;
+    }
+  }
+</style>

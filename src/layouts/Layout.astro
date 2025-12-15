@@ -5,8 +5,9 @@
  * 
  * Both Header and Footer are now pure Astro components!
  */
-import Header from '../components/Header.astro';
+import Header from '../components/header/index.astro';
 import Footer from '../components/Footer.astro';
+import '../styles/global.css';
 
 // Props from pages
 const { drupalNid, title } = Astro.props;
@@ -20,30 +21,15 @@ const { drupalNid, title } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title || 'University of Michigan Library'}</title>
     
-    <!-- Material Icons Font -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    
     <!-- U-M Alerts Script -->
     <script src="https://umich.edu/apis/umalerts/umalerts.js"></script>
     
     <!-- U-M Library Design System Web Components -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet"/>
-
     
-    <!-- Basic styles during migration -->
+    <!-- Focus outline color override -->
     <style is:global>
-      * {
-        box-sizing: border-box;
-      }
-      
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      }
-      
       *:focus {
         outline-color: #00274C;
       }

@@ -1,0 +1,338 @@
+---
+/**
+ * Small Screen (Mobile) Header Component
+ * Displays mobile navigation with collapsible menu
+ */
+import Logo from './Logo.astro';
+import Icon from '../Icon.astro';
+
+interface Props {
+  primary: any[];
+  secondary: any[];
+}
+
+const { primary, secondary } = Astro.props;
+---
+
+<header class="header-small">
+  <div class="margins">
+    <div class="mobile-flex">
+      <!-- Logo -->
+      <div class="logo-mobile">
+        <Logo size={32} />
+      </div>
+
+      <!-- Mobile Nav + Search -->
+      <div class="mobile-actions">
+        <button
+          class="mobile-search-toggle"
+          aria-label="Search"
+          id="mobile-search-btn"
+        >
+          <Icon icon="search" size={24} />
+        </button>
+
+        <button
+          class="mobile-menu-toggle"
+          aria-expanded="false"
+          id="mobile-menu-toggle"
+        >
+          <Icon icon="menu" size={24} class="menu-icon" />
+          <span class="visually-hidden">Navigation</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div class="mobile-dropdown" id="mobile-dropdown" hidden>
+      {
+        primary && primary.length > 0 && (
+          <nav aria-label="Primary navigation">
+            <ul class="mobile-primary-nav">
+              {primary.map((item, index) => {
+                return (
+                  <li class="mobile-primary-item">
+                    {item.children && item.children.length > 0 ? (
+                      <>
+                        <button
+                          class="mobile-primary-btn"
+                          data-index={index}
+                          aria-expanded="false"
+                        >
+                          <span>{item.text}</span>
+                          <Icon icon="expand_more" size={24} />
+                        </button>
+                        <div class="mobile-panel" hidden>
+                          <ul>
+                            {item.children.map((child) => {
+                              return (
+                                <li>
+                                  <a href={child.to}>{child.text}</a>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      </>
+                    ) : (
+                      <a href={item.to} class="mobile-primary-link">
+                        {item.text}
+                      </a>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        )
+      }
+
+      {
+        secondary && secondary.length > 0 && (
+          <nav aria-label="Utility navigation" class="mobile-secondary-nav">
+            <ul>
+              {secondary.map((item) => {
+                return (
+                  <li>
+                    <a href={item.to}>
+                      {item.icon && (
+                        typeof item.icon === 'string' ? (
+                          <Icon icon={item.icon} size={20} />
+                        ) : (
+                          <Icon d={item.icon.d || item.icon} size={20} />
+                        )
+                      )}
+                      {item.text}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        )
+      }
+    </div>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+  const mobileDropdown = document.getElementById("mobile-dropdown");
+  const menuIcon = mobileMenuToggle?.querySelector(".menu-icon");
+
+  if (mobileMenuToggle && mobileDropdown) {
+    mobileMenuToggle.addEventListener("click", () => {
+      const isExpanded =
+        mobileMenuToggle.getAttribute("aria-expanded") === "true";
+      mobileMenuToggle.setAttribute("aria-expanded", String(!isExpanded));
+      mobileDropdown.hidden = isExpanded;
+
+      // Toggle icon - update both material-icons span and Icon component
+      if (menuIcon) {
+        // For Material Design icons rendered as spans
+        const iconSpan = menuIcon.querySelector ? menuIcon.querySelector('span') : menuIcon;
+        if (iconSpan && iconSpan.classList.contains('material-icons')) {
+          iconSpan.textContent = isExpanded ? "menu" : "close";
+        }
+      }
+    });
+  }
+
+  // Mobile primary nav toggles
+  const mobilePrimaryBtns = document.querySelectorAll(".mobile-primary-btn");
+  mobilePrimaryBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const isExpanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!isExpanded));
+
+      const panel = btn.nextElementSibling as HTMLElement;
+      if (panel) {
+        panel.hidden = isExpanded;
+      }
+
+      // Rotate icon - works for both material-icons span and SVG icons
+      const icon = btn.querySelector(".material-icons, svg");
+      if (icon && icon instanceof HTMLElement) {
+        icon.style.transform = isExpanded ? "rotate(0deg)" : "rotate(180deg)";
+      }
+    });
+  });
+
+  // Mobile search button - navigate to search page
+  const mobileSearchBtn = document.getElementById("mobile-search-btn");
+  if (mobileSearchBtn) {
+    mobileSearchBtn.addEventListener("click", () => {
+      window.location.href = "/search";
+    });
+  }
+</script>
+
+<style>
+  .header-small {
+    display: block;
+    border-bottom: 2px solid var(--color-neutral-100, #e0e0e0);
+    background: white;
+  }
+
+  .margins {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .mobile-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .logo-mobile {
+    flex-shrink: 0;
+  }
+
+  .mobile-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .mobile-search-toggle,
+  .mobile-menu-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--color-blue-400, #00274c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-search-toggle:hover,
+  .mobile-menu-toggle:hover {
+    color: var(--color-teal-400, #0891b2);
+  }
+
+  .mobile-search-toggle .material-icons,
+  .mobile-menu-toggle .material-icons {
+    font-size: 32px;
+  }
+
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  /* Mobile dropdown */
+  .mobile-dropdown {
+    background: white;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .mobile-primary-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-primary-item {
+    border-bottom: 1px solid var(--color-neutral-100, #e0e0e0);
+  }
+
+  .mobile-primary-btn,
+  .mobile-primary-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 1rem;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-blue-400, #00274c);
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .mobile-primary-btn:hover,
+  .mobile-primary-link:hover {
+    background: var(--color-neutral-50, #f9f9f9);
+    color: var(--color-teal-400, #0891b2);
+  }
+
+  .mobile-primary-btn .material-icons {
+    transition: transform 0.3s ease;
+    font-size: 20px;
+  }
+
+  .mobile-panel {
+    background: var(--color-neutral-50, #f9f9f9);
+  }
+
+  .mobile-panel ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-panel a {
+    display: block;
+    padding: 0.75rem 1rem 0.75rem 2rem;
+    color: var(--color-blue-400, #00274c);
+    text-decoration: none;
+    font-size: 0.9375rem;
+  }
+
+  .mobile-panel a:hover {
+    background: white;
+    color: var(--color-teal-400, #0891b2);
+  }
+
+  .mobile-secondary-nav {
+    border-top: 2px solid var(--color-neutral-100, #e0e0e0);
+    padding: 0.5rem 0;
+  }
+
+  .mobile-secondary-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-secondary-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: var(--color-neutral-400, #666);
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+
+  .mobile-secondary-nav a:hover {
+    background: var(--color-neutral-50, #f9f9f9);
+    text-decoration: underline;
+  }
+
+  .mobile-secondary-nav .material-icons {
+    font-size: 14px;
+  }
+
+  @media (min-width: 1129px) {
+    .header-small {
+      display: none;
+    }
+  }
+</style>
