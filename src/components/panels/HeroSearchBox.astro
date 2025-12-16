@@ -93,17 +93,6 @@ const horizontalSrc = getSrcByOrientation('horizontal');
 </div>
 
 <style>
-	/* Basic responsive margins approximate the original Margins component */
-	.margins {
-		padding: 0;
-	}
-	@media (min-width: 1024px) {
-		.margins {
-			padding-left: 2.5rem; /* ~ SPACING[2XL] */
-			padding-right: 2.5rem;
-		}
-	}
-
 	.background-section {
 		--neutral-100: var(--color-neutral-100, #f4f4f4);
 		background-color: var(--neutral-100);
@@ -238,13 +227,5 @@ const horizontalSrc = getSrcByOrientation('horizontal');
 		bottom: 0;
 		padding: 0.25rem 0.75rem; /* ~ 2XS + S */
 		max-width: min(90%, 40ch);
-	}
-
-	.visually-hidden {
-		position: absolute !important;
-		height: 1px; width: 1px;
-		overflow: hidden;
-		clip: rect(1px, 1px, 1px, 1px);
-		white-space: nowrap;
 	}
 </style>

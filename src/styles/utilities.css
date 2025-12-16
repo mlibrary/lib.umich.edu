@@ -1,0 +1,52 @@
+/* 
+  Utility Classes
+  Reusable utility classes for layout, spacing, and visibility
+*/
+
+/* Margins container */
+.margins {
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 0 1rem;
+  width: 100%;
+}
+
+@media only screen and (min-width: 641px) {
+  .margins {
+    padding: 0 2.5rem;
+  }
+}
+
+/* Screen size visibility helpers */
+.large-screen {
+  display: none;
+}
+
+@media only screen and (min-width: 641px) {
+  .large-screen {
+    display: block;
+  }
+}
+
+.small-screen {
+  display: block;
+}
+
+@media only screen and (min-width: 641px) {
+  .small-screen {
+    display: none;
+  }
+}
+
+/* Visually hidden (for screen readers) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
