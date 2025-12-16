@@ -16,9 +16,11 @@ const panels = relationships?.field_panels || [];
   <!-- Debug info -->
   <div style="background: yellow; padding: 1rem; margin: 1rem;">
     <strong>Debug:</strong> Found {panels?.length || 0} panels
-    {panels?.length > 0 && (
-      <div>First panel type: {panels[0]?.type || panels[0]?.__typename || 'unknown'}</div>
-    )}
+    {panels?.map((panel, index) => (
+      <div key={index}>
+      Panel {index + 1}: {panel?.type || panel?.__typename || 'unknown'}
+      </div>
+    ))}
   </div>
   
   <Panels data={panels} />

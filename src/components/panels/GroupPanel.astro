@@ -3,25 +3,103 @@
  * GroupPanel - Panel with grouped content
  * Converted from src/components/panels/group-panel.js
  */
-import PanelTemplate from './PanelTemplate.astro';
+// TODO: Import Panels component when it's created
+// import Panels from './Panels.astro';
 
 interface Props {
   data: any;
 }
 
 const { data } = Astro.props;
+
+const { field_panel_group_layout: fieldPanelGroupLayout, relationships } = data;
+
+// Check if this is a 50/50 layout
+const is50Layout = fieldPanelGroupLayout === '50';
+const fieldPanelGroup = relationships?.field_panel_group;
 ---
 
-<PanelTemplate title={data.field_title}>
-  <div class="group-panel-placeholder">
-    <p><strong>GroupPanel (TODO)</strong></p>
+{is50Layout && fieldPanelGroup ? (
+  <div class="margins">
+    <div class="panel-group-50-container">
+      <!-- TODO: Replace with actual Panels component when created -->
+      <div class="panels-placeholder">
+        <p><strong>Panels Component (TODO)</strong></p>
+        <p>Data: {JSON.stringify(fieldPanelGroup)}</p>
+      </div>
+    </div>
   </div>
-</PanelTemplate>
+) : (
+  <!-- Handle other layouts or null case -->
+  <div class="group-panel-fallback">
+    <p>Unsupported layout: {fieldPanelGroupLayout || 'none'}</p>
+  </div>
+)}
 
 <style>
-  .group-panel-placeholder {
+  .margins {
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 0 1rem;
+    width: 100%;
+  }
+
+  @media (min-width: 641px) {
+    .margins {
+      padding: 0 2.5rem;
+    }
+  }
+
+  .panel-group-50-container {
+    display: grid;
+    margin-top: var(--spacing-xl, 2rem);
+  }
+
+  .panel-group-50-container > * {
+    margin-bottom: var(--spacing-xl, 2rem);
+    padding-bottom: var(--spacing-xl, 2rem);
+  }
+
+  .panel-group-50-container > *:not(:last-child) {
+    border-bottom: solid 1px var(--color-neutral-100);
+  }
+
+  @media (min-width: 1129px) {
+    .margins {
+      padding: 0 2.5rem;
+    }
+
+    .panel-group-50-container {
+      grid-gap: var(--spacing-3xl, 3rem);
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .panel-group-50-container > * {
+      margin-bottom: var(--spacing-2xl, 2.5rem);
+      padding-bottom: var(--spacing-2xl, 2.5rem);
+    }
+
+    .panel-group-50-container > *:not(:last-child) {
+      border: none;
+      border-right: solid 1px var(--color-neutral-100);
+      padding-right: var(--spacing-3xl, 3rem);
+    }
+  }
+
+  /* Placeholder styles - remove when Panels component is implemented */
+  .panels-placeholder {
     padding: 1rem;
     background: var(--color-neutral-50, #f9f9f9);
     border: 1px dashed var(--color-neutral-300, #ccc);
+    border-radius: 4px;
+  }
+
+  .group-panel-fallback {
+    padding: 1rem;
+    background: var(--color-neutral-50, #f9f9f9);
+    border: 1px solid var(--color-neutral-300, #ccc);
+    border-radius: 4px;
+    text-align: center;
+    color: var(--color-neutral-300, #637381);
   }
 </style>
