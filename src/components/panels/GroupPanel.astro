@@ -3,8 +3,7 @@
  * GroupPanel - Panel with grouped content
  * Converted from src/components/panels/group-panel.js
  */
-// TODO: Import Panels component when it's created
-// import Panels from './Panels.astro';
+import Panels from './Panels.astro';
 
 interface Props {
   data: any;
@@ -22,18 +21,11 @@ const fieldPanelGroup = relationships?.field_panel_group;
 {is50Layout && fieldPanelGroup ? (
   <div class="margins">
     <div class="panel-group-50-container">
-      <!-- TODO: Replace with actual Panels component when created -->
-      <div class="panels-placeholder">
-        <p><strong>Panels Component (TODO)</strong></p>
-        <p>Data: {JSON.stringify(fieldPanelGroup)}</p>
-      </div>
+      <Panels data={fieldPanelGroup} />
     </div>
   </div>
 ) : (
-  <!-- Handle other layouts or null case -->
-  <div class="group-panel-fallback">
-    <p>Unsupported layout: {fieldPanelGroupLayout || 'none'}</p>
-  </div>
+ null
 )}
 
 <style>
@@ -84,22 +76,5 @@ const fieldPanelGroup = relationships?.field_panel_group;
       border-right: solid 1px var(--color-neutral-100);
       padding-right: var(--spacing-3xl, 3rem);
     }
-  }
-
-  /* Placeholder styles - remove when Panels component is implemented */
-  .panels-placeholder {
-    padding: 1rem;
-    background: var(--color-neutral-50, #f9f9f9);
-    border: 1px dashed var(--color-neutral-300, #ccc);
-    border-radius: 4px;
-  }
-
-  .group-panel-fallback {
-    padding: 1rem;
-    background: var(--color-neutral-50, #f9f9f9);
-    border: 1px solid var(--color-neutral-300, #ccc);
-    border-radius: 4px;
-    text-align: center;
-    color: var(--color-neutral-300, #637381);
   }
 </style>

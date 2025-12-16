@@ -25,18 +25,3 @@ const fieldMachineName: string | undefined = data?.relationships?.field_hero_tem
 {fieldMachineName === 'text' && (
   <HeroText data={data} />
 )}
-
-{!fieldMachineName && (
-  <div style="background: #ffeeee; border: 2px solid #ff0000; padding: 1rem; margin: 1rem;">
-    <h3>Hero Panel Debug - No field_machine_name found</h3>
-    <p><strong>Panel type:</strong> {data?.__typename}</p>
-    <p><strong>Has field_hero_template:</strong> {data?.relationships?.field_hero_template ? 'Yes' : 'No'}</p>
-    {data?.relationships?.field_hero_template && (
-      <p><strong>field_hero_template keys:</strong> {Object.keys(data.relationships.field_hero_template).join(', ')}</p>
-    )}
-    <details>
-      <summary>field_hero_template data (click to expand)</summary>
-      <pre style="font-size: 12px; overflow: auto;">{JSON.stringify(data?.relationships?.field_hero_template, null, 2)}</pre>
-    </details>
-  </div>
-)}
