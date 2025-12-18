@@ -4,6 +4,8 @@
  * Converted from src/components/panels/custom-panel.js
  */
 import FeaturedAndLatestNews from './FeaturedAndLatestNews.astro';
+import WhatsHappeningPanel from './WhatsHappeningPanel.astro';
+import EventsAndExhibitsPanel from './EventsAndExhibitsPanel.astro';
 
 interface Props {
   data: any;
@@ -14,12 +16,12 @@ const { data } = Astro.props;
 {data.field_machine_name == "featured_and_latest_news" && (
   <FeaturedAndLatestNews />
 )}
-<!-- {data.field_machine_name == "ee_features" && 
-  <WhatsappeningPanel/>
+{data.field_machine_name == "ee_featured" && 
+  <WhatsHappeningPanel/>
 }
 {data.field_machine_name =='ee_landing' && 
   <EventsAndExhibitsPanel />
-} -->
+}
 
 <!-- <PanelTemplate title={data.field_title}>
   <div class="custom-panel-placeholder">

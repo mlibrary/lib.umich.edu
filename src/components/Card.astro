@@ -42,32 +42,38 @@ const anchorStyles = Object.entries(anchorStyleAddition)
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noopener noreferrer' : undefined}
     >
-      <CardContent />
+      {image && (
+        <div class="card-image">
+          <!-- TODO: Replace with proper Image component when available -->
+          <img src={image.src || image} alt={image.alt || title} />
+        </div>
+      )}
+      <div class="card-content">
+        <HeadingTag class="card-title">{title}</HeadingTag>
+        {subtitle && <div class="card-subtitle">{subtitle}</div>}
+        <div class="card-body">
+          <slot />
+        </div>
+      </div>
     </a>
   ) : (
-    <CardContent />
+    <Fragment>
+      {image && (
+        <div class="card-image">
+          <!-- TODO: Replace with proper Image component when available -->
+          <img src={image.src || image} alt={image.alt || title} />
+        </div>
+      )}
+      <div class="card-content">
+        <HeadingTag class="card-title">{title}</HeadingTag>
+        {subtitle && <div class="card-subtitle">{subtitle}</div>}
+        <div class="card-body">
+          <slot />
+        </div>
+      </div>
+    </Fragment>
   )}
 </div>
-
-<!-- Card Content Component -->
----
-const CardContent = () => (
-  <>
-    {image && (
-      <div class="card-image">
-        <!-- TODO: Replace with proper Image component when available -->
-        <img src={image.src || image} alt={image.alt || title} />
-      </div>
-    )}
-    <div class="card-content">
-      <HeadingTag class="card-title">{title}</HeadingTag>
-      {subtitle && <div class="card-subtitle">{subtitle}</div>}
-      <div class="card-body">
-        <slot />
-      </div>
-    </div>
-  </>
-);
 ---
 
 <style>

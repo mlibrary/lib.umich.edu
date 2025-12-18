@@ -314,3 +314,14 @@ if (template === 'destination_hor_card_template') {
     margin-top: 2px;
   }
 </style>
+
+<script define:vars={{ cardPanelData: data, template, title, cards }}>
+  // Debug CardPanel data at runtime
+  console.log('CardPanel data (runtime):', {
+    cardPanelData,
+    template,
+    title,
+    cards,
+    cardsCount: cards?.length
+  });
+</script>

@@ -138,13 +138,17 @@ export async function fetchStaff () {
  */
 export async function fetchDrupalPages () {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  // Include nested relationships for hero panels and other panel types
+  // Include nested relationships for hero panels, card panels, and other panel types
   const includes = [
     'field_design_template',
     'field_panels',
     'field_panels.field_hero_template',
     'field_panels.field_hero_images',
-    'field_panels.field_hero_images.field_media_image'
+    'field_panels.field_hero_images.field_media_image',
+    'field_panels.field_card_template',
+    'field_panels.field_cards',
+    'field_panels.field_cards.field_media_image',
+    'field_panels.field_cards.field_media_image.field_media_image'
   ].join(',');
   const url = `${baseUrl}/jsonapi/node/page?include=${includes}&filter[field_redirect_node][value]=0`;
 

@@ -1,0 +1,244 @@
+---
+/**
+ * WhatsHappeningPanel - Featured and latest news and exhibits
+ * Converted from src/components/panels/whats-happening-panel.js
+ * 
+ * "What's happening?"
+ * 
+ * Look at all kinds of events that are prioritized,
+ * use those, then if we need more add in some
+ * non prioritized events (except don't use Exhibits).
+ * Make sure we use up to 3, but no more.
+ * Sort all of them by date.
+ */
+import { fetchDrupalEvents } from '../../lib/drupal.js';
+// TODO: Import EventCard when created
+// import EventCard from '../EventCard.astro';
+
+// Fetch events data
+let events = [];
+let hasEvents = false;
+
+try {
+  const allEvents = await fetchDrupalEvents();
+  
+  // Debug: Log raw events data
+  console.log('WhatsHappeningPanel - Raw events data:', {
+    allEventsCount: allEvents?.length || 0,
+    allEvents: allEvents,
+    sampleEvent: allEvents?.[0]
+  });
+  
+  // Filter priority events
+  const priorityEvents = allEvents.filter(event => 
+    event.field_priority_for_homepage === true &&
+    event.relationships?.field_design_template?.field_machine_name === 'event_exhibit'
+  );
+  
+  // Filter other events (no exhibits)
+  const otherEvents = allEvents.filter(event => 
+    event.field_priority_for_homepage === false &&
+    event.relationships?.field_design_template?.field_machine_name === 'event_exhibit' &&
+    event.relationships?.field_event_type?.name !== 'Exhibit'
+  );
+  
+  // Debug: Log filtered events
+  console.log('WhatsHappeningPanel - Filtered events:', {
+    priorityEventsCount: priorityEvents.length,
+    priorityEvents,
+    otherEventsCount: otherEvents.length,
+    otherEvents
+  });
+  
+  // Helper function to sort events by start date
+  const sortEventsByStartDate = (eventList, onlyTodayOrAfter = true) => {
+    const now = new Date();
+    return eventList
+      .filter(event => {
+        if (!onlyTodayOrAfter) return true;
+        const eventDate = new Date(event.field_event_date_s);
+        return eventDate >= now;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.field_event_date_s);
+        const dateB = new Date(b.field_event_date_s);
+        return dateA - dateB;
+      });
+  };
+  
+  // Join and sort events, keeping only today or future events
+  const sortedPriorityEvents = sortEventsByStartDate(priorityEvents, true);
+  const sortedOtherEvents = sortEventsByStartDate(otherEvents, true);
+  
+  // Combine and take only first 3
+  const joinedEvents = [...sortedPriorityEvents, ...sortedOtherEvents];
+  const finalSortedEvents = sortEventsByStartDate(joinedEvents, true);
+  
+  events = finalSortedEvents.slice(0, 3);
+  hasEvents = events.length > 0;
+  
+  // Debug: Log final processed events
+  console.log('WhatsHappeningPanel - Final processed events:', {
+    sortedPriorityEventsCount: sortedPriorityEvents.length,
+    sortedOtherEventsCount: sortedOtherEvents.length,
+    joinedEventsCount: joinedEvents.length,
+    finalEventsCount: events.length,
+    finalEvents: events,
+    hasEvents
+  });
+  
+} catch (error) {
+  console.error('Error fetching events:', error);
+  events = [];
+  hasEvents = false;
+}
+---
+
+<section class="whats-happening">
+  <div class="margins">
+    <h2 class="whats-happening-title">What's happening?</h2>
+    
+    {!hasEvents ? (
+      <p class="no-events-message">
+        We don't currently have any upcoming events scheduled or exhibits on display.
+      </p>
+    ) : (
+      <>
+        <div class="events-grid">
+          {events.map((event, index) => (
+            <div class="event-card-container" key={index}>
+              <!-- TODO: Replace with EventCard component when created -->
+              <div class="event-card-placeholder">
+                <h3 class="event-title">{event.title}</h3>
+                <div class="event-date">
+                  {new Date(event.field_event_date_s).toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </div>
+                {event.body?.summary && (
+                  <p class="event-summary">{event.body.summary}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <a href="/visit-and-study/events-and-exhibits/today-and-upcoming" class="view-all-link">
+          View all events
+        </a>
+      </>
+    )}
+  </div>
+</section>
+
+<style>
+  .whats-happening {
+    margin-bottom: var(--spacing-3xl, 3rem);
+    margin-top: var(--spacing-3xl, 3rem);
+  }
+
+  .margins {
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 0 1rem;
+    width: 100%;
+  }
+
+  @media (min-width: 641px) {
+    .margins {
+      padding: 0 2.5rem;
+    }
+  }
+
+  .whats-happening-title {
+    font-family: 'Crimson Text', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin: 0 0 var(--spacing-l, 1.5rem) 0;
+    color: var(--color-blue-400, #1e40af);
+  }
+
+  .no-events-message {
+    margin-bottom: var(--spacing-2xl, 2.5rem);
+    margin-top: var(--spacing-l, 1.5rem);
+    color: var(--color-neutral-300, #6b7280);
+  }
+
+  .events-grid {
+    display: block;
+    margin-bottom: var(--spacing-xl, 2rem);
+  }
+
+  @media (min-width: 641px) {
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--spacing-xl, 2rem) var(--spacing-m, 1rem);
+    }
+  }
+
+  .event-card-container {
+    margin-bottom: var(--spacing-l, 1.5rem);
+  }
+
+  @media (min-width: 641px) {
+    .event-card-container {
+      margin-bottom: 0;
+    }
+  }
+
+  /* Placeholder styles for EventCard - remove when EventCard component is ready */
+  .event-card-placeholder {
+    background: white;
+    border: 1px solid var(--color-neutral-200, #e5e7eb);
+    border-radius: 8px;
+    padding: var(--spacing-m, 1rem);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .event-card-placeholder:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .event-title {
+    color: var(--color-blue-400, #1e40af);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0 0 var(--spacing-xs, 0.5rem) 0;
+  }
+
+  .event-date {
+    color: var(--color-indigo-300, #a78bfa);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs, 0.5rem);
+  }
+
+  .event-summary {
+    color: var(--color-neutral-300, #6b7280);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .view-all-link {
+    color: var(--color-teal-400, #0d9488);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .view-all-link:hover {
+    color: var(--color-teal-500, #0f766e);
+    text-decoration: underline;
+  }
+
+  .view-all-link:focus {
+    outline: 2px solid var(--color-teal-400, #0d9488);
+    outline-offset: 2px;
+  }
+</style>
