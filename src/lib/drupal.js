@@ -138,7 +138,7 @@ export async function fetchStaff () {
  */
 export async function fetchDrupalPages () {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  // Include nested relationships for hero panels, card panels, and other panel types
+  // Include nested relationships for hero panels, card panels, group panels, and other panel types
   const includes = [
     'field_design_template',
     'field_panels',
@@ -148,7 +148,18 @@ export async function fetchDrupalPages () {
     'field_panels.field_card_template',
     'field_panels.field_cards',
     'field_panels.field_cards.field_media_image',
-    'field_panels.field_cards.field_media_image.field_media_image'
+    'field_panels.field_cards.field_media_image.field_media_image',
+    // Group panel relationships
+    'field_panels.field_panel_group',
+    'field_panels.field_panel_group.field_cards',
+    'field_panels.field_panel_group.field_cards.field_media_image',
+    'field_panels.field_panel_group.field_cards.field_media_image.field_media_image',
+    'field_panels.field_panel_group.field_cards.field_hours_open',
+    'field_panels.field_panel_group.field_cards.field_parent_location',
+    'field_panels.field_panel_group.field_cards.field_parent_page',
+    // Link panel relationships - include machine name field
+    'field_panels.field_panel_group.field_link_template',
+    'field_panels.field_link_template'
   ].join(',');
   const url = `${baseUrl}/jsonapi/node/page?include=${includes}&filter[field_redirect_node][value]=0`;
 

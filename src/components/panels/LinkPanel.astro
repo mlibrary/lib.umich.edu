@@ -13,7 +13,15 @@ interface Props {
 
 const { data } = Astro.props;
 const { relationships } = data;
-const { field_machine_name: fieldMachineName } = relationships.field_link_template;
+
+// Debug: Log the data structure
+console.log('LinkPanel data:', {
+  data,
+  relationships,
+  fieldLinkTemplate: relationships?.field_link_template
+});
+
+const fieldMachineName = relationships?.field_link_template?.field_machine_name || 'unknown';
 ---
 
 <PanelTemplate title={data.field_title}>
@@ -21,6 +29,7 @@ const { field_machine_name: fieldMachineName } = relationships.field_link_templa
     <p><strong>LinkPanel (TODO)</strong></p>
     <p>Template: {fieldMachineName}</p>
     <p>Links: {data.field_link?.length || 0}</p>
+    <p>Has link template: {relationships?.field_link_template ? 'Yes' : 'No'}</p>
   </div>
 </PanelTemplate>
 
