@@ -109,34 +109,34 @@ const processDrupalNavData = (data) => {
 /**
  * Fetch primary navigation from Drupal
  */
-export async function fetchPrimaryNav () {
+export const fetchPrimaryNav = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const data = await fetchWithRetry(`${baseUrl}/api/nav/primary`);
   return processDrupalNavData(data[0].children);
-}
+};
 
 /**
  * Fetch utility navigation from Drupal
  */
-export async function fetchUtilityNav () {
+export const fetchUtilityNav = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const data = await fetchWithRetry(`${baseUrl}/api/nav/utility`);
   return processDrupalNavData(data[0].children);
-}
+};
 
 /**
  * Fetch staff data from Drupal
  */
-export async function fetchStaff () {
+export const fetchStaff = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const data = await fetchWithRetry(`${baseUrl}/api/staff`);
   return data;
-}
+};
 
 /**
  * Fetch all pages from Drupal JSON:API
  */
-export async function fetchDrupalPages () {
+export const fetchDrupalPages = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   // Include nested relationships for hero panels, card panels, group panels, and other panel types
   const includes = [
@@ -178,12 +178,12 @@ export async function fetchDrupalPages () {
   }
 
   return { data: allData, included: allIncluded };
-}
+};
 
 /**
  * Fetch all section pages from Drupal JSON:API
  */
-export async function fetchDrupalSectionPages () {
+export const fetchDrupalSectionPages = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const url = `${baseUrl}/jsonapi/node/section_page?include=field_design_template`;
 
@@ -201,12 +201,12 @@ export async function fetchDrupalSectionPages () {
   }
 
   return { data: allData, included: allIncluded };
-}
+};
 
 /**
  * Fetch all buildings from Drupal JSON:API
  */
-export async function fetchDrupalBuildings () {
+export const fetchDrupalBuildings = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const url = `${baseUrl}/jsonapi/node/building?include=field_design_template`;
 
@@ -224,12 +224,12 @@ export async function fetchDrupalBuildings () {
   }
 
   return { data: allData, included: allIncluded };
-}
+};
 
 /**
  * Fetch all news items from Drupal JSON:API
  */
-export async function fetchDrupalNews () {
+export const fetchDrupalNews = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const url = `${baseUrl}/jsonapi/node/news?include=field_design_template`;
 
@@ -243,12 +243,12 @@ export async function fetchDrupalNews () {
   }
 
   return allData;
-}
+};
 
 /**
  * Fetch all events and exhibits from Drupal JSON:API
  */
-export async function fetchDrupalEvents () {
+export const fetchDrupalEvents = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const url = `${baseUrl}/jsonapi/node/events_and_exhibits?include=field_design_template,field_event_type`;
 
@@ -262,15 +262,15 @@ export async function fetchDrupalEvents () {
   }
 
   return allData;
-}
+};
 
 /**
  * Generic fetch from Drupal custom API endpoint
  */
-export async function fetchFromDrupal (endpoint) {
+export const fetchFromDrupal = async (endpoint) => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   return await fetchWithRetry(`${baseUrl}${endpoint}`);
-}
+};
 
 /**
  * Fetch a single node by UUID

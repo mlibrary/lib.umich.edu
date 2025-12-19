@@ -3,6 +3,8 @@
  * Site Search Modal for Astro
  * Provides a modal dialog with live search results using Lunr.js
  */
+
+import Icon from '../Icon.astro';
 ---
 
 <div id="site-search-modal-container">
@@ -16,10 +18,7 @@
     <Icon
         icon='search'
         size={14}
-        css={{
-            marginRight: SPACING['2XS'],
-            marginTop: '-2px'
-        }}
+        style={"margin-right: SPACING['2XS']; margin-top: -2px"}
     />
     <span class="visually-hidden">Search this site</span>
   </button>

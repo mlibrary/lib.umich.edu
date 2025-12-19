@@ -16,7 +16,11 @@ const { label = "Search this site" } = Astro.props;
 
 <div class="site-search-container">
   <form class="site-search-form" id="site-search-form">
-    <span class="material-icons search-icon" data-site-search-icon>search</span>
+    <Icon
+        icon='search'
+        size={14}
+        style="maringRight: 2px; marginTop: -2px"
+    />
     <label class="site-search-label">
       <span class="visually-hidden">
         {label}. To access results, tab to navigate, enter to select, esc to dismiss.
@@ -87,14 +91,6 @@ const { label = "Search this site" } = Astro.props;
     left: 0.5rem;
     color: var(--color-neutral-300);
     font-size: 20px;
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  [data-site-search-icon] {
-    position: absolute;
-    left: 0.5rem;
-    color: var(--color-neutral-300);
     z-index: 1;
     pointer-events: none;
   }
@@ -380,19 +376,16 @@ const { label = "Search this site" } = Astro.props;
     }
 
     setupEventListeners() {
-      // Handle search input (live search as user types) - this is the main functionality
+      // Handle search input (live search as user types)
       this.input.addEventListener('input', (e) => {
         this.handleSearch(e.target.value);
       });
 
-      // Prevent form submission and keep results open
+      // Prevent form submission
       this.form.addEventListener('submit', (e) => {
         e.preventDefault();
-        // Don't navigate, just ensure results stay open
         this.openResults = true;
-        if (this.currentQuery) {
-          this.displayResults();
-        }
+        this.displayResults();
       });
 
       // Handle escape key to hide results
@@ -557,7 +550,14 @@ const { label = "Search this site" } = Astro.props;
             target="_blank"
             rel="noopener"
           >
-            <span class="material-icons library-search-icon">search</span>
+            <Icon
+                icon='search'
+                size={14}
+                css={{
+                    marginRight: SPACING['2XS'],
+                    marginTop: '-2px'
+                }}
+            />
             <p class="library-search-query">
               <span class="visually-hidden">Search: </span>
               ${this.escapeHtml(this.currentQuery)}
