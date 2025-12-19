@@ -10,20 +10,20 @@ interface Props {
   label?: string;
 }
 
-
 const { label = "Search this site" } = Astro.props;
 ---
 
 <div class="site-search-container">
   <form class="site-search-form" id="site-search-form">
     <Icon
-        icon='search'
-        size={14}
-        style="maringRight: 2px; marginTop: -2px"
+      icon="search"
+      size={20}
+      style="display: inline-block; fill: currentColor; vertical-align: middle; color: var(--color-neutral-300); left: 0.5rem; position: absolute;"
     />
     <label class="site-search-label">
       <span class="visually-hidden">
-        {label}. To access results, tab to navigate, enter to select, esc to dismiss.
+        {label}. To access results, tab to navigate, enter to select, esc to
+        dismiss.
       </span>
       <input
         type="search"
@@ -37,29 +37,41 @@ const { label = "Search this site" } = Astro.props;
     <!-- Results Container -->
     <div id="site-search-results-container" class="results-container" hidden>
       <!-- Screen reader status -->
-      <div class="visually-hidden" role="status" aria-live="polite" id="site-search-status"></div>
-      
+      <div
+        class="visually-hidden"
+        role="status"
+        aria-live="polite"
+        id="site-search-status"
+      >
+      </div>
+
       <!-- Error message -->
       <div id="site-search-error" class="search-error" hidden></div>
-      
+
       <!-- Results popover -->
       <div id="site-search-popover" class="search-popover" hidden>
         <!-- Keyboard instructions -->
         <p class="keyboard-instructions" aria-hidden="true">
-          <kbd>tab</kbd> to navigate, <kbd>enter</kbd> to select, <kbd>esc</kbd> to dismiss
+          <kbd>tab</kbd> to navigate, <kbd>enter</kbd> to select, <kbd>esc</kbd> to
+          dismiss
         </p>
-        
+
         <!-- Results list -->
         <ol id="site-search-results" class="search-results-list"></ol>
-        
+
         <!-- No results message -->
         <div id="site-search-no-results" class="no-results" hidden>
           <p>
             <span class="no-results-label">
-              No results found for: <strong id="site-search-query-display"></strong>
+              No results found for: <strong id="site-search-query-display"
+              ></strong>
             </span>
             <span class="no-results-suggestion">
-              Try <a href="https://search.lib.umich.edu/everything?utm_source=lib-site-search" target="_blank" rel="noopener">Library Search</a> for books, articles, and more.
+              Try <a
+                href="https://search.lib.umich.edu/everything?utm_source=lib-site-search"
+                target="_blank"
+                rel="noopener">Library Search</a
+              > for books, articles, and more.
             </span>
           </p>
         </div>
@@ -79,10 +91,8 @@ const { label = "Search this site" } = Astro.props;
   }
 
   .site-search-form {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
+    flex-basis: 21rem;
+    margin-bottom: 1rem;
   }
 
   /* Search icon */
@@ -98,7 +108,6 @@ const { label = "Search this site" } = Astro.props;
   /* Search label and input */
   .site-search-label {
     width: 100%;
-    position: relative;
   }
 
   .site-search-input {
@@ -106,7 +115,7 @@ const { label = "Search this site" } = Astro.props;
     padding: 0.5rem 1rem 0.5rem 3rem;
     border: solid 1px var(--color-neutral-300);
     border-radius: 2px;
-    box-shadow: inset 0 1px 4px rgba(0,0,0,0.1);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
     font-family: inherit;
     font-size: 1rem;
     background: white;
@@ -342,21 +351,23 @@ const { label = "Search this site" } = Astro.props;
   // Site Search Component functionality
   class SiteSearch {
     constructor() {
-      this.form = document.getElementById('site-search-form');
-      this.input = document.getElementById('site-search-input');
-      this.resultsContainer = document.getElementById('site-search-results-container');
-      this.popover = document.getElementById('site-search-popover');
-      this.resultsList = document.getElementById('site-search-results');
-      this.noResults = document.getElementById('site-search-no-results');
-      this.searchError = document.getElementById('site-search-error');
-      this.status = document.getElementById('site-search-status');
-      this.queryDisplay = document.getElementById('site-search-query-display');
-      
-      this.currentQuery = '';
+      this.form = document.getElementById("site-search-form");
+      this.input = document.getElementById("site-search-input");
+      this.resultsContainer = document.getElementById(
+        "site-search-results-container",
+      );
+      this.popover = document.getElementById("site-search-popover");
+      this.resultsList = document.getElementById("site-search-results");
+      this.noResults = document.getElementById("site-search-no-results");
+      this.searchError = document.getElementById("site-search-error");
+      this.status = document.getElementById("site-search-status");
+      this.queryDisplay = document.getElementById("site-search-query-display");
+
+      this.currentQuery = "";
       this.searchResults = [];
       this.lunrIndex = null;
       this.openResults = true;
-      
+
       this.init();
     }
 
@@ -370,34 +381,34 @@ const { label = "Search this site" } = Astro.props;
     async waitForLunr() {
       // Wait for the lunr index to be loaded
       while (!window.__LUNR__ || !window.__LUNR__.en) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
       this.lunrIndex = window.__LUNR__.en;
     }
 
     setupEventListeners() {
       // Handle search input (live search as user types)
-      this.input.addEventListener('input', (e) => {
+      this.input.addEventListener("input", (e) => {
         this.handleSearch(e.target.value);
       });
 
       // Prevent form submission
-      this.form.addEventListener('submit', (e) => {
+      this.form.addEventListener("submit", (e) => {
         e.preventDefault();
         this.openResults = true;
         this.displayResults();
       });
 
       // Handle escape key to hide results
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
           this.openResults = false;
           this.hideResults();
         }
       });
 
       // Hide results when clicking outside
-      document.addEventListener('click', (e) => {
+      document.addEventListener("click", (e) => {
         if (!this.form.contains(e.target)) {
           this.openResults = false;
           this.hideResults();
@@ -405,7 +416,7 @@ const { label = "Search this site" } = Astro.props;
       });
 
       // Show results when focusing input
-      this.input.addEventListener('focus', () => {
+      this.input.addEventListener("focus", () => {
         if (this.currentQuery) {
           this.openResults = true;
           this.displayResults();
@@ -415,7 +426,7 @@ const { label = "Search this site" } = Astro.props;
 
     cleanQueryForLunr(str) {
       // Remove quotation marks to prevent search errors (LIBWEB-649)
-      return str.replace(/['"]+/g, '');
+      return str.replace(/['"]+/g, "");
     }
 
     async handleSearch(query) {
@@ -434,7 +445,7 @@ const { label = "Search this site" } = Astro.props;
       }
 
       if (!this.lunrIndex) {
-        console.warn('Lunr index not available yet');
+        console.warn("Lunr index not available yet");
         return;
       }
 
@@ -442,20 +453,21 @@ const { label = "Search this site" } = Astro.props;
         // Perform the search with multiple query strategies (matching Gatsby version)
         const searchResults = this.lunrIndex.index.query((queryBuilder) => {
           const lunr = window.lunr;
-          
+
           // Exact term match with highest boost
           queryBuilder.term(lunr.tokenizer(cleanQuery), { boost: 3 });
-          
+
           // Trailing wildcard with medium boost
           queryBuilder.term(lunr.tokenizer(cleanQuery), {
             boost: 2,
-            wildcard: lunr.Query.wildcard.TRAILING
+            wildcard: lunr.Query.wildcard.TRAILING,
           });
-          
+
           // Leading and trailing wildcard for longer queries
           if (cleanQuery.length > 2) {
             queryBuilder.term(lunr.tokenizer(cleanQuery), {
-              wildcard: lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
+              wildcard:
+                lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
             });
           }
         });
@@ -465,7 +477,7 @@ const { label = "Search this site" } = Astro.props;
           const pageData = this.lunrIndex.store[ref];
           return {
             ...pageData,
-            slug: ref.split(' /')[1] // Extract slug from ref
+            slug: ref.split(" /")[1], // Extract slug from ref
           };
         });
 
@@ -474,17 +486,16 @@ const { label = "Search this site" } = Astro.props;
 
         // Analytics (similar to Gatsby useGoogleTagManager)
         if (window.gtag) {
-          window.gtag('event', 'search', {
-            search_term: cleanQuery
+          window.gtag("event", "search", {
+            search_term: cleanQuery,
           });
         }
-
       } catch (error) {
-        console.error('Site search error', error);
-        if (error.name === 'QueryParseError') {
+        console.error("Site search error", error);
+        if (error.name === "QueryParseError") {
           this.displayError(error.message);
         } else {
-          console.warn('Site search error', error);
+          console.warn("Site search error", error);
         }
       }
     }
@@ -504,11 +515,11 @@ const { label = "Search this site" } = Astro.props;
 
       // Update status for screen readers
       if (hasResults) {
-        const resultText = `${this.searchResults.length} result${this.searchResults.length > 1 ? 's' : ''}`;
+        const resultText = `${this.searchResults.length} result${this.searchResults.length > 1 ? "s" : ""}`;
         this.status.textContent = resultText;
         this.noResults.hidden = true;
       } else {
-        this.status.textContent = 'No results found';
+        this.status.textContent = "No results found";
         this.noResults.hidden = false;
         this.queryDisplay.textContent = this.currentQuery;
       }
@@ -517,22 +528,22 @@ const { label = "Search this site" } = Astro.props;
       if (hasResults) {
         this.resultsList.innerHTML = this.generateResultsHTML();
       } else {
-        this.resultsList.innerHTML = '';
+        this.resultsList.innerHTML = "";
       }
     }
 
     hideResults() {
       this.resultsContainer.hidden = true;
       this.popover.hidden = true;
-      this.status.textContent = '';
+      this.status.textContent = "";
     }
 
     generateResultsHTML() {
       const librarySearchOption = this.generateLibrarySearchOption();
       const siteResults = this.searchResults
         .slice(0, 100) // Limit to 100 results
-        .map(result => this.generateResultHTML(result))
-        .join('');
+        .map((result) => this.generateResultHTML(result))
+        .join("");
 
       return `
         ${librarySearchOption}
@@ -569,17 +580,22 @@ const { label = "Search this site" } = Astro.props;
     }
 
     generateResultHTML(result) {
-      const highlightedTitle = this.highlightText(result.title || '', this.currentQuery);
-      const highlightedSummary = result.summary ? this.highlightText(result.summary, this.currentQuery) : '';
-      
+      const highlightedTitle = this.highlightText(
+        result.title || "",
+        this.currentQuery,
+      );
+      const highlightedSummary = result.summary
+        ? this.highlightText(result.summary, this.currentQuery)
+        : "";
+
       return `
         <li class="search-result-item">
           <a href="/${result.slug}" class="search-result-link">
             <p class="search-result-title">
               ${highlightedTitle}
-              ${result.tag ? `<span class="search-result-tag">● ${this.escapeHtml(result.tag)}</span>` : ''}
+              ${result.tag ? `<span class="search-result-tag">● ${this.escapeHtml(result.tag)}</span>` : ""}
             </p>
-            ${highlightedSummary ? `<p class="search-result-summary">${highlightedSummary}</p>` : ''}
+            ${highlightedSummary ? `<p class="search-result-summary">${highlightedSummary}</p>` : ""}
           </a>
         </li>
       `;
@@ -587,16 +603,21 @@ const { label = "Search this site" } = Astro.props;
 
     highlightText(text, query) {
       if (!query || !text) return this.escapeHtml(text);
-      
+
       // Split query into words and escape for regex (matching highlight-words-core behavior)
-      const words = query.split(/\s+/).filter(word => word.length > 0)
-        .map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-      
+      const words = query
+        .split(/\s+/)
+        .filter((word) => word.length > 0)
+        .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+
       if (words.length === 0) return this.escapeHtml(text);
-      
-      const regex = new RegExp(`(${words.join('|')})`, 'gi');
-      
-      return this.escapeHtml(text).replace(regex, '<mark class="search-result-highlight">$1</mark>');
+
+      const regex = new RegExp(`(${words.join("|")})`, "gi");
+
+      return this.escapeHtml(text).replace(
+        regex,
+        '<mark class="search-result-highlight">$1</mark>',
+      );
     }
 
     displayError(message) {
@@ -610,15 +631,15 @@ const { label = "Search this site" } = Astro.props;
     }
 
     escapeHtml(text) {
-      const div = document.createElement('div');
+      const div = document.createElement("div");
       div.textContent = text;
       return div.innerHTML;
     }
   }
 
   // Initialize the search component when the DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => new SiteSearch());
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => new SiteSearch());
   } else {
     new SiteSearch();
   }
