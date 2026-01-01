@@ -31,7 +31,7 @@ jobs:
     steps:
       # Get code from repo
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       # Get tag from action input
@@ -51,7 +51,7 @@ jobs:
       # Checkout tag from repo
       - name: Checkout correct repository
         if: ${{ github.event_name == 'workflow_dispatch'  && github.events.inputs.tag }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ env.tag }}
       # Install NodeJS
@@ -63,7 +63,7 @@ jobs:
       # Enabling cache
       - name: Caching Gatsby
         id: gatsby-cache-build
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             public
