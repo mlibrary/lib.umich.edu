@@ -1,11 +1,5 @@
 ---
-/**
- * Astro port of src/components/panels/hero-search-box.js
- *
- * Notes:
- * - Reusable React components (Button, Icon, Input, Margins, Html) are NOT imported per request.
- *   Their usages are replaced with native HTML and styles here. We'll migrate them later.
- */
+import Icon from '../Icon.astro';
 
 type Props = {
 	data: any;
@@ -20,17 +14,24 @@ const hasFrost = data?.field_background === 'white';
 const caption: string | null = data?.field_caption_text?.processed ?? null;
 const altText: string = data?.relationships?.field_hero_images?.[0]?.field_media_image?.alt ?? '';
 
-// Extract background images by orientation
+// Extract background images by orientation (adapted for Drupal JSON:API data structure)
 const fieldHeroImages = data?.relationships?.field_hero_images ?? [];
+
+
+
 const getSrcByOrientation = (orientation: string): string => {
-	try {
-		const node = fieldHeroImages.find((n: any) => n?.field_orientation === orientation);
-		return (
-			node?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData?.images?.fallback?.src || ''
-		);
-	} catch {
+	const node = fieldHeroImages.find((n: any) => n?.field_orientation === orientation);
+	
+	if (!node) {
 		return '';
 	}
+	
+	// Check for the fileUrl from our processing
+	if (node.fileUrl) {
+		return node.fileUrl;
+	}
+	
+	return '';
 };
 
 const verticalSrc = getSrcByOrientation('vertical');
@@ -66,7 +67,7 @@ const horizontalSrc = getSrcByOrientation('horizontal');
 						<input id="library-search-query" name="query" type="search" class="search-input" />
 						<input type="hidden" name="utm_source" value="lib-home" />
 						<button type="submit" class="search-button">
-							<span aria-hidden="true">🔎</span>
+							<Icon icon="search" size={20} style="color: #333;" />
 							<span class="visually-hidden">Submit</span>
 						</button>
 					</div>
@@ -92,6 +93,8 @@ const horizontalSrc = getSrcByOrientation('horizontal');
 	</section>
 </div>
 
+
+
 <style>
 	.background-section {
 		--neutral-100: var(--color-neutral-100, #f4f4f4);
@@ -103,6 +106,8 @@ const horizontalSrc = getSrcByOrientation('horizontal');
 		position: relative;
 		min-height: 16rem;
 	}
+	
+	
 	@media (min-width: 720px) {
 		.background-section {
 			background-image: var(--bg-horizontal);
@@ -206,18 +211,19 @@ const horizontalSrc = getSrcByOrientation('horizontal');
 		border-radius: 2px;
 	}
 	.search-button {
-		margin-left: 0.5rem; /* ~ SPACING.XS */
-		height: 40px;
-		padding: 0 0.75rem;
-		border: none;
+		align-items: center;
+		background: var(--color-maize-400);
 		border-radius: 2px;
-		background: var(--color-blue-600, #1967d2);
-		color: #fff;
-		cursor: pointer;
+		color: inherit;
+		display: flex;
+		font-weight: 800;
+		min-height: 2.5rem;
+		padding: 0.5rem 1rem;;
+		margin-left: 0.5rem;
 	}
 	.search-button:hover,
 	.search-button:focus {
-		background: var(--color-blue-700, #1558b3);
+		background: var(--color-maize-500);
 	}
 
 	.caption {

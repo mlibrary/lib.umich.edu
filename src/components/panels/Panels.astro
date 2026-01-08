@@ -29,7 +29,7 @@ const hoursPanel = data.find((panel: any) => panel.__typename === 'paragraph__ho
 ---
 
 {data && data.length > 0 && (
-  <div class="panels-wrapper">
+  <>
     {hoursPanel && (
       <!-- TODO: Implement HoursPanelDateViewer -->
       <!-- <HoursPanelDateViewer data={hoursPanel} /> -->
@@ -61,7 +61,7 @@ const hoursPanel = data.find((panel: any) => panel.__typename === 'paragraph__ho
           return null;
       }
     })}
-  </div>
+  </>
 )}
 
 <script define:vars={{ panelsData: data }}>
@@ -70,7 +70,5 @@ const hoursPanel = data.find((panel: any) => panel.__typename === 'paragraph__ho
 </script>
 
 <style>
-  .panels-wrapper {
-    /* Container for all panels */
-  }
+  /* No wrapper styles needed */
 </style>

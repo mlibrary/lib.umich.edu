@@ -12,6 +12,52 @@ import {
 } from './drupal.js';
 
 /**
+ * Find the file entity that corresponds to a media entity
+ * @param {Object} mediaEntity - The media entity
+ * @param {Array} included - All included entities from the JSON:API response
+ * @returns {Object|null} - The matching file entity or null
+ */
+const findFileEntity = (mediaEntity, included) => {
+  // First, find the file entity ID from the media entity's relationships
+  const fieldMediaImageRef = mediaEntity?.relationships?.field_media_image?.data;
+  if (!fieldMediaImageRef) {
+    return null;
+  }
+
+  const fileEntityId = fieldMediaImageRef.id;
+
+  // Find the file entity in the included data
+  const fileEntity = included?.find((entity) => {
+    return entity.type === 'file--file' && entity.id === fileEntityId;
+  }
+  );
+
+  return fileEntity;
+};
+
+/**
+ * Generate a complete image URL from a file entity
+ * @param {Object} fileEntity - The file entity
+ * @param {String} drupalUrl - Base Drupal URL
+ * @returns {String} - Complete image URL
+ */
+const generateImageUrl = (fileEntity, drupalUrl) => {
+  if (!fileEntity?.attributes?.uri?.url) {
+    return null;
+  }
+
+  const fileUrl = fileEntity.attributes.uri.url;
+
+  // If it starts with /, prepend the Drupal base URL
+  if (fileUrl.startsWith('/')) {
+    return `${drupalUrl}${fileUrl}`;
+  }
+
+  // Otherwise return as-is
+  return fileUrl;
+};
+
+/**
  * Map Drupal design template machine names to Astro template paths
  */
 export const getTemplatePath = (machineName) => {
@@ -125,12 +171,42 @@ export const processDrupalNode = (node, included = []) => {
 
             // For panels and other array relationships, preserve the full structure
             // With __typename for component routing
-            return {
+            const processedItem = {
               __typename: relatedItem.type,
               id: relatedItem.id,
               ...relatedItem.attributes,
               relationships: nestedRelationships
             };
+
+            // Enhance hero panels with file entity data
+            if (relatedItem.type === 'paragraph--hero_panel') {
+              // Enhance hero images with file entity data
+              if (nestedRelationships.field_hero_images) {
+                nestedRelationships.field_hero_images = nestedRelationships.field_hero_images.map((img, idx) => {
+                  // Find the original media entity to get relationships
+                  const mediaEntity = included.find((item) => {
+                    return item.type === 'media--image'
+                      && item.attributes?.drupal_internal__mid === img.drupal_internal__mid;
+                  }
+                  );
+
+                  if (mediaEntity) {
+                    const fileEntity = findFileEntity(mediaEntity, included);
+                    const imageUrl = generateImageUrl(fileEntity, process.env.DRUPAL_URL || 'https://cms.lib.umich.edu');
+
+                    return {
+                      ...img,
+                      fileUrl: imageUrl,
+                      fileEntity: fileEntity?.attributes
+                    };
+                  }
+
+                  return img;
+                });
+              }
+            }
+
+            return processedItem;
           }
           return null;
         }).filter(Boolean);

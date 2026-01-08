@@ -134,6 +134,26 @@ export const fetchStaff = async () => {
 };
 
 /**
+ * Test function to fetch a specific media entity to understand its structure
+ */
+export const debugMediaEntity = async (mediaId) => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  try {
+    // Fetch the specific media entity with all its relationships
+    const url = `${baseUrl}/jsonapi/media/image/${mediaId}?include=field_media_image`;
+    console.log('Fetching media entity:', url);
+
+    const response = await fetchWithRetry(url);
+    console.log('Media entity response:', JSON.stringify(response, null, 2));
+
+    return response;
+  } catch (error) {
+    console.error('Error fetching media entity:', error);
+    return null;
+  }
+};
+
+/**
  * Fetch all pages from Drupal JSON:API
  */
 export const fetchDrupalPages = async () => {

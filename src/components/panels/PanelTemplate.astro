@@ -13,54 +13,53 @@ interface Props {
 const { title, shaded = false, headingCss = {}, ...rest } = Astro.props;
 ---
 
-<section 
-  class:list={['panel', { 'panel-shaded': shaded }]}
+<section
+  class:list={["panel", { "panel-shaded": shaded }]}
   data-can-be-shaded={shaded}
   data-panel
   {...rest}
 >
-  <div class="margins" data-panel-margins>
-    {title && (
-      <h2 class="panel-heading" style={Object.entries(headingCss).map(([k, v]) => `${k}: ${v}`).join('; ')}>
-        {title}
-      </h2>
-    )}
+  <div data-panel-margins>
+    {
+      title && (
+        <h2
+          class="panel-heading"
+          style={Object.entries(headingCss)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join("; ")}
+        >
+          {title}
+        </h2>
+      )
+    }
     <slot />
   </div>
 </section>
 
 <style>
-  .panel {
-    padding-bottom: 2rem;
-    padding-top: 2rem;
-  }
-  
   .panel:not(:last-of-type) {
     border-bottom: solid 1px var(--color-neutral-100, #e0e0e0);
     padding-bottom: 3rem;
   }
-  
+
   .panel-shaded {
     background: var(--color-blue-100, #e8f4f8);
     border-bottom: none !important;
   }
-  
+
   .panel-heading {
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--color-blue-400, #00274C);
+    color: var(--color-blue-400, #00274c);
     margin-bottom: 2rem;
   }
-  
+
   /* Responsive */
-  @media (min-width: 720px) {
-    .panel {
-      padding-bottom: 3rem;
-      padding-top: 3rem;
-    }
-    
-    .panel:not(:last-of-type) {
-      padding-bottom: 3rem;
+  @media (min-width: 920px) {
+    .panel:not(:last-child) {
+      border: none;
+      border-right: solid 1px var(--color-neutral-100);
+      padding-right: 3rem;
     }
   }
 </style>
