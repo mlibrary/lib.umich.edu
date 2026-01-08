@@ -18,7 +18,7 @@ const { label = "Search this site" } = Astro.props;
     <Icon
       icon="search"
       size={20}
-      style="display: inline-block; fill: currentColor; vertical-align: middle; color: var(--color-neutral-300); left: 0.5rem; position: absolute;"
+      style="fill: currentColor; vertical-align: middle; color: var(--color-neutral-300); left: 0.5rem; position: absolute;"
     />
     <label class="site-search-label">
       <span class="visually-hidden">
@@ -92,17 +92,19 @@ const { label = "Search this site" } = Astro.props;
 
   .site-search-form {
     flex-basis: 21rem;
-    margin-bottom: 1rem;
+    position: relative;
+    display: flex;
+    align-items: center;
   }
 
   /* Search icon */
   .search-icon {
-    position: absolute;
-    left: 0.5rem;
     color: var(--color-neutral-300);
     font-size: 20px;
-    z-index: 1;
+    left: 0.5rem;
     pointer-events: none;
+    position: absolute;
+    z-index: 1;
   }
 
   /* Search label and input */
@@ -111,15 +113,18 @@ const { label = "Search this site" } = Astro.props;
   }
 
   .site-search-input {
-    width: 100%;
-    padding: 0.5rem 1rem 0.5rem 3rem;
+    align-items: center;
+    appearance: textfield;
+    background: none;
     border: solid 1px var(--color-neutral-300);
     border-radius: 2px;
     box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
     font-family: inherit;
     font-size: 1rem;
-    background: white;
-    appearance: textfield;
+    padding: .5rem;
+    padding-left: calc(18px + 0.75rem);
+    width: 100%;
   }
 
   .site-search-input::placeholder {

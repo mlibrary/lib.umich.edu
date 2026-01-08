@@ -14,14 +14,14 @@ const panels = relationships?.field_panels || [];
 
 <Layout title={title}>
   <!-- Debug info -->
-  <div style="background: yellow; padding: 1rem; margin: 1rem;">
+  <!-- <div style="background: yellow; padding: 1rem; margin: 1rem;">
     <strong>Debug:</strong> Found {panels?.length || 0} panels
     {panels?.map((panel, index) => (
       <div key={index}>
       Panel {index + 1}: {panel?.type || panel?.__typename || 'unknown'}
       </div>
     ))}
-  </div>
+  </div> -->
   
   <Panels data={panels} />
 </Layout>
