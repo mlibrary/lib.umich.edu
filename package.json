@@ -42,10 +42,7 @@
     "format": "npm run lint -- --fix",
     "lint": "npx eslint $* ./astro.config.mjs src/**/*.js src/**/*.jsx",
     "start": "npm run dev",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "gatsby:build": "gatsby build",
-    "gatsby:clean": "gatsby clean",
-    "gatsby:develop": "gatsby develop -H 0.0.0.0"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

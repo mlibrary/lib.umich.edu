@@ -177,6 +177,10 @@ export const fetchDrupalPages = async () => {
     'field_panels.field_panel_group.field_cards.field_hours_open',
     'field_panels.field_panel_group.field_cards.field_parent_location',
     'field_panels.field_panel_group.field_cards.field_parent_page',
+    // Hours panel lite - direct field_cards relationship
+    'field_panels.field_cards.field_hours_open',
+    'field_panels.field_cards.field_parent_location',
+    'field_panels.field_cards.field_parent_page',
     // Link panel relationships - include machine name field
     'field_panels.field_panel_group.field_link_template',
     'field_panels.field_link_template'

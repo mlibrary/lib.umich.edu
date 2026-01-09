@@ -6,6 +6,7 @@
  * Templates: bulleted_list, 2_column_db_link_list, related_links
  */
 import PanelTemplate from './PanelTemplate.astro';
+import Icon from '../Icon.astro';
 
 interface Props {
   data: any;
@@ -14,29 +15,307 @@ interface Props {
 const { data } = Astro.props;
 const { relationships } = data;
 
-// Debug: Log the data structure
-console.log('LinkPanel data:', {
-  data,
-  relationships,
-  fieldLinkTemplate: relationships?.field_link_template
-});
+// Helper functions for internal link resolution
+const getNIDFromURI = (uri: string) => {
+  if (uri?.includes('entity:node/')) {
+    return uri.split('/')[1];
+  }
+  return null;
+};
 
-const fieldMachineName = relationships?.field_link_template?.field_machine_name || 'unknown';
+// For now, we'll use the link data directly since we don't have page context hook
+// TODO: Implement page context lookup when available
+const getLinkData = (link: any) => {
+  const nid = getNIDFromURI(link.uri);
+  
+  // For now, just use the provided title and URI
+  // In the future, this should look up the actual page data
+  return {
+    text: link.title,
+    to: link.uri
+  };
+};
+
+const fieldMachineName = relationships?.field_link_template?.field_machine_name || 'bulleted_list';
+const links = data.field_link || [];
+const moreLink = data.field_view_all ? {
+  text: data.field_view_all.title,
+  to: data.field_view_all.uri
+} : null;
+const hasTopBorder = data.field_border === 'yes';
 ---
 
-<PanelTemplate title={data.field_title}>
-  <div class="link-panel-placeholder">
-    <p><strong>LinkPanel (TODO)</strong></p>
-    <p>Template: {fieldMachineName}</p>
-    <p>Links: {data.field_link?.length || 0}</p>
-    <p>Has link template: {relationships?.field_link_template ? 'Yes' : 'No'}</p>
-  </div>
-</PanelTemplate>
+{fieldMachineName === 'bulleted_list' && (
+  <section class={`bulleted-link-list ${hasTopBorder ? 'has-top-border' : ''}`}>
+    <h2 class="heading-m">{data.field_title}</h2>
+    <ol class="bulleted-list">
+      {links.map((link: any) => {
+        const linkData = getLinkData(link);
+        const isExternal = linkData.to && !linkData.to.startsWith('/');
+        return (
+          <li>
+            <a 
+              href={linkData.to} 
+              class="link-default"
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+            >
+              {linkData.text}
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+    
+    {moreLink && (
+      <a 
+        href={moreLink.to} 
+        class="link-default"
+        target={!moreLink.to.startsWith('/') ? '_blank' : undefined}
+        rel={!moreLink.to.startsWith('/') ? 'noopener noreferrer' : undefined}
+      >
+        {moreLink.text}
+      </a>
+    )}
+  </section>
+)}
+
+{fieldMachineName === '2_column_db_link_list' && (
+  <section class="database-link-list">
+    <h2 class="heading-m">{data.field_title}</h2>
+    <ol class="db-links-grid">
+      {links.map((link: any, index: number) => (
+        <li class="db-link-item">
+          <a 
+            href={link.uri} 
+            class="db-link"
+            target={!link.uri.startsWith('/') ? '_blank' : undefined}
+            rel={!link.uri.startsWith('/') ? 'noopener noreferrer' : undefined}
+          >
+            <span class="db-link-text">{link.title}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    
+    {data.field_view_all && (
+      <a 
+        href={data.field_view_all.uri} 
+        class="link-default view-all-link"
+        target={!data.field_view_all.uri.startsWith('/') ? '_blank' : undefined}
+        rel={!data.field_view_all.uri.startsWith('/') ? 'noopener noreferrer' : undefined}
+      >
+        {data.field_view_all.title}
+      </a>
+    )}
+  </section>
+)}
+
+{fieldMachineName === 'related_links' && (
+  <PanelTemplate title={data.field_title}>
+    <ol class="related-links-list">
+      {links.map((link: any, index: number) => {
+        const linkData = getLinkData(link);
+        const isExternal = linkData.to && !linkData.to.startsWith('/');
+        return (
+          <li class="related-link-item">
+            <a 
+              href={linkData.to} 
+              class="fancy-link"
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+            >
+              <span class="fancy-link-icon">
+                <Icon icon="insert_link" size={24} />
+              </span>
+              <span class="fancy-link-text">{linkData.text}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  </PanelTemplate>
+)}
 
 <style>
-  .link-panel-placeholder {
-    padding: 1rem;
-    background: var(--color-neutral-50, #f9f9f9);
-    border: 1px dashed var(--color-neutral-300, #ccc);
+  /* Base spacing and typography constants (from reusable/utils.jsx) */
+  :root {
+    --spacing-3xs: 0.125rem;
+    --spacing-2xs: 0.25rem;
+    --spacing-xs: 0.5rem;
+    --spacing-s: 0.75rem;
+    --spacing-m: 1rem;
+    --spacing-l: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 2.5rem;
+  }
+
+  /* Heading styles */
+  .heading-m {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 var(--spacing-m) 0;
+  }
+
+  /* Link styles (from LINK_STYLES) */
+  .link-default {
+    color: var(--color-teal-400);
+    text-decoration: none;
+    box-shadow: inset 0 -1px var(--color-teal-400);
+  }
+
+  .link-default:hover {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .link-description {
+    font-size: 1.125rem;
+    color: var(--color-neutral-400);
+    font-weight: 600;
+    box-shadow: inset 0 -1px var(--color-teal-400);
+  }
+
+  .link-description:hover {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .link-list {
+    color: var(--color-neutral-400);
+  }
+
+  .link-list:hover {
+    box-shadow: inset 0 -1px var(--color-neutral-400);
+  }
+
+  /* Bulleted Link List styles */
+  .bulleted-link-list {
+      border: none;
+      border-right: solid 1px var(--color-neutral-100);
+      padding-right: 3rem;
+  }
+
+  .bulleted-link-list.has-top-border {
+    border-top: solid 1px var(--color-neutral-100);
+    padding-top: var(--spacing-xl);
+  }
+
+  .bulleted-list {
+    column-gap: 2rem;
+    columns: 2;
+    list-style: none;
+    margin-top: 1.5rem;
+    max-width: 24rem;
+  }
+
+  .bulleted-list li {
+    break-inside: avoid;
+  }
+
+  .bulleted-list > li > a{
+    box-shadow: none;
+    color: var(--color-neutral-400);
+    display: block;
+    padding-bottom: 0.75rem;
+  }
+
+  .more-link {
+    margin-bottom: 0;
+  }
+
+  /* Database Link List styles */
+  .database-link-list {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .db-links-grid {
+    column-gap: var(--spacing-xl);
+    columns: 2;
+    margin-top: var(--spacing-l);
+    max-width: 24rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .db-link-item {
+    break-inside: avoid;
+    margin: 0;
+  }
+
+  .db-link {
+    display: block;
+    padding-bottom: var(--spacing-s);
+    color: var(--color-neutral-400);
+    text-decoration: none;
+  }
+
+  .db-link:hover {
+    box-shadow: none;
+  }
+
+  .db-link:hover .db-link-text {
+    box-shadow: inset 0 -1px var(--color-neutral-400);
+  }
+
+  .db-link-text {
+    color: var(--color-neutral-400);
+  }
+
+  .view-all-link {
+    margin-top: var(--spacing-m);
+    display: inline-block;
+  }
+
+  /* Related Links styles */
+  .related-links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .related-link-item {
+    max-width: 34rem;
+  }
+
+  .related-link-item:not(:last-of-type) {
+    margin-bottom: var(--spacing-s);
+  }
+
+  .fancy-link {
+    background: var(--color-teal-100);
+    border-radius: 2px;
+    display: block;
+    padding: var(--spacing-m);
+    padding-right: var(--spacing-l);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .fancy-link:hover .fancy-link-text {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .fancy-link-icon {
+    color: var(--color-teal-400);
+    flex-shrink: 0;
+    margin-top: 2px; /* Slight vertical alignment adjustment */
+  }
+
+  .fancy-link-text {
+    font-size: 1.125rem;
+    color: var(--color-neutral-400);
+    font-weight: 600;
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    flex: 1;
+  }
+
+  /* Media queries (from MEDIA_QUERIES) */
+  @media only screen and (min-width: 641px) {
+    .bulleted-link-list {
+      margin-bottom: var(--spacing-xl);
+    }
   }
 </style>

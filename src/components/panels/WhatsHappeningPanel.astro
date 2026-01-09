@@ -23,11 +23,11 @@ try {
   const allEvents = await fetchDrupalEvents();
   
   // Debug: Log raw events data
-  console.log('WhatsHappeningPanel - Raw events data:', {
-    allEventsCount: allEvents?.length || 0,
-    allEvents: allEvents,
-    sampleEvent: allEvents?.[0]
-  });
+  // console.log('WhatsHappeningPanel - Raw events data:', {
+  //   allEventsCount: allEvents?.length || 0,
+  //   allEvents: allEvents,
+  //   sampleEvent: allEvents?.[0]
+  // });
   
   // Filter priority events
   const priorityEvents = allEvents.filter(event => 
@@ -43,12 +43,12 @@ try {
   );
   
   // Debug: Log filtered events
-  console.log('WhatsHappeningPanel - Filtered events:', {
-    priorityEventsCount: priorityEvents.length,
-    priorityEvents,
-    otherEventsCount: otherEvents.length,
-    otherEvents
-  });
+  // console.log('WhatsHappeningPanel - Filtered events:', {
+  //   priorityEventsCount: priorityEvents.length,
+  //   priorityEvents,
+  //   otherEventsCount: otherEvents.length,
+  //   otherEvents
+  // });
   
   // Helper function to sort events by start date
   const sortEventsByStartDate = (eventList, onlyTodayOrAfter = true) => {
@@ -78,14 +78,14 @@ try {
   hasEvents = events.length > 0;
   
   // Debug: Log final processed events
-  console.log('WhatsHappeningPanel - Final processed events:', {
-    sortedPriorityEventsCount: sortedPriorityEvents.length,
-    sortedOtherEventsCount: sortedOtherEvents.length,
-    joinedEventsCount: joinedEvents.length,
-    finalEventsCount: events.length,
-    finalEvents: events,
-    hasEvents
-  });
+  // console.log('WhatsHappeningPanel - Final processed events:', {
+  //   sortedPriorityEventsCount: sortedPriorityEvents.length,
+  //   sortedOtherEventsCount: sortedOtherEvents.length,
+  //   joinedEventsCount: joinedEvents.length,
+  //   finalEventsCount: events.length,
+  //   finalEvents: events,
+  //   hasEvents
+  // });
   
 } catch (error) {
   console.error('Error fetching events:', error);
