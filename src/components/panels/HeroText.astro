@@ -1,17 +1,173 @@
 ---
 /**
- * HeroText.astro - Placeholder for text hero panels
- * TODO: Port from src/components/panels/hero-text.js
+ * HeroText.astro - Text hero panel with background image
+ * Ported from src/components/panels/hero-text.js
  */
+import Heading from '../../reusable/heading.astro';
+
 type Props = {
   data: any;
 };
 
 const { data } = Astro.props as Props;
+
+// Simple helper functions (no React hooks needed)
+const getNIDFromURI = (uri: string) => {
+  if (uri?.includes('entity:node/')) {
+    return uri.split('/')[1];
+  }
+  return null;
+};
+
+// Simple link resolution (placeholder - can be enhanced later)
+const getSimpleLink = (linkData: any) => {
+  if (!linkData?.uri) return null;
+  
+  // For now, just use the URI directly (simplified approach)
+  // TODO: Implement proper page context lookup if needed
+  return {
+    text: linkData.title || 'Read more',
+    to: linkData.uri.replace('entity:node/', '/node/') // Simple conversion
+  };
+};
+
+const fieldLink = data.field_link?.[0];
+const link = fieldLink ? getSimpleLink(fieldLink) : null;
+
+// Get background images (simplified - no Gatsby image processing)
+const fieldHeroImages = data.relationships?.field_hero_images || [];
+const smallScreenImage = fieldHeroImages.find(
+  (node: any) => node.field_orientation === 'vertical'
+);
+const largeScreenImage = fieldHeroImages.find(
+  (node: any) => node.field_orientation === 'horizontal'
+);
+
+// Simple fallback image URLs (no responsive processing for now)
+const smallImageUrl = smallScreenImage?.relationships?.field_media_image?.uri?.url || '';
+const largeImageUrl = largeScreenImage?.relationships?.field_media_image?.uri?.url || '';
 ---
 
-<div style="background: #fff3cd; border: 2px solid #856404; padding: 1rem; margin: 1rem;">
-  <h3>HeroText (TODO)</h3>
-  <p>This component needs to be ported from hero-text.js</p>
-  <p><strong>Title:</strong> {data?.field_title || 'No title'}</p>
+<div class="margins">
+  <section class="hero-background" style={`background-image: url('${largeImageUrl}')`}>
+    <div class="hero-content">
+      <div class="hero-inner">
+        <Heading level={2} size="3XL" class="hero-title">
+          {data.field_title}
+        </Heading>
+        
+        {data.field_caption_text?.processed && (
+          <div class="hero-text" set:html={data.field_caption_text.processed} />
+        )}
+        
+        {link && (
+          <div class="hero-link">
+            <a href={link.to} class="hero-link-button">
+              {link.text}
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
 </div>
+
+<style>
+  /* Spacing constants */
+  .margins {
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 0;
+  }
+
+  @media only screen and (min-width: 920px) {
+    .margins {
+      padding: 0 2.5rem;
+    }
+  }
+
+  .hero-background {
+    background-color: var(--color-blue-300, #0f4d92);
+    background-position: center;
+    background-size: cover;
+    position: relative;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .hero-background {
+      background-size: cover;
+    }
+  }
+
+  .hero-content {
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 1rem;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .hero-content {
+      padding: 4rem 0.75rem;
+    }
+  }
+
+  .hero-inner {
+    color: white;
+    text-align: center;
+  }
+
+  .hero-inner a {
+    color: white;
+    text-decoration: underline;
+    box-shadow: none;
+  }
+
+  .hero-inner a:hover {
+    box-shadow: none;
+    text-decoration-thickness: 2px;
+  }
+
+  .hero-title {
+    margin-bottom: 1rem;
+    color: white;
+  }
+
+  .hero-text {
+    display: inline-block;
+    font-size: 1.25rem;
+    width: auto;
+    margin-bottom: 1rem;
+  }
+
+  .hero-link {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .hero-link-button {
+    text-decoration-color: var(--color-maize-400, #ffcb05);
+    text-decoration-thickness: 2px;
+  }
+
+  .hero-link-button:focus,
+  .hero-link-button:hover {
+    text-decoration-thickness: 4px;
+  }
+
+  /* Media query for small screens using different background */
+  @media only screen and (max-width: 640px) {
+    .hero-background {
+      background-image: var(--small-screen-bg) !important;
+    }
+  }
+</style>
+
+{smallImageUrl && (
+  <style set:html={`
+    @media only screen and (max-width: 640px) {
+      .hero-background {
+        background-image: url('${smallImageUrl}') !important;
+      }
+    }
+  `} />
+)}

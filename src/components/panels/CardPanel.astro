@@ -12,7 +12,7 @@ import Card from '../Card.astro';
 // TODO: Import these components when they're created
 // import Address from '../Address.astro';
 // import Hours from '../Hours.astro';
-// import DotsSvg from '../DotsSvg.astro';
+import DotsSvg from '../DotsSvg.astro';
 // import DestinationHorizontalPanel from './DestinationHorizontalPanel.astro';
 
 interface Props {
@@ -67,8 +67,7 @@ if (template === 'destination_hor_card_template') {
       <div class="margins" data-panel-margins>
         <div class="highlights-header">
           <div class="dots-container">
-            <!-- TODO: Replace with DotsSvg component -->
-            <div class="dots-placeholder">•••</div>
+            <DotsSvg />
           </div>
           <h2 class="highlights-title">{title}</h2>
         </div>
@@ -81,31 +80,32 @@ if (template === 'destination_hor_card_template') {
                 class="highlights-card"
                 style={`grid-column: span ${columnGaps[index]}; ${index === 2 ? 'grid-row: span 2;' : ''}`}
               >
-                <Card
-                  title={card.title}
-                  subtitle={getCardSubtitle(card)}
-                  href={getCardHref(card)}
-                  headingLevel={title ? 3 : 2}
-                  class="highlights-card-content"
-                  anchorStyleAddition={{ height: '100%', padding: 'var(--spacing-m, 1rem)' }}
-                >
-                  {useSummary ? getSummary(card.body) : (
-                    template === 'address_and_hours' && (
-                      <div>
-                        <div class="card-info-row">
-                          <Icon icon="address" />
-                          <!-- TODO: Replace with Address component -->
-                          <span>Address placeholder</span>
+                <a href={getCardHref(card)}>
+                  <Card
+                    title={card.title}
+                    subtitle={getCardSubtitle(card)}
+                    headingLevel={title ? 3 : 2}
+                    class="highlights-card-content"
+                    anchorStyleAddition={{ height: '100%', padding: 'var(--spacing-m, 1rem)' }}
+                  >
+                    {useSummary ? getSummary(card.body) : (
+                      template === 'address_and_hours' && (
+                        <div>
+                          <div class="card-info-row">
+                            <Icon icon="address" />
+                            <!-- TODO: Replace with Address component -->
+                            <span>Address placeholder</span>
+                          </div>
+                          <div class="card-info-row">
+                            <Icon icon="access_time" />
+                            <!-- TODO: Replace with Hours component -->
+                            <span>Hours placeholder</span>
+                          </div>
                         </div>
-                        <div class="card-info-row">
-                          <Icon icon="access_time" />
-                          <!-- TODO: Replace with Hours component -->
-                          <span>Hours placeholder</span>
-                        </div>
-                      </div>
-                    )
-                  )}
-                </Card>
+                      )
+                    )}
+                  </Card>
+                </a>
               </li>
             );
           })}
