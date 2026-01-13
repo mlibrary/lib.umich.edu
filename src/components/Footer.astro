@@ -4,6 +4,7 @@
  * Original: src/components/footer.jsx
  */
 import fdlpImage from '../images/fdlp.png';
+import Icon from './Icon.astro';
 
 const year = new Date().getFullYear();
 
@@ -82,21 +83,6 @@ const links = [
   }
 ];
 
-// Simple Material Icons mapping
-const iconMap: Record<string, string> = {
-  'address': 'place',
-  'phone': 'phone',
-  'mail_outline': 'mail_outline',
-  'accessible_forward': 'accessible_forward',
-  'map': 'map',
-  'people_outline': 'people_outline',
-  'work': 'work',
-  'blog': 'article',
-  'facebook': 'public',
-  'bluesky': 'cloud',
-  'twitter': 'alternate_email',
-  'youtube': 'play_circle'
-};
 ---
 
 <footer role="contentinfo">
@@ -110,7 +96,7 @@ const iconMap: Record<string, string> = {
               {section.links.map(({ text, to, icon }) => (
                 <li>
                   <a href={to}>
-                    <span class="material-icons" aria-hidden="true">{iconMap[icon] || icon}</span>
+                    <Icon icon={icon} aria-hidden="true" />
                     <span set:html={text.replace('\n', '<br />')} />
                   </a>
                 </li>
@@ -251,6 +237,7 @@ const iconMap: Record<string, string> = {
   }
   
   .fdlp img {
+    width: auto;
     height: 2rem;
   }
   

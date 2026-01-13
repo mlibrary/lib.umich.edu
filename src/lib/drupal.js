@@ -255,18 +255,28 @@ export const fetchDrupalBuildings = async () => {
  */
 export const fetchDrupalNews = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  const url = `${baseUrl}/jsonapi/node/news?include=field_design_template`;
+  // Include the same relationships as the original Gatsby newsFragment
+  const includes = [
+    'field_design_template',
+    'field_media_image',
+    'field_media_image.field_media_image'
+  ].join(',');
+  const url = `${baseUrl}/jsonapi/node/news?include=${includes}`;
 
   let allData = [];
+  let included = [];
   let nextUrl = url;
 
   while (nextUrl) {
     const response = await fetchWithRetry(nextUrl);
     allData = allData.concat(response.data);
+    if (response.included) {
+      included = included.concat(response.included);
+    }
     nextUrl = response.links?.next?.href || null;
   }
 
-  return allData;
+  return { data: allData, included };
 };
 
 /**
@@ -354,9 +364,73 @@ export const fetchDrupalNodeByUuid = async (nodeType, uuid) => {
   return await fetchWithRetry(url);
 };
 
+/**
+ * Fetch featured news for homepage (field_featured_news_item = true)
+ */
+export const fetchFeaturedNews = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  const includes = [
+    'field_design_template',
+    'field_media_image',
+    'field_media_image.field_media_image'
+  ].join(',');
+  const url = `${baseUrl}/jsonapi/node/news?include=${includes}&filter[field_featured_news_item][value]=1&sort=-created&page[limit]=1`;
+  
+  const response = await fetchWithRetry(url);
+  return { data: response.data, included: response.included || [] };
+};
+
+/**
+ * Fetch priority news for homepage (field_priority_for_homepage = true, field_featured_news_item = false)
+ */
+export const fetchPriorityNews = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  const includes = [
+    'field_design_template',
+    'field_media_image',
+    'field_media_image.field_media_image'
+  ].join(',');
+  const url = `${baseUrl}/jsonapi/node/news?include=${includes}&filter[field_priority_for_homepage][value]=1&filter[field_featured_news_item][value]=0&sort=-created&page[limit]=5`;
+  
+  const response = await fetchWithRetry(url);
+  return { data: response.data, included: response.included || [] };
+};
+
+/**
+ * Fetch recent news for homepage (field_priority_for_homepage = false, field_featured_news_item = false)
+ */
+export const fetchRecentNews = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  const includes = [
+    'field_design_template',
+    'field_media_image',
+    'field_media_image.field_media_image'
+  ].join(',');
+  const url = `${baseUrl}/jsonapi/node/news?include=${includes}&filter[field_priority_for_homepage][value]=0&filter[field_featured_news_item][value]=0&sort=-created&page[limit]=5`;
+  
+  const response = await fetchWithRetry(url);
+  return { data: response.data, included: response.included || [] };
+};
+
+/**
+ * Fetch the news landing page slug
+ */
+export const fetchNewsLandingPageSlug = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  const url = `${baseUrl}/jsonapi/node/page?include=field_design_template&filter[field_design_template.field_machine_name][value]=news_landing`;
+  
+  const response = await fetchWithRetry(url);
+  const page = response.data?.[0];
+  return page?.attributes?.path?.alias || null;
+};
+
 export {
   DRUPAL_URL,
   removeTrailingSlash,
   sanitizeDrupalView,
-  fetchWithRetry
+  fetchWithRetry,
+  fetchFeaturedNews,
+  fetchPriorityNews,
+  fetchRecentNews,
+  fetchNewsLandingPageSlug
 };

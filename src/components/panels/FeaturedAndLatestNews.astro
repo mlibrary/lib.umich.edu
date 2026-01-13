@@ -11,7 +11,9 @@
  *
  * If featured/priority/recent are not provided, the component will render nothing.
  */
+import { MARGINS_CLASS } from '../../reusable/utils';
 import Heading from '../../reusable/heading.astro';
+import Card from '../Card.astro';
 
 type Edge<T> = { node: T };
 type Edges<T> = { edges: Array<Edge<T>> } | Array<Edge<T>> | Array<T>;
@@ -58,9 +60,13 @@ const toEdges = <T,>(input?: Edges<T>): Array<Edge<T>> => {
 const featured = toEdges<NewsNode>(featuredNews);
 const priority = toEdges<NewsNode>(priorityNews);
 const recent = toEdges<NewsNode>(recentNews);
+console.log('FeaturedAndLatestNews - featured:', featured.length, 'priority:', priority.length, 'recent:', recent.length);
 
 const processNewsNodeForCard = (newsNode: NewsNode) => {
+	// Handle both the original Gatsby image structure and our new processed structure
 	const newsImage = newsNode?.relationships?.field_media_image?.relationships?.field_media_image?.localFile?.childImageSharp?.gatsbyImageData;
+	const imageUrl = newsImage?.images?.fallback?.src;
+	
 	const children = newsNode?.body?.summary;
 	const href = newsNode?.fields?.slug;
 	const subtitle = newsNode?.created
@@ -71,7 +77,7 @@ const processNewsNodeForCard = (newsNode: NewsNode) => {
 		title: newsNode?.title,
 		subtitle,
 		href,
-		image: newsImage,
+		image: imageUrl ? { src: imageUrl, alt: newsNode?.title } : undefined,
 		children
 	};
 };
@@ -100,36 +106,41 @@ const viewAllNewsHref = newsLandingSlug;
 ---
 
 {hasData && featureCardProps && (
-    <div class="fan-grid">
-        <div class="fan-feature">
-            <Heading level={2} size="M">
-                Feature
-            </Heading>
-            <div class="fan-feature-inner">
-                test
-                {/* <Card title={featureCardProps.title} subtitle={featureCardProps.subtitle} href={featureCardProps.href} image={featureCardProps.image}>
-                    {featureCardProps.children}
-                </Card> */}
-            </div>
-        </div>
+	<div class={MARGINS_CLASS}>
+		<div class="fan-grid">
+			<div class="fan-feature">
+				<Heading level={2} size="M">
+					Feature
+				</Heading>
+				<div class="fan-feature-inner">
+					<Card 
+						title={featureCardProps.title} 
+						subtitle={featureCardProps.subtitle} 
+						href={featureCardProps.href} 
+						image={featureCardProps.image}
+					>
+						{featureCardProps.children}
+					</Card>
+				</div>
+			</div>
 
-        <div class="fan-recent">
-            <Heading level={2} size="M">
-                Recent news
-            </Heading>
+			<div class="fan-recent">
+				<Heading level={2} size="M">
+					Recent news
+				</Heading>
 
-            <ol class="fan-recent-list">
-                {recentCardProps.map(({ title, subtitle, href }, idx) => (
-                    <li>
-                        test
-                        {/* <Card title={title} subtitle={subtitle} href={href} /> */}
-                    </li>
-                ))}
-            </ol>
+				<ol class="fan-recent-list">
+					{recentCardProps.map(({ title, subtitle, href }, idx) => (
+						<li>
+							<Card title={title} subtitle={subtitle} href={href} />
+						</li>
+					))}
+				</ol>
 
-            {viewAllNewsHref && <a href={viewAllNewsHref}>View all news and stories</a>}
-        </div>
-    </div>
+				{viewAllNewsHref && <a href={viewAllNewsHref}>View all news and stories</a>}
+			</div>
+		</div>
+	</div>
 )}
 
 <style>
