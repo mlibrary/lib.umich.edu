@@ -1,0 +1,202 @@
+---
+/**
+ * EventCard - Individual event card component
+ * Converted from src/components/event-card.js
+ */
+import { 
+  eventFormatWhen, 
+  eventFormatWhere, 
+  EXHIBIT_TYPES 
+} from '../utils/events.js';
+import Heading from '../reusable/heading.astro';
+import Icon from './Icon.astro';
+
+export interface Props {
+  event: any;
+  displayImage?: boolean;
+  hasBorder?: boolean;
+}
+
+const { event, displayImage = true, hasBorder = true } = Astro.props;
+
+// Extract event data from the JSON:API structure
+const {
+  attributes: {
+    title,
+    body,
+    field_event_date_s_
+  },
+  relationships,
+  fields
+} = event;
+
+// Handle image data (if present)
+const image = relationships?.field_media_image?.relationships?.field_media_image;
+const imageData = image?.localFile?.childImageSharp?.gatsbyImageData;
+
+// Get start and end dates from the first date entry (with fallback like original)
+const dateEntry = field_event_date_s_?.[0];
+const start = dateEntry?.value;
+const end = dateEntry?.end_value;
+
+// Get event type
+const type = relationships?.field_event_type?.name;
+const isAnExhibit = EXHIBIT_TYPES.includes(type);
+
+// Format when and where
+const when = start && end ? eventFormatWhen({
+  end,
+  kind: 'brief',
+  start,
+  type
+}) : 'Date TBD';
+
+const where = eventFormatWhere({
+  kind: 'brief',
+  node: event.attributes
+});
+
+// Create slug from various possible sources (Drupal path, fields.slug, or fallback)
+const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
+---
+
+<section 
+  class:list={[
+    'event-card',
+    { 'with-border': hasBorder },
+    { 'with-image': displayImage && imageData }
+  ]}
+>
+  {displayImage && imageData && (
+    <div class="event-image">
+      <!-- TODO: Implement proper image component when available -->
+      <div class="image-placeholder">Image</div>
+    </div>
+  )}
+  
+  <div class="event-content">
+    <Heading level={3} size="S" class="event-heading">
+      <a href={slug} class="event-link">
+        {title}
+      </a>
+      <span class="event-date">{when}</span>
+    </Heading>
+    
+    {body?.summary && (
+      <p class="event-summary">{body.summary}</p>
+    )}
+    
+    <div class="event-meta">
+      {where && where.length > 0 && (
+        <span class="event-location">
+          <Icon icon="address" />
+          <span class="visually-hidden">Where: </span>
+          {where.map((item) => item.label).join(', ')}
+        </span>
+      )}
+      
+      {!isAnExhibit && type && (
+        <span class="event-type">
+          <Icon icon="sell" />
+          <span class="visually-hidden">Event type: </span>
+          {type}
+        </span>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .event-card {
+    margin-top: var(--spacing-l, 1.5rem);
+    padding-bottom: var(--spacing-l, 1.5rem);
+  }
+
+  .event-card.with-border {
+    border-bottom: solid 1px var(--color-neutral-100, #f3f4f6);
+  }
+
+  @media (min-width: 1024px) {
+    .event-card.with-image {
+      display: grid;
+      grid-template-columns: 16rem 1fr;
+      gap: var(--spacing-m, 1rem);
+    }
+  }
+
+  .event-image {
+    margin-bottom: var(--spacing-m, 1rem);
+  }
+
+  @media (min-width: 1024px) {
+    .event-image {
+      margin-bottom: 0;
+    }
+  }
+
+  .image-placeholder {
+    background: var(--color-neutral-100, #f3f4f6);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 160px;
+    color: var(--color-neutral-300, #6b7280);
+  }
+
+  .event-heading {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--spacing-2xs, 0.5rem);
+  }
+
+  .event-link {
+    color: var(--color-blue-400, #1e40af);
+    text-decoration: none;
+    order: 1;
+  }
+
+  .event-link:hover {
+    text-decoration: underline;
+  }
+
+  .event-date {
+    color: var(--color-neutral-300, #6b7280);
+    font-size: 0.75rem;
+    font-weight: 400;
+    display: block;
+    margin-top: var(--spacing-3xs, 0.25rem);
+    order: 0;
+  }
+
+  .event-summary {
+    color: var(--color-neutral-300, #6b7280);
+    margin-top: var(--spacing-2xs, 0.5rem);
+    margin-bottom: 0;
+  }
+
+  .event-meta {
+    margin-top: var(--spacing-2xs, 0.5rem);
+  }
+
+  .event-location,
+  .event-type {
+    color: var(--color-neutral-300, #6b7280);
+    margin-right: var(--spacing-l, 1.5rem);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs, 0.75rem);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

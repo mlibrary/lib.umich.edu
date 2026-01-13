@@ -44,8 +44,8 @@ const largeScreenImage = fieldHeroImages.find(
 );
 
 // Simple fallback image URLs (no responsive processing for now)
-const smallImageUrl = smallScreenImage?.relationships?.field_media_image?.uri?.url || '';
-const largeImageUrl = largeScreenImage?.relationships?.field_media_image?.uri?.url || '';
+const smallImageUrl = smallScreenImage?.fileUrl || '';
+const largeImageUrl = largeScreenImage?.fileUrl || '';
 ---
 
 <div class="margins">

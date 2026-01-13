@@ -274,18 +274,67 @@ export const fetchDrupalNews = async () => {
  */
 export const fetchDrupalEvents = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  // Remove field filtering - get all fields
   const url = `${baseUrl}/jsonapi/node/events_and_exhibits?include=field_design_template,field_event_type`;
 
   let allData = [];
+  let included = [];
   let nextUrl = url;
 
   while (nextUrl) {
     const response = await fetchWithRetry(nextUrl);
     allData = allData.concat(response.data);
+    if (response.included) {
+      included = included.concat(response.included);
+    }
     nextUrl = response.links?.next?.href || null;
   }
 
-  return allData;
+  // Process relationships to match Gatsby GraphQL structure
+  const processedData = allData.map((event) => {
+    const processedEvent = { ...event };
+
+    // Process design template relationship
+    if (event.relationships?.field_design_template?.data?.id) {
+      const designTemplate = included.find((item) => {
+        return item.id === event.relationships.field_design_template.data.id;
+      }
+      );
+      if (designTemplate) {
+        processedEvent.relationships.field_design_template = designTemplate;
+      }
+    }
+
+    // Process event type relationship
+    if (event.relationships?.field_event_type?.data?.id) {
+      const eventType = included.find((item) => {
+        return item.id === event.relationships.field_event_type.data.id;
+      }
+      );
+      if (eventType) {
+        processedEvent.relationships.field_event_type = eventType;
+      }
+    }
+
+    // // Debug: Log available fields for first few events
+    // If (allData.indexOf(event) < 2) {
+    //   Console.log(`\n=== Event ${allData.indexOf(event)} Debug ===`);
+    //   Console.log('Event ID:', event.id);
+    //   Console.log('Event type:', event.type);
+    //   Console.log('Event fields:', Object.keys(event));
+    //   Console.log('Event attributes keys:', Object.keys(event.attributes || {}));
+    //   Console.log('Event attributes:', event.attributes);
+    //   Console.log('Looking for date fields containing "date":',
+    //     Object.keys(event.attributes || {}).filter((key) => {
+    //       Return key.includes('date');
+    //     }));
+    //   Console.log('=== End Event Debug ===\n');
+    // }
+
+    return processedEvent;
+  });
+
+  return processedData;
 };
 
 /**

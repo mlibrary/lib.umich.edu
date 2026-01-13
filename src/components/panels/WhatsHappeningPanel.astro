@@ -12,8 +12,8 @@
  * Sort all of them by date.
  */
 import { fetchDrupalEvents } from '../../lib/drupal.js';
-// TODO: Import EventCard when created
-// import EventCard from '../EventCard.astro';
+import Heading from '../../reusable/heading.astro';
+import EventCard from '../EventCard.astro';
 
 // Fetch events data
 let events = [];
@@ -22,70 +22,53 @@ let hasEvents = false;
 try {
   const allEvents = await fetchDrupalEvents();
   
-  // Debug: Log raw events data
-  // console.log('WhatsHappeningPanel - Raw events data:', {
-  //   allEventsCount: allEvents?.length || 0,
-  //   allEvents: allEvents,
-  //   sampleEvent: allEvents?.[0]
-  // });
-  
   // Filter priority events
   const priorityEvents = allEvents.filter(event => 
-    event.field_priority_for_homepage === true &&
+    event.attributes?.field_priority_for_homepage === true &&
     event.relationships?.field_design_template?.field_machine_name === 'event_exhibit'
   );
-  
+
   // Filter other events (no exhibits)
   const otherEvents = allEvents.filter(event => 
-    event.field_priority_for_homepage === false &&
+    event.attributes?.field_priority_for_homepage === false &&
     event.relationships?.field_design_template?.field_machine_name === 'event_exhibit' &&
     event.relationships?.field_event_type?.name !== 'Exhibit'
   );
-  
-  // Debug: Log filtered events
-  // console.log('WhatsHappeningPanel - Filtered events:', {
-  //   priorityEventsCount: priorityEvents.length,
-  //   priorityEvents,
-  //   otherEventsCount: otherEvents.length,
-  //   otherEvents
-  // });
   
   // Helper function to sort events by start date
   const sortEventsByStartDate = (eventList, onlyTodayOrAfter = true) => {
     const now = new Date();
     return eventList
       .filter(event => {
+        // Access the date from attributes, it's an array of date objects
+        const eventDateArray = event.attributes?.field_event_date_s_;
+        const eventDateValue = eventDateArray?.[0]?.value;
+        
         if (!onlyTodayOrAfter) return true;
-        const eventDate = new Date(event.field_event_date_s);
+        if (!eventDateValue) return false;
+        
+        const eventDate = new Date(eventDateValue);
         return eventDate >= now;
       })
       .sort((a, b) => {
-        const dateA = new Date(a.field_event_date_s);
-        const dateB = new Date(b.field_event_date_s);
+        const dateA = new Date(a.attributes?.field_event_date_s_?.[0]?.value);
+        const dateB = new Date(b.attributes?.field_event_date_s_?.[0]?.value);
         return dateA - dateB;
       });
   };
+
   
   // Join and sort events, keeping only today or future events
+  const allSortedEvents = sortEventsByStartDate(allEvents, true);
   const sortedPriorityEvents = sortEventsByStartDate(priorityEvents, true);
   const sortedOtherEvents = sortEventsByStartDate(otherEvents, true);
-  
+
   // Combine and take only first 3
-  const joinedEvents = [...sortedPriorityEvents, ...sortedOtherEvents];
+  const joinedEvents = [...sortedPriorityEvents, ...sortedOtherEvents, ...allSortedEvents];
   const finalSortedEvents = sortEventsByStartDate(joinedEvents, true);
   
   events = finalSortedEvents.slice(0, 3);
   hasEvents = events.length > 0;
-  
-  // Debug: Log final processed events
-  // console.log('WhatsHappeningPanel - Final processed events:', {
-  //   sortedPriorityEventsCount: sortedPriorityEvents.length,
-  //   sortedOtherEventsCount: sortedOtherEvents.length,
-  //   joinedEventsCount: joinedEvents.length,
-  //   finalEventsCount: events.length,
-  //   finalEvents: events,
-  //   hasEvents
-  // });
   
 } catch (error) {
   console.error('Error fetching events:', error);
@@ -96,7 +79,7 @@ try {
 
 <section class="whats-happening">
   <div class="margins">
-    <h2 class="whats-happening-title">What's happening?</h2>
+    <Heading level={2} size="L">What's happening?</Heading>
     
     {!hasEvents ? (
       <p class="no-events-message">
@@ -106,23 +89,11 @@ try {
       <>
         <div class="events-grid">
           {events.map((event, index) => (
-            <div class="event-card-container" key={index}>
-              <!-- TODO: Replace with EventCard component when created -->
-              <div class="event-card-placeholder">
-                <h3 class="event-title">{event.title}</h3>
-                <div class="event-date">
-                  {new Date(event.field_event_date_s).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </div>
-                {event.body?.summary && (
-                  <p class="event-summary">{event.body.summary}</p>
-                )}
-              </div>
-            </div>
+            <EventCard 
+              event={event} 
+              displayImage={false} 
+              hasBorder={false}
+            />
           ))}
         </div>
         
@@ -178,51 +149,6 @@ try {
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: var(--spacing-xl, 2rem) var(--spacing-m, 1rem);
     }
-  }
-
-  .event-card-container {
-    margin-bottom: var(--spacing-l, 1.5rem);
-  }
-
-  @media (min-width: 641px) {
-    .event-card-container {
-      margin-bottom: 0;
-    }
-  }
-
-  /* Placeholder styles for EventCard - remove when EventCard component is ready */
-  .event-card-placeholder {
-    background: white;
-    border: 1px solid var(--color-neutral-200, #e5e7eb);
-    border-radius: 8px;
-    padding: var(--spacing-m, 1rem);
-    transition: box-shadow 0.2s ease;
-  }
-
-  .event-card-placeholder:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .event-title {
-    color: var(--color-blue-400, #1e40af);
-    font-size: 1.125rem;
-    font-weight: 600;
-    line-height: 1.4;
-    margin: 0 0 var(--spacing-xs, 0.5rem) 0;
-  }
-
-  .event-date {
-    color: var(--color-indigo-300, #a78bfa);
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: var(--spacing-xs, 0.5rem);
-  }
-
-  .event-summary {
-    color: var(--color-neutral-300, #6b7280);
-    font-size: 0.875rem;
-    line-height: 1.5;
-    margin: 0;
   }
 
   .view-all-link {
