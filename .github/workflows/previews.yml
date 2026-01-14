@@ -10,6 +10,9 @@ jobs:
   build:
     # Operating system to run job on
     runs-on: ubuntu-latest
+    # Permissions for the GITHUB_TOKEN and LouisBrunner/checks-action
+    permissions:
+      issues: write
     # Stops previous workflow runs in the event of multiple pushes to a PR
     concurrency:
       group: previews-group
