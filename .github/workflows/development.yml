@@ -21,7 +21,7 @@ jobs:
     steps:
       # Get code from repo
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: get short sha
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
