@@ -21,19 +21,20 @@ jobs:
     steps:
       # Get code from repo
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: get short sha
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
           echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
           echo "DEPLOY_URL=https://deploy-preview-$SHORT_SHA--future-wwwlib-development.netlify.app" >> $GITHUB_ENV
       # Install NodeJS
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Install latest LTS version of Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: 20.x
-      # Run npm install and build on our code
-      - run: npm install
+          node-version: lts/*
+          check-latest: true
+      # Run npm ci (clean-install) and build on our code
+      - run: npm ci
       - run: npm run build
       # Deploy to Netlify using our staging secrets
       - name: Deploy to netlify

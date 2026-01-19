@@ -222,7 +222,7 @@ export default function EventsAndExhibitsPanel () {
           </Heading>
           We offer workshops on a range of topics. See our
           {' '}
-          <Link to='https://ttc.iss.lsa.umich.edu/ttc/sessions/upcoming/sponsor/university-library/'>
+          <Link to='https://ttc.iss.lsa.umich.edu/ttc/sessions/upcoming/sponsor/um-library/'>
             list of current offerings
           </Link>
           . U-M authentication is required to register.
