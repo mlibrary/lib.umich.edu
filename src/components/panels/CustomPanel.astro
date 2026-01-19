@@ -17,14 +17,7 @@ const { data } = Astro.props;
 // Fetch news data if this is a featured_and_latest_news panel
 let newsData = null;
 if (data.field_machine_name === "featured_and_latest_news") {
-  console.log('CustomPanel: Fetching news data for featured_and_latest_news panel...');
   newsData = await fetchNewsDataForHomepage();
-  console.log('CustomPanel: News data fetched:', {
-    featuredCount: newsData?.featuredNews?.edges?.length || 0,
-    priorityCount: newsData?.priorityNews?.edges?.length || 0,
-    recentCount: newsData?.recentNews?.edges?.length || 0,
-    newsLandingSlug: newsData?.newsLandingSlug
-  });
 }
 ---
 {data.field_machine_name == "featured_and_latest_news" && newsData && (

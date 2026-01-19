@@ -60,7 +60,6 @@ const toEdges = <T,>(input?: Edges<T>): Array<Edge<T>> => {
 const featured = toEdges<NewsNode>(featuredNews);
 const priority = toEdges<NewsNode>(priorityNews);
 const recent = toEdges<NewsNode>(recentNews);
-console.log('FeaturedAndLatestNews - featured:', featured.length, 'priority:', priority.length, 'recent:', recent.length);
 
 const processNewsNodeForCard = (newsNode: NewsNode) => {
 	// Handle both the original Gatsby image structure and our new processed structure

@@ -48,11 +48,13 @@ const anchorStyles = Object.entries(anchorStyleAddition)
         </div>
       )}
       <div class="card-content">
-        <HeadingTag class="card-title">{title}</HeadingTag>
-        {subtitle && <div class="card-subtitle">{subtitle}</div>}
-        <div class="card-body">
+        <HeadingTag>
+          {subtitle && <span class="card-subtitle">{subtitle}</span>}
+          <span class="card-title" data-card-title>{title}</span>
+        </HeadingTag>
+        <p class="card-body">
           <slot />
-        </div>
+        </p>
       </div>
     </a>
   ) : (
@@ -64,16 +66,17 @@ const anchorStyles = Object.entries(anchorStyleAddition)
         </div>
       )}
       <div class="card-content">
-        <HeadingTag class="card-title">{title}</HeadingTag>
-        {subtitle && <div class="card-subtitle">{subtitle}</div>}
-        <div class="card-body">
+        <HeadingTag>
+          {subtitle && <span class="card-subtitle">{subtitle}</span>}
+          <span class="card-title" data-card-title>{title}</span>
+        </HeadingTag>
+        <p class="card-body">
           <slot />
-        </div>
+        </p>
       </div>
     </Fragment>
   )}
 </div>
----
 
 <style>
   .card {
@@ -99,6 +102,15 @@ const anchorStyles = Object.entries(anchorStyleAddition)
     flex-direction: column;
   }
 
+  .card-link:hover [data-card-title] {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  /* Also handle cases where the card is wrapped by an external link */
+  :global(a:hover) [data-card-title] {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
   .card-image {
     aspect-ratio: 16 / 9;
     overflow: hidden;
@@ -117,30 +129,31 @@ const anchorStyles = Object.entries(anchorStyleAddition)
     flex-direction: column;
   }
 
-  .card-title {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--color-blue-400, #1e40af);
-    line-height: 1.4;
-  }
-
   .card-subtitle {
     color: var(--color-neutral-300, #6b7280);
     font-size: 0.875rem;
-    margin-bottom: 0.5rem;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .card-title {
+    font-size: 1.125rem;
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    font-weight: 600;
+    color: var(--color-neutral-400);
+    line-height: 1.4;
   }
 
   .card-body {
-    color: var(--color-neutral-300, #6b7280);
-    font-size: 0.875rem;
-    flex: 1;
+    color: var(--color-neutral-300);
+    display: inline-block;
+    margin-top: 0.5rem;
   }
 
   /* Responsive typography */
   @media (min-width: 768px) {
     .card-title {
-      font-size: 1.25rem;
+      font-size: 1.125rem;
     }
   }
 </style>

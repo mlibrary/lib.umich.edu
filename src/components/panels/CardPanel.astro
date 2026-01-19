@@ -81,7 +81,7 @@ if (template === 'destination_hor_card_template') {
                 class="highlights-card"
                 style={`grid-column: span ${columnGaps[index]}; ${index === 2 ? 'grid-row: span 2;' : ''}`}
               >
-                <a href={getCardHref(card)}>
+                <a class="highlights-card-link" href={getCardHref(card)}>
                   <Card
                     title={card.title}
                     subtitle={getCardSubtitle(card)}
@@ -244,6 +244,12 @@ if (template === 'destination_hor_card_template') {
     border-radius: 8px;
     margin-bottom: var(--spacing-l, 1.5rem);
     min-height: 0;
+  }
+
+  .highlights-card-link {
+    display: block;
+    height: 100%;
+    text-decoration: none;
   }
 
   @media (min-width: 1129px) {

@@ -67,10 +67,10 @@ const { label = "Search this site" } = Astro.props;
               ></strong>
             </span>
             <span class="no-results-suggestion">
-              Try <a
-                href="https://search.lib.umich.edu/everything?utm_source=lib-site-search"
-                target="_blank"
-                rel="noopener">Library Search</a
+              Try 
+              <a href="https://search.lib.umich.edu/everything?utm_source=lib-site-search">
+                Library Search
+              </a
               > for books, articles, and more.
             </span>
           </p>
@@ -384,11 +384,19 @@ const { label = "Search this site" } = Astro.props;
     }
 
     async waitForLunr() {
+      console.log('Waiting for lunr index...');
       // Wait for the lunr index to be loaded
+      let attempts = 0;
       while (!window.__LUNR__ || !window.__LUNR__.en) {
         await new Promise((resolve) => setTimeout(resolve, 100));
+        attempts++;
+        if (attempts > 100) { // 10 seconds timeout
+          console.error('Lunr index failed to load after 10 seconds');
+          return;
+        }
       }
       this.lunrIndex = window.__LUNR__.en;
+      console.log('Lunr index loaded:', this.lunrIndex);
     }
 
     setupEventListeners() {
@@ -436,6 +444,7 @@ const { label = "Search this site" } = Astro.props;
 
     async handleSearch(query) {
       const cleanQuery = this.cleanQueryForLunr(query.trim());
+      console.log('Searching for:', cleanQuery);
       this.currentQuery = cleanQuery;
 
       // If query changes, allow results to open again
@@ -486,6 +495,7 @@ const { label = "Search this site" } = Astro.props;
           };
         });
 
+        console.log('Search results:', this.searchResults);
         this.displayResults();
         this.clearError();
 
@@ -566,14 +576,9 @@ const { label = "Search this site" } = Astro.props;
             target="_blank"
             rel="noopener"
           >
-            <Icon
-                icon='search'
-                size={14}
-                css={{
-                    marginRight: SPACING['2XS'],
-                    marginTop: '-2px'
-                }}
-            />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="library-search-icon">
+              <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
             <p class="library-search-query">
               <span class="visually-hidden">Search: </span>
               ${this.escapeHtml(this.currentQuery)}

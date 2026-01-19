@@ -130,7 +130,6 @@ export const fetchNewsDataForHomepage = async () => {
   } = await import('./drupal.js');
 
   try {
-    console.log('news-data: Starting to fetch news data...');
     const [featuredResponse, priorityResponse, recentResponse, newsLandingSlug] = await Promise.all([
       fetchFeaturedNews(),
       fetchPriorityNews(),
@@ -138,25 +137,12 @@ export const fetchNewsDataForHomepage = async () => {
       fetchNewsLandingPageSlug()
     ]);
 
-    console.log('news-data: Raw responses:', {
-      featured: featuredResponse.data.length,
-      priority: priorityResponse.data.length,
-      recent: recentResponse.data.length,
-      newsLanding: newsLandingSlug
-    });
-
     const result = {
       featuredNews: convertToEdgesFormat(featuredResponse),
       priorityNews: convertToEdgesFormat(priorityResponse),
       recentNews: convertToEdgesFormat(recentResponse),
       newsLandingSlug
     };
-
-    console.log('news-data: Processed data:', {
-      featuredCount: result.featuredNews.edges.length,
-      priorityCount: result.priorityNews.edges.length,
-      recentCount: result.recentNews.edges.length
-    });
 
     return result;
   } catch (error) {

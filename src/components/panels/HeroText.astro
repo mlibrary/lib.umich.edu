@@ -136,12 +136,21 @@ const largeImageUrl = largeScreenImage?.fileUrl || '';
     display: inline-block;
     font-size: 1.25rem;
     width: auto;
-    margin-bottom: 1rem;
+    max-width: 38rem;
   }
 
   .hero-link {
     font-size: 1.25rem;
     margin-top: 1rem;
+  }
+
+  .hero-link a{
+    text-decoration-color: var(--color-maize-400);
+    text-decoration-thickness: 2px;
+  }
+
+  .hero-link a:hover{
+    text-decoration-thickness: 4px;
   }
 
   .hero-link-button {
