@@ -26,7 +26,6 @@ const {
 } = Astro.props;
 
 const HeadingTag = `h${headingLevel}` as keyof HTMLElementTagNameMap;
-const isExternal = href?.startsWith('http');
 const anchorStyles = Object.entries(anchorStyleAddition)
   .map(([key, value]) => `${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value}`)
   .join('; ');
@@ -38,8 +37,6 @@ const anchorStyles = Object.entries(anchorStyleAddition)
       href={href} 
       class="card-link"
       style={anchorStyles}
-      target={isExternal ? '_blank' : undefined}
-      rel={isExternal ? 'noopener noreferrer' : undefined}
     >
       {image && (
         <div class="card-image">

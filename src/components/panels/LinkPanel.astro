@@ -51,14 +51,11 @@ const hasTopBorder = data.field_border === 'yes';
     <ol class="bulleted-list">
       {links.map((link: any) => {
         const linkData = getLinkData(link);
-        const isExternal = linkData.to && !linkData.to.startsWith('/');
         return (
           <li>
             <a 
               href={linkData.to} 
               class="link-default"
-              target={isExternal ? '_blank' : undefined}
-              rel={isExternal ? 'noopener noreferrer' : undefined}
             >
               {linkData.text}
             </a>
@@ -71,8 +68,6 @@ const hasTopBorder = data.field_border === 'yes';
       <a 
         href={moreLink.to} 
         class="link-default"
-        target={!moreLink.to.startsWith('/') ? '_blank' : undefined}
-        rel={!moreLink.to.startsWith('/') ? 'noopener noreferrer' : undefined}
       >
         {moreLink.text}
       </a>
@@ -89,8 +84,6 @@ const hasTopBorder = data.field_border === 'yes';
           <a 
             href={link.uri} 
             class="db-link"
-            target={!link.uri.startsWith('/') ? '_blank' : undefined}
-            rel={!link.uri.startsWith('/') ? 'noopener noreferrer' : undefined}
           >
             <span class="db-link-text">{link.title}</span>
           </a>
@@ -102,8 +95,6 @@ const hasTopBorder = data.field_border === 'yes';
       <a 
         href={data.field_view_all.uri} 
         class="link-default view-all-link"
-        target={!data.field_view_all.uri.startsWith('/') ? '_blank' : undefined}
-        rel={!data.field_view_all.uri.startsWith('/') ? 'noopener noreferrer' : undefined}
       >
         {data.field_view_all.title}
       </a>
@@ -122,8 +113,6 @@ const hasTopBorder = data.field_border === 'yes';
             <a 
               href={linkData.to} 
               class="fancy-link"
-              target={isExternal ? '_blank' : undefined}
-              rel={isExternal ? 'noopener noreferrer' : undefined}
             >
               <span class="fancy-link-icon">
                 <Icon icon="insert_link" size={24} />
@@ -186,13 +175,6 @@ const hasTopBorder = data.field_border === 'yes';
 
   .link-list:hover {
     box-shadow: inset 0 -1px var(--color-neutral-400);
-  }
-
-  /* Bulleted Link List styles */
-  .bulleted-link-list {
-      border: none;
-      border-right: solid 1px var(--color-neutral-100);
-      padding-right: 3rem;
   }
 
   .bulleted-link-list.has-top-border {
@@ -312,10 +294,19 @@ const hasTopBorder = data.field_border === 'yes';
     flex: 1;
   }
 
-  /* Media queries (from MEDIA_QUERIES) */
-  @media only screen and (min-width: 641px) {
-    .bulleted-link-list {
-      margin-bottom: var(--spacing-xl);
+
+  @media only screen and (min-width: 920px) {
+      .panel-group-50-container >*:not(:last-child) {
+          border: none;
+          border-right: solid 1px var(--color-neutral-100);
+          padding-right: 3rem;
+      }
+  }
+
+  @media only screen and (min-width: 920px) {
+    .panel-group-50-container >* {
+        margin-bottom: 2.5rem;
+        padding-bottom: 2.5rem;
     }
   }
 </style>
