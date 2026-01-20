@@ -1,9 +1,9 @@
 ---
 /**
- * HoursLitePanel - Lightweight hours display
- * Recreated from Gatsby hours-lite-panel.js
+ * HoursLitePanel - Homepage - Lightweight hours display
  */
 import PanelTemplate from './PanelTemplate.astro';
+import Icon from '../Icon.astro';
 
 interface Props {
   data: any; 
@@ -58,6 +58,179 @@ const processedCards = cards.map(cardRef => {
 }).filter(Boolean);
 
 const processedHours = processHoursData(processedCards, included);
+
+// Prepare location data for client-side hours calculation
+const locationDataForClient = processedCards.map(card => {
+  // Find the actual card node in included data to get full relationship structure
+  const fullCardNode = included?.find(item => item.id === card.id);
+  
+  // Create the node structure expected by the hours utility
+  const nodeForHours = {
+    id: card.id,
+    title: card.title,
+    field_display_hours_: true,
+    // Determine if hours are different from building
+    field_hours_different_from_build: fullCardNode?.relationships?.field_hours_open ? true : false,
+    relationships: {}
+  };
+
+  // Map the relationships correctly
+  if (fullCardNode?.relationships) {
+    // Direct hours relationship
+    if (fullCardNode.relationships.field_hours_open?.data) {
+      nodeForHours.relationships.field_hours_open = Array.isArray(fullCardNode.relationships.field_hours_open.data) 
+        ? fullCardNode.relationships.field_hours_open.data.map(ref => {
+            const hoursEntity = included?.find(item => item.id === ref.id);
+            if (!hoursEntity) return ref;
+            
+            // Map the hours entity properly for the hours utility
+            return {
+              __typename: hoursEntity.type,
+              ...hoursEntity.attributes,
+              // Ensure all the fields the utility expects are available
+              id: hoursEntity.id,
+              type: hoursEntity.type
+            };
+          })
+        : [(() => {
+            const hoursEntity = included?.find(item => item.id === fullCardNode.relationships.field_hours_open.data.id);
+            if (!hoursEntity) return fullCardNode.relationships.field_hours_open.data;
+            
+            return {
+              __typename: hoursEntity.type,
+              ...hoursEntity.attributes,
+              id: hoursEntity.id,
+              type: hoursEntity.type
+            };
+          })()];
+    }
+
+    // Parent location relationship
+    if (fullCardNode.relationships.field_parent_location?.data) {
+      const parentLocationId = fullCardNode.relationships.field_parent_location.data.id;
+      const parentLocationEntity = included?.find(item => item.id === parentLocationId);
+      if (parentLocationEntity) {
+        nodeForHours.relationships.field_parent_location = {
+          ...parentLocationEntity.attributes,
+          field_display_hours_: parentLocationEntity.attributes?.field_display_hours_ || false,
+          relationships: {}
+        };
+        
+        // Parent location's hours
+        if (parentLocationEntity.relationships?.field_hours_open?.data) {
+          nodeForHours.relationships.field_parent_location.relationships.field_hours_open = 
+            Array.isArray(parentLocationEntity.relationships.field_hours_open.data)
+              ? parentLocationEntity.relationships.field_hours_open.data.map(ref => {
+                  const hoursEntity = included?.find(item => item.id === ref.id);
+                  if (!hoursEntity) return ref;
+                  
+                  return {
+                    __typename: hoursEntity.type,
+                    ...hoursEntity.attributes,
+                    id: hoursEntity.id,
+                    type: hoursEntity.type
+                  };
+                })
+              : [(() => {
+                  const hoursEntity = included?.find(item => item.id === parentLocationEntity.relationships.field_hours_open.data.id);
+                  if (!hoursEntity) return parentLocationEntity.relationships.field_hours_open.data;
+                  
+                  return {
+                    __typename: hoursEntity.type,
+                    ...hoursEntity.attributes,
+                    id: hoursEntity.id,
+                    type: hoursEntity.type
+                  };
+                })()];
+        }
+      }
+    }
+
+    // Room building relationship
+    if (fullCardNode.relationships.field_room_building?.data) {
+      const buildingId = fullCardNode.relationships.field_room_building.data.id;
+      const buildingEntity = included?.find(item => item.id === buildingId);
+      if (buildingEntity) {
+        nodeForHours.relationships.field_room_building = {
+          ...buildingEntity.attributes,
+          field_display_hours_: buildingEntity.attributes?.field_display_hours_ || false,
+          relationships: {}
+        };
+        
+        // Building's hours
+        if (buildingEntity.relationships?.field_hours_open?.data) {
+          nodeForHours.relationships.field_room_building.relationships.field_hours_open = 
+            Array.isArray(buildingEntity.relationships.field_hours_open.data)
+              ? buildingEntity.relationships.field_hours_open.data.map(ref => {
+                  const hoursEntity = included?.find(item => item.id === ref.id);
+                  if (!hoursEntity) return ref;
+                  
+                  return {
+                    __typename: hoursEntity.type,
+                    ...hoursEntity.attributes,
+                    id: hoursEntity.id,
+                    type: hoursEntity.type
+                  };
+                })
+              : [(() => {
+                  const hoursEntity = included?.find(item => item.id === buildingEntity.relationships.field_hours_open.data.id);
+                  if (!hoursEntity) return buildingEntity.relationships.field_hours_open.data;
+                  
+                  return {
+                    __typename: hoursEntity.type,
+                    ...hoursEntity.attributes,
+                    id: hoursEntity.id,
+                    type: hoursEntity.type
+                  };
+                })()];
+        }
+
+        // Building's parent location
+        if (buildingEntity.relationships?.field_parent_location?.data) {
+          const buildingParentId = buildingEntity.relationships.field_parent_location.data.id;
+          const buildingParentEntity = included?.find(item => item.id === buildingParentId);
+          if (buildingParentEntity) {
+            nodeForHours.relationships.field_room_building.relationships.field_parent_location = {
+              ...buildingParentEntity.attributes,
+              field_display_hours_: buildingParentEntity.attributes?.field_display_hours_ || false,
+              relationships: {}
+            };
+
+            // Building parent's hours
+            if (buildingParentEntity.relationships?.field_hours_open?.data) {
+              nodeForHours.relationships.field_room_building.relationships.field_parent_location.relationships.field_hours_open = 
+                Array.isArray(buildingParentEntity.relationships.field_hours_open.data)
+                  ? buildingParentEntity.relationships.field_hours_open.data.map(ref => {
+                      const hoursEntity = included?.find(item => item.id === ref.id);
+                      if (!hoursEntity) return ref;
+                      
+                      return {
+                        __typename: hoursEntity.type,
+                        ...hoursEntity.attributes,
+                        id: hoursEntity.id,
+                        type: hoursEntity.type
+                      };
+                    })
+                  : [(() => {
+                      const hoursEntity = included?.find(item => item.id === buildingParentEntity.relationships.field_hours_open.data.id);
+                      if (!hoursEntity) return buildingParentEntity.relationships.field_hours_open.data;
+                      
+                      return {
+                        __typename: hoursEntity.type,
+                        ...hoursEntity.attributes,
+                        id: hoursEntity.id,
+                        type: hoursEntity.type
+                      };
+                    })()];
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return nodeForHours;
+});
 ---
 
 <PanelTemplate title={data.field_title}>
@@ -67,15 +240,13 @@ const processedHours = processHoursData(processedCards, included);
         <p>Hours information is currently unavailable.</p>
       </div>
     ) : (
-      <ol class="hours-list">
-        {processedHours.map((hour) => (
-          <li class="hours-item" key={hour.to}>
-            <span class="hours-icon">
-              ⏰
-            </span>
+      <ol class="hours-list" data-hours-list>
+        {processedHours.map((hour, index) => (
+          <li class="hours-item" key={hour.to} data-location-index={index}>
+            <Icon icon="access_time" />
             <a href={hour.to} class="hours-link">
               <span class="location-name">{hour.text}</span>
-              <span class="hours-text">
+              <span class="hours-text" data-hours-text>
                 {hour.subText}
               </span>
             </a>
@@ -89,6 +260,60 @@ const processedHours = processHoursData(processedCards, included);
       </ol>
     )}
   </div>
+
+  <script type="module" define:vars={{ locationDataForClient }}>
+    // Client-side hours update logic
+    async function updateHoursDisplay() {
+      const hoursList = document.querySelector('[data-hours-list]');
+      if (!hoursList) return;
+      
+      try {
+        const hoursModule = await import('/src/utils/hours.js');
+        const { displayHours, getHoursFromNode, findHoursSetByNodeForNow } = hoursModule;
+        
+        // Get current time in Eastern timezone (same as original Gatsby component)
+        const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+        
+        locationDataForClient.forEach((node, index) => {
+          const locationItem = hoursList.querySelector(`[data-location-index="${index}"]`);
+          const hoursText = locationItem?.querySelector('[data-hours-text]');
+          
+          if (!hoursText || !node) return;
+          
+          const hoursFromNode = getHoursFromNode({ node });
+          
+          if (hoursFromNode) {
+            const hoursSet = findHoursSetByNodeForNow({ node, now });
+            
+            if (hoursSet) {
+              const hoursData = displayHours({ node, now });
+              
+              if (hoursData) {
+                const { text } = hoursData;
+                hoursText.textContent = `TODAY: ${text}`;
+              } else {
+                hoursText.textContent = 'TODAY: Hours not available';
+              }
+            } else {
+              hoursText.textContent = 'TODAY: Hours not available';
+            }
+          } else {
+            hoursText.textContent = 'TODAY: Hours not available';
+          }
+        });
+        
+      } catch (error) {
+        console.error('Error in updateHoursDisplay:', error);
+      }
+    }
+
+    // Update hours when the page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateHoursDisplay);
+    } else {
+      updateHoursDisplay();
+    }
+  </script>
 </PanelTemplate>
 
 <style>
@@ -115,14 +340,6 @@ const processedHours = processHoursData(processedCards, included);
     display: flex;
     align-items: flex-start;
     margin-bottom: 1rem;
-  }
-
-  .hours-icon {
-    color: var(--color-indigo-300, #6366f1);
-    display: inline-block;
-    flex-shrink: 0;
-    width: 1.5rem;
-    font-size: 1rem;
   }
 
   .hours-link {
