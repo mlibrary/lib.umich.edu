@@ -7,9 +7,8 @@ import Layout from '../layouts/Layout.astro';
 import Panels from '../components/panels/Panels.astro';
 
 const { node } = Astro.props;
-const { title, relationships } = node;
+const { title, relationships, included } = node;
 const panels = relationships?.field_panels || [];
-//console.log('Home page panels:', panels[0].relationships.field_hero_template);
 ---
 
 <Layout title={title}>
@@ -23,5 +22,5 @@ const panels = relationships?.field_panels || [];
     ))}
   </div> -->
   
-  <Panels data={panels} />
+  <Panels data={panels} included={included || []} />
 </Layout>

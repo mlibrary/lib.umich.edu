@@ -229,7 +229,9 @@ export const processDrupalNode = (node, included = []) => {
     // Add common computed fields
     slug: node.attributes.path?.alias || `/${node.attributes.drupal_internal__nid}`,
     title: node.attributes.title,
-    drupal_internal__nid: node.attributes.drupal_internal__nid
+    drupal_internal__nid: node.attributes.drupal_internal__nid,
+    // Preserve included data for components that need it
+    included: included
   };
 };
 

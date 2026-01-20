@@ -1,27 +1,181 @@
 ---
 /**
  * HoursLitePanel - Lightweight hours display
- * Converted from src/components/panels/hours-lite-panel.js
+ * Recreated from Gatsby hours-lite-panel.js
  */
 import PanelTemplate from './PanelTemplate.astro';
 
 interface Props {
-  data: any;
+  data: any; 
+  included?: any[]; 
 }
 
-const { data } = Astro.props;
+const { data, included = [] } = Astro.props;
+
+const processHoursData = (cards, included) => {
+  if (!cards || cards.length === 0) {
+    return [];
+  }
+
+  return cards.map((node) => {
+    return {
+      isOpen: false, // Will be updated by client-side code
+      subLabel: 'TODAY: Loading hours...',
+      subText: 'TODAY: Loading hours...',
+      text: node.title,
+      to: node.fields.slug,
+      node: node
+    };
+  }).filter(Boolean);
+};
+
+const hoursPanel = included?.find(item => 
+  item.type === 'paragraph--hours_panel_lite' && 
+  item.relationships?.field_cards?.data?.length > 0
+);
+
+let cards = [];
+
+if (hoursPanel?.relationships?.field_cards?.data) {
+  cards = Array.isArray(hoursPanel.relationships.field_cards.data) ? hoursPanel.relationships.field_cards.data : [hoursPanel.relationships.field_cards.data];
+} else if (data.relationships?.field_cards?.data) {
+  cards = Array.isArray(data.relationships.field_cards.data) ? data.relationships.field_cards.data : [data.relationships.field_cards.data];
+}
+
+const processedCards = cards.map(cardRef => {
+  const cardNode = included?.find(item => item.id === cardRef.id);
+  if (!cardNode) return null;
+  
+  return {
+    id: cardNode.id,
+    title: cardNode.attributes?.field_title || cardNode.attributes?.title,
+    fields: {
+      slug: `/locations-and-hours/${cardNode.attributes?.field_slug || cardNode.attributes?.title?.toLowerCase().replace(/\s+/g, '-') || 'location'}`
+    },
+    attributes: cardNode.attributes,
+    relationships: cardNode.relationships
+  };
+}).filter(Boolean);
+
+const processedHours = processHoursData(processedCards, included);
 ---
 
 <PanelTemplate title={data.field_title}>
-  <div class="hours-lite-panel-placeholder">
-    <p><strong>HoursLitePanel (TODO)</strong></p>
+  <div class="hours-lite-panel">
+    {processedHours.length === 0 ? (
+      <div class="no-hours">
+        <p>Hours information is currently unavailable.</p>
+      </div>
+    ) : (
+      <ol class="hours-list">
+        {processedHours.map((hour) => (
+          <li class="hours-item" key={hour.to}>
+            <span class="hours-icon">
+              ⏰
+            </span>
+            <a href={hour.to} class="hours-link">
+              <span class="location-name">{hour.text}</span>
+              <span class="hours-text">
+                {hour.subText}
+              </span>
+            </a>
+          </li>
+        ))}
+        <li class="view-all-item">
+          <a href="/locations-and-hours/hours-view" class="view-all-link">
+            View all hours, locations, and access details
+          </a>
+        </li>
+      </ol>
+    )}
   </div>
 </PanelTemplate>
 
 <style>
-  .hours-lite-panel-placeholder {
+  .hours-lite-panel {
+    margin: 1rem 0;
+  }
+
+  .no-hours {
     padding: 1rem;
     background: var(--color-neutral-50, #f9f9f9);
-    border: 1px dashed var(--color-neutral-300, #ccc);
+    border: 1px solid var(--color-neutral-200, #e5e5e5);
+    border-radius: 4px;
+    text-align: center;
+    color: var(--color-neutral-600, #666);
+  }
+
+  .hours-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+  }
+
+  .hours-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .hours-icon {
+    color: var(--color-indigo-300, #6366f1);
+    display: inline-block;
+    flex-shrink: 0;
+    width: 1.5rem;
+    font-size: 1rem;
+  }
+
+  .hours-link {
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+    padding-bottom: 0.5rem;
+  }
+
+  .hours-link:hover .location-name {
+    text-decoration: underline;
+  }
+
+  .location-name {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .location-name {
+      display: inline-block;
+      margin-right: 0.5rem;
+      margin-bottom: 0;
+    }
+  }
+
+  .hours-text {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-neutral-500, #6b7280);
+    margin-top: 0.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .hours-text {
+      margin-top: 0;
+    }
+  }
+
+  .view-all-item {
+    margin-top: 1rem;
+  }
+
+  .view-all-link {
+    margin-left: 1.5rem;
+    color: var(--color-teal-600, #0891b2);
+    text-decoration: underline;
+  }
+
+  .view-all-link:hover {
+    color: var(--color-teal-700, #0e7490);
   }
 </style>
