@@ -359,8 +359,6 @@ const { label = "Search this site" } = Astro.props;
   // Site Search Component functionality
   class SiteSearch {
     constructor() {
-      console.log('SiteSearch initializing...');
-      
       this.form = document.getElementById("site-search-form");
       this.input = document.getElementById("site-search-input");
       this.resultsContainer = document.getElementById(
@@ -372,12 +370,6 @@ const { label = "Search this site" } = Astro.props;
       this.searchError = document.getElementById("site-search-error");
       this.status = document.getElementById("site-search-status");
       this.queryDisplay = document.getElementById("site-search-query-display");
-
-      console.log('Elements found:', {
-        form: this.form,
-        input: this.input,
-        resultsContainer: this.resultsContainer
-      });
 
       this.currentQuery = "";
       this.searchResults = [];
@@ -393,14 +385,10 @@ const { label = "Search this site" } = Astro.props;
     }
 
     init() {
-      console.log('SiteSearch init() called');
       // Wait for lunr library to be loaded, then load the search index
       const waitForLunrLibrary = () => {
-        console.log('Checking for lunr library...', !!window.lunr);
         if (window.lunr) {
-          console.log('Lunr library found, loading search index...');
           this.waitForLunr().then(() => {
-            console.log('Search index loaded, setting up event listeners...');
             this.setupEventListeners();
           });
         } else {
@@ -411,7 +399,6 @@ const { label = "Search this site" } = Astro.props;
     }
 
     async waitForLunr() {
-      console.log('Loading search index...');
       try {
         // Load the search index directly
         const response = await fetch('/search_index.json');
@@ -419,12 +406,18 @@ const { label = "Search this site" } = Astro.props;
           throw new Error(`Failed to load search index: ${response.status}`);
         }
         const searchData = await response.json();
-        console.log('Search data loaded:', Object.keys(searchData).slice(0, 5)); // Show first 5 keys
         
         // Check if this is a pre-built lunr index or raw data
-        if (searchData.index && searchData.store) {
+        if (searchData.en && searchData.en.index && searchData.en.store) {
+          // This is a lunr index structure (Gatsby format)
+          if (window.lunr) {
+            this.lunrIndex = {
+              index: window.lunr.Index.load(searchData.en.index),
+              store: searchData.en.store
+            };
+          }
+        } else if (searchData.index && searchData.store) {
           // This is a lunr index structure
-          console.log('Found lunr index structure');
           if (window.lunr) {
             this.lunrIndex = {
               index: window.lunr.Index.load(searchData.index),
@@ -433,7 +426,6 @@ const { label = "Search this site" } = Astro.props;
           }
         } else {
           // This appears to be raw page data, create a lunr index
-          console.log('Creating lunr index from page data...');
           if (window.lunr) {
             const pages = Object.entries(searchData).map(([key, value]) => ({
               id: key,
@@ -465,29 +457,15 @@ const { label = "Search this site" } = Astro.props;
               index: idx,
               store: store
             };
-            console.log('Lunr index created successfully', {
-              totalPages: pages.length,
-              samplePages: pages.slice(0, 3),
-              sampleStore: Object.keys(store).slice(0, 3).map(key => ({
-                key,
-                title: store[key].title,
-                summary: store[key].summary?.substring(0, 100) + '...'
-              }))
-            });
           }
         }
-        
-        if (!this.lunrIndex) {
-          console.error('Failed to create lunr index');
-        }
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Failed to load search index:', error);
       }
     }
 
     setupEventListeners() {
-      console.log('Setting up event listeners...');
-      
       // Handle search input (live search as user types)
       this.input.addEventListener("input", (e) => {
         this.handleSearch(e.target.value);
@@ -504,7 +482,6 @@ const { label = "Search this site" } = Astro.props;
 
       // Prevent form submission (don't do anything else on enter)
       this.form.addEventListener("submit", (e) => {
-        console.log('Form submit prevented');
         e.preventDefault();
       });
 
@@ -577,8 +554,6 @@ const { label = "Search this site" } = Astro.props;
           }
         });
 
-        console.log('Mapped search results:', this.searchResults);
-
         // Map results to include page data
         this.searchResults = searchResults.map(({ ref }) => {
           const pageData = this.lunrIndex.store[ref];
@@ -586,21 +561,9 @@ const { label = "Search this site" } = Astro.props;
           const slug = ref.split(' /')[1];
           return {
             ...pageData,
-            slug: slug,
-            ref: ref // Keep ref for debugging
+            slug: slug
           };
         }).filter(result => result && result.slug); // Filter out results without valid slugs
-
-        console.log('Search completed:', {
-          query: cleanQuery,
-          rawResultsCount: searchResults.length,
-          mappedResultsCount: this.searchResults.length,
-          firstFewResults: this.searchResults.slice(0, 3).map(r => ({
-            title: r.title,
-            slug: r.slug,
-            ref: r.ref
-          }))
-        });
 
         this.displayResults();
         this.clearError();
@@ -621,19 +584,10 @@ const { label = "Search this site" } = Astro.props;
     }
 
     displayResults() {
-      console.log('displayResults called:', {
-        hasResults: this.searchResults.length > 0,
-        isSearching: this.currentQuery.length > 0,
-        openResults: this.openResults,
-        query: this.currentQuery,
-        resultsLength: this.searchResults.length
-      });
-      
       const hasResults = this.searchResults.length > 0;
       const isSearching = this.currentQuery.length > 0;
 
       if (!isSearching || !this.openResults) {
-        console.log('Hiding results because:', { isSearching, openResults: this.openResults });
         this.hideResults();
         return;
       }
