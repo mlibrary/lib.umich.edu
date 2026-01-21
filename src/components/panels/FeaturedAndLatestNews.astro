@@ -108,7 +108,7 @@ const viewAllNewsHref = newsLandingSlug;
 	<div class={MARGINS_CLASS}>
 		<div class="fan-grid">
 			<div class="fan-feature">
-				<Heading level={2} size="M">
+				<Heading level={2} size="M" class="fan-feature-heading">
 					Feature
 				</Heading>
 				<div class="fan-feature-inner">
@@ -124,7 +124,7 @@ const viewAllNewsHref = newsLandingSlug;
 			</div>
 
 			<div class="fan-recent">
-				<Heading level={2} size="M">
+				<Heading level={2} size="M" class="fan-recent-heading">
 					Recent news
 				</Heading>
 
@@ -145,28 +145,35 @@ const viewAllNewsHref = newsLandingSlug;
 <style>
 	.fan-grid {
 		display: grid;
-		grid-gap: 0.75rem; /* SPACING.S */
+		grid-gap: 0.75rem; 
 		grid-template-columns: [content-start] repeat(11, 1fr) 1fr [content-end];
-		margin: 3rem 0; /* SPACING["3XL"] */
+		margin: 3rem 0; 
 	}
 
 	.fan-feature {
 		grid-column: content-start / content-end;
 	}
 	.fan-feature-inner {
-		/* On small+ screens add right border & padding */
 	}
+	.fan-feature-heading{
+		margin-bottom: 1.5rem;
+	}
+
+	.fan-recent-heading {
+		margin-bottom: 1.5rem;
+	}
+
 
 	.fan-recent {
 		grid-column: content-start / content-end;
 	}
 
 	.fan-recent-list > li {
-		margin-bottom: 2rem; /* SPACING.XL */
+		margin-bottom: 2rem;
 	}
 
-	@media only screen and (min-width: 641px) { /* MEDIA_QUERIES.S */
-		.fan-grid { grid-gap: 1.5rem; /* SPACING.L */ }
+	@media only screen and (min-width: 641px) { 
+		.fan-grid { grid-gap: 1.5rem;  }
 		.fan-feature { grid-column: content-start / span 6; }
 		.fan-feature-inner { border-right: solid 1px var(--color-neutral-100); padding-right: 2rem; /* SPACING.XL */ }
 		.fan-recent { grid-column: span 6; }

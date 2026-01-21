@@ -1,8 +1,6 @@
 ---
 /**
- * Site Search Component for Astro
- * Inline search input with live results dropdown (like the original Gatsby version)
- * This is different from SiteSearchModal - this shows results in a dropdown below the input
+ * Site Search functionality and site search results popup
  */
 import Icon from "./Icon.astro";
 
@@ -12,6 +10,9 @@ interface Props {
 
 const { label = "Search this site" } = Astro.props;
 ---
+
+<!-- Client-side loading of LUNR, not NPM since it's not needed at build time -->
+<script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
 
 <div class="site-search-container">
   <form class="site-search-form" id="site-search-form">
@@ -148,15 +149,17 @@ const { label = "Search this site" } = Astro.props;
 
   /* Search popover */
   .search-popover {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
     background: white;
     border: solid 1px var(--color-neutral-100);
     border-radius: 2px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     max-height: 70vh;
-    overflow: hidden;
-    overflow-y: auto;
-    margin-top: 0.25rem;
+    overflow: hidden auto;
+    position: absolute;
+    right: 0px;
+    top: calc(44px + 0.25rem);
     width: 100%;
+    z-index: 999;
   }
 
   /* Keyboard instructions */
@@ -356,6 +359,8 @@ const { label = "Search this site" } = Astro.props;
   // Site Search Component functionality
   class SiteSearch {
     constructor() {
+      console.log('SiteSearch initializing...');
+      
       this.form = document.getElementById("site-search-form");
       this.input = document.getElementById("site-search-input");
       this.resultsContainer = document.getElementById(
@@ -368,48 +373,139 @@ const { label = "Search this site" } = Astro.props;
       this.status = document.getElementById("site-search-status");
       this.queryDisplay = document.getElementById("site-search-query-display");
 
+      console.log('Elements found:', {
+        form: this.form,
+        input: this.input,
+        resultsContainer: this.resultsContainer
+      });
+
       this.currentQuery = "";
       this.searchResults = [];
       this.lunrIndex = null;
       this.openResults = true;
 
+      if (!this.form || !this.input || !this.resultsContainer) {
+        console.error('Required elements not found');
+        return;
+      }
+
       this.init();
     }
 
     init() {
-      // Wait for lunr to be available
-      this.waitForLunr().then(() => {
-        this.setupEventListeners();
-      });
+      console.log('SiteSearch init() called');
+      // Wait for lunr library to be loaded, then load the search index
+      const waitForLunrLibrary = () => {
+        console.log('Checking for lunr library...', !!window.lunr);
+        if (window.lunr) {
+          console.log('Lunr library found, loading search index...');
+          this.waitForLunr().then(() => {
+            console.log('Search index loaded, setting up event listeners...');
+            this.setupEventListeners();
+          });
+        } else {
+          setTimeout(waitForLunrLibrary, 100);
+        }
+      };
+      waitForLunrLibrary();
     }
 
     async waitForLunr() {
-      console.log('Waiting for lunr index...');
-      // Wait for the lunr index to be loaded
-      let attempts = 0;
-      while (!window.__LUNR__ || !window.__LUNR__.en) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        attempts++;
-        if (attempts > 100) { // 10 seconds timeout
-          console.error('Lunr index failed to load after 10 seconds');
-          return;
+      console.log('Loading search index...');
+      try {
+        // Load the search index directly
+        const response = await fetch('/search_index.json');
+        if (!response.ok) {
+          throw new Error(`Failed to load search index: ${response.status}`);
         }
+        const searchData = await response.json();
+        console.log('Search data loaded:', Object.keys(searchData).slice(0, 5)); // Show first 5 keys
+        
+        // Check if this is a pre-built lunr index or raw data
+        if (searchData.index && searchData.store) {
+          // This is a lunr index structure
+          console.log('Found lunr index structure');
+          if (window.lunr) {
+            this.lunrIndex = {
+              index: window.lunr.Index.load(searchData.index),
+              store: searchData.store
+            };
+          }
+        } else {
+          // This appears to be raw page data, create a lunr index
+          console.log('Creating lunr index from page data...');
+          if (window.lunr) {
+            const pages = Object.entries(searchData).map(([key, value]) => ({
+              id: key,
+              title: value.title || '',
+              summary: value.summary || '',
+              keywords: value.keywords || '',
+              tag: value.tag || ''
+            }));
+            
+            const idx = window.lunr(function () {
+              this.ref('id');
+              this.field('title', { boost: 10 });
+              this.field('summary', { boost: 5 });
+              this.field('keywords', { boost: 3 });
+              this.field('tag');
+              
+              pages.forEach((page) => {
+                this.add(page);
+              });
+            });
+            
+            // Create a store object for looking up page data
+            const store = {};
+            pages.forEach(page => {
+              store[page.id] = searchData[page.id];
+            });
+            
+            this.lunrIndex = {
+              index: idx,
+              store: store
+            };
+            console.log('Lunr index created successfully', {
+              totalPages: pages.length,
+              samplePages: pages.slice(0, 3),
+              sampleStore: Object.keys(store).slice(0, 3).map(key => ({
+                key,
+                title: store[key].title,
+                summary: store[key].summary?.substring(0, 100) + '...'
+              }))
+            });
+          }
+        }
+        
+        if (!this.lunrIndex) {
+          console.error('Failed to create lunr index');
+        }
+      } catch (error) {
+        console.error('Failed to load search index:', error);
       }
-      this.lunrIndex = window.__LUNR__.en;
-      console.log('Lunr index loaded:', this.lunrIndex);
     }
 
     setupEventListeners() {
+      console.log('Setting up event listeners...');
+      
       // Handle search input (live search as user types)
       this.input.addEventListener("input", (e) => {
         this.handleSearch(e.target.value);
       });
 
-      // Prevent form submission
+      // Also handle keydown to show results immediately
+      this.input.addEventListener("keydown", (e) => {
+        // Don't interfere with special keys
+        if (!['Escape', 'Tab', 'Enter', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+          // Set openResults to true so results will show when input event fires
+          this.openResults = true;
+        }
+      });
+
+      // Prevent form submission (don't do anything else on enter)
       this.form.addEventListener("submit", (e) => {
+        console.log('Form submit prevented');
         e.preventDefault();
-        this.openResults = true;
-        this.displayResults();
       });
 
       // Handle escape key to hide results
@@ -439,18 +535,15 @@ const { label = "Search this site" } = Astro.props;
 
     cleanQueryForLunr(str) {
       // Remove quotation marks to prevent search errors (LIBWEB-649)
-      return str.replace(/['"]+/g, "");
+      return str.replace(/['"]+/gu, '');
     }
 
     async handleSearch(query) {
       const cleanQuery = this.cleanQueryForLunr(query.trim());
-      console.log('Searching for:', cleanQuery);
       this.currentQuery = cleanQuery;
 
-      // If query changes, allow results to open again
-      if (!this.openResults) {
-        this.openResults = true;
-      }
+      // Always allow results to open when user is actively typing
+      this.openResults = true;
 
       if (!cleanQuery) {
         this.searchResults = [];
@@ -459,43 +552,56 @@ const { label = "Search this site" } = Astro.props;
       }
 
       if (!this.lunrIndex) {
-        console.warn("Lunr index not available yet");
         return;
       }
 
       try {
-        // Perform the search with multiple query strategies (matching Gatsby version)
-        const searchResults = this.lunrIndex.index.query((queryBuilder) => {
+        // Perform the search (matching Gatsby version approach)
+        const searchResults = this.lunrIndex.index.query((queryTerm) => {
           const lunr = window.lunr;
 
           // Exact term match with highest boost
-          queryBuilder.term(lunr.tokenizer(cleanQuery), { boost: 3 });
+          queryTerm.term(lunr.tokenizer(cleanQuery), { boost: 3 });
 
           // Trailing wildcard with medium boost
-          queryBuilder.term(lunr.tokenizer(cleanQuery), {
+          queryTerm.term(lunr.tokenizer(cleanQuery), {
             boost: 2,
-            wildcard: lunr.Query.wildcard.TRAILING,
+            wildcard: lunr.Query.wildcard.TRAILING
           });
 
           // Leading and trailing wildcard for longer queries
           if (cleanQuery.length > 2) {
-            queryBuilder.term(lunr.tokenizer(cleanQuery), {
-              wildcard:
-                lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
+            queryTerm.term(lunr.tokenizer(cleanQuery), {
+              wildcard: lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
             });
           }
         });
 
-        // Map results to include page data (matching Gatsby version)
+        console.log('Mapped search results:', this.searchResults);
+
+        // Map results to include page data
         this.searchResults = searchResults.map(({ ref }) => {
           const pageData = this.lunrIndex.store[ref];
+          // Extract slug from ref (same as original Gatsby: ref.split(' /')[1])
+          const slug = ref.split(' /')[1];
           return {
             ...pageData,
-            slug: ref.split(" /")[1], // Extract slug from ref
+            slug: slug,
+            ref: ref // Keep ref for debugging
           };
+        }).filter(result => result && result.slug); // Filter out results without valid slugs
+
+        console.log('Search completed:', {
+          query: cleanQuery,
+          rawResultsCount: searchResults.length,
+          mappedResultsCount: this.searchResults.length,
+          firstFewResults: this.searchResults.slice(0, 3).map(r => ({
+            title: r.title,
+            slug: r.slug,
+            ref: r.ref
+          }))
         });
 
-        console.log('Search results:', this.searchResults);
         this.displayResults();
         this.clearError();
 
@@ -506,7 +612,6 @@ const { label = "Search this site" } = Astro.props;
           });
         }
       } catch (error) {
-        console.error("Site search error", error);
         if (error.name === "QueryParseError") {
           this.displayError(error.message);
         } else {
@@ -516,10 +621,19 @@ const { label = "Search this site" } = Astro.props;
     }
 
     displayResults() {
+      console.log('displayResults called:', {
+        hasResults: this.searchResults.length > 0,
+        isSearching: this.currentQuery.length > 0,
+        openResults: this.openResults,
+        query: this.currentQuery,
+        resultsLength: this.searchResults.length
+      });
+      
       const hasResults = this.searchResults.length > 0;
       const isSearching = this.currentQuery.length > 0;
 
       if (!isSearching || !this.openResults) {
+        console.log('Hiding results because:', { isSearching, openResults: this.openResults });
         this.hideResults();
         return;
       }
@@ -559,7 +673,6 @@ const { label = "Search this site" } = Astro.props;
         .slice(0, 100) // Limit to 100 results
         .map((result) => this.generateResultHTML(result))
         .join("");
-
       return `
         ${librarySearchOption}
         ${siteResults}
