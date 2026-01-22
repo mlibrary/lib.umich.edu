@@ -7,6 +7,7 @@
  */
 import PanelTemplate from './PanelTemplate.astro';
 import Icon from '../Icon.astro';
+import Heading from '../../reusable/heading.astro';
 
 interface Props {
   data: any;
@@ -47,7 +48,7 @@ const hasTopBorder = data.field_border === 'yes';
 
 {fieldMachineName === 'bulleted_list' && (
   <section class={`bulleted-link-list ${hasTopBorder ? 'has-top-border' : ''}`}>
-    <h2 class="heading-m">{data.field_title}</h2>
+    <Heading level={2} style="font-size: 1.5rem; font-weight: 600; line-height: 1.25;">{data.field_title}</Heading>
     <ol class="bulleted-list">
       {links.map((link: any) => {
         const linkData = getLinkData(link);
@@ -77,7 +78,7 @@ const hasTopBorder = data.field_border === 'yes';
 
 {fieldMachineName === '2_column_db_link_list' && (
   <section class="database-link-list">
-    <h2 class="heading-m">{data.field_title}</h2>
+    <Heading level={2} style="font-size: 1.5rem; font-weight: 600; line-height: 1.25;">{data.field_title}</Heading>
     <ol class="db-links-grid">
       {links.map((link: any, index: number) => (
         <li class="db-link-item">
@@ -127,25 +128,6 @@ const hasTopBorder = data.field_border === 'yes';
 )}
 
 <style>
-  /* Base spacing and typography constants (from reusable/utils.jsx) */
-  :root {
-    --spacing-3xs: 0.125rem;
-    --spacing-2xs: 0.25rem;
-    --spacing-xs: 0.5rem;
-    --spacing-s: 0.75rem;
-    --spacing-m: 1rem;
-    --spacing-l: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 2.5rem;
-  }
-
-  /* Heading styles */
-  .heading-m {
-    font-size: 1.5rem;
-    font-weight: 600;
-    line-height: 1.25;
-    margin: 0 0 var(--spacing-m) 0;
-  }
 
   /* Link styles (from LINK_STYLES) */
   .link-default {

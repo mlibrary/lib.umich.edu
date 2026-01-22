@@ -19,7 +19,7 @@ const { label = "Search this site" } = Astro.props;
     <Icon
       icon="search"
       size={20}
-      style="fill: currentColor; vertical-align: middle; color: var(--color-neutral-300); left: 0.5rem; position: absolute;"
+      style="color: var(--color-neutral-300); left: 0.5rem; position: absolute;"
     />
     <label class="site-search-label">
       <span class="visually-hidden">
@@ -79,23 +79,49 @@ const { label = "Search this site" } = Astro.props;
       </div>
     </div>
   </form>
+
+  <!-- HTML Templates -->
+  <template id="library-search-template">
+    <li class="search-result-item">
+      <a class="library-search-option" target="_blank" rel="noopener">
+        <Icon icon="search" size={24} class="library-search-icon" />
+        <p class="library-search-query">
+          <span class="visually-hidden">Search: </span>
+          <span class="query-text"></span>
+        </p>
+        <span class="library-search-badge">Find materials</span>
+      </a>
+    </li>
+  </template>
+
+  <template id="search-result-template">
+    <li class="search-result-item">
+      <a class="search-result-link">
+        <p class="search-result-title">
+          <span class="result-title"></span>
+          <span class="search-result-tag result-tag" hidden>● <span class="tag-text"></span></span>
+        </p>
+        <p class="search-result-summary result-summary" hidden></p>
+      </a>
+    </li>
+  </template>
 </div>
 
 <style>
   /* Site search container */
   .site-search-container {
-    position: relative;
-    display: flex;
     align-items: center;
+    display: flex;
     flex-basis: 21rem;
     margin-bottom: 1rem;
+    position: relative;
   }
 
   .site-search-form {
+    align-items: center;
+    display: flex;
     flex-basis: 21rem;
     position: relative;
-    display: flex;
-    align-items: center;
   }
 
   /* Search icon */
@@ -117,14 +143,13 @@ const { label = "Search this site" } = Astro.props;
     align-items: center;
     appearance: textfield;
     background: none;
-    border: solid 1px var(--color-neutral-300);
     border-radius: 2px;
+    border: solid 1px var(--color-neutral-300);
     box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     font-family: inherit;
     font-size: 1rem;
-    padding: .5rem;
-    padding-left: calc(18px + 0.75rem);
+    padding: .5rem .5rem .5rem calc(18px + 0.75rem);
     width: 100%;
   }
 
@@ -135,7 +160,6 @@ const { label = "Search this site" } = Astro.props;
 
   .site-search-input:focus {
     outline: 2px solid var(--color-blue-400);
-    outline-offset: 1px;
   }
 
   /* Results container */
@@ -168,18 +192,17 @@ const { label = "Search this site" } = Astro.props;
     border-bottom: solid 1px var(--color-neutral-100);
     color: var(--color-neutral-300);
     padding: 0.75rem 1.5rem;
-    margin: 0;
-    font-size: 0.875rem;
   }
 
   .keyboard-instructions kbd {
-    background: var(--color-neutral-100);
+    background: white;
     border: solid 1px var(--color-neutral-200);
-    border-radius: 3px;
-    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+    display: inline-block;
     font-family: monospace;
-    font-size: 0.75rem;
-    margin: 0 0.25rem;
+    font-size: 0.85rem;
+    padding: 0 var(--spacing-2xs);
   }
 
   /* Results list */
@@ -371,12 +394,16 @@ const { label = "Search this site" } = Astro.props;
       this.status = document.getElementById("site-search-status");
       this.queryDisplay = document.getElementById("site-search-query-display");
 
+      // Template references
+      this.librarySearchTemplate = document.getElementById("library-search-template");
+      this.searchResultTemplate = document.getElementById("search-result-template");
+
       this.currentQuery = "";
       this.searchResults = [];
       this.lunrIndex = null;
       this.openResults = true;
 
-      if (!this.form || !this.input || !this.resultsContainer) {
+      if (!this.form || !this.input || !this.resultsContainer || !this.librarySearchTemplate || !this.searchResultTemplate) {
         console.error('Required elements not found');
         return;
       }
@@ -609,7 +636,7 @@ const { label = "Search this site" } = Astro.props;
 
       // Generate results HTML
       if (hasResults) {
-        this.resultsList.innerHTML = this.generateResultsHTML();
+        this.populateResults();
       } else {
         this.resultsList.innerHTML = "";
       }
@@ -621,61 +648,58 @@ const { label = "Search this site" } = Astro.props;
       this.status.textContent = "";
     }
 
-    generateResultsHTML() {
-      const librarySearchOption = this.generateLibrarySearchOption();
-      const siteResults = this.searchResults
-        .slice(0, 100) // Limit to 100 results
-        .map((result) => this.generateResultHTML(result))
-        .join("");
-      return `
-        ${librarySearchOption}
-        ${siteResults}
-      `;
+    populateResults() {
+      // Clear existing results
+      this.resultsList.innerHTML = "";
+      
+      // Add library search option
+      const librarySearchItem = this.createLibrarySearchOption();
+      this.resultsList.appendChild(librarySearchItem);
+      
+      // Add site results (limit to 100)
+      this.searchResults.slice(0, 100).forEach(result => {
+        const resultItem = this.createResultElement(result);
+        this.resultsList.appendChild(resultItem);
+      });
     }
 
-    generateLibrarySearchOption() {
+    createLibrarySearchOption() {
+      const clone = this.librarySearchTemplate.content.cloneNode(true);
+      const link = clone.querySelector('.library-search-option');
+      const queryText = clone.querySelector('.query-text');
+      
       const encodedQuery = encodeURIComponent(this.currentQuery);
-      return `
-        <li class="search-result-item">
-          <a 
-            href="https://search.lib.umich.edu/everything?query=${encodedQuery}&utm_source=lib-site-search"
-            class="library-search-option"
-            target="_blank"
-            rel="noopener"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="library-search-icon">
-              <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-            </svg>
-            <p class="library-search-query">
-              <span class="visually-hidden">Search: </span>
-              ${this.escapeHtml(this.currentQuery)}
-            </p>
-            <span class="library-search-badge">Find materials</span>
-          </a>
-        </li>
-      `;
+      link.href = `https://search.lib.umich.edu/everything?query=${encodedQuery}&utm_source=lib-site-search`;
+      queryText.textContent = this.currentQuery;
+      
+      return clone;
     }
 
-    generateResultHTML(result) {
-      const highlightedTitle = this.highlightText(
-        result.title || "",
-        this.currentQuery,
-      );
-      const highlightedSummary = result.summary
-        ? this.highlightText(result.summary, this.currentQuery)
-        : "";
-
-      return `
-        <li class="search-result-item">
-          <a href="/${result.slug}" class="search-result-link">
-            <p class="search-result-title">
-              ${highlightedTitle}
-              ${result.tag ? `<span class="search-result-tag">● ${this.escapeHtml(result.tag)}</span>` : ""}
-            </p>
-            ${highlightedSummary ? `<p class="search-result-summary">${highlightedSummary}</p>` : ""}
-          </a>
-        </li>
-      `;
+    createResultElement(result) {
+      const clone = this.searchResultTemplate.content.cloneNode(true);
+      const link = clone.querySelector('.search-result-link');
+      const titleElement = clone.querySelector('.result-title');
+      const tagElement = clone.querySelector('.result-tag');
+      const tagText = clone.querySelector('.tag-text');
+      const summaryElement = clone.querySelector('.result-summary');
+      
+      // Set link and title
+      link.href = `/${result.slug}`;
+      titleElement.innerHTML = this.highlightText(result.title || "", this.currentQuery);
+      
+      // Set tag if exists
+      if (result.tag) {
+        tagElement.hidden = false;
+        tagText.textContent = result.tag;
+      }
+      
+      // Set summary if exists
+      if (result.summary) {
+        summaryElement.hidden = false;
+        summaryElement.innerHTML = this.highlightText(result.summary, this.currentQuery);
+      }
+      
+      return clone;
     }
 
     highlightText(text, query) {

@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 /**
  * Footer Component - Converted to Astro
  * Original: src/components/footer.jsx
@@ -116,7 +117,7 @@ const links = [
           <a href="/about-us/policies/copyright-policy">Library Copyright Policy</a>.
         </p>
         <p class="fdlp">
-          <img src={fdlpImage.src} alt="" />
+          <Image src={fdlpImage} alt="Federal Depository Library Program" width={40} height={40} loading="lazy" />
           <span>Federal Depository Library Program</span>
         </p>
       </section>

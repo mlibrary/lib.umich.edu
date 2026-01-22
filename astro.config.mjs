@@ -1,5 +1,9 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  // No integrations needed
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp'
+    }
+  }
 });

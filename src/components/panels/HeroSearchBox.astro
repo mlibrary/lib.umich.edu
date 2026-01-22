@@ -81,7 +81,7 @@ const horizontalSrc = getSrcByOrientation('horizontal');
 				<figure>
 					{altText && (
 						<span class="visually-hidden">
-							<img alt={altText} />
+							<span role=\"img\" aria-label={altText}></span>
 						</span>
 					)}
 					<figcaption>

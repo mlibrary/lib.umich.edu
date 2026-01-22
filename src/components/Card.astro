@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+
 /**
  * Card Component - Reusable card with optional image, title, subtitle, and content
  * Converted from src/components/card
@@ -40,8 +42,7 @@ const anchorStyles = Object.entries(anchorStyleAddition)
     >
       {image && (
         <div class="card-image">
-          <!-- TODO: Replace with proper Image component when available -->
-          <img src={image.src || image} alt={image.alt || title} />
+          <Image src={image.src || image} alt={image.alt || title} width={400} height={300} loading="lazy" />
         </div>
       )}
       <div class="card-content">
@@ -58,8 +59,7 @@ const anchorStyles = Object.entries(anchorStyleAddition)
     <Fragment>
       {image && (
         <div class="card-image">
-          <!-- TODO: Replace with proper Image component when available -->
-          <img src={image.src || image} alt={image.alt || title} />
+          <Image src={image.src || image} alt={image.alt || title} width={400} height={300} loading="lazy" />
         </div>
       )}
       <div class="card-content">
