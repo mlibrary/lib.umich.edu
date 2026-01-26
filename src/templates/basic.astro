@@ -2,61 +2,211 @@
 /**
  * Basic Page Template
  * Converted from src/templates/basic.js
+ * 
+ * Structure matches Gatsby version:
+ * - TemplateLayout (Layout wrapper)
+ * - Margins (Container with margins)
+ * - Template (Grid layout)
+ * - Top (Breadcrumb area)
+ * - Side (Navigation sidebar)
+ * - Content (Main content area)
  */
 import Layout from '../layouts/Layout.astro';
-import PageHeader from '../components/PageHeader.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+
+// TODO: Create these components to match Gatsby structure
+// import { Template, Top, Side, Content } from '../components/PageLayout.astro';
+// import { Margins } from '../reusable/Margins.astro';
+// import { Heading } from '../reusable/heading.astro';
+// import Html from '../components/Html.astro';
+// import Panels from '../components/Panels.astro';
+// import SideNavigation from '../components/navigation/SideNavigation.astro';
+// import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+// import SmallScreen from '../reusable/SmallScreen.astro';
+
+interface Props {
+  node: any;
+  drupal_nid: string;
+  title: string;
+  breadcrumb?: string;
+  summary?: string;
+  keywords?: string;
+  tag?: string;
+  parents?: any[];
+  children?: any[];
+}
 
 const { 
   node,
-  title,
   drupal_nid,
+  title,
   breadcrumb,
   summary,
-  keywords
+  keywords,
+  tag,
+  parents,
+  children
 } = Astro.props;
 
-// Extract hero image if available
-const heroImage = node?.relationships?.field_hero_image;
+// Check if we have node data
+if (!node) {
+  throw new Error('No node data available');
+}
+
+// Extract fields (matches Gatsby destructuring)
+const {
+  field_title_context: fieldTitleContext,
+  body,
+  fields,
+  field_local_navigation: fieldLocalNavigation
+} = node;
+
+// Use the breadcrumb prop if available, otherwise generate one
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { 
+      title: fieldTitleContext || title || 'Unknown Page', 
+      slug: fields?.slug || Astro.url.pathname 
+    },
+    parents || [] // Use parents prop if available
+  );
+}
+
+// TODO: Implement these utilities
+// const { bodyPanels, fullPanels } = transformNodePanels({ node });
+// const navBranch = useNavigationBranch(fields.slug);
+// const smallScreenBranch = useNavigationBranch(fields.slug, 'small');
+// const smallScreenItems = smallScreenBranch?.children || null;
 ---
 
-<Layout title={title}>
-  <PageHeader 
-    breadcrumb={breadcrumb}
-    title={title}
-    summary={summary || node?.attributes?.body?.summary}
-    image={heroImage}
-  />
-  
-  <div class="container">
-    {node?.attributes?.body?.processed && (
-      <div class="body-content" set:html={node.attributes.body.processed} />
-    )}
+<!-- 
+  Basic Template Layout Structure (matching Gatsby)
+  TODO: Replace with actual components when they exist
+-->
+<Layout title={fieldTitleContext || title}>
+  <!-- TemplateLayout wrapper -->
+  <div class="template-layout">
+    <!-- Margins container -->
+    <div class="margins">
+      <!-- Template grid -->
+      <div class="template-grid">
+        <!-- Top section (breadcrumb) -->
+        <div class="top-section">
+          <Breadcrumb data={breadcrumbData} />
+        </div>
+        
+        <!-- Side section (navigation) -->
+        <aside class="side-section">
+          {/* TODO: SideNavigation component */}
+          {fieldLocalNavigation && (
+            <div class="side-nav-placeholder">
+              <!-- <SideNavigation to={fields.slug} branch={navBranch} /> -->
+              <p><em>Side Navigation (TODO)</em></p>
+            </div>
+          )}
+          
+          {/* TODO: SmallScreen + HorizontalNavigation */}
+          <div class="small-screen-placeholder">
+            <!-- <SmallScreen><HorizontalNavigation items={smallScreenItems} /></SmallScreen> -->
+          </div>
+        </aside>
+        
+        <!-- Content section -->
+        <main class="content-section">
+          <!-- Main heading -->
+          <h1 class="page-heading">
+            {fieldTitleContext}
+          </h1>
+          
+          <!-- Body content -->
+          {body && body.processed && (
+            <div class="body-content" set:html={body.processed} />
+          )}
+          
+          {/* TODO: Body Panels */}
+          <div class="body-panels-placeholder">
+            <!-- <Panels data={bodyPanels} /> -->
+            <p><em>Body Panels (TODO)</em></p>
+          </div>
+        </main>
+      </div>
+    </div>
     
-    {!node?.attributes?.body?.processed && (
-      <p>Content coming soon...</p>
-    )}
-    
-    <div class="meta">
-      <p><small>Drupal NID: {drupal_nid}</small></p>
+    {/* TODO: Full width panels */}
+    <div class="full-panels-placeholder">
+      <!-- <Panels data={fullPanels} /> -->
+      <p><em>Full Width Panels (TODO)</em></p>
     </div>
   </div>
 </Layout>
 
 <style>
-  .container {
-    max-width: 1200px;
+  /* Template Layout Styles (matching Gatsby CSS) */
+  .template-layout {
+    /* Base template layout styles */
+  }
+  
+  .margins {
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .template-grid {
+    margin-bottom: 4rem;
+  }
+  
+  .top-section {
+    grid-area: top;
+  }
+  
+  .side-section {
+    /* Mobile styles */
+  }
+  
+  .content-section {
+    grid-area: content;
+    margin-bottom: 2rem;
+  }
+  
+  .page-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--color-blue-400, #00274C);
   }
   
   .body-content {
     line-height: 1.6;
+    margin-bottom: 2rem;
   }
   
-  .meta {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #e0e0e0;
-    color: #666;
+  .side-nav-placeholder,
+  .body-panels-placeholder,
+  .full-panels-placeholder {
+    padding: 1rem;
+    background: var(--color-neutral-100, #f5f5f5);
+    border-left: 3px solid var(--color-blue-400, #00274C);
+    margin: 1rem 0;
+  }
+  
+  /* Desktop grid layout (matching Gatsby MEDIA_QUERIES.S) */
+  @media (min-width: 640px) {
+    .template-grid {
+      display: grid;
+      grid-template-areas:
+        "top top"
+        "side content";
+      grid-template-columns: calc(216px + 3rem) 1fr;
+      grid-template-rows: auto 1fr;
+      margin-bottom: 5rem;
+    }
+    
+    .side-section {
+      grid-area: side;
+      margin-right: 2rem;
+    }
   }
 </style>

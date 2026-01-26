@@ -7,6 +7,8 @@ import { Image } from 'astro:assets';
  * Displays page title, breadcrumb, summary, and optional hero image
  */
 import Breadcrumb from './Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import { astro } from 'globals';
 
 interface Props {
   breadcrumb?: string;
@@ -22,13 +24,23 @@ const imageData = image?.relationships?.field_media_image?.localFile?.childImage
 const imageAlt = image?.field_media_image?.alt || '';
 const imageSrc = image?.relationships?.field_media_image?.localFile?.publicURL || 
                  image?.relationships?.field_media_image?.url;
+
+// Use the breadcrumb prop directly if provided, otherwise generate default
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  // Only generate breadcrumb if none provided
+  breadcrumbData = generateBreadcrumb(
+    { title: title, slug: '/current' },
+    [{ title: 'Parent', slug: '/parent' }]
+  );
+}
 ---
 
 <div class="page-header-wrapper">
   <div class="page-header-container">
     <header class="page-header">
       <div class="page-header-content">
-        {breadcrumb && <Breadcrumb data={breadcrumb} />}
+        <Breadcrumb data={breadcrumbData} />
         
         <h1 class="page-title">{title}</h1>
         

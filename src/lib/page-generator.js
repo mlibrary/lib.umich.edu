@@ -12,6 +12,60 @@ import {
 } from './drupal.js';
 
 /**
+ * Fetch breadcrumb data from Drupal API (matches Gatsby plugin behavior)
+ * @param {string} breadcrumbUrl - The breadcrumb API endpoint URL
+ * @returns {Promise<Object[]|null>} - Breadcrumb data or null if fetch fails
+ */
+const fetchDrupalBreadcrumb = async (breadcrumbUrl) => {
+  try {
+    const baseUrl = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu';
+    const fullUrl = breadcrumbUrl.startsWith('http') ? breadcrumbUrl : `${baseUrl}${breadcrumbUrl}`;
+
+    const response = await fetch(fullUrl);
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
+
+/**
+ * Process Drupal breadcrumb data (matches Gatsby plugin processBreadcrumbData)
+ * @param {Object[]} data - Raw breadcrumb data from Drupal
+ * @returns {Object[]|null} - Processed breadcrumb items or null
+ */
+const processDrupalBreadcrumbData = (data) => {
+  // We want to make sure the data returned has some breadcrumb items.
+  // Sometimes Drupal will hand an empty array and that's not what we want to process.
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return null;
+  }
+
+  let result = [];
+
+  const getParentItem = (item) => {
+    result = result.concat({
+      text: item.text,
+      to: item.to
+    });
+    if (item.parent && Array.isArray(item.parent) && item.parent.length > 0) {
+      getParentItem(item.parent[0]);
+    }
+  };
+
+  getParentItem(data[0]);
+
+  // Reverse order and add current page to the end (matches Gatsby behavior)
+  result = result.reverse();
+
+  return result;
+};
+
+/**
  * Find the file entity that corresponds to a media entity
  * @param {Object} mediaEntity - The media entity
  * @param {Array} included - All included entities from the JSON:API response
@@ -105,16 +159,173 @@ export const getTag = (node, template) => {
 
 /**
  * Create breadcrumb from node data
+ * Expanded to match Gatsby's breadcrumb logic with Drupal API and parent traversal
  */
-export const createBreadcrumb = (node, allNodes) => {
-  // This will be implemented based on your breadcrumb logic
-  // For now, return a basic structure
-  const breadcrumb = [];
+export const createBreadcrumb = async (node, allNodes, options = {}) => {
+  const {
+    enableDrupalFetching = true,
+    timeout = 15000, // Increased from 5000ms to 15000ms
+    fallbackOnly = false
+  } = options;
 
-  // Add logic to traverse parent nodes and build breadcrumb
-  // Based on node.fields.parents
+  // Check if node has Drupal breadcrumb field (like Gatsby plugin did)
+  if (!fallbackOnly && enableDrupalFetching && node.attributes?.field_breadcrumb) {
+    try {
+      const drupalBreadcrumbData = await Promise.race([
+        fetchDrupalBreadcrumb(node.attributes.field_breadcrumb),
+        new Promise((_, reject) => {
+          return setTimeout(() => {
+            return reject(new Error('Breadcrumb fetch timeout'));
+          }, timeout);
+        }
+        )
+      ]);
 
-  return breadcrumb;
+      if (drupalBreadcrumbData) {
+        const processedBreadcrumb = processDrupalBreadcrumbData(drupalBreadcrumbData);
+
+        if (processedBreadcrumb && processedBreadcrumb.length > 0) {
+          return JSON.stringify(processedBreadcrumb);
+        }
+      }
+    } catch (error) {
+      // Silently fall back to computed breadcrumb
+    }
+  }
+
+  // Fall back to building breadcrumb from parent page relationships
+  const breadcrumbItems = [{ text: 'Home', to: '/' }];
+
+  // Build parent hierarchy by traversing various parent relationships
+  const buildParentChain = (currentNode, visited = new Set()) => {
+    // Prevent infinite loops
+    if (visited.has(currentNode.id)) {
+      return [];
+    }
+    visited.add(currentNode.id);
+
+    const parents = [];
+
+    // Check for parent page relationship (most common)
+    if (currentNode.relationships?.field_parent_page) {
+      const parentData = currentNode.relationships.field_parent_page;
+      const parentId = parentData.drupal_internal__nid || parentData.id;
+
+      if (allNodes && Array.isArray(allNodes)) {
+        const parentNode = allNodes.find((n) => {
+          return n.attributes?.drupal_internal__nid === parentId || n.id === parentId;
+        }
+        );
+
+        if (parentNode) {
+          // Recursively get parent's parents
+          const grandParents = buildParentChain(parentNode, visited);
+          parents.push(...grandParents);
+
+          // Add this parent
+          parents.push({
+            text: parentNode.attributes?.field_title_context || parentNode.attributes?.title || parentNode.title,
+            to: parentNode.attributes?.path?.alias || parentNode.slug || `/${parentNode.attributes?.drupal_internal__nid}`
+          });
+        }
+      }
+    }
+
+    // Check for section page parent (alternative parent relationship)
+    else if (currentNode.relationships?.field_parent_section) {
+      const parentData = currentNode.relationships.field_parent_section;
+      const parentId = parentData.drupal_internal__nid || parentData.id;
+
+      if (allNodes && Array.isArray(allNodes)) {
+        const parentNode = allNodes.find((n) => {
+          return n.attributes?.drupal_internal__nid === parentId || n.id === parentId;
+        }
+        );
+
+        if (parentNode) {
+          const grandParents = buildParentChain(parentNode, visited);
+          parents.push(...grandParents);
+          parents.push({
+            text: parentNode.attributes?.field_title_context || parentNode.attributes?.title || parentNode.title,
+            to: parentNode.attributes?.path?.alias || parentNode.slug || `/${parentNode.attributes?.drupal_internal__nid}`
+          });
+        }
+      }
+    }
+
+    // Check for building/location parent relationships (for rooms, floors, etc.)
+    else if (currentNode.relationships?.field_parent_location) {
+      const parentData = currentNode.relationships.field_parent_location;
+      const parentId = parentData.drupal_internal__nid || parentData.id;
+
+      if (allNodes && Array.isArray(allNodes)) {
+        const parentNode = allNodes.find((n) => {
+          return n.attributes?.drupal_internal__nid === parentId || n.id === parentId;
+        }
+        );
+
+        if (parentNode) {
+          const grandParents = buildParentChain(parentNode, visited);
+          parents.push(...grandParents);
+          parents.push({
+            text: parentNode.attributes?.title || parentNode.title,
+            to: parentNode.attributes?.path?.alias || parentNode.slug || `/${parentNode.attributes?.drupal_internal__nid}`
+          });
+        }
+      }
+    }
+
+    // Check for building parent (for rooms that belong to buildings)
+    else if (currentNode.relationships?.field_room_building) {
+      const parentData = currentNode.relationships.field_room_building;
+      const parentId = parentData.drupal_internal__nid || parentData.id;
+
+      if (allNodes && Array.isArray(allNodes)) {
+        const parentNode = allNodes.find((n) => {
+          return n.attributes?.drupal_internal__nid === parentId || n.id === parentId;
+        }
+        );
+
+        if (parentNode) {
+          const grandParents = buildParentChain(parentNode, visited);
+          parents.push(...grandParents);
+          parents.push({
+            text: parentNode.attributes?.title || parentNode.title,
+            to: parentNode.attributes?.path?.alias || parentNode.slug || `/${parentNode.attributes?.drupal_internal__nid}`
+          });
+        }
+      }
+    }
+
+    return parents;
+  };
+
+  // Get all parents for this node
+  const parents = buildParentChain(node);
+
+  // Add parents to breadcrumb
+  breadcrumbItems.push(...parents);
+
+  // Special case: If this is a news story and has no parents, build proper hierarchy
+  if (parents.length === 0 && node.type === 'node--news') {
+    // Add About Us parent
+    breadcrumbItems.push({
+      text: 'About Us',
+      to: '/about-us'
+    });
+    // Add News parent
+    breadcrumbItems.push({
+      text: 'News',
+      to: '/about-us/news'
+    });
+  }
+
+  // Add current page (no 'to' since it's the current page)
+  breadcrumbItems.push({
+    text: node.attributes?.field_title_context || node.attributes?.title || node.title || 'Page'
+  });
+
+  return JSON.stringify(breadcrumbItems);
 };
 
 /**
@@ -231,7 +442,7 @@ export const processDrupalNode = (node, included = []) => {
     title: node.attributes.title,
     drupal_internal__nid: node.attributes.drupal_internal__nid,
     // Preserve included data for components that need it
-    included: included
+    included
   };
 };
 
@@ -268,20 +479,31 @@ export const getPagesToGenerate = async () => {
   ];
 
   // Process each node and generate page data
-  return allNodes
+  const processedNodes = allNodes
     .map((node) => {
       return processDrupalNode(node, included);
     })
     .filter((node) => {
       // Filter out nodes without a design template
       return node.relationships.field_design_template;
-    })
-    .map((node) => {
+    });
+
+  // Generate final page data with breadcrumbs
+  const pagesWithBreadcrumbs = await Promise.all(
+    processedNodes.map(async (node) => {
       const machineName = node.relationships.field_design_template.field_machine_name;
       const template = getTemplatePath(machineName);
       const tag = getTag(node, template);
       const summary = node.attributes.body?.summary || null;
       const keywords = node.attributes.field_seo_keywords || '';
+
+      // Await breadcrumb creation since it's now async
+      const breadcrumbOptions = {
+        enableDrupalFetching: process.env.ENABLE_DRUPAL_BREADCRUMBS !== 'false',
+        timeout: parseInt(process.env.BREADCRUMB_TIMEOUT || '15000'), // Increased default
+        fallbackOnly: process.env.BREADCRUMB_FALLBACK_ONLY === 'true'
+      };
+      const breadcrumb = await createBreadcrumb(node, processedNodes, breadcrumbOptions);
 
       return {
         slug: node.slug,
@@ -289,7 +511,7 @@ export const getPagesToGenerate = async () => {
         template,
         drupal_nid: node.drupal_internal__nid,
         title: node.title,
-        breadcrumb: [],
+        breadcrumb, // Now contains the awaited breadcrumb result
         summary,
         keywords,
         tag,
@@ -297,7 +519,9 @@ export const getPagesToGenerate = async () => {
         children: []
       };
     })
-    .filter((page) => {
-      return page.template !== null;
-    });
+  );
+
+  return pagesWithBreadcrumbs.filter((page) => {
+    return page.template !== null;
+  });
 };
