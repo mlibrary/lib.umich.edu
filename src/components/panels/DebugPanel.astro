@@ -1,0 +1,156 @@
+---
+import Icon from "../Icon.astro";
+
+const { nid } = Astro.props;
+console.log(`nid in DebugPanel: ${JSON.stringify(nid)}`);
+---
+
+{
+  import.meta.env.MODE === "development" && (
+    <aside class="debug-panel">
+      <div class="debug-header" id="debug-header">
+        <a class="header-link" href="#">
+          <h2 class="debug-header-text">Debug Panel</h2>
+        </a>
+        <a href="#" id="close-panel"><Icon icon="close" /></a>
+      </div>
+      <div class="debug-body">
+        <div class="debug-line">NID: {nid}</div>
+        <div class="debug-line">
+          cms.dev:{" "}
+          <a
+            href={`https://cms.dev.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=${nid}`}
+          >
+            https://cms.dev.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=$
+            {nid}
+          </a>
+        </div>
+        <div class="debug-line">
+          cms:{" "}
+          <a
+            href={`https://cms.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=${nid}`}
+          >
+            https://cms.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=$
+            {nid}
+          </a>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+<script>
+  const debugBody = document.querySelector(".debug-body");
+  const debugHeader = document.querySelector("#debug-header");
+  if (debugBody) {
+    const headerlink = debugHeader.querySelector("a.header-link");
+    let isCollapsed = true;
+    let isClosed = false;
+
+    headerlink.addEventListener("click", (e) => {
+      e.preventDefault();
+      isCollapsed = !isCollapsed;
+      if (isCollapsed) {
+        debugBody.style.height = "0";
+        debugBody.style.padding = "0";
+        debugBody.style.overflow = "hidden";
+      } else {
+        debugBody.style.height = "auto";
+        debugBody.style.padding = "1rem";
+        debugBody.style.overflow = "auto";
+      }
+    });
+
+    const closeButton = document.querySelector("#close-panel");
+    closeButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      const debugPanel = document.querySelector(".debug-panel");
+      debugPanel.style.display = "none";
+      isClosed = true;
+    });
+
+    //keyboard shortcut to reopen the panel: Ctrl + D
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key === "d") {
+        e.preventDefault();
+        if (isClosed) {
+          const debugPanel = document.querySelector(".debug-panel");
+          debugPanel.style.display = "block";
+          isClosed = false;
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .debug-panel {
+    background-color: #F7F8F9;
+    color: #333;
+    font-size: 0.95em;
+    margin: 1em 0;
+    overflow: auto;
+    position: fixed;
+    right: 0;
+    top: 10px;
+    width: 400px;
+    z-index: 1000;
+    opacity: .4;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .debug-panel:hover{
+    opacity: 1;
+  }
+
+  .debug-body {
+    height: 0;
+    padding: 0;
+    max-height: 600px;
+    overflow: hidden;
+  }
+
+  .debug-line:not(:first-child) {
+    margin-top: 1rem;
+  }
+
+  .debug-header {
+    border-top: 2px solid var(--color-maize-500);
+    background-color: white;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  .debug-header-text{
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+
+  .header-link {
+    border: none;
+    width: 100%;
+    height: 2rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .header-link:hover {
+    text-decoration: underline;
+    border: none;
+  }
+
+  #close-panel {
+    box-shadow: none;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    font-size: 0.9rem;
+    text-align: center;
+    background-color: var(--color-blue-400);
+    color: white;
+    width: 20px;
+    height: 20px;
+    text-decoration: none;
+  }
+</style>

@@ -14,6 +14,8 @@
 import Layout from '../layouts/Layout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Panels from '../components/panels/Panels.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
 
 // TODO: Create these components to match Gatsby structure
 // import { Template, Top, Side, Content } from '../components/PageLayout.astro';
@@ -57,10 +59,11 @@ if (!node) {
 // Extract fields (matches Gatsby destructuring)
 const {
   field_title_context: fieldTitleContext,
-  body,
   fields,
   field_local_navigation: fieldLocalNavigation
 } = node;
+
+const { processed: body } = node.attributes.body || {};
 
 // Use the breadcrumb prop if available, otherwise generate one
 let breadcrumbData = breadcrumb;
@@ -74,8 +77,15 @@ if (!breadcrumbData) {
   );
 }
 
-// TODO: Implement these utilities
-// const { bodyPanels, fullPanels } = transformNodePanels({ node });
+
+// Extract panels (mimic transformNodePanels from Gatsby)
+let bodyPanels = [];
+let fullPanels = [];
+if (node.relationships && node.relationships.field_panels) {
+  const panels = node.relationships.field_panels;
+  bodyPanels = panels.filter((panel) => panel.field_placement === 'body');
+  fullPanels = panels.filter((panel) => panel.field_placement !== 'body');
+}
 // const navBranch = useNavigationBranch(fields.slug);
 // const smallScreenBranch = useNavigationBranch(fields.slug, 'small');
 // const smallScreenItems = smallScreenBranch?.children || null;
@@ -86,6 +96,7 @@ if (!breadcrumbData) {
   TODO: Replace with actual components when they exist
 -->
 <Layout title={fieldTitleContext || title}>
+  <DebugPanel nid={drupal_nid}></DebugPanel>
   <!-- TemplateLayout wrapper -->
   <div class="template-layout">
     <!-- Margins container -->
@@ -121,14 +132,13 @@ if (!breadcrumbData) {
           </h1>
           
           <!-- Body content -->
-          {body && body.processed && (
-            <div class="body-content" set:html={body.processed} />
+          {body && (
+            <div class="body-content" set:html={body} />
           )}
           
-          {/* TODO: Body Panels */}
           <div class="body-panels-placeholder">
-            <!-- <Panels data={bodyPanels} /> -->
-            <p><em>Body Panels (TODO)</em></p>
+            <Panels data={bodyPanels} />
+            <pre>NID: {node.attributes?.drupal_internal__nid}</pre>
           </div>
         </main>
       </div>

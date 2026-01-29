@@ -10,7 +10,7 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 // Props from pages
-const { drupalNid, title } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <!doctype html>
@@ -55,7 +55,6 @@ const { drupalNid, title } = Astro.props;
       
       <!-- Library Header - Converted to Astro -->
       <Header />
-      
       <!-- Main content -->
       <main id="maincontent">
         <slot />
@@ -67,15 +66,6 @@ const { drupalNid, title } = Astro.props;
     
     <!-- Ask a Librarian Chat -->
     <m-chat id="chat"></m-chat>
-    
-    <!-- Drupal NID for tracking -->
-    {drupalNid && (
-      <div
-        style="display: none;"
-        id="drupalNid"
-        data-drupal-nid={drupalNid}
-      />
-    )}
     
     <style>
       /* Page Grid Layout */

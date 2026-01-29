@@ -18,18 +18,16 @@ const template = data.relationships.field_text_template.field_machine_name;
 const cards = data.relationships.field_text_card || [];
 ---
 
+
 <PanelTemplate title={title}>
-  <div class="text-panel-placeholder">
-    <p><strong>TextPanel (TODO)</strong></p>
-    <p>Template: {template}</p>
-    <p>Cards: {cards.length}</p>
-  </div>
+  {cards.length > 0 && cards[0].field_body?.processed && (
+    <div class="text-panel-body" set:html={cards[0].field_body.processed} />
+  )}
 </PanelTemplate>
 
 <style>
-  .text-panel-placeholder {
-    padding: 1rem;
-    background: var(--color-neutral-50, #f9f9f9);
-    border: 1px dashed var(--color-neutral-300, #ccc);
+  .text-panel-body {
+    line-height: 1.6;
+    margin-bottom: 2rem;
   }
 </style>
