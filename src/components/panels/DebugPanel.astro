@@ -12,27 +12,30 @@ console.log(`nid in DebugPanel: ${JSON.stringify(nid)}`);
         <a class="header-link" href="#">
           <h2 class="debug-header-text">Debug Panel</h2>
         </a>
-        <a href="#" id="close-panel"><Icon icon="close" /></a>
+        <a href="#" id="close-panel">
+          <Icon icon="close" />
+        </a>
       </div>
       <div class="debug-body">
-        <div class="debug-line">NID: {nid}</div>
         <div class="debug-line">
-          cms.dev:{" "}
-          <a
-            href={`https://cms.dev.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=${nid}`}
-          >
-            https://cms.dev.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=$
-            {nid}
-          </a>
+            <div class="debug-line-title">NID</div> 
+            <div class="debug-line-value">{nid}</div>
         </div>
         <div class="debug-line">
-          cms:{" "}
-          <a
-            href={`https://cms.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=${nid}`}
-          >
-            https://cms.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=$
-            {nid}
-          </a>
+          <div class="debug-line-title">cms.dev</div> 
+          <div class="debug-line-value">
+            <a href={`https://cms.dev.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=${nid}`}>
+                https://cms.dev.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]={nid}
+            </a>
+          </div>
+        </div>
+        <div class="debug-line">
+          <div class="debug-line-title">cms</div> 
+          <div class="debug-line-value">
+            <a href={`https://cms.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=${nid}`}>
+                https://cms.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]={nid}
+            </a>
+            </div>
         </div>
       </div>
     </aside>
@@ -45,7 +48,7 @@ console.log(`nid in DebugPanel: ${JSON.stringify(nid)}`);
   if (debugBody) {
     const headerlink = debugHeader.querySelector("a.header-link");
     let isCollapsed = true;
-    let isClosed = false;
+    let isClosed = true;
 
     headerlink.addEventListener("click", (e) => {
       e.preventDefault();
@@ -73,10 +76,13 @@ console.log(`nid in DebugPanel: ${JSON.stringify(nid)}`);
     document.addEventListener("keydown", (e) => {
       if (e.ctrlKey && e.key === "d") {
         e.preventDefault();
+        const debugPanel = document.querySelector(".debug-panel");
         if (isClosed) {
-          const debugPanel = document.querySelector(".debug-panel");
           debugPanel.style.display = "block";
-          isClosed = false;
+          isClosed = !isClosed;
+        } else {
+          debugPanel.style.display = "none";
+          isClosed = !isClosed;
         }
       }
     });
@@ -85,7 +91,8 @@ console.log(`nid in DebugPanel: ${JSON.stringify(nid)}`);
 
 <style>
   .debug-panel {
-    background-color: #F7F8F9;
+    display: none;
+    background-color: #f7f8f9;
     color: #333;
     font-size: 0.95em;
     margin: 1em 0;
@@ -95,11 +102,11 @@ console.log(`nid in DebugPanel: ${JSON.stringify(nid)}`);
     top: 10px;
     width: 400px;
     z-index: 1000;
-    opacity: .4;
+    opacity: 0.6;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  .debug-panel:hover{
+  .debug-panel:hover {
     opacity: 1;
   }
 
@@ -121,7 +128,16 @@ console.log(`nid in DebugPanel: ${JSON.stringify(nid)}`);
     padding: 0.5rem;
   }
 
-  .debug-header-text{
+  .debug-line-title{
+    font-weight: bold;
+  }
+
+  .debug-line-value{
+    margin-left: 1rem;
+    word-break: break-all;
+  }
+
+  .debug-header-text {
     font-weight: bold;
     text-align: center;
     font-size: 1.2rem;
@@ -141,14 +157,15 @@ console.log(`nid in DebugPanel: ${JSON.stringify(nid)}`);
   }
 
   #close-panel {
+
     box-shadow: none;
-    position: absolute;
+    border-radius: 50%;
+    position: fixed;
     right: 10px;
-    top: 15px;
+    top: 40px;
     font-size: 0.9rem;
     text-align: center;
-    background-color: var(--color-blue-400);
-    color: white;
+    color: var(--color-neutral-600, #666666);
     width: 20px;
     height: 20px;
     text-decoration: none;
