@@ -6,6 +6,7 @@
  * Renders different panel types based on __typename
  */
 import HoursLitePanel from './HoursLitePanel.astro';
+import HoursPanelDateViewer from './HoursPanelDateViewer.astro';
 import LinkPanel from './LinkPanel.astro';
 import GroupPanel from './GroupPanel.astro';
 import CardPanel from './CardPanel.astro';
@@ -32,8 +33,7 @@ const hoursPanel = data.find((panel: any) => panel.__typename === 'paragraph__ho
 {data && data.length > 0 && (
   <>
     {hoursPanel && (
-      <!-- TODO: Implement HoursPanelDateViewer -->
-      <!-- <HoursPanelDateViewer data={hoursPanel} /> -->
+      <HoursPanelDateViewer data={hoursPanel} />
     )}
     
     {data.map((panel: any) => {

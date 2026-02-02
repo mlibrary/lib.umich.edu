@@ -28,6 +28,7 @@ import DepartmentTemplate from '../templates/department.astro';
 import NewsLandingTemplate from '../templates/news-landing.astro';
 import NewsTemplate from '../templates/news.astro';
 import EventTemplate from '../templates/event.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
 
 /**
  * getStaticPaths() - Astro's equivalent to Gatsby's createPages()
@@ -99,6 +100,7 @@ const templateComponents = {
   'event': EventTemplate
 };
 
+
 const TemplateComponent = templateComponents[template];
 ---
 
@@ -124,3 +126,5 @@ const TemplateComponent = templateComponents[template];
     </div>
   </Layout>
 )}
+
+<DebugPanel node={node} />

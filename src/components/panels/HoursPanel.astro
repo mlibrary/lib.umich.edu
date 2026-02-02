@@ -3,26 +3,500 @@
  * HoursPanel - Hours display panel
  * Converted from src/components/panels/hours-panel.js
  */
-import PanelTemplate from './PanelTemplate.astro';
+import Heading from '../../reusable/heading.astro';
+import HoursTable from '../HoursTable.astro';
+import HoursPanelDateViewer from './HoursPanelDateViewer.astro';
+import { displayHours } from '../../utils/hours';
 
 interface Props {
   data: any;
 }
 
 const { data } = Astro.props;
+
+// Helper function to create slug
+function createSlug(string: string): string {
+  if (typeof string !== 'string') {
+    return '';
+  }
+  return string
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-');
+}
+
+// Helper function to get row data for a single location
+function getRow(node: any, nowWithWeekOffset: Date, isParent: boolean) {
+  let hours: any[] = [];
+  const notAvailableRow = { label: 'Not available', text: 'n/a' };
+  const rowHeadingText = [isParent ? 'Main hours' : node.title];
+  const mainHoursRow = {
+    label: rowHeadingText,
+    text: rowHeadingText,
+    to: node.fields.slug
+  };
+
+  for (let i = 0; i < 7; i++) {
+    const now = new Date(nowWithWeekOffset);
+    now.setDate(nowWithWeekOffset.getDate() + (i - nowWithWeekOffset.getDay()));
+    const display = displayHours({ node, now });
+    hours = hours.concat(display || notAvailableRow);
+  }
+
+  return [mainHoursRow].concat(hours);
+}
+
+// Transform data for the hours table
+function transformTableData(node: any, now: Date) {
+  const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;
+
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const currentDate = new Date(now);
+  // Set to Sunday
+  currentDate.setDate(currentDate.getDate() - currentDate.getDay());
+
+  const headings = [];
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(currentDate);
+    date.setDate(currentDate.getDate() + i);
+
+    headings.push({
+      label: date.toLocaleString('en-US', {
+        day: 'numeric',
+        month: 'long',
+        weekday: 'long'
+      }),
+      subtext: date.toLocaleString('en-US', {
+        day: 'numeric',
+        month: 'short'
+      }),
+      text: daysOfWeek[date.getDay()]
+    });
+  }
+
+  const sortByTitle = (a: any, b: any) => {
+    const titleA = a.title.toUpperCase();
+    const titleB = b.title.toUpperCase();
+    if (titleA < titleB) return -1;
+    if (titleA > titleB) return 1;
+    return 0;
+  };
+
+  const rows = [
+    getRow(fieldParentCard[0], now, true),
+    ...fieldCards.sort(sortByTitle).map((nodeMap: any) => {
+      return getRow(nodeMap, now, false);
+    })
+  ];
+
+  return {
+    headings,
+    rows
+  };
+}
+
+// Check if we should render
+if (!data.relationships?.field_parent_card || data.relationships.field_parent_card.length === 0) {
+  return null;
+}
+
+const { title } = data.relationships.field_parent_card[0];
+const { field_body: fieldBody } = data;
+
+// Initial table data (will be updated client-side based on weekOffset)
+const initialTableData = transformTableData(data, new Date());
 ---
 
-<PanelTemplate title={data.field_title}>
-  <div class="hours-panel-placeholder">
-    <p><strong>HoursPanel (TODO)</strong></p>
-    <p>Hours information will be displayed here</p>
+<section 
+  class="hours-panel" 
+  id={createSlug(title)}
+  data-hours-panel
+  data-node={JSON.stringify(data)}
+>
+  <div class="margins">
+    <Heading 
+      level={2} 
+      size="L"
+      class="hours-panel-heading"
+    >
+      {title}
+    </Heading>
+    {fieldBody && (
+      <div class="hours-panel-body" set:html={fieldBody.processed} />
+    )}
+    
+    <!-- Date Viewer - Interactive island -->
+    <HoursPanelDateViewer client:load />
+    
+    <!-- Hours Table - Will be updated via client-side script -->
+    <div id={`hours-table-${createSlug(title)}`}>
+      <HoursTable 
+        data={initialTableData}
+        dayOfWeek={new Date().getDay()}
+        location={title}
+      />
+    </div>
   </div>
-</PanelTemplate>
+</section>
+
+<script>
+  import { weekOffset } from '../../stores/hoursStore';
+  import { displayHours } from '../../utils/hours';
+
+  // Re-render table when week offset changes
+  function updateHoursTable(sectionEl: HTMLElement) {
+    const dataAttr = sectionEl.getAttribute('data-node');
+    if (!dataAttr) return;
+
+    const data = JSON.parse(dataAttr);
+    const currentOffset = weekOffset.get();
+    const now = new Date(new Date().setDate(new Date().getDate() + currentOffset * 7));
+
+    // Get the table container
+    const tableId = sectionEl.querySelector('[id^="hours-table-"]')?.id;
+    if (!tableId) return;
+
+    // Transform the data (same logic as server-side)
+    const transformedData = transformTableDataClient(data, now);
+    
+    // Re-render the table by updating the container
+    const tableContainer = document.getElementById(tableId);
+    if (tableContainer) {
+      renderHoursTable(tableContainer, transformedData, currentOffset === 0 ? new Date().getDay() : false, data.relationships.field_parent_card[0].title);
+    }
+  }
+
+  function transformTableDataClient(node: any, now: Date) {
+    const { field_cards: fieldCards, field_parent_card: fieldParentCard } = node.relationships;
+
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const currentDate = new Date(now);
+    currentDate.setDate(currentDate.getDate() - currentDate.getDay());
+
+    const headings = [];
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(currentDate);
+      date.setDate(currentDate.getDate() + i);
+
+      headings.push({
+        label: date.toLocaleString('en-US', {
+          day: 'numeric',
+          month: 'long',
+          weekday: 'long'
+        }),
+        subtext: date.toLocaleString('en-US', {
+          day: 'numeric',
+          month: 'short'
+        }),
+        text: daysOfWeek[date.getDay()]
+      });
+    }
+
+    const sortByTitle = (a: any, b: any) => {
+      const titleA = a.title.toUpperCase();
+      const titleB = b.title.toUpperCase();
+      if (titleA < titleB) return -1;
+      if (titleA > titleB) return 1;
+      return 0;
+    };
+
+    const rows = [
+      getRowClient(fieldParentCard[0], now, true),
+      ...fieldCards.sort(sortByTitle).map((nodeMap: any) => {
+        return getRowClient(nodeMap, now, false);
+      })
+    ];
+
+    return {
+      headings,
+      rows
+    };
+  }
+
+  function getRowClient(node: any, nowWithWeekOffset: Date, isParent: boolean) {
+    let hours: any[] = [];
+    const notAvailableRow = { label: 'Not available', text: 'n/a' };
+    const rowHeadingText = [isParent ? 'Main hours' : node.title];
+    const mainHoursRow = {
+      label: rowHeadingText,
+      text: rowHeadingText,
+      to: node.fields.slug
+    };
+
+    for (let i = 0; i < 7; i++) {
+      const now = new Date(nowWithWeekOffset);
+      now.setDate(nowWithWeekOffset.getDate() + (i - nowWithWeekOffset.getDay()));
+      const display = displayHours({ node, now });
+      hours = hours.concat(display || notAvailableRow);
+    }
+
+    return [mainHoursRow].concat(hours);
+  }
+
+  function renderHoursTable(container: HTMLElement, data: any, dayOfWeek: number | false, location: string) {
+    const todayIndex = dayOfWeek === false ? -1 : dayOfWeek + 1;
+    
+    let html = '<table class="hours-table"><thead><tr>';
+    html += `<th scope="col" colspan="2"><span class="visually-hidden">Inside ${location}</span></th>`;
+    
+    data.headings.forEach((heading: any, index: number) => {
+      const isToday = index + 1 === todayIndex;
+      html += `<th scope="col" class="${isToday ? 'today' : ''}">`;
+      html += `<span class="visually-hidden">${heading.label}</span>`;
+      if (isToday) {
+        html += '<span aria-hidden="true" class="alternative today-badge">Today</span>';
+      }
+      html += `<span aria-hidden="true" class="alternative day-text">${heading.text}</span>`;
+      html += `<span aria-hidden="true" class="subtext">${heading.subtext}</span>`;
+      html += '</th>';
+    });
+    
+    html += '</tr></thead><tbody>';
+    
+    data.rows.forEach((row: any[], rowIndex: number) => {
+      html += `<tr class="${rowIndex === 0 ? 'first-row' : ''}">`;
+      
+      row.forEach((col: any, colIndex: number) => {
+        if (colIndex === 0) {
+          html += '<th scope="row" colspan="2" class="row-header">';
+          if (col.to) {
+            html += `<a href="${col.to}" class="list-medium-link">${col.text}</a>`;
+          } else {
+            html += col.text;
+          }
+          html += '</th>';
+        } else {
+          const isToday = colIndex === todayIndex;
+          html += `<td class="${isToday ? 'today' : ''}">`;
+          html += '<div class="mobile-day-label">';
+          html += `<span class="alternative mobile-day-text">${data.headings[colIndex - 1].text}</span>`;
+          html += `<span class="mobile-day-subtext">${data.headings[colIndex - 1].subtext}</span>`;
+          html += '</div>';
+          html += `<span class="hours-text ${isToday ? 'with-today-badge' : ''}">${col.text}</span>`;
+          if (isToday) {
+            html += '<span aria-hidden="true" class="alternative today-badge-mobile">Today</span>';
+          }
+          html += '</td>';
+        }
+      });
+      
+      html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }
+
+  // Initialize for all hours panels on the page
+  document.addEventListener('DOMContentLoaded', () => {
+    const hoursPanels = document.querySelectorAll('[data-hours-panel]');
+    
+    // Subscribe to week offset changes
+    weekOffset.subscribe(() => {
+      hoursPanels.forEach((panel) => {
+        updateHoursTable(panel as HTMLElement);
+      });
+    });
+  });
+
+  // Also listen for the custom event from DateViewer
+  window.addEventListener('weekOffsetChanged', () => {
+    const hoursPanels = document.querySelectorAll('[data-hours-panel]');
+    hoursPanels.forEach((panel) => {
+      updateHoursTable(panel as HTMLElement);
+    });
+  });
+</script>
 
 <style>
-  .hours-panel-placeholder {
-    padding: 1rem;
-    background: var(--color-neutral-50, #f9f9f9);
-    border: 1px dashed var(--color-neutral-300, #ccc);
+  .hours-panel {
+    margin-bottom: 4rem;
+  }
+
+  .margins {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media only screen and (min-width: 1320px) {
+    .margins {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  .hours-panel-heading {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .hours-panel-heading:target {
+    scroll-margin-top: 350px;
+  }
+
+  .hours-panel-body {
+    margin-bottom: 1rem;
+  }
+
+  /* Import HoursTable styles */
+  :global(.hours-table) {
+    margin-top: 2rem;
+    table-layout: fixed;
+    text-align: left;
+    width: 100%;
+  }
+
+  :global(.hours-table tr > *) {
+    padding: 0.75rem;
+    position: relative;
+  }
+
+  :global(.hours-table tr > *.today) {
+    border-left: 2px solid var(--color-maize-400);
+    border-right: 2px solid var(--color-maize-400);
+  }
+
+  :global(.hours-table tr > * .alternative) {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  :global(.hours-table thead) {
+    border-bottom: 2px solid var(--color-neutral-100);
+  }
+
+  :global(.hours-table thead th.today) {
+    border-top: 2px solid var(--color-maize-400);
+  }
+
+  :global(.hours-table thead th) {
+    vertical-align: bottom;
+  }
+
+  :global(.hours-table .today-badge) {
+    background: var(--color-maize-400);
+    border-radius: 2px 2px 0 0;
+    bottom: 100%;
+    display: inline-block;
+    left: -2px;
+    padding: 0 0.25rem;
+    position: absolute;
+  }
+
+  :global(.hours-table .day-text) {
+    display: block;
+  }
+
+  :global(.hours-table .subtext) {
+    color: var(--color-neutral-300);
+  }
+
+  :global(.hours-table tbody tr) {
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+
+  :global(.hours-table tbody tr.first-row) {
+    background: var(--color-blue-100);
+  }
+
+  :global(.hours-table tbody tr:last-of-type > *.today) {
+    border-bottom: 2px solid var(--color-maize-400);
+  }
+
+  :global(.hours-table .list-medium-link) {
+    color: var(--color-teal-400);
+    text-decoration: underline;
+    text-decoration-thickness: 0.09em;
+    text-underline-offset: 0.15em;
+  }
+
+  :global(.hours-table .list-medium-link:hover) {
+    text-decoration-thickness: 0.15em;
+  }
+
+  :global(.hours-table .mobile-day-label) {
+    align-content: baseline;
+    align-items: baseline;
+    display: none;
+    flex-wrap: wrap;
+  }
+
+  :global(.hours-table .mobile-day-text) {
+    padding-right: 0.5em;
+  }
+
+  :global(.hours-table .mobile-day-subtext) {
+    color: var(--color-neutral-300);
+  }
+
+  :global(.hours-table .today-badge-mobile) {
+    background: var(--color-maize-400);
+    display: none;
+    margin: -0.25rem -0.5rem;
+    margin-left: 0;
+    padding: 0 0.5rem;
+  }
+
+  @media only screen and (max-width: 1100px) {
+    :global(.hours-table tr > *) {
+      display: block;
+      padding: 0.25rem 0.5rem;
+    }
+
+    :global(.hours-table tr > *.today) {
+      border: 2px solid var(--color-maize-400);
+    }
+
+    :global(.hours-table thead) {
+      clip: rect(1px, 1px, 1px, 1px);
+      clip-path: inset(50%);
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
+
+    :global(.hours-table tbody tr) {
+      border-bottom: 0;
+    }
+
+    :global(.hours-table tbody tr.first-row) {
+      background: inherit;
+    }
+
+    :global(.hours-table .row-header) {
+      background: var(--color-blue-100);
+      border-bottom-color: var(--color-neutral-100);
+    }
+
+    :global(.hours-table tbody td) {
+      display: grid !important;
+      gap: 5%;
+      grid-template-columns: minmax(min-content, 6.5rem) 5fr max-content;
+    }
+
+    :global(.hours-table .mobile-day-label) {
+      display: flex;
+    }
+
+    :global(.hours-table .hours-text) {
+      grid-column: 2 / span 2;
+    }
+
+    :global(.hours-table .hours-text.with-today-badge) {
+      grid-column: 2 / span 1;
+    }
+
+    :global(.hours-table .today-badge-mobile) {
+      align-items: center;
+      display: flex;
+    }
   }
 </style>

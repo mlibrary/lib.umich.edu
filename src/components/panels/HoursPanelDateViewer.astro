@@ -1,0 +1,545 @@
+---
+/**
+ * HoursPanelDateViewer - Interactive date viewer and week navigation
+ * Converted from src/components/panels/hours-panel-date-viewer.js
+ * 
+ * This is a client-side island component that provides:
+ * - Week navigation (Previous/Next)
+ * - Calendar picker for selecting weeks
+ * - Date range display
+ */
+import Icon from '../Icon.astro';
+import Heading from '../../reusable/heading.astro';
+---
+
+<div class="date-viewer-bar" id="dateViewerBar">
+  <div class="visually-hidden" role="status" aria-live="polite" aria-atomic="true" id="calendarStatus"></div>
+  <div class="date-viewer-container margins">
+    <div class="controls-wrapper">
+      <!-- Previous Week Button - Desktop -->
+      <button class="prev-next-button prev-desktop" id="prevWeekDesktop" aria-label="Previous week">
+        <Icon icon="navigate_before" size={24} />
+        <span>Previous week</span>
+      </button>
+      <!-- Previous Week Button - Mobile -->
+      <button class="prev-next-button prev-mobile" id="prevWeekMobile" aria-label="Previous week">
+        <Icon icon="navigate_before" size={24} />
+        <span class="visually-hidden">Previous week</span>
+      </button>
+
+      <!-- Date Range Display with Calendar Toggle -->
+      <button class="date-range-button" id="dateRangeButton">
+        <Heading level={2} size="S">
+          <span class="visually-hidden" id="dateRangeLabel" aria-live="polite"></span>
+          <span aria-hidden="true" id="dateRangeText"></span>
+          <Icon icon="calendar_month" size={32} class="calendar-icon" />
+        </Heading>
+      </button>
+
+      <!-- Calendar Popup -->
+      <div class="calendar-popup" id="calendarPopup" role="region" aria-label="calendar navigation" hidden>
+        <div class="calendar-header">
+          <button class="month-nav-button" id="prevMonthButton" aria-label="Previous month">
+            <Icon icon="navigate_before" size={24} />
+          </button>
+          <h2 class="calendar-month-year" id="calendarMonthYear" aria-live="polite"></h2>
+          <button class="month-nav-button" id="nextMonthButton" aria-label="Next month">
+            <Icon icon="navigate_next" size={24} />
+          </button>
+        </div>
+        <div class="calendar-days-header">
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div class="calendar-day-name">{day}</div>
+          ))}
+        </div>
+        <div class="calendar-weeks" id="calendarWeeks"></div>
+        <p class="calendar-hint">
+          <span class="kbd-style">esc</span> to close
+        </p>
+      </div>
+
+      <!-- Next Week Button - Desktop -->
+      <button class="prev-next-button next-desktop" id="nextWeekDesktop" aria-label="Next week">
+        <span>Next week</span>
+        <Icon icon="navigate_next" size={24} />
+      </button>
+      <!-- Next Week Button - Mobile -->
+      <button class="prev-next-button next-mobile" id="nextWeekMobile" aria-label="Next week">
+        <Icon icon="navigate_next" size={24} />
+        <span class="visually-hidden">Next week</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { weekOffset, setWeekOffset } from '../stores/hoursStore';
+
+  // Date formatting utilities
+  function dateFormat(date: Date, abbreviated = false): string {
+    const options: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
+      month: abbreviated ? 'short' : 'long',
+      ...(abbreviated ? {} : { weekday: 'long', year: 'numeric' })
+    };
+    return date.toLocaleString('en-US', options);
+  }
+
+  function startOfDay(date: Date): Date {
+    const newDate = new Date(date);
+    newDate.setHours(0, 0, 0, 0);
+    return newDate;
+  }
+
+  function startOfWeek(date: Date): Date {
+    const newDate = startOfDay(new Date(date));
+    newDate.setDate(newDate.getDate() - newDate.getDay());
+    return newDate;
+  }
+
+  function getDaysInMonth(date: Date): Date[] {
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const days: Date[] = [];
+
+    let currentDay = new Date(startOfMonth);
+    while (currentDay <= endOfMonth) {
+      days.push(new Date(currentDay));
+      currentDay.setDate(currentDay.getDate() + 1);
+    }
+
+    return days;
+  }
+
+  function getCalendarDays(date: Date): Date[] {
+    const days = getDaysInMonth(date);
+    const firstDay = new Date(days[0]);
+    const lastDay = new Date(days[days.length - 1]);
+
+    const daysBefore = Array.from({ length: firstDay.getDay() }, (_, i) => {
+      const d = new Date(firstDay);
+      d.setDate(firstDay.getDate() - firstDay.getDay() + i);
+      return d;
+    });
+
+    const daysAfter = Array.from({ length: 6 - lastDay.getDay() }, (_, i) => {
+      const d = new Date(lastDay);
+      d.setDate(lastDay.getDate() + i + 1);
+      return d;
+    });
+
+    return [...daysBefore, ...days, ...daysAfter];
+  }
+
+  function getColorBasedOnDate(date: Date, currentWeekOffset: number): string {
+    const today = startOfDay(new Date());
+    const targetDay = startOfDay(date);
+
+    if (targetDay.getTime() === today.getTime()) {
+      return 'var(--color-maize-400)';
+    }
+
+    const viewedWeekStart = new Date(new Date().setDate(
+      new Date().getDate() + currentWeekOffset * 7 - new Date().getDay()
+    ));
+    const weekStart = startOfWeek(date);
+
+    if (startOfDay(weekStart).getTime() === startOfDay(viewedWeekStart).getTime()) {
+      return 'var(--color-maize-100)';
+    }
+
+    return 'var(--color-blue-100)';
+  }
+
+  // State
+  let isCalendarVisible = false;
+  let currentBrowseDate = new Date();
+
+  // DOM elements
+  const dateRangeButton = document.getElementById('dateRangeButton') as HTMLButtonElement;
+  const dateRangeText = document.getElementById('dateRangeText');
+  const dateRangeLabel = document.getElementById('dateRangeLabel');
+  const calendarPopup = document.getElementById('calendarPopup');
+  const calendarStatus = document.getElementById('calendarStatus');
+  const calendarMonthYear = document.getElementById('calendarMonthYear');
+  const calendarWeeks = document.getElementById('calendarWeeks');
+  const prevWeekDesktop = document.getElementById('prevWeekDesktop');
+  const prevWeekMobile = document.getElementById('prevWeekMobile');
+  const nextWeekDesktop = document.getElementById('nextWeekDesktop');
+  const nextWeekMobile = document.getElementById('nextWeekMobile');
+  const prevMonthButton = document.getElementById('prevMonthButton');
+  const nextMonthButton = document.getElementById('nextMonthButton');
+
+  // Update date range display
+  function updateDateRange() {
+    const currentOffset = weekOffset.get();
+    const date = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+
+    const fromDate = new Date(date);
+    fromDate.setDate(date.getDate() + currentOffset * 7 - date.getDay());
+
+    const toDate = new Date(date);
+    toDate.setDate(date.getDate() + currentOffset * 7 + (6 - date.getDay()));
+
+    const label = `Showing hours from ${dateFormat(fromDate)} to ${dateFormat(toDate)}`;
+    const text = `${dateFormat(fromDate, true)} - ${dateFormat(toDate, true)}`;
+
+    if (dateRangeText) dateRangeText.textContent = text;
+    if (dateRangeLabel) dateRangeLabel.textContent = label;
+  }
+
+  // Toggle calendar visibility
+  function toggleCalendar() {
+    isCalendarVisible = !isCalendarVisible;
+    
+    if (calendarPopup) {
+      if (isCalendarVisible) {
+        calendarPopup.removeAttribute('hidden');
+        const currentOffset = weekOffset.get();
+        const today = new Date();
+        const newBrowseDate = new Date(today.setDate(today.getDate() + currentOffset * 7));
+        currentBrowseDate = new Date(newBrowseDate.setDate(1));
+        renderCalendar();
+      } else {
+        calendarPopup.setAttribute('hidden', '');
+      }
+    }
+
+    if (calendarStatus) {
+      calendarStatus.textContent = `Calendar ${isCalendarVisible ? 'open' : 'closed'}`;
+    }
+
+    // Update button style
+    if (dateRangeButton) {
+      if (isCalendarVisible) {
+        dateRangeButton.classList.add('active');
+      } else {
+        dateRangeButton.classList.remove('active');
+      }
+    }
+  }
+
+  // Render calendar
+  function renderCalendar() {
+    if (!calendarWeeks || !calendarMonthYear) return;
+
+    const monthYear = currentBrowseDate.toLocaleString('default', { 
+      month: 'long', 
+      year: 'numeric' 
+    });
+    calendarMonthYear.textContent = monthYear;
+    const [month] = monthYear.split(' ');
+
+    const calendarDays = getCalendarDays(currentBrowseDate);
+    const weeks: Date[][] = [];
+    for (let i = 0; i < calendarDays.length; i += 7) {
+      weeks.push(calendarDays.slice(i, i + 7));
+    }
+
+    const currentOffset = weekOffset.get();
+
+    calendarWeeks.innerHTML = '';
+    weeks.forEach((week, weekIndex) => {
+      const currentlySelectedWeek = week.some((day) => {
+        const viewedWeekStart = new Date(new Date().setDate(
+          new Date().getDate() + currentOffset * 7 - new Date().getDay()
+        ));
+        const weekStartDay = startOfDay(day);
+        const viewedWeekStartDay = startOfDay(viewedWeekStart);
+        return weekStartDay.getTime() === viewedWeekStartDay.getTime();
+      });
+
+      const getFormattedDate = (date: Date) => {
+        return date.toLocaleString('default', {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric'
+        });
+      };
+
+      const weekButton = document.createElement('button');
+      weekButton.className = 'calendar-week';
+      weekButton.setAttribute('aria-label', 
+        `${currentlySelectedWeek ? 'This is the currently selected week.' : 'View'} week ${weekIndex + 1} in ${month} from ${getFormattedDate(week[0])} to ${getFormattedDate(week[week.length - 1])}`
+      );
+
+      if (currentlySelectedWeek) {
+        weekButton.classList.add('selected');
+      }
+
+      weekButton.addEventListener('click', () => {
+        const today = new Date();
+        const currentWeekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+        const selectedWeekStart = new Date(week[0]);
+
+        const newOffset = Math.round(
+          (selectedWeekStart.getTime() - currentWeekStart.getTime()) / (7 * 24 * 60 * 60 * 1000)
+        );
+
+        setWeekOffset(newOffset);
+        toggleCalendar();
+      });
+
+      week.forEach((day) => {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'calendar-day';
+        dayDiv.style.backgroundColor = getColorBasedOnDate(day, currentOffset);
+        dayDiv.textContent = day.getDate().toString();
+        weekButton.appendChild(dayDiv);
+      });
+
+      calendarWeeks.appendChild(weekButton);
+    });
+  }
+
+  // Event handlers
+  function handlePrevWeek() {
+    setWeekOffset(weekOffset.get() - 1);
+  }
+
+  function handleNextWeek() {
+    setWeekOffset(weekOffset.get() + 1);
+  }
+
+  function handlePrevMonth() {
+    currentBrowseDate.setMonth(currentBrowseDate.getMonth() - 1);
+    currentBrowseDate.setDate(1);
+    renderCalendar();
+  }
+
+  function handleNextMonth() {
+    currentBrowseDate.setMonth(currentBrowseDate.getMonth() + 1);
+    currentBrowseDate.setDate(1);
+    renderCalendar();
+  }
+
+  function handleEscape(event: KeyboardEvent) {
+    if (event.key === 'Escape' && isCalendarVisible) {
+      toggleCalendar();
+    }
+  }
+
+  // Initialize
+  updateDateRange();
+
+  // Subscribe to store changes
+  weekOffset.subscribe(() => {
+    updateDateRange();
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('weekOffsetChanged', { 
+      detail: { weekOffset: weekOffset.get() } 
+    }));
+  });
+
+  // Event listeners
+  dateRangeButton?.addEventListener('click', toggleCalendar);
+  prevWeekDesktop?.addEventListener('click', handlePrevWeek);
+  prevWeekMobile?.addEventListener('click', handlePrevWeek);
+  nextWeekDesktop?.addEventListener('click', handleNextWeek);
+  nextWeekMobile?.addEventListener('click', handleNextWeek);
+  prevMonthButton?.addEventListener('click', handlePrevMonth);
+  nextMonthButton?.addEventListener('click', handleNextMonth);
+  document.addEventListener('keydown', handleEscape);
+</script>
+
+<style>
+  .date-viewer-bar {
+    background: var(--color-teal-100);
+    border-bottom: 1px solid var(--color-neutral-100);
+    border-top: 1px solid var(--color-neutral-100);
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+    padding: 0.25rem;
+    position: sticky;
+    top: -1px;
+    z-index: 1;
+  }
+
+  .margins {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media only screen and (min-width: 1320px) {
+    .margins {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  .date-viewer-container {
+    position: relative;
+  }
+
+  .controls-wrapper {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .prev-next-button {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: var(--color-teal-400);
+    cursor: pointer;
+    display: flex;
+    font-weight: bold;
+    gap: 0.25rem;
+    margin: 0.5rem 0;
+    padding: 0;
+  }
+
+  .prev-next-button:hover {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .prev-desktop,
+  .next-desktop {
+    display: none;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .prev-desktop,
+    .next-desktop {
+      display: flex;
+    }
+
+    .prev-mobile,
+    .next-mobile {
+      display: none;
+    }
+  }
+
+  .date-range-button {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .date-range-button:hover,
+  .date-range-button.active {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .calendar-icon {
+    color: var(--color-teal-400);
+  }
+
+  /* Calendar Popup */
+  .calendar-popup {
+    align-items: center;
+    background-color: var(--color-neutral-100);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    left: 50%;
+    margin-left: -160px;
+    max-width: 320px;
+    overflow: hidden;
+    position: absolute;
+    top: 45px;
+    transition: height 0.3s ease;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .calendar-popup[hidden] {
+    display: none;
+  }
+
+  .calendar-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
+    width: 100%;
+  }
+
+  .month-nav-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .month-nav-button:first-child {
+    margin-left: 1rem;
+  }
+
+  .month-nav-button:last-child {
+    margin-right: 1rem;
+  }
+
+  .calendar-month-year {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .calendar-days-header {
+    display: grid;
+    font-weight: bold;
+    gap: 4px;
+    grid-template-columns: repeat(7, 1fr);
+    margin-top: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .calendar-day-name {
+    font-size: 0.875rem;
+  }
+
+  .calendar-weeks {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+  }
+
+  .calendar-week {
+    background: none;
+    border: 2px solid transparent;
+    cursor: pointer;
+    display: grid;
+    gap: 4px;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 0;
+  }
+
+  .calendar-week:hover {
+    border-color: var(--color-neutral-300);
+  }
+
+  .calendar-week.selected {
+    border-color: var(--color-maize-400);
+  }
+
+  .calendar-day {
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .calendar-hint {
+    margin-bottom: 8px;
+  }
+
+  .kbd-style {
+    color: var(--color-neutral-300);
+    background: var(--color-neutral-200);
+    border-radius: 3px;
+    padding: 0.125rem 0.25rem;
+    font-family: monospace;
+    font-size: 0.875rem;
+  }
+</style>
