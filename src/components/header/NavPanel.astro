@@ -195,11 +195,11 @@ const dropdownSideWidth = '24rem';
 <script>
   // NavPanel functionality
   class NavPanel {
-    constructor() {
-      this.container = document.querySelector('.nav-panel-container');
-      this.buttons = document.querySelectorAll('.nav-panel-button');
-      this.contentPanels = document.querySelectorAll('.nav-panel-content');
-      this.placeholder = document.querySelector('.nav-panel-placeholder');
+     constructor(container) {
+      this.container = container;
+      this.buttons = container.querySelectorAll('.nav-panel-button');
+      this.contentPanels = container.querySelectorAll('.nav-panel-content');
+      this.placeholder = container.querySelector('.nav-panel-placeholder');
       this.currentOpenPanel = null;
 
       if (!this.container) return;
@@ -293,22 +293,26 @@ const dropdownSideWidth = '24rem';
   }
 
   // Initialize when DOM is ready and expose globally
-  let navPanelInstance = null;
-  
+  let navPanelInstances = [];
+
+  function initNavPanels() {
+    const containers = document.querySelectorAll('.nav-panel-container');
+    navPanelInstances = Array.from(containers).map(container => new NavPanel(container));
+    window.navPanels = navPanelInstances;
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      navPanelInstance = new NavPanel();
-      window.navPanel = navPanelInstance;
-    });
+    document.addEventListener('DOMContentLoaded', initNavPanels);
   } else {
-    navPanelInstance = new NavPanel();
-    window.navPanel = navPanelInstance;
+    initNavPanels();
   }
 
   // Expose reset method globally for parent dropdown to call
   window.resetNavPanelToFirst = function() {
-    if (window.navPanel && window.navPanel.resetToFirst) {
-      window.navPanel.resetToFirst();
+    if (window.navPanels) {
+      window.navPanels.forEach(panel => {
+        if (panel && panel.resetToFirst) panel.resetToFirst();
+      });
     }
   };
 </script>

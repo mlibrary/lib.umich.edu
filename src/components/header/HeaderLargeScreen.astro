@@ -35,7 +35,7 @@ const { primary, secondary } = Astro.props;
                 {secondary.map((item) => {
                   return (
                     <li>
-                      <a href={item.to} class="no-focus-styles">
+                      <a href={item.to}>
                         {item.icon && (
                           <Icon
                             icon={item.icon}
@@ -43,7 +43,7 @@ const { primary, secondary } = Astro.props;
                             style="margin-top: -2px; margin-right: 0.25rem;"
                           />
                         )}
-                        <span>{item.text}</span>
+                        <span class="text">{item.text}</span>
                       </a>
                     </li>
                   );
@@ -111,9 +111,10 @@ const { primary, secondary } = Astro.props;
     text-transform: uppercase;
     letter-spacing: 1.25px;
     padding: 0.75rem 0;
+    text-decoration: none;
   }
 
-  .utility-nav a:hover {
+  .utility-nav a:hover > .text {
     text-decoration: underline;
   }
 

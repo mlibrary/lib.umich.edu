@@ -22,16 +22,6 @@ html {
   box-sizing: border-box;
 }
 
-a {
-  box-shadow: inset 0 -2px var(--color-teal-400);
-  color: var(--color-teal-400);
-  cursor: pointer;
-  text-decoration: none;
-}
-
-a:hover{
-  box-shadow: inset 0 -2px var(--color-teal-400);
-}
 
 button {
   cursor: pointer;

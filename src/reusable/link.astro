@@ -1,0 +1,25 @@
+---
+import { LINK_STYLES } from '../reusable';
+
+interface LinkProps {
+  as?: keyof HTMLElementTagNameMap;
+  kind?:
+    | 'default'
+    | 'subtle'
+    | 'light'
+    | 'special'
+    | 'list'
+    | 'list-medium'
+    | 'list-strong'
+    | 'description';
+  [key: string]: any;
+}
+
+const { kind = 'default', as = 'a', ...other }: LinkProps = Astro.props;
+const Tag = as;
+const style = LINK_STYLES[kind] || {};
+---
+
+<Tag style={style} {...other}>
+  <slot />
+</Tag>
