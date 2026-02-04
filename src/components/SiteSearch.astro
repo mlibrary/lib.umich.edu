@@ -436,7 +436,6 @@ const { label = "Search this site" } = Astro.props;
         
         // Check if this is a pre-built lunr index or raw data
         if (searchData.en && searchData.en.index && searchData.en.store) {
-          // This is a lunr index structure (Gatsby format)
           if (window.lunr) {
             this.lunrIndex = {
               index: window.lunr.Index.load(searchData.en.index),
@@ -560,7 +559,6 @@ const { label = "Search this site" } = Astro.props;
       }
 
       try {
-        // Perform the search (matching Gatsby version approach)
         const searchResults = this.lunrIndex.index.query((queryTerm) => {
           const lunr = window.lunr;
 

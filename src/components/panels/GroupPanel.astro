@@ -7,10 +7,9 @@ import Panels from './Panels.astro';
 
 interface Props {
   data: any;
-  included?: any[];
 }
 
-const { data, included = [] } = Astro.props;
+const { data } = Astro.props;
 
 const { field_panel_group_layout: fieldPanelGroupLayout, relationships } = data;
 
@@ -22,7 +21,7 @@ const fieldPanelGroup = relationships?.field_panel_group;
 {is50Layout && fieldPanelGroup ? (
   <div class="margins">
     <div class="panel-group-50-container">
-      <Panels data={fieldPanelGroup} included={included} />
+      <Panels data={fieldPanelGroup} />
     </div>
   </div>
 ) : (

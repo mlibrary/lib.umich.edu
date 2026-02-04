@@ -2,7 +2,23 @@
 import Icon from "../Icon.astro";
 
 const { nid, node } = Astro.props;
-console.log(node);
+
+// Get the JSON API URLs from the node's links field (robust, safe)
+let jsonApiUrl = null;
+if (node?.links && node.links.self && node.links.self.href) {
+  jsonApiUrl = node.links.self.href;
+} else if (node?.attributes?.links && node.attributes.links.self && node.attributes.links.self.href) {
+  jsonApiUrl = node.attributes.links.self.href;
+}
+
+// Extract base URLs for dev and prod environments
+const devUrl = jsonApiUrl ? jsonApiUrl.replace('cms.lib.umich.edu', 'cms.dev.lib.umich.edu') : null;
+const prodUrl = jsonApiUrl;
+
+const nodeType = node?.type || 'unknown';
+
+// Pretty print JSON data
+const nodeDataJson = JSON.stringify(node, null, 2);
 ---
 
 {
@@ -22,20 +38,34 @@ console.log(node);
             <div class="debug-line-value">{nid}</div>
         </div>
         <div class="debug-line">
+            <div class="debug-line-title">Type</div> 
+            <div class="debug-line-value">{nodeType}</div>
+        </div>
+        <div class="debug-line">
           <div class="debug-line-title">cms.dev</div> 
           <div class="debug-line-value">
-            <a href={`https://cms.dev.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=${nid}`}>
-                https://cms.dev.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]={nid}
+            <a href={devUrl} target="_blank" rel="noopener noreferrer">
+              {devUrl}
             </a>
           </div>
         </div>
         <div class="debug-line">
           <div class="debug-line-title">cms</div> 
           <div class="debug-line-value">
-            <a href={`https://cms.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]=${nid}`}>
-                https://cms.lib.umich.edu/jsonapi/node/page?filter[drupal_internal__nid][value]={nid}
+            <a href={prodUrl} target="_blank" rel="noopener noreferrer">
+              {prodUrl}
             </a>
-            </div>
+          </div>
+        </div>
+        <div class="debug-line debug-json-section">
+          <div class="debug-line-title">
+            <a href="#" class="json-toggle-link" id="json-toggle">
+              Page JSON Data <span class="toggle-icon">▶</span>
+            </a>
+          </div>
+          <div class="debug-line-value json-data-container" id="json-data">
+            <pre class="json-data">{nodeDataJson}</pre>
+          </div>
         </div>
       </div>
     </aside>

@@ -332,103 +332,82 @@ export const createBreadcrumb = async (node, allNodes, options = {}) => {
  * Process Drupal JSON:API node into a page-ready format
  */
 export const processDrupalNode = (node, included = []) => {
-  // Extract relationships from included data
-  const relationships = {};
+  // Helper function to recursively process relationships at any depth
+  const processRelationships = (item, depth = 0, maxDepth = 4) => {
+    if (!item || !item.relationships || depth >= maxDepth) {
+      return {};
+    }
 
-  if (node.relationships) {
-    Object.keys(node.relationships).forEach((key) => {
-      const relationship = node.relationships[key];
-
+    const relationships = {};
+    Object.keys(item.relationships).forEach((key) => {
+      const relationship = item.relationships[key];
       if (!relationship || !relationship.data) {
         return;
       }
 
-      // Handle single relationship
       if (Array.isArray(relationship.data)) {
-        // Handle multiple relationships (like panels)
+        // Handle array relationships
         relationships[key] = relationship.data.map((relData) => {
-          const relatedItem = included.find((item) => {
-            return item.id === relData.id && item.type === relData.type;
+          const relatedItem = included.find((includedItem) => {
+            return includedItem.id === relData.id && includedItem.type === relData.type;
           });
-          if (relatedItem) {
-            // Process nested relationships recursively
-            const nestedRelationships = {};
-            if (relatedItem.relationships) {
-              Object.keys(relatedItem.relationships).forEach((nestedKey) => {
-                const nestedRel = relatedItem.relationships[nestedKey];
-                if (!nestedRel || !nestedRel.data) {
-                  return;
-                }
-
-                if (Array.isArray(nestedRel.data)) {
-                  // Handle nested array relationships
-                  nestedRelationships[nestedKey] = nestedRel.data.map((nestedRelData) => {
-                    const nestedItem = included.find((item) => {
-                      return item.id === nestedRelData.id && item.type === nestedRelData.type;
-                    });
-                    return nestedItem ? { ...nestedItem.attributes, __typename: nestedItem.type } : null;
-                  }).filter(Boolean);
-                } else {
-                  // Handle single nested relationships
-                  const nestedItem = included.find((item) => {
-                    return item.id === nestedRel.data.id && item.type === nestedRel.data.type;
-                  });
-                  if (nestedItem) {
-                    nestedRelationships[nestedKey] = nestedItem.attributes;
-                  }
-                }
-              });
-            }
-
-            // For panels and other array relationships, preserve the full structure
-            // With __typename for component routing
-            const processedItem = {
-              __typename: relatedItem.type,
-              id: relatedItem.id,
-              ...relatedItem.attributes,
-              relationships: nestedRelationships
-            };
-
-            // Enhance hero panels with file entity data
-            if (relatedItem.type === 'paragraph--hero_panel') {
-              // Enhance hero images with file entity data
-              if (nestedRelationships.field_hero_images) {
-                nestedRelationships.field_hero_images = nestedRelationships.field_hero_images.map((img, idx) => {
-                  // Find the original media entity to get relationships
-                  const mediaEntity = included.find((item) => {
-                    return item.type === 'media--image'
-                      && item.attributes?.drupal_internal__mid === img.drupal_internal__mid;
-                  }
-                  );
-
-                  if (mediaEntity) {
-                    const fileEntity = findFileEntity(mediaEntity, included);
-                    const imageUrl = generateImageUrl(fileEntity, process.env.DRUPAL_URL || 'https://cms.lib.umich.edu');
-
-                    return {
-                      ...img,
-                      fileUrl: imageUrl,
-                      fileEntity: fileEntity?.attributes
-                    };
-                  }
-
-                  return img;
-                });
-              }
-            }
-
-            return processedItem;
+          if (!relatedItem) {
+            return null;
           }
-          return null;
+
+          return {
+            __typename: relatedItem.type,
+            id: relatedItem.id,
+            ...relatedItem.attributes,
+            relationships: processRelationships(relatedItem, depth + 1, maxDepth)
+          };
         }).filter(Boolean);
       } else {
-        const relatedItem = included.find((item) => {
-          return item.id === relationship.data.id && item.type === relationship.data.type;
+        // Handle single relationships
+        const relatedItem = included.find((includedItem) => {
+          return includedItem.id === relationship.data.id && includedItem.type === relationship.data.type;
         });
         if (relatedItem) {
-          relationships[key] = relatedItem.attributes;
+          relationships[key] = {
+            __typename: relatedItem.type,
+            id: relatedItem.id,
+            ...relatedItem.attributes,
+            relationships: processRelationships(relatedItem, depth + 1, maxDepth)
+          };
         }
       }
+    });
+    return relationships;
+  };
+
+  // Process all top-level relationships
+  const relationships = processRelationships(node);
+
+  // Special handling for hero panels to enhance images with file URLs
+  if (relationships.field_panels) {
+    relationships.field_panels = relationships.field_panels.map((panel) => {
+      if (panel.__typename === 'paragraph--hero_panel' && panel.relationships?.field_hero_images) {
+        panel.relationships.field_hero_images = panel.relationships.field_hero_images.map((img) => {
+          const mediaEntity = included.find((item) => {
+            return item.type === 'media--image'
+              && item.attributes?.drupal_internal__mid === img.drupal_internal__mid;
+          });
+
+          if (mediaEntity) {
+            const fileEntity = findFileEntity(mediaEntity, included);
+            const imageUrl = generateImageUrl(fileEntity, process.env.DRUPAL_URL || 'https://cms.lib.umich.edu');
+
+            return {
+              ...img,
+              fileUrl: imageUrl,
+              fileEntity: fileEntity?.attributes
+            };
+          }
+
+          return img;
+        });
+      }
+      return panel;
     });
   }
 
@@ -441,8 +420,7 @@ export const processDrupalNode = (node, included = []) => {
     slug: node.attributes.path?.alias || `/${node.attributes.drupal_internal__nid}`,
     title: node.attributes.title,
     drupal_internal__nid: node.attributes.drupal_internal__nid,
-    // Preserve included data for components that need it
-    included
+    links: node.links
   };
 };
 

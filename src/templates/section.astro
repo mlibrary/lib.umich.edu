@@ -12,6 +12,7 @@
  */
 import Layout from '../layouts/Layout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
 import Heading from '../reusable/heading.astro';
 import Panels from '../components/panels/Panels.astro';
 import transformNodePanels from '../utils/transform-node-panels';
@@ -19,7 +20,6 @@ import transformNodePanels from '../utils/transform-node-panels';
 // For now, create placeholder components for missing pieces
 // TODO: Port these components when needed:
 // - PageHeaderMini
-// - HorizontalNavigation  
 // - LocationAside
 // - Template/TemplateContent/TemplateSide (aside-layout)
 // - Html component for body rendering
@@ -64,6 +64,35 @@ const { bodyPanels, fullPanels } = transformNodePanels({ node });
 const showLocationAside = 
   relationships?.field_design_template?.field_machine_name === 'section_locaside' 
   && parentNode;
+
+// Build horizontal navigation items
+function buildNavigationItems() {
+  const createNavItem = (node: any) => ({
+    text: node.field_title_context || node.title,
+    to: node.fields?.slug || '/'
+  });
+
+  if (isRootPage) {
+    // For root pages, show current page + children
+    const items = [createNavItem(node)];
+    if (children && children.length > 0) {
+      items.push(...children.map(createNavItem));
+    }
+    return items;
+  } else {
+    // For child pages, show parent + siblings (including current)
+    const items = [];
+    if (parentNode) {
+      items.push(createNavItem(parentNode));
+    }
+    if (parents && parents.length > 0) {
+      items.push(...parents.map(createNavItem));
+    }
+    return items;
+  }
+}
+
+const navigationItems = buildNavigationItems();
 ---
 
 <Layout title={fieldHeaderTitle || fieldTitleContext || title}>
@@ -85,12 +114,11 @@ const showLocationAside =
     </div>
   )}
 
-  <!-- HorizontalNavigation - TODO: Create component -->
-  <nav class="horizontal-navigation" style={isRootPage ? 'border-top: none;' : ''}>
-    <div class="margins">
-      <div class="nav-placeholder">Horizontal Navigation</div>
-    </div>
-  </nav>
+  <!-- HorizontalNavigation -->
+  <HorizontalNavigation 
+    items={navigationItems}
+    style={isRootPage ? 'border-top: none;' : ''}
+  />
 
   <!-- Main Content -->
   {hasBody ? (

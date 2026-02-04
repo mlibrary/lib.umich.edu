@@ -7,7 +7,7 @@
 
 import 'isomorphic-fetch';
 
-const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/';
+const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.dev.lib.umich.edu/';
 const DRUPAL_REQUEST_TIMEOUT = parseInt(process.env.DRUPAL_REQUEST_TIMEOUT, 10) || 60000;
 
 /**
@@ -211,7 +211,18 @@ export const fetchDrupalPages = async () => {
  */
 export const fetchDrupalSectionPages = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  const url = `${baseUrl}/jsonapi/node/section_page?include=field_design_template`;
+  
+  // Keep includes minimal - only include what exists on ALL section pages
+  // Cannot include panel-specific fields like field_parent_card because
+  // not all panel types have that field (causes 400 error)
+  const includes = [
+    'field_design_template',
+    'field_parent_page',
+    'field_media_image',
+    'field_panels'
+  ].join(',');
+  
+  const url = `${baseUrl}/jsonapi/node/section_page?include=${includes}`;
 
   let allData = [];
   let allIncluded = [];
@@ -229,7 +240,46 @@ export const fetchDrupalSectionPages = async () => {
   return { data: allData, included: allIncluded };
 };
 
+/**
+ * Fetch all hours panel paragraphs with their full relationships
+ * This is needed because we can't include panel-specific fields in the section_page query
+ */
+export const fetchDrupalHoursPanels = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  
+  // Include all relationships needed for hours panels
+  const includes = [
+    'field_parent_card',
+    'field_parent_card.field_hours_open',
+    'field_parent_card.field_parent_location',
+    'field_parent_card.field_parent_location.field_hours_open',
+    'field_cards',
+    'field_cards.field_hours_open',
+    'field_cards.field_parent_location',
+    'field_cards.field_parent_location.field_hours_open',
+    'field_cards.field_room_building',
+    'field_cards.field_room_building.field_hours_open',
+    'field_cards.field_room_building.field_parent_location',
+    'field_cards.field_room_building.field_parent_location.field_hours_open'
+  ].join(',');
+  
+  const url = `${baseUrl}/jsonapi/paragraph/hours_panel?include=${includes}`;
 
+  let allData = [];
+  let allIncluded = [];
+  let nextUrl = url;
+
+  while (nextUrl) {
+    const response = await fetchWithRetry(nextUrl);
+    allData = allData.concat(response.data);
+    if (response.included) {
+      allIncluded = allIncluded.concat(response.included);
+    }
+    nextUrl = response.links?.next?.href || null;
+  }
+
+  return { data: allData, included: allIncluded };
+};
 
 /**
  * Fetch all buildings from Drupal JSON:API

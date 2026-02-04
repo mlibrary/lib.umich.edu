@@ -1,0 +1,130 @@
+---
+/**
+ * HorizontalNavigation Component
+ * 
+ * Displays a horizontal navigation menu with different styles for desktop and mobile
+ */
+import { SPACING, MEDIA_QUERIES } from '../../reusable/utils.js';
+
+interface NavigationItem {
+  to: string;
+  text: string;
+}
+
+interface Props {
+  items?: NavigationItem[];
+  [key: string]: any;
+}
+
+const { items, ...rest } = Astro.props;
+
+if (!items) {
+  return null;
+}
+
+// Get current path for active link detection
+const currentPath = Astro.url.pathname;
+
+function isActive(to: string): boolean {
+  // Remove trailing slash for comparison
+  const normalizedCurrent = currentPath.replace(/\/$/, '');
+  const normalizedTo = to.replace(/\/$/, '');
+  return normalizedCurrent === normalizedTo;
+}
+---
+
+<nav
+  aria-label="Local"
+  {...rest}
+>
+  <div class="margins">
+    <ol>
+      {items.map(({ to, text }) => (
+        <li>
+          <a
+            href={to}
+            class:list={['nav-link', { active: isActive(to) }]}
+          >
+            {text}
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</nav>
+
+<style define:vars={{ 
+  spacingM: SPACING.M,
+  spacingL: SPACING.L,
+  spacing2XL: SPACING['2XL']
+}}>
+  nav {
+    background: var(--color-blue-100);
+    border-bottom: solid 1px var(--color-neutral-100);
+    margin-bottom: var(--spacingL);
+    z-index: 1;
+  }
+
+  .margins {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .margins {
+      padding: 0 var(--spacing2XL);
+    }
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    border-top: solid 1px var(--color-neutral-100);
+  }
+
+  @media only screen and (min-width: 641px) {
+    li {
+      border: none;
+      display: inline-block;
+      margin-right: var(--spacingL);
+    }
+  }
+
+  /* Mobile styles (small screen) */
+  .nav-link {
+    display: block;
+    padding: var(--spacingM);
+    padding-left: calc(var(--spacingM) - 4px);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .nav-link.active {
+    background: var(--color-teal-100);
+    border-left: solid 4px var(--color-teal-400);
+    color: var(--color-teal-400);
+    font-weight: 700;
+  }
+
+  /* Desktop styles (large screen) */
+  @media only screen and (min-width: 641px) {
+    .nav-link {
+      display: inline-block;
+      padding: var(--spacingL);
+      padding-bottom: calc(var(--spacingL) - 4px);
+    }
+
+    .nav-link.active {
+      background: transparent;
+      border-left: none;
+      border-bottom: solid 4px var(--color-teal-400);
+      color: inherit;
+      font-weight: 700;
+    }
+  }
+</style>

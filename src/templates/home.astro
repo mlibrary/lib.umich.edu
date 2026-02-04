@@ -8,12 +8,12 @@ import Panels from '../components/panels/Panels.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
 
 const { node } = Astro.props;
-const { title, relationships, included, drupal_internal__nid } = node;
+const { title, relationships, drupal_internal__nid } = node;
 const panels = relationships?.field_panels || [];
 
 ---
 <Layout title={title}>
-  <DebugPanel nid={drupal_internal__nid}></DebugPanel>
+  <DebugPanel node={node}></DebugPanel>
   <!-- Debug info -->
   <!-- <div style="background: yellow; padding: 1rem; margin: 1rem;">
     <strong>Debug:</strong> Found {panels?.length || 0} panels
@@ -24,5 +24,5 @@ const panels = relationships?.field_panels || [];
     ))}
   </div> -->
   
-  <Panels data={panels} included={included || []} />
+  <Panels data={panels} />
 </Layout>

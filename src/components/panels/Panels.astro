@@ -17,10 +17,9 @@ import CustomPanel from './CustomPanel.astro';
 
 interface Props {
   data: any[];
-  included?: any[];
 }
 
-const { data, included = [] } = Astro.props;
+const { data } = Astro.props;
 
 if (!data || data.length === 0) {
   // Return nothing if no panels
@@ -43,11 +42,11 @@ const hoursPanel = data.find((panel: any) => panel.__typename === 'paragraph__ho
       // Render appropriate panel based on type
       switch (type) {
         case 'paragraph--hours_panel_lite':
-          return <HoursLitePanel data={panel} included={included} key={id} />;
+          return <HoursLitePanel data={panel} key={id} />;
         case 'paragraph--link_panel':
           return <LinkPanel data={panel} key={id} />;
         case 'paragraph--group_panel':
-          return <GroupPanel data={panel} included={included} key={id} />;
+          return <GroupPanel data={panel} key={id} />;
         case 'paragraph--card_panel':
            return <CardPanel data={panel} key={id} />;
         case 'paragraph--text_panel':

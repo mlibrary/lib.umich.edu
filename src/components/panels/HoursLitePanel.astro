@@ -7,225 +7,72 @@ import Icon from '../Icon.astro';
 
 interface Props {
   data: any; 
-  included?: any[]; 
 }
 
-const { data, included = [] } = Astro.props;
+const { data } = Astro.props;
 
-const processHoursData = (cards, included) => {
-  if (!cards || cards.length === 0) {
-    return [];
-  }
-
-  return cards.map((node) => {
-    return {
-      isOpen: false, // Will be updated by client-side code
-      subLabel: 'TODAY: Loading hours...',
-      subText: 'TODAY: Loading hours...',
-      text: node.title,
-      to: node.fields.slug,
-      node: node
-    };
-  }).filter(Boolean);
-};
-
-const hoursPanel = included?.find(item => 
-  item.type === 'paragraph--hours_panel_lite' && 
-  item.relationships?.field_cards?.data?.length > 0
-);
-
-let cards = [];
-
-if (hoursPanel?.relationships?.field_cards?.data) {
-  cards = Array.isArray(hoursPanel.relationships.field_cards.data) ? hoursPanel.relationships.field_cards.data : [hoursPanel.relationships.field_cards.data];
-} else if (data.relationships?.field_cards?.data) {
-  cards = Array.isArray(data.relationships.field_cards.data) ? data.relationships.field_cards.data : [data.relationships.field_cards.data];
+// Get cards from relationships - already resolved by recursive processing
+let cards: any[] = [];
+if (data.relationships?.field_cards) {
+  cards = Array.isArray(data.relationships.field_cards) 
+    ? data.relationships.field_cards 
+    : [data.relationships.field_cards];
 }
 
-const processedCards = cards.map(cardRef => {
-  const cardNode = included?.find(item => item.id === cardRef.id);
-  if (!cardNode) return null;
+const processedCards = cards.map((card: any) => {
+  if (!card) return null;
   
   return {
-    id: cardNode.id,
-    title: cardNode.attributes?.field_title || cardNode.attributes?.title,
-    fields: {
-      slug: `/locations-and-hours/${cardNode.attributes?.field_slug || cardNode.attributes?.title?.toLowerCase().replace(/\s+/g, '-') || 'location'}`
-    },
-    attributes: cardNode.attributes,
-    relationships: cardNode.relationships
+    id: card.id,
+    title: card.field_title || card.title,
+    slug: `/locations-and-hours/${card.field_slug || card.title?.toLowerCase().replace(/\s+/g, '-') || 'location'}`,
+    relationships: card.relationships || {}
   };
 }).filter(Boolean);
 
-const processedHours = processHoursData(processedCards, included);
+const processedHours = processedCards.map((card: any) => ({
+  isOpen: false, // Will be updated by client-side code
+  subLabel: 'TODAY: Loading hours...',
+  subText: 'TODAY: Loading hours...',
+  text: card.title,
+  to: card.slug
+}));
 
 // Prepare location data for client-side hours calculation
-const locationDataForClient = processedCards.map(card => {
-  // Find the actual card node in included data to get full relationship structure
-  const fullCardNode = included?.find(item => item.id === card.id);
-  
-  // Create the node structure expected by the hours utility
-  const nodeForHours = {
+// The relationships are already resolved recursively, so we can use them directly
+const locationDataForClient = processedCards.map((card: any) => {
+  const nodeForHours: any = {
     id: card.id,
     title: card.title,
     field_display_hours_: true,
-    // Determine if hours are different from building
-    field_hours_different_from_build: fullCardNode?.relationships?.field_hours_open ? true : false,
+    field_hours_different_from_build: card.relationships?.field_hours_open ? true : false,
     relationships: {}
   };
 
-  // Map the relationships correctly
-  if (fullCardNode?.relationships) {
-    // Direct hours relationship
-    if (fullCardNode.relationships.field_hours_open?.data) {
-      nodeForHours.relationships.field_hours_open = Array.isArray(fullCardNode.relationships.field_hours_open.data) 
-        ? fullCardNode.relationships.field_hours_open.data.map(ref => {
-            const hoursEntity = included?.find(item => item.id === ref.id);
-            if (!hoursEntity) return ref;
-            
-            // Map the hours entity properly for the hours utility
-            return {
-              __typename: hoursEntity.type,
-              ...hoursEntity.attributes,
-              // Ensure all the fields the utility expects are available
-              id: hoursEntity.id,
-              type: hoursEntity.type
-            };
-          })
-        : [(() => {
-            const hoursEntity = included?.find(item => item.id === fullCardNode.relationships.field_hours_open.data.id);
-            if (!hoursEntity) return fullCardNode.relationships.field_hours_open.data;
-            
-            return {
-              __typename: hoursEntity.type,
-              ...hoursEntity.attributes,
-              id: hoursEntity.id,
-              type: hoursEntity.type
-            };
-          })()];
+  if (card.relationships) {
+    // Direct hours relationship - already resolved
+    if (card.relationships.field_hours_open) {
+      nodeForHours.relationships.field_hours_open = Array.isArray(card.relationships.field_hours_open)
+        ? card.relationships.field_hours_open
+        : [card.relationships.field_hours_open];
     }
 
-    // Parent location relationship
-    if (fullCardNode.relationships.field_parent_location?.data) {
-      const parentLocationId = fullCardNode.relationships.field_parent_location.data.id;
-      const parentLocationEntity = included?.find(item => item.id === parentLocationId);
-      if (parentLocationEntity) {
-        nodeForHours.relationships.field_parent_location = {
-          ...parentLocationEntity.attributes,
-          field_display_hours_: parentLocationEntity.attributes?.field_display_hours_ || false,
-          relationships: {}
-        };
-        
-        // Parent location's hours
-        if (parentLocationEntity.relationships?.field_hours_open?.data) {
-          nodeForHours.relationships.field_parent_location.relationships.field_hours_open = 
-            Array.isArray(parentLocationEntity.relationships.field_hours_open.data)
-              ? parentLocationEntity.relationships.field_hours_open.data.map(ref => {
-                  const hoursEntity = included?.find(item => item.id === ref.id);
-                  if (!hoursEntity) return ref;
-                  
-                  return {
-                    __typename: hoursEntity.type,
-                    ...hoursEntity.attributes,
-                    id: hoursEntity.id,
-                    type: hoursEntity.type
-                  };
-                })
-              : [(() => {
-                  const hoursEntity = included?.find(item => item.id === parentLocationEntity.relationships.field_hours_open.data.id);
-                  if (!hoursEntity) return parentLocationEntity.relationships.field_hours_open.data;
-                  
-                  return {
-                    __typename: hoursEntity.type,
-                    ...hoursEntity.attributes,
-                    id: hoursEntity.id,
-                    type: hoursEntity.type
-                  };
-                })()];
-        }
-      }
+    // Parent location relationship - already resolved with nested relationships
+    if (card.relationships.field_parent_location) {
+      nodeForHours.relationships.field_parent_location = {
+        ...card.relationships.field_parent_location,
+        field_display_hours_: card.relationships.field_parent_location.field_display_hours_ || false,
+        relationships: card.relationships.field_parent_location.relationships || {}
+      };
     }
 
-    // Room building relationship
-    if (fullCardNode.relationships.field_room_building?.data) {
-      const buildingId = fullCardNode.relationships.field_room_building.data.id;
-      const buildingEntity = included?.find(item => item.id === buildingId);
-      if (buildingEntity) {
-        nodeForHours.relationships.field_room_building = {
-          ...buildingEntity.attributes,
-          field_display_hours_: buildingEntity.attributes?.field_display_hours_ || false,
-          relationships: {}
-        };
-        
-        // Building's hours
-        if (buildingEntity.relationships?.field_hours_open?.data) {
-          nodeForHours.relationships.field_room_building.relationships.field_hours_open = 
-            Array.isArray(buildingEntity.relationships.field_hours_open.data)
-              ? buildingEntity.relationships.field_hours_open.data.map(ref => {
-                  const hoursEntity = included?.find(item => item.id === ref.id);
-                  if (!hoursEntity) return ref;
-                  
-                  return {
-                    __typename: hoursEntity.type,
-                    ...hoursEntity.attributes,
-                    id: hoursEntity.id,
-                    type: hoursEntity.type
-                  };
-                })
-              : [(() => {
-                  const hoursEntity = included?.find(item => item.id === buildingEntity.relationships.field_hours_open.data.id);
-                  if (!hoursEntity) return buildingEntity.relationships.field_hours_open.data;
-                  
-                  return {
-                    __typename: hoursEntity.type,
-                    ...hoursEntity.attributes,
-                    id: hoursEntity.id,
-                    type: hoursEntity.type
-                  };
-                })()];
-        }
-
-        // Building's parent location
-        if (buildingEntity.relationships?.field_parent_location?.data) {
-          const buildingParentId = buildingEntity.relationships.field_parent_location.data.id;
-          const buildingParentEntity = included?.find(item => item.id === buildingParentId);
-          if (buildingParentEntity) {
-            nodeForHours.relationships.field_room_building.relationships.field_parent_location = {
-              ...buildingParentEntity.attributes,
-              field_display_hours_: buildingParentEntity.attributes?.field_display_hours_ || false,
-              relationships: {}
-            };
-
-            // Building parent's hours
-            if (buildingParentEntity.relationships?.field_hours_open?.data) {
-              nodeForHours.relationships.field_room_building.relationships.field_parent_location.relationships.field_hours_open = 
-                Array.isArray(buildingParentEntity.relationships.field_hours_open.data)
-                  ? buildingParentEntity.relationships.field_hours_open.data.map(ref => {
-                      const hoursEntity = included?.find(item => item.id === ref.id);
-                      if (!hoursEntity) return ref;
-                      
-                      return {
-                        __typename: hoursEntity.type,
-                        ...hoursEntity.attributes,
-                        id: hoursEntity.id,
-                        type: hoursEntity.type
-                      };
-                    })
-                  : [(() => {
-                      const hoursEntity = included?.find(item => item.id === buildingParentEntity.relationships.field_hours_open.data.id);
-                      if (!hoursEntity) return buildingParentEntity.relationships.field_hours_open.data;
-                      
-                      return {
-                        __typename: hoursEntity.type,
-                        ...hoursEntity.attributes,
-                        id: hoursEntity.id,
-                        type: hoursEntity.type
-                      };
-                    })()];
-            }
-          }
-        }
-      }
+    // Room building relationship - already resolved with nested relationships
+    if (card.relationships.field_room_building) {
+      nodeForHours.relationships.field_room_building = {
+        ...card.relationships.field_room_building,
+        field_display_hours_: card.relationships.field_room_building.field_display_hours_ || false,
+        relationships: card.relationships.field_room_building.relationships || {}
+      };
     }
   }
 
@@ -241,8 +88,8 @@ const locationDataForClient = processedCards.map(card => {
       </div>
     ) : (
       <ol class="hours-list" data-hours-list>
-        {processedHours.map((hour, index) => (
-          <li class="hours-item" key={hour.to} data-location-index={index}>
+        {processedHours.map((hour: any, index: number) => (
+          <li class="hours-item" data-location-index={index}>
             <span class="hours-icon">
               <Icon icon="access_time" style="color: var(--color-indigo-300);" />
             </span>
@@ -275,7 +122,6 @@ const locationDataForClient = processedCards.map(card => {
         const hoursModule = await import('/src/utils/hours.js');
         const { displayHours, getHoursFromNode, findHoursSetByNodeForNow } = hoursModule;
         
-        // Get current time in Eastern timezone (same as original Gatsby component)
         const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
         
         locationDataForClient.forEach((node, index) => {
@@ -283,7 +129,7 @@ const locationDataForClient = processedCards.map(card => {
           const hoursText = locationItem?.querySelector('[data-hours-text]');
           
           if (!hoursText || !node) return;
-          
+          console.log(node);
           const hoursFromNode = getHoursFromNode({ node });
           
           if (hoursFromNode) {

@@ -33,7 +33,7 @@ function getRow(node: any, nowWithWeekOffset: Date, isParent: boolean) {
   const mainHoursRow = {
     label: rowHeadingText,
     text: rowHeadingText,
-    to: node.fields.slug
+    to: node.slug
   };
 
   for (let i = 0; i < 7; i++) {
@@ -107,6 +107,7 @@ const { field_body: fieldBody } = data;
 // Initial table data (will be updated client-side based on weekOffset)
 const initialTableData = transformTableData(data, new Date());
 ---
+<HoursPanelDateViewer />
 
 <section 
   class="hours-panel" 
@@ -114,6 +115,7 @@ const initialTableData = transformTableData(data, new Date());
   data-hours-panel
   data-node={JSON.stringify(data)}
 >
+
   <div class="margins">
     <Heading 
       level={2} 
@@ -127,7 +129,6 @@ const initialTableData = transformTableData(data, new Date());
     )}
     
     <!-- Date Viewer - Interactive island -->
-    <HoursPanelDateViewer client:load />
     
     <!-- Hours Table - Will be updated via client-side script -->
     <div id={`hours-table-${createSlug(title)}`}>
