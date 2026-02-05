@@ -97,18 +97,13 @@ if (node.relationships && node.relationships.field_panels) {
 -->
 <Layout title={fieldTitleContext || title}>
   <DebugPanel node={node}></DebugPanel>
-  <!-- TemplateLayout wrapper -->
   <div class="template-layout">
-    <!-- Margins container -->
     <div class="margins">
-      <!-- Template grid -->
       <div class="template-grid">
-        <!-- Top section (breadcrumb) -->
         <div class="top-section">
           <Breadcrumb data={breadcrumbData} />
         </div>
         
-        <!-- Side section (navigation) -->
         <aside class="side-section">
           {/* TODO: SideNavigation component */}
           {fieldLocalNavigation && (
@@ -124,14 +119,11 @@ if (node.relationships && node.relationships.field_panels) {
           </div>
         </aside>
         
-        <!-- Content section -->
         <main class="content-section">
-          <!-- Main heading -->
           <h1 class="page-heading">
             {fieldTitleContext}
           </h1>
           
-          <!-- Body content -->
           {body && (
             <div class="body-content" set:html={body} />
           )}
@@ -156,12 +148,6 @@ if (node.relationships && node.relationships.field_panels) {
   /* Template Layout Styles (matching Gatsby CSS) */
   .template-layout {
     /* Base template layout styles */
-  }
-  
-  .margins {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1rem;
   }
   
   .template-grid {

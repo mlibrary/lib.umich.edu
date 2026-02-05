@@ -1,4 +1,7 @@
 ---
+import Icon from './Icon.astro';
+import Link from '../reusable/link.astro';
+
 /**
  * Breadcrumb Component - Converted to Astro
  * Original: src/components/breadcrumb.js
@@ -34,12 +37,12 @@ if (!parsedData || parsedData.length === 0) {
     {parsedData.map(({ text, to }, index) => (
       <li class="breadcrumb-item">
         {to ? (
-          <a href={to} class="breadcrumb-link">{text}</a>
+          <Link href={to}>{text}</Link>
         ) : (
           <span class="breadcrumb-text">{text}</span>
         )}
         {index < parsedData.length - 1 && (
-          <span class="breadcrumb-separator" aria-hidden="true">/</span>
+          <Icon icon='navigate_next' />
         )}
       </li>
     ))}
@@ -48,42 +51,25 @@ if (!parsedData || parsedData.length === 0) {
 
 <style>
   .breadcrumb {
-    margin-bottom: 1rem;
+    padding-bottom: var(--spacing-m);
+    padding-top: var(--spacing-xl);
   }
   
   .breadcrumb-list {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     list-style: none;
-    padding: 0;
-    margin: 0;
-    gap: 0.5rem;
   }
   
   .breadcrumb-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-  }
-  
-  .breadcrumb-link {
-    color: var(--color-neutral-400, #666);
-    text-decoration: none;
-  }
-  
-  .breadcrumb-link:hover {
-    color: var(--color-blue-400, #00274C);
-    text-decoration: underline;
+    display: inline-block;
+    margin-right: var(--spacing-2xs);
   }
   
   .breadcrumb-text {
-    color: var(--color-neutral-400, #666);
+    color: var(--color-neutral-400);
   }
   
   .breadcrumb-separator {
-    color: var(--color-neutral-300, #ccc);
+    color: var(--color-neutral-300);
     user-select: none;
   }
 </style>

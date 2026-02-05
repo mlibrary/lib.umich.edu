@@ -27,6 +27,11 @@ button {
   cursor: pointer;
 }
 
+a{
+  color: inherit;
+  text-decoration: none;
+}
+
 /* Focus styles */
 /* disable focus styles for clicking elements but keep the tab focus */
 *:focus {

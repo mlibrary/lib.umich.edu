@@ -8,6 +8,7 @@
 import PanelTemplate from './PanelTemplate.astro';
 import Icon from '../Icon.astro';
 import Heading from '../../reusable/heading.astro';
+import Link from '../../reusable/link.astro';
 
 interface Props {
   data: any;
@@ -54,19 +55,19 @@ const hasTopBorder = data.field_border === 'yes';
         const linkData = getLinkData(link);
         return (
           <li>
-            <a 
+            <Link 
               href={linkData.to} 
               class="link-default"
             >
               {linkData.text}
-            </a>
+            </Link>
           </li>
         );
       })}
     </ol>
     
     {moreLink && (
-      <a 
+      <Link 
         href={moreLink.to} 
         class="link-default"
       >
@@ -82,23 +83,23 @@ const hasTopBorder = data.field_border === 'yes';
     <ol class="db-links-grid">
       {links.map((link: any, index: number) => (
         <li class="db-link-item">
-          <a 
+          <Link kind="list"
             href={link.uri} 
             class="db-link"
           >
             <span class="db-link-text">{link.title}</span>
-          </a>
+          </Link>
         </li>
       ))}
     </ol>
     
     {data.field_view_all && (
-      <a 
+      <Link
         href={data.field_view_all.uri} 
         class="link-default view-all-link"
       >
         {data.field_view_all.title}
-      </a>
+      </Link>
     )}
   </section>
 )}
@@ -128,18 +129,6 @@ const hasTopBorder = data.field_border === 'yes';
 )}
 
 <style>
-
-  /* Link styles (from LINK_STYLES) */
-  .link-default {
-    color: var(--color-teal-400);
-    text-decoration: none;
-    box-shadow: inset 0 -1px var(--color-teal-400);
-  }
-
-  .link-default:hover {
-    box-shadow: inset 0 -2px var(--color-teal-400);
-  }
-
   .link-description {
     font-size: 1.125rem;
     color: var(--color-neutral-400);
@@ -215,7 +204,6 @@ const hasTopBorder = data.field_border === 'yes';
     display: block;
     padding-bottom: var(--spacing-s);
     color: var(--color-neutral-400);
-    text-decoration: none;
   }
 
   .db-link:hover {
