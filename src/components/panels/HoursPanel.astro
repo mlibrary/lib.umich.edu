@@ -5,7 +5,6 @@
  */
 import Heading from '../../reusable/heading.astro';
 import HoursTable from '../HoursTable.astro';
-import HoursPanelDateViewer from './HoursPanelDateViewer.astro';
 import { displayHours } from '../../utils/hours';
 
 interface Props {
@@ -107,8 +106,6 @@ const { field_body: fieldBody } = data;
 // Initial table data (will be updated client-side based on weekOffset)
 const initialTableData = transformTableData(data, new Date());
 ---
-<HoursPanelDateViewer />
-
 <section 
   class="hours-panel" 
   id={createSlug(title)}
@@ -127,8 +124,6 @@ const initialTableData = transformTableData(data, new Date());
     {fieldBody && (
       <div class="hours-panel-body" set:html={fieldBody.processed} />
     )}
-    
-    <!-- Date Viewer - Interactive island -->
     
     <!-- Hours Table - Will be updated via client-side script -->
     <div id={`hours-table-${createSlug(title)}`}>

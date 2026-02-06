@@ -96,7 +96,7 @@ const hasTopBorder = data.field_border === 'yes';
     {data.field_view_all && (
       <Link
         href={data.field_view_all.uri} 
-        class="link-default view-all-link"
+        class="view-all-link"
       >
         {data.field_view_all.title}
       </Link>
@@ -182,8 +182,24 @@ const hasTopBorder = data.field_border === 'yes';
   }
 
   /* Database Link List styles */
-  .database-link-list {
-    margin-bottom: var(--spacing-xl);
+  @media only screen and (min-width: 920px) {
+    :global(.panel-group-50-container) > *:not(:last-child) {
+      border: none;
+      border-right: solid 1px var(--color-neutral-100);
+      padding-right: 3rem;
+    }
+    :global(.panel-group-50-container) > * {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
+  }
+  :global(.panel-group-50-container) > *:not(:last-child) {
+      border-bottom: solid 1px var(--color-neutral-100);
+  }
+
+  :global(.panel-group-50-container) > * {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
   }
 
   .db-links-grid {
@@ -219,7 +235,6 @@ const hasTopBorder = data.field_border === 'yes';
   }
 
   .view-all-link {
-    margin-top: var(--spacing-m);
     display: inline-block;
   }
 
@@ -271,7 +286,7 @@ const hasTopBorder = data.field_border === 'yes';
 
 
   @media only screen and (min-width: 920px) {
-      .panel-group-50-container >*:not(:last-child) {
+      :global(.panel-group-50-container) > *:not(:last-child) {
           border: none;
           border-right: solid 1px var(--color-neutral-100);
           padding-right: 3rem;
@@ -279,7 +294,7 @@ const hasTopBorder = data.field_border === 'yes';
   }
 
   @media only screen and (min-width: 920px) {
-    .panel-group-50-container >* {
+    :global(.panel-group-50-container) > * {
         margin-bottom: 2.5rem;
         padding-bottom: 2.5rem;
     }

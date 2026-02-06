@@ -129,7 +129,6 @@ const locationDataForClient = processedCards.map((card: any) => {
           const hoursText = locationItem?.querySelector('[data-hours-text]');
           
           if (!hoursText || !node) return;
-          console.log(node);
           const hoursFromNode = getHoursFromNode({ node });
           
           if (hoursFromNode) {

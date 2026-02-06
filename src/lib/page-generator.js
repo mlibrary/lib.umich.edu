@@ -355,10 +355,19 @@ export const processDrupalNode = (node, included = []) => {
             return null;
           }
 
+          // Create slug from path.alias (matching Gatsby's fields structure)
+          const slug = relatedItem.attributes?.path?.alias || `/${relatedItem.attributes?.drupal_internal__nid || relatedItem.id}`;
+
           return {
             __typename: relatedItem.type,
             id: relatedItem.id,
             ...relatedItem.attributes,
+            // Add fields object to match Gatsby structure
+            fields: {
+              slug,
+              title: relatedItem.attributes?.title
+            },
+            slug, // Also add slug at top level for convenience
             relationships: processRelationships(relatedItem, depth + 1, maxDepth)
           };
         }).filter(Boolean);
@@ -368,10 +377,19 @@ export const processDrupalNode = (node, included = []) => {
           return includedItem.id === relationship.data.id && includedItem.type === relationship.data.type;
         });
         if (relatedItem) {
+          // Create slug from path.alias (matching Gatsby's fields structure)
+          const slug = relatedItem.attributes?.path?.alias || `/${relatedItem.attributes?.drupal_internal__nid || relatedItem.id}`;
+
           relationships[key] = {
             __typename: relatedItem.type,
             id: relatedItem.id,
             ...relatedItem.attributes,
+            // Add fields object to match Gatsby structure
+            fields: {
+              slug,
+              title: relatedItem.attributes?.title
+            },
+            slug, // Also add slug at top level for convenience
             relationships: processRelationships(relatedItem, depth + 1, maxDepth)
           };
         }

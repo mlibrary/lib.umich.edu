@@ -26,18 +26,19 @@ if (!data || data.length === 0) {
 }
 
 // Find hours panel for date viewer (if exists)
-const hoursPanel = data.find((panel: any) => panel.__typename === 'paragraph__hours_panel');
+const hoursPanel = data.find((panel: any) => panel.__typename === 'paragraph--hours_panel');
 ---
 
 {data && data.length > 0 && (
   <>
     {hoursPanel && (
-      <HoursPanelDateViewer data={hoursPanel} />
+      <HoursPanelDateViewer/>
     )}
     
     {data.map((panel: any) => {
       const type = panel.__typename;
       const { id } = panel;
+      console.log(type);
       
       // Render appropriate panel based on type
       switch (type) {
