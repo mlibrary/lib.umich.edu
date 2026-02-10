@@ -12,6 +12,7 @@
  */
 import Layout from '../layouts/Layout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import PageHeaderMini from '../components/PageHeaderMini.astro';
 import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
 import Heading from '../reusable/heading.astro';
 import Panels from '../components/panels/Panels.astro';
@@ -19,7 +20,6 @@ import transformNodePanels from '../utils/transform-node-panels';
 
 // For now, create placeholder components for missing pieces
 // TODO: Port these components when needed:
-// - PageHeaderMini
 // - LocationAside
 // - Template/TemplateContent/TemplateSide (aside-layout)
 // - Html component for body rendering
@@ -35,20 +35,27 @@ const { node, parents = [], children = [] } = Astro.props;
 
 // Extract node data
 const {
-  title,
-  field_title_context: fieldTitleContext,
-  field_header_title: fieldHeaderTitle,
-  field_root_page_: fieldRootPage,
-  body,
-  fields,
   relationships,
-  drupal_internal__nid: drupalInternalNid
 } = node;
+
+const{
+  fields
+} = node.relationships?.field_design_template || {};
+
+const { 
+  title,
+  body,
+  field_header_title: fieldHeaderTitle,
+  field_title_context: fieldTitleContext,
+  field_root_page_: fieldRootPage,
+ } = node.attributes || {};
+
+console.log(node);
 
 // Parent node for non-root pages
 const parentNode = relationships?.field_parent_page?.[0];
 const { breadcrumb } = fields || {};
-const isRootPage = Boolean(fieldRootPage);
+let isRootPage = Boolean(fieldRootPage);
 const pageHeaderImage = relationships?.field_media_image;
 const hasBody = body?.processed && body.processed.length > 0;
 
@@ -93,6 +100,7 @@ function buildNavigationItems() {
 }
 
 const navigationItems = buildNavigationItems();
+console.log(isRootPage);
 ---
 
 <Layout title={fieldHeaderTitle || fieldTitleContext || title}>
@@ -105,13 +113,10 @@ const navigationItems = buildNavigationItems();
       image={pageHeaderImage}
     />
   ) : (
-    <!-- PageHeaderMini - TODO: Create component -->
-    <div class="page-header-mini">
-      <div class="margins">
-        {breadcrumb && <div class="breadcrumb-placeholder">Breadcrumb: {breadcrumb}</div>}
-        <h1 class="page-title">{fieldHeaderTitle}</h1>
-      </div>
-    </div>
+    <PageHeaderMini
+      breadcrumb={breadcrumb}
+      title={fieldHeaderTitle}
+    />
   )}
 
   <!-- HorizontalNavigation -->
