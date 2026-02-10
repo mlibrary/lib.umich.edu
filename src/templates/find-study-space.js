@@ -839,7 +839,7 @@ NoFassResults.propTypes = {
 };
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
+export const Head = ({ data, location }) => {
   let node = null;
 
   if (data.page) {
@@ -848,7 +848,7 @@ export const Head = ({ data }) => {
     node = data.room;
   }
 
-  return <SearchEngineOptimization data={node} />;
+  return <SearchEngineOptimization data={node} location={location} />;
 };
 /* eslint-enable react/prop-types */
 
