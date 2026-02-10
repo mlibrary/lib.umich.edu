@@ -60,8 +60,8 @@ FullWidthTemplate.propTypes = {
 };
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
-  return <SearchEngineOptimization data={getNode(data)} />;
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={getNode(data)} location={location} />;
 };
 /* eslint-enable react/prop-types */
 

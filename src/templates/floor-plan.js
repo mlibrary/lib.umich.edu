@@ -122,8 +122,8 @@ FloorPlanTemplate.propTypes = {
 export default FloorPlanTemplate;
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
-  return <SearchEngineOptimization data={data.floorPlan} />;
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={data.floorPlan} location={location} />;
 };
 /* eslint-enable react/prop-types */
 
