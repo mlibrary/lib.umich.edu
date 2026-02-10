@@ -226,11 +226,8 @@ const dropdownSideWidth = '24rem';
     autoSelectFirst() {
       // Always select the first item with children (index 0) like React initialState: { panelOpen: 0 }
       if (this.buttons.length > 0) {
-        console.log('Auto-selecting first panel for container:', this.container);
         this.openPanel(this.buttons[0], 0);
-      } else {
-        console.log('No buttons found for auto-selection in container:', this.container);
-      }
+      } 
     }
 
     handleButtonClick(button, index) {
@@ -263,13 +260,11 @@ const dropdownSideWidth = '24rem';
     }
 
     openPanel(button, index) {
-      console.log('Opening panel index:', index, 'in container:', this.container);
       // Update button state
       button.setAttribute('aria-expanded', 'true');
       
       // Show the corresponding content panel - scope to this container only
       const contentPanel = this.container.querySelector(`[data-panel-content-index="${index}"]`);
-      console.log('Found content panel:', contentPanel);
       if (contentPanel) {
         contentPanel.hidden = false;
         this.hidePlaceholder();
@@ -292,10 +287,8 @@ const dropdownSideWidth = '24rem';
 
     // Method to reset to first item (for external use when dropdown opens/reopens)
     resetToFirst() {
-      console.log('ResetToFirst called for container:', this.container);
       // If already on first panel, just make sure it's visible (no close/reopen)
       if (this.currentOpenPanel === 0) {
-        console.log('Already on first panel, just ensuring visibility');
         const contentPanel = this.container.querySelector(`[data-panel-content-index="0"]`);
         if (contentPanel) {
           contentPanel.hidden = false;
@@ -304,7 +297,6 @@ const dropdownSideWidth = '24rem';
         return;
       }
       // Otherwise, transition to first panel
-      console.log('Transitioning to first panel');
       this.closeAllPanels();
       this.autoSelectFirst();
     }

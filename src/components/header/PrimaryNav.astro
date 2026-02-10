@@ -63,7 +63,6 @@ const { items } = Astro.props;
 
   // Function to reset NavPanel to first item
   function resetNavPanelInDropdown(dropdown: HTMLElement) {
-    console.log('Resetting NavPanel in dropdown:', dropdown);
     // Wait a bit for NavPanel to be initialized
     setTimeout(() => {
       const navPanelContainer = dropdown.querySelector('.nav-panel-container');
@@ -72,13 +71,10 @@ const { items } = Astro.props;
         const panelInstance = (window as any).navPanels.find(
           (panel: any) => panel.container === navPanelContainer
         );
-        console.log('Found panel instance:', panelInstance);
         if (panelInstance && panelInstance.resetToFirst) {
           panelInstance.resetToFirst();
         }
-      } else {
-        console.log('NavPanel not found or not initialized yet');
-      }
+      } 
     }, 0);
   }
 

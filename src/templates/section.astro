@@ -50,7 +50,6 @@ const {
   field_root_page_: fieldRootPage,
  } = node.attributes || {};
 
-console.log(node);
 
 // Parent node for non-root pages
 const parentNode = relationships?.field_parent_page?.[0];
@@ -100,7 +99,6 @@ function buildNavigationItems() {
 }
 
 const navigationItems = buildNavigationItems();
-console.log(isRootPage);
 ---
 
 <Layout title={fieldHeaderTitle || fieldTitleContext || title}>

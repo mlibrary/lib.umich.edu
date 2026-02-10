@@ -1,5 +1,378 @@
 ---
-import BasicTemplate from './basic.astro';
-const props = Astro.props;
+/**
+ * News Template
+ * Converted from src/templates/news.js
+ * 
+ * Structure matches Gatsby version:
+ * - TemplateLayout wrapper
+ * - Margins container with Breadcrumb
+ * - Template with aside layout (asideWidth: '25rem')
+ * - TemplateContent (main content area)
+ * - TemplateSide (sidebar with image, share, and stay in the know)
+ * - Full width panels at bottom
+ */
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Panels from '../components/panels/Panels.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
+import Icon from '../components/Icon.astro';
+
+// TODO: Create these components to match Gatsby structure
+// import { Template, TemplateContent, TemplateSide } from '../components/AsideLayout.astro';
+// import { Margins } from '../reusable/Margins.astro';
+// import { Heading } from '../reusable/heading.astro';
+// import Html from '../components/Html.astro';
+// import Panels from '../components/Panels.astro';
+// import Share from '../components/Share.astro';
+
+interface Props {
+  node: any;
+  drupal_nid: string;
+  title: string;
+  breadcrumb?: string;
+  summary?: string;
+  keywords?: string;
+  tag?: string;
+  parents?: any[];
+  children?: any[];
+}
+
+const { 
+  node,
+  drupal_nid,
+  title,
+  breadcrumb,
+  summary,
+  keywords,
+  tag,
+  parents,
+  children
+} = Astro.props;
+
+// Check if we have node data
+if (!node) {
+  throw new Error('No node data available');
+}
+
+// Extract fields (matches Gatsby destructuring from getNode)
+const {
+  relationships,
+} = node;
+console.log(node);
+
+const { slug } = relationships;
+const { processed: body } = node.attributes.body || {};
+const { field_title_context: fieldTitleContext, created } = node.attributes;
+
+// Use the breadcrumb prop if available, otherwise generate one
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { 
+      title: fieldTitleContext || title || 'News', 
+      slug: relationships?.slug || Astro.url.pathname 
+    },
+    parents || []
+  );
+}
+
+// Extract panels (matches transformNodePanels from Gatsby)
+let bodyPanels = [];
+let fullPanels = [];
+if (node.relationships && node.relationships.field_panels) {
+  const panels = node.relationships.field_panels;
+  bodyPanels = panels.filter((panel) => panel.field_placement === 'body');
+  fullPanels = panels.filter((panel) => panel.field_placement !== 'body');
+}
+
+// Extract image data (matches Gatsby logic)
+const imageRelationship = relationships?.field_media_image;
+const image = imageRelationship?.relationships?.field_media_image;
+const imageData = image?.localFile?.childImageSharp?.gatsbyImageData;
+const imageAlt = imageRelationship?.field_media_image?.alt || '';
+const imageCaption = imageRelationship?.field_image_caption?.processed;
+
+// Format date (matches Gatsby date formatting)
+let formattedDate = null;
+if (created) {
+  const date = new Date(created);
+  formattedDate = date.toLocaleDateString('en-us', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+const newsEmailSignUpURL = 'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D';
+const shareUrl = `https://www.lib.umich.edu${slug}`;
 ---
-<BasicTemplate {...props} />
+
+<!-- 
+  News Template Layout Structure (matching Gatsby)
+  Uses aside layout with 25rem sidebar
+-->
+<Layout title={fieldTitleContext || title}>
+  <DebugPanel node={node}></DebugPanel>
+  <div class="template-layout">
+    <div class="margins">
+      <Breadcrumb data={breadcrumbData} />
+    </div>
+    
+    <div class="template-with-aside">
+      <main class="template-content">
+        <h1 class="news-heading">
+          {fieldTitleContext}
+          {formattedDate && (
+            <p class="news-date">
+              {formattedDate}
+            </p>
+          )}
+        </h1>
+        
+        {body && (
+          <div class="body-content" set:html={body} />
+        )}
+        
+        {bodyPanels && bodyPanels.length > 0 && (
+          <div class="body-panels">
+            <Panels data={bodyPanels} />
+          </div>
+        )}
+      </main>
+      
+      <aside class="template-side">
+        {imageData && (
+          <figure class="news-image-figure">
+            <!-- TODO: Replace with Astro Image component -->
+            <div class="image-placeholder">
+              <img 
+                src={imageData.images?.fallback?.src || '/placeholder-image.jpg'} 
+                alt={imageAlt}
+                class="news-image"
+              />
+            </div>
+            {imageCaption && (
+              <figcaption class="image-caption">
+                <div set:html={imageCaption} />
+              </figcaption>
+            )}
+          </figure>
+        )}
+        
+        <!-- TODO: Share Component -->
+        <div class="share-section">
+          <h2 class="share-heading">Share</h2>
+          <ul class="share-list">
+            <li>
+              <a 
+                href={`http://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&t=${encodeURIComponent(fieldTitleContext)}`}
+                class="share-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <!-- TODO: Icon component -->
+                Facebook
+              </a>
+            </li>
+            <li>
+              <a 
+                href={`https://bsky.app/intent/compose?text=${encodeURIComponent(`${fieldTitleContext} @umichlibrary.bsky.social ${shareUrl}`)}`}
+                class="share-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Bluesky
+              </a>
+            </li>
+            <li>
+              <a 
+                href={`https://twitter.com/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`${fieldTitleContext} @UMichLibrary`)}`}
+                class="share-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                X (formerly Twitter)
+              </a>
+            </li>
+            <li>
+              <a 
+                href={`mailto:?subject=${encodeURIComponent(fieldTitleContext)}&body=${encodeURIComponent(`University of Michigan Library: ${shareUrl}`)}`}
+                class="share-link"
+              >
+                Email
+              </a>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Stay in the Know section -->
+        <div class="stay-in-know-section">
+          <h2 class="stay-in-know-heading">Stay in the know</h2>
+          <p>
+            <a 
+              href={newsEmailSignUpURL}
+              class="email-signup-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Sign up for email updates
+            </a>
+          </p>
+        </div>
+      </aside>
+    </div>
+    
+    {fullPanels && fullPanels.length > 0 && (
+      <div class="full-panels">
+        <Panels data={fullPanels} />
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  /* Template Layout Styles (matching Gatsby CSS) */
+  .template-layout {
+    /* Base template layout styles */
+  }
+  
+  .margins {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  /* Aside Layout (matches aside-layout.js Template component with asideWidth: '25rem') */
+  .template-with-aside {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  @media (min-width: 920px) {
+    .template-with-aside {
+      display: grid;
+      grid-template-columns: 1fr 25rem;
+      gap: 3rem;
+      align-items: start;
+    }
+  }
+  
+  .template-content {
+    /* Main content area */
+  }
+  
+  .template-side {
+    /* Sidebar with no border (matches TemplateSide CSS override) */
+  }
+  
+  /* News Heading Styles (matches Heading + date styles from news.js) */
+  .news-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    margin-top: 0.5rem;
+    color: var(--color-blue-400, #00274C);
+  }
+  
+  .news-date {
+    font-size: 0.875rem;
+    color: var(--color-neutral-300, #6b7280);
+    font-family: 'Muli', sans-serif;
+    padding-top: 1rem;
+    margin: 0;
+    font-weight: 400;
+  }
+  
+  /* Body Content */
+  .body-content {
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  
+  .body-panels {
+    margin-top: 2rem;
+  }
+  
+  /* News Image Figure (matches figure styles from news.js) */
+  .news-image-figure {
+    margin-bottom: 2rem;
+    max-width: 38rem;
+  }
+  
+  .news-image {
+    border-radius: 2px;
+    width: 100%;
+    height: auto;
+  }
+  
+  .image-caption {
+    color: var(--color-neutral-300, #6b7280);
+    padding-top: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Share Section (matches Share component styles) */
+  .share-section {
+    margin-bottom: 2rem;
+  }
+  
+  .share-heading {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .share-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .share-link {
+    display: inline-block;
+    padding: 0.25rem 0;
+    text-decoration: none;
+    color: var(--color-teal-400, #0891b2);
+  }
+  
+  .share-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Stay in the Know (matches StayInTheKnow component styles) */
+  .stay-in-know-section {
+    border-top: solid 1px var(--color-neutral-100, #e5e7eb);
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+  
+  .stay-in-know-heading {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .email-signup-link {
+    display: inline-block;
+    color: var(--color-teal-400, #0891b2);
+    text-decoration: none;
+  }
+  
+  .email-signup-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Full Width Panels */
+  .full-panels {
+    margin-top: 3rem;
+  }
+  
+  /* Placeholder for development */
+  .image-placeholder {
+    background: var(--color-neutral-100, #f5f5f5);
+    border: 2px dashed var(--color-neutral-200, #d1d5db);
+    padding: 1rem;
+  }
+</style>
