@@ -1,0 +1,46 @@
+---
+/**
+ * IconText Component
+ * Converted from src/components/icon-text.js
+ * 
+ * Displays an icon alongside text content.
+ * Uses either a named icon or custom SVG path data.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  /** Named icon from Icon component icon list */
+  icon?: string;
+  /** Custom SVG path data, overrides icon prop */
+  d?: string;
+  /** Additional CSS class */
+  class?: string;
+}
+
+const { icon, d, class: className } = Astro.props;
+---
+
+<span class={`icon-text ${className || ''}`}>
+  <span class="icon-wrapper">
+    {d ? (
+      <Icon d={d} />
+    ) : (
+      <Icon icon={icon} />
+    )}
+  </span>
+  <slot />
+</span>
+
+<style>
+  /* Matches icon-text.js styles */
+  .icon-text {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .icon-wrapper {
+    flex-shrink: 0;
+    margin-top: -2px;
+    width: 1.75rem;
+  }
+</style>

@@ -1,0 +1,127 @@
+---
+/**
+ * Share Component
+ * Converted from src/components/share.js
+ * 
+ * Provides social media and email sharing links.
+ * Matches Gatsby version's functionality and styling.
+ */
+import IconText from './IconText.astro';
+import Heading from '../reusable/heading.astro';
+
+interface Props {
+  /** URL to share */
+  url: string;
+  /** Title of the content being shared */
+  title: string;
+}
+
+const { url, title } = Astro.props;
+
+// Build query strings for share URLs (matches qs.stringify behavior)
+function buildQueryString(params: Record<string, string>): string {
+  return Object.entries(params)
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+    .join('&');
+}
+
+// Email share params
+const emailParams = buildQueryString({
+  subject: title,
+  body: `University of Michigan Library: ${url}`
+});
+
+// Facebook share params
+const fbParams = buildQueryString({
+  u: url,
+  t: title
+});
+
+// Bluesky share params
+const blueskyParams = buildQueryString({
+  text: `${title} @umichlibrary.bsky.social ${url}`
+});
+
+// Twitter/X share params
+const twitterParams = buildQueryString({
+  url: url,
+  text: `${title} @UMichLibrary`
+});
+
+// Share options (matches share.js options array)
+const options = [
+  {
+    icon: 'facebook',
+    text: 'Facebook',
+    to: `http://www.facebook.com/sharer/sharer.php?${fbParams}`
+  },
+  {
+    icon: 'bluesky',
+    text: 'Bluesky',
+    to: `https://bsky.app/intent/compose?${blueskyParams}`
+  },
+  {
+    icon: 'twitter',
+    text: 'X (formerly Twitter)',
+    to: `https://twitter.com/share?${twitterParams}`
+  },
+  {
+    icon: 'email',
+    text: 'Email',
+    to: `mailto:?${emailParams}`
+  }
+];
+---
+
+<div class="share-component">
+  <Heading level={2} size="2XS">
+    Share
+  </Heading>
+  <ul class="share-list">
+    {options.map((option) => (
+      <li key={option.to}>
+        <a 
+          href={option.to}
+          class="share-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <IconText icon={option.icon}>
+            {option.text}
+          </IconText>
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  /* Matches share.js Heading styles */
+  .share-heading {
+    font-weight: 600;
+  }
+  
+  /* Share list */
+  .share-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Matches PlainLink styles from share.js */
+  .share-link {
+    display: inline-block;
+    padding: 0.25rem 0; /* SPACING.XS */
+    text-decoration: none;
+    color: var(--color-teal-400, #0891b2);
+  }
+  
+  .share-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Icon color override (matches svg color from share.js) */
+  .share-link :global(svg) {
+    color: var(--color-neutral-300, #6b7280);
+  }
+</style>

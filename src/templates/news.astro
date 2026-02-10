@@ -16,15 +16,13 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Panels from '../components/panels/Panels.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
-import Icon from '../components/Icon.astro';
+import Share from '../components/Share.astro';
 
 // TODO: Create these components to match Gatsby structure
 // import { Template, TemplateContent, TemplateSide } from '../components/AsideLayout.astro';
 // import { Margins } from '../reusable/Margins.astro';
 // import { Heading } from '../reusable/heading.astro';
 // import Html from '../components/Html.astro';
-// import Panels from '../components/Panels.astro';
-// import Share from '../components/Share.astro';
 
 interface Props {
   node: any;
@@ -160,51 +158,8 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
           </figure>
         )}
         
-        <!-- TODO: Share Component -->
-        <div class="share-section">
-          <h2 class="share-heading">Share</h2>
-          <ul class="share-list">
-            <li>
-              <a 
-                href={`http://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&t=${encodeURIComponent(fieldTitleContext)}`}
-                class="share-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <!-- TODO: Icon component -->
-                Facebook
-              </a>
-            </li>
-            <li>
-              <a 
-                href={`https://bsky.app/intent/compose?text=${encodeURIComponent(`${fieldTitleContext} @umichlibrary.bsky.social ${shareUrl}`)}`}
-                class="share-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Bluesky
-              </a>
-            </li>
-            <li>
-              <a 
-                href={`https://twitter.com/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`${fieldTitleContext} @UMichLibrary`)}`}
-                class="share-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                X (formerly Twitter)
-              </a>
-            </li>
-            <li>
-              <a 
-                href={`mailto:?subject=${encodeURIComponent(fieldTitleContext)}&body=${encodeURIComponent(`University of Michigan Library: ${shareUrl}`)}`}
-                class="share-link"
-              >
-                Email
-              </a>
-            </li>
-          </ul>
-        </div>
+        <!-- Share Component (matches Gatsby share.js) -->
+        <Share url={shareUrl} title={fieldTitleContext} />
         
         <!-- Stay in the Know section -->
         <div class="stay-in-know-section">
@@ -311,34 +266,6 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
     color: var(--color-neutral-300, #6b7280);
     padding-top: 0.5rem;
     font-size: 0.875rem;
-  }
-  
-  /* Share Section (matches Share component styles) */
-  .share-section {
-    margin-bottom: 2rem;
-  }
-  
-  .share-heading {
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
-  }
-  
-  .share-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .share-link {
-    display: inline-block;
-    padding: 0.25rem 0;
-    text-decoration: none;
-    color: var(--color-teal-400, #0891b2);
-  }
-  
-  .share-link:hover {
-    text-decoration: underline;
   }
   
   /* Stay in the Know (matches StayInTheKnow component styles) */
