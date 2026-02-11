@@ -9,7 +9,6 @@ import PanelTemplate from './PanelTemplate.astro';
 import PanelList from './PanelList.astro';
 import Icon from '../Icon.astro';
 import Card from '../Card.astro';
-import { MARGINS_CLASS, MARGINS_STYLES } from '../../reusable/utils.js';
 // TODO: Import these components when they're created
 // import Address from '../Address.astro';
 // import Hours from '../Hours.astro';
@@ -63,9 +62,9 @@ if (template === 'destination_hor_card_template') {
 ---
 
 {template === 'highlights' ? (
-  <div class={MARGINS_CLASS}>
+  <div class="margins">
     <section class="highlights-section">
-      <div class={MARGINS_CLASS} data-panel-margins>
+      <div class="margins" data-panel-margins>
         <div class="highlights-header">
           <div class="dots-container">
             <DotsSvg />

@@ -17,11 +17,11 @@ import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Panels from '../components/panels/Panels.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
 import Share from '../components/Share.astro';
+import Heading from '../reusable/Heading.astro';
 
 // TODO: Create these components to match Gatsby structure
 // import { Template, TemplateContent, TemplateSide } from '../components/AsideLayout.astro';
 // import { Margins } from '../reusable/Margins.astro';
-// import { Heading } from '../reusable/heading.astro';
 // import Html from '../components/Html.astro';
 
 interface Props {
@@ -119,14 +119,14 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
     
     <div class="template-with-aside">
       <main class="template-content">
-        <h1 class="news-heading">
+        <Heading level={1} class="news-heading" size="3XL">
           {fieldTitleContext}
           {formattedDate && (
             <p class="news-date">
               {formattedDate}
             </p>
           )}
-        </h1>
+        </Heading>
         
         {body && (
           <div class="body-content" set:html={body} />
@@ -191,13 +191,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   .template-layout {
     /* Base template layout styles */
   }
-  
-  .margins {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-  
+
   /* Aside Layout (matches aside-layout.js Template component with asideWidth: '25rem') */
   .template-with-aside {
     max-width: 1280px;
@@ -224,11 +218,9 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   
   /* News Heading Styles (matches Heading + date styles from news.js) */
   .news-heading {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-    margin-top: 0.5rem;
-    color: var(--color-blue-400, #00274C);
+    margin-bottom: var(--spacing-xl);
+    margin-top: var(--spacing-sm);
+
   }
   
   .news-date {

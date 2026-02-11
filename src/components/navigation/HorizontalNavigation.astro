@@ -4,8 +4,6 @@
  * 
  * Displays a horizontal navigation menu with different styles for desktop and mobile
  */
-import { SPACING, MEDIA_QUERIES } from '../../reusable/utils.js';
-
 interface NavigationItem {
   to: string;
   text: string;
@@ -53,15 +51,11 @@ function isActive(to: string): boolean {
   </div>
 </nav>
 
-<style define:vars={{ 
-  spacingM: SPACING.M,
-  spacingL: SPACING.L,
-  spacing2XL: SPACING['2XL']
-}}>
+<style>
   nav {
     background: var(--color-blue-100);
     border-bottom: solid 1px var(--color-neutral-100);
-    margin-bottom: var(--spacingL);
+    margin-bottom: var(--spacing-l);
     z-index: 1;
   }
 
@@ -79,15 +73,15 @@ function isActive(to: string): boolean {
     li {
       border: none;
       display: inline-block;
-      margin-right: var(--spacingL);
+      margin-right: var(--spacing-l);
     }
   }
 
   /* Mobile styles (small screen) */
   .nav-link {
     display: block;
-    padding: var(--spacingM);
-    padding-left: calc(var(--spacingM) - 4px);
+    padding: var(--spacing-m);
+    padding-left: calc(var(--spacing-m) - 4px);
     text-decoration: none;
     color: inherit;
   }
@@ -103,8 +97,8 @@ function isActive(to: string): boolean {
   @media only screen and (min-width: 641px) {
     .nav-link {
       display: inline-block;
-      padding: var(--spacingL);
-      padding-bottom: calc(var(--spacingL) - 4px);
+      padding: var(--spacing-l);
+      padding-bottom: calc(var(--spacing-l) - 4px);
     }
 
     .nav-link.active {
