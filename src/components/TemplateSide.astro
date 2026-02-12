@@ -1,0 +1,62 @@
+---
+/**
+ * TemplateSide Component
+ * Converted from src/components/aside-layout.js - TemplateSide
+ * 
+ * Sidebar area in Template layout
+ */
+interface Props {
+  contentSide?: 'left' | 'right';
+  class?: string;
+}
+
+const { 
+  contentSide = 'left',
+  class: className = '' 
+} = Astro.props;
+---
+
+<section class={`template-side ${className}`} data-content-side={contentSide}>
+  <div class="template-side-inner">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .template-side {
+    /* Mobile/tablet: bottom border */
+  }
+  
+  .template-side-inner {
+    border-bottom: solid 1px var(--color-neutral-100);
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  
+  /* Large screen positioning */
+  @media only screen and (min-width: 920px) {
+    .template-side {
+      grid-area: side;
+    }
+  }
+  
+  /* XL screen: side border instead of bottom */
+  @media only screen and (min-width: 1200px) {
+    .template-side-inner {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    
+    /* Left content side = right sidebar with left border */
+    .template-side[data-content-side="left"] .template-side-inner {
+      border-left: solid 1px var(--color-neutral-100);
+      padding-left: 3rem;
+    }
+    
+    /* Right content side = left sidebar with right border */
+    .template-side[data-content-side="right"] .template-side-inner {
+      border-right: solid 1px var(--color-neutral-100);
+      padding-right: 3rem;
+    }
+  }
+</style>

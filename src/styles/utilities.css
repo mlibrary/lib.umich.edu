@@ -38,6 +38,19 @@
   }
 }
 
+/*
+  Separate from MEDIA_QUERIES in utils because the width of the content in the header
+  dictates this breakpoint. The "Locations and Hours", "Information", "Ask a Librarian",
+  "Give", and "Account" nav bar currently fits perfectly at this breakpoint. If we need
+  to modify that content this breakpoint can be updated to change the navbar to the
+  mobile view to reflect the new content width
+*/
+@media only screen and (min-width: 1130px){
+  .search-popover{
+      width: 'calc(100% + 12rem)'
+  }
+}
+
 /* Visually hidden (for screen readers) */
 .visually-hidden {
   position: absolute;
@@ -49,4 +62,90 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* Link Styles */
+/* Default link style - teal with underline */
+.link-default,
+.link-special-subtle {
+  color: var(--color-teal-400);
+  box-shadow: inset 0 -1px var(--color-teal-400);
+}
+
+.link-default:hover,
+.link-special-subtle:hover {
+  box-shadow: inset 0 -2px var(--color-teal-400);
+}
+
+/* Description link style */
+.link-description {
+  color: var(--color-neutral-400);
+  font-size: 1.125rem;
+  font-weight: 600;
+  box-shadow: inset 0 -1px var(--color-teal-400);
+}
+
+.link-description:hover {
+  box-shadow: inset 0 -2px var(--color-teal-400);
+}
+
+/* Light link style - for dark backgrounds */
+.link-light {
+  color: white;
+  box-shadow: inset 0 -1px white;
+}
+
+.link-light:hover {
+  box-shadow: inset 0 -2px white;
+}
+
+/* List link style */
+.link-list {
+  color: var(--color-neutral-400);
+}
+
+.link-list:hover {
+  box-shadow: inset 0 -1px var(--color-neutral-400);
+}
+
+/* List medium link style */
+.link-list-medium {
+  font-weight: 600;
+}
+
+.link-list-medium:hover {
+  box-shadow: inset 0 -2px var(--color-teal-400);
+}
+
+/* List strong link style */
+.link-list-strong {
+  color: var(--color-neutral-400);
+  font-weight: 800;
+}
+
+.link-list-strong:hover {
+  box-shadow: inset 0 -1px var(--color-neutral-400);
+}
+
+/* Special link style - uppercase, small */
+.link-special {
+  color: var(--color-neutral-300);
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+}
+
+.link-special:hover {
+  box-shadow: inset 0 -1px var(--color-neutral-300);
+}
+
+/* Subtle link style */
+.link-subtle {
+  color: var(--color-neutral-400);
+  box-shadow: inset 0 -1px var(--color-neutral-300);
+}
+
+.link-subtle:hover {
+  box-shadow: inset 0 -2px var(--color-neutral-300);
 }

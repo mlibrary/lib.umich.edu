@@ -1,0 +1,25 @@
+---
+/**
+ * TemplateLayout Component
+ * Converted from src/templates/template-layout.js
+ * 
+ * Wraps content in the main Layout component
+ * In Gatsby, this also handled SEO via Head export
+ */
+import Layout from '../layouts/Layout.astro';
+
+interface Props {
+  node?: any;
+  title?: string;
+  [key: string]: any;
+}
+
+const { node, title, ...rest } = Astro.props;
+
+// Extract title from node if available
+const pageTitle = title || node?.attributes?.field_title_context || node?.attributes?.title || 'University of Michigan Library';
+---
+
+<Layout title={pageTitle} {...rest}>
+  <slot />
+</Layout>

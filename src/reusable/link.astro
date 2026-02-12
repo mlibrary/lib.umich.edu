@@ -1,6 +1,4 @@
 ---
-import { LINK_STYLES } from '../reusable';
-
 interface LinkProps {
   as?: keyof HTMLElementTagNameMap;
   kind?:
@@ -8,6 +6,7 @@ interface LinkProps {
     | 'subtle'
     | 'light'
     | 'special'
+    | 'special-subtle'
     | 'list'
     | 'list-medium'
     | 'list-strong'
@@ -15,11 +14,11 @@ interface LinkProps {
   [key: string]: any;
 }
 
-const { kind = 'default', as = 'a', ...other }: LinkProps = Astro.props;
+const { kind = 'default', as = 'a', class: className, ...other }: LinkProps = Astro.props;
 const Tag = as;
-const style = LINK_STYLES[kind] || {};
+const linkClass = `link-${kind} ${className || ''}`;
 ---
 
-<Tag style={style} {...other}>
+<Tag class={linkClass} {...other}>
   <slot />
 </Tag>

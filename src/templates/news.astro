@@ -1,28 +1,17 @@
 ---
 /**
  * News Template
- * Converted from src/templates/news.js
- * 
- * Structure matches Gatsby version:
- * - TemplateLayout wrapper
- * - Margins container with Breadcrumb
- * - Template with aside layout (asideWidth: '25rem')
- * - TemplateContent (main content area)
- * - TemplateSide (sidebar with image, share, and stay in the know)
- * - Full width panels at bottom
  */
-import Layout from '../layouts/Layout.astro';
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Panels from '../components/panels/Panels.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
 import Share from '../components/Share.astro';
-import Heading from '../reusable/Heading.astro';
-
-// TODO: Create these components to match Gatsby structure
-// import { Template, TemplateContent, TemplateSide } from '../components/AsideLayout.astro';
-// import { Margins } from '../reusable/Margins.astro';
-// import Html from '../components/Html.astro';
+import Heading from '../reusable/heading.astro';
 
 interface Props {
   node: any;
@@ -57,7 +46,6 @@ if (!node) {
 const {
   relationships,
 } = node;
-console.log(node);
 
 const { slug } = relationships;
 const { processed: body } = node.attributes.body || {};
@@ -87,6 +75,7 @@ if (node.relationships && node.relationships.field_panels) {
 // Extract image data (matches Gatsby logic)
 const imageRelationship = relationships?.field_media_image;
 const image = imageRelationship?.relationships?.field_media_image;
+console.log(image);
 const imageData = image?.localFile?.childImageSharp?.gatsbyImageData;
 const imageAlt = imageRelationship?.field_media_image?.alt || '';
 const imageCaption = imageRelationship?.field_image_caption?.processed;
@@ -110,122 +99,96 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   News Template Layout Structure (matching Gatsby)
   Uses aside layout with 25rem sidebar
 -->
-<Layout title={fieldTitleContext || title}>
+<TemplateLayout node={node} title={fieldTitleContext || title}>
   <DebugPanel node={node}></DebugPanel>
-  <div class="template-layout">
-    <div class="margins">
-      <Breadcrumb data={breadcrumbData} />
-    </div>
-    
-    <div class="template-with-aside">
-      <main class="template-content">
-        <Heading level={1} class="news-heading" size="3XL">
-          {fieldTitleContext}
-          {formattedDate && (
-            <p class="news-date">
-              {formattedDate}
-            </p>
-          )}
-        </Heading>
-        
-        {body && (
-          <div class="body-content" set:html={body} />
-        )}
-        
-        {bodyPanels && bodyPanels.length > 0 && (
-          <div class="body-panels">
-            <Panels data={bodyPanels} />
-          </div>
-        )}
-      </main>
-      
-      <aside class="template-side">
-        {imageData && (
-          <figure class="news-image-figure">
-            <!-- TODO: Replace with Astro Image component -->
-            <div class="image-placeholder">
-              <img 
-                src={imageData.images?.fallback?.src || '/placeholder-image.jpg'} 
-                alt={imageAlt}
-                class="news-image"
-              />
-            </div>
-            {imageCaption && (
-              <figcaption class="image-caption">
-                <div set:html={imageCaption} />
-              </figcaption>
-            )}
-          </figure>
-        )}
-        
-        <!-- Share Component (matches Gatsby share.js) -->
-        <Share url={shareUrl} title={fieldTitleContext} />
-        
-        <!-- Stay in the Know section -->
-        <div class="stay-in-know-section">
-          <h2 class="stay-in-know-heading">Stay in the know</h2>
-          <p>
-            <a 
-              href={newsEmailSignUpURL}
-              class="email-signup-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Sign up for email updates
-            </a>
-          </p>
-        </div>
-      </aside>
-    </div>
-    
-    {fullPanels && fullPanels.length > 0 && (
-      <div class="full-panels">
-        <Panels data={fullPanels} />
-      </div>
-    )}
+  
+  <div class="margins">
+    <Breadcrumb data={breadcrumbData} />
   </div>
-</Layout>
+  
+  <Template asideWidth="25rem">
+    <TemplateContent>
+      <Heading level={1} class="news-heading" size="3XL">
+        {fieldTitleContext}
+        {formattedDate && (
+          <p class="news-date">
+            {formattedDate}
+          </p>
+        )}
+      </Heading>
+      
+      {body && (
+        <div class="body-content" set:html={body} />
+      )}
+      
+      {bodyPanels && bodyPanels.length > 0 && (
+        <div class="body-panels">
+          <Panels data={bodyPanels} />
+        </div>
+      )}
+    </TemplateContent>
+    
+    <TemplateSide class="news-template-side">
+      {imageData && (
+        <figure class="news-image-figure">
+          <!-- TODO: Replace with Astro Image component -->
+          <div class="image-placeholder">
+            <img 
+              src={imageData.images?.fallback?.src || '/placeholder-image.jpg'} 
+              alt={imageAlt}
+              class="news-image"
+            />
+          </div>
+          {imageCaption && (
+            <figcaption class="image-caption">
+              <div set:html={imageCaption} />
+            </figcaption>
+          )}
+        </figure>
+      )}
+      
+      <!-- Share Component (matches Gatsby share.js) -->
+      <Share url={shareUrl} title={fieldTitleContext} />
+      
+      <!-- Stay in the Know section -->
+      <div class="stay-in-know-section">
+        <h2 class="stay-in-know-heading">Stay in the know</h2>
+        <p>
+          <a 
+            href={newsEmailSignUpURL}
+            class="email-signup-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Sign up for email updates
+          </a>
+        </p>
+      </div>
+    </TemplateSide>
+  </Template>
+  
+  {fullPanels && fullPanels.length > 0 && (
+    <Panels data={fullPanels} />
+  )}
+</TemplateLayout>
 
 <style>
-  /* Template Layout Styles (matching Gatsby CSS) */
-  .template-layout {
-    /* Base template layout styles */
-  }
-
-  /* Aside Layout (matches aside-layout.js Template component with asideWidth: '25rem') */
-  .template-with-aside {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
+  /* News-specific styles (matches news.js styling) */
   
-  @media (min-width: 920px) {
-    .template-with-aside {
-      display: grid;
-      grid-template-columns: 1fr 25rem;
-      gap: 3rem;
-      align-items: start;
-    }
-  }
-  
-  .template-content {
-    /* Main content area */
-  }
-  
-  .template-side {
-    /* Sidebar with no border (matches TemplateSide CSS override) */
+  /* Remove border from sidebar (matches TemplateSide CSS override in news.js) */
+  :global(.news-template-side .template-side-inner) {
+    border: none;
   }
   
   /* News Heading Styles (matches Heading + date styles from news.js) */
   .news-heading {
-    margin-bottom: var(--spacing-xl);
-    margin-top: var(--spacing-sm);
-
+    margin-bottom: 2rem;
+    margin-top: 0.75rem;
   }
   
   .news-date {
-    font-size: 0.875rem;
-    color: var(--color-neutral-300, #6b7280);
+    font-size: 1rem;
+    color: var(--color-neutral-300);
     font-family: 'Muli', sans-serif;
     padding-top: 1rem;
     margin: 0;
@@ -235,7 +198,6 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   /* Body Content */
   .body-content {
     line-height: 1.6;
-    margin-bottom: 2rem;
   }
   
   .body-panels {
@@ -255,43 +217,32 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   }
   
   .image-caption {
-    color: var(--color-neutral-300, #6b7280);
+    color: var(--color-neutral-300);
     padding-top: 0.5rem;
     font-size: 0.875rem;
   }
   
   /* Stay in the Know (matches StayInTheKnow component styles) */
   .stay-in-know-section {
-    border-top: solid 1px var(--color-neutral-100, #e5e7eb);
+    border-top: solid 1px var(--color-neutral-100);
     margin-top: 1.5rem;
     padding-top: 1.5rem;
   }
   
   .stay-in-know-heading {
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 600;
     margin: 0 0 0.5rem 0;
   }
   
   .email-signup-link {
     display: inline-block;
-    color: var(--color-teal-400, #0891b2);
-    text-decoration: none;
-  }
-  
-  .email-signup-link:hover {
-    text-decoration: underline;
-  }
-  
-  /* Full Width Panels */
-  .full-panels {
-    margin-top: 3rem;
   }
   
   /* Placeholder for development */
   .image-placeholder {
-    background: var(--color-neutral-100, #f5f5f5);
-    border: 2px dashed var(--color-neutral-200, #d1d5db);
+    background: var(--color-neutral-100);
+    border: 2px dashed var(--color-neutral-200);
     padding: 1rem;
   }
 </style>

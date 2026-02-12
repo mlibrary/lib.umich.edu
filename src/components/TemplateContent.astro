@@ -1,0 +1,31 @@
+---
+/**
+ * TemplateContent Component
+ * Converted from src/components/aside-layout.js - TemplateContent
+ * 
+ * Main content area in Template layout
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`template-content ${className}`}>
+  <slot />
+</div>
+
+<style>
+  .template-content {
+    margin-bottom: 2rem;
+  }
+  
+  /* Large screen positioning */
+  @media only screen and (min-width: 920px) {
+    .template-content {
+      grid-area: content;
+      margin-right: 2.5rem;
+    }
+  }
+</style>

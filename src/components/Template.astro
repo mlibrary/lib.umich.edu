@@ -1,0 +1,68 @@
+---
+/**
+ * Template Component
+ * Converted from src/components/aside-layout.js - Template
+ * 
+ * Main template container with aside/sidebar layout
+ * Uses CSS Grid at large screens (1200px+)
+ */
+interface Props {
+  asideWidth?: string;
+  contentSide?: 'left' | 'right';
+  class?: string;
+}
+
+const { 
+  asideWidth = '21rem', 
+  contentSide = 'left',
+  class: className = ''
+} = Astro.props;
+---
+
+<div class={`template ${className}`} data-content-side={contentSide}>
+  <slot />
+</div>
+
+<style define:vars={{ asideWidth, contentSide }}>
+  .template {
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 0 1rem 2rem;
+    width: 100%;
+  }
+  
+  @media only screen and (min-width: 641px) {
+    .template {
+      padding: 0 2.5rem 2rem;
+    }
+  }
+  
+  /* Grid layout at XL breakpoint */
+  @media only screen and (min-width: 1200px) {
+    .template {
+      display: grid;
+      padding-bottom: 3rem;
+    }
+    
+    .template[data-content-side="left"],
+    .template:not([data-content-side]) {
+      grid-template-areas: "content side";
+      grid-template-columns: 1fr calc(var(--asideWidth) + 4rem);
+    }
+    
+    .template[data-content-side="right"] {
+      grid-template-areas: "side content";
+      grid-template-columns: calc(var(--asideWidth)) 1fr;
+    }
+  }
+  
+  /* Panel spacing overrides */
+  .template :global([data-panel-margins]),
+  .template :global([data-panel]) {
+    padding: 0;
+  }
+  
+  .template :global([data-panel] h2) {
+    margin-top: 2.5rem;
+  }
+</style>
