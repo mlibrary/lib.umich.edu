@@ -36,7 +36,7 @@ const useSpecialists = () => {
   return useContext(SpecialistsContext);
 };
 
-export default function FinaASpecialistTemplate ({ data, location }) {
+export default function FindASpecialistTemplate ({ data, location }) {
   const [initialized, setInitialized] = useState(false);
   const [specialists, setSpecialists] = useState();
   const node = data.page;
@@ -83,7 +83,7 @@ export default function FinaASpecialistTemplate ({ data, location }) {
   );
 }
 
-FinaASpecialistTemplate.propTypes = {
+FindASpecialistTemplate.propTypes = {
   data: PropTypes.shape({
     page: PropTypes.shape({
       body: PropTypes.shape({
@@ -96,7 +96,10 @@ FinaASpecialistTemplate.propTypes = {
       })
     })
   }),
-  location: PropTypes.object
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string
+  })
 };
 
 /* eslint-disable react/prop-types */
@@ -204,7 +207,9 @@ const FindASpecialist = ({ specialists, location }) => {
 };
 
 FindASpecialist.propTypes = {
-  location: PropTypes.object,
+  location: PropTypes.shape({
+    search: PropTypes.string
+  }),
   specialists: PropTypes.any
 };
 
@@ -225,7 +230,9 @@ const SpecialistsURLState = ({ location }) => {
 };
 
 SpecialistsURLState.propTypes = {
-  location: PropTypes.object
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  })
 };
 
 const SpecialistsSearchIndex = () => {
