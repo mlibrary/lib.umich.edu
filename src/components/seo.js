@@ -64,7 +64,7 @@ const SearchEngineOptimization = ({ data, children, titleField, location }) => {
   };
 
   const pageUrl = () => {
-    return (siteData.site.siteMetadata.siteUrl + location?.pathname);
+    return (siteData.site.siteMetadata.siteUrl + (location?.pathname ?? ''));
   };
 
   return (
