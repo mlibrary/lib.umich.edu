@@ -18,7 +18,6 @@ import { sentenceCase } from 'change-case';
 import SpaceFeaturesIcons from '../components/space-features-list';
 import TemplateLayout from './template-layout';
 import { titleCase } from 'title-case';
-import { useLocation } from '@reach/router';
 
 const getBuildingName = (edge) => {
   return (
@@ -140,7 +139,7 @@ const isBrowser = typeof window !== 'undefined';
 const locationSearch = isBrowser ? window.location.search : '';
 const urlState = getUrlState(locationSearch, FILTER_KEYS);
 
-const FindStudySpaceTemplate = ({ data }) => {
+const FindStudySpaceTemplate = ({ data, location }) => {
   const allStudySpaces = data.locations.edges.concat(data.rooms.edges);
 
   allStudySpaces.sort((left, right) => {
@@ -218,8 +217,6 @@ const FindStudySpaceTemplate = ({ data }) => {
       return { ...acc, [key]: true };
     }, {})
   );
-
-  const location = useLocation();
 
   const [queryString, setQueryString] = useState(location.search);
 
@@ -768,7 +765,8 @@ FindStudySpaceTemplate.propTypes = {
     rooms: PropTypes.shape({
       edges: PropTypes.array
     })
-  })
+  }),
+  location: PropTypes.object
 };
 
 export default FindStudySpaceTemplate;
