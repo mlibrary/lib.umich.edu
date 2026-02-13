@@ -1,9 +1,9 @@
 /* eslint-disable no-invalid-this */
 import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
+import { graphql, navigate } from 'gatsby';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
-import { graphql, navigate } from 'gatsby';
 import Html from '../components/html';
 import Link from '../components/link';
 import NoResults from '../components/no-results';
