@@ -78,7 +78,7 @@ const SearchEngineOptimization = ({ data, children, titleField, location }) => {
       <meta property='og:description' content={metaDescription()} />
       <meta property='og:type' content='website' />
       <meta property='twitter:description' content={metaDescription()} />
-      <link rel='canonical' href={pageUrl()} />
+      <link rel='canonical' href={siteData.site.siteMetadata.siteUrl} />
       {children}
     </>
   );
