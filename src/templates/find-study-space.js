@@ -766,7 +766,9 @@ FindStudySpaceTemplate.propTypes = {
       edges: PropTypes.array
     })
   }),
-  location: PropTypes.object
+  location: PropTypes.shape({
+    search: PropTypes.string
+  })
 };
 
 export default FindStudySpaceTemplate;
