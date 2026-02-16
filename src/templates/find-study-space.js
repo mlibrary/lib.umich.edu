@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
+import { graphql, navigate } from 'gatsby';
 import { ORDERED_SPACE_FEATURES, SPACE_FEATURES_ICON_MAP } from '../constants/space-features';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
@@ -9,7 +10,6 @@ import Card from '../components/card';
 import CheckboxGroup from '../components/checkbox-group';
 import Collapsible from '../components/collapsible';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { graphql } from 'gatsby';
 import Html from '../components/html';
 import PlainLink from '../components/plain-link';
 import PropTypes from 'prop-types';
@@ -479,7 +479,7 @@ const FindStudySpaceTemplate = ({ data, location }) => {
 
     const stateString = stringifyState(stateObj);
     const to = stateString.length > 0 ? `?${stateString}` : window.location.pathname;
-    window.history.replaceState({}, '', to);
+    navigate(to, { replace: true });
     setQueryString(stateString.length > 0 ? `?${stateString}` : '');
   }, [selectedCampuses, selectedFeatures, selectedNoiseLevels, showAll]);
 
