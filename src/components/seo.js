@@ -81,7 +81,7 @@ const SearchEngineOptimization = ({ data, children, titleField }) => {
       <meta property='og:description' content={metaDescription()} />
       <meta property='og:type' content='website' />
       <meta property='twitter:description' content={metaDescription()} />
-      <link rel='canonical' href={siteData.site.siteMetadata.siteUrl} />
+      <link rel='canonical' href={pageUrl()} />
       {children}
     </>
   );
