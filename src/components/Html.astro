@@ -1,0 +1,37 @@
+---
+/**
+ * Html Component
+ * Converted from src/components/html.js
+ * 
+ * Renders HTML content with proper styling via Prose component
+ * Uses Astro's built-in set:html directive
+ */
+import Prose from './Prose.astro';
+
+interface Props {
+  html: string;
+  class?: string;
+}
+
+const { html, class: className = '' } = Astro.props;
+
+// Basic HTML processing for Astro
+// Convert relative links to absolute if needed
+function processHtml(rawHtml: string): string {
+  if (!rawHtml) return '';
+  
+  let processed = rawHtml;
+  
+  // Convert Drupal entity divs to a simpler format
+  // Original: <div data-entity-type="media" data-entity-uuid="...">
+  // For now, we'll keep them as-is and handle them with CSS if needed
+  
+  return processed;
+}
+
+const processedHtml = processHtml(html);
+---
+
+<Prose class={className}>
+  <Fragment set:html={processedHtml} />
+</Prose>

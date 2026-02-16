@@ -12,6 +12,7 @@ import Panels from '../components/panels/Panels.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
 import Share from '../components/Share.astro';
 import Heading from '../reusable/heading.astro';
+import Html from '../components/Html.astro';
 
 interface Props {
   node: any;
@@ -68,8 +69,8 @@ let bodyPanels = [];
 let fullPanels = [];
 if (node.relationships && node.relationships.field_panels) {
   const panels = node.relationships.field_panels;
-  bodyPanels = panels.filter((panel) => panel.field_placement === 'body');
-  fullPanels = panels.filter((panel) => panel.field_placement !== 'body');
+  bodyPanels = panels.filter((panel: any) => panel.field_placement === 'body');
+  fullPanels = panels.filter((panel: any) => panel.field_placement !== 'body');
 }
 
 // Extract image data (matches Gatsby logic)
@@ -118,7 +119,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
       </Heading>
       
       {body && (
-        <div class="body-content" set:html={body} />
+        <Html html={body} />
       )}
       
       {bodyPanels && bodyPanels.length > 0 && (
@@ -141,7 +142,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
           </div>
           {imageCaption && (
             <figcaption class="image-caption">
-              <div set:html={imageCaption} />
+              <Html html={imageCaption} />
             </figcaption>
           )}
         </figure>
@@ -214,12 +215,6 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
     border-radius: 2px;
     width: 100%;
     height: auto;
-  }
-  
-  .image-caption {
-    color: var(--color-neutral-300);
-    padding-top: 0.5rem;
-    font-size: 0.875rem;
   }
   
   /* Stay in the Know (matches StayInTheKnow component styles) */

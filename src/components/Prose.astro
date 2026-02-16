@@ -1,0 +1,190 @@
+---
+/**
+ * Prose Component
+ * Converted from src/components/prose.jsx
+ * 
+ * Provides consistent spacing for text content
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`prose ${className}`}>
+  <slot />
+</div>
+
+<style>
+  .prose > :not(:last-child) {
+    margin-bottom: 1rem;
+  }
+
+  .prose > h2:not(:last-child) {
+    margin-top: 2.5rem;
+  }
+
+  .prose > h3:not(:last-child),
+  .prose > h4:not(:last-child),
+  .prose > h5:not(:last-child) {
+    margin-top: 1rem;
+  }
+
+  .prose [data-umich-lib-callout] {
+    max-width: 38rem;
+  }
+
+  .prose [data-umich-lib-callout] + [data-umich-lib-callout] {
+    margin-top: 1.5rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.5rem;
+  }
+
+  /* HTML Content Styling (matches html.js components) */
+  
+  /* Headings */
+  .prose :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .prose :global(h2):not(:last-child) {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .prose :global(h4) {
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    color: var(--color-neutral-300);
+  }
+
+  .prose :global(h5),
+  .prose :global(h6) {
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+  }
+
+  /* Text elements */
+  .prose :global(p) {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .prose :global(p):not(:last-child){
+    margin-bottom: 1rem;
+  }
+
+  .prose :global(em) {
+    font-style: italic;
+  }
+
+  .prose :global(strong) {
+    font-weight: 800;
+  }
+
+  /* Links */
+  .prose :global(a) {
+    color: var(--color-teal-400);
+    box-shadow: inset 0 -1px var(--color-teal-400);
+  }
+
+  .prose :global(a:hover) {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  /* Lists */
+  .prose :global(ul) {
+    list-style: disc;
+    padding-left: 2rem;
+  }
+
+  .prose :global(ol) {
+    list-style: decimal;
+    padding-left: 2rem;
+  }
+
+  /* Blockquote */
+  .prose :global(blockquote) {
+    border-left: solid 4px var(--color-teal-400);
+    padding: 1rem 0 1rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  /* Figures and images */
+  .prose :global(figure) {
+    max-width: 38rem;
+    margin: 1.5rem 0;
+  }
+
+  .prose :global(figcaption) {
+    color: var(--color-neutral-300);
+  }
+
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Tables */
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+  }
+
+  .prose :global(th),
+  .prose :global(td) {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+
+  .prose :global(th) {
+    font-weight: 600;
+    background-color: var(--color-neutral-100);
+  }
+
+  /* Special paragraph classes (matches html.js) */
+  .prose :global(p.umich-lib-callout) {
+    background: var(--color-blue-100);
+    border-left: solid 4px var(--color-blue-400);
+    padding: 1rem 1.5rem;
+    border-radius: 2px;
+  }
+
+  .prose :global(p.umich-lib-alert) {
+    background: var(--color-orange-100);
+    border-left: solid 4px var(--color-orange-400);
+    padding: 1rem 1.5rem;
+    border-radius: 2px;
+  }
+
+  .prose :global(p.umich-lib-cta) {
+    background: var(--color-teal-100);
+    border: solid 2px var(--color-teal-400);
+    padding: 1.5rem;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  /* Lede paragraph */
+  .prose :global(p.lede) {
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+</style>

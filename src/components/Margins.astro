@@ -1,0 +1,31 @@
+---
+/**
+ * Margins Component
+ * Provides consistent max-width container with responsive padding
+ * Matches the .margins utility class from utilities.css
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`margins ${className}`}>
+  <slot />
+</div>
+
+<style>
+  .margins {
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 0 1rem;
+    width: 100%;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .margins {
+      padding: 0 2.5rem;
+    }
+  }
+</style>
