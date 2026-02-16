@@ -367,6 +367,7 @@ const TextPanel = ({ data }) => {
   const placement = data.field_placement;
   const template = data.relationships.field_text_template.field_machine_name;
   const cards = data.relationships.field_text_card;
+  console.log(data);
 
   if (template === 'callout') {
     return (
@@ -377,16 +378,17 @@ const TextPanel = ({ data }) => {
             maxWidth: placement === 'body' ? '38rem' : '100%'
           }}
         >
-          <Heading
-            level={2}
-            size='M'
-            css={{
-              marginBottom: SPACING.XS
-            }}
-          >
-            {title}
-          </Heading>
-
+          {title?.trim() && (
+            <Heading
+              level={2}
+              size='M'
+              css={{
+                marginBottom: SPACING.XS
+              }}
+            >
+              {title}
+            </Heading>
+          )}
           <Html
             html={cards[0].field_body.processed}
             css={{
@@ -423,15 +425,17 @@ const TextPanel = ({ data }) => {
                   paddingTop: hasTopBorder ? SPACING.XL : 0
                 }}
               >
-                <Heading
-                  level={2}
-                  size='M'
-                  css={{
-                    marginBottom: SPACING.L
-                  }}
-                >
-                  {title}
-                </Heading>
+                {title && (
+                  <Heading
+                    level={2}
+                    size='M'
+                    css={{
+                      marginBottom: SPACING.L
+                    }}
+                  >
+                    {title}
+                  </Heading>
+                )}
                 <Html html={card.field_body.processed} />
               </section>
             );
