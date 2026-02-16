@@ -367,7 +367,6 @@ const TextPanel = ({ data }) => {
   const placement = data.field_placement;
   const template = data.relationships.field_text_template.field_machine_name;
   const cards = data.relationships.field_text_card;
-  console.log(data);
 
   if (template === 'callout') {
     return (
