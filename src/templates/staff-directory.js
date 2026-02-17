@@ -125,6 +125,7 @@ const StaffDirectoryQueryContainer = ({
     urlState.department ? { department: urlState.department } : {}
   );
   const [results, setResults] = useState([]);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [stateString] = useDebounce(
     stringifyState({
       department: activeFilters.department,
@@ -195,7 +196,11 @@ const StaffDirectoryQueryContainer = ({
     } catch {
       // Intentionally left blank
     }
-  }, [query, activeFilters, staff]);
+
+    if (!isInitialized) {
+      setIsInitialized(true);
+    }
+  }, [query, activeFilters, staff, isInitialized]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -266,15 +271,17 @@ const StaffDirectoryQueryContainer = ({
           </div>
         )}
 
-        <StaffDirectory
-          handleChange={handleChange}
-          handleClear={handleClear}
-          filters={filters}
-          activeFilters={activeFilters}
-          results={results}
-          staffImages={staffImages}
-          query={query}
-        />
+        {isInitialized && (
+          <StaffDirectory
+            handleChange={handleChange}
+            handleClear={handleClear}
+            filters={filters}
+            activeFilters={activeFilters}
+            results={results}
+            staffImages={staffImages}
+            query={query}
+          />
+        )}
       </Margins>
     </TemplateLayout>
   );
