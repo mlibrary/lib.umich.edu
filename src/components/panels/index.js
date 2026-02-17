@@ -377,7 +377,7 @@ const TextPanel = ({ data }) => {
             maxWidth: placement === 'body' ? '38rem' : '100%'
           }}
         >
-          {title?.trim() && (
+          {title && (
             <Heading
               level={2}
               size='M'
