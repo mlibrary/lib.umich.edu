@@ -271,6 +271,20 @@ const StaffDirectoryQueryContainer = ({
           </div>
         )}
 
+        {!isInitialized && (
+          <div
+            css={{
+              color: 'var(--color-neutral-300)',
+              fontSize: '1.125rem',
+              padding: SPACING.XL
+            }}
+            role='status'
+            aria-live='polite'
+          >
+            Loading staff directory...
+          </div>
+        )}
+
         {isInitialized && (
           <StaffDirectory
             handleChange={handleChange}
