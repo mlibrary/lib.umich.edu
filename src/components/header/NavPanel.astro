@@ -1,5 +1,6 @@
 ---
 import Icon from '../Icon.astro';
+import Heading from '../../reusable/heading.astro';
 
 interface Props {
   items: any[];
@@ -39,7 +40,7 @@ const dropdownSideWidth = '24rem';
           data-panel-content-index={index}
           hidden
         >
-          <h2 class="nav-panel-heading">{item.text}</h2>
+          <Heading level={2} class="nav-panel-heading">{item.text}</Heading>
           {item.description && (
             <p class="nav-panel-description">{item.description}</p>
           )}
@@ -89,8 +90,7 @@ const dropdownSideWidth = '24rem';
     border-left: solid 5px transparent;
     display: flex;
     justify-content: space-between;
-    padding: 0.5rem 1.5rem;
-    padding-left: calc(1.5rem - 5px);
+    padding: 0.75rem 1.5rem 0.75rem calc(-5px + 1.5rem);
     text-align: left;
     width: 100%;
     background: none;
@@ -106,10 +106,6 @@ const dropdownSideWidth = '24rem';
   }
   .nav-panel-item .nav-panel-button:hover .text {
     text-decoration: underline;
-  }
-  .nav-panel-item .nav-panel-button:hover {
-    background: var(--color-teal-100);
-    border-color: var(--color-teal-400);
   }
   .nav-panel-item .nav-panel-button[aria-expanded="true"] {
     background: var(--color-teal-100);
@@ -131,19 +127,17 @@ const dropdownSideWidth = '24rem';
   }
   .nav-panel-content {
     padding: 2rem 2.5rem;
-    position: absolute;
     right: 0;
     top: 0;
     width: 100%;
   }
   .nav-panel-heading {
     font-size: 1.5rem;
-    margin: 0;
+    line-height: 1.25;
   }
   .nav-panel-description {
     color: var(--color-neutral-300);
-    padding-top: 0.25rem;
-    margin: 0;
+    padding-top: 0.5rem;
   }
   .nav-panel-links {
     border-top: solid 1px var(--color-neutral-100);
@@ -158,9 +152,7 @@ const dropdownSideWidth = '24rem';
   .nav-panel-sublink {
     display: block;
     font-size: 1rem;
-    padding: 0.25rem 0;
-    text-decoration: none;
-    color: inherit;
+    padding: 0.5rem 0;
   }
   .nav-panel-sublink:hover .text {
     text-decoration: underline;
