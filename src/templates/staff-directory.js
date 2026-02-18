@@ -281,7 +281,7 @@ const StaffDirectoryQueryContainer = ({
             role='status'
             aria-live='polite'
           >
-            Loading staff directory...
+            Loading Staff Directory...
           </div>
         )}
 
