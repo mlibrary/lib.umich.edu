@@ -1,0 +1,154 @@
+---
+/**
+ * SideNavigation Component
+ * Converted from src/components/navigation/side-navigation.js
+ *
+ * Displays a vertical navigation menu for section pages.
+ * Only shown on large screens (matches Gatsby LargeScreen wrapper).
+ */
+import Heading from '../../reusable/heading.astro';
+import Icon from '../Icon.astro';
+
+interface NavItem {
+  to: string;
+  text: string;
+  children?: NavItem[];
+}
+
+interface Props {
+  /** Current page path — used to determine active/expanded states */
+  path: string;
+  /** The navigation branch to render */
+  branch?: {
+    text: string;
+    children?: NavItem[];
+  };
+}
+
+const { path, branch } = Astro.props;
+
+if (!branch?.children?.length) {
+  return;
+}
+
+const currentPath = path.replace(/\/$/, '');
+
+function isActive(to: string): boolean {
+  return currentPath === to.replace(/\/$/, '');
+}
+
+function hasActiveChild(item: NavItem): boolean {
+  return currentPath.startsWith(item.to);
+}
+---
+
+<nav class="side-nav" aria-labelledby="side-nav-heading">
+  <Heading size="S" level={2} id="side-nav-heading">
+    {branch.text}
+  </Heading>
+  <ol class="side-nav-list">
+    {branch.children!.map((item) => (
+      <li class="side-nav-item">
+        <a
+          href={item.to}
+          class:list={['side-nav-link', { active: isActive(item.to) }]}
+          aria-current={isActive(item.to) ? 'page' : undefined}
+        >
+          <span>{item.text}</span>
+          {item.children?.length && (
+            <span class="side-nav-icon" aria-hidden="true">
+              <span class="visually-hidden">(has sub-pages)</span>
+              <Icon icon="expand_more" />
+            </span>
+          )}
+        </a>
+        {/* Render children when the current path is under this item */}
+        {item.children?.length && hasActiveChild(item) && (
+          <ol class="side-nav-children">
+            {item.children.map((child) => (
+              <li>
+                <a
+                  href={child.to}
+                  class:list={['side-nav-link', 'side-nav-link--child', { active: isActive(child.to) }]}
+                  aria-current={isActive(child.to) ? 'page' : undefined}
+                >
+                  {child.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  /* Only show on large screens — matches Gatsby LargeScreen wrapper */
+  .side-nav {
+    display: none;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .side-nav {
+      display: block;
+    }
+  }
+
+  .side-nav-list,
+  .side-nav-children {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-top: var(--spacing-xs, 0.5rem);
+    margin-bottom: var(--spacing-m, 1rem);
+  }
+
+  .side-nav-item:not(:last-of-type) {
+    border-bottom: solid 1px var(--color-neutral-100);
+  }
+
+  .side-nav-link {
+    align-items: center;
+    border-left: 4px solid transparent;
+    color: inherit;
+    display: flex;
+    font-weight: inherit;
+    justify-content: space-between;
+    padding: var(--spacing-m, 1rem) var(--spacing-s, 0.75rem) var(--spacing-m, 1rem) var(--spacing-m, 1rem);
+    text-decoration: none;
+  }
+
+  .side-nav-link:hover {
+    text-decoration: underline;
+  }
+
+  .side-nav-link.active {
+    border-left-color: var(--color-teal-400);
+    color: var(--color-teal-400);
+    font-weight: 700;
+    padding-left: var(--spacing-s, 0.75rem);
+  }
+
+  .side-nav-icon {
+    color: var(--color-neutral-400);
+    line-height: 1;
+    padding-left: var(--spacing-xs, 0.5rem);
+  }
+
+  .side-nav-link.active .side-nav-icon {
+    color: var(--color-teal-400);
+  }
+
+  /* Child nav items */
+  .side-nav-children {
+    padding-bottom: var(--spacing-xs, 0.5rem);
+  }
+
+  .side-nav-link--child {
+    font-size: 0.9em;
+    margin-left: var(--spacing-m, 1rem);
+    padding-top: var(--spacing-xs, 0.5rem);
+    padding-bottom: var(--spacing-xs, 0.5rem);
+  }
+</style>

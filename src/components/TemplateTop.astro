@@ -1,0 +1,30 @@
+---
+/**
+ * TemplateTop Component
+ * Converted from src/components/page-layout.js — Top
+ *
+ * The full-width top row in the basic page grid (top / side / content).
+ * Spans both side and content columns.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`template-top ${className}`}>
+  <slot />
+</div>
+
+<style>
+  .template-top {
+    /* Mobile: normal flow */
+  }
+
+  @media only screen and (min-width: 641px) {
+    .template-top {
+      grid-area: top;
+    }
+  }
+</style>

@@ -21,11 +21,10 @@ const { class: className = '' } = Astro.props;
     margin-bottom: 2rem;
   }
   
-  /* Large screen positioning */
-  @media only screen and (min-width: 920px) {
+  /* Positioning inside basic (641px+) and aside (920px+) grids */
+  @media only screen and (min-width: 641px) {
     .template-content {
       grid-area: content;
-      margin-right: 2.5rem;
     }
   }
 </style>

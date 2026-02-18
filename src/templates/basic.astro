@@ -2,34 +2,36 @@
 /**
  * Basic Page Template
  * Converted from src/templates/basic.js
- * 
- * Structure matches Gatsby version:
- * - TemplateLayout (Layout wrapper)
- * - Margins (Container with margins)
- * - Template (Grid layout)
- * - Top (Breadcrumb area)
- * - Side (Navigation sidebar)
- * - Content (Main content area)
+ *
+ * Layout (matches Gatsby page-layout.js grid):
+ *   - TemplateLayout → Layout wrapper + SEO
+ *   - Margins → max-width container
+ *   - Template (variant="basic") → top / side / content CSS grid
+ *     - TemplateTop → Breadcrumb (full-width top row)
+ *     - TemplateSide → SideNavigation (large screen only)
+ *                      HorizontalNavigation (small screen only)
+ *     - TemplateContent → Heading + Html body + body Panels
+ *   - Panels (fullPanels, full-width below template)
  */
-import Layout from '../layouts/Layout.astro';
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Margins from '../components/Margins.astro';
+import Template from '../components/Template.astro';
+import TemplateTop from '../components/TemplateTop.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/heading.astro';
+import Html from '../components/Html.astro';
 import Panels from '../components/panels/Panels.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
-
-// TODO: Create these components to match Gatsby structure
-// import { Template, Top, Side, Content } from '../components/PageLayout.astro';
-// import { Margins } from '../reusable/Margins.astro';
-// import { Heading } from '../reusable/heading.astro';
-// import Html from '../components/Html.astro';
-// import Panels from '../components/Panels.astro';
-// import SideNavigation from '../components/navigation/SideNavigation.astro';
-// import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
-// import SmallScreen from '../reusable/SmallScreen.astro';
+import SideNavigation from '../components/navigation/SideNavigation.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import { getNavigationBranch } from '../lib/navigation.js';
 
 interface Props {
   node: any;
-  drupal_nid: string;
+  drupal_nid?: string;
   title: string;
   breadcrumb?: string;
   summary?: string;
@@ -39,170 +41,111 @@ interface Props {
   children?: any[];
 }
 
-const { 
+const {
   node,
-  drupal_nid,
   title,
   breadcrumb,
-  summary,
-  keywords,
-  tag,
   parents,
-  children
 } = Astro.props;
 
-// Check if we have node data
 if (!node) {
   throw new Error('No node data available');
 }
 
-// Extract fields (matches Gatsby destructuring)
 const {
   field_title_context: fieldTitleContext,
-  fields,
-  field_local_navigation: fieldLocalNavigation
-} = node;
+  field_local_navigation: fieldLocalNavigation,
+} = node.attributes;
 
+const { relationships } = node;
 const { processed: body } = node.attributes.body || {};
+const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pathname;
 
-// Use the breadcrumb prop if available, otherwise generate one
+// Breadcrumb
 let breadcrumbData = breadcrumb;
 if (!breadcrumbData) {
   breadcrumbData = generateBreadcrumb(
-    { 
-      title: fieldTitleContext || title || 'Unknown Page', 
-      slug: fields?.slug || Astro.url.pathname 
-    },
-    parents || [] // Use parents prop if available
+    { title: fieldTitleContext || title || 'Unknown Page', slug },
+    parents || []
   );
 }
 
-
-// Extract panels (mimic transformNodePanels from Gatsby)
-let bodyPanels = [];
-let fullPanels = [];
-if (node.relationships && node.relationships.field_panels) {
+// Panels
+let bodyPanels: any[] = [];
+let fullPanels: any[] = [];
+if (node.relationships?.field_panels) {
   const panels = node.relationships.field_panels;
-  bodyPanels = panels.filter((panel) => panel.field_placement === 'body');
-  fullPanels = panels.filter((panel) => panel.field_placement !== 'body');
+  bodyPanels = panels.filter((p: any) => p.field_placement === 'body');
+  fullPanels = panels.filter((p: any) => p.field_placement !== 'body');
 }
-// const navBranch = useNavigationBranch(fields.slug);
-// const smallScreenBranch = useNavigationBranch(fields.slug, 'small');
-// const smallScreenItems = smallScreenBranch?.children || null;
+
+// Side navigation — only fetched when the page opts in to local navigation
+let navBranch = null;
+let smallScreenItems = null;
+
+if (fieldLocalNavigation) {
+  navBranch = await getNavigationBranch(slug);
+  const smallBranch = await getNavigationBranch(slug, 'small');
+  smallScreenItems = smallBranch?.children || null;
+}
 ---
 
-<!-- 
-  Basic Template Layout Structure (matching Gatsby)
-  TODO: Replace with actual components when they exist
--->
-<Layout title={fieldTitleContext || title}>
-  <DebugPanel node={node}></DebugPanel>
-  <div class="template-layout">
-    <div class="margins">
-      <div class="template-grid">
-        <div class="top-section">
-          <Breadcrumb data={breadcrumbData} />
-        </div>
-        
-        <aside class="side-section">
-          {/* TODO: SideNavigation component */}
-          {fieldLocalNavigation && (
-            <div class="side-nav-placeholder">
-              <!-- <SideNavigation to={fields.slug} branch={navBranch} /> -->
-              <p><em>Side Navigation (TODO)</em></p>
-            </div>
-          )}
-          
-          {/* TODO: SmallScreen + HorizontalNavigation */}
-          <div class="small-screen-placeholder">
-            <!-- <SmallScreen><HorizontalNavigation items={smallScreenItems} /></SmallScreen> -->
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <DebugPanel node={node} />
+
+  <Margins>
+    <Template variant="basic">
+      <TemplateTop>
+        <Breadcrumb data={breadcrumbData} />
+      </TemplateTop>
+
+      <TemplateSide class="basic-side">
+        {fieldLocalNavigation && navBranch && (
+          <SideNavigation path={slug} branch={navBranch} />
+        )}
+
+        {fieldLocalNavigation && smallScreenItems && (
+          <div class="small-screen-nav">
+            <HorizontalNavigation items={smallScreenItems} />
           </div>
-        </aside>
-        
-        <main class="content-section">
-          <h1 class="page-heading">
-            {fieldTitleContext}
-          </h1>
-          
-          {body && (
-            <div class="body-content" set:html={body} />
-          )}
-          
-          <div class="body-panels-placeholder">
-            <Panels data={bodyPanels} />
-            <pre>NID: {node.attributes?.drupal_internal__nid}</pre>
-          </div>
-        </main>
-      </div>
-    </div>
-    
-    {/* TODO: Full width panels */}
-    <div class="full-panels-placeholder">
-      <!-- <Panels data={fullPanels} /> -->
-      <p><em>Full Width Panels (TODO)</em></p>
-    </div>
-  </div>
-</Layout>
+        )}
+      </TemplateSide>
+
+      <TemplateContent>
+        <Heading size="3XL" level={1}>
+          {fieldTitleContext}
+        </Heading>
+
+        {body && <Html html={body} />}
+
+        <Panels data={bodyPanels} />
+      </TemplateContent>
+    </Template>
+  </Margins>
+
+  <Panels data={fullPanels} />
+</TemplateLayout>
 
 <style>
-  /* Template Layout Styles (matching Gatsby CSS) */
-  .template-layout {
-    /* Base template layout styles */
+  /* Basic side: no decorative border — nav provides its own visual separation */
+  :global(.basic-side .template-side-inner) {
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
   }
-  
-  .template-grid {
-    margin-bottom: 4rem;
+
+  /* Small-screen horizontal nav — hidden on large screens (SideNavigation handles that) */
+  .small-screen-nav {
+    display: block;
   }
-  
-  .top-section {
-    grid-area: top;
+
+  @media only screen and (min-width: 641px) {
+    .small-screen-nav {
+      display: none;
+    }
   }
-  
   .side-section {
-    /* Mobile styles */
-  }
-  
-  .content-section {
-    grid-area: content;
-    margin-bottom: 2rem;
-  }
-  
-  .page-heading {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-    color: var(--color-blue-400, #00274C);
-  }
-  
-  .body-content {
-    line-height: 1.6;
-    margin-bottom: 2rem;
-  }
-  
-  .side-nav-placeholder,
-  .body-panels-placeholder,
-  .full-panels-placeholder {
-    padding: 1rem;
-    background: var(--color-neutral-100, #f5f5f5);
-    border-left: 3px solid var(--color-blue-400, #00274C);
-    margin: 1rem 0;
-  }
-  
-  /* Desktop grid layout (matching Gatsby MEDIA_QUERIES.S) */
-  @media (min-width: 640px) {
-    .template-grid {
-      display: grid;
-      grid-template-areas:
-        "top top"
-        "side content";
-      grid-template-columns: calc(216px + 3rem) 1fr;
-      grid-template-rows: auto 1fr;
-      margin-bottom: 5rem;
-    }
-    
-    .side-section {
-      grid-area: side;
-      margin-right: 2rem;
-    }
+    grid-area: side;
+    margin-right: 2rem;
   }
 </style>
