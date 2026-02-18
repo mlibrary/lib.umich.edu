@@ -401,6 +401,32 @@ export const processDrupalNode = (node, included = []) => {
   // Process all top-level relationships
   const relationships = processRelationships(node);
 
+  // Special handling for top-level field_media_image (e.g. news, events)
+  // Resolves the file URL and image meta from the media entity + included data
+  if (node.relationships?.field_media_image?.data) {
+    const mediaRef = node.relationships.field_media_image.data;
+    const mediaEntity = included.find((item) => {
+      return item.type === mediaRef.type && item.id === mediaRef.id;
+    });
+    if (mediaEntity) {
+      const fileRef = mediaEntity.relationships?.field_media_image?.data;
+      const fileEntity = fileRef
+        ? included.find((item) => {
+            return item.type === 'file--file' && item.id === fileRef.id;
+          })
+        : null;
+      const imageUrl = generateImageUrl(fileEntity, process.env.DRUPAL_URL || 'https://cms.lib.umich.edu');
+      relationships.field_media_image = {
+        ...relationships.field_media_image,
+        imageUrl,
+        imageAlt: fileRef?.meta?.alt || '',
+        imageWidth: fileRef?.meta?.width || null,
+        imageHeight: fileRef?.meta?.height || null,
+        imageCaption: mediaEntity.attributes?.field_image_caption?.processed || null
+      };
+    }
+  }
+
   // Special handling for hero panels to enhance images with file URLs
   if (relationships.field_panels) {
     relationships.field_panels = relationships.field_panels.map((panel) => {

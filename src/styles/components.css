@@ -5,3 +5,7 @@
 
 /* Add any global component styles here */
 /* For example: shared button styles, form styles, etc. */
+/*
+  Note: h1.focus styles (page heading focus indicator) live in base.css.
+  The .focus class is applied dynamically via JS in Layout.astro on page navigation.
+*/

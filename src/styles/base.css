@@ -32,14 +32,39 @@ a{
   text-decoration: none;
 }
 
-/* Focus styles */
-/* disable focus styles for clicking elements but keep the tab focus */
-*:focus {
-  box-shadow: none;
+[data-reach-dialog-overlay] {
+  background: hsla(0, 0%, 0%, 0.6);
+  z-index: 999;
 }
 
+/* Focus styles */
 *:focus-visible {
     outline: 0;
     box-shadow: 0 0 0 2px var(--color-maize-400), 0 0 0 3px var(--color-neutral-400);
     border-radius: 2px !important;
+}
+
+*:focus {
+  outline-color: var(--color-blue-400);
+}
+
+/* Page heading focus — overrides the global *:focus-visible box-shadow */
+h1.focus {
+  position: relative;
+}
+
+h1.focus:focus,
+h1.focus:focus-visible {
+  outline: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+h1.focus:focus::before {
+  border-left: solid 4px var(--color-teal-400);
+  content: "";
+  height: 100%;
+  left: -0.3em;
+  position: absolute;
+  top: 0;
 }

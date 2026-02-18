@@ -15,17 +15,47 @@ interface Props {
 
 const { html, class: className = '' } = Astro.props;
 
-// Basic HTML processing for Astro
-// Convert relative links to absolute if needed
+const DRUPAL_BASE_URL = (import.meta.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/, '');
+
+// Process HTML from Drupal: fix relative image URLs and improve loading behavior
 function processHtml(rawHtml: string): string {
   if (!rawHtml) return '';
-  
+
   let processed = rawHtml;
-  
-  // Convert Drupal entity divs to a simpler format
-  // Original: <div data-entity-type="media" data-entity-uuid="...">
-  // For now, we'll keep them as-is and handle them with CSS if needed
-  
+
+  // Prefix relative /sites/default/files paths with the Drupal base URL
+  // Handles both src="..." and srcset="..." attributes
+  processed = processed.replace(
+    /(<img\b[^>]*)\bsrc="(\/sites\/default\/files\/[^"]*)"/gi,
+    (_match, before, path) => `${before}src="${DRUPAL_BASE_URL}${path}"`
+  );
+  processed = processed.replace(
+    /(<img\b[^>]*)\bsrcset="([^"]*)"/gi,
+    (_match, before, srcset) => {
+      const fixedSrcset = srcset.replace(/(\/sites\/default\/files\/[^\s,]+)/g, (p: string) =>
+        p.startsWith('http') ? p : `${DRUPAL_BASE_URL}${p}`
+      );
+      return `${before}srcset="${fixedSrcset}"`;
+    }
+  );
+
+  // Unwrap images that Drupal wraps in anchor tags pointing back to the CMS
+  // e.g. <a href="/jsonapi/..."><img ...></a> or <a href="https://cms..."><img ...></a>
+  processed = processed.replace(
+    /<a\b[^>]*href="[^"]*(?:\/jsonapi\/|cms\.lib\.umich\.edu)[^"]*"[^>]*>\s*(<img\b[^>]*\/?>)\s*<\/a>/gi,
+    '$1'
+  );
+
+  // Use lazy loading and async decoding (matches Gatsby behavior)
+  processed = processed.replace(
+    /(<img\b[^>]*)\bloading="eager"/gi,
+    '$1loading="lazy"'
+  );
+  processed = processed.replace(
+    /(<img\b(?![^>]*\bdecoding=)[^>]*)(\/?>)/gi,
+    '$1 decoding="async"$2'
+  );
+
   return processed;
 }
 

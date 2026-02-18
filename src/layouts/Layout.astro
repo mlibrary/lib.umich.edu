@@ -28,12 +28,7 @@ const { title } = Astro.props;
     <script type="module" src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet"/>
     
-    <!-- Focus outline color override -->
-    <style is:global>
-      *:focus {
-        outline-color: #00274C;
-      }
-    </style>
+
   </head>
   <body>
     <!-- Page Grid Structure -->
@@ -66,6 +61,26 @@ const { title } = Astro.props;
     
     <!-- Ask a Librarian Chat -->
     <m-chat id="chat"></m-chat>
+
+    <!-- Page heading focus management (mirrors Gatsby onRouteUpdate behavior) -->
+    <script>
+      function applyPageHeadingFocus() {
+        const dataPageHeading = document.querySelector('[data-page-heading]');
+        const h1 = document.querySelector('h1');
+        const pageHeading = dataPageHeading ? dataPageHeading : h1;
+
+        if (pageHeading) {
+          pageHeading.setAttribute('tabindex', '-1');
+          pageHeading.classList.add('focus');
+          pageHeading.focus();
+        }
+      }
+
+      // astro:page-load fires on navigation when View Transitions is enabled.
+      // DOMContentLoaded covers the initial full-page load in both modes.
+      document.addEventListener('astro:page-load', applyPageHeadingFocus);
+      document.addEventListener('DOMContentLoaded', applyPageHeadingFocus);
+    </script>
     
     <style>
       /* Page Grid Layout */

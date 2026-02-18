@@ -10,6 +10,7 @@ import {
 } from '../utils/events.js';
 import Heading from '../reusable/heading.astro';
 import Icon from './Icon.astro';
+import DrupalImage from './DrupalImage.astro';
 
 export interface Props {
   event: any;
@@ -30,9 +31,12 @@ const {
   fields
 } = event;
 
-// Handle image data (if present)
-const image = relationships?.field_media_image?.relationships?.field_media_image;
-const imageData = image?.localFile?.childImageSharp?.gatsbyImageData;
+// Handle image data — page-generator resolves these as flat fields on field_media_image
+const imageSrc = relationships?.field_media_image?.imageUrl || null;
+const imageAlt = relationships?.field_media_image?.imageAlt || '';
+const imageWidth = relationships?.field_media_image?.imageWidth || 920;
+const imageHeight = relationships?.field_media_image?.imageHeight || 400;
+const imageData = imageSrc; // truthy check alias
 
 // Get start and end dates from the first date entry (with fallback like original)
 const dateEntry = field_event_date_s_?.[0];
@@ -64,13 +68,12 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
   class:list={[
     'event-card',
     { 'with-border': hasBorder },
-    { 'with-image': displayImage && imageData }
+    { 'with-image': displayImage && imageSrc }
   ]}
 >
-  {displayImage && imageData && (
+  {displayImage && imageSrc && (
     <div class="event-image">
-      <!-- TODO: Implement proper image component when available -->
-      <div class="image-placeholder">Image</div>
+      <DrupalImage src={imageSrc} alt={imageAlt} width={imageWidth} height={imageHeight} />
     </div>
   )}
   
