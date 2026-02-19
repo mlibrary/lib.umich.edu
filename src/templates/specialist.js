@@ -1,10 +1,9 @@
 /* eslint-disable no-invalid-this */
 import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
-import { navigate, useLocation } from '@reach/router';
+import { graphql, navigate } from 'gatsby';
 import React, { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
-import { graphql } from 'gatsby';
 import Html from '../components/html';
 import Link from '../components/link';
 import NoResults from '../components/no-results';
@@ -37,7 +36,7 @@ const useSpecialists = () => {
   return useContext(SpecialistsContext);
 };
 
-export default function FinaASpecialistTemplate ({ data }) {
+export default function FindASpecialistTemplate ({ data, location }) {
   const [initialized, setInitialized] = useState(false);
   const [specialists, setSpecialists] = useState();
   const node = data.page;
@@ -92,13 +91,13 @@ export default function FinaASpecialistTemplate ({ data }) {
           </div>
         )}
 
-        {initialized && <FindASpecialist specialists={specialists} />}
+        {initialized && <FindASpecialist specialists={specialists} location={location} />}
       </Margins>
     </TemplateLayout>
   );
 }
 
-FinaASpecialistTemplate.propTypes = {
+FindASpecialistTemplate.propTypes = {
   data: PropTypes.shape({
     page: PropTypes.shape({
       body: PropTypes.shape({
@@ -110,12 +109,16 @@ FinaASpecialistTemplate.propTypes = {
         breadcrumb: PropTypes.any
       })
     })
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string
   })
 };
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
-  return <SearchEngineOptimization data={data.page} />;
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={data.page} location={location} />;
 };
 /* eslint-enable react/prop-types */
 
@@ -134,8 +137,7 @@ const getCategories = (specialists) => {
   );
 };
 
-const FindASpecialist = ({ specialists }) => {
-  const location = useLocation();
+const FindASpecialist = ({ specialists, location }) => {
   const urlState = getUrlState(location.search, ['query', 'hs', 'category']);
   const results = specialists;
   const initialState = {
@@ -209,7 +211,7 @@ const FindASpecialist = ({ specialists }) => {
 
   return (
     <SpecialistsProvider intialState={initialState} reducer={reducer}>
-      <SpecialistsURLState />
+      <SpecialistsURLState location={location} />
       <SpecialistsSearchIndex />
       <SpecialistsGoogleTagManager />
       <SpecialistsSearch />
@@ -219,11 +221,13 @@ const FindASpecialist = ({ specialists }) => {
 };
 
 FindASpecialist.propTypes = {
+  location: PropTypes.shape({
+    search: PropTypes.string
+  }),
   specialists: PropTypes.any
 };
 
-const SpecialistsURLState = () => {
-  const location = useLocation();
+const SpecialistsURLState = ({ location }) => {
   const [{ stateString }] = useSpecialists();
 
   // When changes to state string represenation, set it to browser URL.
@@ -237,6 +241,12 @@ const SpecialistsURLState = () => {
   }, [stateString, location.pathname]);
 
   return null;
+};
+
+SpecialistsURLState.propTypes = {
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  })
 };
 
 const SpecialistsSearchIndex = () => {

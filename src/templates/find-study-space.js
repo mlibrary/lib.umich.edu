@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Button, Heading, Icon, Margins, MEDIA_QUERIES, SPACING, TYPOGRAPHY } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
+import { graphql, navigate } from 'gatsby';
 import { ORDERED_SPACE_FEATURES, SPACE_FEATURES_ICON_MAP } from '../constants/space-features';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
@@ -9,7 +10,6 @@ import Card from '../components/card';
 import CheckboxGroup from '../components/checkbox-group';
 import Collapsible from '../components/collapsible';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { graphql } from 'gatsby';
 import Html from '../components/html';
 import PlainLink from '../components/plain-link';
 import PropTypes from 'prop-types';
@@ -18,7 +18,6 @@ import { sentenceCase } from 'change-case';
 import SpaceFeaturesIcons from '../components/space-features-list';
 import TemplateLayout from './template-layout';
 import { titleCase } from 'title-case';
-import { useLocation } from '@reach/router';
 
 const getBuildingName = (edge) => {
   return (
@@ -140,7 +139,7 @@ const isBrowser = typeof window !== 'undefined';
 const locationSearch = isBrowser ? window.location.search : '';
 const urlState = getUrlState(locationSearch, FILTER_KEYS);
 
-const FindStudySpaceTemplate = ({ data }) => {
+const FindStudySpaceTemplate = ({ data, location }) => {
   const allStudySpaces = data.locations.edges.concat(data.rooms.edges);
 
   allStudySpaces.sort((left, right) => {
@@ -218,8 +217,6 @@ const FindStudySpaceTemplate = ({ data }) => {
       return { ...acc, [key]: true };
     }, {})
   );
-
-  const location = useLocation();
 
   const [queryString, setQueryString] = useState(location.search);
 
@@ -482,7 +479,7 @@ const FindStudySpaceTemplate = ({ data }) => {
 
     const stateString = stringifyState(stateObj);
     const to = stateString.length > 0 ? `?${stateString}` : window.location.pathname;
-    window.history.replaceState({}, '', to);
+    navigate(to, { replace: true });
     setQueryString(stateString.length > 0 ? `?${stateString}` : '');
   }, [selectedCampuses, selectedFeatures, selectedNoiseLevels, showAll]);
 
@@ -768,6 +765,9 @@ FindStudySpaceTemplate.propTypes = {
     rooms: PropTypes.shape({
       edges: PropTypes.array
     })
+  }),
+  location: PropTypes.shape({
+    search: PropTypes.string
   })
 };
 
@@ -839,7 +839,7 @@ NoFassResults.propTypes = {
 };
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
+export const Head = ({ data, location }) => {
   let node = null;
 
   if (data.page) {
@@ -848,7 +848,7 @@ export const Head = ({ data }) => {
     node = data.room;
   }
 
-  return <SearchEngineOptimization data={node} />;
+  return <SearchEngineOptimization data={node} location={location} />;
 };
 /* eslint-enable react/prop-types */
 

@@ -231,8 +231,8 @@ DepartmentTemplate.propTypes = {
 export default DepartmentTemplate;
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
-  return <SearchEngineOptimization data={data.department} />;
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={data.department} location={location} />;
 };
 /* eslint-enable react/prop-types */
 

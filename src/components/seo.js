@@ -2,9 +2,8 @@ import { graphql, useStaticQuery } from 'gatsby';
 import PropTypes from 'prop-types';
 import React from 'react';
 import squarelogo from '../images/squarelogo.png';
-import { useLocation } from '@reach/router';
 
-const SearchEngineOptimization = ({ data, children, titleField }) => {
+const SearchEngineOptimization = ({ data, children, titleField, location }) => {
   const siteData = useStaticQuery(graphql`
   query {
     site {
@@ -19,8 +18,6 @@ const SearchEngineOptimization = ({ data, children, titleField }) => {
 
   const defaultTitle = siteData.site.siteMetadata.title;
   const { title, field_title_context: fieldTitleContext, body, field_seo_keywords: fieldSeoKeywords } = data || {};
-
-  const location = useLocation();
 
   const metaTitle = () => {
     if (titleField && data[titleField]) {
@@ -67,7 +64,7 @@ const SearchEngineOptimization = ({ data, children, titleField }) => {
   };
 
   const pageUrl = () => {
-    return (siteData.site.siteMetadata.siteUrl + location?.pathname);
+    return (siteData.site.siteMetadata.siteUrl + (location?.pathname ?? ''));
   };
 
   return (
@@ -90,6 +87,7 @@ const SearchEngineOptimization = ({ data, children, titleField }) => {
 SearchEngineOptimization.propTypes = {
   children: PropTypes.object,
   data: PropTypes.object,
+  location: PropTypes.object,
   titleField: PropTypes.string
 };
 

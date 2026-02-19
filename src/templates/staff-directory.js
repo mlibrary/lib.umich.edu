@@ -4,10 +4,9 @@ import getUrlState, { stringifyState } from '../utils/get-url-state';
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { graphql } from 'gatsby';
+import { graphql, navigate } from 'gatsby';
 import Html from '../components/html';
 import Link from '../components/link';
-import { navigate } from '@reach/router';
 import NoResults from '../components/no-results';
 import PlainLink from '../components/plain-link';
 import PropTypes from 'prop-types';
@@ -84,8 +83,8 @@ StaffDirectoryWrapper.propTypes = {
 };
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
-  return <SearchEngineOptimization data={data.page} />;
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={data.page} location={location} />;
 };
 /* eslint-enable react/prop-types */
 
