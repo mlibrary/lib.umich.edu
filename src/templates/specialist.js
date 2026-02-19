@@ -78,7 +78,21 @@ export default function FinaASpecialistTemplate ({ data }) {
           </div>
         )}
 
-        {specialists && <FindASpecialist specialists={specialists} />}
+        {!initialized && (
+          <div
+            css={{
+              color: 'var(--color-neutral-300)',
+              fontSize: '1.125rem',
+              padding: SPACING.XL
+            }}
+            role='status'
+            aria-live='polite'
+          >
+            Loading Find a Specialist...
+          </div>
+        )}
+
+        {initialized && <FindASpecialist specialists={specialists} />}
       </Margins>
     </TemplateLayout>
   );
