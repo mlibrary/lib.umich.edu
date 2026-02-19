@@ -125,6 +125,7 @@ const StaffDirectoryQueryContainer = ({
     urlState.department ? { department: urlState.department } : {}
   );
   const [results, setResults] = useState([]);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [stateString] = useDebounce(
     stringifyState({
       department: activeFilters.department,
@@ -194,6 +195,9 @@ const StaffDirectoryQueryContainer = ({
       setResults(filterResults({ activeFilters, results: tryResults }));
     } catch {
       // Intentionally left blank
+    }
+    if (!isInitialized) {
+      setIsInitialized(true);
     }
   }, [query, activeFilters, staff]);
 
@@ -266,15 +270,31 @@ const StaffDirectoryQueryContainer = ({
           </div>
         )}
 
-        <StaffDirectory
-          handleChange={handleChange}
-          handleClear={handleClear}
-          filters={filters}
-          activeFilters={activeFilters}
-          results={results}
-          staffImages={staffImages}
-          query={query}
-        />
+        {!isInitialized && (
+          <div
+            css={{
+              color: 'var(--color-neutral-300)',
+              fontSize: '1.125rem',
+              padding: SPACING.XL
+            }}
+            role='status'
+            aria-live='polite'
+          >
+            Loading Staff Directory...
+          </div>
+        )}
+
+        {isInitialized && (
+          <StaffDirectory
+            handleChange={handleChange}
+            handleClear={handleClear}
+            filters={filters}
+            activeFilters={activeFilters}
+            results={results}
+            staffImages={staffImages}
+            query={query}
+          />
+        )}
       </Margins>
     </TemplateLayout>
   );
