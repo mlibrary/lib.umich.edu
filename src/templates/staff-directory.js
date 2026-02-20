@@ -288,6 +288,7 @@ const StaffDirectoryQueryContainer = ({
             }}
             role='status'
             aria-live='polite'
+            aria-atomic='true'
           >
             Loading Staff Directory...
           </div>
@@ -365,8 +366,6 @@ const StaffDirectory = React.memo(({
       );
     }
   }
-  // Build a plain-text message for the persistent live region (always in DOM so screen readers detect changes).
-  // Never set to empty string — NVDA re-announces the previous content when the region clears to ''.
   let liveSuffix = '';
   [query, activeFilters.department].forEach((param) => {
     if (param) {
@@ -377,8 +376,7 @@ const StaffDirectory = React.memo(({
     ? `No results${liveSuffix}`
     : `${results.length} result${results.length !== 1 ? 's' : ''}${liveSuffix}`;
 
-  // Debounce the announced message so that the query-change render and the
-  // Results-change render collapse into a single NVDA announcement.
+  // Debounce the announced message so that it doesn't repeat itself when the user is typing quickly or changing filters quickly
   const [debouncedLiveMessage] = useDebounce(liveMessage, 400);
 
   [query, activeFilters.department].forEach((param) => {
