@@ -167,6 +167,15 @@ const StaffDirectoryQueryContainer = ({
     // Get the staff directory index
     const index = window.__SDI__;
 
+    // When query is empty, skip lunr (it returns [] for empty input) and show all staff
+    if (!query) {
+      setResults(filterResults({ activeFilters, results: staff }));
+      if (!isInitialized) {
+        setIsInitialized(true);
+      }
+      return;
+    }
+
     try {
       const tryResults = index
         .query((queryName) => {
@@ -356,6 +365,22 @@ const StaffDirectory = React.memo(({
       );
     }
   }
+  // Build a plain-text message for the persistent live region (always in DOM so screen readers detect changes).
+  // Never set to empty string — NVDA re-announces the previous content when the region clears to ''.
+  let liveSuffix = '';
+  [query, activeFilters.department].forEach((param) => {
+    if (param) {
+      liveSuffix += ` ${param === query ? 'for' : 'in'} ${param}`;
+    }
+  });
+  const liveMessage = results.length === 0
+    ? `No results${liveSuffix}`
+    : `${results.length} result${results.length !== 1 ? 's' : ''}${liveSuffix}`;
+
+  // Debounce the announced message so that the query-change render and the
+  // Results-change render collapse into a single NVDA announcement.
+  const [debouncedLiveMessage] = useDebounce(liveMessage, 400);
+
   [query, activeFilters.department].forEach((param) => {
     if (param) {
       resultsSummary = (
@@ -366,11 +391,18 @@ const StaffDirectory = React.memo(({
     }
   });
   if (results.length === 0) {
-    resultsSummary = (<div><span aria-live='assertive'>No results {resultsSummary}</span></div>);
+    resultsSummary = (<div>No results {resultsSummary}</div>);
   }
 
   return (
     <React.Fragment>
+      <div
+        aria-live='polite'
+        aria-atomic='true'
+        className='visually-hidden'
+      >
+        {debouncedLiveMessage}
+      </div>
       <div
         css={{
           display: 'grid',
