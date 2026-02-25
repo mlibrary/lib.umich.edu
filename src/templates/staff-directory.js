@@ -653,9 +653,9 @@ const StaffDirectoryResults = ({
       >
         <tr>
           <th scope='col' className='visually-hidden'>Photo</th>
-          <th scope='colgroup' colSpan='3'>Name and title</th>
-          <th scope='colgroup' colSpan='2'>Contact info</th>
-          <th scope='colgroup' colSpan='3'>Department</th>
+          <th scope='col' colSpan='3'>Name and title</th>
+          <th scope='col' colSpan='2'>Contact info</th>
+          <th scope='col' colSpan='3'>Department</th>
         </tr>
       </thead>
       <tbody>
