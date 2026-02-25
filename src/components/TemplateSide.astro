@@ -37,7 +37,6 @@ const {
   @media only screen and (min-width: 641px) {
     .template-side {
       grid-area: side;
-      margin-right: var(--spacing-3xl);
     }
   }
   
@@ -50,11 +49,11 @@ const {
     
     /* Left content side = right sidebar with left border */
     .template-side[data-content-side="left"] .template-side-inner {
+      padding-left: 3rem;
     }
     
     /* Right content side = left sidebar with right border */
     .template-side[data-content-side="right"] .template-side-inner {
-      border-right: solid 1px var(--color-neutral-100);
       padding-right: 3rem;
     }
   }

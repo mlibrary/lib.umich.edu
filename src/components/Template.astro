@@ -9,6 +9,8 @@
  *  - "basic" — top / side / content, 3-area grid (basic pages with side nav)
  *    Slots: TemplateTop (grid-area: top) + TemplateSide (grid-area: side) + TemplateContent (grid-area: content)
  */
+import Margins from './Margins.astro';
+
 interface Props {
   asideWidth?: string;
   contentSide?: 'left' | 'right';
@@ -24,9 +26,11 @@ const {
 } = Astro.props;
 ---
 
-<div class={`template template--${variant} ${className}`} data-content-side={contentSide}>
-  <slot />
-</div>
+<Margins>
+  <div class={`template template--${variant} ${className}`} data-content-side={contentSide}>
+    <slot />
+  </div>
+</Margins>
 
 <style define:vars={{ asideWidth, contentSide }}>
   .template {
@@ -50,7 +54,7 @@ const {
 
     .template--aside[data-content-side="left"],
     .template--aside:not([data-content-side]) {
-      grid-template-areas: "side content";
+      grid-template-areas: "content side";
       grid-template-columns: 1fr calc(var(--asideWidth) + 4rem);
     }
 
