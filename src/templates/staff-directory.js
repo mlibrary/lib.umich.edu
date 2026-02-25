@@ -167,6 +167,15 @@ const StaffDirectoryQueryContainer = ({
     // Get the staff directory index
     const index = window.__SDI__;
 
+    // When query is empty, skip lunr (it returns [] for empty input) and show all staff
+    if (!query) {
+      setResults(filterResults({ activeFilters, results: staff }));
+      if (!isInitialized) {
+        setIsInitialized(true);
+      }
+      return;
+    }
+
     try {
       const tryResults = index
         .query((queryName) => {
@@ -279,6 +288,7 @@ const StaffDirectoryQueryContainer = ({
             }}
             role='status'
             aria-live='polite'
+            aria-atomic='true'
           >
             Loading Staff Directory...
           </div>
@@ -356,6 +366,19 @@ const StaffDirectory = React.memo(({
       );
     }
   }
+  let liveSuffix = '';
+  [query, activeFilters.department].forEach((param) => {
+    if (param) {
+      liveSuffix += ` ${param === query ? 'for' : 'in'} ${param}`;
+    }
+  });
+  const liveMessage = results.length === 0
+    ? `No results${liveSuffix}`
+    : `${results.length} result${results.length !== 1 ? 's' : ''}${liveSuffix}`;
+
+  // Debounce the announced message so that it doesn't repeat itself when the user is typing quickly or changing filters quickly
+  const [debouncedLiveMessage] = useDebounce(liveMessage, 400);
+
   [query, activeFilters.department].forEach((param) => {
     if (param) {
       resultsSummary = (
@@ -366,11 +389,18 @@ const StaffDirectory = React.memo(({
     }
   });
   if (results.length === 0) {
-    resultsSummary = (<div><span aria-live='assertive'>No results {resultsSummary}</span></div>);
+    resultsSummary = (<div>No results {resultsSummary}</div>);
   }
 
   return (
     <React.Fragment>
+      <div
+        aria-live='polite'
+        aria-atomic='true'
+        className='visually-hidden'
+      >
+        {debouncedLiveMessage}
+      </div>
       <div
         css={{
           display: 'grid',
@@ -623,9 +653,9 @@ const StaffDirectoryResults = ({
       >
         <tr>
           <th scope='col' className='visually-hidden'>Photo</th>
-          <th scope='colgroup' colSpan='3'>Name and title</th>
-          <th scope='colgroup' colSpan='2'>Contact info</th>
-          <th scope='colgroup' colSpan='3'>Department</th>
+          <th scope='col' colSpan='3'>Name and title</th>
+          <th scope='col' colSpan='2'>Contact info</th>
+          <th scope='col' colSpan='3'>Department</th>
         </tr>
       </thead>
       <tbody>
