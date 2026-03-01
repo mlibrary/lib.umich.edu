@@ -19,14 +19,14 @@
     "gatsby-transformer-sharp": "^5.16.0",
     "highlight-words-core": "^1.2.3",
     "isomorphic-fetch": "^3.0.0",
-    "motion": "^12.29.2",
+    "motion": "^12.34.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "rehype-parse": "^9.0.1",
     "rehype-react": "^8.0.0",
     "unified": "^11.0.5",
     "use-debounce": "^10.1.0",
-    "whatwg-url": "^16.0.0"
+    "whatwg-url": "^16.0.1"
   },
   "keywords": [
     "gatsby"
@@ -51,16 +51,16 @@
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.2",
-    "@eslint/js": "^9.39.2",
-    "@stylistic/eslint-plugin": "^5.7.1",
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.9.0",
     "bottleneck": "^2.19.5",
     "entities": "^7.0.1",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.2",
     "eslint-plugin-react": "^7.37.5",
     "fetch-retry": "^6.0.0",
     "gatsby-plugin-netlify": "^5.1.1",
     "gatsby-plugin-remove-serviceworker": "^1.0.0",
-    "globals": "^17.3.0"
+    "globals": "^17.4.0"
   },
   "overrides": {
     "eslint-plugin-react": {
