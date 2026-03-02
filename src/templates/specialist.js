@@ -479,7 +479,7 @@ const SpecialistsResults = () => {
     );
   }
   if (resultsFiltered.length === 0) {
-    resultsSummary = (<div><span aria-live='assertive'>No results {resultsSummary}</span></div>);
+    resultsSummary = (<div><span aria-live='polite' aria-atomic='true'>No results {resultsSummary}</span></div>);
   }
   const tableBreakpoint = `@media only screen and (max-width: 720px)`;
   const borderStyle = '1px solid var(--color-neutral-100)';
@@ -515,7 +515,6 @@ const SpecialistsResults = () => {
           width: '100%'
 
         }}
-        aria-live='polite'
       >
         <caption css={{ textAlign: 'left' }}>
           {resultsSummary}

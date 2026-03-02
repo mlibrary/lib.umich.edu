@@ -366,7 +366,7 @@ const StaffDirectory = React.memo(({
     }
   });
   if (results.length === 0) {
-    resultsSummary = (<div><span aria-live='assertive'>No results {resultsSummary}</span></div>);
+    resultsSummary = (<div><span aria-live='polite' aria-atomic='true'>No results {resultsSummary}</span></div>);
   }
 
   return (
