@@ -368,10 +368,11 @@ const StaffDirectory = React.memo(({
       );
     }
   }
+  const trimmedQuery = query.trim();
   let liveSuffix = '';
-  [query, activeFilters.department].forEach((param) => {
+  [trimmedQuery, activeFilters.department].forEach((param) => {
     if (param) {
-      liveSuffix += ` ${param === query ? 'for' : 'in'} ${param}`;
+      liveSuffix += ` ${param === trimmedQuery ? 'for' : 'in'} ${param}`;
     }
   });
   const liveMessage = results.length === 0
@@ -381,11 +382,11 @@ const StaffDirectory = React.memo(({
   // Debounce the announced message so that it doesn't repeat itself when the user is typing quickly or changing filters quickly
   const [debouncedLiveMessage] = useDebounce(liveMessage, 400);
 
-  [query, activeFilters.department].forEach((param) => {
+  [trimmedQuery, activeFilters.department].forEach((param) => {
     if (param) {
       resultsSummary = (
         <>
-          {resultsSummary} {param === query ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
+          {resultsSummary} {param === trimmedQuery ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
         </>
       );
     }
