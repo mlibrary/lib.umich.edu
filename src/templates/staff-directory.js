@@ -368,6 +368,7 @@ const StaffDirectory = React.memo(({
       );
     }
   }
+  const trimmedQuery = query.trim();
   let liveSuffix = '';
   [trimmedQuery, activeFilters.department].forEach((param) => {
     if (param) {
