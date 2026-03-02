@@ -167,8 +167,10 @@ const StaffDirectoryQueryContainer = ({
     // Get the staff directory index
     const index = window.__SDI__;
 
+    const normalizedQuery = query.trim();
+
     // When query is empty, skip lunr (it returns [] for empty input) and show all staff
-    if (!query) {
+    if (!normalizedQuery) {
       setResults(filterResults({ activeFilters, results: staff }));
       if (!isInitialized) {
         setIsInitialized(true);
@@ -179,15 +181,15 @@ const StaffDirectoryQueryContainer = ({
     try {
       const tryResults = index
         .query((queryName) => {
-          queryName.term(lunr.tokenizer(query), {
+          queryName.term(lunr.tokenizer(normalizedQuery), {
             boost: 3
           });
-          queryName.term(lunr.tokenizer(query), {
+          queryName.term(lunr.tokenizer(normalizedQuery), {
             boost: 2,
             wildcard: lunr.Query.wildcard.TRAILING
           });
-          if (query.length > 2) {
-            queryName.term(lunr.tokenizer(query), {
+          if (normalizedQuery.length > 2) {
+            queryName.term(lunr.tokenizer(normalizedQuery), {
               wildcard:
                 // eslint-disable-next-line no-bitwise
                 lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
