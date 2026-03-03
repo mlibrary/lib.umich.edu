@@ -251,6 +251,7 @@ SpecialistsURLState.propTypes = {
 
 const SpecialistsSearchIndex = () => {
   const [{ query, specialists }, dispatch] = useSpecialists();
+  const trimmedQuery = query.trim();
 
   /* eslint-disable no-underscore-dangle */
   useEffect(() => {
@@ -268,18 +269,24 @@ const SpecialistsSearchIndex = () => {
     // Get the Find a Specialist Index index (FSI)
     const index = window.__FSI__;
 
+    // When query is empty, skip lunr (it returns [] for empty input) and show all specialists
+    if (!trimmedQuery) {
+      dispatch({ results: specialists, type: 'setResults' });
+      return;
+    }
+
     try {
       const results = index
         .query((queryText) => {
-          queryText.term(lunr.tokenizer(query), {
+          queryText.term(lunr.tokenizer(trimmedQuery), {
             boost: 3
           });
-          queryText.term(lunr.tokenizer(query), {
+          queryText.term(lunr.tokenizer(trimmedQuery), {
             boost: 2,
             wildcard: lunr.Query.wildcard.TRAILING
           });
-          if (query.length > 2) {
-            queryText.term(lunr.tokenizer(query), {
+          if (trimmedQuery.length > 2) {
+            queryText.term(lunr.tokenizer(trimmedQuery), {
               wildcard:
                 // eslint-disable-next-line no-bitwise
                 lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
@@ -299,7 +306,7 @@ const SpecialistsSearchIndex = () => {
     } catch {
       // No action needed; intentionally empty block
     }
-  }, [query, dispatch, specialists]);
+  }, [trimmedQuery, dispatch, specialists]);
 
   return null;
 };
