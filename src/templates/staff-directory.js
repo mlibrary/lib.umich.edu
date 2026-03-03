@@ -2,7 +2,6 @@
 import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import { graphql, navigate } from 'gatsby';
-import { graphql, navigate } from 'gatsby';
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
