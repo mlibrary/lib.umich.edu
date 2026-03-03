@@ -27,6 +27,44 @@ const StateProvider = ({ reducer, initialState, children }) => {
   );
 };
 
+const navItemStyles = {
+  alignItems: 'center',
+  borderBottom: `solid 1px var(--color-neutral-100)`,
+  color: 'var(--color-neutral-400)',
+  cursor: 'pointer',
+  display: 'flex',
+  padding: SPACING.M,
+  textAlign: 'left',
+  textDecoration: 'none',
+  width: '100%'
+};
+
+const BeforeIcon = () => {
+  return (
+    <span
+      css={{
+        lineHeight: '1',
+        paddingRight: SPACING.S
+      }}
+    >
+      <Icon icon='navigate_before' size={24} />
+    </span>
+  );
+};
+
+const NextIcon = () => {
+  return (
+    <span
+      css={{
+        lineHeight: '1',
+        paddingLeft: SPACING.S
+      }}
+    >
+      <Icon icon='navigate_next' size={24} />
+    </span>
+  );
+};
+
 StateProvider.propTypes = {
   children: PropTypes.object,
   initialState: PropTypes.object,
@@ -38,125 +76,6 @@ StateProvider.propTypes = {
 
 const useStateValue = () => {
   return useContext(StateContext);
-};
-
-const SmallScreenHeader = ({ primary, secondary }) => {
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case 'setOpenNav':
-        return {
-          ...state,
-          openNav: action.openNav
-        };
-      case 'setOpen':
-        return {
-          ...state,
-          open: action.open
-        };
-      case 'setPanelOpen':
-        return {
-          ...state,
-          panelOpen: action.panelOpen
-        };
-      case 'reset':
-        return {};
-      default:
-        return state;
-    }
-  };
-
-  return (
-    <StateProvider initialState={{}} reducer={reducer}>
-      <header
-        css={{
-          '@media only screen and (min-width: 1129px)': {
-            display: 'none'
-          },
-          borderBottom: `solid 2px var(--color-neutral-100)`,
-          display: 'block'
-        }}
-      >
-        <Margins>
-          <div
-            css={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              position: 'relative'
-            }}
-          >
-            <div
-              css={{
-                flexShrink: '1',
-                padding: `${SPACING.M} 0`
-              }}
-            >
-              <Logo size={32} />
-            </div>
-            <Nav primary={primary} secondary={secondary} />
-          </div>
-        </Margins>
-      </header>
-    </StateProvider>
-  );
-};
-
-SmallScreenHeader.propTypes = {
-  primary: PropTypes.array,
-  secondary: PropTypes.array
-};
-
-const Nav = ({ primary, secondary }) => {
-  const [{ openNav, open }, dispatch] = useStateValue();
-  const isOpen = openNav === true;
-  const toggleNavNode = useRef();
-
-  return (
-    <nav
-      aria-label='Main and utility'
-      css={{
-        flexShrink: 0
-      }}
-    >
-      <SiteSearchModal />
-      <button
-        css={{
-          cursor: 'pointer',
-          marginRight: `-${SPACING.XS}`,
-          padding: `${SPACING.M} ${SPACING.XS}`
-        }}
-        ref={toggleNavNode}
-        aria-expanded={isOpen}
-        onClick={() => {
-          return dispatch({
-            openNav: !isOpen,
-            type: 'setOpenNav'
-          });
-        }}
-      >
-        {isOpen
-          ? (
-              <Icon icon='close' size={32} />
-            )
-          : (
-              <Icon icon='menu' size={32} />
-            )}
-        <span className='visually-hidden'>Navigation</span>
-      </button>
-      {isOpen && (
-        <NavDropdown toggleNavNode={toggleNavNode}>
-          {primary && <NavPrimary items={primary} />}
-          {secondary && !Number.isInteger(open) && (
-            <NavSecondary items={secondary} />
-          )}
-        </NavDropdown>
-      )}
-    </nav>
-  );
-};
-
-Nav.propTypes = {
-  primary: PropTypes.array,
-  secondary: PropTypes.array
 };
 
 const NavDropdown = ({ children, toggleNavNode }) => {
@@ -246,83 +165,6 @@ const NavDropdown = ({ children, toggleNavNode }) => {
   );
 };
 
-NavDropdown.propTypes = {
-  children: PropTypes.array,
-  toggleNavNode: PropTypes.func
-};
-
-const navItemStyles = {
-  alignItems: 'center',
-  borderBottom: `solid 1px var(--color-neutral-100)`,
-  color: 'var(--color-neutral-400)',
-  cursor: 'pointer',
-  display: 'flex',
-  padding: SPACING.M,
-  textAlign: 'left',
-  textDecoration: 'none',
-  width: '100%'
-};
-
-const NavSecondary = ({ items }) => {
-  return (
-    <ul aria-label='Utility'>
-      {items.map(({ to, text, icon }, iterator) => {
-        return (
-          <li key={iterator + text}>
-            <Link
-              to={to}
-              css={{
-                ...navItemStyles,
-                ...TYPOGRAPHY['3XS'],
-                background: 'var(--color-blue-100)',
-                color: 'var(--color-neutral-300)'
-              }}
-            >
-              {icon && (
-                <Icon
-                  icon={icon}
-                  css={{
-                    marginRight: SPACING['2XS'],
-                    marginTop: '-2px'
-                  }}
-                />
-              )}
-              <span>{text}</span>
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
-  );
-};
-
-NavSecondary.propTypes = {
-  items: PropTypes.array
-};
-
-const NavPrimary = ({ items }) => {
-  const [{ open }] = useStateValue();
-
-  // Is an primary nav item open.
-  if (Number.isInteger(open)) {
-    return <NavPanelSecondary {...items[open]} />;
-  }
-
-  return (
-    <ul aria-label='Main'>
-      {items.map((item, iterator) => {
-        return (
-          <NavPrimaryItem {...item} i={iterator} key={iterator + item.text} />
-        );
-      })}
-    </ul>
-  );
-};
-
-NavPrimary.propTypes = {
-  items: PropTypes.array
-};
-
 const NavPrimaryItem = ({ text, i: item }) => {
   const [{ open }, dispatch] = useStateValue();
   const isOpen = open === item;
@@ -354,30 +196,77 @@ NavPrimaryItem.propTypes = {
   text: PropTypes.object
 };
 
-const BeforeIcon = () => {
+NavDropdown.propTypes = {
+  children: PropTypes.array,
+  toggleNavNode: PropTypes.func
+};
+
+const NavPanelTertiary = ({ text, to, children }) => {
+  const [, dispatch] = useStateValue();
+  const beforeNode = useRef();
+
+  useEffect(() => {
+    beforeNode.current.focus();
+  }, []);
+
   return (
-    <span
-      css={{
-        lineHeight: '1',
-        paddingRight: SPACING.S
-      }}
-    >
-      <Icon icon='navigate_before' size={24} />
-    </span>
+    <div>
+      <button
+        css={{
+          ...navItemStyles
+        }}
+        onClick={() => {
+          return dispatch({
+            panelOpen: null,
+            type: 'setPanelOpen'
+          });
+        }}
+        ref={beforeNode}
+        aria-expanded={true}
+      >
+        <BeforeIcon />
+        <span css={{ fontWeight: '800' }}>{text}</span>
+      </button>
+
+      <ul>
+        {children.map((item, iterator) => {
+          return (
+            <li key={iterator + item.text}>
+              <Link to={item.to} css={navItemStyles}>
+                {item.text}
+              </Link>
+            </li>
+          );
+        })}
+        <li>
+          <Link
+            to={to}
+            css={{
+              ':hover': {
+                '.text': LINK_STYLES['list-strong'][':hover']
+              },
+              ...navItemStyles,
+              fontSize: '1rem',
+              fontWeight: '800'
+            }}
+          >
+            <span className='text' css={{ marginRight: '0.5rem' }}>
+              View all {text}
+            </span>
+            <span>
+              <Icon icon='arrow_forward' />
+            </span>
+          </Link>
+        </li>
+      </ul>
+    </div>
   );
 };
 
-const NextIcon = () => {
-  return (
-    <span
-      css={{
-        lineHeight: '1',
-        paddingLeft: SPACING.S
-      }}
-    >
-      <Icon icon='navigate_next' size={24} />
-    </span>
-  );
+NavPanelTertiary.propTypes = {
+  children: PropTypes.array,
+  text: PropTypes.string,
+  to: PropTypes.string
 };
 
 const NavPanelSecondary = ({ text, children }) => {
@@ -454,72 +343,183 @@ NavPanelSecondary.propTypes = {
   text: PropTypes.string
 };
 
-const NavPanelTertiary = ({ text, to, children }) => {
-  const [, dispatch] = useStateValue();
-  const beforeNode = useRef();
+const NavPrimary = ({ items }) => {
+  const [{ open }] = useStateValue();
 
-  useEffect(() => {
-    beforeNode.current.focus();
-  }, []);
+  // Is an primary nav item open.
+  if (Number.isInteger(open)) {
+    return <NavPanelSecondary {...items[open]} />;
+  }
 
   return (
-    <div>
-      <button
-        css={{
-          ...navItemStyles
-        }}
-        onClick={() => {
-          return dispatch({
-            panelOpen: null,
-            type: 'setPanelOpen'
-          });
-        }}
-        ref={beforeNode}
-        aria-expanded={true}
-      >
-        <BeforeIcon />
-        <span css={{ fontWeight: '800' }}>{text}</span>
-      </button>
-
-      <ul>
-        {children.map((item, iterator) => {
-          return (
-            <li key={iterator + item.text}>
-              <Link to={item.to} css={navItemStyles}>
-                {item.text}
-              </Link>
-            </li>
-          );
-        })}
-        <li>
-          <Link
-            to={to}
-            css={{
-              ':hover': {
-                '.text': LINK_STYLES['list-strong'][':hover']
-              },
-              ...navItemStyles,
-              fontSize: '1rem',
-              fontWeight: '800'
-            }}
-          >
-            <span className='text' css={{ marginRight: '0.5rem' }}>
-              View all {text}
-            </span>
-            <span>
-              <Icon icon='arrow_forward' />
-            </span>
-          </Link>
-        </li>
-      </ul>
-    </div>
+    <ul aria-label='Main'>
+      {items.map((item, iterator) => {
+        return (
+          <NavPrimaryItem {...item} i={iterator} key={iterator + item.text} />
+        );
+      })}
+    </ul>
   );
 };
 
-NavPanelTertiary.propTypes = {
-  children: PropTypes.array,
-  text: PropTypes.string,
-  to: PropTypes.string
+NavPrimary.propTypes = {
+  items: PropTypes.array
+};
+
+const NavSecondary = ({ items }) => {
+  return (
+    <ul aria-label='Utility'>
+      {items.map(({ to, text, icon }, iterator) => {
+        return (
+          <li key={iterator + text}>
+            <Link
+              to={to}
+              css={{
+                ...navItemStyles,
+                ...TYPOGRAPHY['3XS'],
+                background: 'var(--color-blue-100)',
+                color: 'var(--color-neutral-300)'
+              }}
+            >
+              {icon && (
+                <Icon
+                  icon={icon}
+                  css={{
+                    marginRight: SPACING['2XS'],
+                    marginTop: '-2px'
+                  }}
+                />
+              )}
+              <span>{text}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
+NavSecondary.propTypes = {
+  items: PropTypes.array
+};
+
+const Nav = ({ primary, secondary }) => {
+  const [{ openNav, open }, dispatch] = useStateValue();
+  const isOpen = openNav === true;
+  const toggleNavNode = useRef();
+
+  return (
+    <nav
+      aria-label='Main and utility'
+      css={{
+        flexShrink: 0
+      }}
+    >
+      <SiteSearchModal />
+      <button
+        css={{
+          cursor: 'pointer',
+          marginRight: `-${SPACING.XS}`,
+          padding: `${SPACING.M} ${SPACING.XS}`
+        }}
+        ref={toggleNavNode}
+        aria-expanded={isOpen}
+        onClick={() => {
+          return dispatch({
+            openNav: !isOpen,
+            type: 'setOpenNav'
+          });
+        }}
+      >
+        {isOpen
+          ? (
+              <Icon icon='close' size={32} />
+            )
+          : (
+              <Icon icon='menu' size={32} />
+            )}
+        <span className='visually-hidden'>Navigation</span>
+      </button>
+      {isOpen && (
+        <NavDropdown toggleNavNode={toggleNavNode}>
+          {primary && <NavPrimary items={primary} />}
+          {secondary && !Number.isInteger(open) && (
+            <NavSecondary items={secondary} />
+          )}
+        </NavDropdown>
+      )}
+    </nav>
+  );
+};
+
+Nav.propTypes = {
+  primary: PropTypes.array,
+  secondary: PropTypes.array
+};
+
+const SmallScreenHeader = ({ primary, secondary }) => {
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'setOpenNav':
+        return {
+          ...state,
+          openNav: action.openNav
+        };
+      case 'setOpen':
+        return {
+          ...state,
+          open: action.open
+        };
+      case 'setPanelOpen':
+        return {
+          ...state,
+          panelOpen: action.panelOpen
+        };
+      case 'reset':
+        return {};
+      default:
+        return state;
+    }
+  };
+
+  return (
+    <StateProvider initialState={{}} reducer={reducer}>
+      <header
+        css={{
+          '@media only screen and (min-width: 1129px)': {
+            display: 'none'
+          },
+          borderBottom: `solid 2px var(--color-neutral-100)`,
+          display: 'block'
+        }}
+      >
+        <Margins>
+          <div
+            css={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              position: 'relative'
+            }}
+          >
+            <div
+              css={{
+                flexShrink: '1',
+                padding: `${SPACING.M} 0`
+              }}
+            >
+              <Logo size={32} />
+            </div>
+            <Nav primary={primary} secondary={secondary} />
+          </div>
+        </Margins>
+      </header>
+    </StateProvider>
+  );
+};
+
+SmallScreenHeader.propTypes = {
+  primary: PropTypes.array,
+  secondary: PropTypes.array
 };
 
 export default SmallScreenHeader;
