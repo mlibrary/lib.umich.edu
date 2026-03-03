@@ -126,18 +126,19 @@ const StaffDirectoryQueryContainer = ({
   );
   const [results, setResults] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const trimmedQuery = query.trim();
   const [stateString] = useDebounce(
     stringifyState({
       department: activeFilters.department,
       // eslint-disable-next-line no-undefined
-      query: query.length > 0 ? query : undefined
+      query: trimmedQuery.length > 0 ? trimmedQuery : undefined
     }),
     100
   );
 
   useGoogleTagManager({
     eventName: 'staffDirectorySearch',
-    value: query
+    value: trimmedQuery
   });
 
   useEffect(() => {
@@ -167,10 +168,8 @@ const StaffDirectoryQueryContainer = ({
     // Get the staff directory index
     const index = window.__SDI__;
 
-    const normalizedQuery = query.trim();
-
     // When query is empty, skip lunr (it returns [] for empty input) and show all staff
-    if (!normalizedQuery) {
+    if (!trimmedQuery) {
       setResults(filterResults({ activeFilters, results: staff }));
       if (!isInitialized) {
         setIsInitialized(true);
@@ -181,15 +180,15 @@ const StaffDirectoryQueryContainer = ({
     try {
       const tryResults = index
         .query((queryName) => {
-          queryName.term(lunr.tokenizer(normalizedQuery), {
+          queryName.term(lunr.tokenizer(trimmedQuery), {
             boost: 3
           });
-          queryName.term(lunr.tokenizer(normalizedQuery), {
+          queryName.term(lunr.tokenizer(trimmedQuery), {
             boost: 2,
             wildcard: lunr.Query.wildcard.TRAILING
           });
-          if (normalizedQuery.length > 2) {
-            queryName.term(lunr.tokenizer(normalizedQuery), {
+          if (trimmedQuery.length > 2) {
+            queryName.term(lunr.tokenizer(trimmedQuery), {
               wildcard:
                 // eslint-disable-next-line no-bitwise
                 lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
@@ -210,7 +209,7 @@ const StaffDirectoryQueryContainer = ({
     if (!isInitialized) {
       setIsInitialized(true);
     }
-  }, [query, activeFilters, staff]);
+  }, [trimmedQuery, activeFilters, staff]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -344,6 +343,7 @@ const StaffDirectory = React.memo(({
   activeFilters
 }) => {
   const [show, setShow] = useState(20);
+  const trimmedQuery = query.trim();
   const staffInView = results.slice(0, show);
   let resultsSummary = <></>;
   let showMoreText = null;
@@ -368,10 +368,11 @@ const StaffDirectory = React.memo(({
       );
     }
   }
+  const trimmedQuery = query.trim();
   let liveSuffix = '';
-  [query, activeFilters.department].forEach((param) => {
+  [trimmedQuery, activeFilters.department].forEach((param) => {
     if (param) {
-      liveSuffix += ` ${param === query ? 'for' : 'in'} ${param}`;
+      liveSuffix += ` ${param === trimmedQuery ? 'for' : 'in'} ${param}`;
     }
   });
   const liveMessage = results.length === 0
@@ -381,11 +382,11 @@ const StaffDirectory = React.memo(({
   // Debounce the announced message so that it doesn't repeat itself when the user is typing quickly or changing filters quickly
   const [debouncedLiveMessage] = useDebounce(liveMessage, 400);
 
-  [query, activeFilters.department].forEach((param) => {
+  [trimmedQuery, activeFilters.department].forEach((param) => {
     if (param) {
       resultsSummary = (
         <>
-          {resultsSummary} {param === query ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
+          {resultsSummary} {param === trimmedQuery ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
         </>
       );
     }
