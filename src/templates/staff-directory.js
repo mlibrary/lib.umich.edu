@@ -2,6 +2,7 @@
 import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
 import { graphql, navigate } from 'gatsby';
+import { graphql, navigate } from 'gatsby';
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
@@ -399,18 +400,19 @@ const StaffDirectoryQueryContainer = ({
   );
   const [results, setResults] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const trimmedQuery = query.trim();
   const [stateString] = useDebounce(
     stringifyState({
       department: activeFilters.department,
       // eslint-disable-next-line no-undefined
-      query: query.length > 0 ? query : undefined
+      query: trimmedQuery.length > 0 ? trimmedQuery : undefined
     }),
     100
   );
 
   useGoogleTagManager({
     eventName: 'staffDirectorySearch',
-    value: query
+    value: trimmedQuery
   });
 
   useEffect(() => {
@@ -440,18 +442,27 @@ const StaffDirectoryQueryContainer = ({
     // Get the staff directory index
     const index = window.__SDI__;
 
+    // When query is empty, skip lunr (it returns [] for empty input) and show all staff
+    if (!trimmedQuery) {
+      setResults(filterResults({ activeFilters, results: staff }));
+      if (!isInitialized) {
+        setIsInitialized(true);
+      }
+      return;
+    }
+
     try {
       const tryResults = index
         .query((queryName) => {
-          queryName.term(lunr.tokenizer(query), {
+          queryName.term(lunr.tokenizer(trimmedQuery), {
             boost: 3
           });
-          queryName.term(lunr.tokenizer(query), {
+          queryName.term(lunr.tokenizer(trimmedQuery), {
             boost: 2,
             wildcard: lunr.Query.wildcard.TRAILING
           });
-          if (query.length > 2) {
-            queryName.term(lunr.tokenizer(query), {
+          if (trimmedQuery.length > 2) {
+            queryName.term(lunr.tokenizer(trimmedQuery), {
               wildcard:
                 // eslint-disable-next-line no-bitwise
                 lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
@@ -472,7 +483,7 @@ const StaffDirectoryQueryContainer = ({
     if (!isInitialized) {
       setIsInitialized(true);
     }
-  }, [query, activeFilters, staff]);
+  }, [trimmedQuery, activeFilters, staff]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -552,6 +563,7 @@ const StaffDirectoryQueryContainer = ({
             }}
             role='status'
             aria-live='polite'
+            aria-atomic='true'
           >
             Loading Staff Directory...
           </div>
@@ -595,74 +607,157 @@ StaffDirectoryQueryContainer.propTypes = {
   staffImages: PropTypes.any
 };
 
-export default function StaffDirectoryWrapper ({ data, location }) {
-  const node = data.page;
-  const { allNodeDepartment, allStaff, allStaffImages } = data;
-
-  const departments = allNodeDepartment.edges.reduce((acc, { node: departmentsNode }) => {
-    return {
-      ...acc,
-      [departmentsNode.drupal_internal__nid]: departmentsNode
-    };
-  }, {});
-  const staff = allStaff.edges.map(({ node: staffNode }) => {
-    return {
-      ...staffNode,
-      department: departments[staffNode.department_nid],
-      division: departments[staffNode.division_nid]
-    };
+const StaffDirectory = React.memo(({
+  handleChange,
+  handleClear,
+  filters,
+  results,
+  staffImages,
+  query,
+  activeFilters
+}) => {
+  const [show, setShow] = useState(20);
+  const trimmedQuery = query.trim();
+  const staffInView = results.slice(0, show);
+  let resultsSummary = <></>;
+  let showMoreText = null;
+  if (results.length > 0) {
+    resultsSummary = (<>{results.length} result{results.length > 1 && 's'}</>);
+    if (show < results.length) {
+      resultsSummary = (<>Showing {show} of {results.length} results</>);
+      const showMore = () => {
+        setShow(results.length);
+      };
+      showMoreText = (
+        <>
+          <p
+            css={{
+              marginBottom: SPACING.L
+            }}
+          >
+            {resultsSummary}
+          </p>
+          <Button onClick={showMore}>Show all</Button>
+        </>
+      );
+    }
+  }
+  let liveSuffix = '';
+  [trimmedQuery, activeFilters.department].forEach((param) => {
+    if (param) {
+      liveSuffix += ` ${param === trimmedQuery ? 'for' : 'in'} ${param}`;
+    }
   });
-  const staffImages = allStaffImages.edges.reduce((acc, { node: staffImagesNode }) => {
-    const img = staffImagesNode.relationships.field_media_image;
+  const liveMessage = results.length === 0
+    ? `No results${liveSuffix}`
+    : `${results.length} result${results.length === 1 ? '' : 's'}${liveSuffix}`;
 
-    return {
-      ...acc,
-      [img.drupal_internal__mid]: {
-        alt: img.field_media_image.alt,
-        ...img.relationships.field_media_image.localFile
-      }
-    };
-  }, {});
+  // Debounce the announced message so that it doesn't repeat itself when the user is typing quickly or changing filters quickly
+  const [debouncedLiveMessage] = useDebounce(liveMessage, 400);
+
+  [trimmedQuery, activeFilters.department].forEach((param) => {
+    if (param) {
+      resultsSummary = (
+        <>
+          {resultsSummary} {param === trimmedQuery ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
+        </>
+      );
+    }
+  });
+  if (results.length === 0) {
+    resultsSummary = (<div>No results {resultsSummary}</div>);
+  }
 
   return (
-    <StaffDirectoryQueryContainer
-      node={node}
-      staff={staff}
-      departments={departments}
-      staffImages={staffImages}
-      location={location}
-      navigate={navigate}
-    />
+    <React.Fragment>
+      <div
+        aria-live='polite'
+        aria-atomic='true'
+        className='visually-hidden'
+      >
+        {debouncedLiveMessage}
+      </div>
+      <div
+        css={{
+          display: 'grid',
+          gridGap: SPACING.S,
+          [MEDIA_QUERIES.S]: {
+            gridTemplateColumns: `3fr 2fr auto`
+          },
+          input: {
+            height: '40px',
+            lineHeight: '1.5'
+          },
+          marginBottom: SPACING.M
+        }}
+      >
+        <TextInput
+          id='staff-directory-search-input'
+          labelText='Search by name, uniqname, or title'
+          name='query'
+          value={query}
+          onChange={(event) => {
+            setShow(20);
+            handleChange(event);
+          }}
+        />
+        {filters.map(({ label, name, options }) => {
+          return (
+            <Select
+              label={label}
+              name={name}
+              options={options}
+              onChange={(event) => {
+                return handleChange(event);
+              }}
+              value={activeFilters[name]}
+              key={name}
+            />
+          );
+        })}
+        <Button
+          kind='subtle'
+          onClick={handleClear}
+          css={{
+            alignSelf: 'end'
+          }}
+        >
+          Clear
+        </Button>
+      </div>
+      <StaffDirectoryResults
+        results={results}
+        staffImages={staffImages}
+        resultsSummary={resultsSummary}
+        staffInView={staffInView}
+      />
+      {showMoreText}
+      {!results.length && (
+        <NoResults>
+          Consider searching with different keywords or using the department or
+          division filter to browse.
+        </NoResults>
+      )}
+    </React.Fragment>
   );
-}
+});
 
-StaffDirectoryWrapper.propTypes = {
-  data: PropTypes.shape({
-    allNodeDepartment: PropTypes.shape({
-      edges: PropTypes.shape({
-        reduce: PropTypes.func
-      })
-    }),
-    allStaff: PropTypes.shape({
-      edges: PropTypes.shape({
-        map: PropTypes.func
-      })
-    }),
-    allStaffImages: PropTypes.shape({
-      edges: PropTypes.shape({
-        reduce: PropTypes.func
-      })
-    }),
-    page: PropTypes.any
+StaffDirectory.propTypes = {
+  activeFilters: PropTypes.shape({
+    department: PropTypes.any
   }),
-  location: PropTypes.any
+  filters: PropTypes.shape({
+    map: PropTypes.func
+  }),
+  handleChange: PropTypes.func,
+  handleClear: PropTypes.any,
+  query: PropTypes.string,
+  results: PropTypes.shape({
+    length: PropTypes.any,
+    slice: PropTypes.func
+  }),
+  staffImages: PropTypes.any
 };
-
-/* eslint-disable react/prop-types */
-export const Head = ({ data, location }) => {
-  return <SearchEngineOptimization data={data.page} location={location} />;
-};
-/* eslint-enable react/prop-types */
 
 // Need to set display name for StaffDirectory React.memo. Can also export default React.memo(StaffDirectory)
 StaffDirectory.displayName = 'StaffDirectory';
