@@ -26,6 +26,52 @@ const getLinkByNID = ({ nids, nid }) => {
   };
 };
 
+const BackgroundSection = ({ data, children, ...rest }) => {
+  const { field_hero_images: fieldHeroImages } = data.relationships;
+  const smallScreenImage = fieldHeroImages.find(
+    (node) => {
+      return node.field_orientation === 'vertical';
+    }
+  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
+  const largeScreenImage = fieldHeroImages.find(
+    (node) => {
+      return node.field_orientation === 'horizontal';
+    }
+  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
+  const sources = [
+    smallScreenImage,
+    {
+      ...largeScreenImage,
+      media: `(min-width: 720px)`
+    }
+  ];
+
+  return (
+    <section
+      css={{
+        backgroundColor: 'var(--color-blue-300)',
+        backgroundImage: `url('${sources[1].images.fallback.src}')`,
+        backgroundPosition: 'center',
+        [MEDIA_QUERIES.S]: {
+          backgroundSize: 'cover'
+        },
+        position: 'relative'
+      }}
+      {...rest}
+    >
+      {children}
+    </section>
+  );
+};
+
+BackgroundSection.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object
+  ]),
+  data: PropTypes.object
+};
+
 export default function HeroText ({ data }) {
   /*
    *Consider finding a better way to do this.
@@ -119,51 +165,5 @@ export default function HeroText ({ data }) {
 }
 
 HeroText.propTypes = {
-  data: PropTypes.object
-};
-
-const BackgroundSection = ({ data, children, ...rest }) => {
-  const { field_hero_images: fieldHeroImages } = data.relationships;
-  const smallScreenImage = fieldHeroImages.find(
-    (node) => {
-      return node.field_orientation === 'vertical';
-    }
-  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
-  const largeScreenImage = fieldHeroImages.find(
-    (node) => {
-      return node.field_orientation === 'horizontal';
-    }
-  ).relationships.field_media_image.localFile.childImageSharp.gatsbyImageData;
-  const sources = [
-    smallScreenImage,
-    {
-      ...largeScreenImage,
-      media: `(min-width: 720px)`
-    }
-  ];
-
-  return (
-    <section
-      css={{
-        backgroundColor: 'var(--color-blue-300)',
-        backgroundImage: `url('${sources[1].images.fallback.src}')`,
-        backgroundPosition: 'center',
-        [MEDIA_QUERIES.S]: {
-          backgroundSize: 'cover'
-        },
-        position: 'relative'
-      }}
-      {...rest}
-    >
-      {children}
-    </section>
-  );
-};
-
-BackgroundSection.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.object
-  ]),
   data: PropTypes.object
 };
