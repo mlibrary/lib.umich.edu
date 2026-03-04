@@ -11,8 +11,11 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
    * focus would change on every key stroke.
    *
    * Is there a new path?
-   */
-  if (newPath !== oldPath) {
+   * Only move focus to the page heading on actual client-side navigations,
+   * not on the initial hydration (prevLocation is null then). Calling focus()
+   * during hydration scrolls the H1 into view, causing the visible jump.
+  */
+  if (prevLocation && newPath !== oldPath) {
     const dataPageHeading = document.querySelector('[data-page-heading]');
     const h1 = document.querySelector('h1');
     const pageHeading = dataPageHeading ? dataPageHeading : h1;
