@@ -42,8 +42,22 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
     }
   }
 };
+/**
+ * On initial hydration, prevRouterProps is null — don't override the browser's
+ * restored scroll position. Only scroll to top on actual client-side navigations.
+ * We also let the hash-scroll logic in onRouteUpdate handle anchor links
+ * with the location.hash check, so we return false if there's a hash in the URL.
+ */
 
-export const shouldUpdateScroll = () => {
+export const shouldUpdateScroll = ({ prevRouterProps, routerProps: { location } }) => {
+  if (!prevRouterProps) {
+    return false;
+  }
+
+  if (location.hash) {
+    return false;
+  }
+
   window.scrollTo(0, 0);
   return false;
 };
