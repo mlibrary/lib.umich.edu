@@ -18,6 +18,115 @@ import EventCard from '../../components/event-card';
 import Link from '../link';
 import PropTypes from 'prop-types';
 
+const TodaysEvents = ({ events }) => {
+  if (Array.isArray(events)) {
+    if (events.length === 0) {
+      return (
+        <p
+          css={{
+            marginBottom: SPACING['2XL']
+          }}
+        >
+          There are no events scheduled today.
+        </p>
+      );
+    }
+
+    if (events.length > 0) {
+      return events.map((event, index) => {
+        return (
+          <EventCard key={`event-card-${index}`} {...event} />
+        );
+      });
+    }
+  }
+
+  return null;
+};
+
+TodaysEvents.propTypes = {
+  events: PropTypes.array
+};
+
+const UpcomingEvents = ({ events }) => {
+  if (Array.isArray(events)) {
+    if (events.length === 0) {
+      return (
+        <p
+          css={{
+            marginBottom: SPACING['2XL']
+          }}
+        >
+          There are no upcoming events.
+        </p>
+      );
+    }
+
+    if (events.length > 0) {
+      return (
+        <Expandable>
+          <ExpandableChildren show={10}>
+            {events.map((event, index) => {
+              return (
+                <EventCard key={`event-card-${index}`} {...event} />
+              );
+            })}
+          </ExpandableChildren>
+          <div
+            css={{
+              marginTop: SPACING.L
+            }}
+          >
+            <ExpandableButton name='events' count={events.length} />
+          </div>
+        </Expandable>
+      );
+    }
+  }
+
+  return null;
+};
+
+UpcomingEvents.propTypes = {
+  events: PropTypes.array
+};
+
+const ExhibitEvents = ({ events, hasBorder = false }) => {
+  if (Array.isArray(events)) {
+    if (events.length === 0) {
+      return (
+        <p
+          css={{
+            marginBottom: SPACING['2XL']
+          }}
+        >
+          There are no upcoming exhibits.
+        </p>
+      );
+    }
+
+    if (events.length > 0) {
+      return events.map((event, index) => {
+        return (
+          <EventCard
+            key={`event-card-${index}`}
+            {...event}
+            displayImage={false}
+            hasBorder={hasBorder}
+          />
+        );
+      });
+    }
+  }
+
+  return null;
+};
+
+ExhibitEvents.propTypes = {
+  events: PropTypes.array,
+  hasBorder: PropTypes.bool
+};
+
 export default function EventsAndExhibitsPanel () {
   /*
    *Potential states for today, upcoming, and exhibits:
@@ -231,112 +340,3 @@ export default function EventsAndExhibitsPanel () {
     </div>
   );
 }
-
-const TodaysEvents = ({ events }) => {
-  if (Array.isArray(events)) {
-    if (events.length === 0) {
-      return (
-        <p
-          css={{
-            marginBottom: SPACING['2XL']
-          }}
-        >
-          There are no events scheduled today.
-        </p>
-      );
-    }
-
-    if (events.length > 0) {
-      return events.map((event, index) => {
-        return (
-          <EventCard key={`event-card-${index}`} {...event} />
-        );
-      });
-    }
-  }
-
-  return null;
-};
-
-TodaysEvents.propTypes = {
-  events: PropTypes.array
-};
-
-const UpcomingEvents = ({ events }) => {
-  if (Array.isArray(events)) {
-    if (events.length === 0) {
-      return (
-        <p
-          css={{
-            marginBottom: SPACING['2XL']
-          }}
-        >
-          There are no upcoming events.
-        </p>
-      );
-    }
-
-    if (events.length > 0) {
-      return (
-        <Expandable>
-          <ExpandableChildren show={10}>
-            {events.map((event, index) => {
-              return (
-                <EventCard key={`event-card-${index}`} {...event} />
-              );
-            })}
-          </ExpandableChildren>
-          <div
-            css={{
-              marginTop: SPACING.L
-            }}
-          >
-            <ExpandableButton name='events' count={events.length} />
-          </div>
-        </Expandable>
-      );
-    }
-  }
-
-  return null;
-};
-
-UpcomingEvents.propTypes = {
-  events: PropTypes.array
-};
-
-const ExhibitEvents = ({ events, hasBorder = false }) => {
-  if (Array.isArray(events)) {
-    if (events.length === 0) {
-      return (
-        <p
-          css={{
-            marginBottom: SPACING['2XL']
-          }}
-        >
-          There are no upcoming exhibits.
-        </p>
-      );
-    }
-
-    if (events.length > 0) {
-      return events.map((event, index) => {
-        return (
-          <EventCard
-            key={`event-card-${index}`}
-            {...event}
-            displayImage={false}
-            hasBorder={hasBorder}
-          />
-        );
-      });
-    }
-  }
-
-  return null;
-};
-
-ExhibitEvents.propTypes = {
-  events: PropTypes.array,
-  hasBorder: PropTypes.bool
-};

@@ -129,6 +129,71 @@ const Tag = ({ label, onDismiss }) => {
   );
 };
 
+const NoFassResults = ({ image, alt }) => {
+  return (
+    <div style={{ margin: '2rem 0' }}>
+      <div>
+        <Heading level={2} size='L' style={{ marginBottom: SPACING.XL }}>
+          We couldn&apos;t find what you&apos;re looking for.
+        </Heading>
+        We couldn&apos;t find any results that match your chosen filters. Try removing a filter or find information about other library spaces with cafes, computing resources, and more.
+        <ul css={{
+          listStyle: 'disc',
+          marginLeft: SPACING.L,
+          marginTop: SPACING.XL
+        }}
+        >
+          <li>
+            <PlainLink
+              to='/visit-and-study/computing-and-technology'
+              css={{
+                color: 'var(--color-teal-400)',
+                textDecoration: 'underline'
+              }}
+            >
+              Computing and Technology
+            </PlainLink>
+          </li>
+          <li>
+            <PlainLink
+              to='/visit-and-study/cafes-and-wellbeing'
+              css={{
+                color: 'var(--color-teal-400)',
+                textDecoration: 'underline'
+              }}
+            >
+              Cafes
+            </PlainLink>
+          </li>
+          <li>
+            <PlainLink
+              to='/visit-and-study/study-spaces/student-parent-and-caregiver-study-room'
+              css={{
+                color: 'var(--color-teal-400)',
+                textDecoration: 'underline'
+              }}
+            >
+              Student Parent and Caregiver Room
+            </PlainLink>
+          </li>
+        </ul>
+      </div>
+      {image && (
+        <GatsbyImage
+          image={image}
+          alt={alt}
+          style={{ margin: '1.5rem auto' }}
+        />
+      )}
+    </div>
+  );
+};
+
+NoFassResults.propTypes = {
+  alt: PropTypes.any,
+  image: PropTypes.any
+};
+
 Tag.propTypes = {
   label: PropTypes.any,
   onDismiss: PropTypes.any
@@ -772,71 +837,6 @@ FindStudySpaceTemplate.propTypes = {
 };
 
 export default FindStudySpaceTemplate;
-
-const NoFassResults = ({ image, alt }) => {
-  return (
-    <div style={{ margin: '2rem 0' }}>
-      <div>
-        <Heading level={2} size='L' style={{ marginBottom: SPACING.XL }}>
-          We couldn&apos;t find what you&apos;re looking for.
-        </Heading>
-        We couldn&apos;t find any results that match your chosen filters. Try removing a filter or find information about other library spaces with cafes, computing resources, and more.
-        <ul css={{
-          listStyle: 'disc',
-          marginLeft: SPACING.L,
-          marginTop: SPACING.XL
-        }}
-        >
-          <li>
-            <PlainLink
-              to='/visit-and-study/computing-and-technology'
-              css={{
-                color: 'var(--color-teal-400)',
-                textDecoration: 'underline'
-              }}
-            >
-              Computing and Technology
-            </PlainLink>
-          </li>
-          <li>
-            <PlainLink
-              to='/visit-and-study/cafes-and-wellbeing'
-              css={{
-                color: 'var(--color-teal-400)',
-                textDecoration: 'underline'
-              }}
-            >
-              Cafes
-            </PlainLink>
-          </li>
-          <li>
-            <PlainLink
-              to='/visit-and-study/study-spaces/student-parent-and-caregiver-study-room'
-              css={{
-                color: 'var(--color-teal-400)',
-                textDecoration: 'underline'
-              }}
-            >
-              Student Parent and Caregiver Room
-            </PlainLink>
-          </li>
-        </ul>
-      </div>
-      {image && (
-        <GatsbyImage
-          image={image}
-          alt={alt}
-          style={{ margin: '1.5rem auto' }}
-        />
-      )}
-    </div>
-  );
-};
-
-NoFassResults.propTypes = {
-  alt: PropTypes.any,
-  image: PropTypes.any
-};
 
 /* eslint-disable react/prop-types */
 export const Head = ({ data, location }) => {

@@ -9,61 +9,6 @@ import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function SideNavigation ({ to, branch }) {
-  if (!branch) {
-    return null;
-  }
-
-  const title = branch.text;
-  const items = branch.children;
-
-  if (!items) {
-    return null;
-  }
-
-  return (
-    <LargeScreen>
-      <nav
-        css={{
-          display: 'none',
-          [MEDIA_QUERIES.S]: {
-            display: 'block'
-          }
-        }}
-        aria-labelledby='side-nav-heading'
-      >
-        <Heading size='S' level={2} id='side-nav-heading'>
-          {title}
-        </Heading>
-        <ol
-          css={{
-            '> li:not(:last-of-type)': {
-              borderBottom: `solid 1px var(--color-neutral-100)`
-            },
-            marginBottom: SPACING.M,
-            marginTop: SPACING.XS
-          }}
-        >
-          {items.map((item) => {
-            return (
-              <li key={item.to + item.text}>
-                <SideNavLink path={to} item={item}>
-                  {item.text}
-                </SideNavLink>
-              </li>
-            );
-          })}
-        </ol>
-      </nav>
-    </LargeScreen>
-  );
-}
-
-SideNavigation.propTypes = {
-  branch: PropTypes.object,
-  to: PropTypes.string
-};
-
 const SideNavLink = ({ path, item, children, ...rest }) => {
   const hasChildren = Boolean(item.children);
   const renderChildren = hasChildren && path.includes(item.to);
@@ -139,4 +84,59 @@ SideNavLink.propTypes = {
   children: PropTypes.string,
   item: PropTypes.object,
   path: PropTypes.string
+};
+
+export default function SideNavigation ({ to, branch }) {
+  if (!branch) {
+    return null;
+  }
+
+  const title = branch.text;
+  const items = branch.children;
+
+  if (!items) {
+    return null;
+  }
+
+  return (
+    <LargeScreen>
+      <nav
+        css={{
+          display: 'none',
+          [MEDIA_QUERIES.S]: {
+            display: 'block'
+          }
+        }}
+        aria-labelledby='side-nav-heading'
+      >
+        <Heading size='S' level={2} id='side-nav-heading'>
+          {title}
+        </Heading>
+        <ol
+          css={{
+            '> li:not(:last-of-type)': {
+              borderBottom: `solid 1px var(--color-neutral-100)`
+            },
+            marginBottom: SPACING.M,
+            marginTop: SPACING.XS
+          }}
+        >
+          {items.map((item) => {
+            return (
+              <li key={item.to + item.text}>
+                <SideNavLink path={to} item={item}>
+                  {item.text}
+                </SideNavLink>
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+    </LargeScreen>
+  );
+}
+
+SideNavigation.propTypes = {
+  branch: PropTypes.object,
+  to: PropTypes.string
 };

@@ -23,54 +23,6 @@ const getContextByNID = ({ nids, nid }) => {
   };
 };
 
-export default function LinkPanel ({ data }) {
-  const { relationships } = data;
-  const { field_machine_name: fieldMachineName } = relationships.field_link_template;
-  const nids = usePageContextByDrupalNodeID();
-
-  switch (fieldMachineName) {
-    case 'bulleted_list':{
-      const links = data.field_link.map((link) => {
-        const nid = getNIDFromURI({ uri: link.uri });
-        const linkObj = nid
-          ? getContextByNID({ nid, nids })
-          : {
-              text: link.title,
-              to: link.uri
-            };
-
-        return linkObj;
-      });
-      const moreLink = data.field_view_all
-        ? {
-            text: data.field_view_all.title,
-            to: data.field_view_all.uri
-          }
-        : null;
-      const hasTopBorder = data.field_border === 'yes';
-
-      return (
-        <BulletedLinkList
-          title={data.field_title}
-          links={links}
-          moreLink={moreLink}
-          hasTopBorder={hasTopBorder}
-        />
-      );
-    }
-    case '2_column_db_link_list':
-      return <DatabaseLinkList data={data} />;
-    case 'related_links':
-      return <RelatedLinks data={data} />;
-    default:
-      return null;
-  }
-}
-
-LinkPanel.propTypes = {
-  data: PropTypes.object
-};
-
 const BulletedLinkList = ({ title, links, moreLink, hasTopBorder = false }) => {
   return (
     <section
@@ -175,6 +127,30 @@ DatabaseLinkList.propTypes = {
   data: PropTypes.object
 };
 
+const FancyLink = ({ link }) => {
+  const nids = usePageContextByDrupalNodeID();
+  const nid = getNIDFromURI({ uri: link.uri });
+  const { text, to } = nid
+    ? getContextByNID({ nid, nids })
+    : {
+        text: link.title,
+        to: link.uri
+      };
+
+  return (
+    <LinkCallout
+      to={to}
+      icon='insert_link'
+    >
+      {text}
+    </LinkCallout>
+  );
+};
+
+FancyLink.propTypes = {
+  link: PropTypes.object
+};
+
 const RelatedLinks = ({ data }) => {
   const { field_title: fieldTitle, field_link: fieldLink } = data;
   return (
@@ -207,26 +183,50 @@ RelatedLinks.propTypes = {
   data: PropTypes.object
 };
 
-const FancyLink = ({ link }) => {
+export default function LinkPanel ({ data }) {
+  const { relationships } = data;
+  const { field_machine_name: fieldMachineName } = relationships.field_link_template;
   const nids = usePageContextByDrupalNodeID();
-  const nid = getNIDFromURI({ uri: link.uri });
-  const { text, to } = nid
-    ? getContextByNID({ nid, nids })
-    : {
-        text: link.title,
-        to: link.uri
-      };
 
-  return (
-    <LinkCallout
-      to={to}
-      icon='insert_link'
-    >
-      {text}
-    </LinkCallout>
-  );
-};
+  switch (fieldMachineName) {
+    case 'bulleted_list':{
+      const links = data.field_link.map((link) => {
+        const nid = getNIDFromURI({ uri: link.uri });
+        const linkObj = nid
+          ? getContextByNID({ nid, nids })
+          : {
+              text: link.title,
+              to: link.uri
+            };
 
-FancyLink.propTypes = {
-  link: PropTypes.object
+        return linkObj;
+      });
+      const moreLink = data.field_view_all
+        ? {
+            text: data.field_view_all.title,
+            to: data.field_view_all.uri
+          }
+        : null;
+      const hasTopBorder = data.field_border === 'yes';
+
+      return (
+        <BulletedLinkList
+          title={data.field_title}
+          links={links}
+          moreLink={moreLink}
+          hasTopBorder={hasTopBorder}
+        />
+      );
+    }
+    case '2_column_db_link_list':
+      return <DatabaseLinkList data={data} />;
+    case 'related_links':
+      return <RelatedLinks data={data} />;
+    default:
+      return null;
+  }
+}
+
+LinkPanel.propTypes = {
+  data: PropTypes.object
 };
