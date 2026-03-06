@@ -1,0 +1,156 @@
+---
+import { Image } from 'astro:assets';
+
+/**
+ * Card Component - Reusable card with optional image, title, subtitle, and content
+ * Converted from src/components/card
+ */
+interface Props {
+  title: string;
+  subtitle?: string;
+  href?: string;
+  image?: any;
+  headingLevel?: number;
+  class?: string;
+  style?: string;
+  anchorStyleAddition?: Record<string, any>;
+}
+
+const { 
+  title, 
+  subtitle, 
+  href, 
+  image, 
+  headingLevel = 2, 
+  class: className = '',
+  style = '',
+  anchorStyleAddition = {}
+} = Astro.props;
+
+const HeadingTag = `h${headingLevel}` as keyof HTMLElementTagNameMap;
+const anchorStyles = Object.entries(anchorStyleAddition)
+  .map(([key, value]) => `${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value}`)
+  .join('; ');
+---
+
+<div class={`card ${className}`} style={style}>
+  {href ? (
+    <a 
+      href={href} 
+      class="card-link"
+      style={anchorStyles}
+    >
+      {image && (
+        <div class="card-image">
+          <Image src={image.src || image} alt={image.alt || title} width={400} height={300} loading="lazy" />
+        </div>
+      )}
+      <div class="card-content">
+        <HeadingTag>
+          {subtitle && <span class="card-subtitle">{subtitle}</span>}
+          <span class="card-title" data-card-title>{title}</span>
+        </HeadingTag>
+        <p class="card-body">
+          <slot />
+        </p>
+      </div>
+    </a>
+  ) : (
+    <Fragment>
+      {image && (
+        <div class="card-image">
+          <Image src={image.src || image} alt={image.alt || title} width={400} height={300} loading="lazy" />
+        </div>
+      )}
+      <div class="card-content">
+        <HeadingTag>
+          {subtitle && <span class="card-subtitle">{subtitle}</span>}
+          <span class="card-title" data-card-title>{title}</span>
+        </HeadingTag>
+        <p class="card-body">
+          <slot />
+        </p>
+      </div>
+    </Fragment>
+  )}
+</div>
+
+<style>
+  .card {
+    background: white;
+    border: 1px solid var(--color-neutral-200, #e5e7eb);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-link {
+    color: inherit;
+    text-decoration: none;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-link:hover [data-card-title] {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  /* Also handle cases where the card is wrapped by an external link */
+  :global(a:hover) [data-card-title] {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .card-image {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-content {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-subtitle {
+    color: var(--color-neutral-300, #6b7280);
+    font-size: 0.875rem;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .card-title {
+    font-size: 1.125rem;
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    font-weight: 600;
+    color: var(--color-neutral-400);
+    line-height: 1.4;
+  }
+
+  .card-body {
+    color: var(--color-neutral-300);
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+
+  /* Responsive typography */
+  @media (min-width: 768px) {
+    .card-title {
+      font-size: 1.125rem;
+    }
+  }
+</style>

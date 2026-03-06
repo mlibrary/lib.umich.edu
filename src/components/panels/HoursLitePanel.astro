@@ -1,0 +1,250 @@
+---
+/**
+ * HoursLitePanel - Homepage - Lightweight hours display
+ */
+import PanelTemplate from './PanelTemplate.astro';
+import Icon from '../../reusable/Icon.astro';
+
+interface Props {
+  data: any; 
+}
+
+const { data } = Astro.props;
+
+// Get cards from relationships - already resolved by recursive processing
+let cards: any[] = [];
+if (data.relationships?.field_cards) {
+  cards = Array.isArray(data.relationships.field_cards) 
+    ? data.relationships.field_cards 
+    : [data.relationships.field_cards];
+}
+
+const processedCards = cards.map((card: any) => {
+  if (!card) return null;
+  
+  return {
+    id: card.id,
+    title: card.field_title || card.title,
+    slug: `/locations-and-hours/${card.field_slug || card.title?.toLowerCase().replace(/\s+/g, '-') || 'location'}`,
+    relationships: card.relationships || {}
+  };
+}).filter(Boolean);
+
+const processedHours = processedCards.map((card: any) => ({
+  isOpen: false, // Will be updated by client-side code
+  subLabel: 'TODAY: Loading hours...',
+  subText: 'TODAY: Loading hours...',
+  text: card.title,
+  to: card.slug
+}));
+
+// Prepare location data for client-side hours calculation
+// The relationships are already resolved recursively, so we can use them directly
+const locationDataForClient = processedCards.map((card: any) => {
+  const nodeForHours: any = {
+    id: card.id,
+    title: card.title,
+    field_display_hours_: true,
+    field_hours_different_from_build: card.relationships?.field_hours_open ? true : false,
+    relationships: {}
+  };
+
+  if (card.relationships) {
+    // Direct hours relationship - already resolved
+    if (card.relationships.field_hours_open) {
+      nodeForHours.relationships.field_hours_open = Array.isArray(card.relationships.field_hours_open)
+        ? card.relationships.field_hours_open
+        : [card.relationships.field_hours_open];
+    }
+
+    // Parent location relationship - already resolved with nested relationships
+    if (card.relationships.field_parent_location) {
+      nodeForHours.relationships.field_parent_location = {
+        ...card.relationships.field_parent_location,
+        field_display_hours_: card.relationships.field_parent_location.field_display_hours_ || false,
+        relationships: card.relationships.field_parent_location.relationships || {}
+      };
+    }
+
+    // Room building relationship - already resolved with nested relationships
+    if (card.relationships.field_room_building) {
+      nodeForHours.relationships.field_room_building = {
+        ...card.relationships.field_room_building,
+        field_display_hours_: card.relationships.field_room_building.field_display_hours_ || false,
+        relationships: card.relationships.field_room_building.relationships || {}
+      };
+    }
+  }
+
+  return nodeForHours;
+});
+---
+
+<PanelTemplate title={data.field_title}>
+  <div class="hours-lite-panel">
+    {processedHours.length === 0 ? (
+      <div class="no-hours">
+        <p>Hours information is currently unavailable.</p>
+      </div>
+    ) : (
+      <ol class="hours-list" data-hours-list>
+        {processedHours.map((hour: any, index: number) => (
+          <li class="hours-item" data-location-index={index}>
+            <span class="hours-icon">
+              <Icon icon="access_time" style="color: var(--color-indigo-300);" />
+            </span>
+            <a href={hour.to} class="hours-link">
+              <span>
+                <span class="location-name">{hour.text}</span>
+                <span class="hours-text" data-hours-text>
+                  {hour.subText}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+        <li>
+          <a href="/locations-and-hours/hours-view" class="view-all-link">
+            View all hours, locations, and access details
+          </a>
+        </li>
+      </ol>
+    )}
+  </div>
+
+  <script type="module" define:vars={{ locationDataForClient }}>
+    // Client-side hours update logic
+    async function updateHoursDisplay() {
+      const hoursList = document.querySelector('[data-hours-list]');
+      if (!hoursList) return;
+      
+      try {
+        const hoursModule = await import('/src/utils/hours.js');
+        const { displayHours, getHoursFromNode, findHoursSetByNodeForNow } = hoursModule;
+        
+        const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+        
+        locationDataForClient.forEach((node, index) => {
+          const locationItem = hoursList.querySelector(`[data-location-index="${index}"]`);
+          const hoursText = locationItem?.querySelector('[data-hours-text]');
+          
+          if (!hoursText || !node) return;
+          const hoursFromNode = getHoursFromNode({ node });
+          
+          if (hoursFromNode) {
+            const hoursSet = findHoursSetByNodeForNow({ node, now });
+            
+            if (hoursSet) {
+              const hoursData = displayHours({ node, now });
+              
+              if (hoursData) {
+                const { text } = hoursData;
+                hoursText.textContent = `TODAY: ${text}`;
+              } else {
+                hoursText.textContent = 'TODAY: Hours not available';
+              }
+            } else {
+              hoursText.textContent = 'TODAY: Hours not available';
+            }
+          } else {
+            hoursText.textContent = 'TODAY: Hours not available';
+          }
+        });
+        
+      } catch (error) {
+        console.error('Error in updateHoursDisplay:', error);
+      }
+    }
+
+    // Update hours when the page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateHoursDisplay);
+    } else {
+      updateHoursDisplay();
+    }
+  </script>
+</PanelTemplate>
+
+<style>
+  .hours-lite-panel {
+    margin: 1rem 0;
+  }
+
+  .no-hours {
+    background: var(--color-neutral-50, #f9f9f9);
+    border-radius: 4px;
+    border: 1px solid var(--color-neutral-200, #e5e5e5);
+    color: var(--color-neutral-600, #666);
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .hours-list {
+    list-style: none;
+    margin-top: 1.5rem;
+  }
+
+  .hours-icon {
+    display: inline;
+    flex-shrink: 0;
+    width: 1.5rem;
+  }
+
+  .hours-item {
+    display: flex;
+  }
+
+  .hours-link {
+    flex: 1;
+    padding-bottom: 0.75rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .hours-link:hover span{
+    text-decoration: underline;
+  }
+
+  .location-name {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .location-name {
+      display: inline-block;
+      margin-bottom: 0;
+      margin-right: 0.5rem;
+    }
+  }
+
+  .hours-text {
+    color: var(--color-neutral-300);
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 1.25px;
+    margin-top: 0;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 768px) {
+    .hours-text {
+      margin-top: 0;
+    }
+  }
+
+  .view-all-link {
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    color: var(--color-teal-400);
+    margin-left: 1.5rem;
+    text-decoration: none;
+  }
+
+  .view-all-link:hover {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  
+</style>

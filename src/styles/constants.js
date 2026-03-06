@@ -87,25 +87,6 @@ export const INTENT_COLORS = {
   warning: 'var(--color-maize-400)'
 };
 
-// Margins utility - returns CSS class name for use in Astro components
-export const MARGINS_CLASS = 'margins';
-
-// CSS styles for margins - can be used in <style> blocks
-export const MARGINS_STYLES = `
-  .${MARGINS_CLASS} {
-    margin: 0 auto;
-    max-width: 1280px;
-    padding: 0 ${SPACING.M};
-    width: 100%;
-  }
-
-  ${MEDIA_QUERIES.S} {
-    .${MARGINS_CLASS} {
-      padding: 0 ${SPACING['2XL']};
-    }
-  }
-`;
-
 const DEFAULT_LINK_STYLE = {
   ':hover': {
     boxShadow: `inset 0 -2px var(--color-teal-400)`

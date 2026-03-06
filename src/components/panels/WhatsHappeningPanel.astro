@@ -1,0 +1,158 @@
+---
+/**
+ * WhatsHappeningPanel - Featured and latest news and exhibits
+ * Converted from src/components/panels/whats-happening-panel.js
+ * 
+ * "What's happening?"
+ * 
+ * Look at all kinds of events that are prioritized,
+ * use those, then if we need more add in some
+ * non prioritized events (except don't use Exhibits).
+ * Make sure we use up to 3, but no more.
+ * Sort all of them by date.
+ */
+import { fetchDrupalEvents } from '../../lib/drupal.js';
+import Heading from '../../reusable/heading.astro';
+import EventCard from '../EventCard.astro';
+
+// Fetch events data
+let events = [];
+let hasEvents = false;
+
+try {
+  const allEvents = await fetchDrupalEvents();
+  
+  // Filter priority events
+  const priorityEvents = allEvents.filter(event => 
+    event.attributes?.field_priority_for_homepage === true &&
+    event.relationships?.field_design_template?.field_machine_name === 'event_exhibit'
+  );
+
+  // Filter other events (no exhibits)
+  const otherEvents = allEvents.filter(event => 
+    event.attributes?.field_priority_for_homepage === false &&
+    event.relationships?.field_design_template?.field_machine_name === 'event_exhibit' &&
+    event.relationships?.field_event_type?.name !== 'Exhibit'
+  );
+  
+  // Helper function to sort events by start date
+  const sortEventsByStartDate = (eventList, onlyTodayOrAfter = true) => {
+    const now = new Date();
+    return eventList
+      .filter(event => {
+        // Access the date from attributes, it's an array of date objects
+        const eventDateArray = event.attributes?.field_event_date_s_;
+        const eventDateValue = eventDateArray?.[0]?.value;
+        
+        if (!onlyTodayOrAfter) return true;
+        if (!eventDateValue) return false;
+        
+        const eventDate = new Date(eventDateValue);
+        return eventDate >= now;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.attributes?.field_event_date_s_?.[0]?.value);
+        const dateB = new Date(b.attributes?.field_event_date_s_?.[0]?.value);
+        return dateA - dateB;
+      });
+  };
+
+  
+  // Join and sort events, keeping only today or future events
+  const allSortedEvents = sortEventsByStartDate(allEvents, true);
+  const sortedPriorityEvents = sortEventsByStartDate(priorityEvents, true);
+  const sortedOtherEvents = sortEventsByStartDate(otherEvents, true);
+
+  // Combine and take only first 3
+  const joinedEvents = [...sortedPriorityEvents, ...sortedOtherEvents, ...allSortedEvents];
+  const finalSortedEvents = sortEventsByStartDate(joinedEvents, true);
+  
+  events = finalSortedEvents.slice(0, 3);
+  hasEvents = events.length > 0;
+  
+} catch (error) {
+  console.error('Error fetching events:', error);
+  events = [];
+  hasEvents = false;
+}
+---
+
+<section class="whats-happening">
+  <div class="margins">
+    <Heading level={2} size="L">What's happening?</Heading>
+    
+    {!hasEvents ? (
+      <p class="no-events-message">
+        We don't currently have any upcoming events scheduled or exhibits on display.
+      </p>
+    ) : (
+      <>
+        <div class="events-grid">
+          {events.map((event, index) => (
+            <EventCard 
+              event={event} 
+              displayImage={false} 
+              hasBorder={false}
+            />
+          ))}
+        </div>
+        
+        <a href="/visit-and-study/events-and-exhibits/today-and-upcoming" class="view-all-link">
+          View all events
+        </a>
+      </>
+    )}
+  </div>
+</section>
+
+<style>
+  .whats-happening {
+    margin-bottom: var(--spacing-3xl, 3rem);
+    margin-top: var(--spacing-3xl, 3rem);
+  }
+
+  .whats-happening-title {
+    font-family: 'Crimson Text', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin: 0 0 var(--spacing-l, 1.5rem) 0;
+    color: var(--color-blue-400, #1e40af);
+  }
+
+  .no-events-message {
+    margin-bottom: var(--spacing-2xl, 2.5rem);
+    margin-top: var(--spacing-l, 1.5rem);
+    color: var(--color-neutral-300, #6b7280);
+  }
+
+  .events-grid {
+    display: block;
+    margin-bottom: var(--spacing-xl, 2rem);
+  }
+
+  @media (min-width: 641px) {
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--spacing-xl, 2rem) var(--spacing-m, 1rem);
+    }
+  }
+
+  .view-all-link {
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    color: var(--color-teal-400, #0d9488);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .view-all-link:hover {
+    color: var(--color-teal-500, #0f766e);
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .view-all-link:focus {
+    outline: 2px solid var(--color-teal-400, #0d9488);
+    outline-offset: 2px;
+  }
+</style>

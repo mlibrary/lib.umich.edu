@@ -1,0 +1,153 @@
+---
+/**
+ * Basic Page Template
+ * Converted from src/templates/basic.js
+ *
+ * Layout (matches Gatsby page-layout.js grid):
+ *   - TemplateLayout → Layout wrapper + SEO
+ *   - Margins → max-width container
+ *   - Template (variant="basic") → top / side / content CSS grid
+ *     - TemplateTop → Breadcrumb (full-width top row)
+ *     - TemplateSide → SideNavigation (large screen only)
+ *                      HorizontalNavigation (small screen only)
+ *     - TemplateContent → Heading + Html body + body Panels
+ *   - Panels (fullPanels, full-width below template)
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Margins from '../components/Margins.astro';
+import Template from '../components/Template.astro';
+import TemplateTop from '../components/TemplateTop.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/heading.astro';
+import Html from '../components/Html.astro';
+import Panels from '../components/panels/Panels.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
+import SideNavigation from '../components/navigation/SideNavigation.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import { getNavigationBranch } from '../lib/navigation.js';
+
+interface Props {
+  node: any;
+  drupal_nid?: string;
+  title: string;
+  breadcrumb?: string;
+  summary?: string;
+  keywords?: string;
+  tag?: string;
+  parents?: any[];
+  children?: any[];
+}
+
+const {
+  node,
+  title,
+  breadcrumb,
+  parents,
+} = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available');
+}
+
+const {
+  field_title_context: fieldTitleContext,
+  field_local_navigation: fieldLocalNavigation,
+} = node.attributes;
+
+const { relationships } = node;
+const { processed: body } = node.attributes.body || {};
+const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pathname;
+
+// Breadcrumb
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: fieldTitleContext || title || 'Unknown Page', slug },
+    parents || []
+  );
+}
+
+// Panels
+let bodyPanels: any[] = [];
+let fullPanels: any[] = [];
+if (node.relationships?.field_panels) {
+  const panels = node.relationships.field_panels;
+  bodyPanels = panels.filter((p: any) => p.field_placement === 'body');
+  fullPanels = panels.filter((p: any) => p.field_placement !== 'body');
+}
+
+// Side navigation — only fetched when the page opts in to local navigation
+let navBranch = null;
+let smallScreenItems = null;
+
+if (fieldLocalNavigation) {
+  navBranch = await getNavigationBranch(slug);
+  const smallBranch = await getNavigationBranch(slug, 'small');
+  smallScreenItems = smallBranch?.children || null;
+}
+---
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <DebugPanel node={node} />
+
+  <Margins>
+    <Template variant="basic" hasSide={!!fieldLocalNavigation}>
+      <TemplateTop>
+        <Breadcrumb data={breadcrumbData} />
+      </TemplateTop>
+
+      {fieldLocalNavigation && (
+        <TemplateSide class="basic-side">
+          {navBranch && (
+            <SideNavigation path={slug} branch={navBranch} />
+          )}
+
+          {smallScreenItems && (
+            <div class="small-screen-nav">
+              <HorizontalNavigation items={smallScreenItems} />
+            </div>
+          )}
+        </TemplateSide>
+      )}
+
+      <TemplateContent>
+        <Heading size="3XL" level={1}>
+          {fieldTitleContext}
+        </Heading>
+
+        {body && <Html html={body} />}
+
+        <Panels data={bodyPanels} />
+      </TemplateContent>
+    </Template>
+  </Margins>
+
+  <Panels data={fullPanels} />
+</TemplateLayout>
+
+<style>
+  /* Basic side: no decorative border — nav provides its own visual separation */
+  :global(.basic-side .template-side-inner) {
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  /* Small-screen horizontal nav — hidden on large screens (SideNavigation handles that) */
+  .small-screen-nav {
+    display: block;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .small-screen-nav {
+      display: none;
+    }
+  }
+  .side-section {
+    grid-area: side;
+    margin-right: 2rem;
+  }
+</style>

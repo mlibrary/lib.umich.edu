@@ -1,0 +1,100 @@
+---
+/**
+ * Template Component
+ * Converted from src/components/aside-layout.js - Template
+ * 
+ * Two variants:
+ *  - "aside" (default) — content + sidebar, 2-column grid (news, events, etc.)
+ *    Slots: TemplateContent (grid-area: content) + TemplateSide (grid-area: side)
+ *  - "basic" — top / side / content, 3-area grid (basic pages with side nav)
+ *    Slots: TemplateTop (grid-area: top) + TemplateSide (grid-area: side) + TemplateContent (grid-area: content)
+ */
+
+interface Props {
+  asideWidth?: string;
+  contentSide?: 'left' | 'right';
+  variant?: 'aside' | 'basic';
+  hasSide?: boolean;
+  class?: string;
+}
+
+const { 
+  asideWidth = '21rem', 
+  contentSide = 'left',
+  variant = 'aside',
+  hasSide = true,
+  class: className = ''
+} = Astro.props;
+---
+
+<div class={`template template--${variant} ${className}`} data-content-side={contentSide} data-has-side={hasSide}>
+  <slot />
+</div>
+
+<style define:vars={{ asideWidth, contentSide }}>
+  .template {
+    margin-bottom: 4rem;
+    width: 100%;
+  }
+
+  /* ─── ASIDE variant (news, events, etc.) ─── */
+  @media only screen and (min-width: 641px) {
+    .template--aside {
+      padding: 0 0 2rem;
+    }
+  }
+
+  @media only screen and (min-width: 1200px) {
+    .template--aside {
+      display: grid;
+      padding-bottom: 3rem;
+      margin-bottom: 5rem;
+    }
+
+    .template--aside[data-content-side="left"],
+    .template--aside:not([data-content-side]) {
+      grid-template-areas: "content side";
+      grid-template-columns: 1fr calc(var(--asideWidth) + 4rem);
+    }
+
+    .template--aside[data-content-side="right"] {
+      grid-template-areas: "side content";
+      grid-template-columns: calc(var(--asideWidth)) 1fr;
+    }
+  }
+
+  /* ─── BASIC variant (top / side nav / content) ─── */
+  @media only screen and (min-width: 641px) {
+    .template--basic[data-has-side="true"] {
+      display: grid;
+      grid-template-areas:
+        "top top"
+        "side content";
+      /* 216px side nav + 3rem gap, matches Gatsby calc(216px + SPACING['4XL']) */
+      grid-template-columns: calc(216px + 3rem) 1fr;
+      grid-template-rows: auto 1fr;
+      margin-bottom: 5rem;
+    }
+
+    /* No side nav — single column, top stacks above content */
+    .template--basic[data-has-side="false"] {
+      display: grid;
+      grid-template-areas:
+        "top"
+        "content";
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      margin-bottom: 5rem;
+    }
+  }
+
+  /* Shared panel spacing overrides */
+  .template :global([data-panel-margins]),
+  .template :global([data-panel]) {
+    padding: 0;
+  }
+
+  .template :global([data-panel] h2) {
+    margin-top: 2.5rem;
+  }
+</style>

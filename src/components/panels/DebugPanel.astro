@@ -1,0 +1,203 @@
+---
+import Icon from '../../reusable/Icon.astro';
+
+const { nid, node } = Astro.props;
+
+// Get the JSON API URLs from the node's links field (robust, safe)
+let jsonApiUrl = null;
+if (node?.links && node.links.self && node.links.self.href) {
+  jsonApiUrl = node.links.self.href;
+} else if (node?.attributes?.links && node.attributes.links.self && node.attributes.links.self.href) {
+  jsonApiUrl = node.attributes.links.self.href;
+}
+
+// Extract base URLs for dev and prod environments
+const devUrl = jsonApiUrl ? jsonApiUrl.replace('cms.lib.umich.edu', 'cms.dev.lib.umich.edu') : null;
+const prodUrl = jsonApiUrl;
+
+const nodeType = node?.type || 'unknown';
+
+// Pretty print JSON data
+const nodeDataJson = JSON.stringify(node, null, 2);
+---
+
+{
+  import.meta.env.MODE === "development" && (
+    <aside class="debug-panel">
+      <div class="debug-header" id="debug-header">
+        <a class="header-link" href="#">
+          <h2 class="debug-header-text">Debug Panel</h2>
+        </a>
+        <a href="#" id="close-panel">
+          <Icon icon="close" />
+        </a>
+      </div>
+      <div class="debug-body">
+        <div class="debug-line">
+            <div class="debug-line-title">NID</div> 
+            <div class="debug-line-value">{nid}</div>
+        </div>
+        <div class="debug-line">
+            <div class="debug-line-title">Type</div> 
+            <div class="debug-line-value">{nodeType}</div>
+        </div>
+        <div class="debug-line">
+          <div class="debug-line-title">cms.dev</div> 
+          <div class="debug-line-value">
+            <a href={devUrl} target="_blank" rel="noopener noreferrer">
+              {devUrl}
+            </a>
+          </div>
+        </div>
+        <div class="debug-line">
+          <div class="debug-line-title">cms</div> 
+          <div class="debug-line-value">
+            <a href={prodUrl} target="_blank" rel="noopener noreferrer">
+              {prodUrl}
+            </a>
+          </div>
+        </div>
+        <div class="debug-line debug-json-section">
+          <div class="debug-line-title">
+            <a href="#" class="json-toggle-link" id="json-toggle">
+              Page JSON Data <span class="toggle-icon">▶</span>
+            </a>
+          </div>
+          <div class="debug-line-value json-data-container" id="json-data">
+            <pre class="json-data">{nodeDataJson}</pre>
+          </div>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+<script>
+  const debugBody = document.querySelector(".debug-body");
+  const debugHeader = document.querySelector("#debug-header");
+  if (debugBody) {
+    const headerlink = debugHeader.querySelector("a.header-link");
+    let isCollapsed = true;
+    let isClosed = true;
+
+    headerlink.addEventListener("click", (e) => {
+      e.preventDefault();
+      isCollapsed = !isCollapsed;
+      if (isCollapsed) {
+        debugBody.style.height = "0";
+        debugBody.style.padding = "0";
+        debugBody.style.overflow = "hidden";
+      } else {
+        debugBody.style.height = "auto";
+        debugBody.style.padding = "1rem";
+        debugBody.style.overflow = "auto";
+      }
+    });
+
+    const closeButton = document.querySelector("#close-panel");
+    closeButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      const debugPanel = document.querySelector(".debug-panel");
+      debugPanel.style.display = "none";
+      isClosed = true;
+    });
+
+    //keyboard shortcut to reopen the panel: Ctrl + D
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key === "d") {
+        e.preventDefault();
+        const debugPanel = document.querySelector(".debug-panel");
+        if (isClosed) {
+          debugPanel.style.display = "block";
+          isClosed = !isClosed;
+        } else {
+          debugPanel.style.display = "none";
+          isClosed = !isClosed;
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .debug-panel {
+    display: none;
+    background-color: #f7f8f9;
+    color: #333;
+    font-size: 0.95em;
+    margin: 1em 0;
+    overflow: auto;
+    position: fixed;
+    right: 0;
+    top: 10px;
+    width: 400px;
+    z-index: 1000;
+    opacity: 0.6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .debug-panel:hover {
+    opacity: 1;
+  }
+
+  .debug-body {
+    height: 0;
+    padding: 0;
+    max-height: 600px;
+    overflow: hidden;
+  }
+
+  .debug-line:not(:first-child) {
+    margin-top: 1rem;
+  }
+
+  .debug-header {
+    border-top: 2px solid var(--color-maize-500);
+    background-color: white;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  .debug-line-title{
+    font-weight: bold;
+  }
+
+  .debug-line-value{
+    margin-left: 1rem;
+    word-break: break-all;
+  }
+
+  .debug-header-text {
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+
+  .header-link {
+    border: none;
+    width: 100%;
+    height: 2rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .header-link:hover {
+    text-decoration: underline;
+    border: none;
+  }
+
+  #close-panel {
+
+    box-shadow: none;
+    border-radius: 50%;
+    position: fixed;
+    right: 10px;
+    top: 40px;
+    font-size: 0.9rem;
+    text-align: center;
+    color: var(--color-neutral-600, #666666);
+    width: 20px;
+    height: 20px;
+    text-decoration: none;
+  }
+</style>

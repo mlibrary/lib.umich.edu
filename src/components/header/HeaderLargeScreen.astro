@@ -1,0 +1,135 @@
+---
+/**
+ * Large Screen (Desktop) Header Component
+ * Displays desktop navigation with search and utility nav
+ */
+import Logo from "./Logo.astro";
+import PrimaryNav from "./PrimaryNav.astro";
+import Icon from '../../reusable/Icon.astro';
+import SiteSearch from "../SiteSearch.astro";
+
+interface Props {
+  primary: any[];
+  secondary: any[];
+}
+
+const { primary, secondary } = Astro.props;
+---
+
+<header class="header-large">
+  <div class="margins">
+    <div class="header-container">
+      <div class="logo-large-wrapper">
+        <Logo size={36} />
+      </div>
+
+      <div class="desktop-nav-container">
+        <!-- Primary Navigation -->
+        {primary && primary.length > 0 && <PrimaryNav items={primary} />}
+
+        <!-- Utility Navigation -->
+        {
+          secondary && secondary.length > 0 && (
+            <nav aria-label="Utility" class="utility-nav">
+              <ul>
+                {secondary.map((item) => {
+                  return (
+                    <li>
+                      <a href={item.to}>
+                        {item.icon && (
+                          <Icon
+                            icon={item.icon}
+                            size={14}
+                            style="margin-top: -2px; margin-right: 0.25rem;"
+                          />
+                        )}
+                        <span class="text">{item.text}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          )
+        }
+
+        <!-- Site Search -->
+        <SiteSearch label="Search this site" />
+      </div>
+    </div>
+  </div>
+</header>
+
+
+
+
+<style>
+  .header-large {
+    display: none;
+  }
+
+  .header-container {
+    position: relative;
+  }
+
+  .logo-large-wrapper {
+    padding-top: 1rem;
+  }
+
+  .desktop-nav-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+
+  /* Utility nav (top right) */
+  .utility-nav {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+  }
+
+  .utility-nav ul {
+    list-style: none;
+  }
+
+  .utility-nav li {
+    display: inline-block;
+    margin-right: 1rem;
+  }
+
+  .utility-nav li:last-child {
+    margin-right: 0;
+  }
+
+  .utility-nav a {
+    color: var(--color-neutral-300, #637381);
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.25px;
+    padding: 0.75rem 0;
+    text-decoration: none;
+  }
+
+  .utility-nav a:hover > .text {
+    text-decoration: underline;
+  }
+
+  .utility-icon-svg {
+    margin-right: 0.25rem;
+    margin-top: -2px;
+  }
+
+
+
+  @media (min-width: 1129px) {
+    .header-large {
+      display: block;
+      border-bottom: 2px solid var(--color-neutral-100, #e0e0e0);
+      background: white;
+    }
+  }
+</style>

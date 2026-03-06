@@ -1,0 +1,292 @@
+---
+/**
+ * Section Template
+ * Converted from src/templates/section.js
+ * 
+ * Handles section pages with:
+ * - Root page vs child page differentiation
+ * - PageHeader/PageHeaderMini
+ * - HorizontalNavigation
+ * - Body content with panels
+ * - Optional LocationAside
+ */
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PageHeaderMini from '../components/PageHeaderMini.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import Heading from '../reusable/heading.astro';
+import Panels from '../components/panels/Panels.astro';
+import transformNodePanels from '../utils/transform-node-panels';
+
+// For now, create placeholder components for missing pieces
+// TODO: Port these components when needed:
+// - LocationAside
+// - Template/TemplateContent/TemplateSide (aside-layout)
+// - Html component for body rendering
+// - Prose wrapper
+
+interface Props {
+  node: any;
+  parents?: any[];
+  children?: any[];
+}
+
+const { node, parents = [], children = [] } = Astro.props;
+
+// Extract node data
+const {
+  relationships,
+} = node;
+
+const{
+  fields
+} = node.relationships?.field_design_template || {};
+
+const { 
+  title,
+  body,
+  field_header_title: fieldHeaderTitle,
+  field_title_context: fieldTitleContext,
+  field_root_page_: fieldRootPage,
+ } = node.attributes || {};
+
+
+// Parent node for non-root pages
+const parentNode = relationships?.field_parent_page?.[0];
+const { breadcrumb } = fields || {};
+let isRootPage = Boolean(fieldRootPage);
+const pageHeaderImage = relationships?.field_media_image;
+const hasBody = body?.processed && body.processed.length > 0;
+
+// Use parent summary if not root page
+const summary = isRootPage 
+  ? body?.summary 
+  : parentNode?.body?.summary;
+
+// Transform panels
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+
+// Check if location aside should be shown
+const showLocationAside = 
+  relationships?.field_design_template?.field_machine_name === 'section_locaside' 
+  && parentNode;
+
+// Build horizontal navigation items
+function buildNavigationItems() {
+  const createNavItem = (node: any) => ({
+    text: node.field_title_context || node.title,
+    to: node.fields?.slug || '/'
+  });
+
+  if (isRootPage) {
+    // For root pages, show current page + children
+    const items = [createNavItem(node)];
+    if (children && children.length > 0) {
+      items.push(...children.map(createNavItem));
+    }
+    return items;
+  } else {
+    // For child pages, show parent + siblings (including current)
+    const items = [];
+    if (parentNode) {
+      items.push(createNavItem(parentNode));
+    }
+    if (parents && parents.length > 0) {
+      items.push(...parents.map(createNavItem));
+    }
+    return items;
+  }
+}
+
+const navigationItems = buildNavigationItems();
+---
+
+<Layout title={fieldHeaderTitle || fieldTitleContext || title}>
+  <!-- Page Header -->
+  {isRootPage ? (
+    <PageHeader
+      breadcrumb={breadcrumb}
+      title={fieldHeaderTitle}
+      summary={summary}
+      image={pageHeaderImage}
+    />
+  ) : (
+    <PageHeaderMini
+      breadcrumb={breadcrumb}
+      title={fieldHeaderTitle}
+    />
+  )}
+
+  <!-- HorizontalNavigation -->
+  <HorizontalNavigation 
+    items={navigationItems}
+    style={isRootPage ? 'border-top: none;' : ''}
+  />
+
+  <!-- Main Content -->
+  {hasBody ? (
+    <div class="template-with-aside">
+      <div class="margins">
+        <div class:list={['template-grid', { 'has-aside': showLocationAside }]}>
+          <!-- Template Content -->
+          <div class="template-content">
+            <div class="prose">
+              <Heading level={1} size="L" data-page-heading>
+                <span class="visually-hidden">{title}</span>
+                <span aria-hidden="true">{fieldTitleContext}</span>
+              </Heading>
+
+              {body && body.processed && (
+                <div class="body-content" set:html={body.processed} />
+              )}
+            </div>
+
+            <Panels data={bodyPanels} />
+          </div>
+
+          <!-- Template Side (LocationAside) -->
+          {showLocationAside && (
+            <aside class="template-side">
+              <div class="aside-content">
+                <!-- LocationAside - TODO: Create component -->
+                <div class="location-aside-placeholder">
+                  LocationAside for: {parentNode.title}
+                </div>
+              </div>
+            </aside>
+          )}
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="margins">
+      <Heading level={1} size="L" data-page-heading>
+        <span class="visually-hidden">{title}</span>
+        <span aria-hidden="true">{fieldTitleContext}</span>
+      </Heading>
+    </div>
+  )}
+
+  <!-- Full Width Panels -->
+  <Panels data={fullPanels} />
+</Layout>
+
+<style>
+  /* Page Header Mini */
+  .page-header-mini {
+    border-bottom: 1px solid var(--color-neutral-100);
+    padding: 2rem 0;
+  }
+
+  .page-header-mini .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .breadcrumb-placeholder {
+    color: var(--color-neutral-300);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Horizontal Navigation Placeholder */
+  .horizontal-navigation {
+    background: var(--color-blue-100);
+    border-bottom: solid 1px var(--color-neutral-100);
+    border-top: solid 1px var(--color-neutral-100);
+    margin-bottom: 1.5rem;
+    z-index: 1;
+  }
+
+  .nav-placeholder {
+    color: var(--color-neutral-300);
+    font-size: 0.875rem;
+    padding: 1rem 0;
+  }
+
+  /* Template with Aside Layout */
+  .template-with-aside {
+    padding-bottom: 2rem;
+  }
+
+  .template-grid {
+    display: block;
+  }
+
+  @media only screen and (min-width: 1200px) {
+    .template-with-aside {
+      padding-bottom: 3rem;
+    }
+
+    .template-grid.has-aside {
+      display: grid;
+      grid-template-areas: "content side";
+      grid-template-columns: 1fr calc(21rem + 4rem);
+    }
+  }
+
+  .template-content {
+    grid-area: content;
+    margin-bottom: 2rem;
+  }
+
+  @media only screen and (min-width: 920px) {
+    .template-content {
+      margin-right: 2.5rem;
+    }
+  }
+
+  .template-side {
+    display: none;
+    grid-area: side;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .template-side {
+      display: block;
+    }
+  }
+
+  .aside-content {
+    border-bottom: solid 1px var(--color-neutral-100);
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  @media only screen and (min-width: 1200px) {
+    .aside-content {
+      border-bottom: none;
+      border-left: solid 1px var(--color-neutral-100);
+      padding-left: 3rem;
+      padding-bottom: 0;
+    }
+  }
+
+  /* Prose styling */
+  .prose {
+    margin-bottom: 2rem;
+  }
+
+  .body-content {
+    line-height: 1.6;
+  }
+
+  /* Panel adjustments within template */
+  .template-with-aside :global([data-panel-margins]),
+  .template-with-aside :global([data-panel]) {
+    padding: 0;
+  }
+
+  .template-with-aside :global([data-panel] h2) {
+    margin-top: 2.5rem;
+  }
+
+  /* Placeholder styles */
+  .location-aside-placeholder {
+    background: var(--color-neutral-50, #f9f9f9);
+    border: 1px dashed var(--color-neutral-300);
+    color: var(--color-neutral-400);
+    padding: 1rem;
+  }
+</style>
