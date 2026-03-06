@@ -28,7 +28,9 @@ export const wrapPageElement = ({ element }) => {
         </div>
         {element}
       </div>
-      <m-chat id='chat'></m-chat>
+      <aside aria-label='Ask a Libararian Chat'>
+        <m-chat id='chat'></m-chat>
+      </aside>
     </>
   ); ;
 };
