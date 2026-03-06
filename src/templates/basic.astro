@@ -94,22 +94,24 @@ if (fieldLocalNavigation) {
   <DebugPanel node={node} />
 
   <Margins>
-    <Template variant="basic">
+    <Template variant="basic" hasSide={!!fieldLocalNavigation}>
       <TemplateTop>
         <Breadcrumb data={breadcrumbData} />
       </TemplateTop>
 
-      <TemplateSide class="basic-side">
-        {fieldLocalNavigation && navBranch && (
-          <SideNavigation path={slug} branch={navBranch} />
-        )}
+      {fieldLocalNavigation && (
+        <TemplateSide class="basic-side">
+          {navBranch && (
+            <SideNavigation path={slug} branch={navBranch} />
+          )}
 
-        {fieldLocalNavigation && smallScreenItems && (
-          <div class="small-screen-nav">
-            <HorizontalNavigation items={smallScreenItems} />
-          </div>
-        )}
-      </TemplateSide>
+          {smallScreenItems && (
+            <div class="small-screen-nav">
+              <HorizontalNavigation items={smallScreenItems} />
+            </div>
+          )}
+        </TemplateSide>
+      )}
 
       <TemplateContent>
         <Heading size="3XL" level={1}>
