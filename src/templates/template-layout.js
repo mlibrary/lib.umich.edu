@@ -20,7 +20,7 @@ TemplateLayout.propTypes = {
 };
 
 /* eslint-disable react/prop-types */
-export const Head = ({ node }) => {
-  return <SearchEngineOptimization data={node} />;
+export const Head = ({ node, location }) => {
+  return <SearchEngineOptimization data={node} location={location} />;
 };
 /* eslint-enable react/prop-types */

@@ -580,8 +580,8 @@ MailingAddress.propTypes = {
 export default ProfileTemplate;
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
-  return <SearchEngineOptimization data={data.profile} titleField='field_user_display_name' />;
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={data.profile} titleField='field_user_display_name' location={location} />;
 };
 /* eslint-enable react/prop-types */
 

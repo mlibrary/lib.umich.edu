@@ -1,13 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 import { Button, Heading, Margins, MEDIA_QUERIES, SPACING, TextInput } from '../reusable';
 import getUrlState, { stringifyState } from '../utils/get-url-state';
+import { graphql, navigate } from 'gatsby';
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
-import { graphql } from 'gatsby';
 import Html from '../components/html';
 import Link from '../components/link';
-import { navigate } from '@reach/router';
 import NoResults from '../components/no-results';
 import PlainLink from '../components/plain-link';
 import PropTypes from 'prop-types';
@@ -84,8 +83,8 @@ StaffDirectoryWrapper.propTypes = {
 };
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
-  return <SearchEngineOptimization data={data.page} />;
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={data.page} location={location} />;
 };
 /* eslint-enable react/prop-types */
 
@@ -126,18 +125,20 @@ const StaffDirectoryQueryContainer = ({
     urlState.department ? { department: urlState.department } : {}
   );
   const [results, setResults] = useState([]);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const trimmedQuery = query.trim();
   const [stateString] = useDebounce(
     stringifyState({
       department: activeFilters.department,
       // eslint-disable-next-line no-undefined
-      query: query.length > 0 ? query : undefined
+      query: trimmedQuery.length > 0 ? trimmedQuery : undefined
     }),
     100
   );
 
   useGoogleTagManager({
     eventName: 'staffDirectorySearch',
-    value: query
+    value: trimmedQuery
   });
 
   useEffect(() => {
@@ -167,18 +168,27 @@ const StaffDirectoryQueryContainer = ({
     // Get the staff directory index
     const index = window.__SDI__;
 
+    // When query is empty, skip lunr (it returns [] for empty input) and show all staff
+    if (!trimmedQuery) {
+      setResults(filterResults({ activeFilters, results: staff }));
+      if (!isInitialized) {
+        setIsInitialized(true);
+      }
+      return;
+    }
+
     try {
       const tryResults = index
         .query((queryName) => {
-          queryName.term(lunr.tokenizer(query), {
+          queryName.term(lunr.tokenizer(trimmedQuery), {
             boost: 3
           });
-          queryName.term(lunr.tokenizer(query), {
+          queryName.term(lunr.tokenizer(trimmedQuery), {
             boost: 2,
             wildcard: lunr.Query.wildcard.TRAILING
           });
-          if (query.length > 2) {
-            queryName.term(lunr.tokenizer(query), {
+          if (trimmedQuery.length > 2) {
+            queryName.term(lunr.tokenizer(trimmedQuery), {
               wildcard:
                 // eslint-disable-next-line no-bitwise
                 lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
@@ -196,7 +206,10 @@ const StaffDirectoryQueryContainer = ({
     } catch {
       // Intentionally left blank
     }
-  }, [query, activeFilters, staff]);
+    if (!isInitialized) {
+      setIsInitialized(true);
+    }
+  }, [trimmedQuery, activeFilters, staff]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -267,15 +280,32 @@ const StaffDirectoryQueryContainer = ({
           </div>
         )}
 
-        <StaffDirectory
-          handleChange={handleChange}
-          handleClear={handleClear}
-          filters={filters}
-          activeFilters={activeFilters}
-          results={results}
-          staffImages={staffImages}
-          query={query}
-        />
+        {!isInitialized && (
+          <div
+            css={{
+              color: 'var(--color-neutral-300)',
+              fontSize: '1.125rem',
+              padding: SPACING.XL
+            }}
+            role='status'
+            aria-live='polite'
+            aria-atomic='true'
+          >
+            Loading Staff Directory...
+          </div>
+        )}
+
+        {isInitialized && (
+          <StaffDirectory
+            handleChange={handleChange}
+            handleClear={handleClear}
+            filters={filters}
+            activeFilters={activeFilters}
+            results={results}
+            staffImages={staffImages}
+            query={query}
+          />
+        )}
       </Margins>
     </TemplateLayout>
   );
@@ -313,6 +343,7 @@ const StaffDirectory = React.memo(({
   activeFilters
 }) => {
   const [show, setShow] = useState(20);
+  const trimmedQuery = query.trim();
   const staffInView = results.slice(0, show);
   let resultsSummary = <></>;
   let showMoreText = null;
@@ -337,21 +368,41 @@ const StaffDirectory = React.memo(({
       );
     }
   }
-  [query, activeFilters.department].forEach((param) => {
+  let liveSuffix = '';
+  [trimmedQuery, activeFilters.department].forEach((param) => {
+    if (param) {
+      liveSuffix += ` ${param === trimmedQuery ? 'for' : 'in'} ${param}`;
+    }
+  });
+  const liveMessage = results.length === 0
+    ? `No results${liveSuffix}`
+    : `${results.length} result${results.length === 1 ? '' : 's'}${liveSuffix}`;
+
+  // Debounce the announced message so that it doesn't repeat itself when the user is typing quickly or changing filters quickly
+  const [debouncedLiveMessage] = useDebounce(liveMessage, 400);
+
+  [trimmedQuery, activeFilters.department].forEach((param) => {
     if (param) {
       resultsSummary = (
         <>
-          {resultsSummary} {param === query ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
+          {resultsSummary} {param === trimmedQuery ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
         </>
       );
     }
   });
   if (results.length === 0) {
-    resultsSummary = (<div><span aria-live='assertive'>No results {resultsSummary}</span></div>);
+    resultsSummary = (<div>No results {resultsSummary}</div>);
   }
 
   return (
     <React.Fragment>
+      <div
+        aria-live='polite'
+        aria-atomic='true'
+        className='visually-hidden'
+      >
+        {debouncedLiveMessage}
+      </div>
       <div
         css={{
           display: 'grid',
@@ -426,9 +477,7 @@ StaffDirectory.propTypes = {
   }),
   handleChange: PropTypes.func,
   handleClear: PropTypes.any,
-  query: PropTypes.shape({
-    length: PropTypes.number
-  }),
+  query: PropTypes.string,
   results: PropTypes.shape({
     length: PropTypes.any,
     slice: PropTypes.func

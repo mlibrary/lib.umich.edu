@@ -1,10 +1,9 @@
+import { graphql, navigate } from 'gatsby';
 import { Heading, Icon, Link, Margins, MEDIA_QUERIES, SPACING, Text } from '../reusable';
-import { navigate, useLocation } from '@reach/router';
 import { Template, TemplateContent, TemplateSide } from '../components/aside-layout';
 import Breadcrumb from '../components/breadcrumb';
 import { GatsbyImage } from 'gatsby-plugin-image';
 import getNode from '../utils/get-node';
-import { graphql } from 'gatsby';
 import Html from '../components/html';
 import LocationAside from '../components/location-aside';
 import PropTypes from 'prop-types';
@@ -12,7 +11,7 @@ import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import TemplateLayout from './template-layout';
 
-const StudyTemplate = ({ data }) => {
+const StudyTemplate = ({ data, location }) => {
   const node = getNode(data);
   const { field_title_context: fieldTitleContext, fields, body, relationships } = node;
   const imageData
@@ -20,7 +19,6 @@ const StudyTemplate = ({ data }) => {
       ?.localFile?.childImageSharp?.gatsbyImageData;
   const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
 
-  const location = useLocation();
   const fromFindStudySpace = location.state && location.state.fromFindStudySpace;
   const findStudySpaceQuery = (location.state && location.state.findStudySpaceQuery) || '';
   const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
@@ -180,14 +178,15 @@ const StudyTemplate = ({ data }) => {
 };
 
 StudyTemplate.propTypes = {
-  data: PropTypes.any
+  data: PropTypes.any,
+  location: PropTypes.object
 };
 
 export default StudyTemplate;
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
-  return <SearchEngineOptimization data={getNode(data)} />;
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={getNode(data)} location={location} />;
 };
 /* eslint-enable react/prop-types */
 

@@ -160,8 +160,8 @@ NewsLandingTemplate.propTypes = {
 };
 
 /* eslint-disable react/prop-types */
-export const Head = ({ data }) => {
-  return <SearchEngineOptimization data={data.page} />;
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={data.page} location={location} />;
 };
 /* eslint-enable react/prop-types */
 
