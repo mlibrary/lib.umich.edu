@@ -1,7 +1,7 @@
 ---
 import Icon from '../../reusable/Icon.astro';
 
-const { nid, node } = Astro.props;
+const { nid, node, template } = Astro.props;
 
 // Get the JSON API URLs from the node's links field (robust, safe)
 let jsonApiUrl = null;
@@ -36,6 +36,10 @@ const nodeDataJson = JSON.stringify(node, null, 2);
         <div class="debug-line">
             <div class="debug-line-title">NID</div> 
             <div class="debug-line-value">{nid}</div>
+        </div>
+        <div class="debug-line">
+            <div class="debug-line-title">Template</div> 
+            <div class="debug-line-value">{template}</div>
         </div>
         <div class="debug-line">
             <div class="debug-line-title">Type</div> 

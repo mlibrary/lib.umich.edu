@@ -1,5 +1,41 @@
 ---
-import BasicTemplate from './basic.astro';
-const props = Astro.props;
+import PageHeader from '../components/PageHeader.astro';
+import Layout from '../layouts/Layout.astro';
+import Html from '../components/Html.astro';
+import Panels from '../components/panels/Panels.astro';
+import transformNodePanels from '../utils/transform-node-panels';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+
+const { node, breadcrumb, title, parents } = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available');
+}
+
+const field_title_context = node.attributes?.field_title_context || title;
+const body = node.attributes?.body || null;
+const image = node.relationships?.field_media_image || null;
+const slug = node.attributes?.path?.alias || Astro.url.pathname;
+
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: field_title_context || title || 'Unknown Page', slug },
+    parents || []
+  );
+}
+
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
 ---
-<BasicTemplate {...props} />
+<Layout title={field_title_context}>
+    <PageHeader
+        breadcrumb={breadcrumbData}
+        title={field_title_context}
+        summary={body?.summary ?? null}
+        image={image} />
+    <div class="margins">
+        {body?.processed && <Html html={body.processed} />}
+        <Panels data={bodyPanels} />
+    </div>
+    <Panels data={fullPanels} />
+</Layout>

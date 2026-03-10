@@ -14,7 +14,6 @@
  *   - Panels (fullPanels, full-width below template)
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
-import Margins from '../components/Margins.astro';
 import Template from '../components/Template.astro';
 import TemplateTop from '../components/TemplateTop.astro';
 import TemplateContent from '../components/TemplateContent.astro';
@@ -28,6 +27,8 @@ import DebugPanel from '../components/panels/DebugPanel.astro';
 import SideNavigation from '../components/navigation/SideNavigation.astro';
 import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
 import { getNavigationBranch } from '../lib/navigation.js';
+import transformNodePanels from '../utils/transform-node-panels';
+
 
 interface Props {
   node: any;
@@ -71,13 +72,7 @@ if (!breadcrumbData) {
 }
 
 // Panels
-let bodyPanels: any[] = [];
-let fullPanels: any[] = [];
-if (node.relationships?.field_panels) {
-  const panels = node.relationships.field_panels;
-  bodyPanels = panels.filter((p: any) => p.field_placement === 'body');
-  fullPanels = panels.filter((p: any) => p.field_placement !== 'body');
-}
+let {bodyPanels, fullPanels} = transformNodePanels({ node });
 
 // Side navigation — only fetched when the page opts in to local navigation
 let navBranch = null;

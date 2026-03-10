@@ -128,7 +128,6 @@ const navigationItems = buildNavigationItems();
     <div class="template-with-aside">
       <div class="margins">
         <div class:list={['template-grid', { 'has-aside': showLocationAside }]}>
-          <!-- Template Content -->
           <div class="template-content">
             <div class="prose">
               <Heading level={1} size="L" data-page-heading>
@@ -223,17 +222,6 @@ const navigationItems = buildNavigationItems();
       display: grid;
       grid-template-areas: "content side";
       grid-template-columns: 1fr calc(21rem + 4rem);
-    }
-  }
-
-  .template-content {
-    grid-area: content;
-    margin-bottom: 2rem;
-  }
-
-  @media only screen and (min-width: 920px) {
-    .template-content {
-      margin-right: 2.5rem;
     }
   }
 
