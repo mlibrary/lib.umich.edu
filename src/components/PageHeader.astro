@@ -8,6 +8,7 @@
 import Breadcrumb from './Breadcrumb.astro';
 import DrupalImage from './DrupalImage.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
 
 interface Props {
   breadcrumb?: string;
@@ -42,7 +43,9 @@ if (!breadcrumbData) {
       <div class="page-header-content">
         <Breadcrumb data={breadcrumbData} />
         
-        <h1 class="page-title">{title}</h1>
+        <Heading size="3XL" level={1}>
+          {title}
+        </Heading>
         
         {summary && (
           <p class="page-summary">{summary}</p>
@@ -59,6 +62,10 @@ if (!breadcrumbData) {
 </div>
 
 <style>
+  .page-heading{
+    margin-bottom: 1rem;
+  }
+
   .page-header-wrapper {
     border-bottom: 1px solid var(--color-neutral-100, #e0e0e0);
   }
@@ -73,20 +80,9 @@ if (!breadcrumbData) {
     padding-top: 0;
   }
   
-  .page-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--color-blue-400, #00274C);
-    margin-bottom: 1rem;
-    margin-top: 0;
-  }
-  
   .page-summary {
-    font-size: 1.25rem;
-    line-height: 1.6;
-    color: var(--color-neutral-400, #666);
-    margin: 0;
+    font-size: 1.125rem;
+    max-width: 38rem;
   }
   
   .page-header-image {
