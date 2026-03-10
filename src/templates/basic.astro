@@ -93,37 +93,35 @@ if (fieldLocalNavigation) {
 <TemplateLayout node={node} title={fieldTitleContext || title}>
   <DebugPanel node={node} />
 
-  <Margins>
-    <Template variant="basic" hasSide={!!fieldLocalNavigation}>
-      <TemplateTop>
-        <Breadcrumb data={breadcrumbData} />
-      </TemplateTop>
+  <Template variant="basic" hasSide={!!fieldLocalNavigation}>
+    <TemplateTop>
+      <Breadcrumb data={breadcrumbData} />
+    </TemplateTop>
 
-      {fieldLocalNavigation && (
-        <TemplateSide class="basic-side">
-          {navBranch && (
-            <SideNavigation path={slug} branch={navBranch} />
-          )}
+    {fieldLocalNavigation && (
+      <TemplateSide class="basic-side">
+        {navBranch && (
+          <SideNavigation path={slug} branch={navBranch} />
+        )}
 
-          {smallScreenItems && (
-            <div class="small-screen-nav">
-              <HorizontalNavigation items={smallScreenItems} />
-            </div>
-          )}
-        </TemplateSide>
-      )}
+        {smallScreenItems && (
+          <div class="small-screen-nav">
+            <HorizontalNavigation items={smallScreenItems} />
+          </div>
+        )}
+      </TemplateSide>
+    )}
 
-      <TemplateContent>
-        <Heading size="3XL" level={1}>
-          {fieldTitleContext}
-        </Heading>
+    <TemplateContent>
+      <Heading size="3XL" level={1}>
+        {fieldTitleContext}
+      </Heading>
 
-        {body && <Html html={body} />}
+      {body && <Html html={body} />}
 
-        <Panels data={bodyPanels} />
-      </TemplateContent>
-    </Template>
-  </Margins>
+      <Panels data={bodyPanels} />
+    </TemplateContent>
+  </Template>
 
   <Panels data={fullPanels} />
 </TemplateLayout>

@@ -19,7 +19,7 @@ const { title, shaded = false, headingCss = {}, ...rest } = Astro.props;
   data-panel
   {...rest}
 >
-  <div data-panel-margins>
+  <div data-panel-margins class="margins">
     {
       title && (
         <h2
@@ -59,7 +59,6 @@ const { title, shaded = false, headingCss = {}, ...rest } = Astro.props;
     .panel:not(:last-child) {
       border: none;
       border-right: solid 1px var(--color-neutral-100);
-      padding-right: 3rem;
     }
   }
 </style>

@@ -211,17 +211,21 @@ export const fetchDrupalPages = async () => {
  */
 export const fetchDrupalSectionPages = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  
+
   // Keep includes minimal - only include what exists on ALL section pages
   // Cannot include panel-specific fields like field_parent_card because
-  // not all panel types have that field (causes 400 error)
+  // Not all panel types have that field (causes 400 error)
   const includes = [
     'field_design_template',
     'field_parent_page',
     'field_media_image',
-    'field_panels'
+    'field_panels',
+    'field_panels.field_card_template',
+    'field_panels.field_cards',
+    'field_panels.field_cards.field_media_image',
+    'field_panels.field_cards.field_media_image.field_media_image'
   ].join(',');
-  
+
   const url = `${baseUrl}/jsonapi/node/section_page?include=${includes}`;
 
   let allData = [];
@@ -246,7 +250,7 @@ export const fetchDrupalSectionPages = async () => {
  */
 export const fetchDrupalHoursPanels = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  
+
   // Include all relationships needed for hours panels
   const includes = [
     'field_parent_card',
@@ -262,7 +266,7 @@ export const fetchDrupalHoursPanels = async () => {
     'field_cards.field_room_building.field_parent_location',
     'field_cards.field_room_building.field_parent_location.field_hours_open'
   ].join(',');
-  
+
   const url = `${baseUrl}/jsonapi/paragraph/hours_panel?include=${includes}`;
 
   let allData = [];
@@ -286,7 +290,15 @@ export const fetchDrupalHoursPanels = async () => {
  */
 export const fetchDrupalBuildings = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  const url = `${baseUrl}/jsonapi/node/building?include=field_design_template`;
+  const includes = [
+    'field_design_template',
+    'field_panels',
+    'field_panels.field_card_template',
+    'field_panels.field_cards',
+    'field_panels.field_cards.field_media_image',
+    'field_panels.field_cards.field_media_image.field_media_image'
+  ].join(',');
+  const url = `${baseUrl}/jsonapi/node/building?include=${includes}`;
 
   let allData = [];
   let allIncluded = [];
@@ -380,7 +392,6 @@ export const fetchDrupalEvents = async () => {
       }
     }
 
-    // // Debug: Log available fields for first few events
     // If (allData.indexOf(event) < 2) {
     //   Console.log(`\n=== Event ${allData.indexOf(event)} Debug ===`);
     //   Console.log('Event ID:', event.id);
@@ -429,7 +440,7 @@ export const fetchFeaturedNews = async () => {
     'field_media_image.field_media_image'
   ].join(',');
   const url = `${baseUrl}/jsonapi/node/news?include=${includes}&filter[field_featured_news_item][value]=1&sort=-created&page[limit]=1`;
-  
+
   const response = await fetchWithRetry(url);
   return { data: response.data, included: response.included || [] };
 };
@@ -445,7 +456,7 @@ export const fetchPriorityNews = async () => {
     'field_media_image.field_media_image'
   ].join(',');
   const url = `${baseUrl}/jsonapi/node/news?include=${includes}&filter[field_priority_for_homepage][value]=1&filter[field_featured_news_item][value]=0&sort=-created&page[limit]=5`;
-  
+
   const response = await fetchWithRetry(url);
   return { data: response.data, included: response.included || [] };
 };
@@ -461,7 +472,7 @@ export const fetchRecentNews = async () => {
     'field_media_image.field_media_image'
   ].join(',');
   const url = `${baseUrl}/jsonapi/node/news?include=${includes}&filter[field_priority_for_homepage][value]=0&filter[field_featured_news_item][value]=0&sort=-created&page[limit]=5`;
-  
+
   const response = await fetchWithRetry(url);
   return { data: response.data, included: response.included || [] };
 };
@@ -472,7 +483,7 @@ export const fetchRecentNews = async () => {
 export const fetchNewsLandingPageSlug = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const url = `${baseUrl}/jsonapi/node/page?include=field_design_template&filter[field_design_template.field_machine_name][value]=news_landing`;
-  
+
   const response = await fetchWithRetry(url);
   const page = response.data?.[0];
   return page?.attributes?.path?.alias || null;
@@ -482,9 +493,5 @@ export {
   DRUPAL_URL,
   removeTrailingSlash,
   sanitizeDrupalView,
-  fetchWithRetry,
-  fetchFeaturedNews,
-  fetchPriorityNews,
-  fetchRecentNews,
-  fetchNewsLandingPageSlug
+  fetchWithRetry
 };

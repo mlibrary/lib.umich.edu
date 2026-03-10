@@ -26,18 +26,17 @@ const {
   class: className = ''
 } = Astro.props;
 ---
-
-<div class={`template template--${variant} ${className}`} data-content-side={contentSide} data-has-side={hasSide}>
-  <slot />
+<div class="margins">
+  <div class={`template template--${variant} ${className}`} data-content-side={contentSide} data-has-side={hasSide}>
+    <slot />
+  </div>
 </div>
 
 <style define:vars={{ asideWidth, contentSide }}>
   .template {
-    margin-bottom: 4rem;
     width: 100%;
   }
 
-  /* ─── ASIDE variant (news, events, etc.) ─── */
   @media only screen and (min-width: 641px) {
     .template--aside {
       padding: 0 0 2rem;
@@ -48,7 +47,6 @@ const {
     .template--aside {
       display: grid;
       padding-bottom: 3rem;
-      margin-bottom: 5rem;
     }
 
     .template--aside[data-content-side="left"],
@@ -63,20 +61,16 @@ const {
     }
   }
 
-  /* ─── BASIC variant (top / side nav / content) ─── */
   @media only screen and (min-width: 641px) {
     .template--basic[data-has-side="true"] {
       display: grid;
       grid-template-areas:
         "top top"
         "side content";
-      /* 216px side nav + 3rem gap, matches Gatsby calc(216px + SPACING['4XL']) */
       grid-template-columns: calc(216px + 3rem) 1fr;
       grid-template-rows: auto 1fr;
-      margin-bottom: 5rem;
     }
 
-    /* No side nav — single column, top stacks above content */
     .template--basic[data-has-side="false"] {
       display: grid;
       grid-template-areas:
@@ -84,14 +78,7 @@ const {
         "content";
       grid-template-columns: 1fr;
       grid-template-rows: auto 1fr;
-      margin-bottom: 5rem;
     }
-  }
-
-  /* Shared panel spacing overrides */
-  .template :global([data-panel-margins]),
-  .template :global([data-panel]) {
-    padding: 0;
   }
 
   .template :global([data-panel] h2) {

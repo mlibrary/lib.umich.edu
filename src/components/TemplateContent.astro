@@ -17,15 +17,9 @@ const { class: className = '' } = Astro.props;
 </div>
 
 <style>
-  .template-content {
-    margin-bottom: 2rem;
-  }
-  
-  /* Positioning inside basic (641px+) and aside (920px+) grids */
   @media only screen and (min-width: 641px) {
     .template-content {
       grid-area: content;
-      margin-right: 2.5rem;
     }
   }
 </style>

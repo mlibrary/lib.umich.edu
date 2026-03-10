@@ -14,7 +14,6 @@ interface Props {
 
 const { data } = Astro.props;
 const title = data.field_title;
-const template = data.relationships.field_text_template.field_machine_name;
 const cards = data.relationships.field_text_card || [];
 ---
 

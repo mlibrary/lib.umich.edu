@@ -427,8 +427,10 @@ export const processDrupalNode = (node, included = []) => {
     }
   }
 
-  // Special handling for hero panels to enhance images with file URLs
+  // Special handling for hero panels and card panels to enhance images with file URLs
   if (relationships.field_panels) {
+    const drupalBaseUrl = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu';
+
     relationships.field_panels = relationships.field_panels.map((panel) => {
       if (panel.__typename === 'paragraph--hero_panel' && panel.relationships?.field_hero_images) {
         panel.relationships.field_hero_images = panel.relationships.field_hero_images.map((img) => {
@@ -439,7 +441,7 @@ export const processDrupalNode = (node, included = []) => {
 
           if (mediaEntity) {
             const fileEntity = findFileEntity(mediaEntity, included);
-            const imageUrl = generateImageUrl(fileEntity, process.env.DRUPAL_URL || 'https://cms.lib.umich.edu');
+            const imageUrl = generateImageUrl(fileEntity, drupalBaseUrl);
 
             return {
               ...img,
@@ -451,6 +453,38 @@ export const processDrupalNode = (node, included = []) => {
           return img;
         });
       }
+
+      // Enrich card panel card images with resolved URLs
+      if (panel.__typename === 'paragraph--card_panel' && Array.isArray(panel.relationships?.field_cards)) {
+        panel.relationships.field_cards = panel.relationships.field_cards.map((card) => {
+          const mediaEntity = card.relationships?.field_media_image;
+          if (!mediaEntity) {
+            return card;
+          }
+          // processRelationships() spreads file entity attributes, so uri.url is top-level
+          const fileEntity = mediaEntity.relationships?.field_media_image;
+          const rawUrl = fileEntity?.uri?.url;
+          if (!rawUrl) {
+            return card;
+          }
+          const imageUrl = rawUrl.startsWith('/') ? `${drupalBaseUrl}${rawUrl}` : rawUrl;
+          // field_media_image attribute on media--image entity holds alt/width/height
+          const imageAlt = mediaEntity.field_media_image?.alt || '';
+
+          return {
+            ...card,
+            relationships: {
+              ...card.relationships,
+              field_media_image: {
+                ...mediaEntity,
+                imageUrl,
+                imageAlt
+              }
+            }
+          };
+        });
+      }
+
       return panel;
     });
   }
