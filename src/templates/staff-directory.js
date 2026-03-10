@@ -19,75 +19,6 @@ import useGoogleTagManager from '../hooks/use-google-tag-manager';
 
 const lunr = require('lunr');
 
-export default function StaffDirectoryWrapper ({ data, location }) {
-  const node = data.page;
-  const { allNodeDepartment, allStaff, allStaffImages } = data;
-
-  const departments = allNodeDepartment.edges.reduce((acc, { node: departmentsNode }) => {
-    return {
-      ...acc,
-      [departmentsNode.drupal_internal__nid]: departmentsNode
-    };
-  }, {});
-  const staff = allStaff.edges.map(({ node: staffNode }) => {
-    return {
-      ...staffNode,
-      department: departments[staffNode.department_nid],
-      division: departments[staffNode.division_nid]
-    };
-  });
-  const staffImages = allStaffImages.edges.reduce((acc, { node: staffImagesNode }) => {
-    const img = staffImagesNode.relationships.field_media_image;
-
-    return {
-      ...acc,
-      [img.drupal_internal__mid]: {
-        alt: img.field_media_image.alt,
-        ...img.relationships.field_media_image.localFile
-      }
-    };
-  }, {});
-
-  return (
-    <StaffDirectoryQueryContainer
-      node={node}
-      staff={staff}
-      departments={departments}
-      staffImages={staffImages}
-      location={location}
-      navigate={navigate}
-    />
-  );
-}
-
-StaffDirectoryWrapper.propTypes = {
-  data: PropTypes.shape({
-    allNodeDepartment: PropTypes.shape({
-      edges: PropTypes.shape({
-        reduce: PropTypes.func
-      })
-    }),
-    allStaff: PropTypes.shape({
-      edges: PropTypes.shape({
-        map: PropTypes.func
-      })
-    }),
-    allStaffImages: PropTypes.shape({
-      edges: PropTypes.shape({
-        reduce: PropTypes.func
-      })
-    }),
-    page: PropTypes.any
-  }),
-  location: PropTypes.any
-};
-
-/* eslint-disable react/prop-types */
-export const Head = ({ data, location }) => {
-  return <SearchEngineOptimization data={data.page} location={location} />;
-};
-/* eslint-enable react/prop-types */
-
 const filterResults = ({ activeFilters, results }) => {
   const filterKeys = Object.keys(activeFilters);
 
@@ -105,6 +36,381 @@ const filterResults = ({ activeFilters, results }) => {
     );
   });
 };
+
+const StaffPhoto = ({ mid, staffImages }) => {
+  const img = staffImages[mid];
+
+  if (!img) {
+    return <StaffPhotoPlaceholder />;
+  }
+
+  return (
+    <GatsbyImage
+      image={img.childImageSharp.gatsbyImageData}
+      alt={img.alt}
+      css={{
+        backgroundColor: 'var(--color-blue-100)',
+        borderRadius: '2px',
+        overflow: 'hidden'
+      }}
+    />
+  );
+};
+
+StaffPhoto.propTypes = {
+  mid: PropTypes.number,
+  staffImages: PropTypes.array
+};
+
+const StaffDirectoryResults = ({
+  results,
+  resultsSummary,
+  staffImages,
+  staffInView
+}) => {
+  const tableBreakpoint = `@media only screen and (max-width: 820px)`;
+  const borderStyle = '1px solid var(--color-neutral-100)';
+
+  if (results.length < 1) {
+    return resultsSummary;
+  }
+
+  return (
+    <table
+      css={{
+        tableLayout: 'fixed',
+        textAlign: 'left',
+        'tr > *': {
+          '& + *': {
+            paddingLeft: '2rem',
+            [tableBreakpoint]: {
+              '&:nth-of-type(2)': {
+                '& + *': {
+                  paddingBottom: '1rem'
+                },
+                paddingTop: '1rem'
+              },
+              paddingLeft: '0'
+            }
+          },
+          padding: '0.75rem 0',
+          position: 'relative',
+          [tableBreakpoint]: {
+            display: 'block',
+            padding: '0.5rem 0 0 0'
+          },
+          verticalAlign: 'top'
+        },
+        width: '100%'
+      }}
+    >
+      <caption css={{ textAlign: 'left' }}>
+        {resultsSummary}
+      </caption>
+      <colgroup>
+        <col
+          span='1'
+          css={{
+            width: '43px'
+          }}
+        />
+      </colgroup>
+      <thead
+        css={{
+          borderBottom: borderStyle,
+          color: 'var(--color-neutral-300)',
+          [tableBreakpoint]: {
+            clip: 'rect(1px, 1px, 1px, 1px)',
+            clipPath: 'inset(50%)',
+            height: '1px',
+            overflow: 'hidden',
+            position: 'absolute',
+            whiteSpace: 'nowrap',
+            width: '1px'
+          }
+        }}
+      >
+        <tr>
+          <th scope='col' className='visually-hidden'>Photo</th>
+          <th scope='colgroup' colSpan='3'>Name and title</th>
+          <th scope='colgroup' colSpan='2'>Contact info</th>
+          <th scope='colgroup' colSpan='3'>Department</th>
+        </tr>
+      </thead>
+      <tbody>
+        {staffInView.map(
+          ({
+            uniqname,
+            name,
+            title,
+            email,
+            phone,
+            department,
+            division,
+            image_mid: imageMid
+          }) => {
+            return (
+              <tr
+                key={uniqname}
+                css={{
+                  borderTop: borderStyle
+                }}
+              >
+                <td
+                  css={{
+                    [tableBreakpoint]: {
+                      display: 'none!important'
+                    }
+                  }}
+                >
+                  <StaffPhoto mid={imageMid} staffImages={staffImages} />
+                </td>
+                <th scope='row' colSpan='3'>
+                  <PlainLink
+                    css={{
+                      ':hover': {
+                        textDecorationThickness: '2px'
+                      },
+                      color: 'var(--color-teal-400)',
+                      textDecoration: 'underline'
+                    }}
+                    to={`/users/${uniqname}`}
+                  >
+                    {name}
+                  </PlainLink>
+                  <span css={{ display: 'block' }}>{title}</span>
+                </th>
+                <td
+                  colSpan='2'
+                  css={{
+                    span: {
+                      display: 'block',
+                      [tableBreakpoint]: {
+                        display: 'initial'
+                      }
+                    }
+                  }}
+                >
+                  <span>
+                    <Link to={`mailto:${email}`} kind='subtle'>
+                      {email}
+                    </Link>
+                  </span>
+                  {phone && (
+                    <>
+                      <span
+                        css={{
+                          display: 'none!important',
+                          padding: '0 0.5rem',
+                          [tableBreakpoint]: {
+                            display: 'initial!important'
+                          }
+                        }}
+                      >
+                        &middot;
+                      </span>
+                      <span>
+                        <Link to={`tel:1-${phone}`} kind='subtle'>
+                          {phone}
+                        </Link>
+                      </span>
+                    </>
+                  )}
+                </td>
+                <td
+                  colSpan='3'
+                  css={{
+                    [tableBreakpoint]: {
+                      display: 'none!important'
+                    }
+                  }}
+                >
+                  {department && (
+                    <Link to={department.fields.slug} kind='subtle'>
+                      {department.title}
+                    </Link>
+                  )}
+
+                  {!department && division && (
+                    <Link to={division.fields.slug} kind='subtle'>
+                      {division.title}
+                    </Link>
+                  )}
+                </td>
+              </tr>
+            );
+          }
+        )}
+      </tbody>
+    </table>
+  );
+};
+
+StaffDirectoryResults.propTypes = {
+  results: PropTypes.shape({
+    length: PropTypes.number
+  }),
+  resultsSummary: PropTypes.any,
+  staffImages: PropTypes.any,
+  staffInView: PropTypes.shape({
+    map: PropTypes.func
+  })
+};
+
+const StaffDirectory = React.memo(({
+  handleChange,
+  handleClear,
+  filters,
+  results,
+  staffImages,
+  query,
+  activeFilters
+}) => {
+  const [show, setShow] = useState(20);
+  const trimmedQuery = query.trim();
+  const staffInView = results.slice(0, show);
+  let resultsSummary = <></>;
+  let showMoreText = null;
+  if (results.length > 0) {
+    resultsSummary = (<>{results.length} result{results.length > 1 && 's'}</>);
+    if (show < results.length) {
+      resultsSummary = (<>Showing {show} of {results.length} results</>);
+      const showMore = () => {
+        setShow(results.length);
+      };
+      showMoreText = (
+        <>
+          <p
+            css={{
+              marginBottom: SPACING.L
+            }}
+          >
+            {resultsSummary}
+          </p>
+          <Button onClick={showMore}>Show all</Button>
+        </>
+      );
+    }
+  }
+  let liveSuffix = '';
+  [trimmedQuery, activeFilters.department].forEach((param) => {
+    if (param) {
+      liveSuffix += ` ${param === trimmedQuery ? 'for' : 'in'} ${param}`;
+    }
+  });
+  const liveMessage = results.length === 0
+    ? `No results${liveSuffix}`
+    : `${results.length} result${results.length === 1 ? '' : 's'}${liveSuffix}`;
+
+  // Debounce the announced message so that it doesn't repeat itself when the user is typing quickly or changing filters quickly
+  const [debouncedLiveMessage] = useDebounce(liveMessage, 400);
+
+  [trimmedQuery, activeFilters.department].forEach((param) => {
+    if (param) {
+      resultsSummary = (
+        <>
+          {resultsSummary} {param === trimmedQuery ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
+        </>
+      );
+    }
+  });
+  if (results.length === 0) {
+    resultsSummary = (<div>No results {resultsSummary}</div>);
+  }
+
+  return (
+    <React.Fragment>
+      <div
+        aria-live='polite'
+        aria-atomic='true'
+        className='visually-hidden'
+      >
+        {debouncedLiveMessage}
+      </div>
+      <div
+        css={{
+          display: 'grid',
+          gridGap: SPACING.S,
+          [MEDIA_QUERIES.S]: {
+            gridTemplateColumns: `3fr 2fr auto`
+          },
+          input: {
+            height: '40px',
+            lineHeight: '1.5'
+          },
+          marginBottom: SPACING.M
+        }}
+      >
+        <TextInput
+          id='staff-directory-search-input'
+          labelText='Search by name, uniqname, or title'
+          name='query'
+          value={query}
+          onChange={(event) => {
+            setShow(20);
+            handleChange(event);
+          }}
+        />
+        {filters.map(({ label, name, options }) => {
+          return (
+            <Select
+              label={label}
+              name={name}
+              options={options}
+              onChange={(event) => {
+                return handleChange(event);
+              }}
+              value={activeFilters[name]}
+              key={name}
+            />
+          );
+        })}
+        <Button
+          kind='subtle'
+          onClick={handleClear}
+          css={{
+            alignSelf: 'end'
+          }}
+        >
+          Clear
+        </Button>
+      </div>
+      <StaffDirectoryResults
+        results={results}
+        staffImages={staffImages}
+        resultsSummary={resultsSummary}
+        staffInView={staffInView}
+      />
+      {showMoreText}
+      {!results.length && (
+        <NoResults>
+          Consider searching with different keywords or using the department or
+          division filter to browse.
+        </NoResults>
+      )}
+    </React.Fragment>
+  );
+});
+
+StaffDirectory.propTypes = {
+  activeFilters: PropTypes.shape({
+    department: PropTypes.any
+  }),
+  filters: PropTypes.shape({
+    map: PropTypes.func
+  }),
+  handleChange: PropTypes.func,
+  handleClear: PropTypes.any,
+  query: PropTypes.string,
+  results: PropTypes.shape({
+    length: PropTypes.any,
+    slice: PropTypes.func
+  }),
+  staffImages: PropTypes.any
+};
+
+// Need to set display name for StaffDirectory React.memo. Can also export default React.memo(StaffDirectory)
+StaffDirectory.displayName = 'StaffDirectory';
 
 const StaffDirectoryQueryContainer = ({
   node,
@@ -333,185 +639,74 @@ StaffDirectoryQueryContainer.propTypes = {
   staffImages: PropTypes.any
 };
 
-const StaffDirectory = React.memo(({
-  handleChange,
-  handleClear,
-  filters,
-  results,
-  staffImages,
-  query,
-  activeFilters
-}) => {
-  const [show, setShow] = useState(20);
-  const trimmedQuery = query.trim();
-  const staffInView = results.slice(0, show);
-  let resultsSummary = <></>;
-  let showMoreText = null;
-  if (results.length > 0) {
-    resultsSummary = (<>{results.length} result{results.length > 1 && 's'}</>);
-    if (show < results.length) {
-      resultsSummary = (<>Showing {show} of {results.length} results</>);
-      const showMore = () => {
-        setShow(results.length);
-      };
-      showMoreText = (
-        <>
-          <p
-            css={{
-              marginBottom: SPACING.L
-            }}
-          >
-            {resultsSummary}
-          </p>
-          <Button onClick={showMore}>Show all</Button>
-        </>
-      );
-    }
-  }
-  let liveSuffix = '';
-  [trimmedQuery, activeFilters.department].forEach((param) => {
-    if (param) {
-      liveSuffix += ` ${param === trimmedQuery ? 'for' : 'in'} ${param}`;
-    }
-  });
-  const liveMessage = results.length === 0
-    ? `No results${liveSuffix}`
-    : `${results.length} result${results.length === 1 ? '' : 's'}${liveSuffix}`;
+export default function StaffDirectoryWrapper ({ data, location }) {
+  const node = data.page;
+  const { allNodeDepartment, allStaff, allStaffImages } = data;
 
-  // Debounce the announced message so that it doesn't repeat itself when the user is typing quickly or changing filters quickly
-  const [debouncedLiveMessage] = useDebounce(liveMessage, 400);
-
-  [trimmedQuery, activeFilters.department].forEach((param) => {
-    if (param) {
-      resultsSummary = (
-        <>
-          {resultsSummary} {param === trimmedQuery ? 'for' : 'in'} <strong style={{ fontWeight: '800' }}>{param}</strong>
-        </>
-      );
-    }
+  const departments = allNodeDepartment.edges.reduce((acc, { node: departmentsNode }) => {
+    return {
+      ...acc,
+      [departmentsNode.drupal_internal__nid]: departmentsNode
+    };
+  }, {});
+  const staff = allStaff.edges.map(({ node: staffNode }) => {
+    return {
+      ...staffNode,
+      department: departments[staffNode.department_nid],
+      division: departments[staffNode.division_nid]
+    };
   });
-  if (results.length === 0) {
-    resultsSummary = (<div>No results {resultsSummary}</div>);
-  }
+  const staffImages = allStaffImages.edges.reduce((acc, { node: staffImagesNode }) => {
+    const img = staffImagesNode.relationships.field_media_image;
+
+    return {
+      ...acc,
+      [img.drupal_internal__mid]: {
+        alt: img.field_media_image.alt,
+        ...img.relationships.field_media_image.localFile
+      }
+    };
+  }, {});
 
   return (
-    <React.Fragment>
-      <div
-        aria-live='polite'
-        aria-atomic='true'
-        className='visually-hidden'
-      >
-        {debouncedLiveMessage}
-      </div>
-      <div
-        css={{
-          display: 'grid',
-          gridGap: SPACING.S,
-          [MEDIA_QUERIES.S]: {
-            gridTemplateColumns: `3fr 2fr auto`
-          },
-          input: {
-            height: '40px',
-            lineHeight: '1.5'
-          },
-          marginBottom: SPACING.M
-        }}
-      >
-        <TextInput
-          id='staff-directory-search-input'
-          labelText='Search by name, uniqname, or title'
-          name='query'
-          value={query}
-          onChange={(event) => {
-            setShow(20);
-            handleChange(event);
-          }}
-        />
-        {filters.map(({ label, name, options }) => {
-          return (
-            <Select
-              label={label}
-              name={name}
-              options={options}
-              onChange={(event) => {
-                return handleChange(event);
-              }}
-              value={activeFilters[name]}
-              key={name}
-            />
-          );
-        })}
-        <Button
-          kind='subtle'
-          onClick={handleClear}
-          css={{
-            alignSelf: 'end'
-          }}
-        >
-          Clear
-        </Button>
-      </div>
-      <StaffDirectoryResults
-        results={results}
-        staffImages={staffImages}
-        resultsSummary={resultsSummary}
-        staffInView={staffInView}
-      />
-      {showMoreText}
-      {!results.length && (
-        <NoResults>
-          Consider searching with different keywords or using the department or
-          division filter to browse.
-        </NoResults>
-      )}
-    </React.Fragment>
-  );
-});
-
-StaffDirectory.propTypes = {
-  activeFilters: PropTypes.shape({
-    department: PropTypes.any
-  }),
-  filters: PropTypes.shape({
-    map: PropTypes.func
-  }),
-  handleChange: PropTypes.func,
-  handleClear: PropTypes.any,
-  query: PropTypes.string,
-  results: PropTypes.shape({
-    length: PropTypes.any,
-    slice: PropTypes.func
-  }),
-  staffImages: PropTypes.any
-};
-
-// Need to set display name for StaffDirectory React.memo. Can also export default React.memo(StaffDirectory)
-StaffDirectory.displayName = 'StaffDirectory';
-
-const StaffPhoto = ({ mid, staffImages }) => {
-  const img = staffImages[mid];
-
-  if (!img) {
-    return <StaffPhotoPlaceholder />;
-  }
-
-  return (
-    <GatsbyImage
-      image={img.childImageSharp.gatsbyImageData}
-      alt={img.alt}
-      css={{
-        backgroundColor: 'var(--color-blue-100)',
-        borderRadius: '2px',
-        overflow: 'hidden'
-      }}
+    <StaffDirectoryQueryContainer
+      node={node}
+      staff={staff}
+      departments={departments}
+      staffImages={staffImages}
+      location={location}
+      navigate={navigate}
     />
   );
+}
+
+StaffDirectoryWrapper.propTypes = {
+  data: PropTypes.shape({
+    allNodeDepartment: PropTypes.shape({
+      edges: PropTypes.shape({
+        reduce: PropTypes.func
+      })
+    }),
+    allStaff: PropTypes.shape({
+      edges: PropTypes.shape({
+        map: PropTypes.func
+      })
+    }),
+    allStaffImages: PropTypes.shape({
+      edges: PropTypes.shape({
+        reduce: PropTypes.func
+      })
+    }),
+    page: PropTypes.any
+  }),
+  location: PropTypes.any
 };
 
-StaffPhoto.propTypes = {
-  mid: PropTypes.number,
-  staffImages: PropTypes.array
+/* eslint-disable react/prop-types */
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={data.page} location={location} />;
 };
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   query ($slug: String!) {
@@ -582,198 +777,3 @@ export const query = graphql`
     }
   }
 `;
-
-const StaffDirectoryResults = ({
-  results,
-  resultsSummary,
-  staffImages,
-  staffInView
-}) => {
-  const tableBreakpoint = `@media only screen and (max-width: 820px)`;
-  const borderStyle = '1px solid var(--color-neutral-100)';
-
-  if (results.length < 1) {
-    return resultsSummary;
-  }
-
-  return (
-    <table
-      css={{
-        tableLayout: 'fixed',
-        textAlign: 'left',
-        'tr > *': {
-          '& + *': {
-            paddingLeft: '2rem',
-            [tableBreakpoint]: {
-              '&:nth-of-type(2)': {
-                '& + *': {
-                  paddingBottom: '1rem'
-                },
-                paddingTop: '1rem'
-              },
-              paddingLeft: '0'
-            }
-          },
-          padding: '0.75rem 0',
-          position: 'relative',
-          [tableBreakpoint]: {
-            display: 'block',
-            padding: '0.5rem 0 0 0'
-          },
-          verticalAlign: 'top'
-        },
-        width: '100%'
-      }}
-    >
-      <caption css={{ textAlign: 'left' }}>
-        {resultsSummary}
-      </caption>
-      <colgroup>
-        <col
-          span='1'
-          css={{
-            width: '43px'
-          }}
-        />
-      </colgroup>
-      <thead
-        css={{
-          borderBottom: borderStyle,
-          color: 'var(--color-neutral-300)',
-          [tableBreakpoint]: {
-            clip: 'rect(1px, 1px, 1px, 1px)',
-            clipPath: 'inset(50%)',
-            height: '1px',
-            overflow: 'hidden',
-            position: 'absolute',
-            whiteSpace: 'nowrap',
-            width: '1px'
-          }
-        }}
-      >
-        <tr>
-          <th scope='col' className='visually-hidden'>Photo</th>
-          <th scope='colgroup' colSpan='3'>Name and title</th>
-          <th scope='colgroup' colSpan='2'>Contact info</th>
-          <th scope='colgroup' colSpan='3'>Department</th>
-        </tr>
-      </thead>
-      <tbody>
-        {staffInView.map(
-          ({
-            uniqname,
-            name,
-            title,
-            email,
-            phone,
-            department,
-            division,
-            image_mid: imageMid
-          }) => {
-            return (
-              <tr
-                key={uniqname}
-                css={{
-                  borderTop: borderStyle
-                }}
-              >
-                <td
-                  css={{
-                    [tableBreakpoint]: {
-                      display: 'none!important'
-                    }
-                  }}
-                >
-                  <StaffPhoto mid={imageMid} staffImages={staffImages} />
-                </td>
-                <th scope='row' colSpan='3'>
-                  <PlainLink
-                    css={{
-                      ':hover': {
-                        textDecorationThickness: '2px'
-                      },
-                      color: 'var(--color-teal-400)',
-                      textDecoration: 'underline'
-                    }}
-                    to={`/users/${uniqname}`}
-                  >
-                    {name}
-                  </PlainLink>
-                  <span css={{ display: 'block' }}>{title}</span>
-                </th>
-                <td
-                  colSpan='2'
-                  css={{
-                    span: {
-                      display: 'block',
-                      [tableBreakpoint]: {
-                        display: 'initial'
-                      }
-                    }
-                  }}
-                >
-                  <span>
-                    <Link to={`mailto:${email}`} kind='subtle'>
-                      {email}
-                    </Link>
-                  </span>
-                  {phone && (
-                    <>
-                      <span
-                        css={{
-                          display: 'none!important',
-                          padding: '0 0.5rem',
-                          [tableBreakpoint]: {
-                            display: 'initial!important'
-                          }
-                        }}
-                      >
-                        &middot;
-                      </span>
-                      <span>
-                        <Link to={`tel:1-${phone}`} kind='subtle'>
-                          {phone}
-                        </Link>
-                      </span>
-                    </>
-                  )}
-                </td>
-                <td
-                  colSpan='3'
-                  css={{
-                    [tableBreakpoint]: {
-                      display: 'none!important'
-                    }
-                  }}
-                >
-                  {department && (
-                    <Link to={department.fields.slug} kind='subtle'>
-                      {department.title}
-                    </Link>
-                  )}
-
-                  {!department && division && (
-                    <Link to={division.fields.slug} kind='subtle'>
-                      {division.title}
-                    </Link>
-                  )}
-                </td>
-              </tr>
-            );
-          }
-        )}
-      </tbody>
-    </table>
-  );
-};
-
-StaffDirectoryResults.propTypes = {
-  results: PropTypes.shape({
-    length: PropTypes.number
-  }),
-  resultsSummary: PropTypes.any,
-  staffImages: PropTypes.any,
-  staffInView: PropTypes.shape({
-    map: PropTypes.func
-  })
-};

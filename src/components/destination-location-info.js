@@ -8,19 +8,6 @@ import React from 'react';
 import { SPACING } from '../reusable';
 import useFloorPlan from '../hooks/use-floor-plan';
 
-export default function DestinationLocationInfoContainer ({ node }) {
-  // eslint-disable-next-line no-underscore-dangle
-  if (node.__typename === 'node__page') {
-    return null;
-  }
-
-  return <DestinationLocationInfo node={node} />;
-}
-
-DestinationLocationInfoContainer.propTypes = {
-  node: PropTypes.object
-};
-
 const resolveLocationFromNode = (node) => {
   const { relationships } = node;
 
@@ -116,5 +103,18 @@ const DestinationLocationInfo = ({ node }) => {
 };
 
 DestinationLocationInfo.propTypes = {
+  node: PropTypes.object
+};
+
+export default function DestinationLocationInfoContainer ({ node }) {
+  // eslint-disable-next-line no-underscore-dangle
+  if (node.__typename === 'node__page') {
+    return null;
+  }
+
+  return <DestinationLocationInfo node={node} />;
+}
+
+DestinationLocationInfoContainer.propTypes = {
   node: PropTypes.object
 };
