@@ -1,0 +1,176 @@
+---
+/**
+ * Card - Reusable card component
+ * Ported from src/reusable/card.jsx
+ *
+ * Props:
+ * - title: string (required)
+ * - subtitle?: string
+ * - headingLevel?: 2 | 3  (default 3)
+ * - image?: { src: string; alt?: string } | any  (optional decorative image)
+ * - href?: string  (renders outer element as <a>; omit to render as <div> for external-anchor wrapping)
+ * - horizontal?: boolean  (2-column layout at ≥641px: image left, content right)
+ * - anchorStyleAddition?: Record<string, string>  (extra inline styles on the outer element)
+ * - class?: string
+ */
+import Heading from "./Heading.astro";
+import CardImage from "./CardImage.astro";
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  headingLevel?: 2 | 3;
+  image?: any;
+  href?: string;
+  horizontal?: boolean;
+  anchorStyleAddition?: Record<string, string>;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  headingLevel = 3,
+  image,
+  href,
+  horizontal = false,
+  anchorStyleAddition = {},
+  class: className = "",
+} = Astro.props;
+
+// Convert anchorStyleAddition object to an inline style string
+const extraStyles = Object.entries(anchorStyleAddition)
+  .map(
+    ([k, v]) => `${k.replace(/([A-Z])/g, (m) => `-${m.toLowerCase()}`)}: ${v}`,
+  )
+  .join("; ");
+
+// Resolve image source/alt from various shapes (Drupal, astro:assets, plain object)
+const imgSrc = image?.src ?? image?.url ?? null;
+const imgAlt = image?.alt ?? "";
+
+// Whether the image is a remote string URL (no Astro Image processing needed for remote)
+const isRemoteImage =
+  typeof imgSrc === "string" &&
+  (imgSrc.startsWith("http") || imgSrc.startsWith("//"));
+const isLocalImage = imgSrc && !isRemoteImage;
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class:list={["card", { "card--horizontal": horizontal }, className]}
+      style={extraStyles || undefined}
+    >
+      {image && imgSrc && (
+        <div class="card-image" data-card-image>
+          {isRemoteImage ? (
+            <img src={imgSrc} alt={imgAlt} loading="lazy" />
+          ) : (
+            <CardImage imgSrc={imgSrc} imgAlt={imgAlt} />
+          )}
+        </div>
+      )}
+      <div class="card-body">
+        <Heading level={headingLevel}>
+          {subtitle && <span class="card-subtitle">{subtitle}</span>}
+          <span class="card-title" data-card-title>
+            {title}
+          </span>
+        </Heading>
+        <div class="card-children">
+          <slot />
+        </div>
+      </div>
+    </a>
+  ) : (
+    <div
+      class:list={["card", { "card--horizontal": horizontal }, className]}
+      style={extraStyles || undefined}
+    >
+      {image && imgSrc && (
+        <div class="card-image" data-card-image>
+          {isRemoteImage ? (
+            <img src={imgSrc} alt={imgAlt} loading="lazy" />
+          ) : (
+            <CardImage imgSrc={imgSrc} imgAlt={imgAlt} />
+          )}
+        </div>
+      )}
+      <div class="card-body">
+        <Heading level={headingLevel}>
+          {subtitle && <span class="card-subtitle">{subtitle}</span>}
+          <span class="card-title" data-card-title>
+            {title}
+          </span>
+        </Heading>
+        <div class="card-children">
+          <slot />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .card {
+    display: block;
+  }
+
+  /* Horizontal: image left / content right at ≥641px (MEDIA_QUERIES.S) */
+  @media only screen and (min-width: 641px) {
+    .card--horizontal [data-card-image] {
+      margin-bottom: 0;
+    }
+
+    .card--horizontal {
+      display: grid;
+      gap: 1rem; /* SPACING.M */
+      grid-template-columns: 18.75rem 1fr;
+    }
+  }
+
+  .card-image {
+    aspect-ratio: 3 / 2;
+    background-color: var(--color-blue-100);
+    border-radius: 4px;
+    margin-bottom: 1rem; /* SPACING.S */
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .card-image img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .card-body :global(h2),
+  .card-body :global(h3) {
+    margin-top: 0;
+  }
+
+  /* LINK_STYLES.description */
+  [data-card-title] {
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    color: var(--color-neutral-400);
+    font-size: 1.125rem;
+  }
+
+  /* TYPOGRAPHY['3XS']: 0.875rem, weight 800, uppercase + neutral-300 */
+  .card-subtitle {
+    color: var(--color-neutral-300);
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 800;
+    margin-bottom: var(--spacing-2xs);
+    text-transform: uppercase;
+  }
+
+  .card-children:not(:empty) {
+    color: var(--color-neutral-300);
+    display: inline-block;
+    margin-top: var(--spacing-xs);
+  }
+</style>

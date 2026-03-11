@@ -1,0 +1,24 @@
+---
+interface LinkProps {
+  as?: keyof HTMLElementTagNameMap;
+  kind?:
+    | 'default'
+    | 'subtle'
+    | 'light'
+    | 'special'
+    | 'special-subtle'
+    | 'list'
+    | 'list-medium'
+    | 'list-strong'
+    | 'description';
+  [key: string]: any;
+}
+
+const { kind = 'default', as = 'a', class: className, ...other }: LinkProps = Astro.props;
+const Tag = as;
+const linkClass = `link-${kind} ${className || ''}`;
+---
+
+<Tag class={linkClass} {...other}>
+  <slot />
+</Tag>
