@@ -2,18 +2,19 @@
 /**
  * News Template
  */
-import TemplateLayout from '../components/TemplateLayout.astro';
-import Template from '../components/Template.astro';
-import TemplateContent from '../components/TemplateContent.astro';
-import TemplateSide from '../components/TemplateSide.astro';
-import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
-import Panels from '../components/panels/Panels.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
-import Share from '../components/Share.astro';
+import DrupalImage from '../components/DrupalImage.astro';
 import Heading from '../reusable/heading.astro';
 import Html from '../components/Html.astro';
-import DrupalImage from '../components/DrupalImage.astro';
+import Link from '../reusable/link.astro';
+import Panels from '../components/panels/Panels.astro';
+import Share from '../components/Share.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateLayout from '../components/TemplateLayout.astro';
+import TemplateSide from '../components/TemplateSide.astro';
 
 interface Props {
   node: any;
@@ -154,14 +155,14 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
       <div class="stay-in-know-section">
         <h2 class="stay-in-know-heading">Stay in the know</h2>
         <p>
-          <a 
+          <Link 
             href={newsEmailSignUpURL}
             class="email-signup-link"
             target="_blank"
             rel="noopener noreferrer"
           >
             Sign up for email updates
-          </a>
+        </Link>
         </p>
       </div>
     </TemplateSide>
