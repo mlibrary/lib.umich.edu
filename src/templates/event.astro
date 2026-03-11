@@ -1,5 +1,20 @@
 ---
 import BasicTemplate from './basic.astro';
-const props = Astro.props;
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Layout from '../layouts/Layout.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import Heading from '../reusable/Heading.astro';
+
+const {field_title_context: fieldTitleContext, fields} = Astro.props;
 ---
-<BasicTemplate {...props} />
+<Layout>
+    <div class="margins">
+        <Breadcrumb data={fields.breadcrumb} />
+    </div>
+    <Template asideWidth="25rem">
+        <TemplateContent>
+            <Heading level={1} size="3XL">{fieldTitleContext}</Heading>
+        </TemplateContent>
+    </Template>
+</Layout>
