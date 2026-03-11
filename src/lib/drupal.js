@@ -489,6 +489,52 @@ export const fetchNewsLandingPageSlug = async () => {
   return page?.attributes?.path?.alias || null;
 };
 
+/**
+ * Build-time in-memory cache for media entity lookups.
+ * Persists across all pages in a single build so each UUID is only fetched once.
+ */
+const mediaEntityCache = new Map();
+
+/**
+ * Fetch a media entity by UUID from Drupal JSON:API.
+ * Tries known media bundles (image, remote_video, file) in order.
+ * Uses a plain fetch with a short timeout — NOT fetchWithRetry — because
+ * a 404 (wrong bundle) should simply try the next bundle immediately, not be retried.
+ * Results are cached for the duration of the build.
+ */
+export const fetchMediaEntity = async (uuid) => {
+  if (mediaEntityCache.has(uuid)) {
+    return mediaEntityCache.get(uuid);
+  }
+
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  for (const bundle of ['image', 'remote_video', 'file']) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, 5000);
+      const response = await fetch(
+        `${baseUrl}/jsonapi/media/${bundle}/${uuid}?include=field_media_image,field_media_file`,
+        { signal: controller.signal }
+      );
+      clearTimeout(timeoutId);
+      if (response.ok) {
+        const result = await response.json();
+        if (result?.data) {
+          mediaEntityCache.set(uuid, result);
+          return result;
+        }
+      }
+    } catch {
+      // Timeout or network error — try next bundle
+    }
+  }
+
+  mediaEntityCache.set(uuid, null);
+  return null;
+};
+
 export {
   DRUPAL_URL,
   removeTrailingSlash,
