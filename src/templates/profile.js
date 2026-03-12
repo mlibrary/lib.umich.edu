@@ -14,6 +14,142 @@ import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 import StaffPhotoPlaceholder from '../components/staff-photo-placeholder';
 
+const ProfileHeader = ({
+  field_user_display_name,
+  field_user_work_title,
+  relationships
+}) => {
+  const { field_user_department } = relationships;
+  const depts = [...field_user_department].reverse();
+
+  return (
+    <React.Fragment>
+      <Heading
+        size='3XL'
+        level={1}
+        css={{
+          marginBottom: SPACING.XS
+        }}
+      >
+        {field_user_display_name}
+      </Heading>
+      {field_user_work_title && <Text lede>{field_user_work_title}</Text>}
+      {depts && depts.map((department, index) => {
+        return (
+          <span key={index}>
+            {index > 0 && ' · '}
+            <Link to={department.path.alias}>
+              {department.field_title_context}
+            </Link>
+          </span>
+        );
+      })}
+    </React.Fragment>
+  );
+};
+
+ProfileHeader.propTypes = {
+  field_user_display_name: PropTypes.any,
+  field_user_work_title: PropTypes.any,
+  relationships: PropTypes.shape({
+    field_user_department: PropTypes.any
+  })
+};
+
+const SocialLink = ({ to, icon, label }) => {
+  return (
+    <a
+      href={to}
+      css={{
+        color: 'var(--color-neutral-300)'
+      }}
+    >
+      <Icon icon={icon} size={24} />
+      <span className='visually-hidden'>{label}</span>
+    </a>
+  );
+};
+
+SocialLink.propTypes = {
+  icon: PropTypes.any,
+  label: PropTypes.any,
+  to: PropTypes.any
+};
+
+const SocialLinks = ({
+  field_linkedin,
+  field_facebook,
+  field_instagram,
+  field_bluesky,
+  field_twitter
+}) => {
+  const links = [
+    field_linkedin,
+    field_facebook,
+    field_instagram,
+    field_bluesky,
+    field_twitter
+  ].filter((linkItem) => {
+    return linkItem && linkItem.uri;
+  });
+
+  if (links.length === 0) {
+    return null;
+  }
+
+  return (
+    <div
+      css={{
+        '> a': {
+          ':not(:last-of-type)': {
+            marginRight: SPACING.S
+          },
+          display: 'inline-block',
+          marginTop: SPACING.S
+        }
+      }}
+    >
+      {links.map((sl) => {
+        // User__userField_linkedin -> linkedin
+        // eslint-disable-next-line no-underscore-dangle
+        const icon = sl.__typename.substr(16);
+        return <SocialLink to={sl.uri} icon={icon} label={icon} key={sl.uri} />;
+      })}
+    </div>
+  );
+};
+
+SocialLinks.propTypes = {
+  field_bluesky: PropTypes.any,
+  field_facebook: PropTypes.any,
+  field_instagram: PropTypes.any,
+  field_linkedin: PropTypes.any,
+  field_twitter: PropTypes.any
+};
+
+const MailingAddress = ({
+  address_line1,
+  locality,
+  administrative_area,
+  postal_code
+}) => {
+  return (
+    <React.Fragment>
+      <Text>{address_line1}</Text>
+      <Text>
+        {locality}, {administrative_area} {postal_code}
+      </Text>
+    </React.Fragment>
+  );
+};
+
+MailingAddress.propTypes = {
+  address_line1: PropTypes.any,
+  administrative_area: PropTypes.any,
+  locality: PropTypes.any,
+  postal_code: PropTypes.any
+};
+
 const ProfileTemplate = ({ data }) => {
   const {
     field_user_display_name,
@@ -439,142 +575,6 @@ ProfileTemplate.propTypes = {
       office: PropTypes.any
     })
   })
-};
-
-const ProfileHeader = ({
-  field_user_display_name,
-  field_user_work_title,
-  relationships
-}) => {
-  const { field_user_department } = relationships;
-  const depts = [...field_user_department].reverse();
-
-  return (
-    <React.Fragment>
-      <Heading
-        size='3XL'
-        level={1}
-        css={{
-          marginBottom: SPACING.XS
-        }}
-      >
-        {field_user_display_name}
-      </Heading>
-      {field_user_work_title && <Text lede>{field_user_work_title}</Text>}
-      {depts && depts.map((department, index) => {
-        return (
-          <span key={index}>
-            {index > 0 && ' · '}
-            <Link to={department.path.alias}>
-              {department.field_title_context}
-            </Link>
-          </span>
-        );
-      })}
-    </React.Fragment>
-  );
-};
-
-ProfileHeader.propTypes = {
-  field_user_display_name: PropTypes.any,
-  field_user_work_title: PropTypes.any,
-  relationships: PropTypes.shape({
-    field_user_department: PropTypes.any
-  })
-};
-
-const SocialLinks = ({
-  field_linkedin,
-  field_facebook,
-  field_instagram,
-  field_bluesky,
-  field_twitter
-}) => {
-  const links = [
-    field_linkedin,
-    field_facebook,
-    field_instagram,
-    field_bluesky,
-    field_twitter
-  ].filter((linkItem) => {
-    return linkItem && linkItem.uri;
-  });
-
-  if (links.length === 0) {
-    return null;
-  }
-
-  return (
-    <div
-      css={{
-        '> a': {
-          ':not(:last-of-type)': {
-            marginRight: SPACING.S
-          },
-          display: 'inline-block',
-          marginTop: SPACING.S
-        }
-      }}
-    >
-      {links.map((sl) => {
-        // User__userField_linkedin -> linkedin
-        // eslint-disable-next-line no-underscore-dangle
-        const icon = sl.__typename.substr(16);
-        return <SocialLink to={sl.uri} icon={icon} label={icon} key={sl.uri} />;
-      })}
-    </div>
-  );
-};
-
-SocialLinks.propTypes = {
-  field_bluesky: PropTypes.any,
-  field_facebook: PropTypes.any,
-  field_instagram: PropTypes.any,
-  field_linkedin: PropTypes.any,
-  field_twitter: PropTypes.any
-};
-
-const SocialLink = ({ to, icon, label }) => {
-  return (
-    <a
-      href={to}
-      css={{
-        color: 'var(--color-neutral-300)'
-      }}
-    >
-      <Icon icon={icon} size={24} />
-      <span className='visually-hidden'>{label}</span>
-    </a>
-  );
-};
-
-SocialLink.propTypes = {
-  icon: PropTypes.any,
-  label: PropTypes.any,
-  to: PropTypes.any
-};
-
-const MailingAddress = ({
-  address_line1,
-  locality,
-  administrative_area,
-  postal_code
-}) => {
-  return (
-    <React.Fragment>
-      <Text>{address_line1}</Text>
-      <Text>
-        {locality}, {administrative_area} {postal_code}
-      </Text>
-    </React.Fragment>
-  );
-};
-
-MailingAddress.propTypes = {
-  address_line1: PropTypes.any,
-  administrative_area: PropTypes.any,
-  locality: PropTypes.any,
-  postal_code: PropTypes.any
 };
 
 export default ProfileTemplate;
