@@ -544,7 +544,7 @@ const FindStudySpaceTemplate = ({ data, location }) => {
 
     const stateString = stringifyState(stateObj);
     const to = stateString.length > 0 ? `?${stateString}` : window.location.pathname;
-    navigate(to, { replace: true });
+    navigate(to, { replace: true, state: { preserveScroll: true } });
     setQueryString(stateString.length > 0 ? `?${stateString}` : '');
   }, [selectedCampuses, selectedFeatures, selectedNoiseLevels, showAll]);
 

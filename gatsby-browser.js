@@ -10,18 +10,26 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
    * Find a Specialist searches. Otherwise the
    * focus would change on every key stroke.
    *
-   * Is there a new path?
-   */
+   * We defer via requestAnimationFrame so React 19 concurrent rendering
+   * has time to finish painting the new page's DOM before we query for the H1.
+   *
+   * We use focus({ preventScroll: true }) so the browser doesn't jump to the
+   * heading — scroll position is managed separately by shouldUpdateScroll.
+   * This also prevents the scroll jump on initial hydration that previously
+   * occurred when focus() was called without preventScroll.
+  */
   if (newPath !== oldPath) {
-    const dataPageHeading = document.querySelector('[data-page-heading]');
-    const h1 = document.querySelector('h1');
-    const pageHeading = dataPageHeading ? dataPageHeading : h1;
+    requestAnimationFrame(() => {
+      const dataPageHeading = document.querySelector('[data-page-heading]');
+      const h1 = document.querySelector('h1');
+      const pageHeading = dataPageHeading ? dataPageHeading : h1;
 
-    if (pageHeading) {
-      pageHeading.setAttribute('tabindex', '-1');
-      pageHeading.classList.add('focus');
-      pageHeading.focus();
-    }
+      if (pageHeading) {
+        pageHeading.setAttribute('tabindex', '-1');
+        pageHeading.classList.add('focus');
+        pageHeading.focus({ preventScroll: true });
+      }
+    });
   }
 
   /**
@@ -42,8 +50,33 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
     }
   }
 };
+/**
+ * On initial hydration, prevRouterProps is null — don't override the browser's
+ * restored scroll position. Only scroll to top on actual client-side navigations.
+ * We also let the hash-scroll logic in onRouteUpdate handle anchor links
+ * with the location.hash check, so we return false if there's a hash in the URL.
+ * When a navigation carries state.preserveScroll (e.g. URL-based search pages
+ * like Staff Directory or Find a Specialist), skip the scroll so the page
+ * doesn't jump back to the top on every keystroke.
+ */
 
-export const shouldUpdateScroll = () => {
+export const shouldUpdateScroll = ({ prevRouterProps, routerProps: { location } }) => {
+  if (!prevRouterProps) {
+    console.log('initial load, do not scroll');
+    return false;
+  }
+
+  if (location.hash) {
+    console.log('hash in URL, do not scroll');
+    return false;
+  }
+
+  if (location.state?.preserveScroll) {
+    console.log('preserveScroll flag set, do not scroll');
+    return false;
+  }
+
+  console.log('scroll to top');
   window.scrollTo(0, 0);
   return false;
 };
