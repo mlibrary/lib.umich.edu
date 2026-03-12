@@ -36,92 +36,6 @@ const useSpecialists = () => {
   return useContext(SpecialistsContext);
 };
 
-export default function FindASpecialistTemplate ({ data, location }) {
-  const [initialized, setInitialized] = useState(false);
-  const [specialists, setSpecialists] = useState();
-  const node = data.page;
-  const { body, fields, field_title_context: fieldTitleContext } = node;
-
-  useEffect(() => {
-    if (!initialized) {
-      setInitialized(true);
-      setSpecialists(processSpecialistData({ data }));
-    }
-  }, [initialized, data]);
-
-  return (
-    <TemplateLayout node={node}>
-      <Margins
-        css={{
-          marginBottom: SPACING['2XL']
-        }}
-      >
-        <Breadcrumb data={fields.breadcrumb} />
-        <Heading
-          size='3XL'
-          level={1}
-          css={{
-            marginBottom: SPACING.S
-          }}
-        >
-          {fieldTitleContext}
-        </Heading>
-
-        {body && (
-          <div
-            css={{
-              marginBottom: SPACING.XL
-            }}
-          >
-            <Html html={body.processed} />{' '}
-          </div>
-        )}
-
-        {!initialized && (
-          <div
-            css={{
-              color: 'var(--color-neutral-300)',
-              fontSize: '1.125rem',
-              padding: SPACING.XL
-            }}
-            role='status'
-            aria-live='polite'
-          >
-            Loading Find a Specialist...
-          </div>
-        )}
-
-        {initialized && <FindASpecialist specialists={specialists} location={location} />}
-      </Margins>
-    </TemplateLayout>
-  );
-}
-
-FindASpecialistTemplate.propTypes = {
-  data: PropTypes.shape({
-    page: PropTypes.shape({
-      body: PropTypes.shape({
-        processed: PropTypes.any
-      }),
-      // eslint-disable-next-line camelcase
-      field_title_context: PropTypes.any,
-      fields: PropTypes.shape({
-        breadcrumb: PropTypes.any
-      })
-    })
-  }),
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string
-  })
-};
-
-/* eslint-disable react/prop-types */
-export const Head = ({ data, location }) => {
-  return <SearchEngineOptimization data={data.page} location={location} />;
-};
-/* eslint-enable react/prop-types */
-
 const getCategories = (specialists) => {
   return Array.from(
     new Set(
@@ -135,96 +49,6 @@ const getCategories = (specialists) => {
         .sort()
     )
   );
-};
-
-const FindASpecialist = ({ specialists, location }) => {
-  const urlState = getUrlState(location.search, ['query', 'hs', 'category']);
-  const results = specialists;
-  const initialState = {
-    categories: getCategories(specialists),
-    category: urlState.category,
-    healthSciencesOnly: Boolean(urlState.hs),
-    query: urlState.query ? urlState.query : '',
-    results,
-    specialists,
-    stateString: stringifyState({
-      category: urlState.category,
-      hs: urlState.hs,
-      query: urlState.query
-    })
-  };
-
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case 'setQuery':
-        return {
-          ...state,
-          query: action.query,
-          stateString: stringifyState({
-            category: state.category,
-            hs: state.healthSciencesOnly ? true : null,
-            query: action.query.length > 0 ? action.query : null
-          })
-        };
-      case 'setResults':
-        return {
-          ...state,
-          results: action.results
-        };
-      case 'setHealthSciencesOnly':
-        return {
-          ...state,
-          category: null,
-          healthSciencesOnly: action.healthSciencesOnly,
-          stateString: stringifyState({
-            category: action.healthSciencesOnly ? state.category : null,
-            hs: action.healthSciencesOnly ? true : null,
-            query: state.query.length > 0 ? state.query : null
-          })
-        };
-      case 'setCategory': {
-        const category
-          = action.category === 'All categories' ? null : action.category;
-
-        return {
-          ...state,
-          category,
-          healthSciencesOnly: true,
-          stateString: stringifyState({
-            category,
-            hs: true,
-            query: state.query.length > 0 ? state.query : null
-          })
-        };
-      }
-      case 'clear':
-        return {
-          ...initialState,
-          category: null,
-          healthSciencesOnly: state.healthSciencesOnly,
-          query: ''
-        };
-      default:
-        return state;
-    }
-  };
-
-  return (
-    <SpecialistsProvider intialState={initialState} reducer={reducer}>
-      <SpecialistsURLState location={location} />
-      <SpecialistsSearchIndex />
-      <SpecialistsGoogleTagManager />
-      <SpecialistsSearch />
-      <SpecialistsResults />
-    </SpecialistsProvider>
-  );
-};
-
-FindASpecialist.propTypes = {
-  location: PropTypes.shape({
-    search: PropTypes.string
-  }),
-  specialists: PropTypes.any
 };
 
 const SpecialistsURLState = ({ location }) => {
@@ -311,6 +135,38 @@ const SpecialistsSearchIndex = () => {
   return null;
 };
 
+const SpecialistsGoogleTagManager = () => {
+  const [{ query }] = useSpecialists();
+
+  useGoogleTagManager({
+    eventName: 'findASpecialistSearch',
+    value: query
+  });
+
+  return null;
+};
+
+const SpecialistsCategorySelect = () => {
+  const [{ healthSciencesOnly, category, categories }, dispatch]
+    = useSpecialists();
+
+  if (!healthSciencesOnly) {
+    return null;
+  }
+
+  return (
+    <Select
+      label='Category'
+      name='category'
+      options={['All categories'].concat(categories)}
+      onChange={(event) => {
+        return dispatch({ category: event.target.value, type: 'setCategory' });
+      }}
+      value={category ? category : 'All categories'}
+    />
+  );
+};
+
 const SpecialistsHealthSciencesOnly = () => {
   // eslint-disable-next-line no-warning-comments
   // TODO, replace with dispatch
@@ -337,36 +193,26 @@ const SpecialistsHealthSciencesOnly = () => {
   );
 };
 
-const SpecialistsCategorySelect = () => {
-  const [{ healthSciencesOnly, category, categories }, dispatch]
-    = useSpecialists();
+const filterResults = ({ results, healthSciencesOnly, category }) => {
+  let filteredResults = results;
 
-  if (!healthSciencesOnly) {
-    return null;
+  if (healthSciencesOnly) {
+    filteredResults = filteredResults.filter(
+      (result) => {
+        // eslint-disable-next-line no-undefined
+        return result.category !== undefined;
+      }
+    );
   }
 
-  return (
-    <Select
-      label='Category'
-      name='category'
-      options={['All categories'].concat(categories)}
-      onChange={(event) => {
-        return dispatch({ category: event.target.value, type: 'setCategory' });
-      }}
-      value={category ? category : 'All categories'}
-    />
-  );
-};
-
-const SpecialistsGoogleTagManager = () => {
-  const [{ query }] = useSpecialists();
-
-  useGoogleTagManager({
-    eventName: 'findASpecialistSearch',
-    value: query
-  });
-
-  return null;
+  if (category) {
+    filteredResults = filteredResults.filter(
+      (result) => {
+        return result.category === category;
+      }
+    );
+  }
+  return filteredResults;
 };
 
 const SpecialistsSearch = () => {
@@ -413,28 +259,6 @@ const SpecialistsSearch = () => {
       <SpecialistsHealthSciencesOnly />
     </div>
   );
-};
-
-const filterResults = ({ results, healthSciencesOnly, category }) => {
-  let filteredResults = results;
-
-  if (healthSciencesOnly) {
-    filteredResults = filteredResults.filter(
-      (result) => {
-        // eslint-disable-next-line no-undefined
-        return result.category !== undefined;
-      }
-    );
-  }
-
-  if (category) {
-    filteredResults = filteredResults.filter(
-      (result) => {
-        return result.category === category;
-      }
-    );
-  }
-  return filteredResults;
 };
 
 const SpecialistsResults = () => {
@@ -602,6 +426,182 @@ const SpecialistsResults = () => {
     </React.Fragment>
   );
 };
+
+const FindASpecialist = ({ specialists, location }) => {
+  const urlState = getUrlState(location.search, ['query', 'hs', 'category']);
+  const results = specialists;
+  const initialState = {
+    categories: getCategories(specialists),
+    category: urlState.category,
+    healthSciencesOnly: Boolean(urlState.hs),
+    query: urlState.query ? urlState.query : '',
+    results,
+    specialists,
+    stateString: stringifyState({
+      category: urlState.category,
+      hs: urlState.hs,
+      query: urlState.query
+    })
+  };
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'setQuery':
+        return {
+          ...state,
+          query: action.query,
+          stateString: stringifyState({
+            category: state.category,
+            hs: state.healthSciencesOnly ? true : null,
+            query: action.query.length > 0 ? action.query : null
+          })
+        };
+      case 'setResults':
+        return {
+          ...state,
+          results: action.results
+        };
+      case 'setHealthSciencesOnly':
+        return {
+          ...state,
+          category: null,
+          healthSciencesOnly: action.healthSciencesOnly,
+          stateString: stringifyState({
+            category: action.healthSciencesOnly ? state.category : null,
+            hs: action.healthSciencesOnly ? true : null,
+            query: state.query.length > 0 ? state.query : null
+          })
+        };
+      case 'setCategory': {
+        const category
+          = action.category === 'All categories' ? null : action.category;
+
+        return {
+          ...state,
+          category,
+          healthSciencesOnly: true,
+          stateString: stringifyState({
+            category,
+            hs: true,
+            query: state.query.length > 0 ? state.query : null
+          })
+        };
+      }
+      case 'clear':
+        return {
+          ...initialState,
+          category: null,
+          healthSciencesOnly: state.healthSciencesOnly,
+          query: ''
+        };
+      default:
+        return state;
+    }
+  };
+
+  return (
+    <SpecialistsProvider intialState={initialState} reducer={reducer}>
+      <SpecialistsURLState location={location} />
+      <SpecialistsSearchIndex />
+      <SpecialistsGoogleTagManager />
+      <SpecialistsSearch />
+      <SpecialistsResults />
+    </SpecialistsProvider>
+  );
+};
+
+FindASpecialist.propTypes = {
+  location: PropTypes.shape({
+    search: PropTypes.string
+  }),
+  specialists: PropTypes.any
+};
+
+export default function FindASpecialistTemplate ({ data, location }) {
+  const [initialized, setInitialized] = useState(false);
+  const [specialists, setSpecialists] = useState();
+  const node = data.page;
+  const { body, fields, field_title_context: fieldTitleContext } = node;
+
+  useEffect(() => {
+    if (!initialized) {
+      setInitialized(true);
+      setSpecialists(processSpecialistData({ data }));
+    }
+  }, [initialized, data]);
+
+  return (
+    <TemplateLayout node={node}>
+      <Margins
+        css={{
+          marginBottom: SPACING['2XL']
+        }}
+      >
+        <Breadcrumb data={fields.breadcrumb} />
+        <Heading
+          size='3XL'
+          level={1}
+          css={{
+            marginBottom: SPACING.S
+          }}
+        >
+          {fieldTitleContext}
+        </Heading>
+
+        {body && (
+          <div
+            css={{
+              marginBottom: SPACING.XL
+            }}
+          >
+            <Html html={body.processed} />{' '}
+          </div>
+        )}
+
+        {!initialized && (
+          <div
+            css={{
+              color: 'var(--color-neutral-300)',
+              fontSize: '1.125rem',
+              padding: SPACING.XL
+            }}
+            role='status'
+            aria-live='polite'
+          >
+            Loading Find a Specialist...
+          </div>
+        )}
+
+        {initialized && <FindASpecialist specialists={specialists} location={location} />}
+      </Margins>
+    </TemplateLayout>
+  );
+}
+
+FindASpecialistTemplate.propTypes = {
+  data: PropTypes.shape({
+    page: PropTypes.shape({
+      body: PropTypes.shape({
+        processed: PropTypes.any
+      }),
+      // eslint-disable-next-line camelcase
+      field_title_context: PropTypes.any,
+      fields: PropTypes.shape({
+        breadcrumb: PropTypes.any
+      })
+    })
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string
+  })
+};
+
+/* eslint-disable react/prop-types */
+export const Head = ({ data, location }) => {
+  return <SearchEngineOptimization data={data.page} location={location} />;
+};
+/* eslint-enable react/prop-types */
 
 export const query = graphql`
   fragment specialistsSynonym on Node {

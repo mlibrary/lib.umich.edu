@@ -57,7 +57,6 @@ export default [
       'max-statements': 'off',
       'no-magic-numbers': 'off',
       'no-ternary': 'off',
-      'no-use-before-define': 'off',
       'one-var': ['error', { initialized: 'never' }],
       'react/no-unknown-property': ['error', { ignore: ['css'] }],
       'sort-imports': ['error', { ignoreCase: true }]
