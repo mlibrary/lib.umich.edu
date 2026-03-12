@@ -599,34 +599,6 @@ TextPanel.propTypes = {
   data: PropTypes.object
 };
 
-const PanelStateWrapper = ({ children }) => {
-  const initialState = {
-    weekOffset: 0
-  };
-
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case 'setWeekOffset':
-        return {
-          ...state,
-          weekOffset: action.weekOffset
-        };
-      default:
-        return state;
-    }
-  };
-
-  return (
-    <StateProvider initialState={initialState} reducer={reducer}>
-      {children}
-    </StateProvider>
-  );
-};
-
-PanelStateWrapper.propTypes = {
-  children: PropTypes.any
-};
-
 export default function Panels ({ data }) {
   if (!data) {
     return null;
@@ -671,6 +643,34 @@ export default function Panels ({ data }) {
 
 Panels.propTypes = {
   data: PropTypes.array
+};
+
+const PanelStateWrapper = ({ children }) => {
+  const initialState = {
+    weekOffset: 0
+  };
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'setWeekOffset':
+        return {
+          ...state,
+          weekOffset: action.weekOffset
+        };
+      default:
+        return state;
+    }
+  };
+
+  return (
+    <StateProvider initialState={initialState} reducer={reducer}>
+      {children}
+    </StateProvider>
+  );
+};
+
+PanelStateWrapper.propTypes = {
+  children: PropTypes.any
 };
 
 export { PanelTemplate, PanelList, CardPanel };

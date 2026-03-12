@@ -12,6 +12,30 @@ const linkCSS = {
   paddingRight: SPACING.L
 };
 
+const Link = ({ to, ...other }) => {
+  /*
+   *The check if the href is an internal link.
+   */
+  if (to.startsWith('/')) {
+    return (
+      <GatsbyLink to={to} css={linkCSS}>
+        <LinkContent {...other} />
+      </GatsbyLink>
+    );
+  }
+
+  // A regular anchor link. Probably an external link.
+  return (
+    <a href={to} css={linkCSS}>
+      <LinkContent {...other} />
+    </a>
+  );
+};
+
+Link.propTypes = {
+  to: PropTypes.string
+};
+
 const LinkContent = ({
   // eslint-disable-next-line react/prop-types
   d: data,
@@ -47,30 +71,6 @@ LinkContent.propTypes = {
   children: PropTypes.node,
   data: PropTypes.object,
   icon: PropTypes.string
-};
-
-const Link = ({ to, ...other }) => {
-  /*
-   *The check if the href is an internal link.
-   */
-  if (to.startsWith('/')) {
-    return (
-      <GatsbyLink to={to} css={linkCSS}>
-        <LinkContent {...other} />
-      </GatsbyLink>
-    );
-  }
-
-  // A regular anchor link. Probably an external link.
-  return (
-    <a href={to} css={linkCSS}>
-      <LinkContent {...other} />
-    </a>
-  );
-};
-
-Link.propTypes = {
-  to: PropTypes.string
 };
 
 export default Link;

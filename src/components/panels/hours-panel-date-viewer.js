@@ -50,71 +50,64 @@ const updateWeekOffset = ({
   }
 };
 
-const PreviousNextWeekButton = ({ type, children, ...rest }) => {
-  return (
-    <>
-      <button
-        {...rest}
-        css={{
-          '&:hover': {
-            boxShadow: 'inset 0 -2px var(--color-teal-400);'
-          },
-          boxShadow: 'none',
-          color: 'var(--color-teal-400)',
-          display: 'none',
-          fontWeight: 'bold',
-          gap: SPACING['2XS'],
-          margin: '.5rem 0',
-          [MEDIA_QUERIES.S]: {
-            display: 'flex'
-          }
-        }}
-      >
-        {type === 'previous' && (
-          <Icon
-            width='24px'
-            height='24px'
-            icon='navigate_before'
-          />
-        )}
-        {children}
-        {type === 'next' && (
-          <Icon
-            width='24px'
-            height='24px'
-            icon='navigate_next'
-          />
-        )}
-      </button>
-      <button
-        {...rest}
-        css={{
-          boxShadow: 'none',
-          color: 'var(--color-teal-400)',
-          display: 'flex',
-          fontWeight: 'bold',
-          gap: SPACING['2XS'],
-          margin: '.5rem 0',
-          [MEDIA_QUERIES.S]: {
-            display: 'none'
-          }
-        }}
-      >
-        <Icon
-          width='24px'
-          height='24px'
-          icon={type === 'previous' ? 'navigate_before' : 'navigate_next'}
-        />
-        <span className='visually-hidden'>{children}</span>
-      </button>
-    </>
-  );
-};
+export default function HoursPanelDateViewer () {
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+  const [calendarStatus, setCalendarStatus] = useState('');
 
-PreviousNextWeekButton.propTypes = {
-  children: PropTypes.string,
-  type: PropTypes.string
-};
+  const toggleCalendarVisibility = (event) => {
+    if (event?.key && event.key !== 'Escape') {
+      return;
+    }
+
+    setIsCalendarVisible((prev) => {
+      const newState = !prev;
+      setCalendarStatus(`Calendar ${newState ? 'open' : 'closed'}`);
+      return newState;
+    });
+
+    event?.preventDefault();
+  };
+
+  useEffect(() => {
+    const handleKeydown = (event) => {
+      return toggleCalendarVisibility(event);
+    };
+
+    document.addEventListener('keydown', handleKeydown);
+    return () => {
+      return document.removeEventListener('keydown', handleKeydown);
+    };
+  }, []);
+
+  return (
+    <div
+      css={{
+        background: 'var(--color-teal-100)',
+        borderBottom: '1px solid var(--color-neutral-100)',
+        borderTop: '1px solid var(--color-neutral-100)',
+        marginBottom: SPACING.L,
+        marginTop: SPACING.L,
+        padding: SPACING['2XS'],
+        position: 'sticky',
+        top: '-1px',
+        zIndex: 1
+      }}
+      id='dateViewerBar'
+    >
+      <div
+        aria-live='polite'
+        aria-atomic='true'
+        className='visually-hidden'
+      >
+        {calendarStatus}
+      </div>
+      <HoursPanelNextPrev
+        toggleCalendarVisibility={toggleCalendarVisibility}
+        isCalendarVisible={isCalendarVisible}
+      />
+    </div>
+  );
+}
 
 const CalendarView = ({ isVisible, weekOffset }) => {
   const [currentBrowseDate, setCurrentDate] = useState(new Date());
@@ -503,61 +496,68 @@ HoursPanelNextPrev.propTypes = {
   toggleCalendarVisibility: PropTypes.func.isRequired
 };
 
-export default function HoursPanelDateViewer () {
-  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
-  const [calendarStatus, setCalendarStatus] = useState('');
-
-  const toggleCalendarVisibility = (event) => {
-    if (event?.key && event.key !== 'Escape') {
-      return;
-    }
-
-    setIsCalendarVisible((prev) => {
-      const newState = !prev;
-      setCalendarStatus(`Calendar ${newState ? 'open' : 'closed'}`);
-      return newState;
-    });
-
-    event?.preventDefault();
-  };
-
-  useEffect(() => {
-    const handleKeydown = (event) => {
-      return toggleCalendarVisibility(event);
-    };
-
-    document.addEventListener('keydown', handleKeydown);
-    return () => {
-      return document.removeEventListener('keydown', handleKeydown);
-    };
-  }, []);
-
+const PreviousNextWeekButton = ({ type, children, ...rest }) => {
   return (
-    <div
-      css={{
-        background: 'var(--color-teal-100)',
-        borderBottom: '1px solid var(--color-neutral-100)',
-        borderTop: '1px solid var(--color-neutral-100)',
-        marginBottom: SPACING.L,
-        marginTop: SPACING.L,
-        padding: SPACING['2XS'],
-        position: 'sticky',
-        top: '-1px',
-        zIndex: 1
-      }}
-      id='dateViewerBar'
-    >
-      <div
-        aria-live='polite'
-        aria-atomic='true'
-        className='visually-hidden'
+    <>
+      <button
+        {...rest}
+        css={{
+          '&:hover': {
+            boxShadow: 'inset 0 -2px var(--color-teal-400);'
+          },
+          boxShadow: 'none',
+          color: 'var(--color-teal-400)',
+          display: 'none',
+          fontWeight: 'bold',
+          gap: SPACING['2XS'],
+          margin: '.5rem 0',
+          [MEDIA_QUERIES.S]: {
+            display: 'flex'
+          }
+        }}
       >
-        {calendarStatus}
-      </div>
-      <HoursPanelNextPrev
-        toggleCalendarVisibility={toggleCalendarVisibility}
-        isCalendarVisible={isCalendarVisible}
-      />
-    </div>
+        {type === 'previous' && (
+          <Icon
+            width='24px'
+            height='24px'
+            icon='navigate_before'
+          />
+        )}
+        {children}
+        {type === 'next' && (
+          <Icon
+            width='24px'
+            height='24px'
+            icon='navigate_next'
+          />
+        )}
+      </button>
+      <button
+        {...rest}
+        css={{
+          boxShadow: 'none',
+          color: 'var(--color-teal-400)',
+          display: 'flex',
+          fontWeight: 'bold',
+          gap: SPACING['2XS'],
+          margin: '.5rem 0',
+          [MEDIA_QUERIES.S]: {
+            display: 'none'
+          }
+        }}
+      >
+        <Icon
+          width='24px'
+          height='24px'
+          icon={type === 'previous' ? 'navigate_before' : 'navigate_next'}
+        />
+        <span className='visually-hidden'>{children}</span>
+      </button>
+    </>
   );
-}
+};
+
+PreviousNextWeekButton.propTypes = {
+  children: PropTypes.string,
+  type: PropTypes.string
+};
