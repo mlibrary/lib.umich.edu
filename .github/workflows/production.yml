@@ -87,6 +87,7 @@ jobs:
         if: ${{ failure() }}
         uses: slackapi/slack-github-action@v2.1.1
         with:
+          webhook-type: webhook-trigger
           payload: |
             {
               "url": "https://github.com/mlibrary/lib.umich.edu/actions/runs/${{ github.run_id }}",
