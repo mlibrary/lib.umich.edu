@@ -22,401 +22,6 @@ const cleanQueryStringForLunr = (str) => {
   return query;
 };
 
-const KeyboardControlIntructions = () => {
-  return (
-    <React.Fragment>
-      <Kbd>tab</Kbd>
-      {' '}
-      to navigate,
-      <Kbd>enter</Kbd>
-      {' '}
-      to select,
-      <Kbd>esc</Kbd>
-      {' '}
-      to
-      dismiss
-    </React.Fragment>
-  );
-};
-
-const ResultsSummary = ({ searching, noResults, resultCount }) => {
-  if (noResults || !searching) {
-    return null;
-  }
-
-  const resultText = `${resultCount} result${resultCount > 1 ? 's' : ''}`;
-
-  return (
-    <div className='visually-hidden' role='status'>
-      <span>{resultText}</span>
-    </div>
-  );
-};
-
-ResultsSummary.propTypes = {
-  noResults: PropTypes.bool,
-  resultCount: PropTypes.number,
-  searching: PropTypes.bool
-};
-
-const Popover = ({ children, error }) => {
-  return (
-    <div
-      css={{
-        ...Z_SPACE['16'],
-        background: 'white',
-        border: `solid 1px var(--color-neutral-100)`,
-        borderRadius: '2px',
-        maxHeight: '70vh',
-        overflow: 'hidden',
-        overflowY: 'auto',
-        position: 'absolute',
-        right: 0,
-        top: 'calc(44px + 0.25rem)',
-        width: '100%',
-        zIndex: '999',
-        [HEADER_MEDIA_QUERIES.LARGESCREEN]: {
-          width: 'calc(100% + 12rem)'
-        }
-      }}
-    >
-      <div
-        css={{
-          borderBottom: `solid 1px`,
-          borderBottomColor: 'var(--color-neutral-100)'
-        }}
-      >
-        {error && <Alert intent='error'>{error.error.message}</Alert>}
-        {children}
-      </div>
-    </div>
-  );
-};
-
-Popover.propTypes = {
-  children: PropTypes.node,
-  error: PropTypes.object
-};
-
-const NoResults = ({ query }) => {
-  return (
-    <p
-      css={{
-        color: 'var(--color-neutral-300)',
-        padding: SPACING.L
-      }}
-    >
-      <span
-        css={{
-          color: 'var(--color-neutral-400)',
-          display: 'block',
-          ...TYPOGRAPHY.XS
-        }}
-      >
-        No results found for:
-        {' '}
-        <span
-          css={{
-            fontWeight: '700'
-          }}
-        >
-          {query}
-        </span>
-      </span>
-      <span
-        css={{
-          display: 'block'
-        }}
-      >
-        Try
-        {' '}
-        <Link to='https://search.lib.umich.edu/everything?utm_source=lib-site-search'>
-          Library Search
-        </Link>
-        {' '}
-        for books, articles, and more.
-      </span>
-    </p>
-  );
-};
-
-NoResults.propTypes = {
-  query: PropTypes.string
-};
-
-const LibrarySearchScopeOption = ({ query }) => {
-  return (
-    <a
-      href={`https://search.lib.umich.edu/everything?query=${query}&utm_source=lib-site-search`}
-      css={{
-        ':hover, :focus': {
-          '[data-title]': {
-            textDecoration: 'underline'
-          },
-          background: 'var(--color-teal-100)',
-          borderLeft: `solid 4px var(--color-teal-400)`,
-          outline: 'none',
-          paddingLeft: `calc(${SPACING.L} - 4px)`
-        },
-        alignItems: 'center',
-        borderBottom: `solid 1px var(--color-neutral-100)`,
-        display: 'grid',
-        gridGap: SPACING.S,
-        gridTemplateColumns: 'auto 1fr auto',
-        padding: `${SPACING.M} ${SPACING.L}`
-      }}
-    >
-      <Icon
-        icon='search'
-        size={24}
-        data-site-search-icon
-        css={{
-          color: 'var(--color-neutral-300)',
-          left: SPACING.XS
-        }}
-      />
-      <p
-        data-title
-        css={{
-          ...TYPOGRAPHY.XS,
-          mark: {
-            background: `var(--color-maize-200)!important`,
-            fontWeight: '700'
-          },
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap'
-        }}
-      >
-        <span className='visually-hidden'>Search: </span>
-        {query}
-      </p>
-      <span
-        css={{
-          display: 'inline-block',
-          ...TYPOGRAPHY['3XS'],
-          background: 'var(--color-blue-100)',
-          border: `solid 1px var(--color-neutral-100)`,
-          borderRadius: '4px',
-          padding: `0 ${SPACING['2XS']}`
-        }}
-      >
-        Find materials
-      </span>
-    </a>
-  );
-};
-
-LibrarySearchScopeOption.propTypes = {
-  query: PropTypes.string
-};
-
-/**
- * Renders the value as text but with spans wrapping the
- * matching and non-matching segments of text.
- */
-const HighlightText = ({ query, text }) => {
-  // Escape regexp special characters in `str`
-  const escapeRegexp = (str) => {
-    return String(str).replace(/(?:[.*+?=^!:${}()|[\]/\\])/gu, '\\$1');
-  };
-
-  const chunks = findAll({
-    searchWords: escapeRegexp(query || '').split(/\s+/u),
-    textToHighlight: text
-  });
-
-  const highlightedText = chunks.map((chunk, index) => {
-    const { end, highlight, start } = chunk;
-    const textChunk = text.substr(start, end - start);
-
-    if (highlight) {
-      return <mark key={`highlight-${index}`}>{textChunk}</mark>;
-    }
-    return <React.Fragment key={`text-${index}`}>{textChunk}</React.Fragment>;
-  });
-
-  return highlightedText;
-};
-
-const ResultContent = ({ query, result }) => {
-  return (
-    <React.Fragment>
-      <p>
-        <span
-          data-title
-          css={{
-            ...TYPOGRAPHY.XS,
-            mark: {
-              background: `var(--color-maize-200)!important`,
-              fontWeight: '700'
-            }
-          }}
-        >
-          <HighlightText query={query} text={result.title} />
-        </span>
-        {result.tag && (
-          <span
-            css={{
-              color: 'var(--color-neutral-300)',
-              display: 'inline-block',
-              fontSize: '0.875rem',
-              fontWeight: 'bold',
-              letterSpacing: '0.0875em',
-              marginLeft: SPACING.XS,
-              textTransform: 'uppercase'
-            }}
-          >
-            ● {result.tag}
-          </span>
-        )}
-      </p>
-      {result.summary && (
-        <p
-          css={{
-            WebkitBoxOrient: 'vertical',
-            WebkitLineClamp: 2,
-            color: 'var(--color-neutral-300)',
-            display: '-webkit-box',
-            mark: {
-              background: 'none',
-              fontWeight: '600'
-            },
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
-          }}
-        >
-          <HighlightText query={query} text={result.summary} />
-        </p>
-      )}
-    </React.Fragment>
-  );
-};
-
-ResultContent.propTypes = {
-  query: PropTypes.string,
-  result: PropTypes.object
-};
-
-const ResultsList = ({ searching, noResults, results, query, error }) => {
-  // If you're not searching, don't show anything.
-  if (!searching) {
-    return null;
-  }
-
-  if (noResults) {
-    return (
-      <Popover error={error}>
-        <NoResults query={query} />
-      </Popover>
-    );
-  }
-
-  return (
-    <Popover error={error}>
-      <p
-        css={{
-          background: 'var(--color-blue-100)',
-          borderBottom: `solid 1px var(--color-neutral-100)`,
-          color: 'var(--color-neutral-300)',
-          padding: `${SPACING.S} ${SPACING.L}`
-        }}
-        aria-hidden='true'
-        data-site-search-keyboard-instructions
-      >
-        <KeyboardControlIntructions />
-      </p>
-      <ol>
-        <li>
-          <LibrarySearchScopeOption query={query} />
-        </li>
-        {results.slice(0, 100).map((result, index) => {
-          return (
-            <li
-              key={index}
-              value={result.title}
-              css={{
-                ':not(:last-child)': {
-                  borderBottom: `solid 1px var(--color-neutral-100)`
-                }
-              }}
-            >
-              <GatsbyLink
-                to={`/${result.slug}`}
-                css={{
-                  ':hover, :focus': {
-                    '[data-title]': {
-                      textDecoration: 'underline'
-                    },
-                    background: 'var(--color-teal-100)',
-                    borderLeft: `solid 4px var(--color-teal-400)`,
-                    outline: 'none',
-                    paddingLeft: `calc(${SPACING.L} - 4px)`
-                  },
-                  display: 'block',
-                  padding: `${SPACING.M} ${SPACING.L}`
-                }}
-                onClick={() => {
-                  if (document.body.classList.contains('stop-scroll')) {
-                    document.body.classList.remove('stop-scroll');
-                  }
-                }}
-              >
-                <ResultContent query={query} result={result} />
-              </GatsbyLink>
-            </li>
-          );
-        })}
-      </ol>
-    </Popover>
-  );
-};
-
-ResultsList.propTypes = {
-  error: PropTypes.string,
-  noResults: PropTypes.bool,
-  query: PropTypes.string,
-  results: PropTypes.array,
-  searching: PropTypes.bool
-};
-
-const ResultsContainer = ({ results, query, error, openResults }) => {
-  const searching = query.length > 0;
-  const noResults = searching && results.length === 0;
-
-  /*
-   * Do not render results, if user just hit ESC.
-   * This is reset when the query changes.
-   */
-  if (!openResults) {
-    return null;
-  }
-
-  return (
-    <React.Fragment>
-      <ResultsSummary
-        searching={searching}
-        noResults={noResults}
-        resultCount={results.length}
-      />
-      <ResultsList
-        searching={searching}
-        noResults={noResults}
-        results={results}
-        query={query}
-        error={error}
-      />
-    </React.Fragment>
-  );
-};
-
-ResultsContainer.propTypes = {
-  error: PropTypes.bool,
-  openResults: PropTypes.array,
-  query: PropTypes.string,
-  results: PropTypes.array
-};
-
 export default function SiteSearch ({ label }) {
   const [query, setQuery] = useState('');
   const [error, setError] = useState(null);
@@ -569,4 +174,399 @@ export default function SiteSearch ({ label }) {
 
 SiteSearch.propTypes = {
   label: PropTypes.string
+};
+
+const ResultsSummary = ({ searching, noResults, resultCount }) => {
+  if (noResults || !searching) {
+    return null;
+  }
+
+  const resultText = `${resultCount} result${resultCount > 1 ? 's' : ''}`;
+
+  return (
+    <div className='visually-hidden' role='status'>
+      <span>{resultText}</span>
+    </div>
+  );
+};
+
+ResultsSummary.propTypes = {
+  noResults: PropTypes.bool,
+  resultCount: PropTypes.number,
+  searching: PropTypes.bool
+};
+
+const ResultsContainer = ({ results, query, error, openResults }) => {
+  const searching = query.length > 0;
+  const noResults = searching && results.length === 0;
+
+  /*
+   * Do not render results, if user just hit ESC.
+   * This is reset when the query changes.
+   */
+  if (!openResults) {
+    return null;
+  }
+
+  return (
+    <React.Fragment>
+      <ResultsSummary
+        searching={searching}
+        noResults={noResults}
+        resultCount={results.length}
+      />
+      <ResultsList
+        searching={searching}
+        noResults={noResults}
+        results={results}
+        query={query}
+        error={error}
+      />
+    </React.Fragment>
+  );
+};
+
+ResultsContainer.propTypes = {
+  error: PropTypes.bool,
+  openResults: PropTypes.array,
+  query: PropTypes.string,
+  results: PropTypes.array
+};
+
+const ResultsList = ({ searching, noResults, results, query, error }) => {
+  // If you're not searching, don't show anything.
+  if (!searching) {
+    return null;
+  }
+
+  if (noResults) {
+    return (
+      <Popover error={error}>
+        <NoResults query={query} />
+      </Popover>
+    );
+  }
+
+  return (
+    <Popover error={error}>
+      <p
+        css={{
+          background: 'var(--color-blue-100)',
+          borderBottom: `solid 1px var(--color-neutral-100)`,
+          color: 'var(--color-neutral-300)',
+          padding: `${SPACING.S} ${SPACING.L}`
+        }}
+        aria-hidden='true'
+        data-site-search-keyboard-instructions
+      >
+        <KeyboardControlIntructions />
+      </p>
+      <ol>
+        <li>
+          <LibrarySearchScopeOption query={query} />
+        </li>
+        {results.slice(0, 100).map((result, index) => {
+          return (
+            <li
+              key={index}
+              value={result.title}
+              css={{
+                ':not(:last-child)': {
+                  borderBottom: `solid 1px var(--color-neutral-100)`
+                }
+              }}
+            >
+              <GatsbyLink
+                to={`/${result.slug}`}
+                css={{
+                  ':hover, :focus': {
+                    '[data-title]': {
+                      textDecoration: 'underline'
+                    },
+                    background: 'var(--color-teal-100)',
+                    borderLeft: `solid 4px var(--color-teal-400)`,
+                    outline: 'none',
+                    paddingLeft: `calc(${SPACING.L} - 4px)`
+                  },
+                  display: 'block',
+                  padding: `${SPACING.M} ${SPACING.L}`
+                }}
+                onClick={() => {
+                  if (document.body.classList.contains('stop-scroll')) {
+                    document.body.classList.remove('stop-scroll');
+                  }
+                }}
+              >
+                <ResultContent query={query} result={result} />
+              </GatsbyLink>
+            </li>
+          );
+        })}
+      </ol>
+    </Popover>
+  );
+};
+
+ResultsList.propTypes = {
+  error: PropTypes.string,
+  noResults: PropTypes.bool,
+  query: PropTypes.string,
+  results: PropTypes.array,
+  searching: PropTypes.bool
+};
+
+const KeyboardControlIntructions = () => {
+  return (
+    <React.Fragment>
+      <Kbd>tab</Kbd>
+      {' '}
+      to navigate,
+      <Kbd>enter</Kbd>
+      {' '}
+      to select,
+      <Kbd>esc</Kbd>
+      {' '}
+      to
+      dismiss
+    </React.Fragment>
+  );
+};
+
+const LibrarySearchScopeOption = ({ query }) => {
+  return (
+    <a
+      href={`https://search.lib.umich.edu/everything?query=${query}&utm_source=lib-site-search`}
+      css={{
+        ':hover, :focus': {
+          '[data-title]': {
+            textDecoration: 'underline'
+          },
+          background: 'var(--color-teal-100)',
+          borderLeft: `solid 4px var(--color-teal-400)`,
+          outline: 'none',
+          paddingLeft: `calc(${SPACING.L} - 4px)`
+        },
+        alignItems: 'center',
+        borderBottom: `solid 1px var(--color-neutral-100)`,
+        display: 'grid',
+        gridGap: SPACING.S,
+        gridTemplateColumns: 'auto 1fr auto',
+        padding: `${SPACING.M} ${SPACING.L}`
+      }}
+    >
+      <Icon
+        icon='search'
+        size={24}
+        data-site-search-icon
+        css={{
+          color: 'var(--color-neutral-300)',
+          left: SPACING.XS
+        }}
+      />
+      <p
+        data-title
+        css={{
+          ...TYPOGRAPHY.XS,
+          mark: {
+            background: `var(--color-maize-200)!important`,
+            fontWeight: '700'
+          },
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        <span className='visually-hidden'>Search: </span>
+        {query}
+      </p>
+      <span
+        css={{
+          display: 'inline-block',
+          ...TYPOGRAPHY['3XS'],
+          background: 'var(--color-blue-100)',
+          border: `solid 1px var(--color-neutral-100)`,
+          borderRadius: '4px',
+          padding: `0 ${SPACING['2XS']}`
+        }}
+      >
+        Find materials
+      </span>
+    </a>
+  );
+};
+
+LibrarySearchScopeOption.propTypes = {
+  query: PropTypes.string
+};
+
+const ResultContent = ({ query, result }) => {
+  return (
+    <React.Fragment>
+      <p>
+        <span
+          data-title
+          css={{
+            ...TYPOGRAPHY.XS,
+            mark: {
+              background: `var(--color-maize-200)!important`,
+              fontWeight: '700'
+            }
+          }}
+        >
+          <HighlightText query={query} text={result.title} />
+        </span>
+        {result.tag && (
+          <span
+            css={{
+              color: 'var(--color-neutral-300)',
+              display: 'inline-block',
+              fontSize: '0.875rem',
+              fontWeight: 'bold',
+              letterSpacing: '0.0875em',
+              marginLeft: SPACING.XS,
+              textTransform: 'uppercase'
+            }}
+          >
+            ● {result.tag}
+          </span>
+        )}
+      </p>
+      {result.summary && (
+        <p
+          css={{
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2,
+            color: 'var(--color-neutral-300)',
+            display: '-webkit-box',
+            mark: {
+              background: 'none',
+              fontWeight: '600'
+            },
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}
+        >
+          <HighlightText query={query} text={result.summary} />
+        </p>
+      )}
+    </React.Fragment>
+  );
+};
+
+ResultContent.propTypes = {
+  query: PropTypes.string,
+  result: PropTypes.object
+};
+
+/**
+ * Renders the value as text but with spans wrapping the
+ * matching and non-matching segments of text.
+ */
+const HighlightText = ({ query, text }) => {
+  // Escape regexp special characters in `str`
+  const escapeRegexp = (str) => {
+    return String(str).replace(/(?:[.*+?=^!:${}()|[\]/\\])/gu, '\\$1');
+  };
+
+  const chunks = findAll({
+    searchWords: escapeRegexp(query || '').split(/\s+/u),
+    textToHighlight: text
+  });
+
+  const highlightedText = chunks.map((chunk, index) => {
+    const { end, highlight, start } = chunk;
+    const textChunk = text.substr(start, end - start);
+
+    if (highlight) {
+      return <mark key={`highlight-${index}`}>{textChunk}</mark>;
+    }
+    return <React.Fragment key={`text-${index}`}>{textChunk}</React.Fragment>;
+  });
+
+  return highlightedText;
+};
+
+const NoResults = ({ query }) => {
+  return (
+    <p
+      css={{
+        color: 'var(--color-neutral-300)',
+        padding: SPACING.L
+      }}
+    >
+      <span
+        css={{
+          color: 'var(--color-neutral-400)',
+          display: 'block',
+          ...TYPOGRAPHY.XS
+        }}
+      >
+        No results found for:
+        {' '}
+        <span
+          css={{
+            fontWeight: '700'
+          }}
+        >
+          {query}
+        </span>
+      </span>
+      <span
+        css={{
+          display: 'block'
+        }}
+      >
+        Try
+        {' '}
+        <Link to='https://search.lib.umich.edu/everything?utm_source=lib-site-search'>
+          Library Search
+        </Link>
+        {' '}
+        for books, articles, and more.
+      </span>
+    </p>
+  );
+};
+
+NoResults.propTypes = {
+  query: PropTypes.string
+};
+
+const Popover = ({ children, error }) => {
+  return (
+    <div
+      css={{
+        ...Z_SPACE['16'],
+        background: 'white',
+        border: `solid 1px var(--color-neutral-100)`,
+        borderRadius: '2px',
+        maxHeight: '70vh',
+        overflow: 'hidden',
+        overflowY: 'auto',
+        position: 'absolute',
+        right: 0,
+        top: 'calc(44px + 0.25rem)',
+        width: '100%',
+        zIndex: '999',
+        [HEADER_MEDIA_QUERIES.LARGESCREEN]: {
+          width: 'calc(100% + 12rem)'
+        }
+      }}
+    >
+      <div
+        css={{
+          borderBottom: `solid 1px`,
+          borderBottomColor: 'var(--color-neutral-100)'
+        }}
+      >
+        {error && <Alert intent='error'>{error.error.message}</Alert>}
+        {children}
+      </div>
+    </div>
+  );
+};
+
+Popover.propTypes = {
+  children: PropTypes.node,
+  error: PropTypes.object
 };

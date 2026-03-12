@@ -7,45 +7,6 @@ import Prose from '../components/prose';
 import React from 'react';
 import SearchEngineOptimization from '../components/seo';
 
-const Image = () => {
-  const imageData = useStaticQuery(graphql`
-    {
-      file(relativePath: { eq: "404.png" }) {
-        childImageSharp {
-          gatsbyImageData(width: 920, placeholder: NONE, layout: CONSTRAINED)
-        }
-      }
-    }
-  `);
-
-  return (
-    <div
-      css={{
-        display: 'block',
-        [MEDIA_QUERIES.M]: {
-          float: 'right',
-          margin: SPACING.L,
-          marginBottom: 0,
-          shapeMargin: SPACING.XL,
-          shapeOutside:
-            'polygon(65px 381px, 84px 210px, -18px 211px, -35px 141px, -11px 106px, 103px 115px, 123px 96px, 189px 111px, 262px 27px, 266px -14px, 313px -30px, 427px -29px, 475px 18px, 456px 75px, 458px 177px, 504px 163px, 632px 171px, 632px 225px, 536px 235px, 524px 490px, 44px 491px)',
-          width: '40vw'
-        },
-        [MEDIA_QUERIES.L]: {
-          maxWidth: '38rem',
-          width: '50vw'
-        },
-        marginBottom: SPACING['2XL']
-      }}
-    >
-      <GatsbyImage
-        image={imageData.file.childImageSharp.gatsbyImageData}
-        alt=''
-      />
-    </div>
-  );
-};
-
 const NotFoundPage = () => {
   return (
     <Layout>
@@ -106,6 +67,45 @@ const NotFoundPage = () => {
         </Prose>
       </Margins>
     </Layout>
+  );
+};
+
+const Image = () => {
+  const imageData = useStaticQuery(graphql`
+    {
+      file(relativePath: { eq: "404.png" }) {
+        childImageSharp {
+          gatsbyImageData(width: 920, placeholder: NONE, layout: CONSTRAINED)
+        }
+      }
+    }
+  `);
+
+  return (
+    <div
+      css={{
+        display: 'block',
+        [MEDIA_QUERIES.M]: {
+          float: 'right',
+          margin: SPACING.L,
+          marginBottom: 0,
+          shapeMargin: SPACING.XL,
+          shapeOutside:
+            'polygon(65px 381px, 84px 210px, -18px 211px, -35px 141px, -11px 106px, 103px 115px, 123px 96px, 189px 111px, 262px 27px, 266px -14px, 313px -30px, 427px -29px, 475px 18px, 456px 75px, 458px 177px, 504px 163px, 632px 171px, 632px 225px, 536px 235px, 524px 490px, 44px 491px)',
+          width: '40vw'
+        },
+        [MEDIA_QUERIES.L]: {
+          maxWidth: '38rem',
+          width: '50vw'
+        },
+        marginBottom: SPACING['2XL']
+      }}
+    >
+      <GatsbyImage
+        image={imageData.file.childImageSharp.gatsbyImageData}
+        alt=''
+      />
+    </div>
   );
 };
 

@@ -3,6 +3,26 @@ import Panels from './index';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+export default function GroupPanel ({ data }) {
+  const { field_panel_group_layout: fieldPanelGroupLayout, relationships } = data;
+
+  if (fieldPanelGroupLayout === '50') {
+    const { field_panel_group: fieldPanelGroup } = relationships;
+
+    return (
+      <PanelGroup50Container>
+        <Panels data={fieldPanelGroup} />
+      </PanelGroup50Container>
+    );
+  }
+
+  return null;
+}
+
+GroupPanel.propTypes = {
+  data: PropTypes.object
+};
+
 const PanelGroup50Container = ({ children }) => {
   return (
     <Margins>
@@ -40,24 +60,4 @@ const PanelGroup50Container = ({ children }) => {
 
 PanelGroup50Container.propTypes = {
   children: PropTypes.object
-};
-
-export default function GroupPanel ({ data }) {
-  const { field_panel_group_layout: fieldPanelGroupLayout, relationships } = data;
-
-  if (fieldPanelGroupLayout === '50') {
-    const { field_panel_group: fieldPanelGroup } = relationships;
-
-    return (
-      <PanelGroup50Container>
-        <Panels data={fieldPanelGroup} />
-      </PanelGroup50Container>
-    );
-  }
-
-  return null;
-}
-
-GroupPanel.propTypes = {
-  data: PropTypes.object
 };
