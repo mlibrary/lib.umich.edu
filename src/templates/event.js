@@ -15,6 +15,164 @@ import Share from '../components/share';
 import TemplateLayout from './template-layout';
 import useFloorPlan from '../hooks/use-floor-plan';
 
+const EventTemplate = ({ data }) => {
+  const node = data.event;
+  const { field_title_context: fieldTitleContext, body, fields, relationships } = node;
+  const { slug } = fields;
+  const image
+    = relationships?.field_media_image?.relationships.field_media_image;
+  const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
+  const imageData = image
+    ? image.localFile.childImageSharp.gatsbyImageData
+    : null;
+  const imageCaptionHTML
+    = relationships?.field_media_image?.field_image_caption?.processed;
+  const contact = relationships?.field_library_contact;
+  const eventContacts = relationships?.field_non_library_event_contact;
+  return (
+    <TemplateLayout node={node}>
+      <Margins>
+        <Breadcrumb data={fields.breadcrumb} />
+      </Margins>
+      <Template asideWidth='25rem'>
+        <TemplateContent>
+          <Heading
+            level={1}
+            size='3XL'
+            css={{
+              marginBottom: SPACING.XL,
+              marginTop: SPACING.S
+            }}
+          >
+            {fieldTitleContext}
+          </Heading>
+          <EventMetadata data={node} />
+          {body && <Html html={body.processed} />}
+        </TemplateContent>
+        <TemplateSide
+          css={{
+            '> div': {
+              border: 'none'
+            }
+          }}
+        >
+          {imageData && (
+            <figure
+              css={{
+                marginBottom: SPACING.XL,
+                maxWidth: '38rem'
+              }}
+            >
+              <GatsbyImage
+                image={imageData}
+                css={{
+                  borderRadius: '2px',
+                  width: '100%'
+                }}
+                alt={imageAlt}
+              />
+              {imageCaptionHTML && (
+                <figcaption
+                  css={{
+                    color: 'var(--color-neutral-300)',
+                    paddingTop: SPACING.S
+                  }}
+                >
+                  <Html html={imageCaptionHTML} />
+                </figcaption>
+              )}
+            </figure>
+          )}
+
+          <Share
+            url={`https://www.lib.umich.edu${slug}`}
+            title={fieldTitleContext}
+          />
+
+          {contact && (
+            <>
+              <h2
+                css={{
+                  borderTop: `solid 1px var(--color-neutral-100)`,
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  marginBottom: SPACING['2XS'],
+                  marginTop: SPACING.L,
+                  paddingTop: SPACING.L
+                }}
+              >
+                Library contact
+              </h2>
+              <p>
+                <Link to={`/users/${contact.name}`}>
+                  {contact.field_user_display_name}
+                </Link>
+                {' · '}
+                <a
+                  href={`mailto:${contact.field_user_email}`}
+                  css={{
+                    textDecoration: 'underline'
+                  }}
+                >
+                  {contact.field_user_email}
+                </a>
+              </p>
+            </>
+          )}
+
+          {eventContacts && eventContacts.length > 0 && (
+            <>
+              <h2
+                css={{
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  marginBottom: SPACING['2XS'],
+                  paddingTop: SPACING.L
+                }}
+              >
+                Event contact
+              </h2>
+              {eventContacts.map((eventContact, index) => {
+                return (
+                  <p key={index}>
+                    {`${eventContact.field_first_name} ${eventContact.field_last_name}`}
+                    {' · '}
+                    <a
+                      href={`mailto:${eventContact.field_email}`}
+                      css={{
+                        textDecoration: 'underline'
+                      }}
+                    >
+                      {eventContact.field_email}
+                    </a>
+                  </p>
+                );
+              })}
+            </>
+          )}
+
+          <p
+            css={{
+              borderTop: `solid 1px var(--color-neutral-100)`,
+              marginTop: SPACING.L,
+              paddingTop: SPACING.L
+            }}
+          >
+            Library events are free and open to the public, and we are committed
+            to making them accessible to attendees. If you anticipate needing
+            accommodations to participate, please notify the listed contact with
+            as much notice as possible.
+          </p>
+        </TemplateSide>
+      </Template>
+    </TemplateLayout>
+  );
+};
+
+EventTemplate.propTypes = {
+  data: PropTypes.object
+};
+
 /*
  *Details the events:
  *- Dates and times
@@ -171,164 +329,6 @@ const EventMetadata = ({ data }) => {
 };
 
 EventMetadata.propTypes = {
-  data: PropTypes.object
-};
-
-const EventTemplate = ({ data }) => {
-  const node = data.event;
-  const { field_title_context: fieldTitleContext, body, fields, relationships } = node;
-  const { slug } = fields;
-  const image
-    = relationships?.field_media_image?.relationships.field_media_image;
-  const imageAlt = relationships?.field_media_image?.field_media_image?.alt || '';
-  const imageData = image
-    ? image.localFile.childImageSharp.gatsbyImageData
-    : null;
-  const imageCaptionHTML
-    = relationships?.field_media_image?.field_image_caption?.processed;
-  const contact = relationships?.field_library_contact;
-  const eventContacts = relationships?.field_non_library_event_contact;
-  return (
-    <TemplateLayout node={node}>
-      <Margins>
-        <Breadcrumb data={fields.breadcrumb} />
-      </Margins>
-      <Template asideWidth='25rem'>
-        <TemplateContent>
-          <Heading
-            level={1}
-            size='3XL'
-            css={{
-              marginBottom: SPACING.XL,
-              marginTop: SPACING.S
-            }}
-          >
-            {fieldTitleContext}
-          </Heading>
-          <EventMetadata data={node} />
-          {body && <Html html={body.processed} />}
-        </TemplateContent>
-        <TemplateSide
-          css={{
-            '> div': {
-              border: 'none'
-            }
-          }}
-        >
-          {imageData && (
-            <figure
-              css={{
-                marginBottom: SPACING.XL,
-                maxWidth: '38rem'
-              }}
-            >
-              <GatsbyImage
-                image={imageData}
-                css={{
-                  borderRadius: '2px',
-                  width: '100%'
-                }}
-                alt={imageAlt}
-              />
-              {imageCaptionHTML && (
-                <figcaption
-                  css={{
-                    color: 'var(--color-neutral-300)',
-                    paddingTop: SPACING.S
-                  }}
-                >
-                  <Html html={imageCaptionHTML} />
-                </figcaption>
-              )}
-            </figure>
-          )}
-
-          <Share
-            url={`https://www.lib.umich.edu${slug}`}
-            title={fieldTitleContext}
-          />
-
-          {contact && (
-            <>
-              <h2
-                css={{
-                  borderTop: `solid 1px var(--color-neutral-100)`,
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  marginBottom: SPACING['2XS'],
-                  marginTop: SPACING.L,
-                  paddingTop: SPACING.L
-                }}
-              >
-                Library contact
-              </h2>
-              <p>
-                <Link to={`/users/${contact.name}`}>
-                  {contact.field_user_display_name}
-                </Link>
-                {' · '}
-                <a
-                  href={`mailto:${contact.field_user_email}`}
-                  css={{
-                    textDecoration: 'underline'
-                  }}
-                >
-                  {contact.field_user_email}
-                </a>
-              </p>
-            </>
-          )}
-
-          {eventContacts && eventContacts.length > 0 && (
-            <>
-              <h2
-                css={{
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  marginBottom: SPACING['2XS'],
-                  paddingTop: SPACING.L
-                }}
-              >
-                Event contact
-              </h2>
-              {eventContacts.map((eventContact, index) => {
-                return (
-                  <p key={index}>
-                    {`${eventContact.field_first_name} ${eventContact.field_last_name}`}
-                    {' · '}
-                    <a
-                      href={`mailto:${eventContact.field_email}`}
-                      css={{
-                        textDecoration: 'underline'
-                      }}
-                    >
-                      {eventContact.field_email}
-                    </a>
-                  </p>
-                );
-              })}
-            </>
-          )}
-
-          <p
-            css={{
-              borderTop: `solid 1px var(--color-neutral-100)`,
-              marginTop: SPACING.L,
-              paddingTop: SPACING.L
-            }}
-          >
-            Library events are free and open to the public, and we are committed
-            to making them accessible to attendees. If you anticipate needing
-            accommodations to participate, please notify the listed contact with
-            as much notice as possible.
-          </p>
-        </TemplateSide>
-      </Template>
-    </TemplateLayout>
-  );
-};
-
-EventTemplate.propTypes = {
   data: PropTypes.object
 };
 

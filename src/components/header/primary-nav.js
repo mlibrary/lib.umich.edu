@@ -37,32 +37,353 @@ const useStateValue = () => {
   return useContext(StateContext);
 };
 
-const NoPanelsAreOpen = () => {
+const Nav = ({ items }) => {
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'setOpen':
+        return {
+          ...state,
+          open: action.open
+        };
+      case 'setPanelOpen':
+        return {
+          ...state,
+          panelOpen: action.panelOpen
+        };
+      case 'setMinHeight':
+        return {
+          ...state,
+          minHeight: action.minHeight
+        };
+
+      default:
+        return state;
+    }
+  };
+
+  return (
+    <StateProvider initialState={{ panelOpen: 0 }} reducer={reducer}>
+      <nav aria-label='Main' aria-describedby='main-nav-description'>
+        <p id='main-nav-description' className='visually-hidden'>
+          Expand main navigation buttons to view related content groups and
+          associated links.
+        </p>
+        <ul
+          css={{
+            alignItems: 'stretch',
+            display: 'flex'
+          }}
+        >
+          {items.map(({ text, to, children }, iterator) => {
+            return (
+              <NavPrimaryItem
+                key={iterator + text}
+                text={text}
+                to={to}
+                items={children}
+                i={iterator}
+              />
+            );
+          })}
+        </ul>
+      </nav>
+    </StateProvider>
+  );
+};
+
+Nav.propTypes = {
+  items: PropTypes.array
+};
+
+const NavPrimaryItem = ({
+  text,
+  items,
+  // eslint-disable-next-line react/prop-types
+  i: item
+}) => {
+  const [{ open }, dispatch] = useStateValue();
+  const isOpen = open === item;
+  const primaryNode = useRef();
+
+  const activeStyles = () => {
+    if (isOpen) {
+      return {
+        borderColor: 'var(--color-teal-400)'
+      };
+    }
+    return {};
+  };
+
+  return (
+    <li
+      key={item + text}
+      css={{
+        '> button': {
+          marginRight: SPACING.L
+        },
+        display: 'inline-block'
+      }}
+    >
+      <button
+        onClick={() => {
+          return dispatch({
+            open: isOpen ? null : item,
+            type: 'setOpen'
+          });
+        }}
+        aria-expanded={isOpen}
+        css={{
+          ':hover': {
+            borderColor: 'var(--color-teal-400)'
+          },
+          ...TYPOGRAPHY.XS,
+          borderBottom: `solid 3px transparent`,
+          cursor: 'pointer',
+          display: 'inline-block',
+          height: '100%',
+          paddingBottom: `calc(${SPACING.M} - 3px)`,
+          paddingTop: SPACING.M,
+          ...activeStyles()
+        }}
+        ref={primaryNode}
+      >
+        {text}
+      </button>
+
+      {isOpen && <NavDropdown items={items} primaryNode={primaryNode} />}
+    </li>
+  );
+};
+
+NavPrimaryItem.propTypes = {
+  items: PropTypes.array,
+  iterator: PropTypes.number,
+  text: PropTypes.string
+};
+
+const NavDropdown = ({ items, primaryNode }) => {
+  const [, dispatch] = useStateValue();
+  const dropdownNode = useRef();
+
+  useEffect(() => {
+    const closeDropdown = () => {
+      dispatch({
+        open: null,
+        type: 'setOpen'
+      });
+    };
+
+    const handleClick = (event) => {
+      /*
+       *Double check the node is current.
+       */
+      if (dropdownNode.current) {
+        /*
+         *If the user is clicking the primary nav button
+         *then they're clicking outside, but this button
+         *will handle closing for us. No need to close it
+         *from here.
+         */
+        if (primaryNode.current.contains(event.target)) {
+          return;
+        }
+
+        /*
+         *If the click is outside of the dropdown then
+         *close the dropdown.
+         *
+         *Except if they're click on the primary nav button,
+         *but this case is caught above.
+         */
+        if (!dropdownNode.current.contains(event.target)) {
+          closeDropdown();
+        }
+      }
+    };
+
+    const handleKeydown = (event) => {
+      if (event.keyCode === 27) {
+        // ESC key
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener('mouseup', handleClick);
+    document.addEventListener('keydown', handleKeydown);
+    return () => {
+      document.removeEventListener('mouseup', handleClick);
+      document.removeEventListener('keydown', handleKeydown);
+    };
+  }, [dispatch, primaryNode]);
+
   return (
     <div
       css={{
-        alignItems: 'center',
-        background: 'var(--color-blue-100)',
-        color: 'var(--color-neutral-300)',
-        display: 'flex',
-        height: '100%',
-        justifyContent: 'center',
-        padding: `${SPACING.XL} ${SPACING['2XL']}`,
+        background: 'white',
+        border: `solid 1px var(--color-neutral-100)`,
+        boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
+        left: '0',
         position: 'absolute',
-        right: '0',
-        top: '0',
-        width: `calc(100% - ${dropdownSideWidth})`
+        width: '100%',
+        zIndex: '101'
       }}
+      ref={dropdownNode}
     >
-      <p
-        css={{
-          ...TYPOGRAPHY['2XS']
-        }}
-      >
-        Select an item from the list to see related links.
-      </p>
+      <NavPanel items={items} />
     </div>
   );
+};
+
+NavDropdown.propTypes = {
+  items: PropTypes.array,
+  primaryNode: PropTypes.object
+};
+
+const NavPanel = ({ items }) => {
+  const [{ openPanel, minHeight }, dispatch] = useStateValue();
+
+  const minHeightValue = minHeight > 340 ? minHeight : 340;
+
+  /*
+   * Set panel open to null on "unmount" of the NavPanel.
+   * This is useful so that when opening a different dropdown,
+   * It wont use a previous panel index. It resets.
+   */
+  useEffect(() => {
+    return () => {
+      dispatch({
+        panelOpen: 0,
+        type: 'setPanelOpen'
+      });
+    };
+  }, [openPanel, dispatch]);
+
+  return (
+    <div
+      css={{
+        position: 'relative'
+      }}
+    >
+      <ul
+        css={{
+          borderRight: `solid 1px var(--color-neutral-100)`,
+          minHeight: minHeightValue,
+          padding: `${SPACING.S} 0`,
+          width: dropdownSideWidth
+        }}
+      >
+        {items.map((item, iterator) => {
+          return (
+            <NavPanelItem {...item} i={iterator} key={iterator + item.text} />
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+NavPanel.propTypes = {
+  items: PropTypes.array
+};
+
+const NavPanelItem = ({
+  text,
+  to,
+  description,
+  children,
+  // eslint-disable-next-line react/prop-types
+  i: item
+}) => {
+  const [{ panelOpen }, dispatch] = useStateValue();
+  const isOpen = panelOpen === item;
+  const noPanelsAreOpen = panelOpen === null;
+
+  const activeStyles = () => {
+    if (isOpen) {
+      return {
+        background: 'var(--color-teal-100)',
+        borderColor: 'var(--color-teal-400)'
+      };
+    }
+
+    return {};
+  };
+
+  // Render as a link if no links to show in panel.
+  if (!children) {
+    return (
+      <li>
+        <Link
+          to={to}
+          css={{
+            ':hover .text': LINK_STYLES['list-strong'][':hover'],
+            display: 'block',
+            fontWeight: '800',
+            padding: `${SPACING.S} ${SPACING.L}`
+          }}
+        >
+          <span className='text'>{text}</span>
+        </Link>
+      </li>
+    );
+  }
+
+  return (
+    <li>
+      <button
+        css={{
+          ':hover': {
+            '.text': {
+              ...LINK_STYLES['list-strong'][':hover']
+            },
+            cursor: 'pointer'
+          },
+          alignItems: 'center',
+          borderLeft: 'solid 5px transparent',
+          display: 'flex',
+          justifyContent: 'space-between',
+          padding: `${SPACING.S} ${SPACING.L}`,
+          paddingLeft: `calc(${SPACING.L} - 5px)`,
+          textAlign: 'left',
+          width: '100%',
+          ...activeStyles()
+        }}
+        onClick={() => {
+          return dispatch({
+            panelOpen: panelOpen === item ? null : item,
+            type: 'setPanelOpen'
+          });
+        }}
+        aria-expanded={panelOpen === item}
+      >
+        <span
+          className='text'
+          css={{
+            ...LINK_STYLES['list-strong'],
+            fontSize: '1rem'
+          }}
+        >
+          {text}
+        </span>
+        <Icon icon='navigate_next' />
+      </button>
+      {isOpen && (
+        <NavPanelItemLinks
+          parentItem={{ description, text, to }}
+          items={children}
+        />
+      )}
+      {noPanelsAreOpen && <NoPanelsAreOpen />}
+    </li>
+  );
+};
+
+NavPanelItem.propTypes = {
+  children: PropTypes.array,
+  description: PropTypes.string,
+  iterator: PropTypes.number,
+  text: PropTypes.string,
+  to: PropTypes.string
 };
 
 const NavPanelItemLinks = ({ parentItem, items }) => {
@@ -189,353 +510,32 @@ NavPanelItemLinks.propTypes = {
   parentItem: PropTypes.object
 };
 
-const NavPanelItem = ({
-  text,
-  to,
-  description,
-  children,
-  // eslint-disable-next-line react/prop-types
-  i: item
-}) => {
-  const [{ panelOpen }, dispatch] = useStateValue();
-  const isOpen = panelOpen === item;
-  const noPanelsAreOpen = panelOpen === null;
-
-  const activeStyles = () => {
-    if (isOpen) {
-      return {
-        background: 'var(--color-teal-100)',
-        borderColor: 'var(--color-teal-400)'
-      };
-    }
-
-    return {};
-  };
-
-  // Render as a link if no links to show in panel.
-  if (!children) {
-    return (
-      <li>
-        <Link
-          to={to}
-          css={{
-            ':hover .text': LINK_STYLES['list-strong'][':hover'],
-            display: 'block',
-            fontWeight: '800',
-            padding: `${SPACING.S} ${SPACING.L}`
-          }}
-        >
-          <span className='text'>{text}</span>
-        </Link>
-      </li>
-    );
-  }
-
-  return (
-    <li>
-      <button
-        css={{
-          ':hover': {
-            '.text': {
-              ...LINK_STYLES['list-strong'][':hover']
-            },
-            cursor: 'pointer'
-          },
-          alignItems: 'center',
-          borderLeft: 'solid 5px transparent',
-          display: 'flex',
-          justifyContent: 'space-between',
-          padding: `${SPACING.S} ${SPACING.L}`,
-          paddingLeft: `calc(${SPACING.L} - 5px)`,
-          textAlign: 'left',
-          width: '100%',
-          ...activeStyles()
-        }}
-        onClick={() => {
-          return dispatch({
-            panelOpen: panelOpen === item ? null : item,
-            type: 'setPanelOpen'
-          });
-        }}
-        aria-expanded={panelOpen === item}
-      >
-        <span
-          className='text'
-          css={{
-            ...LINK_STYLES['list-strong'],
-            fontSize: '1rem'
-          }}
-        >
-          {text}
-        </span>
-        <Icon icon='navigate_next' />
-      </button>
-      {isOpen && (
-        <NavPanelItemLinks
-          parentItem={{ description, text, to }}
-          items={children}
-        />
-      )}
-      {noPanelsAreOpen && <NoPanelsAreOpen />}
-    </li>
-  );
-};
-
-NavPanelItem.propTypes = {
-  children: PropTypes.array,
-  description: PropTypes.string,
-  iterator: PropTypes.number,
-  text: PropTypes.string,
-  to: PropTypes.string
-};
-
-const NavPanel = ({ items }) => {
-  const [{ openPanel, minHeight }, dispatch] = useStateValue();
-
-  const minHeightValue = minHeight > 340 ? minHeight : 340;
-
-  /*
-   * Set panel open to null on "unmount" of the NavPanel.
-   * This is useful so that when opening a different dropdown,
-   * It wont use a previous panel index. It resets.
-   */
-  useEffect(() => {
-    return () => {
-      dispatch({
-        panelOpen: 0,
-        type: 'setPanelOpen'
-      });
-    };
-  }, [openPanel, dispatch]);
-
+const NoPanelsAreOpen = () => {
   return (
     <div
       css={{
-        position: 'relative'
-      }}
-    >
-      <ul
-        css={{
-          borderRight: `solid 1px var(--color-neutral-100)`,
-          minHeight: minHeightValue,
-          padding: `${SPACING.S} 0`,
-          width: dropdownSideWidth
-        }}
-      >
-        {items.map((item, iterator) => {
-          return (
-            <NavPanelItem {...item} i={iterator} key={iterator + item.text} />
-          );
-        })}
-      </ul>
-    </div>
-  );
-};
-
-NavPanel.propTypes = {
-  items: PropTypes.array
-};
-
-const NavDropdown = ({ items, primaryNode }) => {
-  const [, dispatch] = useStateValue();
-  const dropdownNode = useRef();
-
-  useEffect(() => {
-    const closeDropdown = () => {
-      dispatch({
-        open: null,
-        type: 'setOpen'
-      });
-    };
-
-    const handleClick = (event) => {
-      /*
-       *Double check the node is current.
-       */
-      if (dropdownNode.current) {
-        /*
-         *If the user is clicking the primary nav button
-         *then they're clicking outside, but this button
-         *will handle closing for us. No need to close it
-         *from here.
-         */
-        if (primaryNode.current.contains(event.target)) {
-          return;
-        }
-
-        /*
-         *If the click is outside of the dropdown then
-         *close the dropdown.
-         *
-         *Except if they're click on the primary nav button,
-         *but this case is caught above.
-         */
-        if (!dropdownNode.current.contains(event.target)) {
-          closeDropdown();
-        }
-      }
-    };
-
-    const handleKeydown = (event) => {
-      if (event.keyCode === 27) {
-        // ESC key
-        closeDropdown();
-      }
-    };
-
-    document.addEventListener('mouseup', handleClick);
-    document.addEventListener('keydown', handleKeydown);
-    return () => {
-      document.removeEventListener('mouseup', handleClick);
-      document.removeEventListener('keydown', handleKeydown);
-    };
-  }, [dispatch, primaryNode]);
-
-  return (
-    <div
-      css={{
-        background: 'white',
-        border: `solid 1px var(--color-neutral-100)`,
-        boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.1)`,
-        left: '0',
+        alignItems: 'center',
+        background: 'var(--color-blue-100)',
+        color: 'var(--color-neutral-300)',
+        display: 'flex',
+        height: '100%',
+        justifyContent: 'center',
+        padding: `${SPACING.XL} ${SPACING['2XL']}`,
         position: 'absolute',
-        width: '100%',
-        zIndex: '101'
+        right: '0',
+        top: '0',
+        width: `calc(100% - ${dropdownSideWidth})`
       }}
-      ref={dropdownNode}
     >
-      <NavPanel items={items} />
+      <p
+        css={{
+          ...TYPOGRAPHY['2XS']
+        }}
+      >
+        Select an item from the list to see related links.
+      </p>
     </div>
   );
-};
-
-NavDropdown.propTypes = {
-  items: PropTypes.array,
-  primaryNode: PropTypes.object
-};
-
-const NavPrimaryItem = ({
-  text,
-  items,
-  // eslint-disable-next-line react/prop-types
-  i: item
-}) => {
-  const [{ open }, dispatch] = useStateValue();
-  const isOpen = open === item;
-  const primaryNode = useRef();
-
-  const activeStyles = () => {
-    if (isOpen) {
-      return {
-        borderColor: 'var(--color-teal-400)'
-      };
-    }
-    return {};
-  };
-
-  return (
-    <li
-      key={item + text}
-      css={{
-        '> button': {
-          marginRight: SPACING.L
-        },
-        display: 'inline-block'
-      }}
-    >
-      <button
-        onClick={() => {
-          return dispatch({
-            open: isOpen ? null : item,
-            type: 'setOpen'
-          });
-        }}
-        aria-expanded={isOpen}
-        css={{
-          ':hover': {
-            borderColor: 'var(--color-teal-400)'
-          },
-          ...TYPOGRAPHY.XS,
-          borderBottom: `solid 3px transparent`,
-          cursor: 'pointer',
-          display: 'inline-block',
-          height: '100%',
-          paddingBottom: `calc(${SPACING.M} - 3px)`,
-          paddingTop: SPACING.M,
-          ...activeStyles()
-        }}
-        ref={primaryNode}
-      >
-        {text}
-      </button>
-
-      {isOpen && <NavDropdown items={items} primaryNode={primaryNode} />}
-    </li>
-  );
-};
-
-NavPrimaryItem.propTypes = {
-  items: PropTypes.array,
-  iterator: PropTypes.number,
-  text: PropTypes.string
-};
-
-const Nav = ({ items }) => {
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case 'setOpen':
-        return {
-          ...state,
-          open: action.open
-        };
-      case 'setPanelOpen':
-        return {
-          ...state,
-          panelOpen: action.panelOpen
-        };
-      case 'setMinHeight':
-        return {
-          ...state,
-          minHeight: action.minHeight
-        };
-
-      default:
-        return state;
-    }
-  };
-
-  return (
-    <StateProvider initialState={{ panelOpen: 0 }} reducer={reducer}>
-      <nav aria-label='Main' aria-describedby='main-nav-description'>
-        <p id='main-nav-description' className='visually-hidden'>
-          Expand main navigation buttons to view related content groups and
-          associated links.
-        </p>
-        <ul
-          css={{
-            alignItems: 'stretch',
-            display: 'flex'
-          }}
-        >
-          {items.map(({ text, to, children }, iterator) => {
-            return (
-              <NavPrimaryItem
-                key={iterator + text}
-                text={text}
-                to={to}
-                items={children}
-                i={iterator}
-              />
-            );
-          })}
-        </ul>
-      </nav>
-    </StateProvider>
-  );
-};
-
-Nav.propTypes = {
-  items: PropTypes.array
 };
 
 export default Nav;

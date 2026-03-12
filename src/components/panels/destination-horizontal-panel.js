@@ -7,6 +7,45 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import useFloorPlan from '../../hooks/use-floor-plan';
 
+export default function DestinationHorizontalPanel ({ data }) {
+  const cards = data.relationships.field_cards.map((card) => {
+    const buildingSlug = getBuildingSlug({ node: card });
+    const parentTitle = getParentTitle({ node: card });
+    const floor = getFloor({ node: card });
+    const imageData = getImage({ node: card });
+    const room = getRoom({ node: card });
+    return {
+      bid: card.relationships.field_room_building.id,
+      buildingSlug,
+      content: <Html html={card.body.processed} />,
+      image: imageData.relationships.field_media_image.localFile.childImageSharp.gatsbyImageData,
+      imageAlt: imageData.field_media_image?.alt,
+      linkDestText: `${parentTitle} ${floor}`,
+      rid: card.relationships.field_floor.id,
+      subtitle: `${parentTitle}, ${floor}, ${room}`,
+      title: card.title
+    };
+  });
+
+  return (
+    <div
+      css={{
+        marginTop: SPACING.XL
+      }}
+    >
+      {cards.map((card, iterator) => {
+        return (
+          <DestinationCard key={`destination-${iterator}`} card={card} />
+        );
+      })}
+    </div>
+  );
+}
+
+DestinationHorizontalPanel.propTypes = {
+  data: PropTypes.object
+};
+
 const DestinationCard = ({ card }) => {
   const floorPlan = useFloorPlan(card.bid, card.rid);
 
@@ -66,43 +105,4 @@ const DestinationCard = ({ card }) => {
 
 DestinationCard.propTypes = {
   card: PropTypes.object
-};
-
-export default function DestinationHorizontalPanel ({ data }) {
-  const cards = data.relationships.field_cards.map((card) => {
-    const buildingSlug = getBuildingSlug({ node: card });
-    const parentTitle = getParentTitle({ node: card });
-    const floor = getFloor({ node: card });
-    const imageData = getImage({ node: card });
-    const room = getRoom({ node: card });
-    return {
-      bid: card.relationships.field_room_building.id,
-      buildingSlug,
-      content: <Html html={card.body.processed} />,
-      image: imageData.relationships.field_media_image.localFile.childImageSharp.gatsbyImageData,
-      imageAlt: imageData.field_media_image?.alt,
-      linkDestText: `${parentTitle} ${floor}`,
-      rid: card.relationships.field_floor.id,
-      subtitle: `${parentTitle}, ${floor}, ${room}`,
-      title: card.title
-    };
-  });
-
-  return (
-    <div
-      css={{
-        marginTop: SPACING.XL
-      }}
-    >
-      {cards.map((card, iterator) => {
-        return (
-          <DestinationCard key={`destination-${iterator}`} card={card} />
-        );
-      })}
-    </div>
-  );
-}
-
-DestinationHorizontalPanel.propTypes = {
-  data: PropTypes.object
 };

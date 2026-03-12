@@ -14,8 +14,7 @@ const getYouTubeVideoId = (url) => {
 
 const getEmbedUrl = (videoId) => {
   const baseParams = new URLSearchParams({
-    // Prevent showing related videos at the end
-    rel: '0'
+    rel: '0' // Prevent showing related videos at the end
   });
 
   if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
@@ -34,6 +33,7 @@ export default function MediaPlayer ({ url }) {
   const videoId = getYouTubeVideoId(url);
 
   if (!videoId) {
+    console.warn(`MediaPlayer: Unable to extract video ID from URL: ${url}`);
     return null;
   }
 

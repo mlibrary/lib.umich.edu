@@ -14,40 +14,6 @@ import Share from '../components/share';
 import TemplateLayout from './template-layout';
 import transformNodePanels from '../utils/transform-node-panels';
 
-const StayInTheKnow = () => {
-  const newsEmailSignUpURL
-    = 'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D';
-
-  return (
-    <>
-      <Heading
-        level={2}
-        size='2XS'
-        css={{
-          borderTop: `solid 1px var(--color-neutral-100)`,
-          fontWeight: '600',
-          marginTop: SPACING.L,
-          paddingTop: SPACING.L
-        }}
-      >
-        Stay in the know
-      </Heading>
-      <Text>
-        {' '}
-        <Link
-          to={newsEmailSignUpURL}
-          css={{
-            display: 'inline-block'
-          }}
-        >
-          Sign up for email updates
-        </Link>
-        {' '}
-      </Text>
-    </>
-  );
-};
-
 const NewsTemplate = ({ data }) => {
   const node = getNode(data);
   const { bodyPanels, fullPanels } = transformNodePanels({ node });
@@ -167,6 +133,40 @@ export const Head = ({ data, location }) => {
 /* eslint-enable react/prop-types */
 
 export default NewsTemplate;
+
+const StayInTheKnow = () => {
+  const newsEmailSignUpURL
+    = 'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D';
+
+  return (
+    <>
+      <Heading
+        level={2}
+        size='2XS'
+        css={{
+          borderTop: `solid 1px var(--color-neutral-100)`,
+          fontWeight: '600',
+          marginTop: SPACING.L,
+          paddingTop: SPACING.L
+        }}
+      >
+        Stay in the know
+      </Heading>
+      <Text>
+        {' '}
+        <Link
+          to={newsEmailSignUpURL}
+          css={{
+            display: 'inline-block'
+          }}
+        >
+          Sign up for email updates
+        </Link>
+        {' '}
+      </Text>
+    </>
+  );
+};
 
 export const query = graphql`
   query ($slug: String!) {
