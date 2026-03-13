@@ -37,6 +37,11 @@ const PanelTemplate = ({ title, children, shaded, headingCss, ...rest }) => {
           borderBottom: shaded ? 'none' : `solid 1px var(--color-neutral-100)`,
           paddingBottom: SPACING['3XL']
         },
+        '[data-aside-layout] + &': {
+          [MEDIA_QUERIES.S]: {
+            paddingTop: '0'
+          }
+        },
         background: shaded ? 'var(--color-blue-100)' : '',
         paddingBottom: SPACING.XL,
         paddingTop: SPACING.XL,
