@@ -11,7 +11,7 @@ export const Template = ({
   const asWidth = asideWidth ? asideWidth : '21rem';
 
   return (
-    <Margins>
+    <Margins data-aside-layout>
       <div
         css={{
           '[data-panel-margins], [data-panel]': {
@@ -32,7 +32,10 @@ export const Template = ({
                   gridTemplateAreas: `"side content"`,
                   gridTemplateColumns: `calc(${asWidth}) 1fr`
                 }),
-            paddingBottom: SPACING['3XL']
+            paddingBottom: SPACING['3XL'],
+            '[data-aside-layout]:has(+ [data-panel]) > &': {
+              paddingBottom: '0'
+            }
           }
         }}
         {...rest}

@@ -33,6 +33,11 @@ const PanelTemplate = ({ title, children, shaded, headingCss, ...rest }) => {
       data-can-be-shaded={shaded}
       data-panel
       css={{
+        '[data-aside-layout] + &': {
+          [MEDIA_QUERIES.S]: {
+            paddingTop: '0'
+          }
+        },
         ':not(:last-of-type)': {
           borderBottom: shaded ? 'none' : `solid 1px var(--color-neutral-100)`,
           paddingBottom: SPACING['3XL']
