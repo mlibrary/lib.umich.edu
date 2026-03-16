@@ -1,12 +1,13 @@
 import React from 'react';
 import { Script } from 'gatsby';
 import SkipLinks from './src/components/skip-links';
+import { GatsbyLink } from 'gatsby';
 
 export const wrapPageElement = ({ element }) => {
   return (
     <>
       <Script src='https://umich.edu/apis/umalerts/umalerts.js' />
-      <Script type='module' src='https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js' />
+      <Script type='module' src='https://cdn.jsdelivr.net/npm/@umich-lib/design-system@latest/dist/umich-lib-components.min.js' />
       <div
         css={{
           display: 'grid',
@@ -16,7 +17,9 @@ export const wrapPageElement = ({ element }) => {
         }}
       >
         <div>
-          <SkipLinks />
+          <m-skip-links>
+            <a href='/site-map'>View site map</a>
+          </m-skip-links>
           <div
             css={{
               backgroundColor: 'var(--color-blue-100)',
