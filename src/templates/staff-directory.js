@@ -80,6 +80,15 @@ const StaffDirectoryResults = ({
       css={{
         tableLayout: 'fixed',
         textAlign: 'left',
+        [tableBreakpoint]: {
+          tableLayout: 'auto'
+        },
+        'tr': {
+          [tableBreakpoint]: {
+            display: 'block',
+            width: '100%'
+          }
+        },
         'tr > *': {
           '& + *': {
             paddingLeft: '2rem',
@@ -97,7 +106,8 @@ const StaffDirectoryResults = ({
           position: 'relative',
           [tableBreakpoint]: {
             display: 'block',
-            padding: '0.5rem 0 0 0'
+            padding: '0.5rem 0 0 0',
+            width: '100%'
           },
           verticalAlign: 'top'
         },
@@ -115,6 +125,9 @@ const StaffDirectoryResults = ({
           }}
         />
       </colgroup>
+      <colgroup span='3'></colgroup>
+      <colgroup span='2'></colgroup>
+      <colgroup span='3'></colgroup>
       <thead
         css={{
           borderBottom: borderStyle,
