@@ -76,6 +76,10 @@ export const TemplateSide = ({ children, contentSide = 'left', ...rest }) => {
                 }),
             paddingBottom: 0
           },
+          '[data-aside-layout]:has(+ [data-panel]) &': {
+            marginBottom: 0,
+            paddingBottom: 0
+          },
           borderBottom: `solid 1px var(--color-neutral-100)`,
           marginBottom: SPACING['2XL'],
           paddingBottom: SPACING['2XL']
