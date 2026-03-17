@@ -17,41 +17,6 @@ const breadcrumbData = [
   }
 ];
 
-const NestLinkedList = ({ data }) => {
-  return (
-    <ol
-      css={{
-        '> li': {
-          breakInside: 'avoid'
-        },
-        listStyleType: 'decimal',
-        marginLeft: SPACING.L
-      }}
-    >
-      {data.map(({ text, to, children }) => {
-        return (
-          <li
-            key={to}
-            css={{
-              margin: SPACING.S,
-              marginLeft: '0'
-            }}
-          >
-            <Link to={to}>{text}</Link>
-            {children && <NestLinkedList data={children} />}
-          </li>
-        );
-      })}
-    </ol>
-  );
-};
-
-NestLinkedList.propTypes = {
-  data: PropTypes.shape({
-    map: PropTypes.func
-  })
-};
-
 export default function SiteMap () {
   const { primary, secondary } = useNavigationData();
 
@@ -127,4 +92,39 @@ export default function SiteMap () {
 
 export const Head = () => {
   return <SearchEngineOptimization data={{ title: 'Site map' }} />;
+};
+
+const NestLinkedList = ({ data }) => {
+  return (
+    <ol
+      css={{
+        '> li': {
+          breakInside: 'avoid'
+        },
+        listStyleType: 'decimal',
+        marginLeft: SPACING.L
+      }}
+    >
+      {data.map(({ text, to, children }) => {
+        return (
+          <li
+            key={to}
+            css={{
+              margin: SPACING.S,
+              marginLeft: '0'
+            }}
+          >
+            <Link to={to}>{text}</Link>
+            {children && <NestLinkedList data={children} />}
+          </li>
+        );
+      })}
+    </ol>
+  );
+};
+
+NestLinkedList.propTypes = {
+  data: PropTypes.shape({
+    map: PropTypes.func
+  })
 };

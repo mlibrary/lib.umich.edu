@@ -23,171 +23,12 @@ const frostCSS = {
   background: 'rgba(255,255,255,0.8)'
 };
 
-/**
- * The background image to the hero is decorative, as it is
- * a background CSS style.
- *
- * But! We want to provide as much of an equitable experience
- * for everyone, so with a11y in mind, we will render
- * a visually hidden image in a figure with the
- * figcaption that is displayed. This will provide context
- * to the caption link that is not available from
- * the background image.
- */
-
-const BackgroundSection = ({ data, children, ...rest }) => {
-  const { field_hero_images: fieldHeroImages } = data.relationships;
-  const screenImage = (orientation) => {
-    return fieldHeroImages
-      .find((node) => {
-        return node.field_orientation === orientation;
-      })
-      .relationships
-      .field_media_image
-      .localFile
-      .childImageSharp
-      .gatsbyImageData
-      .images
-      .fallback
-      .src;
-  };
-
-  return (
-    <section
-      css={{
-        backgroundColor: 'var(--color-neutral-100)',
-        backgroundImage: `url('${screenImage('vertical')}')`,
-        backgroundPosition: 'center top 33%',
-        [MEDIA_QUERIES.M]: {
-          backgroundImage: `url('${screenImage('horizontal')}')`,
-          backgroundPosition: 'center left 20%'
-        },
-        position: 'relative'
-      }}
-      {...rest}
-    >
-      {children}
-    </section>
-  );
-};
-
-BackgroundSection.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.array
-  ]),
-  data: PropTypes.object
-};
-
-const Caption = ({ data }) => {
-  const caption = data.field_caption_text && data.field_caption_text.processed;
-  const altText = data.relationships.field_hero_images[0].field_media_image.alt;
-
-  if (!caption) {
-    return null;
-  }
-
-  return (
-    <div
-      css={{
-        borderRadius: '2px 0 0 0',
-        bottom: '0',
-        padding: `${SPACING['2XS']} ${SPACING.S}`,
-        position: 'absolute',
-        right: '0',
-        ...frostCSS
-      }}
-    >
-      <figure aria-hidden={altText ? 'false' : 'true'}>
-        {altText && (
-          <span className='visually-hidden'>
-            <img alt={altText} />
-          </span>
-        )}
-        {caption && (
-          <figcaption>
-            <Html html={caption} />
-          </figcaption>
-        )}
-      </figure>
-    </div>
-  );
-};
-
-Caption.propTypes = {
-  data: PropTypes.object
-};
-
-const Search = ({ labelId }) => {
-  return (
-    <form
-      action='https://search.lib.umich.edu/everything'
-      method='get'
-      css={{
-        textAlign: 'center',
-        [MEDIA_QUERIES.M]: {
-          textAlign: 'left'
-        }
-      }}
-      role='search'
-      aria-labelledby={labelId}
-    >
-      <label
-        htmlFor='library-search-query'
-        css={{
-          display: 'block',
-          paddingBottom: SPACING.XS
-        }}
-      >
-        Search our
-        {' '}
-        <a href='https://search.lib.umich.edu/catalog?utm_source=lib-home'>
-          catalog
-        </a>
-        ,
-        {' '}
-        <a href='https://search.lib.umich.edu/articles?utm_source=lib-home'>
-          articles
-        </a>
-        , and more
-      </label>
-      <div
-        css={{
-          alignItems: 'flex-end',
-          display: 'flex',
-          input: {
-            height: '40px'
-          }
-        }}
-      >
-        <Input id='library-search-query' type='search' name='query' />
-        <input type='hidden' name='utm_source' value='lib-home' />
-        <Button
-          type='submit'
-          kind='primary'
-          css={{
-            marginLeft: SPACING.XS
-          }}
-        >
-          <Icon icon='search' size={20} />
-          <span className='visually-hidden'>Submit</span>
-        </Button>
-      </div>
-    </form>
-  );
-};
-
-Search.propTypes = {
-  labelId: PropTypes.string
-};
-
 /*
  *We have two types of heros.
  *
  *1. One that puts provides access to Library Search, "lib_search_box"
  *2. A heading and HTML content on an image, "text"
  */
-
 export default function HeroSearchBox ({ data }) {
   const hasFrost = data.field_background === 'white';
   const applyFrostCSS = hasFrost ? frostCSS : {};
@@ -286,4 +127,160 @@ export default function HeroSearchBox ({ data }) {
 
 HeroSearchBox.propTypes = {
   data: PropTypes.object
+};
+/**
+ * The background image to the hero is decorative, as it is
+ * a background CSS style.
+ *
+ * But! We want to provide as much of an equitable experience
+ * for everyone, so with a11y in mind, we will render
+ * a visually hidden image in a figure with the
+ * figcaption that is displayed. This will provide context
+ * to the caption link that is not available from
+ * the background image.
+ */
+const Caption = ({ data }) => {
+  const caption = data.field_caption_text && data.field_caption_text.processed;
+  const altText = data.relationships.field_hero_images[0].field_media_image.alt;
+
+  if (!caption) {
+    return null;
+  }
+
+  return (
+    <div
+      css={{
+        borderRadius: '2px 0 0 0',
+        bottom: '0',
+        padding: `${SPACING['2XS']} ${SPACING.S}`,
+        position: 'absolute',
+        right: '0',
+        ...frostCSS
+      }}
+    >
+      <figure aria-hidden={altText ? 'false' : 'true'}>
+        {altText && (
+          <span className='visually-hidden'>
+            <img alt={altText} />
+          </span>
+        )}
+        {caption && (
+          <figcaption>
+            <Html html={caption} />
+          </figcaption>
+        )}
+      </figure>
+    </div>
+  );
+};
+
+Caption.propTypes = {
+  data: PropTypes.object
+};
+
+const BackgroundSection = ({ data, children, ...rest }) => {
+  const { field_hero_images: fieldHeroImages } = data.relationships;
+  const screenImage = (orientation) => {
+    return fieldHeroImages
+      .find((node) => {
+        return node.field_orientation === orientation;
+      })
+      .relationships
+      .field_media_image
+      .localFile
+      .childImageSharp
+      .gatsbyImageData
+      .images
+      .fallback
+      .src;
+  };
+
+  return (
+    <section
+      css={{
+        backgroundColor: 'var(--color-neutral-100)',
+        backgroundImage: `url('${screenImage('vertical')}')`,
+        backgroundPosition: 'center top 33%',
+        [MEDIA_QUERIES.M]: {
+          backgroundImage: `url('${screenImage('horizontal')}')`,
+          backgroundPosition: 'center left 20%'
+        },
+        position: 'relative'
+      }}
+      {...rest}
+    >
+      {children}
+    </section>
+  );
+};
+
+BackgroundSection.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array
+  ]),
+  data: PropTypes.object
+};
+
+const Search = ({ labelId }) => {
+  return (
+    <form
+      action='https://search.lib.umich.edu/everything'
+      method='get'
+      css={{
+        textAlign: 'center',
+        [MEDIA_QUERIES.M]: {
+          textAlign: 'left'
+        }
+      }}
+      role='search'
+      aria-labelledby={labelId}
+    >
+      <label
+        htmlFor='library-search-query'
+        css={{
+          display: 'block',
+          paddingBottom: SPACING.XS
+        }}
+      >
+        Search our
+        {' '}
+        <a href='https://search.lib.umich.edu/catalog?utm_source=lib-home'>
+          catalog
+        </a>
+        ,
+        {' '}
+        <a href='https://search.lib.umich.edu/articles?utm_source=lib-home'>
+          articles
+        </a>
+        , and more
+      </label>
+      <div
+        css={{
+          alignItems: 'flex-end',
+          display: 'flex',
+          input: {
+            height: '40px'
+          }
+        }}
+      >
+        <Input id='library-search-query' type='search' name='query' />
+        <input type='hidden' name='utm_source' value='lib-home' />
+        <Button
+          type='submit'
+          kind='primary'
+          css={{
+            marginLeft: SPACING.XS
+          }}
+        >
+          <Icon icon='search' size={20} />
+          <span className='visually-hidden'>Submit</span>
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+Search.propTypes = {
+  labelId: PropTypes.string
 };
