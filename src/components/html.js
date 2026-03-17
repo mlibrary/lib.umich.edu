@@ -1,6 +1,6 @@
 /* eslint-disable id-length */
 import * as prod from 'react/jsx-runtime';
-import { Heading, List, Text } from '../reusable';
+import { Heading, LINK_STYLES, List, Text } from '../reusable';
 import React, { createElement, Fragment } from 'react';
 import Blockquote from '../reusable/blockquote';
 import Callout from '../reusable/callout';
@@ -68,9 +68,39 @@ Heading6.propTypes = {
   children: PropTypes.any
 };
 
+/**
+ * Renders bookmarklet-style `javascript:` hrefs by setting the href
+ * imperatively after mount, since React 19 blocks javascript: URLs
+ * passed as JSX props (security precaution against XSS).
+ * This is safe here because content originates from our trusted CMS.
+ * It might make sense to move this to a separate component if we
+ * need to support bookmarklets in other contexts. For now, this'll do.
+ */
+const BookmarkletLink = ({ children, href }) => {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current.setAttribute('href', href);
+    }
+  }, [href]);
+  return <a ref={ref} css={{ ...LINK_STYLES.default }}>{children}</a>;
+};
+
+BookmarkletLink.propTypes = {
+  children: PropTypes.any,
+  href: PropTypes.string
+};
+
 const components = {
   a: ({ children, href }) => {
-    return (children && href ? <Link to={href}>{children}</Link> : null);
+    if (!children || !href) {
+      return null;
+    }
+    // eslint-disable-next-line no-script-url
+    if (href.startsWith('javascript:')) {
+      return <BookmarkletLink href={href}>{children}</BookmarkletLink>;
+    }
+    return <Link to={href}>{children}</Link>;
   },
   article: () => {
     return null;
