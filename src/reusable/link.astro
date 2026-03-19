@@ -19,6 +19,4 @@ const Tag = as;
 const linkClass = `link-${kind} ${className || ''}`;
 ---
 
-<Tag class={linkClass} {...other}>
-  <slot />
-</Tag>
+<Tag class={linkClass} {...other}><slot /></Tag>

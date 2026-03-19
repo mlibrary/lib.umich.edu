@@ -8,7 +8,8 @@ import {
   fetchDrupalEvents,
   fetchDrupalNews,
   fetchDrupalPages,
-  fetchDrupalSectionPages
+  fetchDrupalSectionPages,
+  fetchFromDrupal
 } from './drupal.js';
 
 /**
@@ -18,16 +19,12 @@ import {
  */
 const fetchDrupalBreadcrumb = async (breadcrumbUrl) => {
   try {
-    const baseUrl = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu';
-    const fullUrl = breadcrumbUrl.startsWith('http') ? breadcrumbUrl : `${baseUrl}${breadcrumbUrl}`;
-
-    const response = await fetch(fullUrl);
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    return data;
+    // Normalize to a relative path for fetchFromDrupal (which has retry + backoff)
+    const baseUrl = (process.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/u, '');
+    const path = breadcrumbUrl.startsWith('http')
+      ? breadcrumbUrl.replace(baseUrl, '')
+      : breadcrumbUrl;
+    return await fetchFromDrupal(path);
   } catch (error) {
     return null;
   }
@@ -544,38 +541,45 @@ export const getPagesToGenerate = async () => {
       return node.relationships.field_design_template;
     });
 
-  // Generate final page data with breadcrumbs
-  const pagesWithBreadcrumbs = await Promise.all(
-    processedNodes.map(async (node) => {
-      const machineName = node.relationships.field_design_template.field_machine_name;
-      const template = getTemplatePath(machineName);
-      const tag = getTag(node, template);
-      const summary = node.attributes.body?.summary || null;
-      const keywords = node.attributes.field_seo_keywords || '';
+  // Generate final page data with breadcrumbs.
+  // Process in batches of 20 to avoid overwhelming Drupal with concurrent requests
+  // (matches the concurrency limit used by the original Gatsby plugin).
+  const BREADCRUMB_BATCH_SIZE = 20;
+  const breadcrumbOptions = {
+    enableDrupalFetching: process.env.ENABLE_DRUPAL_BREADCRUMBS !== 'false',
+    timeout: parseInt(process.env.BREADCRUMB_TIMEOUT || '15000'),
+    fallbackOnly: process.env.BREADCRUMB_FALLBACK_ONLY === 'true'
+  };
 
-      // Await breadcrumb creation since it's now async
-      const breadcrumbOptions = {
-        enableDrupalFetching: process.env.ENABLE_DRUPAL_BREADCRUMBS !== 'false',
-        timeout: parseInt(process.env.BREADCRUMB_TIMEOUT || '15000'), // Increased default
-        fallbackOnly: process.env.BREADCRUMB_FALLBACK_ONLY === 'true'
-      };
-      const breadcrumb = await createBreadcrumb(node, processedNodes, breadcrumbOptions);
+  const pagesWithBreadcrumbs = [];
+  for (let i = 0; i < processedNodes.length; i += BREADCRUMB_BATCH_SIZE) {
+    const batch = processedNodes.slice(i, i + BREADCRUMB_BATCH_SIZE);
+    const batchResults = await Promise.all(
+      batch.map(async (node) => {
+        const machineName = node.relationships.field_design_template.field_machine_name;
+        const template = getTemplatePath(machineName);
+        const tag = getTag(node, template);
+        const summary = node.attributes.body?.summary || null;
+        const keywords = node.attributes.field_seo_keywords || '';
+        const breadcrumb = await createBreadcrumb(node, processedNodes, breadcrumbOptions);
 
-      return {
-        slug: node.slug,
-        node,
-        template,
-        drupal_nid: node.drupal_internal__nid,
-        title: node.title,
-        breadcrumb, // Now contains the awaited breadcrumb result
-        summary,
-        keywords,
-        tag,
-        parents: [],
-        children: []
-      };
-    })
-  );
+        return {
+          slug: node.slug,
+          node,
+          template,
+          drupal_nid: node.drupal_internal__nid,
+          title: node.title,
+          breadcrumb,
+          summary,
+          keywords,
+          tag,
+          parents: [],
+          children: []
+        };
+      })
+    );
+    pagesWithBreadcrumbs.push(...batchResults);
+  }
 
   return pagesWithBreadcrumbs.filter((page) => {
     return page.template !== null;

@@ -20,7 +20,7 @@ let events = [];
 let hasEvents = false;
 
 try {
-  const allEvents = await fetchDrupalEvents();
+  const { data: allEvents } = await fetchDrupalEvents();
   
   // Filter priority events
   const priorityEvents = allEvents.filter(event => 

@@ -1,20 +1,323 @@
 ---
-import BasicTemplate from './basic.astro';
+/**
+ * Event / Exhibit Template
+ * Ported from src/templates/event.js
+ */
 import Breadcrumb from '../components/Breadcrumb.astro';
-import Layout from '../layouts/Layout.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
+import DrupalImage from '../components/DrupalImage.astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Link from '../reusable/link.astro';
+import Share from '../components/Share.astro';
 import Template from '../components/Template.astro';
 import TemplateContent from '../components/TemplateContent.astro';
-import Heading from '../reusable/Heading.astro';
+import TemplateLayout from '../components/TemplateLayout.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import { eventFormatWhen, eventFormatWhere } from '../utils/events.js';
+import createGoogleMapsURL from '../components/utilities/create-google-maps-url.js';
 
-const {field_title_context: fieldTitleContext, fields} = Astro.props;
+interface Props {
+  node: any;
+  drupal_nid: string;
+  title: string;
+  breadcrumb?: string;
+  summary?: string;
+  keywords?: string;
+  tag?: string;
+  parents?: any[];
+  children?: any[];
+}
+
+const {
+  node,
+  title,
+  breadcrumb,
+} = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available');
+}
+
+const attrs = node.attributes;
+const rels = node.relationships;
+
+const fieldTitleContext = attrs.field_title_context;
+const { processed: body } = attrs.body || {};
+const { slug } = node;
+
+// --- Event metadata ---
+const dates = attrs.field_event_date_s_ || [];
+const eventType = rels.field_event_type?.name || '';
+const series = rels.field_event_series?.name || null;
+const registrationLink = attrs.field_registration_link?.uri
+  ? { label: 'Register to attend', to: attrs.field_registration_link.uri }
+  : null;
+
+// Format each occurrence's "When" string (matches Gatsby EventMetadata)
+const when = dates.map((date: any) => {
+  const start = new Date(date.value);
+  const end = new Date(date.end_value);
+  return eventFormatWhen({ end, kind: 'full', start, type: eventType });
+});
+
+// Build a compatible node structure for eventFormatWhere
+const whereNode = {
+  field_event_online: attrs.field_event_online,
+  field_online_event_link: attrs.field_online_event_link || null,
+  field_non_library_location_addre: attrs.field_non_library_location_addre || {},
+  relationships: {
+    field_event_building: rels.field_event_building || null,
+    field_event_room: rels.field_event_room || null,
+  },
+};
+const where = eventFormatWhere({ kind: 'full', node: whereNode });
+
+// Building page link — slug is constructed from path.alias by processDrupalNode
+const buildingSlug = rels.field_event_building?.fields?.slug || null;
+
+// --- Image (resolved by processDrupalNode special handling) ---
+const imageSrc = rels.field_media_image?.imageUrl || null;
+const imageAlt = rels.field_media_image?.imageAlt || '';
+const imageWidth = rels.field_media_image?.imageWidth || 920;
+const imageHeight = rels.field_media_image?.imageHeight || 600;
+const imageCaption = rels.field_media_image?.imageCaption || null;
+
+// --- Contacts ---
+const contact = rels.field_library_contact || null;
+const eventContacts: any[] = Array.isArray(rels.field_non_library_event_contact)
+  ? rels.field_non_library_event_contact
+  : rels.field_non_library_event_contact
+    ? [rels.field_non_library_event_contact]
+    : [];
+
+const shareUrl = `https://www.lib.umich.edu${slug}`;
 ---
-<Layout>
-    <div class="margins">
-        <Breadcrumb data={fields.breadcrumb} />
-    </div>
-    <Template asideWidth="25rem">
-        <TemplateContent>
-            <Heading level={1} size="3XL">{fieldTitleContext}</Heading>
-        </TemplateContent>
-    </Template>
-</Layout>
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <DebugPanel node={node} />
+
+  <div class="margins">
+    <Breadcrumb data={breadcrumb} />
+  </div>
+
+  <Template asideWidth="25rem">
+    <TemplateContent>
+      <Heading
+        level={1}
+        size="3XL"
+        class="event-heading"
+      >
+        {fieldTitleContext}
+      </Heading>
+
+      <!-- Event metadata table (matches Gatsby EventMetadata component) -->
+      <table class="event-metadata">
+        <caption class="visually-hidden">Event details</caption>
+        <tbody>
+          <tr>
+            <th scope="row">When</th>
+            <td class="event-when-cell">
+              {when.map((str: string) => <p>{str}</p>)}
+            </td>
+          </tr>
+
+          {where && where.length > 0 && (
+            <tr>
+              <th scope="row">Where</th>
+              <td class="event-where-cell">
+                {where.map(({ label, href, className }: any) => href
+                  ? <span class={className}><Link href={href}>{label}</Link></span>
+                  : <div class={className}>{label}</div>
+                )}
+                {where.map(({ locality }: any) => locality && (
+                  <Link href={createGoogleMapsURL({ place_id: null, query: locality })}>
+                    View directions
+                  </Link>
+                ))}
+                {buildingSlug && (
+                  <span class="building-link">
+                    <Link href={buildingSlug}>View building information</Link>
+                  </span>
+                )}
+                {/* TODO: "View floor plan" link — requires querying floor_plan nodes
+                    by matching field_room_building + field_floor IDs (Gatsby useFloorPlan hook).
+                    Implement once a fetchDrupalFloorPlans utility is added. */}
+              </td>
+            </tr>
+          )}
+
+          {registrationLink && (
+            <tr>
+              <th scope="row">Registration</th>
+              <td>
+                <Link href={registrationLink.to}>{registrationLink.label}</Link>
+              </td>
+            </tr>
+          )}
+
+          <tr>
+            <th scope="row">Event type</th>
+            <td>{eventType}</td>
+          </tr>
+
+          {series && (
+            <tr>
+              <th scope="row">Series</th>
+              <td>{series}</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      {body && <Html html={body} />}
+    </TemplateContent>
+
+    <TemplateSide>
+      {imageSrc && (
+        <figure class="event-figure">
+          <DrupalImage
+            src={imageSrc}
+            alt={imageAlt}
+            width={imageWidth}
+            height={imageHeight}
+            class="event-image"
+          />
+          {imageCaption && (
+            <figcaption class="event-figcaption">
+              <Html html={imageCaption} />
+            </figcaption>
+          )}
+        </figure>
+      )}
+
+      <Share url={shareUrl} title={fieldTitleContext} />
+
+      {contact && (
+        <div class="event-library-contact">
+          <h2 class="event-contact-heading event-contact-heading--library">Library contact</h2>
+          <p>
+            <Link href={`/users/${contact.name}`}>{contact.field_user_display_name}</Link>
+            {' · '}
+            <a href={`mailto:${contact.field_user_email}`} class="event-contact-email">
+              {contact.field_user_email}
+            </a>
+          </p>
+        </div>
+      )}
+
+      {eventContacts.length > 0 && (
+        <div class="event-non-library-contacts">
+          <h2 class="event-contact-heading">Event contact</h2>
+          {eventContacts.map((ec: any) => (
+            <p>
+              {`${ec.field_first_name} ${ec.field_last_name}`}
+              {' · '}
+              <a href={`mailto:${ec.field_email}`} class="event-contact-email">
+                {ec.field_email}
+              </a>
+            </p>
+          ))}
+        </div>
+      )}
+
+      <p class="event-accessibility-note">
+        Library events are free and open to the public, and we are committed
+        to making them accessible to attendees. If you anticipate needing
+        accommodations to participate, please notify the listed contact with
+        as much notice as possible.
+      </p>
+    </TemplateSide>
+  </Template>
+</TemplateLayout>
+
+<style>
+  /* --- Heading --- */
+  .event-heading {
+    margin-bottom: 2rem;   /* SPACING.XL */
+    margin-top: 0.75rem;   /* SPACING.S */
+  }
+
+  /* --- Metadata table (matches Gatsby EventMetadata css-in-js) --- */
+  .event-metadata {
+    border-collapse: collapse;
+    margin-bottom: 2rem;   /* SPACING.XL */
+    max-width: 38rem;
+    text-align: left;
+    width: 100%;
+  }
+
+  .event-metadata th,
+  .event-metadata td {
+    border-bottom: solid 1px var(--color-neutral-100);
+    padding: 1rem;         /* SPACING.M */
+    padding-left: 0;
+  }
+
+  .event-metadata th {
+    font-size: 0.875rem;   /* TYPOGRAPHY['3XS'] */
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    padding-right: 1rem;   /* SPACING.M */
+    padding-top: 0.75rem;  /* SPACING.S */
+    vertical-align: top;
+    width: 20%;
+  }
+
+  .event-metadata tbody tr:first-child th {
+    padding-top: 0;
+  }
+
+  .event-when-cell p + p {
+    margin-top: 0.5rem;    /* SPACING.XS */
+  }
+
+  .event-where-cell p + p:not(.margin-top-none) {
+    margin-top: 0.5rem;
+  }
+
+  .building-link {
+    display: block;
+  }
+
+  /* --- Sidebar figure --- */
+  .event-figure {
+    margin-bottom: 2rem;   /* SPACING.XL */
+    max-width: 38rem;
+  }
+
+  .event-image {
+    border-radius: 2px;
+    width: 100%;
+  }
+
+  .event-figcaption {
+    color: var(--color-neutral-300);
+    padding-top: 0.75rem;  /* SPACING.S */
+  }
+
+  /* --- Contacts --- */
+  .event-contact-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;  /* SPACING.2XS */
+    padding-top: 1.5rem;     /* SPACING.L */
+  }
+
+  .event-contact-heading--library {
+    border-top: solid 1px var(--color-neutral-100);
+    margin-top: 1.5rem;      /* SPACING.L */
+  }
+
+  .event-contact-email {
+    text-decoration: underline;
+  }
+
+  /* --- Accessibility note --- */
+  .event-accessibility-note {
+    border-top: solid 1px var(--color-neutral-100);
+    margin-top: 1.5rem;      /* SPACING.L */
+    padding-top: 1.5rem;     /* SPACING.L */
+  }
+</style>

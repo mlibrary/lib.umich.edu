@@ -40,8 +40,7 @@ if (!parsedData || parsedData.length === 0) {
           <Link href={to}>{text}</Link>
         ) : (
           <span class="breadcrumb-text">{text}</span>
-        )}
-        {index < parsedData.length - 1 && (
+        )}{index < parsedData.length - 1 && (
           <Icon icon='navigate_next' />
         )}
       </li>
