@@ -389,6 +389,56 @@ export const fetchFromDrupal = async (endpoint) => {
 };
 
 /**
+ * Fetch the path alias of the staff directory page.
+ * Uses a targeted filtered query to avoid fetching all pages.
+ */
+export const fetchStaffDirectorySlug = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  const url = `${baseUrl}/jsonapi/node/page?include=field_design_template&filter[field_design_template.field_machine_name]=staff_directory&fields[node--page]=path&page[limit]=1`;
+  try {
+    const response = await fetchWithRetry(url);
+    return response.data?.[0]?.attributes?.path?.alias || '/staff-directory';
+  } catch {
+    return '/staff-directory';
+  }
+};
+
+/**
+ * Fetch all department nodes from Drupal JSON:API
+ * Matches the departmentFragment relationships: field_department_head (user),
+ * field_media_file (org chart), field_panels, field_design_template
+ */
+export const fetchDrupalDepartments = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  // Department panels only use link and text panels (no card/media sub-fields).
+  // Including field_panels.field_card_template or field_panels.field_cards on
+  // node/department returns a 400 because those fields don't exist on those panel types.
+  const includes = [
+    'field_design_template',
+    'field_department_head',
+    'field_media_file',
+    'field_media_file.field_media_file',
+    'field_panels'
+  ].join(',');
+  const url = `${baseUrl}/jsonapi/node/department?include=${includes}`;
+
+  let allData = [];
+  let allIncluded = [];
+  let nextUrl = url;
+
+  while (nextUrl) {
+    const response = await fetchWithRetry(nextUrl);
+    allData = allData.concat(response.data);
+    if (response.included) {
+      allIncluded = allIncluded.concat(response.included);
+    }
+    nextUrl = response.links?.next?.href || null;
+  }
+
+  return { data: allData, included: allIncluded };
+};
+
+/**
  * Fetch a single node by UUID
  */
 export const fetchDrupalNodeByUuid = async (nodeType, uuid) => {

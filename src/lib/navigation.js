@@ -5,10 +5,24 @@
  * Fetches primary nav (with build-time caching) and finds the branch
  * that matches a given path — used by SideNavigation on basic pages.
  */
-import { fetchPrimaryNav } from './drupal.js';
+import { fetchPrimaryNav, fetchStaffDirectorySlug } from './drupal.js';
 
 /** @type {null | Promise<any[]>} */
 let primaryNavCache = null;
+
+/** @type {null | Promise<string>} */
+let staffDirectorySlugCache = null;
+
+/**
+ * Returns the staff directory page slug, fetching only once per build.
+ * @returns {Promise<string>}
+ */
+export async function getStaffDirectorySlug () {
+  if (!staffDirectorySlugCache) {
+    staffDirectorySlugCache = fetchStaffDirectorySlug();
+  }
+  return staffDirectorySlugCache;
+}
 
 /**
  * Returns the primary nav tree, fetching only once per build.

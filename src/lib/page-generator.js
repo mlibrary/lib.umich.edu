@@ -5,6 +5,7 @@
  */
 import {
   fetchDrupalBuildings,
+  fetchDrupalDepartments,
   fetchDrupalEvents,
   fetchDrupalNews,
   fetchDrupalPages,
@@ -505,10 +506,11 @@ export const processDrupalNode = (node, included = []) => {
  */
 export const getPagesToGenerate = async () => {
   // Fetch all content types from Drupal (like your GraphQL query)
-  const [pages, sections, buildings, news, events] = await Promise.all([
+  const [pages, sections, buildings, departments, news, events] = await Promise.all([
     fetchDrupalPages(),
     fetchDrupalSectionPages(),
     fetchDrupalBuildings(),
+    fetchDrupalDepartments(),
     fetchDrupalNews(),
     fetchDrupalEvents()
   ]);
@@ -518,6 +520,7 @@ export const getPagesToGenerate = async () => {
     ...(pages.data || []),
     ...(sections.data || []),
     ...(buildings.data || []),
+    ...(departments.data || []),
     ...(news.data || []),
     ...(events.data || [])
   ];
@@ -527,6 +530,7 @@ export const getPagesToGenerate = async () => {
     ...(pages.included || []),
     ...(sections.included || []),
     ...(buildings.included || []),
+    ...(departments.included || []),
     ...(news.included || []),
     ...(events.included || [])
   ];

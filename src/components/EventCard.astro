@@ -79,9 +79,11 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
   
   <div class="event-content">
     <Heading level={3} size="S" class="event-heading">
-      <a href={slug} class="event-link">
-        {title}
-      </a>
+      <span class="event-link-container">
+        <a href={slug} class="event-link">
+          {title}
+        </a>
+      </span>
       <span class="event-date">{when}</span>
     </Heading>
     
@@ -153,13 +155,15 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
     margin-bottom: var(--spacing-2xs, 0.5rem);
   }
 
+  .event-link-container {
+        order: 1;
+  }
+
   .event-link {
     box-shadow: inset 0 -1px var(--color-teal-400);
     color: var(--color-neutral-400);
     font-size: 1.125rem;
     font-weight: 600;
-    order: 1;
-    text-decoration: none;
   }
 
   .event-link:hover {

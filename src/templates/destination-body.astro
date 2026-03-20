@@ -1,5 +1,9 @@
 ---
 import BasicTemplate from './basic.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
+
 const props = Astro.props;
 ---
+<Breadcrumb {...props} />
 <BasicTemplate {...props} />
