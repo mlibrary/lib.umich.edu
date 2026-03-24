@@ -134,23 +134,58 @@ export const fetchStaff = async () => {
 };
 
 /**
- * Test function to fetch a specific media entity to understand its structure
+ * Fetch staff profile images from Drupal JSON:API
+ *
+ * Queries media/image entities directly to get image URLs and alt text.
+ * Returns a map of drupal_internal__mid → { url, alt }.
  */
-export const debugMediaEntity = async (mediaId) => {
+export const fetchStaffImages = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  try {
-    // Fetch the specific media entity with all its relationships
-    const url = `${baseUrl}/jsonapi/media/image/${mediaId}?include=field_media_image`;
-    console.log('Fetching media entity:', url);
+  const fields = 'fields[media--image]=drupal_internal__mid,field_media_image&fields[file--file]=uri';
+  const url = `${baseUrl}/jsonapi/media/image?include=field_media_image&${fields}`;
 
-    const response = await fetchWithRetry(url);
-    console.log('Media entity response:', JSON.stringify(response, null, 2));
+  let allData = [];
+  let allIncluded = [];
+  let nextUrl = url;
 
-    return response;
-  } catch (error) {
-    console.error('Error fetching media entity:', error);
-    return null;
+  while (nextUrl) {
+    const response = await fetchWithRetry(nextUrl);
+    allData = allData.concat(response.data || []);
+    if (response.included) {
+      allIncluded = allIncluded.concat(response.included);
+    }
+    nextUrl = response.links?.next?.href || null;
   }
+
+  // Build lookup map for included file entities
+  const includedById = {};
+  for (const item of allIncluded) {
+    includedById[item.id] = item;
+  }
+
+  // Build map of drupal_internal__mid → { url, alt }
+  const staffImages = {};
+  for (const media of allData) {
+    const mid = media.attributes?.drupal_internal__mid;
+    if (!mid) continue;
+
+    // Alt text is stored in the relationship meta (not in media attributes)
+    const alt = media.relationships?.field_media_image?.data?.meta?.alt || '';
+
+    const fileRef = media.relationships?.field_media_image?.data;
+    if (!fileRef) continue;
+
+    const file = includedById[fileRef.id];
+    if (!file) continue;
+
+    const fileUrl = file.attributes?.uri?.url;
+    if (!fileUrl) continue;
+
+    const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${baseUrl}${fileUrl}`;
+    staffImages[String(mid)] = { url: fullUrl, alt };
+  }
+
+  return staffImages;
 };
 
 /**
