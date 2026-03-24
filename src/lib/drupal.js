@@ -220,7 +220,12 @@ export const fetchDrupalPages = async () => {
     'field_panels.field_cards.field_parent_page.field_hours_open',
     // Link panel relationships - include machine name field
     'field_panels.field_panel_group.field_link_template',
-    'field_panels.field_link_template'
+    'field_panels.field_link_template',
+    // Page-level media image (used by collecting-area hero image)
+    'field_media_image',
+    'field_media_image.field_media_image',
+    // Collecting area taxonomy term reference
+    'field_collecting_area'
   ].join(',');
   const url = `${baseUrl}/jsonapi/node/page?include=${includes}&filter[field_redirect_node][value]=0`;
 
