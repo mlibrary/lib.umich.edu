@@ -86,6 +86,7 @@ const StaffDirectoryResults = ({
         'tr': {
           [tableBreakpoint]: {
             display: 'block',
+            paddingBottom: '1rem',
             width: '100%'
           }
         },
