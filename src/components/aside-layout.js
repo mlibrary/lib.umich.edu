@@ -32,10 +32,10 @@ export const Template = ({
                   gridTemplateAreas: `"side content"`,
                   gridTemplateColumns: `calc(${asWidth}) 1fr`
                 }),
-            paddingBottom: SPACING['3XL'],
             '[data-aside-layout]:has(+ [data-panel]) > &': {
               paddingBottom: '0'
-            }
+            },
+            paddingBottom: SPACING['3XL']
           }
         }}
         {...rest}
