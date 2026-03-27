@@ -1,0 +1,74 @@
+---
+/**
+ * PanelTemplate - Reusable panel wrapper
+ * Converted from PanelTemplate in src/components/panels/index.js
+ */
+interface Props {
+  title?: string;
+  shaded?: boolean;
+  headingCss?: Record<string, any>;
+  [key: string]: any;
+}
+
+const { title, shaded = false, headingCss = {}, ...rest } = Astro.props;
+---
+
+<section
+  class:list={["panel", { "panel-shaded": shaded }]}
+  data-can-be-shaded={shaded}
+  data-panel
+  {...rest}
+>
+  <div data-panel-margins class="margins">
+    {
+      title && (
+        <h2
+          class="panel-heading"
+          style={Object.entries(headingCss)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join("; ")}
+        >
+          {title}
+        </h2>
+      )
+    }
+    <slot />
+  </div>
+</section>
+
+<style>
+  .panel:not(:last-of-type) {
+    border-bottom: solid 1px var(--color-neutral-100, #e0e0e0);
+    padding-bottom: 3rem;
+  }
+
+  .panel-shaded {
+    background: var(--color-blue-100, #e8f4f8);
+    border-bottom: none !important;
+  }
+
+  .panel-heading {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-neutral-400);
+  }
+
+  /* .panel{
+    padding: 2rem 0;
+  } */
+
+  @media only screen and (min-width: 641px) {
+    /* .panel{
+      padding: 3rem 0;
+    } */
+  }
+
+  /* Responsive */
+  @media (min-width: 920px) {
+    .panel:not(:last-child) {
+      border: none;
+      border-right: solid 1px var(--color-neutral-100);
+    }
+  }
+</style>

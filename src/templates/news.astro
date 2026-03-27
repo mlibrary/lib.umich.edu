@@ -1,0 +1,238 @@
+---
+/**
+ * News Template
+ */
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
+import DrupalImage from '../components/DrupalImage.astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Link from '../reusable/link.astro';
+import Panels from '../components/panels/Panels.astro';
+import Share from '../components/Share.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateLayout from '../components/TemplateLayout.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+
+interface Props {
+  node: any;
+  drupal_nid: string;
+  title: string;
+  breadcrumb?: string;
+  summary?: string;
+  keywords?: string;
+  tag?: string;
+  parents?: any[];
+  children?: any[];
+}
+
+const { 
+  node,
+  drupal_nid,
+  title,
+  breadcrumb,
+  summary,
+  keywords,
+  tag,
+  parents,
+  children
+} = Astro.props;
+
+// Check if we have node data
+if (!node) {
+  throw new Error('No node data available');
+}
+
+// Extract fields (matches Gatsby destructuring from getNode)
+const {
+  relationships,
+} = node;
+
+const { slug } = relationships;
+const { processed: body } = node.attributes.body || {};
+const { field_title_context: fieldTitleContext, created } = node.attributes;
+
+// Use the breadcrumb prop if available, otherwise generate one
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { 
+      title: fieldTitleContext || title || 'News', 
+      slug: relationships?.slug || Astro.url.pathname 
+    },
+    parents || []
+  );
+}
+
+// Extract panels (matches transformNodePanels from Gatsby)
+let bodyPanels = [];
+let fullPanels = [];
+if (node.relationships && node.relationships.field_panels) {
+  const panels = node.relationships.field_panels;
+  bodyPanels = panels.filter((panel: any) => panel.field_placement === 'body');
+  fullPanels = panels.filter((panel: any) => panel.field_placement !== 'body');
+}
+
+// Extract image data — page-generator resolves these as flat fields on field_media_image
+const imageRelationship = relationships?.field_media_image;
+const imageSrc = imageRelationship?.imageUrl || null;
+const imageAlt = imageRelationship?.imageAlt || '';
+const imageWidth = imageRelationship?.imageWidth;
+const imageHeight = imageRelationship?.imageHeight;
+const imageCaption = imageRelationship?.imageCaption || null;
+
+// Format date (matches Gatsby date formatting)
+let formattedDate = null;
+if (created) {
+  const date = new Date(created);
+  formattedDate = date.toLocaleDateString('en-us', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+const newsEmailSignUpURL = 'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D';
+const shareUrl = `https://www.lib.umich.edu${slug}`;
+---
+
+<!-- 
+  News Template Layout Structure (matching Gatsby)
+  Uses aside layout with 25rem sidebar
+-->
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <DebugPanel node={node}></DebugPanel>
+  
+  <div class="margins">
+    <Breadcrumb data={breadcrumbData} />
+  </div>
+  
+  <Template asideWidth="25rem">
+    <TemplateContent>
+      <Heading level={1} class="news-heading" size="3XL">
+        {fieldTitleContext}
+        {formattedDate && (
+          <p class="news-date">
+            {formattedDate}
+          </p>
+        )}
+      </Heading>
+      
+      {body && (
+        <Html html={body} />
+      )}
+      
+      {bodyPanels && bodyPanels.length > 0 && (
+        <div class="body-panels">
+          <Panels data={bodyPanels} />
+        </div>
+      )}
+    </TemplateContent>
+    
+    <TemplateSide class="news-template-side">
+      {imageSrc && (
+        <figure class="news-image-figure">
+          <DrupalImage
+            src={imageSrc}
+            alt={imageAlt}
+            width={imageWidth}
+            class="news-image"
+          />
+          {imageCaption && (
+            <figcaption class="image-caption">
+              <Html html={imageCaption} />
+            </figcaption>
+          )}
+        </figure>
+      )}
+      
+      <!-- Share Component (matches Gatsby share.js) -->
+      <Share url={shareUrl} title={fieldTitleContext} />
+      
+      <!-- Stay in the Know section -->
+      <div class="stay-in-know-section">
+        <h2 class="stay-in-know-heading">Stay in the know</h2>
+        <p>
+          <Link 
+            href={newsEmailSignUpURL}
+            class="email-signup-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Sign up for email updates
+        </Link>
+        </p>
+      </div>
+    </TemplateSide>
+  </Template>
+  
+  {fullPanels && fullPanels.length > 0 && (
+    <Panels data={fullPanels} />
+  )}
+</TemplateLayout>
+
+<style>
+  /* News-specific styles (matches news.js styling) */
+  
+  /* Remove border from sidebar (matches TemplateSide CSS override in news.js) */
+  :global(.news-template-side .template-side-inner) {
+    border: none;
+  }
+  
+  /* News Heading Styles (matches Heading + date styles from news.js) */
+  .news-heading {
+    margin-bottom: 2rem;
+    margin-top: 0.75rem;
+  }
+  
+  .news-date {
+    font-size: 1rem;
+    color: var(--color-neutral-300);
+    font-family: 'Muli', sans-serif;
+    padding-top: 1rem;
+    margin: 0;
+    font-weight: 400;
+  }
+  
+  /* Body Content */
+  .body-content {
+    line-height: 1.6;
+  }
+  
+  .body-panels {
+    margin-top: 2rem;
+  }
+  
+  /* News Image Figure (matches figure styles from news.js) */
+  .news-image-figure {
+    margin-bottom: 2rem;
+    max-width: 38rem;
+  }
+  
+  .news-image {
+    border-radius: 2px;
+    width: 100%;
+    height: auto;
+  }
+  
+  /* Stay in the Know (matches StayInTheKnow component styles) */
+  .stay-in-know-section {
+    border-top: solid 1px var(--color-neutral-100);
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+  
+  .stay-in-know-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .email-signup-link {
+    display: inline-block;
+  }
+  
+
+</style>

@@ -17,14 +17,8 @@ export const wrapPageElement = ({ element }) => {
       >
         <div>
           <SkipLinks />
-          <div
-            css={{
-              backgroundColor: 'var(--color-blue-100)',
-              minHeight: '37px'
-            }}
-          >
-            <m-universal-header></m-universal-header>
-          </div>
+
+          <m-universal-header></m-universal-header>
         </div>
         {element}
       </div>

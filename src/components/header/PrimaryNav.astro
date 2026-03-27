@@ -1,0 +1,188 @@
+---
+/**
+ * Primary Navigation Component (Desktop)
+ * Displays main navigation with dropdowns
+ */
+import NavPanel from './NavPanel.astro';
+
+interface Props {
+  items: any[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav
+  aria-label="Main"
+  aria-describedby="main-nav-description"
+  class="primary-nav"
+>
+  <p id="main-nav-description" class="visually-hidden">
+    Expand main navigation buttons to view related content groups and associated
+    links.
+  </p>
+  <ul>
+    {
+      items.map((item, index) => {
+        return (
+          <li class="primary-nav-item">
+            {item.children && item.children.length > 0 ? (
+              <>
+                <button
+                  class="primary-nav-btn no-focus-styles"
+                  aria-expanded="false"
+                  data-nav-index={index}
+                >
+                  {item.text}
+                </button>
+                <div
+                  class="primary-dropdown"
+                  hidden
+                  data-dropdown-index={index}
+                >
+                  <NavPanel items={item.children} />
+                </div>
+              </>
+            ) : (
+              <a href={item.to} class="primary-nav-link">
+                {item.text}
+              </a>
+            )}
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>
+
+<script>
+  // Desktop primary nav toggles
+  const primaryNav = document.querySelector(".primary-nav");
+  const primaryNavBtns = document.querySelectorAll(".primary-nav-btn");
+  let currentOpenDropdown: number | null = null;
+
+  // Function to reset NavPanel to first item
+  function resetNavPanelInDropdown(dropdown: HTMLElement) {
+    // Wait a bit for NavPanel to be initialized
+    setTimeout(() => {
+      const navPanelContainer = dropdown.querySelector('.nav-panel-container');
+      if (navPanelContainer && (window as any).navPanels) {
+        // Find the NavPanel instance for this container
+        const panelInstance = (window as any).navPanels.find(
+          (panel: any) => panel.container === navPanelContainer
+        );
+        if (panelInstance && panelInstance.resetToFirst) {
+          panelInstance.resetToFirst();
+        }
+      } 
+    }, 0);
+  }
+
+  primaryNavBtns.forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const index = Number(btn.getAttribute("data-nav-index"));
+      const isExpanded = btn.getAttribute("aria-expanded") === "true";
+      
+      // Close all other dropdowns
+      primaryNavBtns.forEach(otherBtn => {
+        if (otherBtn !== btn) {
+          const otherIndex = Number(otherBtn.getAttribute("data-nav-index"));
+          otherBtn.setAttribute("aria-expanded", "false");
+          const otherDropdown = document.querySelector(`[data-dropdown-index="${otherIndex}"]`) as HTMLElement;
+          if (otherDropdown) otherDropdown.hidden = true;
+        }
+      });
+
+      // Toggle current dropdown
+      const dropdown = document.querySelector(
+        `[data-dropdown-index="${index}"]`
+      ) as HTMLElement;
+      
+      btn.setAttribute("aria-expanded", String(!isExpanded));
+      if (dropdown) {
+        dropdown.hidden = isExpanded;
+        
+        // If opening the dropdown, reset the NavPanel to first item
+        if (!isExpanded) {
+          resetNavPanelInDropdown(dropdown);
+        }
+      }
+      
+      currentOpenDropdown = isExpanded ? null : index;
+    });
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener("click", (event) => {
+    if (primaryNav && !primaryNav.contains(event.target as Node)) {
+      primaryNavBtns.forEach((btn) => {
+        btn.setAttribute("aria-expanded", "false");
+      });
+      document.querySelectorAll(".primary-dropdown").forEach((dropdown) => {
+        (dropdown as HTMLElement).hidden = true;
+      });
+      currentOpenDropdown = null;
+    }
+  });
+
+  // Handle Escape key to close dropdown
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && currentOpenDropdown !== null) {
+      const btn = document.querySelector(`[data-nav-index="${currentOpenDropdown}"]`);
+      const dropdown = document.querySelector(`[data-dropdown-index="${currentOpenDropdown}"]`) as HTMLElement;
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+      if (dropdown) dropdown.hidden = true;
+      currentOpenDropdown = null;
+    }
+  });
+</script>
+
+<style>
+  .primary-nav ul {
+    display: flex;
+    align-items: stretch;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .primary-nav-item {
+    display: inline-block;
+  }
+  
+  .primary-nav-item > button {
+    margin-right: 1.5rem;
+  }
+
+  .primary-nav-btn,
+  .primary-nav-link {
+    font-size: 1.125rem;
+    border-bottom: solid 3px transparent;
+    cursor: pointer;
+    display: inline-block;
+    height: 100%;
+    padding-bottom: calc(1rem - 3px);
+    padding-top: 1rem;
+  }
+
+  .primary-nav-btn:hover,
+  .primary-nav-link:hover {
+    border-bottom-color: var(--color-teal-400, #0891b2);
+  }
+
+  .primary-nav-btn[aria-expanded="true"] {
+    border-bottom-color: var(--color-teal-400, #0891b2);
+  }
+
+  /* Primary dropdown panels */
+  .primary-dropdown {
+    background: white;
+    border: solid 1px var(--color-neutral-100);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px 0px;
+    left: 0px;
+    position: absolute;
+    width: 100%;
+    z-index: 101;
+  }
+</style>

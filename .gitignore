@@ -5,7 +5,11 @@ yarn-error.log
 
 # Build directory
 /public
+/dist
 .DS_Store
 
 # env vars
 .env.development
+
+# Local Netlify folder
+.netlify
