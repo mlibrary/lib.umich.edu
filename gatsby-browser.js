@@ -1,5 +1,21 @@
 export { wrapPageElement } from './gatsby-shared';
 
+/**
+ * Gatsby injects #gatsby-announcer directly into <body>, outside any ARIA
+ * landmark. Wrap it in an <aside> so screen-reader users aren't flagged by
+ * accessibility auditors for text outside a landmark region.
+ */
+export const onInitialClientRender = () => {
+  const announcer = document.getElementById('gatsby-announcer');
+
+  if (announcer && !announcer.closest('aside')) {
+    const aside = document.createElement('aside');
+    aside.setAttribute('aria-label', 'Page Navigation Announcements');
+    announcer.parentNode.insertBefore(aside, announcer);
+    aside.appendChild(announcer);
+  }
+};
+
 export const onRouteUpdate = ({ location, prevLocation }) => {
   const newPath = location.pathname;
   const oldPath = prevLocation ? prevLocation.pathname : null;
