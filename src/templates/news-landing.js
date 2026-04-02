@@ -36,13 +36,9 @@ const processNewsData = (data) => {
 };
 
 const NewsLandingTemplate = ({ data }) => {
-  const news = processNewsData(data.featuredNews).concat(
-    processNewsData(data.restNews)
-  );
   const newsLibraryUpdates = processNewsData(data.newsLibraryUpdates);
-  const newsMainInitialShow = 10;
   const newsLibraryUpdatesInitialShow = 20;
-  const { field_title_context: fieldTitleContext, body, fields, drupal_internal__nid: drupalInternalNID } = data.page;
+  const { body, fields, drupal_internal__nid: drupalInternalNID } = data.page;
 
   return (
     <Layout drupalNid={drupalInternalNID}>
@@ -55,56 +51,25 @@ const NewsLandingTemplate = ({ data }) => {
             marginBottom: SPACING.L
           }}
         >
-          {fieldTitleContext}
+          New DS Packages - Release and Testing
         </Heading>
       </Margins>
       <Template>
         <TemplateContent>
           {body && (
             <div css={{ marginBottom: SPACING.XL }}>
-              <Html html={body.processed} />
+              <Heading level={2} size='L'>m-banner</Heading>
+              <m-banner variant='info'></m-banner>
+              <m-banner variant='warning'></m-banner>
+              <m-banner>No variant specified</m-banner>
+              <m-banner>With a <a href='#'>link</a></m-banner>
+
+              <Heading level={2} size='L'css={{ marginTop: SPACING.L }}>m-callout</Heading>
+              <m-callout variant='success' label='This is the success content. This should also be dismissable.' dismissible></m-callout>
+              <m-callout variant='warning' label='This is the warning content.'></m-callout>
+              <m-callout variant='critical' label='This is the critical content.'></m-callout>
+              <m-callout variant='info' label='This is the info content.'></m-callout>
             </div>
-          )}
-
-          {news && (
-            <>
-              <span className='visually-hidden'>
-                <Heading level={2} size='L'>
-                  Main news
-                </Heading>
-              </span>
-              <Expandable>
-                <ol>
-                  <ExpandableChildren show={newsMainInitialShow}>
-                    {news.map((item, index) => {
-                      return (
-                        <li
-                          key={`news-item-${index}`}
-                          css={{
-                            marginBottom: SPACING.L
-                          }}
-                        >
-                          <Card
-                            headingLevel={2}
-                            href={item.href}
-                            title={item.title}
-                            subtitle={item.subtitle}
-                            image={item.image}
-                            horizontal
-                          >
-                            {item.description}
-                          </Card>
-                        </li>
-                      );
-                    })}
-                  </ExpandableChildren>
-                </ol>
-
-                {news.length > newsMainInitialShow && (
-                  <ExpandableButton name='stories' count={news.length} />
-                )}
-              </Expandable>
-            </>
           )}
         </TemplateContent>
 
