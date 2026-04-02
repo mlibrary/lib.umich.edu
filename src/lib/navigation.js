@@ -5,7 +5,8 @@
  * Fetches primary nav (with build-time caching) and finds the branch
  * that matches a given path — used by SideNavigation on basic pages.
  */
-import { fetchPrimaryNav, fetchStaffDirectorySlug } from './drupal.js';
+import { fetchPrimaryNav } from './drupal.js';
+import { fetchStaffDirectorySlug } from './staff-data.js';
 
 /** @type {null | Promise<any[]>} */
 let primaryNavCache = null;

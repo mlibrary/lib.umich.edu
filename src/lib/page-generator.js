@@ -5,13 +5,13 @@
  */
 import {
   fetchDrupalBuildings,
-  fetchDrupalDepartments,
-  fetchDrupalEvents,
-  fetchDrupalNews,
   fetchDrupalPages,
   fetchDrupalSectionPages,
   fetchFromDrupal
 } from './drupal.js';
+import { fetchDrupalDepartments } from './staff-data.js';
+import { fetchDrupalEvents } from './events-data.js';
+import { fetchDrupalNews } from './news-data.js';
 
 /**
  * Fetch breadcrumb data from Drupal API (matches Gatsby plugin behavior)
