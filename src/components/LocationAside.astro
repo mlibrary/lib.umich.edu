@@ -1,0 +1,531 @@
+---
+/**
+ * LocationAside Component
+ * Converted from src/components/location-aside.js
+ *
+ * Sidebar widget showing location information:
+ *  - Today's hours + "View more hours" link
+ *  - Address + "View directions" link
+ *  - Contact (phone / email)
+ *  - Floor plans links
+ *
+ * Two modes:
+ *  - Default (section pages, visit pages): Hours → Address/Contact → Floor plans
+ *  - Study-space aside: Location info → Hours → Noise level → Features
+ */
+import Heading from '../reusable/Heading.astro';
+import Icon from '../reusable/Icon.astro';
+import Link from '../reusable/link.astro';
+import { displayHours } from '../utils/hours';
+import getBuildingSlug from '../utils/get-building-slug';
+import getFloor from '../utils/get-floor';
+import createSlug from '../reusable/create-slug';
+import { SPACE_FEATURES_ICON_MAP } from '../constants/space-features';
+
+interface Props {
+  node: any;
+  isStudySpaceAside?: boolean;
+}
+
+const { node, isStudySpaceAside = false } = Astro.props;
+
+// ---------- Data extraction ----------
+
+const {
+  field_phone_number: fieldPhoneNumber,
+  field_room_number: fieldRoomNumber,
+  field_email: fieldEmail,
+  field_noise_level: noiseLevel,
+  field_space_features: spaceFeatures,
+  field_building_address: fieldBuildingAddress,
+  relationships,
+} = node;
+
+const buildingNode = relationships?.field_room_building;
+const parentLocationNode = relationships?.field_parent_location;
+const buildingSlug = getBuildingSlug({ node });
+
+// Location node for hours lookup
+const locationNode = buildingNode
+  ?? parentLocationNode?.relationships?.field_parent_location
+  ?? node;
+
+// Location title for study-space aside
+const locationTitle = buildingNode?.title ?? parentLocationNode?.title;
+const floor = getFloor({ node });
+
+// Floor plans
+let floorPlans = relationships?.field_floor_plan ?? [];
+if (!Array.isArray(floorPlans)) {
+  floorPlans = floorPlans ? [floorPlans] : [];
+}
+
+// ---------- Address helpers ----------
+
+function transformAddressDataToArray(data: any, kind: string): string[] {
+  const {
+    organization,
+    address_line1: addressLine1,
+    address_line2: addressLine2,
+    locality,
+    administrative_area: administrativeArea,
+    postal_code: postalCode,
+  } = data;
+  const line2 = kind === 'brief' ? null : addressLine2;
+  return [organization, addressLine1, line2, `${locality}, ${administrativeArea} ${postalCode}`]
+    .filter((line): line is string => typeof line === 'string' && line.length > 0);
+}
+
+function getAddress(kind: string): string[] | null {
+  const parentLoc = relationships?.field_parent_location;
+  const roomBuilding = relationships?.field_room_building;
+
+  if (fieldBuildingAddress && fieldBuildingAddress.address_line1?.length) {
+    return transformAddressDataToArray(fieldBuildingAddress, kind);
+  }
+  if (roomBuilding?.field_building_address?.address_line1?.length) {
+    return transformAddressDataToArray(roomBuilding.field_building_address, kind);
+  }
+  if (parentLoc?.field_building_address) {
+    return transformAddressDataToArray(parentLoc.field_building_address, kind);
+  }
+  return null;
+}
+
+function getDescription(): string[][] | null {
+  const name = buildingNode?.title ?? parentLocationNode?.title ?? null;
+  const floorVal = getFloor({ node });
+  const room = fieldRoomNumber ? `Room ${fieldRoomNumber}` : null;
+  const line1 = [floorVal, room].filter(Boolean) as string[];
+  const line2 = [name].filter(Boolean) as string[];
+  if (line1.length > 0 || line2.length > 0) {
+    return [line1, line2];
+  }
+  return null;
+}
+
+function createGoogleMapsURL(query: string): string {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query)}`;
+}
+
+// Address data
+const addressLines = getAddress('full');
+const description = getDescription();
+const fullAddressLines: string[] = [];
+if (description) {
+  for (const part of description) {
+    fullAddressLines.push(part.join(', '));
+  }
+}
+if (addressLines) {
+  fullAddressLines.push(...addressLines);
+}
+
+// Hours anchored link helper
+function getHoursAnchor(): string {
+  const parentTitle = locationNode?.relationships?.field_parent_location?.title;
+  const anchorTitle = parentTitle ?? locationNode?.title;
+  return `/locations-and-hours/hours-view#${createSlug(anchorTitle)}`;
+}
+
+// ---------- Noise level formatter ----------
+function formatNoiseLevel(level: string): string {
+  return level.replace(/_/g, ' ').replace(/^./, (s) => s.toUpperCase());
+}
+
+// ---------- Space features formatter ----------
+function formatFeatureLabel(feature: string): string {
+  return feature.replace(/_/g, ' ').replace(/^./, (s) => s.toUpperCase());
+}
+---
+
+{isStudySpaceAside ? (
+  <!-- Study-space mode -->
+  <>
+    {/* Location section */}
+    {(locationTitle || floor || floorPlans.length > 0) && (
+      <section aria-labelledby="location" class="aside-section">
+        <div class="layout-with-icon">
+          <div class="icon-circle icon-circle--orange">
+            <Icon icon="address" size={24} />
+          </div>
+          <div>
+            <Heading level={2} size="M" id="location" class="aside-heading">
+              Location
+            </Heading>
+            <p>
+              {[locationTitle, floor, fieldRoomNumber].filter(Boolean).join(', ')}
+            </p>
+            {buildingSlug && (
+              <p><Link href={buildingSlug}>View building information</Link></p>
+            )}
+            {floorPlans.length > 1 ? (
+              <ul>
+                {floorPlans.map((fp: any) => (
+                  <li><Link href={fp.fields?.slug}>{fp.fields?.title}</Link></li>
+                ))}
+              </ul>
+            ) : floorPlans.length === 1 ? (
+              <Link href={floorPlans[0].fields?.slug}>View floor plan</Link>
+            ) : null}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* Hours section */}
+    {locationNode && (
+      <section aria-labelledby="todays-hours" class="aside-section">
+        <div class="layout-with-icon">
+          <div class="icon-circle icon-circle--indigo">
+            <Icon icon="access_time" size={24} />
+          </div>
+          <div>
+            <Heading level={2} size="M" id="todays-hours" class="aside-heading">
+              Hours
+            </Heading>
+            <p class="hours-display" data-hours-node={JSON.stringify({
+              field_display_hours_: node.field_display_hours_,
+              field_hours_different_from_build: node.field_hours_different_from_build,
+              relationships: {
+                field_hours_open: node.relationships?.field_hours_open,
+                field_room_building: node.relationships?.field_room_building,
+                field_parent_location: node.relationships?.field_parent_location,
+              }
+            })}>…</p>
+            <Link href={getHoursAnchor()}>View more hours</Link>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* Noise level */}
+    {noiseLevel && (
+      <section aria-labelledby="noise-level" class:list={['aside-section', { 'aside-section--last': !spaceFeatures?.length }]}>
+        <div class="layout-with-icon">
+          <div class="icon-circle icon-circle--green">
+            <Icon icon="volume_up" size={24} />
+          </div>
+          <div>
+            <Heading level={2} size="M" id="noise-level" class="aside-heading">
+              Noise Level
+            </Heading>
+            <p>{formatNoiseLevel(noiseLevel)}</p>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* Space features */}
+    {spaceFeatures && spaceFeatures.length > 0 && (
+      <section aria-labelledby="features">
+        <div class="layout-with-icon">
+          <div class="icon-circle icon-circle--teal">
+            <Icon icon="info_outline" size={24} />
+          </div>
+          <div>
+            <Heading level={2} size="M" id="features" class="aside-heading">
+              Features
+            </Heading>
+            <ul class="features-list">
+              {spaceFeatures.map((feature: string) => {
+                const icon = SPACE_FEATURES_ICON_MAP[feature as keyof typeof SPACE_FEATURES_ICON_MAP];
+                return icon ? (
+                  <li class="feature-item">
+                    <Icon icon={icon} size={18} class="feature-icon" />
+                    <span>{formatFeatureLabel(feature)}</span>
+                  </li>
+                ) : null;
+              })}
+            </ul>
+          </div>
+        </div>
+      </section>
+    )}
+  </>
+) : (
+  <!-- Default mode (section pages, visit pages) -->
+  <>
+    {/* Hours section */}
+    {locationNode && (
+      <section aria-labelledby="todays-hours" class="aside-section">
+        <div class="layout-with-icon">
+          <div class="icon-circle icon-circle--indigo">
+            <Icon icon="access_time" size={24} />
+          </div>
+          <div>
+            <Heading level={2} size="M" id="todays-hours" class="aside-heading">
+              Hours
+            </Heading>
+            <p class="hours-display" data-hours-node={JSON.stringify({
+              field_display_hours_: node.field_display_hours_,
+              field_hours_different_from_build: node.field_hours_different_from_build,
+              relationships: {
+                field_hours_open: node.relationships?.field_hours_open,
+                field_room_building: node.relationships?.field_room_building,
+                field_parent_location: node.relationships?.field_parent_location,
+              }
+            })}>…</p>
+            <Link href={getHoursAnchor()}>View more hours</Link>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* Address + Contact section */}
+    <address aria-label="Address and contact information">
+      {fullAddressLines.length > 0 && (
+        <div class="aside-section">
+          <div class="layout-with-icon">
+            <div class="icon-circle icon-circle--orange">
+              <Icon icon="address" size={24} />
+            </div>
+            <div>
+              <Heading level={2} size="M" class="aside-heading">
+                Address
+              </Heading>
+              {fullAddressLines.map((line) => (
+                <p>{line}</p>
+              ))}
+              {addressLines && (
+                <Link href={createGoogleMapsURL(addressLines.join(' '))}>
+                  View directions
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(fieldPhoneNumber || fieldEmail) && (
+        <div class="aside-section">
+          <div class="layout-with-icon">
+            <div class="icon-circle icon-circle--green">
+              <Icon icon="phone" size={24} />
+            </div>
+            <div>
+              <Heading level={2} size="M" class="aside-heading">
+                Contact
+              </Heading>
+              {fieldPhoneNumber && (
+                <p><Link href={`tel:${fieldPhoneNumber}`}>{fieldPhoneNumber}</Link></p>
+              )}
+              {fieldEmail && (
+                <p><Link href={`mailto:${fieldEmail}`}>{fieldEmail}</Link></p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </address>
+
+    {/* Floor plans */}
+    {floorPlans.length > 0 && (
+      <section aria-label="floor plans">
+        <div class="layout-with-icon">
+          <div class="icon-circle icon-circle--teal">
+            <Icon icon="map" size={24} />
+          </div>
+          <div>
+            <Heading level={2} size="M" class="aside-heading">
+              Floor plans
+            </Heading>
+            <ul class="floor-plan-list">
+              {floorPlans.map((fp: any) => (
+                <li><Link href={fp.fields?.slug}>{fp.fields?.title}</Link></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+    )}
+  </>
+)}
+
+<style>
+  .aside-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .aside-section--last {
+    margin-bottom: 0;
+  }
+
+  .layout-with-icon {
+    display: flex;
+  }
+
+  .icon-circle {
+    align-items: center;
+    border-radius: 50%;
+    display: flex;
+    flex-shrink: 0;
+    height: 2.5rem;
+    justify-content: center;
+    margin-right: 0.75rem;
+    width: 2.5rem;
+  }
+
+  .icon-circle--orange {
+    background: var(--color-orange-100);
+    color: var(--color-orange-500);
+  }
+
+  .icon-circle--indigo {
+    background: var(--color-indigo-100);
+    color: var(--color-indigo-400);
+  }
+
+  .icon-circle--green {
+    background: var(--color-green-100);
+    color: var(--color-green-500);
+  }
+
+  .icon-circle--teal {
+    background: var(--color-teal-100);
+    color: var(--color-teal-500);
+  }
+
+  .aside-heading {
+    padding-bottom: 0.25rem;
+    padding-top: 0.25rem;
+  }
+
+  .features-list {
+    list-style: none;
+    margin: 0.5rem 0;
+    padding: 0;
+  }
+
+  .feature-item {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .feature-icon {
+    color: var(--color-teal-400);
+  }
+
+  .floor-plan-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .floor-plan-list li {
+    margin-bottom: 0.25rem;
+  }
+
+  address {
+    font-style: normal;
+  }
+
+  address p {
+    margin-bottom: 0.25rem;
+  }
+</style>
+
+<script>
+  // Client-side hours display — hours are dynamic based on "now"
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.hours-display').forEach((el) => {
+      try {
+        const nodeData = JSON.parse(el.getAttribute('data-hours-node') || '{}');
+        const now = new Date();
+        // Inline the hours display logic for vanilla JS
+        const hours = computeDisplayHours(nodeData, now);
+        if (hours) {
+          el.textContent = `Today: ${hours}`;
+        } else {
+          el.textContent = 'Today: n/a';
+        }
+      } catch {
+        el.textContent = 'Today: n/a';
+      }
+    });
+  });
+
+  function computeDisplayHours(node, now) {
+    const allHours = getHoursFromNode(node);
+    if (!allHours) return null;
+
+    const hoursSet = findHoursSetForNow(allHours, now);
+    if (!hoursSet) return null;
+
+    const hoursForNow = hoursSet.field_hours_open?.find(
+      (data) => data.day === now.getDay()
+    );
+    if (!hoursForNow) return null;
+
+    const { starthours, endhours, comment } = hoursForNow;
+    if (!comment && starthours === endhours) return null;
+
+    if (starthours !== endhours) {
+      const parts = [`${formatTime(starthours)} - ${formatTime(endhours)}`, comment]
+        .filter(Boolean)
+        .join(', ');
+      return parts;
+    }
+    return comment || null;
+  }
+
+  function getHoursFromNode(node) {
+    if (!node.field_display_hours_) return null;
+    const prioritize = (hours) => {
+      if (!hours) return [];
+      const types = [
+        'paragraph__hours_exceptions',
+        'paragraph__fall_and_winter_semester_hours',
+      ];
+      const exceptions = hours.filter((s) => s.__typename === types[0]);
+      const fallWinter = hours.filter((s) => s.__typename === types[1]);
+      const rest = hours.filter((s) => !types.includes(s.__typename));
+      return [...exceptions, ...rest, ...fallWinter].filter(Boolean);
+    };
+
+    if (node.field_hours_different_from_build) {
+      return prioritize(node.relationships?.field_hours_open);
+    }
+    const building = node.relationships?.field_room_building;
+    const parentLoc = node.relationships?.field_parent_location;
+
+    if (building?.field_display_hours_) {
+      return prioritize(building.relationships?.field_hours_open);
+    }
+    if (parentLoc?.field_display_hours_) {
+      return prioritize(parentLoc.relationships?.field_hours_open);
+    }
+    if (building && !building.field_display_hours_ && building.relationships?.field_parent_location?.field_display_hours_) {
+      return prioritize(building.relationships.field_parent_location.relationships?.field_hours_open);
+    }
+    if (parentLoc && !parentLoc.field_display_hours_ && parentLoc.relationships?.field_parent_location?.field_display_hours_) {
+      return prioritize(parentLoc.relationships.field_parent_location.relationships?.field_hours_open);
+    }
+    return null;
+  }
+
+  function findHoursSetForNow(allHours, now) {
+    return allHours.find((set) => {
+      if (!set.field_date_range) return false;
+      const start = new Date(set.field_date_range.value.replace(/-/g, '/').replace(/T.+/, ''));
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(set.field_date_range.end_value.replace(/-/g, '/').replace(/T.+/, ''));
+      end.setHours(23, 59, 59);
+      return start <= now && now <= end;
+    }) || null;
+  }
+
+  function formatTime(time) {
+    const timeStr = time.toString();
+    const hrs = timeStr.slice(0, -2);
+    const mins = timeStr.slice(-2);
+    let formatted = '';
+    if (Number(hrs) === 0) formatted = '12';
+    else if (hrs <= 12) formatted = hrs;
+    else formatted = (hrs - 12).toString();
+    if (Number(mins) > 0) formatted += `:${mins}`;
+    return formatted + (hrs >= 12 ? 'pm' : 'am');
+  }
+</script>
