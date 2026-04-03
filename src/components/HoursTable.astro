@@ -1,0 +1,274 @@
+---
+/**
+ * HoursTable - Responsive hours display table
+ * Converted from src/components/hours-table.js
+ */
+
+interface Props {
+  data: {
+    headings: Array<{
+      text: string;
+      subtext: string;
+      label: string;
+    }>;
+    rows: Array<Array<{
+      label: string | string[];
+      text: string | string[];
+      to?: string;
+    }>>;
+  };
+  dayOfWeek?: number | false;
+  location: string;
+}
+
+const { data, dayOfWeek = false, location } = Astro.props;
+const todayIndex = dayOfWeek === false ? -1 : dayOfWeek + 1;
+---
+
+<table class="hours-table">
+  <thead>
+    <tr>
+      <th scope="col" colspan="2">
+        <span class="visually-hidden">{`Inside ${location}`}</span>
+      </th>
+      {data.headings.map(({ text, subtext, label }, index) => (
+        <th
+          scope="col"
+          class={index + 1 === todayIndex ? 'today' : ''}
+        >
+          <span class="visually-hidden">{label}</span>
+          {index + 1 === todayIndex && (
+            <span
+              aria-hidden="true"
+              class="alternative today-badge"
+            >
+              Today
+            </span>
+          )}
+          <span
+            aria-hidden="true"
+            class="alternative day-text"
+          >
+            {text}
+          </span>
+          <span
+            aria-hidden="true"
+            class="subtext"
+          >
+            {subtext}
+          </span>
+        </th>
+      ))}
+    </tr>
+  </thead>
+  <tbody>
+    {data.rows.map((row, rowIndex) => (
+      <tr class={rowIndex === 0 ? 'first-row' : ''}>
+        {row.map((col, colIndex) => {
+          if (colIndex === 0) {
+            return (
+              <th scope="row" colspan="2" class="row-header">
+                {col.to ? (
+                  <a href={col.to} class="list-medium-link">
+                    {col.text}
+                  </a>
+                ) : (
+                  col.text
+                )}
+              </th>
+            );
+          } else {
+            const isToday = colIndex === todayIndex;
+            return (
+              <td class={isToday ? 'today' : ''}>
+                <div class="mobile-day-label">
+                  <span class="alternative mobile-day-text">
+                    {data.headings[colIndex - 1].text}
+                  </span>
+                  <span class="mobile-day-subtext">
+                    {data.headings[colIndex - 1].subtext}
+                  </span>
+                </div>
+                <span class:list={['hours-text', { 'with-today-badge': isToday }]}>
+                  {col.text}
+                </span>
+                {isToday && (
+                  <span
+                    aria-hidden="true"
+                    class="alternative today-badge-mobile"
+                  >
+                    Today
+                  </span>
+                )}
+              </td>
+            );
+          }
+        })}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<style>
+  .hours-table {
+    margin-top: 2rem;
+    table-layout: fixed;
+    text-align: left;
+    width: 100%;
+  }
+
+  .hours-table tr > * {
+    padding: 0.75rem;
+    position: relative;
+  }
+
+  .hours-table tr > *.today {
+    border-left: 2px solid var(--color-maize-400);
+    border-right: 2px solid var(--color-maize-400);
+  }
+
+  .hours-table tr > * .alternative {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  /* Thead styles */
+  thead {
+    border-bottom: 2px solid var(--color-neutral-100);
+  }
+
+  thead th.today {
+    border-top: 2px solid var(--color-maize-400);
+  }
+
+  thead th {
+    vertical-align: bottom;
+  }
+
+  .today-badge {
+    background: var(--color-maize-400);
+    border-radius: 2px 2px 0 0;
+    bottom: 100%;
+    display: inline-block;
+    left: -2px;
+    padding: 0 0.25rem;
+    position: absolute;
+  }
+
+  .day-text {
+    display: block;
+  }
+
+  .subtext {
+    color: var(--color-neutral-300);
+  }
+
+  /* Tbody styles */
+  tbody tr {
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+
+  tbody tr.first-row {
+    background: var(--color-blue-100);
+  }
+
+  tbody tr:last-of-type > *.today {
+    border-bottom: 2px solid var(--color-maize-400);
+  }
+
+  .row-header {
+  }
+
+  .list-medium-link {
+    color: var(--color-teal-400);
+    text-decoration: underline;
+    text-decoration-thickness: 0.09em;
+    text-underline-offset: 0.15em;
+  }
+
+  .list-medium-link:hover {
+    text-decoration-thickness: 0.15em;
+  }
+
+  .mobile-day-label {
+    align-content: baseline;
+    align-items: baseline;
+    display: none;
+    flex-wrap: wrap;
+  }
+
+  .mobile-day-text {
+    padding-right: 0.5em;
+  }
+
+  .mobile-day-subtext {
+    color: var(--color-neutral-300);
+  }
+
+  .today-badge-mobile {
+    background: var(--color-maize-400);
+    display: none;
+    margin: -0.25rem -0.5rem;
+    margin-left: 0;
+    padding: 0 0.5rem;
+  }
+
+  /* Mobile responsive styles */
+  @media only screen and (max-width: 1100px) {
+    .hours-table tr > * {
+      display: block;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .hours-table tr > *.today {
+      border: 2px solid var(--color-maize-400);
+    }
+
+    thead {
+      clip: rect(1px, 1px, 1px, 1px);
+      clip-path: inset(50%);
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
+
+    tbody tr {
+      border-bottom: 0;
+    }
+
+    tbody tr.first-row {
+      background: inherit;
+    }
+
+    .row-header {
+      background: var(--color-blue-100);
+      border-bottom-color: var(--color-neutral-100);
+    }
+
+    tbody td {
+      display: grid !important;
+      gap: 5%;
+      grid-template-columns: minmax(min-content, 6.5rem) 5fr max-content;
+    }
+
+    .mobile-day-label {
+      display: flex;
+    }
+
+    .hours-text {
+      grid-column: 2 / span 2;
+    }
+
+    .hours-text.with-today-badge {
+      grid-column: 2 / span 1;
+    }
+
+    .today-badge-mobile {
+      align-items: center;
+      display: flex;
+    }
+  }
+</style>

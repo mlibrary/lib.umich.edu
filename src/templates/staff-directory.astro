@@ -1,0 +1,810 @@
+---
+/**
+ * Staff Directory Template
+ * Converted from src/templates/staff-directory.js
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateTop from '../components/TemplateTop.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Icon from '../reusable/Icon.astro';
+import Link from '../reusable/link.astro';
+import NoResults from '../components/NoResults.astro';
+import StaffPhotoPlaceholder from '../components/StaffPhotoPlaceholder.astro';
+import { fetchStaff, fetchStaffImages, fetchDrupalDepartments } from '../lib/staff-data.js';
+import { decodeHTML } from 'entities';
+
+interface Props {
+  node: any;
+  title: string;
+  breadcrumb?: string;
+  parents?: any[];
+  [key: string]: any;
+}
+
+const { node, title, breadcrumb, parents } = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available for staff directory');
+}
+
+const {
+  field_title_context: fieldTitleContext,
+} = node.attributes;
+
+const { relationships } = node;
+const { processed: body } = node.attributes.body || {};
+const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pathname;
+
+// Breadcrumb
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: fieldTitleContext || title || 'Staff Directory', slug },
+    parents || []
+  );
+}
+
+// Fetch staff data and images from Drupal API
+const [staffRawData, staffImages] = await Promise.all([
+  fetchStaff(),
+  fetchStaffImages(),
+]);
+
+// Process staff data (matching create-staff-nodes.js logic)
+const processOffice = (arr: (string | null | undefined)[]) => {
+  const filtered = arr.filter((item) => item && item.length > 0);
+  const joined = filtered.join(' ');
+  return joined.length > 0 ? joined : null;
+};
+
+// Deduplicate by uniqname — the Gatsby source used `id: \`staff-${uniqname}\`` so
+// repeated entries for the same person (e.g. multiple department roles) were
+// collapsed to one node automatically. We replicate that by keeping only the
+// last occurrence of each uniqname (matching Gatsby's createNode overwrite behavior).
+const staffByUniqname = new Map<string, any>();
+for (const raw of (staffRawData || [])) {
+  const [division_nid, department_nid] = (raw.field_user_department || '').split(', ');
+  staffByUniqname.set(raw.name, {
+    uniqname: raw.name,
+    name: decodeHTML(raw.field_user_display_name || raw.name),
+    title: raw.field_user_work_title || '',
+    email: raw.field_user_email,
+    phone: raw.field_user_phone === '000-000-0000' ? null : raw.field_user_phone,
+    department_nid: department_nid || null,
+    division_nid: division_nid || null,
+    image_mid: raw.field_media_image || null,
+    office: processOffice([raw.field_user_room, raw.field_room_building]),
+  });
+}
+const staff = [...staffByUniqname.values()].sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+// Fetch departments and build lookup
+const departmentsResponse = await fetchDrupalDepartments();
+const departmentsMap: Record<string, { title: string; slug: string }> = {};
+for (const dept of (departmentsResponse.data || [])) {
+  const nid = dept.attributes?.drupal_internal__nid;
+  const deptTitle = dept.attributes?.title;
+  const deptSlug = dept.attributes?.path?.alias || null;
+  if (nid && deptTitle) {
+    departmentsMap[String(nid)] = { title: deptTitle, slug: deptSlug };
+  }
+}
+
+// Enrich staff with department/division data and image URLs
+const enrichedStaff = staff.map((person: any) => {
+  const img = person.image_mid ? staffImages[String(person.image_mid)] : null;
+  return {
+    ...person,
+    department: person.department_nid ? departmentsMap[String(person.department_nid)] || null : null,
+    division: person.division_nid ? departmentsMap[String(person.division_nid)] || null : null,
+    imageUrl: img?.url || null,
+    imageAlt: img?.alt || '',
+  };
+});
+
+// Build unique department/division options for dropdown filter
+const departmentOptions = ['All'];
+const deptTitles = new Set<string>();
+for (const person of enrichedStaff) {
+  if (person.department?.title) deptTitles.add(person.department.title);
+  if (person.division?.title) deptTitles.add(person.division.title);
+}
+departmentOptions.push(...[...deptTitles].sort());
+
+// Serialize staff data for client-side use (search/filter)
+const staffJson = JSON.stringify(enrichedStaff);
+---
+
+<!-- Client-side loading of lunr -->
+<script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <Template variant="basic" hasSide={false}>
+    <TemplateTop>
+      <Breadcrumb data={breadcrumbData} />
+    </TemplateTop>
+
+    <TemplateContent>
+      <Heading size="3XL" level={1} class="staff-directory-heading">
+        {fieldTitleContext}
+      </Heading>
+
+      {body && (
+        <div class="staff-directory-body">
+          <Html html={body} />
+        </div>
+      )}
+
+      <!-- Loading state (shown until JS initializes) -->
+      <div
+        id="staff-directory-loading"
+        class="staff-directory-loading"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        Loading Staff Directory...
+      </div>
+
+      <!-- Main interactive area (hidden until JS initializes) -->
+      <div id="staff-directory-app" class="staff-directory-app" hidden>
+        <!-- Accessible live region -->
+        <div
+          id="staff-directory-live"
+          class="visually-hidden"
+          aria-live="polite"
+          aria-atomic="true"
+        ></div>
+
+        <!-- Controls: search, filter, clear -->
+        <div class="staff-directory-controls">
+          <label class="staff-search-label">
+            <span class="staff-search-label-text">Search by name, uniqname, or title</span>
+            <input
+              type="text"
+              id="staff-directory-search-input"
+              name="query"
+              class="staff-search-input"
+              autocomplete="off"
+            />
+          </label>
+
+          <label class="select-label">
+            <span class="select-label-text">Department or division</span>
+            <div class="select-wrapper">
+              <select id="staff-directory-department-filter" name="department" class="select-input">
+                {departmentOptions.map((opt) => (
+                  <option value={opt}>{opt}</option>
+                ))}
+              </select>
+              <Icon icon="expand_more" class="select-icon" />
+            </div>
+          </label>
+
+          <button
+            type="button"
+            id="staff-directory-clear"
+            class="staff-directory-clear-btn"
+          >
+            Clear
+          </button>
+        </div>
+
+        <!-- Results table -->
+        <table id="staff-directory-table" class="staff-directory-table">
+          <caption id="staff-directory-summary" class="staff-directory-summary"></caption>
+          <colgroup>
+            <col span="1" class="photo-col" />
+          </colgroup>
+          <thead class="staff-directory-thead">
+            <tr>
+              <th scope="col" class="visually-hidden">Photo</th>
+              <th scope="colgroup" colspan="3">Name and title</th>
+              <th scope="colgroup" colspan="2">Contact info</th>
+              <th scope="colgroup" colspan="3">Department</th>
+            </tr>
+          </thead>
+          <tbody id="staff-directory-tbody"></tbody>
+        </table>
+
+        <!-- Show more button area -->
+        <div id="staff-directory-show-more" hidden>
+          <p id="staff-directory-show-more-summary" class="show-more-summary"></p>
+          <button type="button" id="staff-directory-show-all-btn" class="staff-directory-show-all-btn">
+            Show all
+          </button>
+        </div>
+
+        <!-- No results area -->
+        <div id="staff-directory-no-results" hidden>
+          <NoResults>
+            Consider searching with different keywords or using the department or
+            division filter to browse.
+          </NoResults>
+        </div>
+      </div>
+
+      <!-- Staff data embedded for client-side use -->
+      <script id="staff-data" type="application/json" set:html={staffJson}></script>
+    </TemplateContent>
+  </Template>
+</TemplateLayout>
+
+<!-- Row template for staff results -->
+<template id="staff-row-template">
+  <tr class="staff-row">
+    <td class="staff-photo-cell">
+      <StaffPhotoPlaceholder />
+    </td>
+    <th scope="row" colspan="3" class="staff-name-cell">
+      <a class="staff-name-link" href=""></a>
+      <span class="staff-title"></span>
+    </th>
+    <td colspan="2" class="staff-contact-cell">
+      <span class="staff-email-wrapper">
+        <a class="staff-email link-subtle" href=""></a>
+      </span>
+      <span class="staff-phone-separator">&middot;</span>
+      <span class="staff-phone-wrapper">
+        <a class="staff-phone link-subtle" href=""></a>
+      </span>
+    </td>
+    <td colspan="3" class="staff-department-cell">
+      <a class="staff-department-link link-subtle" href=""></a>
+    </td>
+  </tr>
+</template>
+
+<script is:inline>
+(function () {
+  // Parse staff data
+  var staffDataEl = document.getElementById('staff-data');
+  if (!staffDataEl) return;
+
+  var staff;
+  try {
+    staff = JSON.parse(staffDataEl.textContent);
+  } catch (e) {
+    console.error('Failed to parse staff data:', e);
+    return;
+  }
+
+  // DOM elements
+  var app = document.getElementById('staff-directory-app');
+  var loading = document.getElementById('staff-directory-loading');
+  var searchInput = document.getElementById('staff-directory-search-input');
+  var departmentFilter = document.getElementById('staff-directory-department-filter');
+  var clearBtn = document.getElementById('staff-directory-clear');
+  var tbody = document.getElementById('staff-directory-tbody');
+  var caption = document.getElementById('staff-directory-summary');
+  var showMoreContainer = document.getElementById('staff-directory-show-more');
+  var showMoreSummary = document.getElementById('staff-directory-show-more-summary');
+  var showAllBtn = document.getElementById('staff-directory-show-all-btn');
+  var noResultsContainer = document.getElementById('staff-directory-no-results');
+  var liveRegion = document.getElementById('staff-directory-live');
+  var rowTemplate = document.getElementById('staff-row-template');
+  var table = document.getElementById('staff-directory-table');
+
+  var SHOW_LIMIT = 20;
+  var currentResults = staff.slice();
+  var showAll = false;
+  var liveDebounceTimer = null;
+  var urlDebounceTimer = null;
+
+  // Build lunr index
+  var index = null;
+  if (typeof lunr !== 'undefined') {
+    index = lunr(function () {
+      this.ref('uniqname');
+      this.field('name');
+      this.field('uniqname');
+      this.field('title');
+      for (var i = 0; i < staff.length; i++) {
+        this.add(staff[i]);
+      }
+    });
+  }
+
+  // Read initial URL state
+  function getUrlParams () {
+    var params = new URLSearchParams(window.location.search);
+    return {
+      query: params.get('query') || '',
+      department: params.get('department') || ''
+    };
+  }
+
+  function setUrlParams (query, department) {
+    var params = new URLSearchParams();
+    if (query) params.set('query', query);
+    if (department && department !== 'All') params.set('department', department);
+    var newUrl = params.toString() ? '?' + params.toString() : window.location.pathname;
+    window.history.replaceState({ preserveScroll: true }, '', newUrl);
+  }
+
+  // Filter results by active department/division
+  function filterResults (results, department) {
+    if (!department || department === 'All') return results;
+    return results.filter(function (person) {
+      var divTitle = person.division && person.division.title;
+      var deptTitle = person.department && person.department.title;
+      return department === divTitle || department === deptTitle;
+    });
+  }
+
+  // Search and filter
+  function search () {
+    var query = (searchInput.value || '').trim();
+    var department = departmentFilter.value;
+    var results;
+
+    if (!query && index) {
+      // No query — show all staff, just apply department filter
+      results = filterResults(staff, department);
+    } else if (query && index) {
+      try {
+        var searchResults = index.query(function (q) {
+          q.term(lunr.tokenizer(query), { boost: 3 });
+          q.term(lunr.tokenizer(query), { boost: 2, wildcard: lunr.Query.wildcard.TRAILING });
+          if (query.length > 2) {
+            q.term(lunr.tokenizer(query), {
+              wildcard: lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
+            });
+          }
+        });
+
+        results = [];
+        for (var i = 0; i < searchResults.length; i++) {
+          var ref = searchResults[i].ref;
+          for (var j = 0; j < staff.length; j++) {
+            if (staff[j].uniqname === ref) {
+              results.push(staff[j]);
+              break;
+            }
+          }
+        }
+        results = filterResults(results, department);
+      } catch (e) {
+        results = [];
+      }
+    } else {
+      results = filterResults(staff, department);
+    }
+
+    currentResults = results;
+    showAll = false;
+    render();
+
+    // Debounce the live region update
+    clearTimeout(liveDebounceTimer);
+    liveDebounceTimer = setTimeout(function () {
+      var liveSuffix = '';
+      if (query) liveSuffix += ' for ' + query;
+      if (department && department !== 'All') liveSuffix += ' in ' + department;
+      var msg = results.length === 0
+        ? 'No results' + liveSuffix
+        : results.length + ' result' + (results.length === 1 ? '' : 's') + liveSuffix;
+      liveRegion.textContent = msg;
+    }, 400);
+
+    // Debounce URL update
+    clearTimeout(urlDebounceTimer);
+    urlDebounceTimer = setTimeout(function () {
+      setUrlParams(query || '', department);
+    }, 100);
+  }
+
+  // Render results to the table
+  function render () {
+    var results = currentResults;
+    var limit = showAll ? results.length : SHOW_LIMIT;
+    var staffInView = results.slice(0, limit);
+
+    // Clear table body
+    tbody.innerHTML = '';
+
+    if (results.length === 0) {
+      table.hidden = true;
+      showMoreContainer.hidden = true;
+      noResultsContainer.hidden = false;
+      caption.textContent = '';
+      return;
+    }
+
+    table.hidden = false;
+    noResultsContainer.hidden = true;
+
+    // Build summary caption
+    var query = (searchInput.value || '').trim();
+    var department = departmentFilter.value;
+    var summaryParts = [];
+
+    if (limit < results.length) {
+      summaryParts.push('Showing ' + limit + ' of ' + results.length + ' results');
+    } else {
+      summaryParts.push(results.length + ' result' + (results.length > 1 ? 's' : ''));
+    }
+    if (query) summaryParts.push('for "' + query + '"');
+    if (department && department !== 'All') summaryParts.push('in ' + department);
+    caption.textContent = summaryParts.join(' ');
+
+    // Show more button
+    if (limit < results.length) {
+      showMoreContainer.hidden = false;
+      showMoreSummary.textContent = summaryParts.join(' ');
+    } else {
+      showMoreContainer.hidden = true;
+    }
+
+    // Render rows
+    for (var i = 0; i < staffInView.length; i++) {
+      var person = staffInView[i];
+      var row = rowTemplate.content.cloneNode(true);
+
+      // Photo
+      if (person.imageUrl) {
+        var photoCell = row.querySelector('.staff-photo-cell');
+        var img = document.createElement('img');
+        img.src = person.imageUrl;
+        img.alt = person.imageAlt || person.name;
+        img.width = 43;
+        img.height = 57;
+        img.loading = 'lazy';
+        // Replace placeholder SVG with actual image
+        var placeholder = photoCell.querySelector('svg');
+        if (placeholder) photoCell.replaceChild(img, placeholder);
+      }
+
+      // Name link
+      var nameLink = row.querySelector('.staff-name-link');
+      nameLink.href = '/users/' + person.uniqname;
+      nameLink.textContent = person.name;
+
+      // Title
+      row.querySelector('.staff-title').textContent = person.title || '';
+
+      // Email
+      var emailLink = row.querySelector('.staff-email');
+      if (person.email) {
+        emailLink.href = 'mailto:' + person.email;
+        emailLink.textContent = person.email;
+        row.querySelector('.staff-email-wrapper').hidden = false;
+      } else {
+        row.querySelector('.staff-email-wrapper').hidden = true;
+      }
+
+      // Phone
+      var phoneLink = row.querySelector('.staff-phone');
+      var phoneSeparator = row.querySelector('.staff-phone-separator');
+      if (person.phone) {
+        phoneLink.href = 'tel:1-' + person.phone;
+        phoneLink.textContent = person.phone;
+        row.querySelector('.staff-phone-wrapper').hidden = false;
+        if (phoneSeparator) phoneSeparator.hidden = false;
+      } else {
+        row.querySelector('.staff-phone-wrapper').hidden = true;
+        if (phoneSeparator) phoneSeparator.hidden = true;
+      }
+
+      // Department/Division
+      var deptLink = row.querySelector('.staff-department-link');
+      var dept = person.department || person.division;
+      if (dept && dept.slug) {
+        deptLink.href = dept.slug;
+        deptLink.textContent = dept.title;
+        row.querySelector('.staff-department-cell').hidden = false;
+      } else if (dept) {
+        // No slug — just show text
+        deptLink.removeAttribute('href');
+        deptLink.textContent = dept.title;
+        row.querySelector('.staff-department-cell').hidden = false;
+      } else {
+        deptLink.textContent = '';
+      }
+
+      tbody.appendChild(row);
+    }
+  }
+
+  // Event listeners
+  searchInput.addEventListener('input', search);
+  departmentFilter.addEventListener('change', search);
+
+  clearBtn.addEventListener('click', function () {
+    searchInput.value = '';
+    departmentFilter.value = 'All';
+    showAll = false;
+    search();
+  });
+
+  showAllBtn.addEventListener('click', function () {
+    showAll = true;
+    render();
+  });
+
+  // Initialize from URL state
+  var initialState = getUrlParams();
+  if (initialState.query) searchInput.value = initialState.query;
+  if (initialState.department) departmentFilter.value = initialState.department;
+
+  // Show app, hide loading
+  loading.hidden = true;
+  app.hidden = false;
+
+  // Initial search
+  search();
+})();
+</script>
+
+<style>
+  .staff-directory-heading {
+    margin-bottom: var(--spacing-s);
+  }
+
+  .staff-directory-body {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .staff-directory-loading {
+    color: var(--color-neutral-300);
+    font-size: 1.125rem;
+    padding: var(--spacing-xl);
+  }
+
+  /* Controls layout */
+  .staff-directory-controls {
+    display: grid;
+    gap: var(--spacing-s);
+    margin-bottom: var(--spacing-m);
+  }
+
+  @media only screen and (min-width: 641px) {
+    .staff-directory-controls {
+      grid-template-columns: 3fr 2fr auto;
+    }
+  }
+
+  .staff-directory-controls input,
+  .staff-directory-controls select {
+    height: 40px;
+    line-height: 1.5;
+  }
+
+  /* Search input */
+  .staff-search-label-text {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .staff-search-input {
+    appearance: none;
+    background: transparent;
+    border: solid 1px var(--color-neutral-300);
+    border-radius: 4px;
+    box-shadow: none;
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    padding: var(--spacing-xs);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Select styles (inline since it's part of this template) */
+  .select-label-text {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-input {
+    appearance: none;
+    background: transparent;
+    background-image: none;
+    border: solid 1px var(--color-neutral-300);
+    border-radius: 4px;
+    box-shadow: none;
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    height: 40px;
+    line-height: 1.5;
+    padding: var(--spacing-xs);
+    padding-right: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .select-wrapper :global(svg.select-icon) {
+    pointer-events: none;
+    position: absolute;
+    right: var(--spacing-s);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* Clear button */
+  .staff-directory-clear-btn {
+    align-self: end;
+    appearance: none;
+    background: none;
+    border: none;
+    color: var(--color-teal-400);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 600;
+    height: 40px;
+    padding: var(--spacing-xs) var(--spacing-m);
+    text-decoration: underline;
+  }
+
+  .staff-directory-clear-btn:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* Results table */
+  .staff-directory-table {
+    table-layout: fixed;
+    text-align: left;
+    width: 100%;
+  }
+
+  .staff-directory-summary {
+    text-align: left;
+  }
+
+  .photo-col {
+    width: 43px;
+  }
+
+  .staff-directory-thead {
+    border-bottom: 1px solid var(--color-neutral-100);
+    color: var(--color-neutral-300);
+  }
+
+  .staff-directory-thead th {
+    padding: .75rem 0 .75rem 2rem;
+  }
+
+  @media only screen and (max-width: 820px) {
+    .staff-directory-thead {
+      clip: rect(1px, 1px, 1px, 1px);
+      clip-path: inset(50%);
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
+  }
+
+  /* Table rows */
+  :global(.staff-row) {
+    border-top: 1px solid var(--color-neutral-100);
+  }
+
+  :global(.staff-row > *) {
+    padding: 0.75rem 0;
+    position: relative;
+    vertical-align: top;
+  }
+
+  :global(.staff-row > * + *) {
+    padding-left: 2rem;
+  }
+
+  @media only screen and (max-width: 820px) {
+    :global(.staff-row > *) {
+      display: block;
+      padding: 0.5rem 0 0 0;
+    }
+
+    :global(.staff-row > * + *) {
+      padding-left: 0;
+    }
+
+    :global(.staff-row > * + *:nth-of-type(2)) {
+      padding-top: 1rem;
+    }
+
+    :global(.staff-row > * + *:nth-of-type(2) + *) {
+      padding-bottom: 1rem;
+    }
+  }
+
+  /* Photo cell */
+  :global(.staff-photo-cell) {
+    width: 43px;
+  }
+
+  @media only screen and (max-width: 820px) {
+    :global(.staff-photo-cell) {
+      display: none !important;
+    }
+  }
+
+  :global(.staff-photo-cell svg),
+  :global(.staff-photo-cell img) {
+    background-color: var(--color-blue-100);
+    border-radius: 2px;
+    display: block;
+    height: auto;
+    overflow: hidden;
+    width: 43px;
+  }
+
+  /* Name cell */
+  :global(.staff-name-link) {
+    color: var(--color-teal-400);
+    text-decoration: underline;
+  }
+
+  :global(.staff-name-link:hover) {
+    text-decoration-thickness: 2px;
+  }
+
+  :global(.staff-title) {
+    display: block;
+  }
+
+  /* Contact cell */
+  :global(.staff-contact-cell span) {
+    display: block;
+  }
+
+  @media only screen and (max-width: 820px) {
+    :global(.staff-contact-cell span) {
+      display: initial;
+    }
+  }
+
+  :global(.staff-phone-separator) {
+    display: none !important;
+    padding: 0 0.5rem;
+  }
+
+  @media only screen and (max-width: 820px) {
+    :global(.staff-phone-separator) {
+      display: initial !important;
+    }
+  }
+
+  /* Department cell */
+  @media only screen and (max-width: 820px) {
+    :global(.staff-department-cell) {
+      display: none !important;
+    }
+  }
+
+  /* Show more */
+  .show-more-summary {
+    margin-bottom: var(--spacing-l);
+  }
+
+  .staff-directory-show-all-btn {
+    appearance: none;
+    background: var(--color-teal-400);
+    border: 2px solid var(--color-teal-400);
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    padding: var(--spacing-xs) var(--spacing-m);
+  }
+
+  .staff-directory-show-all-btn:hover {
+    background: var(--color-teal-500, #0c5940);
+  }
+</style>

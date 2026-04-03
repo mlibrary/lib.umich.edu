@@ -1,0 +1,112 @@
+---
+/**
+ * HorizontalNavigation Component
+ * 
+ * Displays a horizontal navigation menu with different styles for desktop and mobile
+ */
+interface NavigationItem {
+  to: string;
+  text: string;
+}
+
+interface Props {
+  items?: NavigationItem[];
+  [key: string]: any;
+}
+
+const { items, ...rest } = Astro.props;
+
+if (!items) {
+  return null;
+}
+
+// Get current path for active link detection
+const currentPath = Astro.url.pathname;
+
+function isActive(to: string): boolean {
+  // Remove trailing slash for comparison
+  const normalizedCurrent = currentPath.replace(/\/$/, '');
+  const normalizedTo = to.replace(/\/$/, '');
+  return normalizedCurrent === normalizedTo;
+}
+---
+
+<nav
+  aria-label="Local"
+  {...rest}
+>
+  <div class="margins">
+    <ol>
+      {items.map(({ to, text }) => (
+        <li>
+          <a
+            href={to}
+            class:list={['nav-link', { active: isActive(to) }]}
+          >
+            {text}
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</nav>
+
+<style>
+  nav {
+    background: var(--color-blue-100);
+    border-bottom: solid 1px var(--color-neutral-100);
+    margin-bottom: var(--spacing-l);
+    z-index: 1;
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    border-top: solid 1px var(--color-neutral-100);
+  }
+
+  @media only screen and (min-width: 641px) {
+    li {
+      border: none;
+      display: inline-block;
+      margin-right: var(--spacing-l);
+    }
+  }
+
+  /* Mobile styles (small screen) */
+  .nav-link {
+    display: block;
+    padding: var(--spacing-m);
+    padding-left: calc(var(--spacing-m) - 4px);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .nav-link.active {
+    background: var(--color-teal-100);
+    border-left: solid 4px var(--color-teal-400);
+    color: var(--color-teal-400);
+    font-weight: 700;
+  }
+
+  /* Desktop styles (large screen) */
+  @media only screen and (min-width: 641px) {
+    .nav-link {
+      display: inline-block;
+      padding: var(--spacing-l);
+      padding-bottom: calc(var(--spacing-l) - 4px);
+    }
+
+    .nav-link.active {
+      background: transparent;
+      border-left: none;
+      border-bottom: solid 4px var(--color-teal-400);
+      color: inherit;
+      font-weight: 700;
+    }
+  }
+</style>

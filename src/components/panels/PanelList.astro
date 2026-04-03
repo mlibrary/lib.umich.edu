@@ -1,0 +1,75 @@
+---
+/**
+ * PanelList - Grid/column layout for panel items
+ * Converted from PanelList in src/components/panels/index.js
+ */
+interface Props {
+  twoColumns?: boolean;
+  disableLargeScreenStyles?: boolean;
+  [key: string]: any;
+}
+
+const { twoColumns = false, disableLargeScreenStyles = false, ...rest } = Astro.props;
+---
+
+<ol 
+  class:list={[
+    'panel-list',
+    { 'panel-list-grid': !twoColumns && !disableLargeScreenStyles },
+    { 'panel-list-columns': twoColumns },
+    { 'panel-list-no-responsive': disableLargeScreenStyles }
+  ]}
+  {...rest}
+>
+  <slot />
+</ol>
+
+<style>
+  .panel-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Grid layout (default) */
+  @media (min-width: 720px) {
+    .panel-list-grid {
+      display: grid;
+      grid-gap: 2rem 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+  }
+  
+  /* Two-column layout */
+  @media (min-width: 720px) {
+    .panel-list-columns {
+      column-gap: 3rem;
+      columns: 2;
+    }
+    
+    .panel-list-columns > :global(li) {
+      break-inside: avoid;
+      margin-bottom: 0;
+      margin-top: 2rem;
+    }
+    
+    .panel-list-columns > :global(li:first-of-type) {
+      margin-top: 0;
+    }
+  }
+  
+  /* Mobile spacing for grid items */
+  .panel-list-grid > :global(li) {
+    margin-top: 2rem;
+  }
+  
+  .panel-list-grid > :global(li:first-of-type) {
+    margin-top: 0;
+  }
+  
+  @media (min-width: 720px) {
+    .panel-list-grid > :global(li) {
+      margin: 0;
+    }
+  }
+</style>
