@@ -293,6 +293,88 @@ export const fetchDrupalBuildings = async () => {
 };
 
 /**
+ * Fetch all room nodes from Drupal JSON:API
+ * Rooms can use templates: visit, basic, study_space, destination_body, destination_full
+ */
+export const fetchDrupalRooms = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  const includes = [
+    'field_design_template',
+    'field_panels',
+    'field_panels.field_card_template',
+    'field_panels.field_cards',
+    'field_panels.field_cards.field_media_image',
+    'field_panels.field_cards.field_media_image.field_media_image',
+    'field_room_building',
+    'field_room_building.field_hours_open',
+    'field_room_building.field_parent_location',
+    'field_room_building.field_parent_location.field_hours_open',
+    'field_floor',
+    'field_floor_plan',
+    'field_hours_open',
+    'field_parent_page',
+    'field_media_image',
+    'field_media_image.field_media_image'
+  ].join(',');
+  const url = `${baseUrl}/jsonapi/node/room?include=${includes}`;
+
+  let allData = [];
+  let allIncluded = [];
+  let nextUrl = url;
+
+  while (nextUrl) {
+    const response = await fetchWithRetry(nextUrl);
+    allData = allData.concat(response.data);
+    if (response.included) {
+      allIncluded = allIncluded.concat(response.included);
+    }
+    nextUrl = response.links?.next?.href || null;
+  }
+
+  return { data: allData, included: allIncluded };
+};
+
+/**
+ * Fetch all location nodes from Drupal JSON:API
+ * Locations can use templates: visit, full_width, study_space, destination_body, destination_full
+ */
+export const fetchDrupalLocations = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  const includes = [
+    'field_design_template',
+    'field_panels',
+    'field_panels.field_card_template',
+    'field_panels.field_cards',
+    'field_panels.field_cards.field_media_image',
+    'field_panels.field_cards.field_media_image.field_media_image',
+    'field_parent_location',
+    'field_parent_location.field_hours_open',
+    'field_floor_plan',
+    'field_floor',
+    'field_hours_open',
+    'field_parent_page',
+    'field_media_image',
+    'field_media_image.field_media_image'
+  ].join(',');
+  const url = `${baseUrl}/jsonapi/node/location?include=${includes}`;
+
+  let allData = [];
+  let allIncluded = [];
+  let nextUrl = url;
+
+  while (nextUrl) {
+    const response = await fetchWithRetry(nextUrl);
+    allData = allData.concat(response.data);
+    if (response.included) {
+      allIncluded = allIncluded.concat(response.included);
+    }
+    nextUrl = response.links?.next?.href || null;
+  }
+
+  return { data: allData, included: allIncluded };
+};
+
+/**
  * Generic fetch from Drupal custom API endpoint
  */
 export const fetchFromDrupal = async (endpoint) => {

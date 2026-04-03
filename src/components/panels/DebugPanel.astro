@@ -18,7 +18,7 @@ const prodUrl = jsonApiUrl;
 const nodeType = node?.type || 'unknown';
 
 // Pretty print JSON data
-const nodeDataJson = JSON.stringify(node, null, 2);
+// const nodeDataJson = JSON.stringify(node, null, 2);
 ---
 
 {
@@ -61,7 +61,7 @@ const nodeDataJson = JSON.stringify(node, null, 2);
             </a>
           </div>
         </div>
-        <div class="debug-line debug-json-section">
+        {/* <div class="debug-line debug-json-section">
           <div class="debug-line-title">
             <a href="#" class="json-toggle-link" id="json-toggle">
               Page JSON Data <span class="toggle-icon">▶</span>
@@ -70,7 +70,7 @@ const nodeDataJson = JSON.stringify(node, null, 2);
           <div class="debug-line-value json-data-container" id="json-data">
             <pre class="json-data">{nodeDataJson}</pre>
           </div>
-        </div>
+        </div> */}
       </div>
     </aside>
   )

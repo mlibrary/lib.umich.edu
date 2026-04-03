@@ -53,7 +53,9 @@ export async function getStaticPaths() {
       keywords: page.keywords,
       tag: page.tag,
       parents: page.parents,
-      children: page.children
+      children: page.children,
+      parentIds: page.parentIds,
+      childIds: page.childIds
     }
   }));
 }
@@ -69,7 +71,9 @@ const {
   keywords,
   tag,
   parents,
-  children
+  children,
+  parentIds,
+  childIds
 } = Astro.props;
 
 // Map template names to components (like your getTemplate function)
@@ -113,6 +117,8 @@ const TemplateComponent = templateComponents[template];
     tag={tag}
     parents={parents}
     children={children}
+    parentIds={parentIds}
+    childIds={childIds}
   />
 ) : (
   <Layout title={title || 'Page Not Found'}>

@@ -5,7 +5,9 @@
  */
 import {
   fetchDrupalBuildings,
+  fetchDrupalLocations,
   fetchDrupalPages,
+  fetchDrupalRooms,
   fetchDrupalSectionPages,
   fetchFromDrupal
 } from './drupal.js';
@@ -29,6 +31,93 @@ const fetchDrupalBreadcrumb = async (breadcrumbUrl) => {
   } catch (error) {
     return null;
   }
+};
+
+/**
+ * Sanitize Drupal view data (matches Gatsby plugin sanitizeDrupalView)
+ * Drupal custom view APIs can return "empty" results as nested arrays.
+ */
+const sanitizeDrupalView = (data) => {
+  if (Array.isArray(data)) {
+    if (data[0] && !Array.isArray(data[0])) {
+      return data;
+    }
+  }
+  return null;
+};
+
+/**
+ * Fetch parent/child menu ordering data from Drupal custom view endpoints.
+ * These are the same endpoints Gatsby fetched during onCreateNode via
+ * field_parent_menu / field_child_menu attributes on each node.
+ *
+ * @param {Object} node - A processed Drupal node
+ * @returns {Promise<{parentIds: string[], childIds: string[]}>}
+ */
+const fetchMenuOrderData = async (node) => {
+  const attrs = node.attributes || {};
+  const result = { childIds: [], parentIds: [] };
+
+  const fetchMenuField = async (fieldValue) => {
+    if (!fieldValue) {
+      return [];
+    }
+    try {
+      const data = await fetchFromDrupal(fieldValue);
+      const sanitized = sanitizeDrupalView(data);
+      return sanitized
+        ? sanitized.map(({ uuid }) => {
+            return uuid;
+          })
+        : [];
+    } catch {
+      return [];
+    }
+  };
+
+  result.parentIds = await fetchMenuField(attrs.field_parent_menu);
+  result.childIds = await fetchMenuField(attrs.field_child_menu);
+
+  return result;
+};
+
+/**
+ * Resolve an ordered list of UUIDs to actual section page nodes.
+ * Returns data in Gatsby edges format: [{node: {...}}, ...]
+ *
+ * @param {string[]} uuids - Ordered Drupal UUIDs
+ * @param {Object[]} allProcessedNodes - All processed nodes from page generation
+ * @param {string} [nodeType] - Optional JSON:API type to filter by (e.g. 'node--section_page')
+ * @returns {Object[]} - Edges-format array [{node: {...}}, ...]
+ */
+const resolveMenuNodes = (uuids, allProcessedNodes, nodeType) => {
+  if (!uuids || uuids.length === 0) {
+    return [];
+  }
+  return uuids
+    .map((uuid) => {
+      const found = allProcessedNodes.find((processedNode) => {
+        if (nodeType && processedNode.type !== nodeType) {
+          return false;
+        }
+        return processedNode.id === uuid;
+      });
+      if (!found) {
+        return null;
+      }
+      // Return in Gatsby edges format for processHorizontalNavigationData compatibility
+      return {
+        node: {
+          drupal_id: found.id,
+          field_title_context: found.attributes?.field_title_context || found.title,
+          fields: {
+            slug: found.slug
+          },
+          title: found.title
+        }
+      };
+    })
+    .filter(Boolean);
 };
 
 /**
@@ -506,10 +595,12 @@ export const processDrupalNode = (node, included = []) => {
  */
 export const getPagesToGenerate = async () => {
   // Fetch all content types from Drupal (like your GraphQL query)
-  const [pages, sections, buildings, departments, news, events] = await Promise.all([
+  const [pages, sections, buildings, rooms, locations, departments, news, events] = await Promise.all([
     fetchDrupalPages(),
     fetchDrupalSectionPages(),
     fetchDrupalBuildings(),
+    fetchDrupalRooms(),
+    fetchDrupalLocations(),
     fetchDrupalDepartments(),
     fetchDrupalNews(),
     fetchDrupalEvents()
@@ -520,6 +611,8 @@ export const getPagesToGenerate = async () => {
     ...(pages.data || []),
     ...(sections.data || []),
     ...(buildings.data || []),
+    ...(rooms.data || []),
+    ...(locations.data || []),
     ...(departments.data || []),
     ...(news.data || []),
     ...(events.data || [])
@@ -530,6 +623,8 @@ export const getPagesToGenerate = async () => {
     ...(pages.included || []),
     ...(sections.included || []),
     ...(buildings.included || []),
+    ...(rooms.included || []),
+    ...(locations.included || []),
     ...(departments.included || []),
     ...(news.included || []),
     ...(events.included || [])
@@ -567,6 +662,11 @@ export const getPagesToGenerate = async () => {
         const keywords = node.attributes.field_seo_keywords || '';
         const breadcrumb = await createBreadcrumb(node, processedNodes, breadcrumbOptions);
 
+        // Fetch parent/child menu ordering from Drupal custom view endpoints
+        const menuData = await fetchMenuOrderData(node);
+        const parentNodes = resolveMenuNodes(menuData.parentIds, processedNodes, 'node--section_page');
+        const childNodes = resolveMenuNodes(menuData.childIds, processedNodes, 'node--section_page');
+
         return {
           slug: node.slug,
           node,
@@ -577,8 +677,10 @@ export const getPagesToGenerate = async () => {
           summary,
           keywords,
           tag,
-          parents: [],
-          children: []
+          parents: parentNodes,
+          children: childNodes,
+          parentIds: menuData.parentIds,
+          childIds: menuData.childIds
         };
       })
     );

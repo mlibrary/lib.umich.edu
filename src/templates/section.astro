@@ -3,12 +3,6 @@
  * Section Template
  * Converted from src/templates/section.js
  * 
- * Handles section pages with:
- * - Root page vs child page differentiation
- * - PageHeader/PageHeaderMini
- * - HorizontalNavigation
- * - Body content with panels
- * - Optional LocationAside
  */
 import Layout from '../layouts/Layout.astro';
 import Margins from '../components/Margins.astro';
@@ -24,14 +18,17 @@ import Prose from '../components/Prose.astro';
 import Panels from '../components/panels/Panels.astro';
 import LocationAside from '../components/LocationAside.astro';
 import transformNodePanels from '../utils/transform-node-panels';
+import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data';
 
 interface Props {
   node: any;
   parents?: any[];
   children?: any[];
+  parentIds?: string[];
+  childIds?: string[];
 }
 
-const { node, parents = [], children = [] } = Astro.props;
+const { node, parents = [], children = [], parentIds = [], childIds = [] } = Astro.props;
 
 // Extract node data
 const {
@@ -70,32 +67,30 @@ const showLocationAside =
   relationships?.field_design_template?.field_machine_name === 'section_locaside' 
   && parentNode;
 
-// Build horizontal navigation items
-function buildNavigationItems() {
-  const createNavItem = (n: any) => ({
-    text: n.field_title_context || n.title,
-    to: n.fields?.slug || '/'
-  });
 
-  if (isRootPage) {
-    const items = [createNavItem(node)];
-    if (children && children.length > 0) {
-      items.push(...children.map(createNavItem));
-    }
-    return items;
-  } else {
-    const items = [];
-    if (parentNode) {
-      items.push(createNavItem(parentNode));
-    }
-    if (parents && parents.length > 0) {
-      items.push(...parents.map(createNavItem));
-    }
-    return items;
-  }
-}
+// Build horizontal navigation using the same utility as Gatsby.
+// currentNode needs field_title_context and fields.slug to match Gatsby shape.
+const currentNode = {
+  field_title_context: fieldTitleContext || node.attributes?.title,
+  fields: { slug: node.slug || node.attributes?.path?.alias }
+};
 
-const navigationItems = buildNavigationItems();
+const parentNodeNav = parentNode
+  ? {
+      field_title_context: parentNode.field_title_context || parentNode.title,
+      fields: { slug: parentNode.fields?.slug || parentNode.slug }
+    }
+  : null;
+
+const navigationItems = processHorizontalNavigationData({
+  childrenNodeOrderByDrupalId: childIds,
+  childrenNodes: children,
+  currentNode,
+  isRootPage,
+  parentNode: parentNodeNav,
+  parentNodeOrderByDrupalId: parentIds,
+  parentNodes: parents
+});
 ---
 
 <Layout title={fieldHeaderTitle || fieldTitleContext || title}>
