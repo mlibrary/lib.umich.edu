@@ -18,7 +18,7 @@ import Prose from '../components/Prose.astro';
 import Panels from '../components/panels/Panels.astro';
 import LocationAside from '../components/LocationAside.astro';
 import transformNodePanels from '../utils/transform-node-panels';
-import processHorizontalNavigationData from '../components/utilities/process-horizontal-navigation-data';
+import buildHorizontalNavigation from '../utils/build-horizontal-navigation';
 
 interface Props {
   node: any;
@@ -68,28 +68,15 @@ const showLocationAside =
   && parentNode;
 
 
-// Build horizontal navigation using the same utility as Gatsby.
-// currentNode needs field_title_context and fields.slug to match Gatsby shape.
-const currentNode = {
-  field_title_context: fieldTitleContext || node.attributes?.title,
-  fields: { slug: node.slug || node.attributes?.path?.alias }
-};
-
-const parentNodeNav = parentNode
-  ? {
-      field_title_context: parentNode.field_title_context || parentNode.title,
-      fields: { slug: parentNode.fields?.slug || parentNode.slug }
-    }
-  : null;
-
-const navigationItems = processHorizontalNavigationData({
-  childrenNodeOrderByDrupalId: childIds,
-  childrenNodes: children,
-  currentNode,
+// Horizontal navigation
+const navigationItems = buildHorizontalNavigation({
+  node,
   isRootPage,
-  parentNode: parentNodeNav,
-  parentNodeOrderByDrupalId: parentIds,
-  parentNodes: parents
+  parentNode,
+  parentIds,
+  parents,
+  childIds,
+  children
 });
 ---
 

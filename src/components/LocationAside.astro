@@ -30,6 +30,14 @@ interface Props {
 const { node, isStudySpaceAside = false } = Astro.props;
 
 // ---------- Data extraction ----------
+// The node can come in two shapes:
+//  1. A relationship-resolved object (from section_locaside) where attributes are
+//     spread at the top level: { field_phone_number, relationships, … }
+//  2. A top-level page node (from visit) with nested attributes:
+//     { attributes: { field_phone_number, … }, relationships: { … } }
+// Normalise so all downstream code sees the same flat shape.
+const attrs = node.attributes ?? node;
+const relationships = node.relationships ?? {};
 
 const {
   field_phone_number: fieldPhoneNumber,
@@ -38,8 +46,9 @@ const {
   field_noise_level: noiseLevel,
   field_space_features: spaceFeatures,
   field_building_address: fieldBuildingAddress,
-  relationships,
-} = node;
+  field_display_hours_: fieldDisplayHours,
+  field_hours_different_from_build: fieldHoursDifferentFromBuild,
+} = attrs;
 
 const buildingNode = relationships?.field_room_building;
 const parentLocationNode = relationships?.field_parent_location;
@@ -185,12 +194,12 @@ function formatFeatureLabel(feature: string): string {
               Hours
             </Heading>
             <p class="hours-display" data-hours-node={JSON.stringify({
-              field_display_hours_: node.field_display_hours_,
-              field_hours_different_from_build: node.field_hours_different_from_build,
+              field_display_hours_: fieldDisplayHours,
+              field_hours_different_from_build: fieldHoursDifferentFromBuild,
               relationships: {
-                field_hours_open: node.relationships?.field_hours_open,
-                field_room_building: node.relationships?.field_room_building,
-                field_parent_location: node.relationships?.field_parent_location,
+                field_hours_open: relationships?.field_hours_open,
+                field_room_building: relationships?.field_room_building,
+                field_parent_location: relationships?.field_parent_location,
               }
             })}>…</p>
             <Link href={getHoursAnchor()}>View more hours</Link>
@@ -258,12 +267,12 @@ function formatFeatureLabel(feature: string): string {
               Hours
             </Heading>
             <p class="hours-display" data-hours-node={JSON.stringify({
-              field_display_hours_: node.field_display_hours_,
-              field_hours_different_from_build: node.field_hours_different_from_build,
+              field_display_hours_: fieldDisplayHours,
+              field_hours_different_from_build: fieldHoursDifferentFromBuild,
               relationships: {
-                field_hours_open: node.relationships?.field_hours_open,
-                field_room_building: node.relationships?.field_room_building,
-                field_parent_location: node.relationships?.field_parent_location,
+                field_hours_open: relationships?.field_hours_open,
+                field_room_building: relationships?.field_room_building,
+                field_parent_location: relationships?.field_parent_location,
               }
             })}>…</p>
             <Link href={getHoursAnchor()}>View more hours</Link>
