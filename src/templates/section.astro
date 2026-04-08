@@ -58,6 +58,11 @@ const summary = isRootPage
 // Transform panels
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
+// Render the Template layout when there's body text OR body-placed panels.
+// Gatsby's hasBody check only considers body.processed, but if the body text
+// isn't available yet body-placed panels and the LocationAside still need to render.
+const hasContent = hasBody || bodyPanels.length > 0;
+
 // Check if location aside should be shown
 const showLocationAside = 
   relationships?.field_design_template?.field_machine_name === 'section_locaside' 
@@ -96,7 +101,7 @@ const navigationItems = buildHorizontalNavigation({
     style={isRootPage ? '' : 'border-top: none;'}
   />
 
-  {hasBody ? (
+  {hasContent ? (
     <Template hasSide={showLocationAside}>
       <TemplateContent>
         <Prose>

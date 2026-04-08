@@ -188,18 +188,47 @@ export const fetchDrupalPages = async () => {
 export const fetchDrupalSectionPages = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
 
-  // Keep includes minimal - only include what exists on ALL section pages
-  // Cannot include panel-specific fields like field_parent_card because
-  // Not all panel types have that field (causes 400 error)
+  // Include all panel relationship types that section pages can reference.
+  // Matches the Gatsby sectionFragment which spreads buildingFragment,
+  // locationFragment, and roomFragment on field_parent_page.
+  // NOTE: Section pages do NOT allow link_panel or group_panel paragraph
+  //       types, so field_link_template and field_panel_group are omitted.
   const includes = [
     'field_design_template',
     'field_parent_page',
     'field_media_image',
+    // Card panel relationships
     'field_panels',
     'field_panels.field_card_template',
     'field_panels.field_cards',
     'field_panels.field_cards.field_media_image',
-    'field_panels.field_cards.field_media_image.field_media_image'
+    'field_panels.field_cards.field_media_image.field_media_image',
+    // Text panel relationships
+    'field_panels.field_text_template',
+    'field_panels.field_text_card',
+    'field_panels.field_text_card.field_text_image',
+    'field_panels.field_text_card.field_text_image.field_media_image',
+    // Hours panel lite - direct field_cards with location data
+    'field_panels.field_cards.field_hours_open',
+    'field_panels.field_cards.field_parent_location',
+    'field_panels.field_cards.field_parent_location.field_hours_open',
+    // Parent page sub-relationships (needed by LocationAside for section_locaside)
+    'field_parent_page.field_hours_open',
+    'field_parent_page.field_floor_plan',
+    'field_parent_page.field_parent_location',
+    'field_parent_page.field_parent_location.field_hours_open',
+    // Parent page: visit info, amenities, campus (building/location/room fragments)
+    'field_parent_page.field_visit',
+    'field_parent_page.field_amenities',
+    'field_parent_page.field_building_campus',
+    'field_parent_page.field_media_image',
+    'field_parent_page.field_panels',
+    // Parent page: room-specific (room_building → building → parent_location chain)
+    'field_parent_page.field_room_building',
+    'field_parent_page.field_room_building.field_hours_open',
+    'field_parent_page.field_room_building.field_parent_location',
+    'field_parent_page.field_room_building.field_parent_location.field_hours_open',
+    'field_parent_page.field_floor'
   ].join(',');
 
   const url = `${baseUrl}/jsonapi/node/section_page?include=${includes}`;
@@ -263,6 +292,7 @@ export const fetchDrupalHoursPanels = async () => {
 
 /**
  * Fetch all buildings from Drupal JSON:API
+ * Matches Gatsby buildingFragment relationships.
  */
 export const fetchDrupalBuildings = async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
@@ -272,7 +302,17 @@ export const fetchDrupalBuildings = async () => {
     'field_panels.field_card_template',
     'field_panels.field_cards',
     'field_panels.field_cards.field_media_image',
-    'field_panels.field_cards.field_media_image.field_media_image'
+    'field_panels.field_cards.field_media_image.field_media_image',
+    // Building-specific relationships (visit template, LocationAside)
+    'field_visit',
+    'field_amenities',
+    'field_hours_open',
+    'field_floor_plan',
+    'field_building_campus',
+    'field_parent_location',
+    'field_parent_page',
+    'field_media_image',
+    'field_media_image.field_media_image'
   ].join(',');
   const url = `${baseUrl}/jsonapi/node/building?include=${includes}`;
 
@@ -314,7 +354,10 @@ export const fetchDrupalRooms = async () => {
     'field_hours_open',
     'field_parent_page',
     'field_media_image',
-    'field_media_image.field_media_image'
+    'field_media_image.field_media_image',
+    // Room-specific: visit template and LocationAside
+    'field_visit',
+    'field_amenities'
   ].join(',');
   const url = `${baseUrl}/jsonapi/node/room?include=${includes}`;
 
@@ -354,7 +397,10 @@ export const fetchDrupalLocations = async () => {
     'field_hours_open',
     'field_parent_page',
     'field_media_image',
-    'field_media_image.field_media_image'
+    'field_media_image.field_media_image',
+    // Location-specific: visit template and LocationAside
+    'field_visit',
+    'field_amenities'
   ].join(',');
   const url = `${baseUrl}/jsonapi/node/location?include=${includes}`;
 
