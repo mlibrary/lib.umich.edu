@@ -26,13 +26,12 @@ const imageAlt = imageRelationship?.imageAlt || '';
 const imageWidth = imageRelationship?.imageWidth || 920;
 const imageHeight = imageRelationship?.imageHeight || 400;
 
-// Use the breadcrumb prop directly if provided, otherwise generate default
+// Use the breadcrumb prop directly if provided, otherwise generate a basic fallback
 let breadcrumbData = breadcrumb;
 if (!breadcrumbData) {
-  // Only generate breadcrumb if none provided
   breadcrumbData = generateBreadcrumb(
-    { title: title, slug: '/current' },
-    [{ title: 'Parent', slug: '/parent' }]
+    { title: title, slug: '' },
+    []
   );
 }
 ---
