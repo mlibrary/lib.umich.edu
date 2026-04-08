@@ -2,8 +2,7 @@ export { wrapPageElement } from './gatsby-shared';
 
 /**
  * Gatsby injects #gatsby-announcer directly into <body>, outside any ARIA
- * landmark. Wrap it in an <aside> so screen-reader users aren't flagged by
- * accessibility auditors for text outside a landmark region.
+ * landmark. This wraps it in an an <aside> for accessibility
  */
 export const onInitialClientRender = () => {
   const announcer = document.getElementById('gatsby-announcer');
