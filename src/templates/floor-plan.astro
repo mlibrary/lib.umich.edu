@@ -1,5 +1,175 @@
 ---
-import BasicTemplate from './basic.astro';
-const props = Astro.props;
+/**
+ * Floor Plan Template
+ * Converted from src/templates/floor-plan.js
+ *
+ * Layout (matches Gatsby page-layout.js grid):
+ *   - TemplateLayout → Layout wrapper + SEO
+ *   - Margins → max-width container
+ *   - Template (variant="basic") → top / side / content CSS grid
+ *     - TemplateTop → Breadcrumb (full-width top row)
+ *     - TemplateSide → SideNavigation (large screen only)
+ *                      HorizontalNavigation (small screen only)
+ *     - TemplateContent → Heading + body HTML + printable PDF link + SVG image
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateTop from '../components/TemplateTop.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import SideNavigation from '../components/navigation/SideNavigation.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import { getNavigationBranch } from '../lib/navigation.js';
+
+interface Props {
+  node: any;
+  title: string;
+  breadcrumb?: string;
+  parents?: any[];
+}
+
+const {
+  node,
+  title,
+  breadcrumb,
+  parents,
+} = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available');
+}
+
+const DRUPAL_BASE_URL = (import.meta.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/, '');
+
+const {
+  field_title_context: fieldTitleContext,
+  field_local_navigation: fieldLocalNavigation,
+} = node.attributes;
+
+const { relationships } = node;
+const { processed: body } = node.attributes.body || {};
+const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pathname;
+
+// SVG image and printable PDF from file relationships
+const fieldSvgImage = relationships?.field_svg_image;
+const fieldPrintableImage = relationships?.field_printable_image;
+
+const svgUrl = fieldSvgImage?.uri?.url
+  ? (fieldSvgImage.uri.url.startsWith('http') ? fieldSvgImage.uri.url : `${DRUPAL_BASE_URL}${fieldSvgImage.uri.url}`)
+  : null;
+
+const pdfUrl = fieldPrintableImage?.uri?.url
+  ? (fieldPrintableImage.uri.url.startsWith('http') ? fieldPrintableImage.uri.url : `${DRUPAL_BASE_URL}${fieldPrintableImage.uri.url}`)
+  : null;
+
+// Breadcrumb
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: fieldTitleContext || title || 'Unknown Page', slug },
+    parents || []
+  );
+}
+
+// Side navigation — only fetched when the page opts in to local navigation
+let navBranch = null;
+let smallScreenItems = null;
+
+if (fieldLocalNavigation) {
+  navBranch = await getNavigationBranch(slug);
+  const smallBranch = await getNavigationBranch(slug, 'small');
+  smallScreenItems = smallBranch?.children || null;
+}
 ---
-<BasicTemplate {...props} />
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <Template variant="basic" hasSide={!!fieldLocalNavigation}>
+    <TemplateTop>
+      <Breadcrumb data={breadcrumbData} />
+    </TemplateTop>
+
+    {fieldLocalNavigation && (
+      <TemplateSide class="floor-plan-side">
+        {navBranch && (
+          <SideNavigation path={slug} branch={navBranch} />
+        )}
+
+        {smallScreenItems && (
+          <div class="small-screen-nav">
+            <HorizontalNavigation items={smallScreenItems} />
+          </div>
+        )}
+      </TemplateSide>
+    )}
+
+    <TemplateContent>
+      <Heading size="3XL" level={1}>
+        {fieldTitleContext}
+      </Heading>
+
+      {body && <Html html={body} />}
+
+      {pdfUrl && (
+        <p class="floor-plan-pdf-link">
+          <a href={pdfUrl} class="floor-plan-link">
+            {node.attributes.title} PDF
+          </a>
+        </p>
+      )}
+
+      {svgUrl && (
+        <img
+          src={svgUrl}
+          alt=""
+          class="floor-plan-svg"
+        />
+      )}
+    </TemplateContent>
+  </Template>
+</TemplateLayout>
+
+<style>
+  /* Side navigation: no decorative border */
+  :global(.floor-plan-side .template-side-inner) {
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  /* Small-screen horizontal nav — hidden on large screens */
+  .small-screen-nav {
+    display: block;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .small-screen-nav {
+      display: none;
+    }
+  }
+
+  /* PDF link — matches LINK_STYLES.default + SPACING.L top margin */
+  .floor-plan-pdf-link {
+    margin-top: 1.5rem; /* SPACING.L */
+  }
+
+  .floor-plan-link {
+    color: var(--color-teal-400);
+    box-shadow: inset 0 -1px var(--color-teal-400);
+  }
+
+  .floor-plan-link:hover {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  /* SVG image — matches Gatsby original styling */
+  .floor-plan-svg {
+    display: block;
+    margin-top: 2.5rem; /* SPACING['2XL'] */
+    max-width: 38rem;
+    width: 100%;
+  }
+</style>

@@ -375,6 +375,38 @@ export const fetchDrupalLocations = async () => {
 };
 
 /**
+ * Fetch all floor plan nodes from Drupal JSON:API
+ * Floor plans have SVG and printable PDF file references
+ */
+export const fetchDrupalFloorPlans = async () => {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  const includes = [
+    'field_design_template',
+    'field_svg_image',
+    'field_printable_image',
+    'field_room_building',
+    'field_room_building.field_hours_open',
+    'field_floor'
+  ].join(',');
+  const url = `${baseUrl}/jsonapi/node/floor_plan?include=${includes}`;
+
+  let allData = [];
+  let allIncluded = [];
+  let nextUrl = url;
+
+  while (nextUrl) {
+    const response = await fetchWithRetry(nextUrl);
+    allData = allData.concat(response.data);
+    if (response.included) {
+      allIncluded = allIncluded.concat(response.included);
+    }
+    nextUrl = response.links?.next?.href || null;
+  }
+
+  return { data: allData, included: allIncluded };
+};
+
+/**
  * Generic fetch from Drupal custom API endpoint
  */
 export const fetchFromDrupal = async (endpoint) => {
