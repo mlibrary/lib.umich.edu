@@ -3,17 +3,6 @@
  * Destination Body Template
  * Converted from src/templates/destination-body.js
  *
- * Layout (matches Gatsby page-layout.js grid):
- *   - TemplateLayout → Layout wrapper
- *   - Margins (via Template variant="basic") → max-width container
- *   - Template (variant="basic") → top / side / content CSS grid
- *     - TemplateTop → Breadcrumb (full-width top row)
- *     - TemplateSide → SideNavigation (large screen)
- *                      HorizontalNavigation (small screen)
- *     - TemplateContent → Heading + lede summary + DestinationLocationInfo
- *                         + hero image + body HTML + Panels
- *
- * Data sources: page, room, or location (Gatsby used getNode to pick whichever existed)
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
 import Template from '../components/Template.astro';
@@ -55,10 +44,6 @@ const {
   parents,
 } = Astro.props;
 
-if (!node) {
-  throw new Error('Destination Body template: no node data available');
-}
-
 const {
   field_title_context: fieldTitleContext,
   field_local_navigation: fieldLocalNavigation,
@@ -81,8 +66,8 @@ if (!breadcrumbData) {
 const imageRelationship = relationships?.field_media_image;
 const imageSrc = imageRelationship?.imageUrl || null;
 const imageAlt = imageRelationship?.imageAlt || '';
-const imageWidth = imageRelationship?.imageWidth || 920;
-const imageHeight = imageRelationship?.imageHeight || 600;
+const imageWidth = imageRelationship?.imageWidth;
+const imageHeight = imageRelationship?.imageHeight;
 
 // Panels
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
@@ -147,7 +132,7 @@ const hoursAnchor = hoursAnchorTitle
     </TemplateTop>
 
     {fieldLocalNavigation && (
-      <TemplateSide class="destination-side">
+      <TemplateSide class="destination-side" contentSide="right">
         {navBranch && (
           <SideNavigation path={slug} branch={navBranch} />
         )}
