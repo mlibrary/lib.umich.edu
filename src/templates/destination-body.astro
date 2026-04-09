@@ -1,9 +1,312 @@
 ---
-import BasicTemplate from './basic.astro';
+/**
+ * Destination Body Template
+ * Converted from src/templates/destination-body.js
+ *
+ * Layout (matches Gatsby page-layout.js grid):
+ *   - TemplateLayout → Layout wrapper
+ *   - Margins (via Template variant="basic") → max-width container
+ *   - Template (variant="basic") → top / side / content CSS grid
+ *     - TemplateTop → Breadcrumb (full-width top row)
+ *     - TemplateSide → SideNavigation (large screen)
+ *                      HorizontalNavigation (small screen)
+ *     - TemplateContent → Heading + lede summary + DestinationLocationInfo
+ *                         + hero image + body HTML + Panels
+ *
+ * Data sources: page, room, or location (Gatsby used getNode to pick whichever existed)
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateTop from '../components/TemplateTop.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
-import DebugPanel from '../components/panels/DebugPanel.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import DrupalImage from '../components/DrupalImage.astro';
+import IconText from '../components/IconText.astro';
+import Link from '../reusable/link.astro';
+import Panels from '../components/panels/Panels.astro';
+import SideNavigation from '../components/navigation/SideNavigation.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import { getNavigationBranch } from '../lib/navigation.js';
+import transformNodePanels from '../utils/transform-node-panels';
+import getBuildingSlug from '../utils/get-building-slug';
+import getFloor from '../utils/get-floor';
+import createSlug from '../reusable/create-slug';
 
-const props = Astro.props;
+interface Props {
+  node: any;
+  drupal_nid?: string;
+  title: string;
+  breadcrumb?: string;
+  summary?: string;
+  keywords?: string;
+  tag?: string;
+  parents?: any[];
+  children?: any[];
+}
+
+const {
+  node,
+  title,
+  breadcrumb,
+  parents,
+} = Astro.props;
+
+if (!node) {
+  throw new Error('Destination Body template: no node data available');
+}
+
+const {
+  field_title_context: fieldTitleContext,
+  field_local_navigation: fieldLocalNavigation,
+} = node.attributes || {};
+
+const { relationships } = node;
+const { processed: body, summary: bodySummary } = node.attributes?.body || {};
+const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pathname;
+
+// Breadcrumb
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: fieldTitleContext || title || 'Unknown Page', slug },
+    parents || []
+  );
+}
+
+// Hero image
+const imageRelationship = relationships?.field_media_image;
+const imageSrc = imageRelationship?.imageUrl || null;
+const imageAlt = imageRelationship?.imageAlt || '';
+const imageWidth = imageRelationship?.imageWidth || 920;
+const imageHeight = imageRelationship?.imageHeight || 600;
+
+// Panels
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+
+// Side navigation
+let navBranch = null;
+let smallScreenItems = null;
+
+if (fieldLocalNavigation) {
+  navBranch = await getNavigationBranch(slug);
+  const smallBranch = await getNavigationBranch(slug, 'small');
+  smallScreenItems = smallBranch?.children || null;
+}
+
+// --- DestinationLocationInfo logic (inline, matching destination-location-info.js) ---
+// Only rendered for room/location nodes, not page nodes
+const isPageNode = node.type === 'node--page';
+
+// Location resolution (matches resolveLocationFromNode)
+const buildingNode = relationships?.field_room_building;
+const parentLocationNode = relationships?.field_parent_location;
+const locationNode = buildingNode
+  ?? parentLocationNode?.relationships?.field_parent_location
+  ?? node;
+
+const buildingSlug = getBuildingSlug({ node });
+const shouldDisplayHours = node.attributes?.field_display_hours_;
+const locationTitle = parentLocationNode?.title ?? buildingNode?.title;
+const phoneNumber = node.attributes?.field_phone_number;
+const email = node.attributes?.field_email;
+const floor = relationships?.field_floor ? getFloor({ node }) : null;
+const roomNumber = node.attributes?.field_room_number
+  ? `Room ${node.attributes.field_room_number}`
+  : null;
+const locationSummary = [locationTitle, floor, roomNumber]
+  .filter((item) => typeof item === 'string')
+  .join(', ');
+
+// Floor plan: use the node's own relationship (already resolved by processDrupalNode)
+const floorPlans = Array.isArray(relationships?.field_floor_plan)
+  ? relationships.field_floor_plan
+  : relationships?.field_floor_plan
+    ? [relationships.field_floor_plan]
+    : [];
+const floorPlan = floorPlans[0] || null;
+
+// Ask Librarian special case
+const askLibrarian = slug === '/ask-librarian';
+
+// Hours anchor link
+const hoursAnchorTitle = locationNode?.relationships?.field_parent_location?.title
+  ?? locationNode?.title;
+const hoursAnchor = hoursAnchorTitle
+  ? `/locations-and-hours/hours-view#${createSlug(hoursAnchorTitle)}`
+  : '/locations-and-hours/hours-view';
 ---
-<Breadcrumb {...props} />
-<BasicTemplate {...props} />
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <Template variant="basic" hasSide={!!fieldLocalNavigation}>
+    <TemplateTop>
+      <Breadcrumb data={breadcrumbData} />
+    </TemplateTop>
+
+    {fieldLocalNavigation && (
+      <TemplateSide class="destination-side">
+        {navBranch && (
+          <SideNavigation path={slug} branch={navBranch} />
+        )}
+
+        {smallScreenItems && (
+          <div class="small-screen-nav">
+            <HorizontalNavigation items={smallScreenItems} />
+          </div>
+        )}
+      </TemplateSide>
+    )}
+
+    <TemplateContent>
+      <div class="destination-content">
+        <Heading
+          level={1}
+          size="3XL"
+          style="margin-bottom: var(--spacing-l); margin-top: var(--spacing-s);"
+        >
+          {fieldTitleContext}
+        </Heading>
+
+        {bodySummary && (
+          <p class="lede">{bodySummary}</p>
+        )}
+
+        {/* DestinationLocationInfo — only for room/location nodes */}
+        {!isPageNode && (
+          <div class="location-info">
+            {shouldDisplayHours && (
+              <p>
+                <IconText icon="access_time">
+                  <span>
+                    <span class="hours-display" data-hours-node={JSON.stringify({
+                      field_display_hours_: shouldDisplayHours,
+                      field_hours_different_from_build: node.attributes?.field_hours_different_from_build,
+                      relationships: {
+                        field_hours_open: relationships?.field_hours_open,
+                        field_room_building: relationships?.field_room_building,
+                        field_parent_location: relationships?.field_parent_location,
+                      }
+                    })}>…</span>
+                    <span class="block">
+                      <Link href={hoursAnchor}>View more hours</Link>
+                    </span>
+                  </span>
+                </IconText>
+              </p>
+            )}
+
+            {(floorPlan || askLibrarian) && (
+              <p>
+                <IconText icon="address">
+                  <span>
+                    {locationSummary}
+                    {buildingSlug && (
+                      <span class="block">
+                        <Link href={buildingSlug}>View building information</Link>
+                      </span>
+                    )}
+                    <span class="block">
+                      {askLibrarian
+                        ? 'Online'
+                        : floorPlan?.fields?.slug && (
+                            <Link href={floorPlan.fields.slug}>View floor plan</Link>
+                          )
+                      }
+                    </span>
+                  </span>
+                </IconText>
+              </p>
+            )}
+
+            {phoneNumber && (
+              <p>
+                <IconText icon="phone">
+                  <Link href={`tel:+1-${phoneNumber}`}>{phoneNumber}</Link>
+                </IconText>
+              </p>
+            )}
+
+            {email && (
+              <p>
+                <IconText icon="mail_outline">
+                  <Link href={`mailto:${email}`}>{email}</Link>
+                </IconText>
+              </p>
+            )}
+          </div>
+        )}
+
+        {imageSrc && (
+          <DrupalImage
+            src={imageSrc}
+            alt={imageAlt}
+            width={imageWidth}
+            height={imageHeight}
+            class="destination-hero-image"
+          />
+        )}
+      </div>
+
+      {body && <Html html={body} />}
+
+      <Panels data={bodyPanels} />
+    </TemplateContent>
+  </Template>
+
+  <Panels data={fullPanels} />
+</TemplateLayout>
+
+<style>
+  /* Side nav: no decorative border */
+  :global(.destination-side .template-side-inner) {
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  /* Small-screen horizontal nav — hidden on large screens */
+  .small-screen-nav {
+    display: block;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .small-screen-nav {
+      display: none;
+    }
+  }
+
+  /* Content column max-width (matches Gatsby maxWidth: '38rem') */
+  .destination-content {
+    max-width: 38rem;
+  }
+
+  /* Lede text (matches Gatsby Text lede) */
+  .lede {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  /* Location info spacing (matches Gatsby > *:not(:last-child) marginBottom) */
+  .location-info {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .location-info > p:not(:last-child) {
+    margin-bottom: var(--spacing-m);
+  }
+
+  .block {
+    display: block;
+  }
+
+  /* Hero image */
+  .destination-hero-image {
+    border-radius: 2px;
+    margin-bottom: var(--spacing-2xl);
+    width: 100%;
+  }
+</style>
