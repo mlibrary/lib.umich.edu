@@ -590,11 +590,21 @@ export const processDrupalNode = (node, included = []) => {
   };
 };
 
+// cache pages on build for 5 minutes. To be replaced with AStro's Content Layer API
+let _pagesCache = null;
+let _pagesCacheTimestamp = 0;
+const PAGES_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes in dev
+
 /**
  * Get all pages that should be generated
  * This is the Astro equivalent of your Gatsby GraphQL query + createPages
  */
 export const getPagesToGenerate = async () => {
+  const isDev = import.meta.env?.DEV ?? (process.env.NODE_ENV !== 'production');
+  if (isDev && _pagesCache && (Date.now() - _pagesCacheTimestamp < PAGES_CACHE_TTL_MS)) {
+    return _pagesCache;
+  }
+
   // Fetch all content types from Drupal (like your GraphQL query)
   const [pages, sections, buildings, rooms, locations, floorPlans, departments, news, events] = await Promise.all([
     fetchDrupalPages(),
@@ -724,7 +734,13 @@ export const getPagesToGenerate = async () => {
     pagesWithBreadcrumbs.push(...batchResults);
   }
 
-  return pagesWithBreadcrumbs.filter((page) => {
+  const result = pagesWithBreadcrumbs.filter((page) => {
     return page.template !== null;
   });
+
+  // Store in cache for dev mode reuse
+  _pagesCache = result;
+  _pagesCacheTimestamp = Date.now();
+
+  return result;
 };
