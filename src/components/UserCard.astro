@@ -1,0 +1,97 @@
+---
+/**
+ * UserCard Component
+ * Converted from src/components/user-card.js
+ *
+ * Displays a contact card with photo, name link, title, phone, and email.
+ */
+import StaffPhotoPlaceholder from './StaffPhotoPlaceholder.astro';
+import Link from '../reusable/link.astro';
+
+interface Props {
+  name: string;
+  to: string;
+  image?: {
+    alt: string;
+    url: string;
+  };
+  title?: string;
+  phone?: string;
+  email?: string;
+}
+
+const { name, to, image, title, phone, email } = Astro.props;
+---
+
+<section class="user-card">
+  <div class="user-photo-container">
+    {image?.url ? (
+      <img
+        src={image.url}
+        alt={image.alt || ''}
+        class="user-photo"
+        loading="lazy"
+        decoding="async"
+        width="75"
+        height="100"
+      />
+    ) : (
+      <StaffPhotoPlaceholder />
+    )}
+  </div>
+  <div class="user-info">
+    <Link href={to} kind="description">{name}</Link>
+    {title && <p class="user-title">{title}</p>}
+    {phone && (
+      <p>
+        <Link href={`tel:${phone}`} kind="subtle">{phone}</Link>
+      </p>
+    )}
+    {email && (
+      <p>
+        <Link href={`mailto:${email}`} kind="subtle">{email}</Link>
+      </p>
+    )}
+  </div>
+</section>
+
+<style>
+  .user-card {
+    display: flex;
+    margin: 1.5rem 0; /* SPACING.L */
+  }
+
+  .user-photo-container {
+    aspect-ratio: 3 / 4;
+    background-color: var(--color-blue-100);
+    border-radius: 2px;
+    flex-shrink: 0;
+    overflow: hidden;
+    width: 75px;
+  }
+
+  .user-photo-container :global(svg) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .user-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+
+  .user-info {
+    margin-left: 1rem; /* SPACING.M */
+  }
+
+  .user-title {
+    margin: 0;
+  }
+
+  .user-info p {
+    margin: 0;
+  }
+</style>

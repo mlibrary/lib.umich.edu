@@ -1,0 +1,125 @@
+---
+/**
+ * Page Header Component - Converted to Astro
+ * Original: src/components/page-header.js
+ * 
+ * Displays page title, breadcrumb, summary, and optional hero image
+ */
+import Breadcrumb from './Breadcrumb.astro';
+import DrupalImage from './DrupalImage.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+
+interface Props {
+  breadcrumb?: string;
+  title: string;
+  summary?: string;
+  image?: any;
+}
+
+const { breadcrumb, title, summary, image } = Astro.props;
+
+// Extract image data — page-generator resolves these as flat fields on field_media_image
+const imageRelationship = image;
+const imageSrc = imageRelationship?.imageUrl || null;
+const imageAlt = imageRelationship?.imageAlt || '';
+const imageWidth = imageRelationship?.imageWidth || 920;
+const imageHeight = imageRelationship?.imageHeight || 400;
+
+// Use the breadcrumb prop directly if provided, otherwise generate a basic fallback
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: title, slug: '' },
+    []
+  );
+}
+---
+
+<div class="page-header-wrapper">
+  <div class="margins">
+    <header class="page-header">
+      <div class="page-header-content">
+        <Breadcrumb data={breadcrumbData} />
+        
+        <Heading size="3XL" level={1}>
+          {title}
+        </Heading>
+        
+        {summary && (
+          <p class="page-summary">{summary}</p>
+        )}
+      </div>
+      
+      {imageSrc && (
+        <div class="page-header-image">
+          <DrupalImage src={imageSrc} alt={imageAlt} width={imageWidth} height={imageHeight} loading="eager" sizes="(min-width: 920px) 920px, 100vw" />
+        </div>
+      )}
+    </header>
+  </div>
+</div>
+
+<style>
+  .page-heading{
+    margin-bottom: 1rem;
+  }
+
+  .page-header-wrapper {
+    border-bottom: 1px solid var(--color-neutral-100, #e0e0e0);
+  }
+  
+  .page-header {
+    display: block;
+  }
+  
+  .page-header-content {
+    padding-bottom: 2rem;
+    padding-right: 3rem;
+    padding-top: 0;
+  }
+  
+  .page-summary {
+    font-size: 1.125rem;
+    max-width: 38rem;
+  }
+  
+  .page-header-image {
+    margin: 0 -1rem;
+  }
+  
+  .page-header-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  /* Desktop layout: side-by-side */
+  @media (min-width: 640px) {
+    .page-header {
+      display: flex;
+      align-items: stretch;
+      min-height: 350px;
+    }
+    
+    .page-header-content {
+      flex: 1 1 0;
+    }
+    
+    .page-header-image {
+      flex: 0 1 50%;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page-header-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+</style>

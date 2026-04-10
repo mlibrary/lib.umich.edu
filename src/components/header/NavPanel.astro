@@ -1,0 +1,320 @@
+---
+import Icon from '../../reusable/Icon.astro';
+import Heading from '../../reusable/Heading.astro';
+
+interface Props {
+  items: any[];
+}
+
+const { items } = Astro.props;
+
+const dropdownSideWidth = '24rem';
+---
+
+<div class="nav-panel-container">
+  <ul class="nav-panel-sidebar" style={`width: ${dropdownSideWidth};`}>
+    {items.map((item, index) => (
+      <li class="nav-panel-item">
+        {item.children ? (
+          <button
+            class="nav-panel-button"
+            data-panel-index={index}
+            aria-expanded="false"
+          >
+            <span class="text">{item.text}</span>
+            <Icon icon="navigate_next" />
+          </button>
+        ) : (
+          <a href={item.to} class="nav-panel-link">
+            <span class="text">{item.text}</span>
+          </a>
+        )}
+      </li>
+    ))}
+  </ul>
+  <div class="nav-panel-content-container">
+    {items.map((item, index) => (
+      item.children && (
+        <div
+          class="nav-panel-content"
+          data-panel-content-index={index}
+          hidden
+        >
+          <Heading level={2} class="nav-panel-heading">{item.text}</Heading>
+          {item.description && (
+            <p class="nav-panel-description">{item.description}</p>
+          )}
+          <ul
+            class="nav-panel-links"
+            style={item.children.length > 4 ? 'columns: 2; column-gap: 1.5rem;' : ''}
+          >
+            {item.children.map((child) => (
+              <li class="nav-panel-link-item">
+                <a href={child.to} class="nav-panel-sublink">
+                  <span class="text">{child.text}</span>
+                </a>
+              </li>
+            ))}
+            {item.to && (
+              <li class="nav-panel-link-item">
+                <a href={item.to} class="nav-panel-view-all">
+                  <span class="text">View all {item.text}</span>
+                  <Icon icon="arrow_forward" />
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
+      )
+    ))}
+    <div class="nav-panel-placeholder">
+      <p>Select an item from the list to see related links.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .nav-panel-container {
+    position: relative;
+    display: flex;
+  }
+  .nav-panel-sidebar {
+    border-right: solid 1px var(--color-neutral-100);
+    min-height: 340px;
+    padding: 0.5rem 0;
+    margin: 0;
+    list-style: none;
+  }
+  .nav-panel-item .nav-panel-button {
+    align-items: center;
+    border-left: solid 5px transparent;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem 0.75rem calc(-5px + 1.5rem);
+    text-align: left;
+    width: 100%;
+    background: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+  .nav-panel-item .nav-panel-button .text {
+    font-weight: 800;
+  }
+  .nav-panel-item .nav-panel-button:hover .text {
+    text-decoration: underline;
+  }
+  .nav-panel-item .nav-panel-button[aria-expanded="true"] {
+    background: var(--color-teal-100);
+    border-color: var(--color-teal-400);
+  }
+  .nav-panel-item .nav-panel-link {
+    display: block;
+    font-weight: 800;
+    padding: 0.5rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  .nav-panel-item .nav-panel-link:hover .text {
+    text-decoration: underline;
+  }
+  .nav-panel-content-container {
+    position: relative;
+    width: calc(100% - 24rem);
+  }
+  .nav-panel-content {
+    padding: 2rem 2.5rem;
+    right: 0;
+    top: 0;
+    width: 100%;
+  }
+  .nav-panel-heading {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+  .nav-panel-description {
+    color: var(--color-neutral-300);
+    padding-top: 0.5rem;
+  }
+  .nav-panel-links {
+    border-top: solid 1px var(--color-neutral-100);
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    list-style: none;
+    padding-left: 0;
+  }
+  .nav-panel-link-item {
+    break-inside: avoid;
+  }
+  .nav-panel-sublink {
+    display: block;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+  .nav-panel-sublink:hover .text {
+    text-decoration: underline;
+  }
+  .nav-panel-view-all {
+    display: block;
+    font-size: 1rem;
+    font-weight: 800;
+    padding: 0.25rem 0;
+    text-decoration: none;
+    color: inherit;
+  }
+  .nav-panel-view-all:hover .text {
+    text-decoration: underline;
+  }
+  .nav-panel-placeholder {
+    align-items: center;
+    background: var(--color-blue-100);
+    color: var(--color-neutral-300);
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    padding: 2rem 2.5rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    font-size: 0.875rem;
+  }
+</style>
+
+<script>
+  // NavPanel functionality
+  class NavPanel {
+     constructor(container) {
+      this.container = container;
+      this.buttons = container.querySelectorAll('.nav-panel-button');
+      this.contentPanels = container.querySelectorAll('.nav-panel-content');
+      this.placeholder = container.querySelector('.nav-panel-placeholder');
+      this.currentOpenPanel = null;
+
+      if (!this.container) return;
+
+      this.init();
+    }
+
+    init() {
+      // Add click event listeners to buttons
+      this.buttons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+          this.handleButtonClick(button, index);
+        });
+      });
+
+      // Initialize state - set first panel as conceptually "active" but keep hidden until dropdown opens
+      // This matches React's initialState: { panelOpen: 0 }
+      this.currentOpenPanel = 0;
+      if (this.buttons.length > 0) {
+        this.buttons[0].setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    autoSelectFirst() {
+      // Always select the first item with children (index 0) like React initialState: { panelOpen: 0 }
+      if (this.buttons.length > 0) {
+        this.openPanel(this.buttons[0], 0);
+      } 
+    }
+
+    handleButtonClick(button, index) {
+      const isCurrentlyOpen = this.currentOpenPanel === index;
+      
+      if (isCurrentlyOpen) {
+        // Clicking same button closes it and shows placeholder
+        this.closeAllPanels();
+        this.currentOpenPanel = null;
+        this.showPlaceholder();
+      } else {
+        // Clicking different button switches to that panel
+        this.closeAllPanels();
+        this.openPanel(button, index);
+      }
+    }
+
+    closeAllPanels() {
+      // Reset all buttons
+      this.buttons.forEach(btn => {
+        btn.setAttribute('aria-expanded', 'false');
+      });
+
+      // Hide all content panels
+      this.contentPanels.forEach(panel => {
+        panel.hidden = true;
+      });
+
+      this.currentOpenPanel = null;
+    }
+
+    openPanel(button, index) {
+      // Update button state
+      button.setAttribute('aria-expanded', 'true');
+      
+      // Show the corresponding content panel - scope to this container only
+      const contentPanel = this.container.querySelector(`[data-panel-content-index="${index}"]`);
+      if (contentPanel) {
+        contentPanel.hidden = false;
+        this.hidePlaceholder();
+      }
+      
+      this.currentOpenPanel = index;
+    }
+
+    showPlaceholder() {
+      if (this.placeholder) {
+        this.placeholder.style.display = 'flex';
+      }
+    }
+
+    hidePlaceholder() {
+      if (this.placeholder) {
+        this.placeholder.style.display = 'none';
+      }
+    }
+
+    // Method to reset to first item (for external use when dropdown opens/reopens)
+    resetToFirst() {
+      // If already on first panel, just make sure it's visible (no close/reopen)
+      if (this.currentOpenPanel === 0) {
+        const contentPanel = this.container.querySelector(`[data-panel-content-index="0"]`);
+        if (contentPanel) {
+          contentPanel.hidden = false;
+          this.hidePlaceholder();
+        }
+        return;
+      }
+      // Otherwise, transition to first panel
+      this.closeAllPanels();
+      this.autoSelectFirst();
+    }
+  }
+
+  // Initialize when DOM is ready and expose globally
+  let navPanelInstances = [];
+
+  function initNavPanels() {
+    const containers = document.querySelectorAll('.nav-panel-container');
+    navPanelInstances = Array.from(containers).map(container => new NavPanel(container));
+    window.navPanels = navPanelInstances;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNavPanels);
+  } else {
+    initNavPanels();
+  }
+
+  // Expose reset method globally for parent dropdown to call
+  window.resetNavPanelToFirst = function() {
+    if (window.navPanels) {
+      window.navPanels.forEach(panel => {
+        if (panel && panel.resetToFirst) panel.resetToFirst();
+      });
+    }
+  };
+</script>

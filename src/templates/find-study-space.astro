@@ -1,0 +1,1157 @@
+---
+/**
+ * Find a Study Space Template
+ * Converted from src/templates/find-study-space.js (Gatsby)
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Icon from '../reusable/Icon.astro';
+import { fetchStudySpaces } from '../lib/study-spaces.js';
+import { ORDERED_SPACE_FEATURES, SPACE_FEATURES_ICON_MAP } from '../constants/space-features.js';
+
+const props = Astro.props;
+const { node, breadcrumb } = props;
+const { body } = node.attributes;
+const fieldTitleContext = node.attributes.field_title_context || node.title;
+
+// Fetch all study spaces at build time
+const allStudySpaces = await fetchStudySpaces();
+
+// Sort alphabetically by title
+allStudySpaces.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
+
+// Derive filter options from data
+const campusBuildingMap: Record<string, Set<string>> = {};
+allStudySpaces.forEach((space) => {
+  if (space.campus && space.building) {
+    if (!campusBuildingMap[space.campus]) {
+      campusBuildingMap[space.campus] = new Set();
+    }
+    campusBuildingMap[space.campus].add(space.building);
+  }
+});
+
+const campusesWithBuildings = Object.entries(campusBuildingMap).map(
+  ([campus, buildingsSet]) => ({
+    campus,
+    buildings: Array.from(buildingsSet).sort()
+  })
+);
+
+const existingFeatures = new Set(allStudySpaces.flatMap((s) => s.spaceFeatures).filter(Boolean));
+const allSpaceFeatures = ORDERED_SPACE_FEATURES.filter((f) => existingFeatures.has(f));
+
+const allNoiseLevels = Array.from(
+  new Set(allStudySpaces.map((s) => s.noiseLevel).filter(Boolean))
+);
+
+// Utility: snake_case → Sentence case
+const sentenceCase = (str: string) =>
+  str.replace(/_/g, ' ').replace(/^./u, (c) => c.toUpperCase());
+
+// No-results image
+import fassNoResults from '../images/fass-no-results.png';
+---
+
+<TemplateLayout node={node}>
+  <div class="margins fass-page">
+    <Breadcrumb data={breadcrumb} />
+    <Heading size="3XL" level={1} class="fass-heading">
+      {fieldTitleContext}
+    </Heading>
+    {body?.processed && (
+      <div class="fass-body">
+        <Html html={body.processed} />
+      </div>
+    )}
+  </div>
+
+  <Template contentSide="right" asideWidth="25rem">
+    <TemplateSide contentSide="right">
+      <div class="fass-filter-label">FILTER BY</div>
+
+      {/* --- Locations collapsible --- */}
+      <div class="fass-collapsible" data-collapsible>
+        <button
+          class="fass-collapsible-trigger"
+          aria-expanded="true"
+          aria-controls="filter-locations"
+          data-collapsible-trigger
+        >
+          <span data-collapsible-title>Locations</span>
+          <span class="fass-collapsible-icon" data-collapsible-icon>
+            <Icon icon="expand_more" size={24} />
+          </span>
+        </button>
+        <div class="fass-collapsible-content" id="filter-locations" data-collapsible-content>
+          <div class="fass-collapsible-inner">
+            {campusesWithBuildings.map(({ campus, buildings }) => {
+              const parentId = `parent-${campus.replace(/[\s,]+/g, '-').replace(/[^a-zA-Z0-9\-_]/g, '').toLowerCase()}`;
+              return (
+                <div class="fass-checkbox-group" data-campus-group={campus}>
+                  <div class="fass-checkbox">
+                    <input
+                      type="checkbox"
+                      id={parentId}
+                      data-filter-campus={campus}
+                      data-filter-parent
+                    />
+                    <label for={parentId} class="fass-checkbox-label fass-checkbox-label--parent">
+                      {campus}
+                    </label>
+                  </div>
+                  <div class="fass-checkbox-children">
+                    {buildings.map((building) => {
+                      const childKey = `${campus}:${building}`;
+                      const childId = `child-${parentId}-${building.replace(/[\s,]+/g, '-').replace(/[^a-zA-Z0-9\-_]/g, '').toLowerCase()}`;
+                      return (
+                        <div class="fass-checkbox">
+                          <input
+                            type="checkbox"
+                            id={childId}
+                            data-filter-building={childKey}
+                            data-campus-parent={campus}
+                          />
+                          <label for={childId} class="fass-checkbox-label">
+                            {building}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <hr class="fass-divider" />
+
+      {/* --- Noise Levels collapsible --- */}
+      <div class="fass-collapsible" data-collapsible>
+        <button
+          class="fass-collapsible-trigger"
+          aria-expanded="true"
+          aria-controls="filter-noise"
+          data-collapsible-trigger
+        >
+          <span data-collapsible-title>Noise Levels</span>
+          <span class="fass-collapsible-icon" data-collapsible-icon>
+            <Icon icon="expand_more" size={24} />
+          </span>
+        </button>
+        <div class="fass-collapsible-content" id="filter-noise" data-collapsible-content>
+          <div class="fass-collapsible-inner">
+            {allNoiseLevels.map((level) => {
+              const noiseId = `option-noise-${level.replace(/[\s,]+/g, '-').replace(/[^a-zA-Z0-9\-_]/g, '').toLowerCase()}`;
+              return (
+                <div class="fass-checkbox">
+                  <input
+                    type="checkbox"
+                    id={noiseId}
+                    data-filter-noise={level}
+                  />
+                  <label for={noiseId} class="fass-checkbox-label">
+                    {sentenceCase(level)}
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <hr class="fass-divider" />
+
+      {/* --- Features collapsible --- */}
+      <div class="fass-collapsible" data-collapsible>
+        <button
+          class="fass-collapsible-trigger"
+          aria-expanded="true"
+          aria-controls="filter-features"
+          data-collapsible-trigger
+        >
+          <span data-collapsible-title>Features</span>
+          <span class="fass-collapsible-icon" data-collapsible-icon>
+            <Icon icon="expand_more" size={24} />
+          </span>
+        </button>
+        <div class="fass-collapsible-content" id="filter-features" data-collapsible-content>
+          <div class="fass-collapsible-inner">
+            {allSpaceFeatures.map((feature) => {
+              const featureId = `option-feature-${feature.replace(/[\s,]+/g, '-').replace(/[^a-zA-Z0-9\-_]/g, '').toLowerCase()}`;
+              return (
+                <div class="fass-checkbox">
+                  <input
+                    type="checkbox"
+                    id={featureId}
+                    data-filter-feature={feature}
+                  />
+                  <label for={featureId} class="fass-checkbox-label fass-checkbox-label--feature">
+                    <Icon icon={SPACE_FEATURES_ICON_MAP[feature]} size={18} class="fass-feature-icon" />
+                    {sentenceCase(feature)}
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </TemplateSide>
+
+    <TemplateContent>
+      {/* Active filter tags */}
+      <div id="fass-active-tags" class="fass-active-tags" style="display:none;">
+        <div class="fass-tags-list" id="fass-tags-list"></div>
+        <button type="button" class="fass-clear-all" id="fass-clear-all">
+          Clear all active filters
+        </button>
+      </div>
+
+      {/* Screen reader live region */}
+      <div aria-live="polite" class="sr-only" id="fass-sr-status"></div>
+
+      {/* No results */}
+      <div id="fass-no-results" style="display:none;">
+        <div class="fass-no-results">
+          <Heading level={2} size="L" class="fass-no-results-heading">
+            We couldn't find what you're looking for.
+          </Heading>
+          <p>
+            We couldn't find any results that match your chosen filters. Try removing
+            a filter or find information about other library spaces with cafes,
+            computing resources, and more.
+          </p>
+          <ul class="fass-no-results-links">
+            <li><a href="/visit-and-study/computing-and-technology">Computing and Technology</a></li>
+            <li><a href="/visit-and-study/cafes-and-wellbeing">Cafes</a></li>
+            <li><a href="/visit-and-study/study-spaces/student-parent-and-caregiver-study-room">Student Parent and Caregiver Room</a></li>
+          </ul>
+          <img
+            src={typeof fassNoResults === 'string' ? fassNoResults : fassNoResults.src}
+            alt="No study spaces found"
+            class="fass-no-results-image"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      {/* Results */}
+      <div id="fass-results">
+        <p id="fass-results-summary-top" aria-live="polite" class="fass-results-summary"></p>
+        <ol class="fass-grid" id="fass-grid"></ol>
+        <div class="fass-results-bottom">
+          <p id="fass-results-summary-bottom" class="fass-results-summary"></p>
+          <button id="fass-show-toggle" class="fass-show-toggle" style="display:none;">
+            Show all
+          </button>
+        </div>
+      </div>
+    </TemplateContent>
+  </Template>
+
+  {/* Embed study space data for client-side filtering */}
+  <script
+    id="fass-data"
+    type="application/json"
+    set:html={JSON.stringify(allStudySpaces)}
+  />
+
+  {/* Embed icon map for client-side rendering */}
+  <script
+    id="fass-icon-map"
+    type="application/json"
+    set:html={JSON.stringify(SPACE_FEATURES_ICON_MAP)}
+  />
+</TemplateLayout>
+
+<style>
+  /* Page header */
+  :global(.fass-heading) {
+    margin-bottom: 0.75rem;
+  }
+
+  .fass-body {
+    margin-bottom: 2rem;
+  }
+
+  /* Filter sidebar */
+  .fass-filter-label {
+    color: var(--color-neutral-300);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .fass-divider {
+    border: 0;
+    border-top: 1px solid var(--color-neutral-100);
+    display: block;
+    height: 1px;
+    margin: 1em 0;
+    padding: 0;
+  }
+
+  /* Collapsible sections */
+  .fass-collapsible-trigger {
+    align-items: center;
+    background: none;
+    border: none;
+    border-left: solid 4px transparent;
+    color: var(--color-neutral-400);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    width: 100%;
+  }
+
+  .fass-collapsible-trigger:hover {
+    background: var(--color-teal-100);
+    outline: none;
+  }
+
+  .fass-collapsible-trigger:hover [data-collapsible-title] {
+    text-decoration: underline;
+  }
+
+  .fass-collapsible-trigger[aria-expanded="true"] {
+    border-left-color: var(--color-teal-400);
+    color: var(--color-teal-400);
+  }
+
+  .fass-collapsible-trigger[aria-expanded="true"] [data-collapsible-title] {
+    font-weight: bold;
+  }
+
+  .fass-collapsible-trigger [data-collapsible-title] {
+    font-size: 1.1rem;
+  }
+
+  .fass-collapsible-icon {
+    color: var(--color-teal-400);
+    transform-origin: center 13px;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .fass-collapsible-trigger[aria-expanded="false"] .fass-collapsible-icon {
+    transform: rotate(180deg);
+  }
+
+  .fass-collapsible-content {
+    overflow: hidden;
+    transition: height 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  }
+
+  .fass-collapsible-content[aria-hidden="true"] {
+    height: 0 !important;
+    opacity: 0;
+  }
+
+  .fass-collapsible-inner {
+    padding: 1rem 0;
+  }
+
+  /* Checkboxes */
+  .fass-checkbox {
+    align-items: center;
+    display: flex;
+    margin-bottom: 0.75rem;
+  }
+
+  .fass-checkbox input[type="checkbox"] {
+    accent-color: var(--color-teal-400);
+    flex-shrink: 0;
+    height: 18px;
+    margin-left: 0;
+    margin-right: 0.75rem;
+    width: 18px;
+  }
+
+  .fass-checkbox-label {
+    color: var(--color-neutral-400);
+    font-size: 1rem;
+  }
+
+  .fass-checkbox-label--parent {
+    font-weight: bold;
+  }
+
+  .fass-checkbox-label--feature {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .fass-checkbox-children {
+    margin-left: 24px;
+  }
+
+  :global(.fass-feature-icon) {
+    color: var(--color-teal-400);
+  }
+
+  /* Active filter tags */
+  .fass-active-tags {
+    margin-bottom: 1.5rem;
+  }
+
+  .fass-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .fass-clear-all {
+    background: none;
+    border: none;
+    color: var(--color-neutral-300);
+    cursor: pointer;
+    display: block;
+    margin-top: 0.5rem;
+    text-decoration: underline;
+  }
+
+  /* Tag buttons */
+  :global(.fass-tag) {
+    align-items: center;
+    background: var(--color-teal-100);
+    border: 2px solid var(--color-teal-200);
+    border-radius: 1rem;
+    color: var(--color-neutral-400);
+    cursor: pointer;
+    display: flex;
+    font-size: 0.9rem;
+    font-weight: 500;
+    gap: 4px;
+    padding: 0.25rem 0.75rem;
+  }
+
+  :global(.fass-tag:hover) {
+    border-color: var(--color-teal-400);
+  }
+
+  :global(.fass-tag:active) {
+    background: var(--color-teal-400);
+    border-color: var(--color-teal-400);
+    color: white;
+  }
+
+  /* Screen reader only */
+  .sr-only {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  /* No results section */
+  .fass-no-results {
+    margin: 2rem 0;
+  }
+
+  :global(.fass-no-results-heading) {
+    margin-bottom: 2rem;
+  }
+
+  .fass-no-results-links {
+    list-style: disc;
+    margin-left: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .fass-no-results-links a {
+    color: var(--color-teal-400);
+    text-decoration: underline;
+  }
+
+  .fass-no-results-image {
+    margin: 1.5rem auto;
+    max-width: 100%;
+  }
+
+  /* Results grid */
+  .fass-results-summary {
+    margin-bottom: 1rem;
+  }
+
+  .fass-grid {
+    display: grid;
+    gap: 2rem 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    list-style: none;
+  }
+
+  @media only screen and (min-width: 720px) {
+    .fass-grid {
+      grid-template-columns: repeat(2, minmax(320px, 1fr));
+    }
+  }
+
+  .fass-results-bottom {
+    margin-top: 2.5rem;
+  }
+
+  .fass-show-toggle {
+    background: var(--color-blue-400);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .fass-show-toggle:hover {
+    opacity: 0.85;
+  }
+
+  /* Card animation */
+  :global(.fass-card) {
+    list-style: none;
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  :global(.fass-card[data-entering]) {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  /* Space features inline list */
+  :global(.fass-space-features) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.5rem;
+    list-style: none;
+    margin: 0.5rem 0;
+  }
+
+  :global(.fass-space-feature) {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.5rem;
+  }
+
+  :global(.fass-space-feature svg) {
+    color: var(--color-teal-400);
+  }
+
+  /* Noise level display */
+  :global(.fass-noise-level) {
+    align-items: center;
+    color: var(--color-neutral-300);
+    display: flex;
+    font-weight: bold;
+    gap: 0.5rem;
+  }
+
+  /* Card inner styling */
+  :global(.fass-card-image) {
+    aspect-ratio: 3 / 2;
+    background-color: var(--color-blue-100);
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  :global(.fass-card-image img) {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  :global(.fass-card a) {
+    display: block;
+  }
+
+  :global(.fass-card-title) {
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    color: var(--color-neutral-400);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  :global(.fass-card-subtitle) {
+    color: var(--color-neutral-300);
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+  }
+
+  :global(.fass-card-summary) {
+    color: var(--color-neutral-300);
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+
+  /* Collapsible mobile default: hide left border on mobile */
+  @media only screen and (max-width: 1199px) {
+    .fass-collapsible-trigger {
+      border-left-color: transparent !important;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * Find a Study Space — Client-side interactivity
+   *
+   * Handles:
+   * - Collapsible filter sections
+   * - Checkbox filtering (campuses → buildings, features, noise levels)
+   * - URL state sync (replaceState / popstate)
+   * - Active filter tags with dismiss
+   * - Show more / less pagination
+   * - Card rendering with entry animation
+   */
+
+  // ───────────────────── helpers ─────────────────────
+  const sentenceCase = (str) =>
+    str.replace(/_/g, ' ').replace(/^./u, (c) => c.toUpperCase());
+
+  const titleCase = (str) =>
+    str.replace(/\w\S*/g, (t) => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
+
+  /**
+   * Minimal URL state helpers (replaces qs library).
+   * Encodes arrays as repeated keys: campuses=a&campuses=b
+   */
+  const parseUrlState = (search: string): Record<string, string | string[]> => {
+    const params = new URLSearchParams(search);
+    const state: Record<string, string | string[]> = {};
+    for (const key of new Set(params.keys())) {
+      const values = params.getAll(key);
+      state[key] = values.length === 1 ? values[0] : values;
+    }
+    return state;
+  };
+
+  const stringifyState = (obj) => {
+    const params = new URLSearchParams();
+    Object.entries(obj).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, v));
+      } else {
+        params.append(key, String(value));
+      }
+    });
+    return params.toString();
+  };
+
+  // ───────────────────── data ─────────────────────
+  const allStudySpaces = JSON.parse(document.getElementById('fass-data').textContent);
+  const iconMap = JSON.parse(document.getElementById('fass-icon-map').textContent);
+
+  // Pre-built SVG icon strings for card rendering
+  const iconSvg = (name, size = 18) => {
+    const d = iconMap[name];
+    if (!d) return '';
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${d}"/></svg>`;
+  };
+
+  // Volume up icon SVG for noise level
+  const volumeUpPath = 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z';
+  const volumeUpSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${volumeUpPath}"/></svg>`;
+
+  // Dismiss icon SVG for tag buttons
+  const dismissSvg = '<svg role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 24 24" width="16px" fill="#212B36"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>';
+
+  // ───────────────────── DOM refs ─────────────────────
+  const grid = document.getElementById('fass-grid');
+  const noResultsEl = document.getElementById('fass-no-results');
+  const resultsEl = document.getElementById('fass-results');
+  const summaryTop = document.getElementById('fass-results-summary-top');
+  const summaryBottom = document.getElementById('fass-results-summary-bottom');
+  const showToggle = document.getElementById('fass-show-toggle');
+  const tagsContainer = document.getElementById('fass-active-tags');
+  const tagsList = document.getElementById('fass-tags-list');
+  const clearAllBtn = document.getElementById('fass-clear-all');
+  const srStatus = document.getElementById('fass-sr-status');
+
+  // ───────────────────── state ─────────────────────
+  let showAll = false;
+  const INITIAL_SHOW = 6;
+
+  // ───────────────────── collapsibles ─────────────────────
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = () => window.innerWidth < 1200;
+
+  document.querySelectorAll('[data-collapsible]').forEach((section) => {
+    const trigger = section.querySelector<HTMLElement>('[data-collapsible-trigger]');
+    const content = section.querySelector<HTMLElement>('[data-collapsible-content]');
+
+    const collapse = () => {
+      trigger.setAttribute('aria-expanded', 'false');
+      content.setAttribute('aria-hidden', 'true');
+      content.style.height = '0';
+    };
+
+    const expand = () => {
+      trigger.setAttribute('aria-expanded', 'true');
+      content.setAttribute('aria-hidden', 'false');
+      content.style.height = content.scrollHeight + 'px';
+    };
+
+    // Initial state: collapsed on mobile, expanded on desktop
+    if (isMobile()) {
+      collapse();
+    } else {
+      // Set initial height for CSS transition
+      content.style.height = 'auto';
+      content.setAttribute('aria-hidden', 'false');
+    }
+
+    trigger.addEventListener('click', () => {
+      const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+      if (isExpanded) {
+        // Set explicit height first so CSS transition works
+        content.style.height = content.scrollHeight + 'px';
+        // Force reflow
+        content.offsetHeight;
+        collapse();
+      } else {
+        expand();
+        // After transition, allow natural sizing
+        const onEnd = () => {
+          if (trigger.getAttribute('aria-expanded') === 'true') {
+            content.style.height = 'auto';
+          }
+          content.removeEventListener('transitionend', onEnd);
+        };
+        content.addEventListener('transitionend', onEnd);
+      }
+    });
+  });
+
+  // ───────────────────── checkbox helpers ─────────────────────
+
+  // Sync parent checkbox indeterminate/checked from children
+  const syncParentCheckbox = (campusName: string) => {
+    const parentEl = document.querySelector<HTMLInputElement>(`[data-filter-campus="${CSS.escape(campusName)}"]`);
+    const children = document.querySelectorAll<HTMLInputElement>(`[data-campus-parent="${CSS.escape(campusName)}"]`);
+    if (!parentEl || children.length === 0) return;
+
+    const total = children.length;
+    let checked = 0;
+    children.forEach((c) => { if (c.checked) checked++; });
+
+    parentEl.checked = checked === total;
+    parentEl.indeterminate = checked > 0 && checked < total;
+  };
+
+  // ───────────────────── render cards ─────────────────────
+  const escapeHtml = (str) => {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  };
+
+  const renderCard = (space) => {
+    const li = document.createElement('li');
+    li.className = 'fass-card';
+    li.dataset.slug = space.slug;
+
+    if (!prefersReducedMotion) {
+      li.dataset.entering = '';
+    }
+
+    // Build card HTML
+    let html = `<a href="${escapeHtml(space.slug)}">`;
+
+    if (space.imageUrl) {
+      html += `<div class="fass-card-image"><img src="${escapeHtml(space.imageUrl)}" alt="${escapeHtml(space.imageAlt || '')}" loading="lazy" /></div>`;
+    }
+
+    html += '<div class="fass-card-body">';
+
+    if (space.building) {
+      html += `<span class="fass-card-subtitle">${escapeHtml(space.building)}</span>`;
+    }
+    html += `<span class="fass-card-title">${escapeHtml(space.title)}</span>`;
+
+    if (space.bodySummary) {
+      html += `<div class="fass-card-summary">${escapeHtml(space.bodySummary)}</div>`;
+    }
+
+    // Space features
+    if (space.spaceFeatures && space.spaceFeatures.length > 0) {
+      html += '<ul class="fass-space-features">';
+      space.spaceFeatures.forEach((feature) => {
+        if (iconMap[feature]) {
+          html += `<li class="fass-space-feature">${iconSvg(feature)} <span>${escapeHtml(sentenceCase(feature))}</span></li>`;
+        }
+      });
+      html += '</ul>';
+    }
+
+    // Noise level
+    if (space.noiseLevel) {
+      html += `<div class="fass-noise-level">${volumeUpSvg} <span>Noise Level: ${escapeHtml(sentenceCase(space.noiseLevel))}</span></div>`;
+    }
+
+    html += '</div></a>';
+    li.innerHTML = html;
+
+    // Trigger entry animation
+    if (!prefersReducedMotion) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          li.removeAttribute('data-entering');
+        });
+      });
+    }
+
+    return li;
+  };
+
+  // ───────────────────── filtering ─────────────────────
+  const getFilteredSpaces = () => {
+    const hasCampusFilter = !!document.querySelector('[data-filter-campus]:checked, [data-filter-building]:checked');
+    const hasFeatureFilter = !!document.querySelector('[data-filter-feature]:checked');
+    const hasNoiseFilter = !!document.querySelector('[data-filter-noise]:checked');
+
+    // Collect selected values only when a filter is active
+    let selectedBuildingKeys, selectedFeatures, selectedNoiseLevels;
+
+    if (hasCampusFilter) {
+      selectedBuildingKeys = new Set();
+      document.querySelectorAll<HTMLInputElement>('[data-filter-campus]:checked').forEach((el) => {
+        selectedBuildingKeys.add(el.dataset.filterCampus);
+      });
+      document.querySelectorAll<HTMLInputElement>('[data-filter-building]:checked').forEach((el) => {
+        selectedBuildingKeys.add(el.dataset.filterBuilding);
+      });
+    }
+
+    if (hasFeatureFilter) {
+      selectedFeatures = [];
+      document.querySelectorAll<HTMLInputElement>('[data-filter-feature]:checked').forEach((el) => {
+        selectedFeatures.push(el.dataset.filterFeature);
+      });
+    }
+
+    if (hasNoiseFilter) {
+      selectedNoiseLevels = new Set();
+      document.querySelectorAll<HTMLInputElement>('[data-filter-noise]:checked').forEach((el) => {
+        selectedNoiseLevels.add(el.dataset.filterNoise);
+      });
+    }
+
+    return allStudySpaces.filter((space) => {
+      if (hasCampusFilter) {
+        const campusMatch = selectedBuildingKeys.has(space.campus);
+        const buildingMatch = selectedBuildingKeys.has(`${space.campus}:${space.building}`);
+        if (!campusMatch && !buildingMatch) return false;
+      }
+
+      if (hasFeatureFilter) {
+        const hasAll = selectedFeatures.every((f) => space.spaceFeatures.includes(f));
+        if (!hasAll) return false;
+      }
+
+      if (hasNoiseFilter) {
+        if (!selectedNoiseLevels.has(space.noiseLevel)) return false;
+      }
+
+      return true;
+    });
+  };
+
+  // ───────────────────── render ─────────────────────
+  const render = () => {
+    const filtered = getFilteredSpaces();
+    const count = filtered.length;
+    const showCount = showAll ? count : Math.min(INITIAL_SHOW, count);
+
+    // No results
+    if (count === 0) {
+      noResultsEl.style.display = '';
+      resultsEl.style.display = 'none';
+      srStatus.textContent = 'No results found matching your selected filters.';
+      renderTags();
+      return;
+    }
+
+    noResultsEl.style.display = 'none';
+    resultsEl.style.display = '';
+
+    // Summary text
+    let summaryText;
+    if (count <= 6) {
+      summaryText = `Showing ${count} result${count > 1 ? 's' : ''}`;
+    } else {
+      summaryText = `Showing ${showCount} of ${count} results`;
+    }
+    summaryTop.textContent = summaryText;
+    summaryBottom.textContent = summaryText;
+
+    // Show toggle
+    if (count > INITIAL_SHOW) {
+      showToggle.style.display = '';
+      showToggle.textContent = showAll ? 'Show less' : 'Show all';
+    } else {
+      showToggle.style.display = 'none';
+    }
+
+    // Render cards
+    grid.innerHTML = '';
+    filtered.slice(0, showCount).forEach((space) => {
+      grid.appendChild(renderCard(space));
+    });
+
+    srStatus.textContent = '';
+    renderTags();
+  };
+
+  // ───────────────────── active tags ─────────────────────
+  const renderTags = () => {
+    tagsList.innerHTML = '';
+    const tags = [];
+
+    // Campuses and buildings
+    const campusGroups = document.querySelectorAll<HTMLElement>('[data-campus-group]');
+    campusGroups.forEach((group) => {
+      const campus = group.dataset.campusGroup;
+      const parentEl = group.querySelector<HTMLInputElement>('[data-filter-campus]');
+      const childEls = group.querySelectorAll<HTMLInputElement>('[data-filter-building]');
+
+      const allChildrenChecked = Array.from(childEls).every((c) => c.checked);
+
+      if (parentEl.checked && allChildrenChecked) {
+        // Show campus-level tag
+        tags.push({
+          label: `Location: ${titleCase(campus)}`,
+          dismiss: () => {
+            parentEl.checked = false;
+            parentEl.indeterminate = false;
+            childEls.forEach((c) => { c.checked = false; });
+            onFilterChange();
+          }
+        });
+      } else {
+        // Show individual building tags
+        childEls.forEach((c) => {
+          if (c.checked) {
+            const key = c.dataset.filterBuilding;
+            const buildingName = key.split(':')[1] || key;
+            tags.push({
+              label: `Location: ${titleCase(campus)}, ${titleCase(buildingName)}`,
+              dismiss: () => {
+                c.checked = false;
+                syncParentCheckbox(campus);
+                onFilterChange();
+              }
+            });
+          }
+        });
+      }
+    });
+
+    // Features
+    document.querySelectorAll<HTMLInputElement>('[data-filter-feature]').forEach((el) => {
+      if (el.checked) {
+        tags.push({
+          label: `Feature: ${sentenceCase(el.dataset.filterFeature)}`,
+          dismiss: () => {
+            el.checked = false;
+            onFilterChange();
+          }
+        });
+      }
+    });
+
+    // Noise levels
+    document.querySelectorAll<HTMLInputElement>('[data-filter-noise]').forEach((el) => {
+      if (el.checked) {
+        tags.push({
+          label: `Noise level: ${sentenceCase(el.dataset.filterNoise)}`,
+          dismiss: () => {
+            el.checked = false;
+            onFilterChange();
+          }
+        });
+      }
+    });
+
+    if (tags.length === 0) {
+      tagsContainer.style.display = 'none';
+      return;
+    }
+
+    tagsContainer.style.display = '';
+    tags.forEach((tag) => {
+      const btn = document.createElement('button');
+      btn.className = 'fass-tag';
+      btn.setAttribute('aria-label', `Select to remove filter: ${tag.label}`);
+      btn.innerHTML = `${escapeHtml(tag.label)} ${dismissSvg}`;
+      btn.addEventListener('click', tag.dismiss);
+      tagsList.appendChild(btn);
+    });
+  };
+
+  // ───────────────────── URL state ─────────────────────
+  const pushUrlState = () => {
+    const stateObj: Record<string, string | string[]> = {};
+
+    const campuses: string[] = [];
+    document.querySelectorAll<HTMLInputElement>('[data-filter-campus]:checked').forEach((el) => {
+      campuses.push(el.dataset.filterCampus!);
+    });
+    document.querySelectorAll<HTMLInputElement>('[data-filter-building]:checked').forEach((el) => {
+      campuses.push(el.dataset.filterBuilding!);
+    });
+    if (campuses.length) stateObj.campuses = campuses;
+
+    const features: string[] = [];
+    document.querySelectorAll<HTMLInputElement>('[data-filter-feature]:checked').forEach((el) => {
+      features.push(el.dataset.filterFeature!);
+    });
+    if (features.length) stateObj.features = features;
+
+    const noise: string[] = [];
+    document.querySelectorAll<HTMLInputElement>('[data-filter-noise]:checked').forEach((el) => {
+      noise.push(el.dataset.filterNoise!);
+    });
+    if (noise.length) stateObj.noise = noise;
+
+    if (showAll) stateObj.showAll = '1';
+
+    const qs = stringifyState(stateObj);
+    const to = qs.length > 0 ? `?${qs}` : window.location.pathname;
+    history.replaceState(null, '', to);
+  };
+
+  const restoreFromUrl = () => {
+    const state = parseUrlState(window.location.search);
+
+    // Clear all checkboxes first
+    document.querySelectorAll<HTMLInputElement>('[data-filter-campus], [data-filter-building], [data-filter-feature], [data-filter-noise]').forEach((el) => {
+      el.checked = false;
+      el.indeterminate = false;
+    });
+
+    // Restore campuses/buildings
+    const campusKeys = Array.isArray(state.campuses) ? state.campuses : (state.campuses ? [state.campuses] : []);
+    campusKeys.forEach((key) => {
+      const campusEl = document.querySelector<HTMLInputElement>(`[data-filter-campus="${CSS.escape(key)}"]`);
+      const buildingEl = document.querySelector<HTMLInputElement>(`[data-filter-building="${CSS.escape(key)}"]`);
+      if (campusEl) campusEl.checked = true;
+      if (buildingEl) buildingEl.checked = true;
+    });
+
+    // When a campus parent is checked, also check all its children
+    document.querySelectorAll<HTMLInputElement>('[data-filter-campus]:checked').forEach((parentEl) => {
+      const campus = parentEl.dataset.filterCampus!;
+      document.querySelectorAll<HTMLInputElement>(`[data-campus-parent="${CSS.escape(campus)}"]`).forEach((c) => {
+        c.checked = true;
+      });
+    });
+
+    // Sync parent indeterminate state
+    document.querySelectorAll<HTMLElement>('[data-campus-group]').forEach((group) => {
+      syncParentCheckbox(group.dataset.campusGroup!);
+    });
+
+    // Restore features
+    const featureKeys = Array.isArray(state.features) ? state.features : (state.features ? [state.features] : []);
+    featureKeys.forEach((key) => {
+      const el = document.querySelector<HTMLInputElement>(`[data-filter-feature="${CSS.escape(key)}"]`);
+      if (el) el.checked = true;
+    });
+
+    // Restore noise
+    const noiseKeys = Array.isArray(state.noise) ? state.noise : (state.noise ? [state.noise] : []);
+    noiseKeys.forEach((key) => {
+      const el = document.querySelector<HTMLInputElement>(`[data-filter-noise="${CSS.escape(key)}"]`);
+      if (el) el.checked = true;
+    });
+
+    // Restore showAll
+    showAll = state.showAll === '1';
+  };
+
+  // ───────────────────── event handlers ─────────────────────
+  const onFilterChange = () => {
+    showAll = false;
+    render();
+    pushUrlState();
+  };
+
+  // Parent checkbox: check/uncheck all children
+  document.querySelectorAll<HTMLInputElement>('[data-filter-campus]').forEach((parentEl) => {
+    parentEl.addEventListener('change', () => {
+      const campus = parentEl.dataset.filterCampus!;
+      document.querySelectorAll<HTMLInputElement>(`[data-campus-parent="${CSS.escape(campus)}"]`).forEach((child) => {
+        child.checked = parentEl.checked;
+      });
+      onFilterChange();
+    });
+  });
+
+  // Building checkbox: sync parent
+  document.querySelectorAll<HTMLInputElement>('[data-filter-building]').forEach((el) => {
+    el.addEventListener('change', () => {
+      syncParentCheckbox(el.dataset.campusParent!);
+      onFilterChange();
+    });
+  });
+
+  // Feature & noise checkboxes
+  document.querySelectorAll('[data-filter-feature], [data-filter-noise]').forEach((el) => {
+    el.addEventListener('change', onFilterChange);
+  });
+
+  // Show toggle
+  showToggle.addEventListener('click', () => {
+    showAll = !showAll;
+    render();
+    pushUrlState();
+  });
+
+  // Clear all
+  clearAllBtn.addEventListener('click', () => {
+    document.querySelectorAll<HTMLInputElement>('[data-filter-campus], [data-filter-building], [data-filter-feature], [data-filter-noise]').forEach((el) => {
+      el.checked = false;
+      el.indeterminate = false;
+    });
+    onFilterChange();
+  });
+
+  // Back/forward navigation
+  window.addEventListener('popstate', () => {
+    restoreFromUrl();
+    render();
+  });
+
+  // ───────────────────── init ─────────────────────
+  restoreFromUrl();
+  render();
+
+  // Respect prefers-reduced-motion
+  if (prefersReducedMotion) {
+    const style = document.createElement('style');
+    style.textContent = '.fass-card { transition: none !important; }';
+    document.head.appendChild(style);
+  }
+</script>

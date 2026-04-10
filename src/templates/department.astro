@@ -1,0 +1,250 @@
+---
+/**
+ * Department Template
+ * Converted from src/templates/department.js
+ *
+ * Layout: Template (basic variant) → top/side/content grid
+ *   - TemplateTop    → Breadcrumb
+ *   - TemplateSide   → SideNavigation (large) + HorizontalNavigation (small)
+ *   - TemplateContent → Heading + Prose ("Who we are" list, appointment callout,
+ *                        "What we do", "What we're working on") + body Panels
+ * Full-width Panels below the template grid.
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateTop from '../components/TemplateTop.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Icon from '../reusable/Icon.astro';
+import List from '../reusable/List.astro';
+import Html from '../components/Html.astro';
+import Callout from '../reusable/Callout.astro';
+import Panels from '../components/panels/Panels.astro';
+import Prose from '../components/Prose.astro';
+import SideNavigation from '../components/navigation/SideNavigation.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import { getNavigationBranch, getStaffDirectorySlug } from '../lib/navigation.js';
+import transformNodePanels from '../utils/transform-node-panels';
+
+interface Props {
+  node: any;
+  title?: string;
+  breadcrumb?: string;
+  parents?: any[];
+}
+
+const { node, title, breadcrumb, parents } = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available');
+}
+
+const {
+  field_title_context: fieldTitleContext,
+  field_local_navigation: fieldLocalNavigation,
+  field_email: fieldEmail,
+  field_fax_number: fieldFaxNumber,
+  field_make_an_appointment: fieldMakeAnAppointment,
+  body,
+  field_what_were_working_on: fieldWhatWereWorkingOn,
+} = node.attributes;
+
+const { relationships } = node;
+const slug = node.slug || node.attributes?.path?.alias || Astro.url.pathname;
+
+// Breadcrumb
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: fieldTitleContext || title || 'Unknown Page', slug },
+    parents || []
+  );
+}
+
+// Side navigation — only fetched when the page opts in
+let navBranch = null;
+let smallScreenItems = null;
+if (fieldLocalNavigation) {
+  navBranch = await getNavigationBranch(slug);
+  const smallBranch = await getNavigationBranch(slug, 'small');
+  smallScreenItems = smallBranch?.children || null;
+}
+
+// Staff directory slug — fetched once per build, then cached
+const staffDirectorySlug = await getStaffDirectorySlug();
+const staffDirectoryUrl = `${staffDirectorySlug}?${new URLSearchParams({ department: fieldTitleContext || title || '' }).toString()}`;
+
+// Org chart file URL — media--file → file--file → uri.url
+const DRUPAL_BASE_URL = (import.meta.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/, '');
+const orgChartFileUrl = relationships.field_media_file?.relationships?.field_media_file?.uri?.url;
+const orgChartUrl = orgChartFileUrl
+  ? (orgChartFileUrl.startsWith('/') ? `${DRUPAL_BASE_URL}${orgChartFileUrl}` : orgChartFileUrl)
+  : null;
+
+// Department heads
+const departmentHeads: any[] = relationships.field_department_head || [];
+
+// Fax icon — custom SVG path matching Gatsby department.js
+const FAX_SVG_PATH = 'M 18 3 V 7 H 6 V 3 Z M 21.6 9.52 a 3.16 3.16 0 0 0 -1.11 -1.1 A 2.93 2.93 0 0 0 19 8 H 5 a 2.91 2.91 0 0 0 -1.49 0.41 a 3.08 3.08 0 0 0 -1.11 1.1 A 3 3 0 0 0 2 11 v 6 H 6 v 4 H 18 V 17 h 4 V 11 A 3 3 0 0 0 21.6 9.52 Z M 16 19 H 8 V 14 h 8 Z m 3.74 -7.28 A 1 1 0 0 1 19 12 a 1 1 0 0 1 -0.7 -0.28 A 0.94 0.94 0 0 1 18 11 a 1.07 1.07 0 0 1 0.28 -0.73 A 0.91 0.91 0 0 1 19 10 a 1 1 0 0 1 0.73 0.31 A 1 1 0 0 1 20 11 A 0.92 0.92 0 0 1 19.73 11.71 Z';
+
+// Panels
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+---
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <Template variant="basic" hasSide={!!fieldLocalNavigation}>
+    <TemplateTop>
+      <Breadcrumb data={breadcrumbData} />
+    </TemplateTop>
+
+    {fieldLocalNavigation && (
+      <TemplateSide class="basic-side">
+        {navBranch && (
+          <SideNavigation path={slug} branch={navBranch} />
+        )}
+        {smallScreenItems && (
+          <div class="small-screen-nav">
+            <HorizontalNavigation items={smallScreenItems} />
+          </div>
+        )}
+      </TemplateSide>
+    )}
+
+    <TemplateContent>
+      <Heading size="3XL" level={1} class="dept-heading">
+        {fieldTitleContext}
+      </Heading>
+
+      <Prose>
+        <Heading size="M" level={2}>Who we are</Heading>
+
+        <List class="dept-info-list">
+          {departmentHeads.length > 0 && (
+            <li>
+              <Icon icon="person_outline" />
+              <span>
+                Leadership:
+                {departmentHeads.map((head, index) => (
+                  <>
+                    {index > 0 && departmentHeads.length !== 2 && ','}
+                    {index > 0 && index + 1 === departmentHeads.length && ' and'}
+                    {' '}
+                    <a href={`/users/${head.name}`}>{head.field_user_display_name}</a>
+                  </>
+                ))}
+              </span>
+            </li>
+          )}
+
+          {fieldEmail && (
+            <li>
+              <Icon icon="mail_outline" />
+              <span>Email: <a href={`mailto:${fieldEmail}`}>{fieldEmail}</a></span>
+            </li>
+          )}
+
+          {fieldFaxNumber && (
+            <li>
+              <Icon d={FAX_SVG_PATH} />
+              <span>Fax: {fieldFaxNumber}</span>
+            </li>
+          )}
+
+          {orgChartUrl && (
+            <li>
+              <Icon icon="hierarchy" />
+              <a href={orgChartUrl}>Organization chart</a>
+            </li>
+          )}
+
+          <li>
+            <Icon icon="people_outline" />
+            <span>
+              <a href={staffDirectoryUrl}>Staff directory</a>
+              {' '}for {fieldTitleContext}
+            </span>
+          </li>
+        </List>
+
+        {fieldMakeAnAppointment?.uri && (
+          <div class="appointment-callout">
+            <Callout to={fieldMakeAnAppointment.uri} icon="today">
+              Make an appointment with us
+            </Callout>
+          </div>
+        )}
+
+        {body?.processed && (
+          <>
+            <Heading level={2} size="M">What we do</Heading>
+            <Html html={body.processed} />
+          </>
+        )}
+
+        {fieldWhatWereWorkingOn?.processed && (
+          <>
+            <Heading level={2} size="M">What we&rsquo;re working on</Heading>
+            <Html html={fieldWhatWereWorkingOn.processed} />
+          </>
+        )}
+      </Prose>
+
+      <Panels data={bodyPanels} />
+    </TemplateContent>
+  </Template>
+
+  <Panels data={fullPanels} />
+</TemplateLayout>
+
+<style>
+  .dept-heading {
+    margin-bottom: 1.5rem;
+  }
+
+  /* Each info row: icon + text side-by-side */
+  .dept-info-list :global(li) {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .dept-info-list :global(svg) {
+    flex-shrink: 0;
+    margin-top: 0.1em;
+  }
+
+  .appointment-callout {
+    margin-top: 2.5rem;
+  }
+
+  .appointment-callout :global(a) {
+    display: inline-block;
+    box-shadow: none;
+  }
+
+    .appointment-callout:hover :global(a) {
+    display: inline-block;
+    box-shadow: none;
+  }
+
+  /* Small-screen horizontal nav — hidden on large screens */
+  .small-screen-nav {
+    display: block;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .small-screen-nav {
+      display: none;
+    }
+  }
+
+  /* Match basic-side nav: remove the decorative border */
+  :global(.basic-side .template-side-inner) {
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+</style>

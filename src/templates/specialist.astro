@@ -1,0 +1,961 @@
+---
+/**
+ * Find a Specialist Template
+ * Converted from src/templates/specialist.js
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateTop from '../components/TemplateTop.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import NoResults from '../components/NoResults.astro';
+import { fetchSpecialistTaxonomies } from '../lib/specialist-data.js';
+
+interface Props {
+  node: any;
+  title: string;
+  breadcrumb?: string;
+  parents?: any[];
+  [key: string]: any;
+}
+
+const { node, title, breadcrumb, parents } = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available for specialist page');
+}
+
+const {
+  field_title_context: fieldTitleContext,
+} = node.attributes;
+
+const { processed: body } = node.attributes.body || {};
+const slug = node.attributes?.path?.alias || Astro.url.pathname;
+
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: fieldTitleContext || title || 'Find a Specialist', slug },
+    parents || []
+  );
+}
+
+// Fetch all 4 taxonomy vocabularies
+const taxonomies = await fetchSpecialistTaxonomies();
+
+/**
+ * Process specialist data — port of src/utils/process-specialist-data.js
+ *
+ * Combines terms from all 4 taxonomies, handles synonyms, contacts,
+ * and produces the sorted specialist list.
+ */
+function processSpecialistData(taxonomies: {
+  healthSciences: { data: any[]; included: any[] };
+  academicDiscipline: { data: any[]; included: any[] };
+  collectingAreas: { data: any[]; included: any[] };
+  libraryExpertise: { data: any[]; included: any[] };
+  users: any[];
+}) {
+  // Build a combined lookup of all included resources across all taxonomies
+  const allIncluded: Record<string, any> = {};
+  for (const group of [taxonomies.healthSciences, taxonomies.academicDiscipline, taxonomies.collectingAreas, taxonomies.libraryExpertise]) {
+    for (const item of (group.included || [])) {
+      allIncluded[item.id] = item;
+    }
+  }
+
+  // Flatten all taxonomy term data entries in priority order (health sciences first)
+  const allTerms = [
+    ...taxonomies.healthSciences.data,
+    ...taxonomies.academicDiscipline.data,
+    ...taxonomies.collectingAreas.data,
+    ...taxonomies.libraryExpertise.data,
+  ];
+
+  // Rebuild the reverse term→user relationship that gatsby-source-drupal synthesized.
+  // Users have fields pointing to these taxonomy terms (forward direction on the user).
+  // JSON:API can't traverse that in reverse via includes, so we scan each user's
+  // relationships for references to our 4 specialist vocabulary types.
+  const specialistTermTypes = new Set([
+    'taxonomy_term--health_sciences',
+    'taxonomy_term--academic_discipline',
+    'taxonomy_term--collecting_areas',
+    'taxonomy_term--library_expertise',
+  ]);
+  const termUserMap: Record<string, any[]> = {};
+  for (const user of (taxonomies.users || [])) {
+    for (const rel of Object.values(user.relationships || {})) {
+      const refs = Array.isArray((rel as any)?.data) ? (rel as any).data : [];
+      for (const ref of refs) {
+        if (specialistTermTypes.has(ref.type)) {
+          if (!termUserMap[ref.id]) termUserMap[ref.id] = [];
+          termUserMap[ref.id].push(user);
+        }
+      }
+    }
+  }
+
+  // Resolve relationship references to actual included data
+  const getSynonyms = (term: any): any[] => {
+    const refs = term.relationships?.field_synonym?.data;
+    if (!refs || !Array.isArray(refs)) return [];
+    return refs;
+  };
+
+  const getUsers = (term: any): any[] => {
+    return termUserMap[term.id] || [];
+  };
+
+  const processUserNodes = (users: any[]) => {
+    return users.map((user: any) => ({
+      description: user.attributes?.field_user_work_title || '',
+      link: {
+        label: user.attributes?.field_user_display_name || user.attributes?.name || '',
+        to: `/users/${user.attributes?.name}`
+      }
+    }));
+  };
+
+  const processGroupEmail = (term: any) => {
+    const email = term.attributes?.field_group_email;
+    if (!email) return [];
+    return [{
+      description: term.attributes?.field_brief_group_description || '',
+      link: {
+        label: email,
+        to: `mailto:${email}`
+      }
+    }];
+  };
+
+  const processContacts = (users: any[], groupEmail: any[]) => {
+    if (groupEmail.length > 0) return groupEmail;
+    if (users.length > 0) return users;
+    return [{
+      description: 'We can help you locate library resources, connect with a specialist, or find support at any stage of your project.',
+      link: {
+        label: 'Ask a Librarian',
+        to: '/ask-librarian'
+      }
+    }];
+  };
+
+  const inheritedIds = new Set<string>();
+
+  const result = allTerms.reduce((acc: any[], term: any, index: number) => {
+    if (inheritedIds.has(term.id)) return acc;
+
+    // Find children: terms later in the list whose synonyms reference this term
+    const children = allTerms.slice(index + 1).filter((candidate: any) => {
+      return getSynonyms(candidate).some((syn: any) => syn.id === term.id);
+    });
+
+    // Gather users from this term and all its children
+    const userNodes = getUsers(term).concat(
+      children.flatMap((child: any) => getUsers(child))
+    );
+
+    // Deduplicate users by name (uniqname)
+    const uniqueNames = new Set<string>();
+    const uniqueUsers = userNodes.filter((user: any) => {
+      const name = user.attributes?.name;
+      if (uniqueNames.has(name)) return false;
+      uniqueNames.add(name);
+      return true;
+    });
+
+    const users = processUserNodes(uniqueUsers);
+
+    // Mark children as inherited so they don't appear as separate entries
+    for (const child of children) {
+      inheritedIds.add(child.id);
+    }
+
+    const groupEmail = processGroupEmail(term);
+    const contacts = processContacts(users, groupEmail);
+
+    // Resolve health sciences category
+    const categoryRef = term.relationships?.field_health_sciences_category?.data;
+    const categoryNode = categoryRef ? allIncluded[categoryRef.id] : null;
+    const category = categoryNode?.attributes?.name || undefined;
+
+    acc.push({
+      name: term.attributes?.name || '',
+      category,
+      contacts
+    });
+
+    return acc;
+  }, []);
+
+  return result.sort((a: any, b: any) => {
+    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+  });
+}
+
+const specialists = processSpecialistData(taxonomies);
+
+// Extract unique categories for the dropdown
+const categories = Array.from(
+  new Set(
+    specialists
+      .map((s: any) => s.category)
+      .filter(Boolean)
+      .sort()
+  )
+);
+
+// Serialize for client-side use
+const specialistsJson = JSON.stringify(specialists);
+const categoriesJson = JSON.stringify(categories);
+---
+
+<!-- Client-side loading of lunr -->
+<script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <Template variant="basic" hasSide={false}>
+    <TemplateTop>
+      <Breadcrumb data={breadcrumbData} />
+    </TemplateTop>
+
+    <TemplateContent>
+      <Heading size="3XL" level={1} class="specialist-heading">
+        {fieldTitleContext}
+      </Heading>
+
+      {body && (
+        <div class="specialist-body">
+          <Html html={body} />
+        </div>
+      )}
+
+      <!-- Loading state (shown until JS initializes) -->
+      <div
+        id="specialist-loading"
+        class="specialist-loading"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        Loading Find a Specialist...
+      </div>
+
+      <!-- Main interactive area (hidden until JS initializes) -->
+      <div id="specialist-app" class="specialist-app" hidden>
+        <!-- Accessible live region -->
+        <div
+          id="specialist-live"
+          class="visually-hidden"
+          aria-live="polite"
+          aria-atomic="true"
+        ></div>
+
+        <!-- Controls: search, category, clear, health sciences toggle -->
+        <div id="specialist-controls" class="specialist-controls">
+          <label class="specialist-search-label">
+            <span class="specialist-search-label-text">Search by subject or specialty</span>
+            <input
+              type="text"
+              id="specialist-search-input"
+              name="query"
+              class="specialist-search-input"
+              autocomplete="off"
+            />
+          </label>
+
+          <label id="specialist-category-label" class="select-label" hidden>
+            <span class="select-label-text">Category</span>
+            <div class="select-wrapper">
+              <select id="specialist-category-filter" name="category" class="select-input">
+                <option value="All categories">All categories</option>
+                {categories.map((cat: string) => (
+                  <option value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+          </label>
+
+          <button
+            type="button"
+            id="specialist-clear"
+            class="specialist-clear-btn"
+          >
+            Clear
+          </button>
+
+          <button
+            type="button"
+            role="switch"
+            aria-checked="false"
+            id="specialist-hs-toggle"
+            class="switch-btn"
+          >
+            <span role="presentation" class="switch-track" data-on="false">
+              <span class="switch-label">off</span>
+              <span class="switch-knob"></span>
+            </span>
+            <span>Show Health Sciences only</span>
+          </button>
+        </div>
+
+        <!-- Results table -->
+        <table id="specialist-table" class="specialist-table" aria-live="polite">
+          <caption id="specialist-summary" class="specialist-summary"></caption>
+          <thead class="specialist-thead">
+            <tr id="specialist-thead-row">
+              <th scope="col">Subjects and specialties</th>
+              <th colspan="2" scope="colgroup">Contact</th>
+            </tr>
+          </thead>
+          <tbody id="specialist-tbody"></tbody>
+        </table>
+
+        <!-- Show more button area -->
+        <div id="specialist-show-more" hidden>
+          <p id="specialist-show-more-summary" class="show-more-summary"></p>
+          <button type="button" id="specialist-show-all-btn" class="specialist-show-all-btn">
+            Show all
+          </button>
+        </div>
+
+        <!-- No results area -->
+        <div id="specialist-no-results" hidden>
+          <NoResults>
+            Consider searching with different keywords.
+          </NoResults>
+        </div>
+      </div>
+
+      <!-- Specialist data embedded for client-side use -->
+      <script id="specialist-data" type="application/json" set:html={specialistsJson}></script>
+      <script id="categories-data" type="application/json" set:html={categoriesJson}></script>
+    </TemplateContent>
+  </Template>
+</TemplateLayout>
+
+<script is:inline>
+(function () {
+  // Parse specialist data
+  var specialistDataEl = document.getElementById('specialist-data');
+  if (!specialistDataEl) return;
+
+  var specialists;
+  try {
+    specialists = JSON.parse(specialistDataEl.textContent);
+  } catch (e) {
+    console.error('Failed to parse specialist data:', e);
+    return;
+  }
+
+  // DOM elements
+  var app = document.getElementById('specialist-app');
+  var loading = document.getElementById('specialist-loading');
+  var searchInput = document.getElementById('specialist-search-input');
+  var categoryFilter = document.getElementById('specialist-category-filter');
+  var categoryLabel = document.getElementById('specialist-category-label');
+  var clearBtn = document.getElementById('specialist-clear');
+  var hsToggle = document.getElementById('specialist-hs-toggle');
+  var tbody = document.getElementById('specialist-tbody');
+  var caption = document.getElementById('specialist-summary');
+  var showMoreContainer = document.getElementById('specialist-show-more');
+  var showMoreSummary = document.getElementById('specialist-show-more-summary');
+  var showAllBtn = document.getElementById('specialist-show-all-btn');
+  var noResultsContainer = document.getElementById('specialist-no-results');
+  var liveRegion = document.getElementById('specialist-live');
+  var table = document.getElementById('specialist-table');
+  var theadRow = document.getElementById('specialist-thead-row');
+
+  var SHOW_LIMIT = 20;
+  var currentResults = specialists.slice();
+  var showAll = false;
+  var healthSciencesOnly = false;
+  var activeCategory = null;
+  var liveDebounceTimer = null;
+  var urlDebounceTimer = null;
+
+  // Build lunr index
+  var index = null;
+  if (typeof lunr !== 'undefined') {
+    index = lunr(function () {
+      this.ref('name');
+      this.field('name');
+      for (var i = 0; i < specialists.length; i++) {
+        this.add(specialists[i]);
+      }
+    });
+  }
+
+  // URL state helpers
+  function getUrlParams() {
+    var params = new URLSearchParams(window.location.search);
+    return {
+      query: params.get('query') || '',
+      hs: params.get('hs') || '',
+      category: params.get('category') || ''
+    };
+  }
+
+  function setUrlParams(query, hs, category) {
+    var params = new URLSearchParams();
+    if (query) params.set('query', query);
+    if (hs) params.set('hs', 'true');
+    if (category) params.set('category', category);
+    var newUrl = params.toString() ? '?' + params.toString() : window.location.pathname;
+    window.history.replaceState({ preserveScroll: true }, '', newUrl);
+  }
+
+  // Health Sciences toggle
+  function updateHSToggle() {
+    hsToggle.setAttribute('aria-checked', healthSciencesOnly ? 'true' : 'false');
+    var track = hsToggle.querySelector('.switch-track');
+    track.setAttribute('data-on', healthSciencesOnly ? 'true' : 'false');
+    track.querySelector('.switch-label').textContent = healthSciencesOnly ? 'on' : 'off';
+
+    // Show/hide category filter
+    categoryLabel.hidden = !healthSciencesOnly;
+
+    // Show/hide category column header
+    updateCategoryHeader();
+
+    if (!healthSciencesOnly) {
+      activeCategory = null;
+      categoryFilter.value = 'All categories';
+    }
+  }
+
+  function updateCategoryHeader() {
+    // Check if we already have the category TH
+    var existingCatTh = theadRow.querySelector('.category-th');
+    if (healthSciencesOnly && !existingCatTh) {
+      var th = document.createElement('th');
+      th.scope = 'col';
+      th.className = 'category-th';
+      th.textContent = 'Category';
+      theadRow.appendChild(th);
+    } else if (!healthSciencesOnly && existingCatTh) {
+      existingCatTh.remove();
+    }
+  }
+
+  // Filter results
+  function filterResults(results) {
+    var filtered = results;
+
+    if (healthSciencesOnly) {
+      filtered = filtered.filter(function (r) {
+        return r.category !== undefined && r.category !== null;
+      });
+    }
+
+    if (activeCategory) {
+      filtered = filtered.filter(function (r) {
+        return r.category === activeCategory;
+      });
+    }
+
+    return filtered;
+  }
+
+  // Search and filter
+  function search() {
+    var query = (searchInput.value || '').trim();
+    var results;
+
+    if (!query && index) {
+      results = specialists;
+    } else if (query && index) {
+      try {
+        var searchResults = index.query(function (q) {
+          q.term(lunr.tokenizer(query), { boost: 3 });
+          q.term(lunr.tokenizer(query), { boost: 2, wildcard: lunr.Query.wildcard.TRAILING });
+          if (query.length > 2) {
+            q.term(lunr.tokenizer(query), {
+              wildcard: lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
+            });
+          }
+        });
+
+        results = [];
+        for (var i = 0; i < searchResults.length; i++) {
+          var ref = searchResults[i].ref;
+          for (var j = 0; j < specialists.length; j++) {
+            if (specialists[j].name === ref) {
+              results.push(specialists[j]);
+              break;
+            }
+          }
+        }
+      } catch (e) {
+        results = [];
+      }
+    } else {
+      results = specialists;
+    }
+
+    currentResults = filterResults(results);
+    showAll = false;
+    render();
+
+    // Debounce the live region update
+    clearTimeout(liveDebounceTimer);
+    liveDebounceTimer = setTimeout(function () {
+      var liveParts = [];
+      if (currentResults.length === 0) {
+        liveParts.push('No results');
+      } else {
+        liveParts.push(currentResults.length + ' result' + (currentResults.length === 1 ? '' : 's'));
+      }
+      if (query) liveParts.push('for ' + query);
+      if (activeCategory) liveParts.push('in ' + activeCategory);
+      if (healthSciencesOnly) liveParts.push('with the Show Health Sciences Only filter active');
+      liveRegion.textContent = liveParts.join(' ');
+    }, 400);
+
+    // Debounce URL update
+    clearTimeout(urlDebounceTimer);
+    urlDebounceTimer = setTimeout(function () {
+      setUrlParams(query || '', healthSciencesOnly, activeCategory);
+    }, 100);
+  }
+
+  // Render results to the table
+  function render() {
+    var results = currentResults;
+    var limit = showAll ? results.length : SHOW_LIMIT;
+    var shown = results.slice(0, limit);
+
+    // Clear table body
+    tbody.innerHTML = '';
+
+    if (results.length === 0) {
+      table.hidden = true;
+      showMoreContainer.hidden = true;
+      noResultsContainer.hidden = false;
+      caption.textContent = '';
+      return;
+    }
+
+    table.hidden = false;
+    noResultsContainer.hidden = true;
+
+    // Build summary
+    var query = (searchInput.value || '').trim();
+    var summaryParts = [];
+
+    if (limit < results.length) {
+      summaryParts.push('Showing ' + limit + ' of ' + results.length + ' results');
+    } else {
+      summaryParts.push(results.length + ' result' + (results.length > 1 ? 's' : ''));
+    }
+    if (query) summaryParts.push('for "' + query + '"');
+    if (activeCategory) summaryParts.push('in ' + activeCategory);
+    if (healthSciencesOnly) summaryParts.push('with the Show Health Sciences Only filter active');
+    caption.textContent = summaryParts.join(' ');
+
+    // Show more button
+    if (limit < results.length) {
+      showMoreContainer.hidden = false;
+      showMoreSummary.textContent = summaryParts.join(' ');
+    } else {
+      showMoreContainer.hidden = true;
+    }
+
+    // Render rows
+    for (var i = 0; i < shown.length; i++) {
+      var specialist = shown[i];
+      var tr = document.createElement('tr');
+      tr.className = 'specialist-row';
+
+      // Name cell (th)
+      var nameTh = document.createElement('th');
+      nameTh.scope = 'row';
+      nameTh.className = 'specialist-name-cell';
+      nameTh.textContent = specialist.name;
+      tr.appendChild(nameTh);
+
+      // Contacts cell
+      var contactsTd = document.createElement('td');
+      contactsTd.colSpan = 2;
+      contactsTd.className = 'specialist-contacts-cell';
+
+      for (var c = 0; c < specialist.contacts.length; c++) {
+        var contact = specialist.contacts[c];
+        var contactDiv = document.createElement('div');
+        contactDiv.className = 'specialist-contact';
+
+        var contactLink = document.createElement('a');
+        contactLink.href = contact.link.to;
+        contactLink.textContent = contact.link.label;
+        contactLink.className = 'specialist-contact-link';
+        contactDiv.appendChild(contactLink);
+
+        if (contact.description) {
+          var descP = document.createElement('p');
+          descP.className = 'specialist-contact-desc';
+          descP.textContent = contact.description;
+          contactDiv.appendChild(descP);
+        }
+
+        contactsTd.appendChild(contactDiv);
+      }
+      tr.appendChild(contactsTd);
+
+      // Category cell (only when HS toggle is on)
+      if (healthSciencesOnly) {
+        var catTd = document.createElement('td');
+        catTd.className = 'specialist-category-cell';
+        catTd.textContent = specialist.category || '';
+        tr.appendChild(catTd);
+      }
+
+      tbody.appendChild(tr);
+    }
+  }
+
+  // Event listeners
+  searchInput.addEventListener('input', search);
+  categoryFilter.addEventListener('change', function () {
+    var val = categoryFilter.value;
+    activeCategory = val === 'All categories' ? null : val;
+    search();
+  });
+
+  clearBtn.addEventListener('click', function () {
+    searchInput.value = '';
+    activeCategory = null;
+    categoryFilter.value = 'All categories';
+    // Keep healthSciencesOnly state on clear (matches Gatsby behavior)
+    search();
+  });
+
+  hsToggle.addEventListener('click', function () {
+    healthSciencesOnly = !healthSciencesOnly;
+    updateHSToggle();
+    search();
+  });
+
+  showAllBtn.addEventListener('click', function () {
+    showAll = true;
+    render();
+  });
+
+  // Initialize from URL state
+  var initialState = getUrlParams();
+  if (initialState.query) searchInput.value = initialState.query;
+  if (initialState.hs === 'true') {
+    healthSciencesOnly = true;
+    updateHSToggle();
+  }
+  if (initialState.category) {
+    activeCategory = initialState.category;
+    categoryFilter.value = initialState.category;
+  }
+
+  // Show app, hide loading
+  loading.hidden = true;
+  app.hidden = false;
+
+  // Initial search
+  search();
+})();
+</script>
+
+<style>
+  .specialist-heading {
+    margin-bottom: var(--spacing-s);
+  }
+
+  .specialist-body {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .specialist-loading {
+    color: var(--color-neutral-300);
+    font-size: 1.125rem;
+    padding: var(--spacing-xl);
+  }
+
+  /* Controls layout */
+  .specialist-controls {
+    display: grid;
+    gap: var(--spacing-m);
+    margin-bottom: var(--spacing-m);
+  }
+
+  @media only screen and (min-width: 960px) {
+    .specialist-controls {
+      grid-template-columns: minmax(200px, 3fr) auto auto auto;
+    }
+  }
+
+  .specialist-controls input,
+  .specialist-controls select {
+    height: 40px;
+    line-height: 1.5;
+  }
+
+  /* Search input */
+  .specialist-search-label-text {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .specialist-search-input {
+    appearance: none;
+    background: transparent;
+    border: solid 1px var(--color-neutral-300);
+    border-radius: 4px;
+    box-shadow: none;
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    padding: var(--spacing-xs);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Select styles */
+  .select-label-text {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-input {
+    appearance: none;
+    background: transparent;
+    background-image: none;
+    border: solid 1px var(--color-neutral-300);
+    border-radius: 4px;
+    box-shadow: none;
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    height: 40px;
+    line-height: 1.5;
+    padding: var(--spacing-xs);
+    padding-right: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Clear button */
+  .specialist-clear-btn {
+    align-self: end;
+    appearance: none;
+    background: none;
+    border: none;
+    color: var(--color-teal-400);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 600;
+    height: 40px;
+    padding: var(--spacing-xs) var(--spacing-m);
+    text-decoration: underline;
+  }
+
+  .specialist-clear-btn:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* Switch toggle — inline since it's rendered directly in the template */
+  .switch-btn {
+    align-items: center;
+    align-self: end;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    font-family: inherit;
+    font-size: inherit;
+    height: 40px;
+    outline: none;
+    padding: var(--spacing-2xs);
+  }
+
+  @media only screen and (min-width: 960px) {
+    .switch-btn {
+      margin-left: var(--spacing-m);
+    }
+  }
+
+  .switch-btn:focus .switch-track {
+    box-shadow: 0 0 0 3px #ffffff, 0 0 0 4px var(--color-neutral-400);
+    outline: none;
+  }
+
+  .switch-btn:hover .switch-track {
+    box-shadow: 0 0 0 4px var(--color-neutral-100);
+  }
+
+  .switch-track {
+    background: var(--color-neutral-300);
+    border: solid 2px var(--color-neutral-300);
+    border-radius: 16px;
+    display: inline-block;
+    height: 24px;
+    margin-right: var(--spacing-xs);
+    position: relative;
+    width: 58px;
+    flex-shrink: 0;
+  }
+
+  .switch-track[data-on="true"] {
+    background: var(--color-green-500);
+    border-color: var(--color-green-500);
+  }
+
+  .switch-label {
+    color: white;
+    display: inline-block;
+    font-size: 0.675rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    position: absolute;
+    top: 2px;
+    right: 5px;
+  }
+
+  .switch-track[data-on="true"] .switch-label {
+    left: 8px;
+    right: auto;
+  }
+
+  .switch-knob {
+    background: white;
+    border-radius: 50%;
+    display: inline-block;
+    height: 20px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 20px;
+  }
+
+  .switch-track[data-on="true"] .switch-knob {
+    left: auto;
+    right: 0px;
+  }
+
+  /* Results table */
+  .specialist-table {
+    table-layout: fixed;
+    text-align: left;
+    width: 100%;
+  }
+
+  .specialist-summary {
+    text-align: left;
+  }
+
+  .specialist-thead {
+    border-bottom: 1px solid var(--color-neutral-100);
+    color: var(--color-neutral-300);
+  }
+
+  @media only screen and (max-width: 720px) {
+    .specialist-thead {
+      clip: rect(1px, 1px, 1px, 1px);
+      clip-path: inset(50%);
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
+  }
+
+  /* Table rows */
+  :global(.specialist-row) {
+    border-top: 1px solid var(--color-neutral-100);
+  }
+
+  :global(.specialist-row > *) {
+    padding: 0.75rem 0;
+    position: relative;
+  }
+
+  :global(.specialist-row > * + *) {
+    padding-left: 2rem;
+  }
+
+  @media only screen and (max-width: 720px) {
+    :global(.specialist-row > *) {
+      display: block;
+      padding: 0.25rem 0;
+    }
+
+    :global(.specialist-row > * + *) {
+      padding-left: 0;
+    }
+
+    :global(.specialist-row > *:last-child) {
+      padding-bottom: 1rem;
+    }
+  }
+
+  /* Name cell */
+  @media only screen and (max-width: 720px) {
+    :global(.specialist-name-cell) {
+      font-weight: 600;
+      padding-top: 1rem !important;
+    }
+  }
+
+  /* Contacts cell */
+  :global(.specialist-contact + .specialist-contact) {
+    padding-top: 0.5rem;
+  }
+
+  :global(.specialist-contact-link) {
+    color: var(--color-teal-400);
+    text-decoration: underline;
+  }
+
+  :global(.specialist-contact-link:hover) {
+    text-decoration-thickness: 2px;
+  }
+
+  :global(.specialist-contact-desc) {
+    margin: 0;
+  }
+
+  /* Category cell */
+  @media only screen and (max-width: 720px) {
+    :global(.specialist-category-cell) {
+      display: none !important;
+    }
+  }
+
+  /* Show more */
+  .show-more-summary {
+    margin-bottom: var(--spacing-m);
+  }
+
+  .specialist-show-all-btn {
+    appearance: none;
+    background: var(--color-teal-400);
+    border: 2px solid var(--color-teal-400);
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    padding: var(--spacing-xs) var(--spacing-m);
+  }
+
+  .specialist-show-all-btn:hover {
+    background: var(--color-teal-500, #0c5940);
+  }
+</style>

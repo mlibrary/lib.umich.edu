@@ -1,0 +1,61 @@
+---
+/**
+ * LinkCallout Component
+ * Converted from src/components/link-callout.js
+ *
+ * A teal-background callout link with an optional icon.
+ * Internal paths (starting with /) render as <a href>, external as <a href>.
+ *
+ * Props:
+ *  - to: string  — href / path
+ *  - icon: string — named icon from Icon component
+ *  - d: string   — custom SVG path data (overrides icon)
+ */
+import Icon from '../reusable/Icon.astro';
+
+interface Props {
+  to: string;
+  icon?: string;
+  d?: string;
+  class?: string;
+}
+
+const { to, icon, d, class: className = '' } = Astro.props;
+---
+
+<a href={to} class={`link-callout ${className}`.trim()}>
+  <span class="link-callout-icon">
+    {d ? <Icon d={d} size={24} /> : <Icon icon={icon} size={24} />}
+  </span>
+  <span class="link-callout-text">
+    <slot />
+  </span>
+</a>
+
+<style>
+  .link-callout {
+    background: var(--color-teal-100);
+    border-radius: 2px;
+    display: block;
+    padding: 1rem;
+    padding-right: 2rem;
+    text-decoration: none;
+  }
+
+  .link-callout-icon {
+    color: var(--color-teal-400);
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .link-callout-text {
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    color: var(--color-neutral-400);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .link-callout:hover .link-callout-text {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+</style>

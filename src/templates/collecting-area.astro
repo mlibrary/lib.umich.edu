@@ -1,0 +1,250 @@
+---
+/**
+ * Collecting Area Template
+ * Converted from src/templates/collecting-area.js
+ *
+ * Two-column layout with:
+ *  - Left: Heading + body HTML + body panels
+ *  - Right: Hero image with caption + Contact user cards
+ *  - Below: Full-width panels
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Panels from '../components/panels/Panels.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
+import UserCard from '../components/UserCard.astro';
+import transformNodePanels from '../utils/transform-node-panels';
+import { fetchWithRetry, removeTrailingSlash, DRUPAL_URL } from '../lib/drupal.js';
+
+interface Props {
+  node: any;
+  drupal_nid?: string;
+  title: string;
+  breadcrumb?: string;
+  summary?: string;
+  keywords?: string;
+  tag?: string;
+  parents?: any[];
+  children?: any[];
+}
+
+const { node, title, breadcrumb, parents } = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available for collecting area page');
+}
+
+const {
+  field_title_context: fieldTitleContext,
+} = node.attributes;
+
+const { relationships } = node;
+const { processed: body } = node.attributes.body || {};
+const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pathname;
+
+// Breadcrumb
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: fieldTitleContext || title || 'Collecting Area', slug },
+    parents || []
+  );
+}
+
+// Panels
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+
+// Hero image — resolved by page-generator's processDrupalNode
+const imageRelationship = relationships?.field_media_image;
+const imageSrc = imageRelationship?.imageUrl || null;
+const imageAlt = imageRelationship?.imageAlt || '';
+const imageCaption = imageRelationship?.imageCaption || null;
+
+// Collecting area contacts
+// The Gatsby template used field_collecting_area.relationships.user__user, which is
+// a synthesized reverse relationship. In JSON:API, we fetch users separately and
+// filter by those who reference the collecting area taxonomy term.
+const collectingAreaTerm = relationships?.field_collecting_area;
+const collectingAreaTermId = collectingAreaTerm?.id || null;
+
+let contacts: any[] = [];
+if (collectingAreaTermId) {
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+
+  // Fetch all users with media image includes to resolve photos
+  const allUsers: any[] = [];
+  const allIncluded: any[] = [];
+  let nextUrl: string | null =
+    `${baseUrl}/jsonapi/user/user?include=field_media_image,field_media_image.field_media_image`;
+  while (nextUrl) {
+    const response = await fetchWithRetry(nextUrl);
+    allUsers.push(...(response.data || []));
+    if (response.included) {
+      allIncluded.push(...response.included);
+    }
+    nextUrl = response.links?.next?.href || null;
+  }
+
+  // Build lookup of included entities by id
+  const includedById: Record<string, any> = {};
+  for (const item of allIncluded) {
+    includedById[item.id] = item;
+  }
+
+  // Filter to users who reference this collecting area term
+  const matchingUsers = allUsers.filter((user: any) => {
+    for (const rel of Object.values(user.relationships || {})) {
+      const refs = Array.isArray((rel as any)?.data) ? (rel as any).data : [];
+      for (const ref of refs) {
+        if (ref.type === 'taxonomy_term--collecting_areas' && ref.id === collectingAreaTermId) {
+          return true;
+        }
+      }
+    }
+    return false;
+  });
+
+  // Process into contact card data
+  const userList = matchingUsers.map((user: any) => {
+    const attrs = user.attributes || {};
+    const displayName = attrs.field_user_display_name || attrs.name || '';
+    const workTitle = attrs.field_user_work_title || '';
+    const email = attrs.field_user_email || '';
+    const phone = attrs.field_user_phone === '000-000-0000' ? null : attrs.field_user_phone;
+    const uniqname = attrs.name || '';
+
+    // Resolve user photo from included media + file entities
+    let image: { alt: string; url: string } | undefined;
+    const mediaRef = user.relationships?.field_media_image?.data;
+    if (mediaRef) {
+      const mediaEntity = includedById[mediaRef.id];
+      if (mediaEntity) {
+        const alt = mediaEntity.relationships?.field_media_image?.data?.meta?.alt
+          || mediaEntity.attributes?.field_media_image?.alt || '';
+        const fileRef = mediaEntity.relationships?.field_media_image?.data;
+        if (fileRef) {
+          const fileEntity = includedById[fileRef.id];
+          const fileUrl = fileEntity?.attributes?.uri?.url;
+          if (fileUrl) {
+            const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${baseUrl}${fileUrl}`;
+            image = { alt, url: fullUrl };
+          }
+        }
+      }
+    }
+
+    return {
+      email,
+      image,
+      name: displayName,
+      phone,
+      title: workTitle,
+      to: `/users/${uniqname}`,
+      uniqname,
+    };
+  });
+
+  // Sort alphabetically by display name
+  contacts = userList.sort((a: any, b: any) => a.name.localeCompare(b.name));
+}
+---
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <DebugPanel node={node} />
+
+  <div class="margins">
+    <Breadcrumb data={breadcrumbData} />
+  </div>
+
+  <Template asideWidth="25rem">
+    <TemplateContent>
+      <Heading level={1} size="3XL" class="collecting-area-heading">
+        {fieldTitleContext}
+      </Heading>
+
+      {body && <Html html={body} />}
+
+      {bodyPanels && bodyPanels.length > 0 && <Panels data={bodyPanels} />}
+    </TemplateContent>
+
+    <TemplateSide class="collecting-area-side">
+      {imageSrc && (
+        <figure class="collecting-area-figure">
+          <img
+            src={imageSrc}
+            alt={imageAlt}
+            class="collecting-area-image"
+            loading="lazy"
+            decoding="async"
+          />
+          {imageCaption && (
+            <figcaption class="collecting-area-caption">
+              <Html html={imageCaption} />
+            </figcaption>
+          )}
+        </figure>
+      )}
+
+      {contacts.length > 0 && (
+        <div>
+          <Heading level={2} size="M" class="contact-heading">
+            Contact
+          </Heading>
+          {contacts.map((contact) => (
+            <UserCard
+              name={contact.name}
+              to={contact.to}
+              image={contact.image}
+              title={contact.title}
+              phone={contact.phone}
+              email={contact.email}
+            />
+          ))}
+        </div>
+      )}
+    </TemplateSide>
+  </Template>
+
+  {fullPanels && fullPanels.length > 0 && <Panels data={fullPanels} />}
+</TemplateLayout>
+
+<style>
+  .collecting-area-heading {
+    margin-bottom: 1.5rem; /* SPACING.L */
+    margin-top: 0.75rem;   /* SPACING.S */
+  }
+
+  .collecting-area-figure {
+    max-width: 38rem;
+    margin: 0;
+  }
+
+  .collecting-area-image {
+    border-radius: 2px;
+    width: 100%;
+    height: auto;
+  }
+
+  .collecting-area-caption {
+    border-bottom: solid 1px var(--color-neutral-100);
+    color: var(--color-neutral-300);
+    margin-bottom: 2rem;   /* SPACING.XL */
+    padding-bottom: 2rem;  /* SPACING.XL */
+    padding-top: 0.75rem;  /* SPACING.S */
+  }
+
+  .contact-heading {
+    margin-top: 2rem; /* SPACING.XL */
+  }
+
+  /* Remove default TemplateSide inner border (matches Gatsby css={{ '> div': { border: 'none' } }}) */
+  .collecting-area-side :global(.template-side-inner) {
+    border: none;
+  }
+</style>

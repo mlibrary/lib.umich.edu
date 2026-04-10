@@ -1,0 +1,57 @@
+---
+/**
+ * List Component
+ * Converted from src/reusable/list.jsx
+ *
+ * Props:
+ *  - type: 'bulleted' | 'numbered' | undefined
+ *    - undefined (default): plain <ul> with no list markers
+ *    - 'bulleted': <ul> with disc markers
+ *    - 'numbered': <ol> with decimal markers
+ *  - class: optional extra class names
+ */
+
+interface Props {
+  type?: 'bulleted' | 'numbered';
+  class?: string;
+}
+
+const { type, class: className = '' } = Astro.props;
+---
+
+{type === 'numbered' ? (
+  <ol data-list class={`list list--numbered ${className}`.trim()}>
+    <slot />
+  </ol>
+) : type === 'bulleted' ? (
+  <ul data-list class={`list list--bulleted ${className}`.trim()}>
+    <slot />
+  </ul>
+) : (
+  <ul data-list class={`list ${className}`.trim()}>
+    <slot />
+  </ul>
+)}
+
+<style>
+  .list {
+    list-style: none;
+    margin: 0;
+    max-width: 38rem;
+    padding: 0;
+  }
+
+  .list :global(li:not(:last-child)) {
+    margin-bottom: 0.5rem;
+  }
+
+  .list--bulleted {
+    list-style: disc;
+    margin-left: 1.5rem;
+  }
+
+  .list--numbered {
+    list-style: decimal;
+    margin-left: 1.5rem;
+  }
+</style>
