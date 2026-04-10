@@ -634,15 +634,48 @@ export const getPagesToGenerate = async () => {
     ...(events.included || [])
   ];
 
-  // Process each node and generate page data
   const processedNodes = allNodes
     .map((node) => {
       return processDrupalNode(node, included);
     })
     .filter((node) => {
-      // Filter out nodes without a design template
       return node.relationships.field_design_template;
     });
+
+  const floorPlanNodes = processedNodes.filter((node) => {
+    return node.type === 'node--floor_plan';
+  });
+
+  processedNodes.forEach((node) => {
+    if (node.type === 'node--page' || node.type === 'node--floor_plan' || node.type === 'node--section_page') {
+      return;
+    }
+    const building = node.relationships.field_room_building;
+    const parentLocation = node.relationships.field_parent_location;
+    const bid = building?.id ?? parentLocation?.id;
+    const fid = node.relationships.field_floor?.id;
+    if (!bid || !fid) {
+      return;
+    }
+    const match = floorPlanNodes.find((fp) => {
+      const fpBuilding = fp.relationships?.field_room_building;
+      const fpFloor = fp.relationships?.field_floor;
+      return fpBuilding?.id === bid && fpFloor?.id === fid;
+    });
+    if (match) {
+      node.relationships.field_floor_plan = {
+        ...(match.attributes || {}),
+        id: match.id,
+        __typename: match.type,
+        fields: {
+          slug: match.slug,
+          title: match.title
+        },
+        slug: match.slug,
+        relationships: match.relationships
+      };
+    }
+  });
 
   // Generate final page data with breadcrumbs.
   // Process in batches of 20 to avoid overwhelming Drupal with concurrent requests

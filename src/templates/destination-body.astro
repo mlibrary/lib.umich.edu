@@ -53,7 +53,6 @@ const { relationships } = node;
 const { processed: body, summary: bodySummary } = node.attributes?.body || {};
 const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pathname;
 
-// Breadcrumb
 let breadcrumbData = breadcrumb;
 if (!breadcrumbData) {
   breadcrumbData = generateBreadcrumb(
@@ -62,17 +61,14 @@ if (!breadcrumbData) {
   );
 }
 
-// Hero image
 const imageRelationship = relationships?.field_media_image;
 const imageSrc = imageRelationship?.imageUrl || null;
 const imageAlt = imageRelationship?.imageAlt || '';
 const imageWidth = imageRelationship?.imageWidth;
 const imageHeight = imageRelationship?.imageHeight;
 
-// Panels
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
-// Side navigation
 let navBranch = null;
 let smallScreenItems = null;
 
@@ -82,11 +78,8 @@ if (fieldLocalNavigation) {
   smallScreenItems = smallBranch?.children || null;
 }
 
-// --- DestinationLocationInfo logic (inline, matching destination-location-info.js) ---
-// Only rendered for room/location nodes, not page nodes
 const isPageNode = node.type === 'node--page';
 
-// Location resolution (matches resolveLocationFromNode)
 const buildingNode = relationships?.field_room_building;
 const parentLocationNode = relationships?.field_parent_location;
 const locationNode = buildingNode
@@ -106,7 +99,6 @@ const locationSummary = [locationTitle, floor, roomNumber]
   .filter((item) => typeof item === 'string')
   .join(', ');
 
-// Floor plan: use the node's own relationship (already resolved by processDrupalNode)
 const floorPlans = Array.isArray(relationships?.field_floor_plan)
   ? relationships.field_floor_plan
   : relationships?.field_floor_plan
@@ -114,10 +106,8 @@ const floorPlans = Array.isArray(relationships?.field_floor_plan)
     : [];
 const floorPlan = floorPlans[0] || null;
 
-// Ask Librarian special case
 const askLibrarian = slug === '/ask-librarian';
 
-// Hours anchor link
 const hoursAnchorTitle = locationNode?.relationships?.field_parent_location?.title
   ?? locationNode?.title;
 const hoursAnchor = hoursAnchorTitle
@@ -159,7 +149,6 @@ const hoursAnchor = hoursAnchorTitle
           <p class="lede">{bodySummary}</p>
         )}
 
-        {/* DestinationLocationInfo — only for room/location nodes */}
         {!isPageNode && (
           <div class="location-info">
             {shouldDisplayHours && (
@@ -245,14 +234,12 @@ const hoursAnchor = hoursAnchorTitle
 </TemplateLayout>
 
 <style>
-  /* Side nav: no decorative border */
   :global(.destination-side .template-side-inner) {
     border: none;
     padding: 0;
     margin-bottom: 0;
   }
 
-  /* Small-screen horizontal nav — hidden on large screens */
   .small-screen-nav {
     display: block;
   }
@@ -263,19 +250,16 @@ const hoursAnchor = hoursAnchorTitle
     }
   }
 
-  /* Content column max-width (matches Gatsby maxWidth: '38rem') */
   .destination-content {
     max-width: 38rem;
   }
 
-  /* Lede text (matches Gatsby Text lede) */
   .lede {
     font-size: 1.25rem;
     line-height: 1.5;
     margin-bottom: var(--spacing-xl);
   }
 
-  /* Location info spacing (matches Gatsby > *:not(:last-child) marginBottom) */
   .location-info {
     margin-bottom: var(--spacing-2xl);
   }
@@ -295,3 +279,104 @@ const hoursAnchor = hoursAnchorTitle
     width: 100%;
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.hours-display').forEach((el) => {
+      try {
+        const nodeData = JSON.parse(el.getAttribute('data-hours-node') || '{}');
+        const now = new Date();
+        const hours = computeDisplayHours(nodeData, now);
+        if (hours) {
+          el.textContent = `Today: ${hours}`;
+        } else {
+          el.textContent = 'Today: n/a';
+        }
+      } catch {
+        el.textContent = 'Today: n/a';
+      }
+    });
+  });
+
+  function computeDisplayHours(node, now) {
+    const allHours = getHoursFromNode(node);
+    if (!allHours) return null;
+
+    const hoursSet = findHoursSetForNow(allHours, now);
+    if (!hoursSet) return null;
+
+    const hoursForNow = hoursSet.field_hours_open?.find(
+      (data) => data.day === now.getDay()
+    );
+    if (!hoursForNow) return null;
+
+    const { starthours, endhours, comment } = hoursForNow;
+    if (!comment && starthours === endhours) return null;
+
+    if (starthours !== endhours) {
+      const parts = [`${formatTime(starthours)} - ${formatTime(endhours)}`, comment]
+        .filter(Boolean)
+        .join(', ');
+      return parts;
+    }
+    return comment || null;
+  }
+
+  function getHoursFromNode(node) {
+    if (!node.field_display_hours_) return null;
+    const prioritize = (hours) => {
+      if (!hours) return [];
+      const types = [
+        'paragraph__hours_exceptions',
+        'paragraph__fall_and_winter_semester_hours',
+      ];
+      const exceptions = hours.filter((s) => s.__typename === types[0]);
+      const fallWinter = hours.filter((s) => s.__typename === types[1]);
+      const rest = hours.filter((s) => !types.includes(s.__typename));
+      return [...exceptions, ...rest, ...fallWinter].filter(Boolean);
+    };
+
+    if (node.field_hours_different_from_build) {
+      return prioritize(node.relationships?.field_hours_open);
+    }
+    const building = node.relationships?.field_room_building;
+    const parentLoc = node.relationships?.field_parent_location;
+
+    if (building?.field_display_hours_) {
+      return prioritize(building.relationships?.field_hours_open);
+    }
+    if (parentLoc?.field_display_hours_) {
+      return prioritize(parentLoc.relationships?.field_hours_open);
+    }
+    if (building && !building.field_display_hours_ && building.relationships?.field_parent_location?.field_display_hours_) {
+      return prioritize(building.relationships.field_parent_location.relationships?.field_hours_open);
+    }
+    if (parentLoc && !parentLoc.field_display_hours_ && parentLoc.relationships?.field_parent_location?.field_display_hours_) {
+      return prioritize(parentLoc.relationships.field_parent_location.relationships?.field_hours_open);
+    }
+    return null;
+  }
+
+  function findHoursSetForNow(allHours, now) {
+    return allHours.find((set) => {
+      if (!set.field_date_range) return false;
+      const start = new Date(set.field_date_range.value.replace(/-/g, '/').replace(/T.+/, ''));
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(set.field_date_range.end_value.replace(/-/g, '/').replace(/T.+/, ''));
+      end.setHours(23, 59, 59);
+      return start <= now && now <= end;
+    }) || null;
+  }
+
+  function formatTime(time) {
+    const timeStr = time.toString();
+    const hrs = timeStr.slice(0, -2);
+    const mins = timeStr.slice(-2);
+    let formatted = '';
+    if (Number(hrs) === 0) formatted = '12';
+    else if (hrs <= 12) formatted = hrs;
+    else formatted = (hrs - 12).toString();
+    if (Number(mins) > 0) formatted += `:${mins}`;
+    return formatted + (hrs >= 12 ? 'pm' : 'am');
+  }
+</script>
