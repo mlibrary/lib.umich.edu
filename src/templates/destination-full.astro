@@ -112,20 +112,23 @@ const hoursAnchor = hoursAnchorTitle
 ---
 
 <TemplateLayout node={node} title={fieldTitleContext || title}>
-  <Template variant="aside" asideWidth="26rem">
+    <div class="margins">
     <TemplateTop>
       <Breadcrumb data={breadcrumbData} />
-    </TemplateTop>
-
-    <TemplateContent>
-      <div class="destination-full-content">
-        <Heading
+      <Heading
           level={1}
           size="3XL"
           style="margin-bottom: var(--spacing-l); margin-top: var(--spacing-s);"
         >
           {fieldTitleContext}
         </Heading>
+    </TemplateTop>
+    </div>
+  <Template variant="aside" asideWidth="26rem">
+
+    <TemplateContent>
+      <div class="destination-full-content">
+        
 
         {bodySummary && (
           <p class="lede">{bodySummary}</p>
