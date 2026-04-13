@@ -2,7 +2,9 @@
 /**
  * Dynamic Route for All Drupal Pages
  * 
- * This file uses getStaticPaths() to generate pages from Drupal
+ * Uses getStaticPaths() with persistent file-based caching.
+ * Data is fetched once from Drupal and cached to disk — no re-fetching
+ * on dev server restarts or page navigations.
  */
 import { getPagesToGenerate } from '../lib/page-generator.js';
 import Layout from '../layouts/Layout.astro';
@@ -29,19 +31,15 @@ import EventTemplate from '../templates/event.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
 
 /**
- * getStaticPaths() - Astro's equivalent to Gatsby's createPages()
- * 
- * This function runs at BUILD TIME and generates all pages
- * Similar to how your gatsby-node.js Promise worked
+ * getStaticPaths() - Generates all pages from Drupal data.
+ * Uses persistent file-based cache in dev to avoid API re-fetching.
  */
 export async function getStaticPaths() {
-  // Fetch all pages from Drupal (like your GraphQL query)
   const pages = await getPagesToGenerate();
   
-  // Map each page to a route (like Gatsby's createPage)
   return pages.map((page) => ({
     params: { 
-      slug: page.slug === '/' ? undefined : page.slug.slice(1) // Remove leading slash
+      slug: page.slug === '/' ? undefined : page.slug.slice(1)
     },
     props: {
       node: page.node,

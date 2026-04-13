@@ -1,8 +1,3 @@
-/**
- * Astro Page Generator - Replacement for Gatsby's createPages API
- *
- * This module helps generate dynamic pages from Drupal data
- */
 import {
   fetchDrupalBuildings,
   fetchDrupalFloorPlans,
@@ -17,13 +12,11 @@ import { fetchDrupalEvents } from './events-data.js';
 import { fetchDrupalNews } from './news-data.js';
 
 /**
- * Fetch breadcrumb data from Drupal API (matches Gatsby plugin behavior)
- * @param {string} breadcrumbUrl - The breadcrumb API endpoint URL
- * @returns {Promise<Object[]|null>} - Breadcrumb data or null if fetch fails
+ * @param {string} breadcrumbUrl
+ * @returns {Promise<Object[]|null>}
  */
 const fetchDrupalBreadcrumb = async (breadcrumbUrl) => {
   try {
-    // Normalize to a relative path for fetchFromDrupal (which has retry + backoff)
     const baseUrl = (process.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/u, '');
     const path = breadcrumbUrl.startsWith('http')
       ? breadcrumbUrl.replace(baseUrl, '')
@@ -34,10 +27,7 @@ const fetchDrupalBreadcrumb = async (breadcrumbUrl) => {
   }
 };
 
-/**
- * Sanitize Drupal view data (matches Gatsby plugin sanitizeDrupalView)
- * Drupal custom view APIs can return "empty" results as nested arrays.
- */
+
 const sanitizeDrupalView = (data) => {
   if (Array.isArray(data)) {
     if (data[0] && !Array.isArray(data[0])) {
@@ -48,11 +38,7 @@ const sanitizeDrupalView = (data) => {
 };
 
 /**
- * Fetch parent/child menu ordering data from Drupal custom view endpoints.
- * These are the same endpoints Gatsby fetched during onCreateNode via
- * field_parent_menu / field_child_menu attributes on each node.
- *
- * @param {Object} node - A processed Drupal node
+ * @param {Object} node
  * @returns {Promise<{parentIds: string[], childIds: string[]}>}
  */
 const fetchMenuOrderData = async (node) => {
@@ -83,13 +69,10 @@ const fetchMenuOrderData = async (node) => {
 };
 
 /**
- * Resolve an ordered list of UUIDs to actual section page nodes.
- * Returns data in Gatsby edges format: [{node: {...}}, ...]
- *
- * @param {string[]} uuids - Ordered Drupal UUIDs
- * @param {Object[]} allProcessedNodes - All processed nodes from page generation
- * @param {string} [nodeType] - Optional JSON:API type to filter by (e.g. 'node--section_page')
- * @returns {Object[]} - Edges-format array [{node: {...}}, ...]
+ * @param {string[]} uuids
+ * @param {Object[]} allProcessedNodes
+ * @param {string} [nodeType] 
+ * @returns {Object[]} 
  */
 const resolveMenuNodes = (uuids, allProcessedNodes, nodeType) => {
   if (!uuids || uuids.length === 0) {
@@ -106,7 +89,6 @@ const resolveMenuNodes = (uuids, allProcessedNodes, nodeType) => {
       if (!found) {
         return null;
       }
-      // Return in Gatsby edges format for processHorizontalNavigationData compatibility
       return {
         node: {
           drupal_id: found.id,
@@ -122,13 +104,10 @@ const resolveMenuNodes = (uuids, allProcessedNodes, nodeType) => {
 };
 
 /**
- * Process Drupal breadcrumb data (matches Gatsby plugin processBreadcrumbData)
  * @param {Object[]} data - Raw breadcrumb data from Drupal
  * @returns {Object[]|null} - Processed breadcrumb items or null
  */
 const processDrupalBreadcrumbData = (data) => {
-  // We want to make sure the data returned has some breadcrumb items.
-  // Sometimes Drupal will hand an empty array and that's not what we want to process.
   if (!data || !Array.isArray(data) || data.length === 0) {
     return null;
   }
@@ -147,20 +126,17 @@ const processDrupalBreadcrumbData = (data) => {
 
   getParentItem(data[0]);
 
-  // Reverse order and add current page to the end (matches Gatsby behavior)
   result = result.reverse();
 
   return result;
 };
 
 /**
- * Find the file entity that corresponds to a media entity
- * @param {Object} mediaEntity - The media entity
- * @param {Array} included - All included entities from the JSON:API response
- * @returns {Object|null} - The matching file entity or null
+ * @param {Object} mediaEntity
+ * @param {Array} included
+ * @returns {Object|null}
  */
 const findFileEntity = (mediaEntity, included) => {
-  // First, find the file entity ID from the media entity's relationships
   const fieldMediaImageRef = mediaEntity?.relationships?.field_media_image?.data;
   if (!fieldMediaImageRef) {
     return null;
@@ -168,7 +144,6 @@ const findFileEntity = (mediaEntity, included) => {
 
   const fileEntityId = fieldMediaImageRef.id;
 
-  // Find the file entity in the included data
   const fileEntity = included?.find((entity) => {
     return entity.type === 'file--file' && entity.id === fileEntityId;
   }
@@ -178,10 +153,9 @@ const findFileEntity = (mediaEntity, included) => {
 };
 
 /**
- * Generate a complete image URL from a file entity
- * @param {Object} fileEntity - The file entity
- * @param {String} drupalUrl - Base Drupal URL
- * @returns {String} - Complete image URL
+ * @param {Object} fileEntity
+ * @param {String} drupalUrl
+ * @returns {String}
  */
 const generateImageUrl = (fileEntity, drupalUrl) => {
   if (!fileEntity?.attributes?.uri?.url) {
@@ -190,18 +164,14 @@ const generateImageUrl = (fileEntity, drupalUrl) => {
 
   const fileUrl = fileEntity.attributes.uri.url;
 
-  // If it starts with /, prepend the Drupal base URL
   if (fileUrl.startsWith('/')) {
     return `${drupalUrl}${fileUrl}`;
   }
 
-  // Otherwise return as-is
   return fileUrl;
 };
 
-/**
- * Map Drupal design template machine names to Astro template paths
- */
+
 export const getTemplatePath = (machineName) => {
   const templateMap = {
     basic: 'basic',
@@ -228,9 +198,6 @@ export const getTemplatePath = (machineName) => {
   return templateMap[machineName] || null;
 };
 
-/**
- * Determine tag for a node based on template and node data
- */
 export const getTag = (node, template) => {
   if (template === 'department') {
     return 'department';
@@ -238,25 +205,20 @@ export const getTag = (node, template) => {
   if (template === 'news') {
     return 'news';
   }
-  // Check for event type
   if (node.relationships?.field_event_type) {
     return node.relationships.field_event_type.name === 'Exhibit' ? 'exhibit' : 'event';
   }
   return null;
 };
 
-/**
- * Create breadcrumb from node data
- * Expanded to match Gatsby's breadcrumb logic with Drupal API and parent traversal
- */
+
 export const createBreadcrumb = async (node, allNodes, options = {}) => {
   const {
     enableDrupalFetching = true,
-    timeout = 15000, // Increased from 5000ms to 15000ms
+    timeout = 15000,
     fallbackOnly = false
   } = options;
 
-  // Check if node has Drupal breadcrumb field (like Gatsby plugin did)
   if (!fallbackOnly && enableDrupalFetching && node.attributes?.field_breadcrumb) {
     try {
       const drupalBreadcrumbData = await Promise.race([
@@ -277,16 +239,12 @@ export const createBreadcrumb = async (node, allNodes, options = {}) => {
         }
       }
     } catch (error) {
-      // Silently fall back to computed breadcrumb
     }
   }
 
-  // Fall back to building breadcrumb from parent page relationships
   const breadcrumbItems = [{ text: 'Home', to: '/' }];
 
-  // Build parent hierarchy by traversing various parent relationships
   const buildParentChain = (currentNode, visited = new Set()) => {
-    // Prevent infinite loops
     if (visited.has(currentNode.id)) {
       return [];
     }
@@ -294,7 +252,6 @@ export const createBreadcrumb = async (node, allNodes, options = {}) => {
 
     const parents = [];
 
-    // Check for parent page relationship (most common)
     if (currentNode.relationships?.field_parent_page) {
       const parentData = currentNode.relationships.field_parent_page;
       const parentId = parentData.drupal_internal__nid || parentData.id;
@@ -306,11 +263,9 @@ export const createBreadcrumb = async (node, allNodes, options = {}) => {
         );
 
         if (parentNode) {
-          // Recursively get parent's parents
           const grandParents = buildParentChain(parentNode, visited);
           parents.push(...grandParents);
 
-          // Add this parent
           parents.push({
             text: parentNode.attributes?.field_title_context || parentNode.attributes?.title || parentNode.title,
             to: parentNode.attributes?.path?.alias || parentNode.slug || `/${parentNode.attributes?.drupal_internal__nid}`
@@ -319,7 +274,6 @@ export const createBreadcrumb = async (node, allNodes, options = {}) => {
       }
     }
 
-    // Check for section page parent (alternative parent relationship)
     else if (currentNode.relationships?.field_parent_section) {
       const parentData = currentNode.relationships.field_parent_section;
       const parentId = parentData.drupal_internal__nid || parentData.id;
@@ -341,7 +295,6 @@ export const createBreadcrumb = async (node, allNodes, options = {}) => {
       }
     }
 
-    // Check for building/location parent relationships (for rooms, floors, etc.)
     else if (currentNode.relationships?.field_parent_location) {
       const parentData = currentNode.relationships.field_parent_location;
       const parentId = parentData.drupal_internal__nid || parentData.id;
@@ -363,7 +316,6 @@ export const createBreadcrumb = async (node, allNodes, options = {}) => {
       }
     }
 
-    // Check for building parent (for rooms that belong to buildings)
     else if (currentNode.relationships?.field_room_building) {
       const parentData = currentNode.relationships.field_room_building;
       const parentId = parentData.drupal_internal__nid || parentData.id;
@@ -388,27 +340,21 @@ export const createBreadcrumb = async (node, allNodes, options = {}) => {
     return parents;
   };
 
-  // Get all parents for this node
   const parents = buildParentChain(node);
 
-  // Add parents to breadcrumb
   breadcrumbItems.push(...parents);
 
-  // Special case: If this is a news story and has no parents, build proper hierarchy
   if (parents.length === 0 && node.type === 'node--news') {
-    // Add About Us parent
     breadcrumbItems.push({
       text: 'About Us',
       to: '/about-us'
     });
-    // Add News parent
     breadcrumbItems.push({
       text: 'News',
       to: '/about-us/news'
     });
   }
 
-  // Add current page (no 'to' since it's the current page)
   breadcrumbItems.push({
     text: node.attributes?.field_title_context || node.attributes?.title || node.title || 'Page'
   });
@@ -416,11 +362,7 @@ export const createBreadcrumb = async (node, allNodes, options = {}) => {
   return JSON.stringify(breadcrumbItems);
 };
 
-/**
- * Process Drupal JSON:API node into a page-ready format
- */
 export const processDrupalNode = (node, included = []) => {
-  // Helper function to recursively process relationships at any depth
   const processRelationships = (item, depth = 0, maxDepth = 4) => {
     if (!item || !item.relationships || depth >= maxDepth) {
       return {};
@@ -434,7 +376,6 @@ export const processDrupalNode = (node, included = []) => {
       }
 
       if (Array.isArray(relationship.data)) {
-        // Handle array relationships
         relationships[key] = relationship.data.map((relData) => {
           const relatedItem = included.find((includedItem) => {
             return includedItem.id === relData.id && includedItem.type === relData.type;
@@ -443,41 +384,36 @@ export const processDrupalNode = (node, included = []) => {
             return null;
           }
 
-          // Create slug from path.alias (matching Gatsby's fields structure)
           const slug = relatedItem.attributes?.path?.alias || `/${relatedItem.attributes?.drupal_internal__nid || relatedItem.id}`;
 
           return {
             __typename: relatedItem.type,
             id: relatedItem.id,
             ...relatedItem.attributes,
-            // Add fields object to match Gatsby structure
             fields: {
               slug,
               title: relatedItem.attributes?.title
             },
-            slug, // Also add slug at top level for convenience
+            slug,
             relationships: processRelationships(relatedItem, depth + 1, maxDepth)
           };
         }).filter(Boolean);
       } else {
-        // Handle single relationships
         const relatedItem = included.find((includedItem) => {
           return includedItem.id === relationship.data.id && includedItem.type === relationship.data.type;
         });
         if (relatedItem) {
-          // Create slug from path.alias (matching Gatsby's fields structure)
           const slug = relatedItem.attributes?.path?.alias || `/${relatedItem.attributes?.drupal_internal__nid || relatedItem.id}`;
 
           relationships[key] = {
             __typename: relatedItem.type,
             id: relatedItem.id,
             ...relatedItem.attributes,
-            // Add fields object to match Gatsby structure
             fields: {
               slug,
               title: relatedItem.attributes?.title
             },
-            slug, // Also add slug at top level for convenience
+            slug,
             relationships: processRelationships(relatedItem, depth + 1, maxDepth)
           };
         }
@@ -486,11 +422,8 @@ export const processDrupalNode = (node, included = []) => {
     return relationships;
   };
 
-  // Process all top-level relationships
   const relationships = processRelationships(node);
 
-  // Special handling for top-level field_media_image (e.g. news, events)
-  // Resolves the file URL and image meta from the media entity + included data
   if (node.relationships?.field_media_image?.data) {
     const mediaRef = node.relationships.field_media_image.data;
     const mediaEntity = included.find((item) => {
@@ -515,7 +448,6 @@ export const processDrupalNode = (node, included = []) => {
     }
   }
 
-  // Special handling for hero panels and card panels to enhance images with file URLs
   if (relationships.field_panels) {
     const drupalBaseUrl = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu';
 
@@ -542,21 +474,18 @@ export const processDrupalNode = (node, included = []) => {
         });
       }
 
-      // Enrich card panel card images with resolved URLs
       if (panel.__typename === 'paragraph--card_panel' && Array.isArray(panel.relationships?.field_cards)) {
         panel.relationships.field_cards = panel.relationships.field_cards.map((card) => {
           const mediaEntity = card.relationships?.field_media_image;
           if (!mediaEntity) {
             return card;
           }
-          // processRelationships() spreads file entity attributes, so uri.url is top-level
           const fileEntity = mediaEntity.relationships?.field_media_image;
           const rawUrl = fileEntity?.uri?.url;
           if (!rawUrl) {
             return card;
           }
           const imageUrl = rawUrl.startsWith('/') ? `${drupalBaseUrl}${rawUrl}` : rawUrl;
-          // field_media_image attribute on media--image entity holds alt/width/height
           const imageAlt = mediaEntity.field_media_image?.alt || '';
 
           return {
@@ -582,7 +511,6 @@ export const processDrupalNode = (node, included = []) => {
     type: node.type,
     attributes: node.attributes,
     relationships,
-    // Add common computed fields
     slug: node.attributes.path?.alias || `/${node.attributes.drupal_internal__nid}`,
     title: node.attributes.title,
     drupal_internal__nid: node.attributes.drupal_internal__nid,
@@ -590,22 +518,69 @@ export const processDrupalNode = (node, included = []) => {
   };
 };
 
-// cache pages on build for 5 minutes. To be replaced with AStro's Content Layer API
 let _pagesCache = null;
 let _pagesCacheTimestamp = 0;
-const PAGES_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes in dev
+const PAGES_CACHE_TTL_MS = 5 * 60 * 1000; 
 
-/**
- * Get all pages that should be generated
- * This is the Astro equivalent of your Gatsby GraphQL query + createPages
- */
+import { fileURLToPath } from 'url';
+import path from 'path';
+import fs from 'fs';
+
+const PROJECT_ROOT = path.resolve(fileURLToPath(import.meta.url), '..', '..', '..');
+const CACHE_DIR = path.join(PROJECT_ROOT, '.astro');
+const CACHE_FILE = path.join(CACHE_DIR, 'drupal-pages-cache.json');
+
+const readPersistentCache = () => {
+  try {
+    if (!fs.existsSync(CACHE_FILE)) {
+      return null;
+    }
+    const raw = fs.readFileSync(CACHE_FILE, 'utf-8');
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed?.pages) || !parsed.timestamp) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
+// file based caching
+const writePersistentCache = (pages) => {
+  try {
+    if (!fs.existsSync(CACHE_DIR)) {
+      fs.mkdirSync(CACHE_DIR, { recursive: true });
+    }
+    fs.writeFileSync(CACHE_FILE, JSON.stringify({
+      pages,
+      timestamp: Date.now(),
+      count: pages.length
+    }));
+  } catch (err) {
+    console.warn('[page-generator] Failed to write persistent cache:', err.message);
+  }
+};
+
+
 export const getPagesToGenerate = async () => {
   const isDev = import.meta.env?.DEV ?? (process.env.NODE_ENV !== 'production');
-  if (isDev && _pagesCache && (Date.now() - _pagesCacheTimestamp < PAGES_CACHE_TTL_MS)) {
+  const forceRefresh = process.env.DRUPAL_FORCE_REFRESH === 'true';
+
+  if (!forceRefresh && isDev && _pagesCache && (Date.now() - _pagesCacheTimestamp < PAGES_CACHE_TTL_MS)) {
     return _pagesCache;
   }
 
-  // Fetch all content types from Drupal (like your GraphQL query)
+  if (!forceRefresh && isDev) {
+    const cached = readPersistentCache();
+    if (cached) {
+      console.log(`[page-generator] Using persistent cache (${cached.count} pages from ${new Date(cached.timestamp).toLocaleTimeString()})`);
+      _pagesCache = cached.pages;
+      _pagesCacheTimestamp = Date.now();
+      return cached.pages;
+    }
+  }
+
   const [pages, sections, buildings, rooms, locations, floorPlans, departments, news, events] = await Promise.all([
     fetchDrupalPages(),
     fetchDrupalSectionPages(),
@@ -618,7 +593,6 @@ export const getPagesToGenerate = async () => {
     fetchDrupalEvents()
   ]);
 
-  // Combine all nodes (like your edges.concat in Gatsby)
   const allNodes = [
     ...(pages.data || []),
     ...(sections.data || []),
@@ -631,7 +605,6 @@ export const getPagesToGenerate = async () => {
     ...(events.data || [])
   ];
 
-  // Combine all included relationship data
   const included = [
     ...(pages.included || []),
     ...(sections.included || []),
@@ -687,9 +660,6 @@ export const getPagesToGenerate = async () => {
     }
   });
 
-  // Generate final page data with breadcrumbs.
-  // Process in batches of 20 to avoid overwhelming Drupal with concurrent requests
-  // (matches the concurrency limit used by the original Gatsby plugin).
   const BREADCRUMB_BATCH_SIZE = 20;
   const breadcrumbOptions = {
     enableDrupalFetching: process.env.ENABLE_DRUPAL_BREADCRUMBS !== 'false',
@@ -709,7 +679,6 @@ export const getPagesToGenerate = async () => {
         const keywords = node.attributes.field_seo_keywords || '';
         const breadcrumb = await createBreadcrumb(node, processedNodes, breadcrumbOptions);
 
-        // Fetch parent/child menu ordering from Drupal custom view endpoints
         const menuData = await fetchMenuOrderData(node);
         const parentNodes = resolveMenuNodes(menuData.parentIds, processedNodes, 'node--section_page');
         const childNodes = resolveMenuNodes(menuData.childIds, processedNodes, 'node--section_page');
@@ -738,9 +707,13 @@ export const getPagesToGenerate = async () => {
     return page.template !== null;
   });
 
-  // Store in cache for dev mode reuse
   _pagesCache = result;
   _pagesCacheTimestamp = Date.now();
+
+  if (isDev) {
+    writePersistentCache(result);
+    console.log(`[page-generator] Wrote persistent cache (${result.length} pages)`);
+  }
 
   return result;
 };
