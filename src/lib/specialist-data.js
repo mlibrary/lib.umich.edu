@@ -5,6 +5,7 @@
  * Find a Specialist page.
  */
 import { DRUPAL_URL, fetchWithRetry, removeTrailingSlash } from './drupal.js';
+import { getAllUsersBasic } from './user-data.js';
 
 /**
  * Fetch specialist taxonomy terms from Drupal JSON:API
@@ -60,16 +61,7 @@ export const fetchSpecialistTaxonomies = async () => {
       fetchTaxonomy('collecting_areas'),
       fetchTaxonomy('library_expertise'),
     ]),
-    (async () => {
-      const allUsers = [];
-      let nextUrl = `${baseUrl}/jsonapi/user/user`;
-      while (nextUrl) {
-        const response = await fetchWithRetry(nextUrl);
-        allUsers.push(...(response.data || []));
-        nextUrl = response.links?.next?.href || null;
-      }
-      return allUsers;
-    })()
+    getAllUsersBasic()
   ]);
 
   return { healthSciences, academicDiscipline, collectingAreas, libraryExpertise, users };

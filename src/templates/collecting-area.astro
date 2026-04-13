@@ -20,7 +20,8 @@ import Panels from '../components/panels/Panels.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
 import UserCard from '../components/UserCard.astro';
 import transformNodePanels from '../utils/transform-node-panels';
-import { fetchWithRetry, removeTrailingSlash, DRUPAL_URL } from '../lib/drupal.js';
+import { removeTrailingSlash, DRUPAL_URL } from '../lib/drupal.js';
+import { getAllUsersWithImages } from '../lib/user-data.js';
 
 interface Props {
   node: any;
@@ -77,19 +78,8 @@ let contacts: any[] = [];
 if (collectingAreaTermId) {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
 
-  // Fetch all users with media image includes to resolve photos
-  const allUsers: any[] = [];
-  const allIncluded: any[] = [];
-  let nextUrl: string | null =
-    `${baseUrl}/jsonapi/user/user?include=field_media_image,field_media_image.field_media_image`;
-  while (nextUrl) {
-    const response = await fetchWithRetry(nextUrl);
-    allUsers.push(...(response.data || []));
-    if (response.included) {
-      allIncluded.push(...response.included);
-    }
-    nextUrl = response.links?.next?.href || null;
-  }
+  // Fetch all users once (cached across all collecting-area pages)
+  const { users: allUsers, included: allIncluded } = await getAllUsersWithImages();
 
   // Build lookup of included entities by id
   const includedById: Record<string, any> = {};
