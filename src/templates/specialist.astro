@@ -1,8 +1,4 @@
 ---
-/**
- * Find a Specialist Template
- * Converted from src/templates/specialist.js
- */
 import TemplateLayout from '../components/TemplateLayout.astro';
 import Template from '../components/Template.astro';
 import TemplateTop from '../components/TemplateTop.astro';
@@ -43,15 +39,8 @@ if (!breadcrumbData) {
   );
 }
 
-// Fetch all 4 taxonomy vocabularies
 const taxonomies = await fetchSpecialistTaxonomies();
 
-/**
- * Process specialist data — port of src/utils/process-specialist-data.js
- *
- * Combines terms from all 4 taxonomies, handles synonyms, contacts,
- * and produces the sorted specialist list.
- */
 function processSpecialistData(taxonomies: {
   healthSciences: { data: any[]; included: any[] };
   academicDiscipline: { data: any[]; included: any[] };
@@ -59,7 +48,6 @@ function processSpecialistData(taxonomies: {
   libraryExpertise: { data: any[]; included: any[] };
   users: any[];
 }) {
-  // Build a combined lookup of all included resources across all taxonomies
   const allIncluded: Record<string, any> = {};
   for (const group of [taxonomies.healthSciences, taxonomies.academicDiscipline, taxonomies.collectingAreas, taxonomies.libraryExpertise]) {
     for (const item of (group.included || [])) {
@@ -67,7 +55,6 @@ function processSpecialistData(taxonomies: {
     }
   }
 
-  // Flatten all taxonomy term data entries in priority order (health sciences first)
   const allTerms = [
     ...taxonomies.healthSciences.data,
     ...taxonomies.academicDiscipline.data,
@@ -75,10 +62,6 @@ function processSpecialistData(taxonomies: {
     ...taxonomies.libraryExpertise.data,
   ];
 
-  // Rebuild the reverse term→user relationship that gatsby-source-drupal synthesized.
-  // Users have fields pointing to these taxonomy terms (forward direction on the user).
-  // JSON:API can't traverse that in reverse via includes, so we scan each user's
-  // relationships for references to our 4 specialist vocabulary types.
   const specialistTermTypes = new Set([
     'taxonomy_term--health_sciences',
     'taxonomy_term--academic_discipline',
@@ -98,7 +81,6 @@ function processSpecialistData(taxonomies: {
     }
   }
 
-  // Resolve relationship references to actual included data
   const getSynonyms = (term: any): any[] => {
     const refs = term.relationships?.field_synonym?.data;
     if (!refs || !Array.isArray(refs)) return [];
@@ -148,17 +130,14 @@ function processSpecialistData(taxonomies: {
   const result = allTerms.reduce((acc: any[], term: any, index: number) => {
     if (inheritedIds.has(term.id)) return acc;
 
-    // Find children: terms later in the list whose synonyms reference this term
     const children = allTerms.slice(index + 1).filter((candidate: any) => {
       return getSynonyms(candidate).some((syn: any) => syn.id === term.id);
     });
 
-    // Gather users from this term and all its children
     const userNodes = getUsers(term).concat(
       children.flatMap((child: any) => getUsers(child))
     );
 
-    // Deduplicate users by name (uniqname)
     const uniqueNames = new Set<string>();
     const uniqueUsers = userNodes.filter((user: any) => {
       const name = user.attributes?.name;
@@ -169,7 +148,6 @@ function processSpecialistData(taxonomies: {
 
     const users = processUserNodes(uniqueUsers);
 
-    // Mark children as inherited so they don't appear as separate entries
     for (const child of children) {
       inheritedIds.add(child.id);
     }
@@ -177,7 +155,6 @@ function processSpecialistData(taxonomies: {
     const groupEmail = processGroupEmail(term);
     const contacts = processContacts(users, groupEmail);
 
-    // Resolve health sciences category
     const categoryRef = term.relationships?.field_health_sciences_category?.data;
     const categoryNode = categoryRef ? allIncluded[categoryRef.id] : null;
     const category = categoryNode?.attributes?.name || undefined;
@@ -198,7 +175,6 @@ function processSpecialistData(taxonomies: {
 
 const specialists = processSpecialistData(taxonomies);
 
-// Extract unique categories for the dropdown
 const categories = Array.from(
   new Set(
     specialists
@@ -208,12 +184,10 @@ const categories = Array.from(
   )
 );
 
-// Serialize for client-side use
 const specialistsJson = JSON.stringify(specialists);
 const categoriesJson = JSON.stringify(categories);
 ---
 
-<!-- Client-side loading of lunr -->
 <script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
 
 <TemplateLayout node={node} title={fieldTitleContext || title}>
@@ -233,7 +207,6 @@ const categoriesJson = JSON.stringify(categories);
         </div>
       )}
 
-      <!-- Loading state (shown until JS initializes) -->
       <div
         id="specialist-loading"
         class="specialist-loading"
@@ -244,9 +217,7 @@ const categoriesJson = JSON.stringify(categories);
         Loading Find a Specialist...
       </div>
 
-      <!-- Main interactive area (hidden until JS initializes) -->
       <div id="specialist-app" class="specialist-app" hidden>
-        <!-- Accessible live region -->
         <div
           id="specialist-live"
           class="visually-hidden"
@@ -254,7 +225,6 @@ const categoriesJson = JSON.stringify(categories);
           aria-atomic="true"
         ></div>
 
-        <!-- Controls: search, category, clear, health sciences toggle -->
         <div id="specialist-controls" class="specialist-controls">
           <label class="specialist-search-label">
             <span class="specialist-search-label-text">Search by subject or specialty</span>
@@ -302,7 +272,6 @@ const categoriesJson = JSON.stringify(categories);
           </button>
         </div>
 
-        <!-- Results table -->
         <table id="specialist-table" class="specialist-table" aria-live="polite">
           <caption id="specialist-summary" class="specialist-summary"></caption>
           <thead class="specialist-thead">
@@ -314,7 +283,6 @@ const categoriesJson = JSON.stringify(categories);
           <tbody id="specialist-tbody"></tbody>
         </table>
 
-        <!-- Show more button area -->
         <div id="specialist-show-more" hidden>
           <p id="specialist-show-more-summary" class="show-more-summary"></p>
           <button type="button" id="specialist-show-all-btn" class="specialist-show-all-btn">
@@ -322,7 +290,6 @@ const categoriesJson = JSON.stringify(categories);
           </button>
         </div>
 
-        <!-- No results area -->
         <div id="specialist-no-results" hidden>
           <NoResults>
             Consider searching with different keywords.
@@ -330,7 +297,6 @@ const categoriesJson = JSON.stringify(categories);
         </div>
       </div>
 
-      <!-- Specialist data embedded for client-side use -->
       <script id="specialist-data" type="application/json" set:html={specialistsJson}></script>
       <script id="categories-data" type="application/json" set:html={categoriesJson}></script>
     </TemplateContent>
@@ -339,7 +305,6 @@ const categoriesJson = JSON.stringify(categories);
 
 <script is:inline>
 (function () {
-  // Parse specialist data
   var specialistDataEl = document.getElementById('specialist-data');
   if (!specialistDataEl) return;
 
@@ -351,7 +316,6 @@ const categoriesJson = JSON.stringify(categories);
     return;
   }
 
-  // DOM elements
   var app = document.getElementById('specialist-app');
   var loading = document.getElementById('specialist-loading');
   var searchInput = document.getElementById('specialist-search-input');
@@ -377,7 +341,6 @@ const categoriesJson = JSON.stringify(categories);
   var liveDebounceTimer = null;
   var urlDebounceTimer = null;
 
-  // Build lunr index
   var index = null;
   if (typeof lunr !== 'undefined') {
     index = lunr(function () {
@@ -389,7 +352,6 @@ const categoriesJson = JSON.stringify(categories);
     });
   }
 
-  // URL state helpers
   function getUrlParams() {
     var params = new URLSearchParams(window.location.search);
     return {
@@ -408,17 +370,14 @@ const categoriesJson = JSON.stringify(categories);
     window.history.replaceState({ preserveScroll: true }, '', newUrl);
   }
 
-  // Health Sciences toggle
   function updateHSToggle() {
     hsToggle.setAttribute('aria-checked', healthSciencesOnly ? 'true' : 'false');
     var track = hsToggle.querySelector('.switch-track');
     track.setAttribute('data-on', healthSciencesOnly ? 'true' : 'false');
     track.querySelector('.switch-label').textContent = healthSciencesOnly ? 'on' : 'off';
 
-    // Show/hide category filter
     categoryLabel.hidden = !healthSciencesOnly;
 
-    // Show/hide category column header
     updateCategoryHeader();
 
     if (!healthSciencesOnly) {
@@ -428,7 +387,6 @@ const categoriesJson = JSON.stringify(categories);
   }
 
   function updateCategoryHeader() {
-    // Check if we already have the category TH
     var existingCatTh = theadRow.querySelector('.category-th');
     if (healthSciencesOnly && !existingCatTh) {
       var th = document.createElement('th');
@@ -441,7 +399,6 @@ const categoriesJson = JSON.stringify(categories);
     }
   }
 
-  // Filter results
   function filterResults(results) {
     var filtered = results;
 
@@ -460,7 +417,6 @@ const categoriesJson = JSON.stringify(categories);
     return filtered;
   }
 
-  // Search and filter
   function search() {
     var query = (searchInput.value || '').trim();
     var results;
@@ -500,7 +456,6 @@ const categoriesJson = JSON.stringify(categories);
     showAll = false;
     render();
 
-    // Debounce the live region update
     clearTimeout(liveDebounceTimer);
     liveDebounceTimer = setTimeout(function () {
       var liveParts = [];
@@ -515,20 +470,17 @@ const categoriesJson = JSON.stringify(categories);
       liveRegion.textContent = liveParts.join(' ');
     }, 400);
 
-    // Debounce URL update
     clearTimeout(urlDebounceTimer);
     urlDebounceTimer = setTimeout(function () {
       setUrlParams(query || '', healthSciencesOnly, activeCategory);
     }, 100);
   }
 
-  // Render results to the table
   function render() {
     var results = currentResults;
     var limit = showAll ? results.length : SHOW_LIMIT;
     var shown = results.slice(0, limit);
 
-    // Clear table body
     tbody.innerHTML = '';
 
     if (results.length === 0) {
@@ -542,7 +494,6 @@ const categoriesJson = JSON.stringify(categories);
     table.hidden = false;
     noResultsContainer.hidden = true;
 
-    // Build summary
     var query = (searchInput.value || '').trim();
     var summaryParts = [];
 
@@ -556,7 +507,6 @@ const categoriesJson = JSON.stringify(categories);
     if (healthSciencesOnly) summaryParts.push('with the Show Health Sciences Only filter active');
     caption.textContent = summaryParts.join(' ');
 
-    // Show more button
     if (limit < results.length) {
       showMoreContainer.hidden = false;
       showMoreSummary.textContent = summaryParts.join(' ');
@@ -564,20 +514,17 @@ const categoriesJson = JSON.stringify(categories);
       showMoreContainer.hidden = true;
     }
 
-    // Render rows
     for (var i = 0; i < shown.length; i++) {
       var specialist = shown[i];
       var tr = document.createElement('tr');
       tr.className = 'specialist-row';
 
-      // Name cell (th)
       var nameTh = document.createElement('th');
       nameTh.scope = 'row';
       nameTh.className = 'specialist-name-cell';
       nameTh.textContent = specialist.name;
       tr.appendChild(nameTh);
 
-      // Contacts cell
       var contactsTd = document.createElement('td');
       contactsTd.colSpan = 2;
       contactsTd.className = 'specialist-contacts-cell';
@@ -604,7 +551,6 @@ const categoriesJson = JSON.stringify(categories);
       }
       tr.appendChild(contactsTd);
 
-      // Category cell (only when HS toggle is on)
       if (healthSciencesOnly) {
         var catTd = document.createElement('td');
         catTd.className = 'specialist-category-cell';
@@ -616,7 +562,6 @@ const categoriesJson = JSON.stringify(categories);
     }
   }
 
-  // Event listeners
   searchInput.addEventListener('input', search);
   categoryFilter.addEventListener('change', function () {
     var val = categoryFilter.value;
@@ -628,7 +573,6 @@ const categoriesJson = JSON.stringify(categories);
     searchInput.value = '';
     activeCategory = null;
     categoryFilter.value = 'All categories';
-    // Keep healthSciencesOnly state on clear (matches Gatsby behavior)
     search();
   });
 
@@ -643,7 +587,6 @@ const categoriesJson = JSON.stringify(categories);
     render();
   });
 
-  // Initialize from URL state
   var initialState = getUrlParams();
   if (initialState.query) searchInput.value = initialState.query;
   if (initialState.hs === 'true') {
@@ -655,11 +598,9 @@ const categoriesJson = JSON.stringify(categories);
     categoryFilter.value = initialState.category;
   }
 
-  // Show app, hide loading
   loading.hidden = true;
   app.hidden = false;
 
-  // Initial search
   search();
 })();
 </script>
@@ -679,7 +620,6 @@ const categoriesJson = JSON.stringify(categories);
     padding: var(--spacing-xl);
   }
 
-  /* Controls layout */
   .specialist-controls {
     display: grid;
     gap: var(--spacing-m);
@@ -698,7 +638,6 @@ const categoriesJson = JSON.stringify(categories);
     line-height: 1.5;
   }
 
-  /* Search input */
   .specialist-search-label-text {
     display: block;
     margin-bottom: var(--spacing-xs);
@@ -718,7 +657,6 @@ const categoriesJson = JSON.stringify(categories);
     box-sizing: border-box;
   }
 
-  /* Select styles */
   .select-label-text {
     display: block;
     margin-bottom: var(--spacing-xs);
@@ -746,7 +684,6 @@ const categoriesJson = JSON.stringify(categories);
     box-sizing: border-box;
   }
 
-  /* Clear button */
   .specialist-clear-btn {
     align-self: end;
     appearance: none;
@@ -766,7 +703,6 @@ const categoriesJson = JSON.stringify(categories);
     text-decoration-thickness: 2px;
   }
 
-  /* Switch toggle — inline since it's rendered directly in the template */
   .switch-btn {
     align-items: center;
     align-self: end;
@@ -846,7 +782,6 @@ const categoriesJson = JSON.stringify(categories);
     right: 0px;
   }
 
-  /* Results table */
   .specialist-table {
     table-layout: fixed;
     text-align: left;
@@ -874,7 +809,6 @@ const categoriesJson = JSON.stringify(categories);
     }
   }
 
-  /* Table rows */
   :global(.specialist-row) {
     border-top: 1px solid var(--color-neutral-100);
   }
@@ -903,7 +837,6 @@ const categoriesJson = JSON.stringify(categories);
     }
   }
 
-  /* Name cell */
   @media only screen and (max-width: 720px) {
     :global(.specialist-name-cell) {
       font-weight: 600;
@@ -911,7 +844,6 @@ const categoriesJson = JSON.stringify(categories);
     }
   }
 
-  /* Contacts cell */
   :global(.specialist-contact + .specialist-contact) {
     padding-top: 0.5rem;
   }
@@ -929,14 +861,12 @@ const categoriesJson = JSON.stringify(categories);
     margin: 0;
   }
 
-  /* Category cell */
   @media only screen and (max-width: 720px) {
     :global(.specialist-category-cell) {
       display: none !important;
     }
   }
 
-  /* Show more */
   .show-more-summary {
     margin-bottom: var(--spacing-m);
   }
