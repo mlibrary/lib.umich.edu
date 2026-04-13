@@ -45,6 +45,10 @@ const fetchMenuOrderData = async (node) => {
   const attrs = node.attributes || {};
   const result = { childIds: [], parentIds: [] };
 
+  if (!attrs.field_parent_menu && !attrs.field_child_menu) {
+    return result;
+  }
+
   const fetchMenuField = async (fieldValue) => {
     if (!fieldValue) {
       return [];
@@ -62,8 +66,13 @@ const fetchMenuOrderData = async (node) => {
     }
   };
 
-  result.parentIds = await fetchMenuField(attrs.field_parent_menu);
-  result.childIds = await fetchMenuField(attrs.field_child_menu);
+  // Fetch both in parallel instead of sequentially
+  const [parentIds, childIds] = await Promise.all([
+    fetchMenuField(attrs.field_parent_menu),
+    fetchMenuField(attrs.field_child_menu)
+  ]);
+  result.parentIds = parentIds;
+  result.childIds = childIds;
 
   return result;
 };
@@ -660,11 +669,11 @@ export const getPagesToGenerate = async () => {
     }
   });
 
-  const BREADCRUMB_BATCH_SIZE = 20;
+  const BREADCRUMB_BATCH_SIZE = 50;
   const breadcrumbOptions = {
-    enableDrupalFetching: process.env.ENABLE_DRUPAL_BREADCRUMBS !== 'false',
+    enableDrupalFetching: false,
     timeout: parseInt(process.env.BREADCRUMB_TIMEOUT || '15000'),
-    fallbackOnly: process.env.BREADCRUMB_FALLBACK_ONLY === 'true'
+    fallbackOnly: true
   };
 
   const pagesWithBreadcrumbs = [];
