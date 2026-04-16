@@ -207,6 +207,85 @@ export const convertToEdgesFormat = (drupalResponse) => {
 };
 
 /**
+ * Fetch and process all news data needed for the News Landing page.
+ *
+ * Returns:
+ * - mainNews: featured (field_featured_news_item=true) + rest, all with field_news_type=news_main
+ * - libraryUpdates: field_news_type=library_updates with design template "news"
+ *
+ * Each item has: { title, subtitle (formatted date), href, image?, description? }
+ */
+export const fetchNewsDataForLanding = async () => {
+  try {
+    const { data: allNews, included } = await fetchDrupalNews();
+
+    if (!allNews || !Array.isArray(allNews)) {
+      return { mainNews: [], libraryUpdates: [] };
+    }
+
+    const processForCard = (newsNode) => {
+      const slug = newsNode?.attributes?.path?.alias
+        || `/news/${newsNode?.attributes?.drupal_internal__nid}`;
+      const mediaImage = processMediaImage(newsNode, included || []);
+      const fileUrl = mediaImage?.localFile?.childImageSharp?.gatsbyImageData?.images?.fallback?.src;
+      const created = newsNode?.attributes?.created;
+      const subtitle = created
+        ? new Date(created).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+        : undefined;
+
+      return {
+        title: newsNode?.attributes?.title,
+        subtitle,
+        href: slug,
+        image: fileUrl ? { src: fileUrl, alt: newsNode?.attributes?.title || '' } : undefined,
+        description: newsNode?.attributes?.body?.summary || undefined
+      };
+    };
+
+    // Sort all news by created date descending
+    const sorted = [...allNews].sort((nodeA, nodeB) => {
+      return new Date(nodeB.attributes?.created) - new Date(nodeA.attributes?.created);
+    });
+
+    // Main news: field_news_type = "news_main", featured first then rest
+    const mainNewsNodes = sorted.filter((node) => {
+      return node.attributes?.field_news_type === 'news_main';
+    });
+    const featuredMain = mainNewsNodes.filter((node) => {
+      return node.attributes?.field_featured_news_item === true;
+    });
+    const restMain = mainNewsNodes.filter((node) => {
+      return node.attributes?.field_featured_news_item !== true;
+    });
+    const mainNews = [...featuredMain, ...restMain].map(processForCard);
+
+    // Library updates: field_news_type = "library_updates" with design template "news"
+    const libraryUpdates = sorted
+      .filter((node) => {
+        if (node.attributes?.field_news_type !== 'library_updates') {
+          return false;
+        }
+        // Check design template machine name
+        const templateRef = node.relationships?.field_design_template?.data;
+        if (!templateRef) {
+          return true; // include if we can't check
+        }
+        const templateEntity = (included || []).find((entity) => {
+          return entity.id === templateRef.id;
+        });
+        const machineName = templateEntity?.attributes?.field_machine_name;
+        return !machineName || machineName === 'news';
+      })
+      .map(processForCard);
+
+    return { mainNews, libraryUpdates };
+  } catch (error) {
+    console.error('Error fetching news data for landing:', error);
+    return { mainNews: [], libraryUpdates: [] };
+  }
+};
+
+/**
  * Fetch and process all news data needed for FeaturedAndLatestNews component
  */
 export const fetchNewsDataForHomepage = async () => {

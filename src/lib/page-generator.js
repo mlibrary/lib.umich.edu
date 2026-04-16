@@ -672,9 +672,9 @@ export const getPagesToGenerate = async () => {
 
   const BREADCRUMB_BATCH_SIZE = 50;
   const breadcrumbOptions = {
-    enableDrupalFetching: false,
+    enableDrupalFetching: true,
     timeout: parseInt(process.env.BREADCRUMB_TIMEOUT || '15000'),
-    fallbackOnly: true
+    fallbackOnly: false
   };
 
   const pagesWithBreadcrumbs = [];

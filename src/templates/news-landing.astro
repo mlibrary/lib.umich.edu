@@ -1,5 +1,165 @@
 ---
-import BasicTemplate from './basic.astro';
-const props = Astro.props;
+/**
+ * News Landing Template
+ * Converted from src/templates/news-landing.js
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import Margins from '../components/Margins.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Card from '../reusable/Card.astro';
+import Expandable from '../reusable/Expandable.astro';
+import { fetchNewsDataForLanding } from '../lib/news-data.js';
+
+interface Props {
+  node: any;
+  title?: string;
+  breadcrumb?: string;
+  parents?: any[];
+}
+
+const { node, title, breadcrumb } = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available');
+}
+
+const {
+  field_title_context: fieldTitleContext,
+  body,
+} = node.attributes;
+
+// Fetch news data for the landing page
+const { mainNews, libraryUpdates } = await fetchNewsDataForLanding();
+
+const newsMainInitialShow = 10;
+const newsLibraryUpdatesInitialShow = 20;
 ---
-<BasicTemplate {...props} />
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <Margins>
+    <Breadcrumb data={breadcrumb} />
+    <Heading
+      size="3XL"
+      level={1}
+      class="news-landing-title"
+    >
+      {fieldTitleContext || title}
+    </Heading>
+  </Margins>
+
+  <Template>
+    <TemplateContent>
+      {body?.processed && (
+        <div class="news-landing-body">
+          <Html html={body.processed} />
+        </div>
+      )}
+
+      {mainNews.length > 0 && (
+        <>
+          <span class="visually-hidden">
+            <Heading level={2} size="L">
+              Main news
+            </Heading>
+          </span>
+          <Expandable
+            show={newsMainInitialShow}
+            buttonName="stories"
+            totalCount={mainNews.length}
+          >
+            <ol class="news-list">
+              {mainNews.map((item) => (
+                <li class="news-list-item">
+                  <Card
+                    headingLevel={2}
+                    href={item.href}
+                    title={item.title}
+                    subtitle={item.subtitle}
+                    image={item.image}
+                    horizontal
+                  >
+                    {item.description}
+                  </Card>
+                </li>
+              ))}
+            </ol>
+          </Expandable>
+        </>
+      )}
+    </TemplateContent>
+
+    <TemplateSide>
+      <Heading
+        size="L"
+        level={2}
+        class="library-updates-title"
+      >
+        Library Updates
+      </Heading>
+      {libraryUpdates.length > 0 && (
+        <Expandable
+          show={newsLibraryUpdatesInitialShow}
+          buttonName="updates"
+          totalCount={libraryUpdates.length}
+        >
+          <ol class="updates-list">
+            {libraryUpdates.map((item) => (
+              <li class="updates-list-item">
+                <Card
+                  href={item.href}
+                  title={item.title}
+                  subtitle={item.subtitle}
+                />
+              </li>
+            ))}
+          </ol>
+        </Expandable>
+      )}
+    </TemplateSide>
+  </Template>
+</TemplateLayout>
+
+<style>
+  .news-landing-title {
+    margin-bottom: 1.5rem; /* SPACING.L */
+  }
+
+  .news-landing-body {
+    margin-bottom: 2rem; /* SPACING.XL */
+  }
+
+  .news-list,
+  .updates-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .news-list-item {
+    margin-bottom: 1.5rem; /* SPACING.L */
+  }
+
+  .updates-list-item {
+    margin-bottom: 2rem; /* SPACING.XL */
+  }
+
+  .library-updates-title {
+    margin-bottom: 1.5rem; /* SPACING.L */
+  }
+
+  .visually-hidden {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+</style>

@@ -1,0 +1,115 @@
+---
+/**
+ * Expandable Component
+ * Ported from src/reusable/expandable/expandable.jsx, expandable-children.jsx, expandable-button.jsx
+ */
+interface Props {
+  show?: number;
+  buttonName?: string;
+  totalCount?: number;
+}
+
+const {
+  show = 3,
+  buttonName = '',
+  totalCount,
+} = Astro.props;
+
+const count = totalCount ?? 0;
+const needsExpand = count > show;
+---
+
+<div class="expandable" data-expandable data-show={show}>
+  <div class="expandable-children" data-expandable-children>
+    <slot />
+  </div>
+
+  {needsExpand && (
+    <button
+      class="expandable-button"
+      type="button"
+      data-expandable-button
+      data-name={buttonName}
+      data-count={count}
+    >
+      {`Show all ${count} ${buttonName}`.trim()}
+    </button>
+  )}
+</div>
+
+<script>
+  function initExpandable(container: HTMLElement) {
+    const childrenWrapper = container.querySelector('[data-expandable-children]');
+    const button = container.querySelector<HTMLButtonElement>('[data-expandable-button]');
+    const show = parseInt(container.dataset.show || '3', 10);
+
+    if (!childrenWrapper) return;
+
+    const list = childrenWrapper.querySelector('ol, ul');
+    const items = list
+      ? Array.from(list.children) as HTMLElement[]
+      : Array.from(childrenWrapper.children) as HTMLElement[];
+
+    if (items.length <= show) {
+      if (button) button.style.display = 'none';
+      return;
+    }
+
+    let expanded = false;
+
+    items.forEach((item, index) => {
+      if (index >= show) {
+        item.style.display = 'none';
+      }
+    });
+
+    if (!button) return;
+
+    const name = button.dataset.name || '';
+    const count = button.dataset.count || String(items.length);
+
+    button.addEventListener('click', () => {
+      expanded = !expanded;
+
+      items.forEach((item, index) => {
+        if (index >= show) {
+          item.style.display = expanded ? '' : 'none';
+        }
+      });
+
+      button.textContent = expanded
+        ? `Show fewer ${name}`.trim()
+        : `Show all ${count} ${name}`.trim();
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-expandable]').forEach(initExpandable);
+
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-expandable]').forEach(initExpandable);
+  });
+</script>
+
+<style>
+  .expandable-button {
+    align-items: center;
+    background: var(--color-teal-400);
+    border: none;
+    border-radius: 2px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    font-weight: 800;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .expandable-button:hover {
+    background: var(--color-teal-500, var(--color-teal-400));
+  }
+
+  .expandable-button:focus {
+    box-shadow: 0 0 0 3px #ffffff, 0 0 0 4px var(--color-neutral-400);
+    outline: none;
+  }
+</style>
