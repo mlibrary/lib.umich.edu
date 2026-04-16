@@ -101,7 +101,7 @@ const { bodyPanels, fullPanels } = transformNodePanels({ node });
     </TemplateTop>
 
     {fieldLocalNavigation && (
-      <TemplateSide class="basic-side">
+      <TemplateSide contentSide="right" class="basic-side">
         {navBranch && (
           <SideNavigation path={slug} branch={navBranch} />
         )}

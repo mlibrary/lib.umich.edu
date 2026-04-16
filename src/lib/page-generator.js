@@ -615,6 +615,7 @@ export const getPagesToGenerate = async () => {
   ];
 
   const included = [
+    ...allNodes,
     ...(pages.included || []),
     ...(sections.included || []),
     ...(buildings.included || []),

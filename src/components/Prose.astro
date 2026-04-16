@@ -179,12 +179,13 @@ const { class: className = '' } = Astro.props;
   }
 
   .prose :global(p.umich-lib-cta) {
-    background: var(--color-teal-100);
-    border: solid 2px var(--color-teal-400);
-    padding: 1.5rem;
+    background-color: var(--color-indigo-100);
+    border: 1px solid var(--color-neutral-100);
     border-radius: 4px;
-    text-align: center;
-    font-weight: 600;
+    font-weight: bold;
+    max-width: 38rem;
+    padding: 1rem 1.5rem 1rem 1rem;
+    width: fit-content;
   }
 
   /* Lede paragraph */

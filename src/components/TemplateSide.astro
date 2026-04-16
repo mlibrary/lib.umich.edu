@@ -47,14 +47,16 @@ const {
       padding-bottom: 0;
     }
     
-    /* Left content side = right sidebar with left border */
-    .template-side[data-content-side="right"] .template-side-inner {
-      padding-right: 3rem;
+    /* Content on left = sidebar on right → left border + left padding */
+    .template-side[data-content-side="left"] .template-side-inner {
+      border-left: solid 1px var(--color-neutral-100);
+      padding-left: 3rem;
     }
     
-    /* Right content side = left sidebar with right border */
-    .template-side[data-content-side="left"] .template-side-inner {
-      padding-left: 3rem;
+    /* Content on right = sidebar on left → right border + right padding */
+    .template-side[data-content-side="right"] .template-side-inner {
+      border-right: solid 1px var(--color-neutral-100);
+      padding-right: 3rem;
     }
   }
 </style>
