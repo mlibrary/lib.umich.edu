@@ -33,7 +33,6 @@ const {
   body,
 } = node.attributes;
 
-// Fetch news data for the landing page
 const { mainNews, libraryUpdates } = await fetchNewsDataForLanding();
 
 const newsMainInitialShow = 10;
@@ -126,11 +125,11 @@ const newsLibraryUpdatesInitialShow = 20;
 
 <style>
   .news-landing-title {
-    margin-bottom: 1.5rem; /* SPACING.L */
+    margin-bottom: 1.5rem; 
   }
 
   .news-landing-body {
-    margin-bottom: 2rem; /* SPACING.XL */
+    margin-bottom: 2rem;
   }
 
   .news-list,
@@ -141,15 +140,15 @@ const newsLibraryUpdatesInitialShow = 20;
   }
 
   .news-list-item {
-    margin-bottom: 1.5rem; /* SPACING.L */
+    margin-bottom: 1.5rem;
   }
 
   .updates-list-item {
-    margin-bottom: 2rem; /* SPACING.XL */
+    margin-bottom: 2rem;
   }
 
   .library-updates-title {
-    margin-bottom: 1.5rem; /* SPACING.L */
+    margin-bottom: 1.5rem;
   }
 
   .visually-hidden {

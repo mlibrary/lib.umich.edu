@@ -9,6 +9,7 @@ import { DRUPAL_URL, fetchWithRetry, removeTrailingSlash } from './drupal.js';
 
 let cachedUsersWithImages = null;
 let cachedUsersBasic = null;
+let cachedUsersForProfiles = null;
 
 /**
  * Fetch all Drupal users WITH media image includes (for collecting-area contacts).
@@ -54,4 +55,38 @@ export async function getAllUsersBasic() {
 
   cachedUsersBasic = allUsers;
   return cachedUsersBasic;
+}
+
+/**
+ * Fetch all Drupal users WITH full profile relationship includes.
+ * Includes: media image, department, name pronunciation, office location.
+ * Cached across all page renders during the build.
+ */
+export async function getAllUsersForProfiles() {
+  if (cachedUsersForProfiles) return cachedUsersForProfiles;
+
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  const includes = [
+    'field_media_image',
+    'field_media_image.field_media_image',
+    'field_user_department',
+    'field_name_pronunciation',
+    'field_office_location'
+  ].join(',');
+
+  const allUsers = [];
+  const allIncluded = [];
+  let nextUrl = `${baseUrl}/jsonapi/user/user?include=${includes}`;
+
+  while (nextUrl) {
+    const response = await fetchWithRetry(nextUrl);
+    allUsers.push(...(response.data || []));
+    if (response.included) {
+      allIncluded.push(...response.included);
+    }
+    nextUrl = response.links?.next?.href || null;
+  }
+
+  cachedUsersForProfiles = { users: allUsers, included: allIncluded };
+  return cachedUsersForProfiles;
 }
