@@ -351,6 +351,9 @@ const SpecialistsResults = () => {
         <caption css={{ textAlign: 'left' }}>
           {resultsSummary}
         </caption>
+        <colgroup span='1'></colgroup>
+        <colgroup span='2'></colgroup>
+        <colgroup span='1'></colgroup>
         <thead
           css={{
             borderBottom: borderStyle,
@@ -367,9 +370,9 @@ const SpecialistsResults = () => {
           }}
         >
           <tr>
-            <th scope='col'>Subjects and specialties</th>
+            <th scope='colgroup'>Subjects and specialties</th>
             <th colSpan='2' scope='colgroup'>Contact</th>
-            {healthSciencesOnly && <th scope='col'>Category</th>}
+            <th scope='colgroup'>Category</th>
           </tr>
         </thead>
         <tbody>
@@ -414,7 +417,7 @@ const SpecialistsResults = () => {
                     );
                   })}
                 </td>
-                {healthSciencesOnly && <td>{resultsCategory}</td>}
+                <td>{healthSciencesOnly && resultsCategory}</td>
               </tr>
             );
           })}
