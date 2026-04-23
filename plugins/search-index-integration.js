@@ -2,14 +2,13 @@
  * Astro integration that generates a Lunr search index at build time.
  *
  */
-import lunr from 'lunr';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { getPagesToGenerate } from '../src/lib/page-generator.js';
-import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import lunr from 'lunr';
 
 export default function searchIndexIntegration() {
   return {
-    name: 'search-index',
     hooks: {
       'astro:build:done': async ({ dir }) => {
         console.log('[search-index] Generating search index…');
@@ -20,24 +19,24 @@ export default function searchIndexIntegration() {
         const docs = [];
 
         for (const page of pages) {
-          if (!page.slug) continue;
+          if (page.slug) {
+            const ref = `SitePage ${page.slug}`;
+            const doc = {
+              id: ref,
+              keywords: page.keywords || '',
+              summary: page.summary || '',
+              tag: page.tag || '',
+              title: page.title || ''
+            };
 
-          const ref = `SitePage ${page.slug}`;
-          const doc = {
-            id: ref,
-            title: page.title || '',
-            summary: page.summary || '',
-            keywords: page.keywords || '',
-            tag: page.tag || ''
-          };
-
-          docs.push(doc);
-          store[ref] = {
-            title: doc.title,
-            summary: doc.summary,
-            keywords: doc.keywords,
-            tag: doc.tag
-          };
+            docs.push(doc);
+            store[ref] = {
+              keywords: doc.keywords,
+              summary: doc.summary,
+              tag: doc.tag,
+              title: doc.title
+            };
+          }
         }
 
         const idx = lunr(function () {
@@ -67,6 +66,7 @@ export default function searchIndexIntegration() {
 
         console.log(`[search-index] Wrote ${docs.length} pages to ${outPath}`);
       }
-    }
+    },
+    name: 'search-index'
   };
 }

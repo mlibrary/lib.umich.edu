@@ -87,7 +87,7 @@ const locationDataForClient = processedCards.map((card: any) => {
         <p>Hours information is currently unavailable.</p>
       </div>
     ) : (
-      <ol class="hours-list" data-hours-list>
+      <ol class="hours-list" data-hours-list data-location-data={JSON.stringify(locationDataForClient)}>
         {processedHours.map((hour: any, index: number) => (
           <li class="hours-item" data-location-index={index}>
             <span class="hours-icon">
@@ -112,48 +112,46 @@ const locationDataForClient = processedCards.map((card: any) => {
     )}
   </div>
 
-  <script type="module" define:vars={{ locationDataForClient }}>
+  <script>
+    import { displayHours, getHoursFromNode, findHoursSetByNodeForNow } from '../../utils/hours.js';
+
     // Client-side hours update logic
-    async function updateHoursDisplay() {
+    function updateHoursDisplay() {
       const hoursList = document.querySelector('[data-hours-list]');
       if (!hoursList) return;
-      
-      try {
-        const hoursModule = await import('/src/utils/hours.js');
-        const { displayHours, getHoursFromNode, findHoursSetByNodeForNow } = hoursModule;
-        
-        const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
-        
-        locationDataForClient.forEach((node, index) => {
-          const locationItem = hoursList.querySelector(`[data-location-index="${index}"]`);
-          const hoursText = locationItem?.querySelector('[data-hours-text]');
-          
-          if (!hoursText || !node) return;
-          const hoursFromNode = getHoursFromNode({ node });
-          
-          if (hoursFromNode) {
-            const hoursSet = findHoursSetByNodeForNow({ node, now });
-            
-            if (hoursSet) {
-              const hoursData = displayHours({ node, now });
-              
-              if (hoursData) {
-                const { text } = hoursData;
-                hoursText.textContent = `TODAY: ${text}`;
-              } else {
-                hoursText.textContent = 'TODAY: Hours not available';
-              }
+
+      const locationDataForClient = JSON.parse(
+        (hoursList as HTMLElement).dataset.locationData || '[]'
+      );
+
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+
+      locationDataForClient.forEach((node: any, index: number) => {
+        const locationItem = hoursList.querySelector(`[data-location-index="${index}"]`);
+        const hoursText = locationItem?.querySelector('[data-hours-text]');
+
+        if (!hoursText || !node) return;
+        const hoursFromNode = getHoursFromNode({ node });
+
+        if (hoursFromNode) {
+          const hoursSet = findHoursSetByNodeForNow({ node, now });
+
+          if (hoursSet) {
+            const hoursData = displayHours({ node, now });
+
+            if (hoursData) {
+              const { text } = hoursData;
+              hoursText.textContent = `TODAY: ${text}`;
             } else {
               hoursText.textContent = 'TODAY: Hours not available';
             }
           } else {
             hoursText.textContent = 'TODAY: Hours not available';
           }
-        });
-        
-      } catch (error) {
-        console.error('Error in updateHoursDisplay:', error);
-      }
+        } else {
+          hoursText.textContent = 'TODAY: Hours not available';
+        }
+      });
     }
 
     // Update hours when the page loads
