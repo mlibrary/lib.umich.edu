@@ -1,5 +1,7 @@
 [build]
-  publish = "public"
+  command = "npm run build"
+  publish = "dist"
+  ignore = "exit 0"
 [[headers]]
   for = "/*"
   [headers.values]

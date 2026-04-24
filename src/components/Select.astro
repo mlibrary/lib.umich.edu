@@ -1,0 +1,72 @@
+---
+/**
+ * Select Component - Custom styled dropdown
+ * Converted from src/components/select.js
+ *
+ * Props:
+ * - label: Display label above the select
+ * - name: Form field name
+ * - options: Array of option strings
+ * - value: Currently selected value
+ * - id: Optional id for the select element
+ */
+import Icon from '../reusable/Icon.astro';
+
+interface Props {
+  label: string;
+  name: string;
+  options: string[];
+  value?: string;
+  id?: string;
+  [key: string]: any;
+}
+
+const { label, name, options, value, id, ...rest } = Astro.props;
+---
+
+<label class="select-label">
+  <span class="select-label-text">{label}</span>
+  <div class="select-wrapper">
+    <select name={name} id={id} class="select-input" value={value || 'All'} {...rest}>
+      {options.map((opt, i) => (
+        <option id={`${name}${opt}`} value={opt}>{opt}</option>
+      ))}
+    </select>
+    <Icon icon="expand_more" class="select-icon" />
+  </div>
+</label>
+
+<style>
+  .select-label-text {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-input {
+    appearance: none;
+    background: transparent;
+    background-image: none;
+    border: solid 1px var(--color-neutral-300);
+    border-radius: 4px;
+    box-shadow: none;
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    height: 40px;
+    line-height: 1.5;
+    padding: var(--spacing-xs);
+    padding-right: 2rem;
+    width: 100%;
+  }
+
+  .select-icon {
+    bottom: var(--spacing-s);
+    pointer-events: none;
+    position: absolute;
+    right: var(--spacing-s);
+  }
+</style>

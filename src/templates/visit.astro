@@ -1,0 +1,164 @@
+---
+/**
+ * Visit Template
+ * Converted from src/templates/visit.js
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import PageHeader from '../components/PageHeader.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import LocationAside from '../components/LocationAside.astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Prose from '../components/Prose.astro';
+import List from '../reusable/List.astro';
+import Panels from '../components/panels/Panels.astro';
+import transformNodePanels from '../utils/transform-node-panels';
+import buildHorizontalNavigation from '../utils/build-horizontal-navigation';
+
+interface Props {
+  node: any;
+  title?: string;
+  breadcrumb?: string;
+  parents?: any[];
+  children?: any[];
+  parentIds?: string[];
+  childIds?: string[];
+}
+
+const { node, title, breadcrumb, parents = [], children = [], parentIds = [], childIds = [] } = Astro.props;
+
+if (!node) {
+  throw new Error('Visit template: no node data available');
+}
+
+// Extract node attributes
+const {
+  field_title_context: fieldTitleContext,
+  field_root_page_: fieldRootPage,
+  field_access: fieldAccess,
+  body,
+} = node.attributes || {};
+
+const { relationships } = node;
+const nodeTitle = title || node.attributes?.title;
+const pageTitle = nodeTitle || fieldTitleContext;
+
+// Parent node (first parent page)
+const parentNode = relationships?.field_parent_page?.[0];
+const isRootPage = Boolean(fieldRootPage);
+
+// Visit-specific relationships
+const fieldVisit = relationships?.field_visit || [];
+const fieldAmenities = relationships?.field_amenities || [];
+
+// Hero image
+const pageHeaderImage = relationships?.field_media_image;
+
+// Panels
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+
+// Horizontal navigation
+const navigationItems = buildHorizontalNavigation({
+  node,
+  isRootPage,
+  parentNode,
+  parentIds,
+  parents,
+  childIds,
+  children
+});
+
+// Sort visit items and amenities by weight
+const sortedVisitItems = [...fieldVisit].sort((a, b) => a.weight - b.weight);
+const sortedAmenities = [...fieldAmenities].sort((a, b) => a.weight - b.weight);
+---
+
+<TemplateLayout node={node} title={pageTitle}>
+  <header>
+    <PageHeader
+      breadcrumb={breadcrumb}
+      title={nodeTitle}
+      summary={body?.summary || null}
+      image={pageHeaderImage}
+    />
+  </header>
+
+  {navigationItems.length > 0 && (
+    <HorizontalNavigation items={navigationItems} />
+  )}
+
+  <section aria-label="Hours, parking, and amenities">
+    <Template>
+      <TemplateSide>
+        <LocationAside node={node} />
+      </TemplateSide>
+      <TemplateContent>
+        <Prose>
+          <Heading
+            level={1}
+            size="XL"
+            style="font-weight: 600;"
+            data-page-heading
+          >
+            <span class="visually-hidden">{pageTitle}</span>
+            <span aria-hidden="true">{fieldTitleContext}</span>
+          </Heading>
+
+          {sortedVisitItems.length > 0 && (
+            <List type="bulleted">
+              {sortedVisitItems.map((item: any) => (
+                <li>
+                  <Html html={item.description.processed} />
+                </li>
+              ))}
+            </List>
+          )}
+
+          {fieldAccess?.processed && (
+            <>
+              <Heading level={2} size="M">
+                Getting here
+              </Heading>
+              <Html html={fieldAccess.processed} />
+            </>
+          )}
+
+          {sortedAmenities.length > 0 && (
+            <>
+              <Heading level={2} size="M">
+                Amenities
+              </Heading>
+              <List type="bulleted">
+                {sortedAmenities.map((amenity: any) => (
+                  <li>
+                    {amenity.description
+                      ? <Html html={amenity.description.processed} />
+                      : <>{amenity.name}</>
+                    }
+                  </li>
+                ))}
+              </List>
+            </>
+          )}
+        </Prose>
+
+        <Panels data={bodyPanels} />
+      </TemplateContent>
+    </Template>
+  </section>
+
+  {fullPanels.length > 0 && (
+    <div class="full-panels-wrapper">
+      <Panels data={fullPanels} />
+    </div>
+  )}
+</TemplateLayout>
+
+<style>
+  .full-panels-wrapper :global(section:nth-of-type(odd)) {
+    background: var(--color-blue-100);
+  }
+</style>

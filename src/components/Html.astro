@@ -1,0 +1,200 @@
+---
+/**
+ * Html Component
+ * Converted from src/components/html.js
+ *
+ * Renders Drupal HTML content with:
+ * - Drupal entity embed resolution (media--image, media--remote_video, media--file)
+ * - Relative image URL fixing (/sites/default/files/... → absolute)
+ * - CMS anchor link unwrapping (jsonapi / cms.lib.umich.edu image links)
+ * - Lazy loading + async decoding on all images
+ * - iframe stripping (Gatsby html.js had no iframe component — rendered null)
+ * - <u> tag stripping (Gatsby's `u` component returned children only)
+ */
+import Prose from './Prose.astro';
+import { fetchMediaEntity } from '../lib/drupal.js';
+import { getYouTubeVideoId, buildYouTubeEmbedUrl } from '../utils/youtube';
+
+interface Props {
+  html: string;
+  class?: string;
+}
+
+const { html, class: className = '' } = Astro.props;
+
+const DRUPAL_BASE_URL = (import.meta.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/, '');
+
+// Builds the video iframe HTML string for use inside set:html processing.
+// data-generated="1" marks our iframes so the authored-iframe strip pass skips them.
+function buildVideoHtml(embedUrl: string, title: string): string {
+  return (
+    '<div style="padding-top:56.25%;position:relative">' +
+    `<iframe data-generated="1" src="${embedUrl}" title="${title}" ` +
+    'width="100%" height="100%" ' +
+    'allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+    'allowfullscreen referrerpolicy="strict-origin-when-cross-origin" ' +
+    'sandbox="allow-scripts allow-same-origin allow-presentation" ' +
+    'style="border:0;left:0;position:absolute;top:0;width:100%;height:100%">' +
+    '</iframe></div>'
+  );
+}
+
+const uuids: string[] = [];
+const seenUuids = new Set<string>();
+const entityTagRe = /<[a-zA-Z][\w-]*\b[^>]*data-entity-type="media"[^>]*>/gi;
+for (const match of (html ?? '').matchAll(entityTagRe)) {
+  const uuidMatch = /data-entity-uuid="([^"]+)"/.exec(match[0]);
+  if (uuidMatch && !seenUuids.has(uuidMatch[1])) {
+    seenUuids.add(uuidMatch[1]);
+    uuids.push(uuidMatch[1]);
+  }
+}
+
+const entityMap: Record<string, string> = {};
+if (uuids.length > 0) {
+  await Promise.all(
+    [...new Set(uuids)].map(async (uuid) => {
+      try {
+        const result = await fetchMediaEntity(uuid);
+        if (!result?.data) return;
+
+        const entity = result.data;
+        const included: any[] = result.included ?? [];
+        const entityType: string = entity.type; // media--image | media--remote_video | media--file
+
+        if (entityType === 'media--remote_video') {
+          const oembedUrl: string = entity.attributes?.field_media_oembed_video ?? '';
+          const videoId = getYouTubeVideoId(oembedUrl);
+          if (videoId) {
+            entityMap[uuid] = buildVideoHtml(
+              buildYouTubeEmbedUrl(videoId),
+              entity.attributes?.name ?? 'YouTube video player'
+            );
+          }
+        } else if (entityType === 'media--image') {
+          const fileRef = entity.relationships?.field_media_image?.data;
+          const fileEntity = included.find((e: any) => e.type === 'file--file' && e.id === fileRef?.id);
+          const rawUrl: string = fileEntity?.attributes?.uri?.url ?? '';
+          if (rawUrl) {
+            const src = rawUrl.startsWith('/') ? `${DRUPAL_BASE_URL}${rawUrl}` : rawUrl;
+            const alt: string = fileRef?.meta?.alt ?? '';
+            entityMap[uuid] =
+              `<figure>` +
+              `<img src="${src}" alt="${alt}" loading="lazy" decoding="async" />` +
+              `</figure>`;
+          }
+        } else if (entityType === 'media--file') {
+          const fileRef = entity.relationships?.field_media_file?.data;
+          const fileEntity = included.find((e: any) => e.type === 'file--file' && e.id === fileRef?.id);
+          const rawUrl: string = fileEntity?.attributes?.uri?.url ?? '';
+          const name: string = entity.attributes?.name ?? 'Download';
+          const mime: string = fileEntity?.attributes?.filemime ?? '';
+          if (rawUrl) {
+            const href = rawUrl.startsWith('/') ? `${DRUPAL_BASE_URL}${rawUrl}` : rawUrl;
+            const label = mime === 'application/pdf' ? `${name} (PDF)` : name;
+            entityMap[uuid] = `<a href="${href}">${label}</a>`;
+          }
+        }
+      } catch {
+        // Entity unavailable — the div will be removed from output
+      }
+    })
+  );
+}
+
+
+function processHtml(rawHtml: string): string {
+  if (!rawHtml) return '';
+  let out = rawHtml;
+
+  out = out.replace(/<\/?u\b[^>]*>/gi, '');
+
+  if (uuids.length > 0) {
+    out = out.replace(
+      /<figure\b[^>]*>[\s\S]*?<\/figure>/gi,
+      (figureMatch) => {
+        const uuidMatch = /data-entity-uuid="([^"]+)"/.exec(figureMatch);
+        if (!uuidMatch) return figureMatch;
+        let resolved: string | undefined = entityMap[uuidMatch[1]];
+
+        if (resolved === undefined) {
+          const srcMatch = /\bsrc="([^"]*\/media\/oembed\?[^"]*)"/.exec(figureMatch);
+          if (srcMatch) {
+            const rawSrc = srcMatch[1].replace(/&amp;/g, '&');
+            const urlParamMatch = /[?&]url=([^&]+)/.exec(rawSrc);
+            if (urlParamMatch) {
+              try {
+                const videoUrl = decodeURIComponent(urlParamMatch[1]);
+                const videoId = getYouTubeVideoId(videoUrl);
+                if (videoId) {
+                  const iframeTag = /<iframe\b[^>]*>/.exec(figureMatch)?.[0] ?? '';
+                  const titleMatch = /\btitle="([^"]*)"/.exec(iframeTag);
+                  const title = titleMatch ? titleMatch[1] : 'YouTube video player';
+                  resolved = buildVideoHtml(buildYouTubeEmbedUrl(videoId), title);
+                }
+              } catch {
+                // decodeURIComponent failed — leave figure as-is
+              }
+            }
+          }
+        }
+
+        if (resolved === undefined) return figureMatch;
+        const captionMatch = /<figcaption[^>]*>([\s\S]*?)<\/figcaption>/i.exec(figureMatch);
+        if (captionMatch) {
+          return `<figure>${resolved}<figcaption>${captionMatch[1]}</figcaption></figure>`;
+        }
+        return resolved;
+      }
+    );
+
+    out = out.replace(
+      /<drupal-entity\b([^>]*)>[\s\S]*?<\/drupal-entity>/gi,
+      (match, attrs) => {
+        if (!/data-entity-type="media"/.test(attrs)) return match;
+        const uuidMatch = /data-entity-uuid="([^"]+)"/.exec(attrs);
+        if (!uuidMatch) return '';
+        const resolved = entityMap[uuidMatch[1]];
+        return resolved ?? '';
+      }
+    );
+  }
+
+  out = out.replace(/<iframe\b(?![^>]*\bdata-generated="1")[^>]*>[\s\S]*?<\/iframe>/gi, '');
+  out = out.replace(/\s*data-generated="1"/gi, '');
+
+  out = out.replace(
+    /(<img\b[^>]*)\bsrc="(\/sites\/default\/files\/[^"]*)"/gi,
+    (_m, before, path) => `${before}src="${DRUPAL_BASE_URL}${path}"`
+  );
+  out = out.replace(
+    /(<img\b[^>]*)\bsrcset="([^"]*)"/gi,
+    (_m, before, srcset) => {
+      const fixed = srcset.replace(/(\/sites\/default\/files\/[^\s,]+)/g, (p: string) =>
+        p.startsWith('http') ? p : `${DRUPAL_BASE_URL}${p}`
+      );
+      return `${before}srcset="${fixed}"`;
+    }
+  );
+
+  out = out.replace(
+    /<a\b[^>]*href="[^"]*(?:\/jsonapi\/|cms\.lib\.umich\.edu)[^"]*"[^>]*>\s*(<img\b[^>]*\/?>)\s*<\/a>/gi,
+    '$1'
+  );
+
+  out = out.replace(/(<img\b[^>]*)\bloading="eager"/gi, '$1loading="lazy"');
+  out = out.replace(
+    /(<img\b(?![^>]*\bdecoding=)[^>]*)(\/?>)/gi,
+    '$1 decoding="async"$2'
+  );
+
+
+  return out;
+}
+
+const processedHtml = processHtml(html ?? '');
+---
+
+<Prose class={className}>
+  <Fragment set:html={processedHtml} />
+</Prose>

@@ -1,0 +1,382 @@
+---
+/**
+ * Destination Body Template
+ * Converted from src/templates/destination-body.js
+ *
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateTop from '../components/TemplateTop.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import DrupalImage from '../components/DrupalImage.astro';
+import IconText from '../components/IconText.astro';
+import Link from '../reusable/link.astro';
+import Panels from '../components/panels/Panels.astro';
+import SideNavigation from '../components/navigation/SideNavigation.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import { getNavigationBranch } from '../lib/navigation.js';
+import transformNodePanels from '../utils/transform-node-panels';
+import getBuildingSlug from '../utils/get-building-slug';
+import getFloor from '../utils/get-floor';
+import createSlug from '../reusable/create-slug';
+
+interface Props {
+  node: any;
+  drupal_nid?: string;
+  title: string;
+  breadcrumb?: string;
+  summary?: string;
+  keywords?: string;
+  tag?: string;
+  parents?: any[];
+  children?: any[];
+}
+
+const {
+  node,
+  title,
+  breadcrumb,
+  parents,
+} = Astro.props;
+
+const {
+  field_title_context: fieldTitleContext,
+  field_local_navigation: fieldLocalNavigation,
+} = node.attributes || {};
+
+const { relationships } = node;
+const { processed: body, summary: bodySummary } = node.attributes?.body || {};
+const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pathname;
+
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: fieldTitleContext || title || 'Unknown Page', slug },
+    parents || []
+  );
+}
+
+const imageRelationship = relationships?.field_media_image;
+const imageSrc = imageRelationship?.imageUrl || null;
+const imageAlt = imageRelationship?.imageAlt || '';
+const imageWidth = imageRelationship?.imageWidth;
+const imageHeight = imageRelationship?.imageHeight;
+
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+
+let navBranch = null;
+let smallScreenItems = null;
+
+if (fieldLocalNavigation) {
+  navBranch = await getNavigationBranch(slug);
+  const smallBranch = await getNavigationBranch(slug, 'small');
+  smallScreenItems = smallBranch?.children || null;
+}
+
+const isPageNode = node.type === 'node--page';
+
+const buildingNode = relationships?.field_room_building;
+const parentLocationNode = relationships?.field_parent_location;
+const locationNode = buildingNode
+  ?? parentLocationNode?.relationships?.field_parent_location
+  ?? node;
+
+const buildingSlug = getBuildingSlug({ node });
+const shouldDisplayHours = node.attributes?.field_display_hours_;
+const locationTitle = parentLocationNode?.title ?? buildingNode?.title;
+const phoneNumber = node.attributes?.field_phone_number;
+const email = node.attributes?.field_email;
+const floor = relationships?.field_floor ? getFloor({ node }) : null;
+const roomNumber = node.attributes?.field_room_number
+  ? `Room ${node.attributes.field_room_number}`
+  : null;
+const locationSummary = [locationTitle, floor, roomNumber]
+  .filter((item) => typeof item === 'string')
+  .join(', ');
+
+const floorPlans = Array.isArray(relationships?.field_floor_plan)
+  ? relationships.field_floor_plan
+  : relationships?.field_floor_plan
+    ? [relationships.field_floor_plan]
+    : [];
+const floorPlan = floorPlans[0] || null;
+
+const askLibrarian = slug === '/ask-librarian';
+
+const hoursAnchorTitle = locationNode?.relationships?.field_parent_location?.title
+  ?? locationNode?.title;
+const hoursAnchor = hoursAnchorTitle
+  ? `/locations-and-hours/hours-view#${createSlug(hoursAnchorTitle)}`
+  : '/locations-and-hours/hours-view';
+---
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <Template variant="basic" hasSide={!!fieldLocalNavigation}>
+    <TemplateTop>
+      <Breadcrumb data={breadcrumbData} />
+    </TemplateTop>
+
+    {fieldLocalNavigation && (
+      <TemplateSide class="destination-side" contentSide="right">
+        {navBranch && (
+          <SideNavigation path={slug} branch={navBranch} />
+        )}
+
+        {smallScreenItems && (
+          <div class="small-screen-nav">
+            <HorizontalNavigation items={smallScreenItems} />
+          </div>
+        )}
+      </TemplateSide>
+    )}
+
+    <TemplateContent>
+      <div class="destination-content">
+        <Heading
+          level={1}
+          size="3XL"
+          style="margin-bottom: var(--spacing-l); margin-top: var(--spacing-s);"
+        >
+          {fieldTitleContext}
+        </Heading>
+
+        {bodySummary && (
+          <p class="lede">{bodySummary}</p>
+        )}
+
+        {!isPageNode && (
+          <div class="location-info">
+            {shouldDisplayHours && (
+              <p>
+                <IconText icon="access_time">
+                  <span>
+                    <span class="hours-display" data-hours-node={JSON.stringify({
+                      field_display_hours_: shouldDisplayHours,
+                      field_hours_different_from_build: node.attributes?.field_hours_different_from_build,
+                      relationships: {
+                        field_hours_open: relationships?.field_hours_open,
+                        field_room_building: relationships?.field_room_building,
+                        field_parent_location: relationships?.field_parent_location,
+                      }
+                    })}>…</span>
+                    <span class="block">
+                      <Link href={hoursAnchor}>View more hours</Link>
+                    </span>
+                  </span>
+                </IconText>
+              </p>
+            )}
+
+            {(floorPlan || askLibrarian) && (
+              <p>
+                <IconText icon="address">
+                  <span>
+                    {locationSummary}
+                    {buildingSlug && (
+                      <span class="block">
+                        <Link href={buildingSlug}>View building information</Link>
+                      </span>
+                    )}
+                    <span class="block">
+                      {askLibrarian
+                        ? 'Online'
+                        : floorPlan?.fields?.slug && (
+                            <Link href={floorPlan.fields.slug}>View floor plan</Link>
+                          )
+                      }
+                    </span>
+                  </span>
+                </IconText>
+              </p>
+            )}
+
+            {phoneNumber && (
+              <p>
+                <IconText icon="phone">
+                  <Link href={`tel:+1-${phoneNumber}`}>{phoneNumber}</Link>
+                </IconText>
+              </p>
+            )}
+
+            {email && (
+              <p>
+                <IconText icon="mail_outline">
+                  <Link href={`mailto:${email}`}>{email}</Link>
+                </IconText>
+              </p>
+            )}
+          </div>
+        )}
+
+        {imageSrc && (
+          <DrupalImage
+            src={imageSrc}
+            alt={imageAlt}
+            width={imageWidth}
+            height={imageHeight}
+            class="destination-hero-image"
+          />
+        )}
+      </div>
+
+      {body && <Html html={body} />}
+
+      <Panels data={bodyPanels} />
+    </TemplateContent>
+  </Template>
+
+  <Panels data={fullPanels} />
+</TemplateLayout>
+
+<style>
+  :global(.destination-side .template-side-inner) {
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  .small-screen-nav {
+    display: block;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .small-screen-nav {
+      display: none;
+    }
+  }
+
+  .destination-content {
+    max-width: 38rem;
+  }
+
+  .lede {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .location-info {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .location-info > p:not(:last-child) {
+    margin-bottom: var(--spacing-m);
+  }
+
+  .block {
+    display: block;
+  }
+
+  /* Hero image */
+  .destination-hero-image {
+    border-radius: 2px;
+    margin-bottom: var(--spacing-2xl);
+    width: 100%;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.hours-display').forEach((el) => {
+      try {
+        const nodeData = JSON.parse(el.getAttribute('data-hours-node') || '{}');
+        const now = new Date();
+        const hours = computeDisplayHours(nodeData, now);
+        if (hours) {
+          el.textContent = `Today: ${hours}`;
+        } else {
+          el.textContent = 'Today: n/a';
+        }
+      } catch {
+        el.textContent = 'Today: n/a';
+      }
+    });
+  });
+
+  function computeDisplayHours(node, now) {
+    const allHours = getHoursFromNode(node);
+    if (!allHours) return null;
+
+    const hoursSet = findHoursSetForNow(allHours, now);
+    if (!hoursSet) return null;
+
+    const hoursForNow = hoursSet.field_hours_open?.find(
+      (data) => data.day === now.getDay()
+    );
+    if (!hoursForNow) return null;
+
+    const { starthours, endhours, comment } = hoursForNow;
+    if (!comment && starthours === endhours) return null;
+
+    if (starthours !== endhours) {
+      const parts = [`${formatTime(starthours)} - ${formatTime(endhours)}`, comment]
+        .filter(Boolean)
+        .join(', ');
+      return parts;
+    }
+    return comment || null;
+  }
+
+  function getHoursFromNode(node) {
+    if (!node.field_display_hours_) return null;
+    const prioritize = (hours) => {
+      if (!hours) return [];
+      const types = [
+        'paragraph__hours_exceptions',
+        'paragraph__fall_and_winter_semester_hours',
+      ];
+      const exceptions = hours.filter((s) => s.__typename === types[0]);
+      const fallWinter = hours.filter((s) => s.__typename === types[1]);
+      const rest = hours.filter((s) => !types.includes(s.__typename));
+      return [...exceptions, ...rest, ...fallWinter].filter(Boolean);
+    };
+
+    if (node.field_hours_different_from_build) {
+      return prioritize(node.relationships?.field_hours_open);
+    }
+    const building = node.relationships?.field_room_building;
+    const parentLoc = node.relationships?.field_parent_location;
+
+    if (building?.field_display_hours_) {
+      return prioritize(building.relationships?.field_hours_open);
+    }
+    if (parentLoc?.field_display_hours_) {
+      return prioritize(parentLoc.relationships?.field_hours_open);
+    }
+    if (building && !building.field_display_hours_ && building.relationships?.field_parent_location?.field_display_hours_) {
+      return prioritize(building.relationships.field_parent_location.relationships?.field_hours_open);
+    }
+    if (parentLoc && !parentLoc.field_display_hours_ && parentLoc.relationships?.field_parent_location?.field_display_hours_) {
+      return prioritize(parentLoc.relationships.field_parent_location.relationships?.field_hours_open);
+    }
+    return null;
+  }
+
+  function findHoursSetForNow(allHours, now) {
+    return allHours.find((set) => {
+      if (!set.field_date_range) return false;
+      const start = new Date(set.field_date_range.value.replace(/-/g, '/').replace(/T.+/, ''));
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(set.field_date_range.end_value.replace(/-/g, '/').replace(/T.+/, ''));
+      end.setHours(23, 59, 59);
+      return start <= now && now <= end;
+    }) || null;
+  }
+
+  function formatTime(time) {
+    const timeStr = time.toString();
+    const hrs = timeStr.slice(0, -2);
+    const mins = timeStr.slice(-2);
+    let formatted = '';
+    if (Number(hrs) === 0) formatted = '12';
+    else if (hrs <= 12) formatted = hrs;
+    else formatted = (hrs - 12).toString();
+    if (Number(mins) > 0) formatted += `:${mins}`;
+    return formatted + (hrs >= 12 ? 'pm' : 'am');
+  }
+</script>

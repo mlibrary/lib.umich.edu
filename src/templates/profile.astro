@@ -1,0 +1,460 @@
+---
+/**
+ * Profile Template
+ * Converted from src/templates/profile.js
+ *
+ * Layout (matches Gatsby page-layout.js grid):
+ *   - Layout → global wrapper (header / footer)
+ *   - Margins → max-width container
+ *   - Profile grid (top / side / content):
+ *     - Top → Breadcrumb
+ *     - Side → Photo, pronouns, email, phone, office, mailing address, ORCID, social links
+ *             + ProfileHeader on small screens
+ *     - Content → ProfileHeader on large screens, appointment link, name pronunciation,
+ *                 about, languages, links
+ */
+import Layout from '../layouts/Layout.astro';
+import Margins from '../components/Margins.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Heading from '../reusable/Heading.astro';
+import Icon from '../reusable/Icon.astro';
+import Link from '../reusable/link.astro';
+import LinkCallout from '../reusable/Callout.astro';
+import List from '../reusable/List.astro';
+import Html from '../components/Html.astro';
+import StaffPhotoPlaceholder from '../components/StaffPhotoPlaceholder.astro';
+import LANGUAGES from '../utils/languages.js';
+
+interface Props {
+  profile: {
+    name: string;
+    displayName: string;
+    workTitle?: string;
+    proAbout?: { processed: string };
+    pronounSubject?: string;
+    pronounObject?: string;
+    pronounDependentPos?: string;
+    pronounIndependentP?: string;
+    email?: string;
+    phone?: string;
+    orcidId?: string;
+    languagesSpoken?: string[];
+    physicalAddressPublic?: boolean;
+    mailingAddress?: {
+      address_line1?: string;
+      locality?: string;
+      administrative_area?: string;
+      postal_code?: string;
+    };
+    makeAnAppointment?: { uri: string };
+    userUrls?: Array<{ uri: string; title: string }>;
+    socialLinks?: Record<string, { uri?: string } | null>;
+    departments?: Array<{ title: string; path?: string }>;
+    image?: { url: string; alt: string };
+    pronunciationUrl?: string;
+    office?: string;
+  };
+}
+
+const { profile } = Astro.props;
+
+const {
+  displayName,
+  workTitle,
+  proAbout,
+  pronounSubject,
+  pronounObject,
+  pronounDependentPos,
+  pronounIndependentP,
+  email,
+  phone,
+  orcidId,
+  languagesSpoken,
+  physicalAddressPublic,
+  mailingAddress,
+  makeAnAppointment,
+  userUrls,
+  socialLinks,
+  departments,
+  image,
+  pronunciationUrl,
+  office,
+} = profile;
+
+// Process pronouns into sets (same algorithm as Gatsby)
+function processPronouns(pronouns: (string | null | undefined)[]): string[] | null {
+  const cleaned = pronouns.filter((p): p is string => typeof p === 'string');
+  if (cleaned.length === 0) return null;
+
+  const matrix = cleaned.map((p) => p.split('/'));
+  const transposed = matrix.reduce<string[][]>(
+    (prev, next) => next.map((_, i) => (prev[i] || []).concat(next[i])),
+    []
+  );
+  return transposed.map((set) =>
+    set.filter((v, i, arr) => v && arr.indexOf(v) === i).join('/')
+  );
+}
+
+const pronouns = processPronouns([pronounSubject, pronounObject, pronounDependentPos, pronounIndependentP]);
+
+// Departments reversed (matching Gatsby)
+const depts = departments ? [...departments].reverse() : [];
+
+// Social links
+const socialEntries = socialLinks
+  ? Object.entries(socialLinks)
+      .filter(([, value]) => value?.uri)
+      .map(([key, value]) => ({ icon: key, uri: value!.uri! }))
+  : [];
+
+// Breadcrumb
+const breadcrumbData = JSON.stringify([
+  { text: 'Home', to: '/' },
+  { text: displayName },
+]);
+---
+
+<Layout title={displayName}>
+  <Margins>
+    <div class="profile-grid">
+      <!-- Top: Breadcrumb -->
+      <div class="profile-top">
+        <Breadcrumb data={breadcrumbData} />
+      </div>
+
+      <!-- Side -->
+      <section class="profile-side">
+        <!-- Small screen: show header here -->
+        <div class="small-screen-only profile-header-mobile">
+          <Heading size="3XL" level={1} class="profile-name">
+            {displayName}
+          </Heading>
+          {workTitle && <p class="profile-lede">{workTitle}</p>}
+          {depts.length > 0 && (
+            <p class="profile-departments">
+              {depts.map((dept, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  {dept.path
+                    ? <Link href={dept.path}>{dept.title}</Link>
+                    : <span>{dept.title}</span>
+                  }
+                </>
+              ))}
+            </p>
+          )}
+        </div>
+
+        <div class="profile-info-box">
+          {image ? (
+            <img
+              src={image.url}
+              alt={image.alt}
+              class="profile-photo"
+              loading="lazy"
+            />
+          ) : (
+            <StaffPhotoPlaceholder />
+          )}
+
+          {pronouns && (
+            <>
+              <Heading level={2} size="2XS" class="info-label">Pronouns</Heading>
+              {pronouns.map((set) => <p class="info-text">{set}</p>)}
+            </>
+          )}
+
+          {email && (
+            <>
+              <Heading level={2} size="2XS" class="info-label">Email</Heading>
+              <Link href={`mailto:${email}`}>{email}</Link>
+            </>
+          )}
+
+          {phone && (
+            <>
+              <Heading level={2} size="2XS" class="info-label">Phone</Heading>
+              <Link href={`tel:1-${phone}`}>{phone}</Link>
+            </>
+          )}
+
+          {office && physicalAddressPublic && (
+            <>
+              <Heading level={2} size="2XS" class="info-label">Office</Heading>
+              <p class="info-text">{office}</p>
+            </>
+          )}
+
+          {mailingAddress && (
+            <>
+              <Heading level={2} size="2XS" class="info-label">Mailing address</Heading>
+              <p class="info-text">{mailingAddress.address_line1}</p>
+              <p class="info-text">
+                {mailingAddress.locality}, {mailingAddress.administrative_area} {mailingAddress.postal_code}
+              </p>
+            </>
+          )}
+
+          {orcidId && (
+            <>
+              <Heading level={2} size="2XS" class="info-label">ORCID ID</Heading>
+              <p class="info-text">{orcidId}</p>
+            </>
+          )}
+
+          {socialEntries.length > 0 && (
+            <div class="social-links">
+              {socialEntries.map(({ icon, uri }) => (
+                <a href={uri} class="social-link">
+                  <Icon icon={icon} size={24} />
+                  <span class="visually-hidden">{icon}</span>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <!-- Content -->
+      <div class="profile-content">
+        <!-- Large screen: show header here -->
+        <div class="large-screen-only">
+          <Heading size="3XL" level={1} class="profile-name">
+            {displayName}
+          </Heading>
+          {workTitle && <p class="profile-lede">{workTitle}</p>}
+          {depts.length > 0 && (
+            <p class="profile-departments">
+              {depts.map((dept, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  {dept.path
+                    ? <Link href={dept.path}>{dept.title}</Link>
+                    : <span>{dept.title}</span>
+                  }
+                </>
+              ))}
+            </p>
+          )}
+        </div>
+
+        {makeAnAppointment?.uri && (
+          <div class="appointment-link">
+            <LinkCallout to={makeAnAppointment.uri} icon="today">
+              Make an appointment
+            </LinkCallout>
+          </div>
+        )}
+
+        {pronunciationUrl && (
+          <figure class="pronunciation">
+            <figcaption class="pronunciation-caption">Name pronunciation</figcaption>
+            <audio class="pronunciation-audio" controls src={pronunciationUrl}>
+              Your browser does not support the <code>audio</code> element.
+            </audio>
+          </figure>
+        )}
+
+        <div class="profile-sections">
+          {proAbout?.processed && (
+            <>
+              <Heading size="S" level={2}>About me</Heading>
+              <div class="about-html">
+                <Html html={proAbout.processed} />
+              </div>
+            </>
+          )}
+
+          {languagesSpoken && languagesSpoken.length > 0 && (
+            <>
+              <Heading size="S" level={2}>Languages</Heading>
+              <p>
+                {languagesSpoken
+                  .map((lang) => LANGUAGES[lang]?.name || lang)
+                  .join(', ')}
+              </p>
+            </>
+          )}
+
+          {userUrls && userUrls.length > 0 && (
+            <>
+              <Heading size="S" level={2}>My links</Heading>
+              <List type="bulleted">
+                {userUrls.map(({ uri, title }) => (
+                  <li>
+                    <Link href={uri}>{decodeURIComponent(title)}</Link>
+                  </li>
+                ))}
+              </List>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  </Margins>
+</Layout>
+
+<style>
+  /* Grid layout matching Gatsby page-layout.js */
+  .profile-grid {
+    margin-bottom: 3rem;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .profile-grid {
+      display: grid;
+      grid-template-areas:
+        "top top"
+        "side content";
+      grid-template-columns: calc(216px + 3rem) 1fr;
+      grid-template-rows: auto 1fr;
+      margin-bottom: 4rem;
+    }
+  }
+
+  .profile-top {
+    grid-area: top;
+  }
+
+  .profile-side {
+    grid-area: side;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .profile-side {
+      margin-right: 3rem;
+    }
+  }
+
+  .profile-content {
+    grid-area: content;
+    margin-bottom: 2rem;
+  }
+
+  /* Responsive show/hide */
+  .small-screen-only {
+    display: block;
+  }
+  .large-screen-only {
+    display: none;
+  }
+  @media only screen and (min-width: 641px) {
+    .small-screen-only {
+      display: none;
+    }
+    .large-screen-only {
+      display: block;
+    }
+  }
+
+  /* Profile header */
+  .profile-name {
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-lede {
+    font-size: 1.125rem;
+    max-width: 38rem;
+  }
+
+  .profile-header-mobile {
+    margin-bottom: 2rem;
+  }
+
+  /* Info box (sidebar) */
+  .profile-info-box {
+    background: var(--color-blue-100);
+    margin: 0 -1rem;
+    margin-bottom: 2.5rem;
+    padding: 1rem;
+  }
+  .profile-info-box :global(h2) {
+    margin-top: 1rem;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .profile-info-box {
+      margin: 0;
+      margin-bottom: 2.5rem;
+    }
+  }
+
+  .profile-photo {
+    aspect-ratio: 2 / 3;
+    border-radius: 2px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .info-label {
+    font-weight: 700;
+  }
+
+  .info-text {
+    max-width: 38rem;
+  }
+
+  /* Social links */
+  .social-links {
+    margin-top: 1rem;
+  }
+
+  .social-link {
+    color: var(--color-neutral-300);
+    display: inline-block;
+    margin-top: 1rem;
+  }
+
+  .social-link:not(:last-of-type) {
+    margin-right: 1rem;
+  }
+
+  /* Appointment callout */
+  .appointment-link {
+    margin-top: 2.5rem;
+  }
+
+  .appointment-link :global(a) {
+    display: inline-block;
+  }
+
+  /* Name pronunciation */
+  .pronunciation {
+    margin-bottom: 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .pronunciation-caption {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .pronunciation-audio {
+    max-width: 24rem;
+    width: 100%;
+  }
+
+  /* Content sections */
+  .profile-sections :global(h2) {
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .about-html {
+    margin-bottom: 2rem;
+  }
+
+  /* Utility */
+  .visually-hidden {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+</style>

@@ -1,19 +1,3 @@
-/*
- *# Find a Specialist nodes
- *
- *Take structured data created from Drupal JSON API
- *gatsby-source-drupal plugin and create new nodes that
- *are easier to use for the Find a Specialist template.
- *
- *Combine these terms across all 4 taxonomies
- * 1. Health Sciences
- * 2. Academic Discipline
- * 3. Collecting Areas
- * 4. Library Expertise
- *
- *Use the synonyms overriding priority above.
- */
-
 export default function processSpecialistData ({ data }) {
   const groups = [
     'allTaxonomyTermHealthSciences',
@@ -79,11 +63,6 @@ export default function processSpecialistData ({ data }) {
     ];
   };
 
-  /*
-   *If there is a groupEmail, use that.
-   *Otherwise use users, and if there are no users,
-   *use the Ask a Librarian contact.
-   */
   const processContacts = ({ users, groupEmail }) => {
     if (groupEmail.length > 0) {
       return groupEmail;

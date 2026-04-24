@@ -41,12 +41,13 @@ jobs:
       - run: npm run build
       # Deploy to Netlify using our production secrets
       - name: Deploy to netlify
-        run: npx netlify-cli deploy --dir=public --alias deploy-preview-${{ github.event.number }}
+        run: |
+          DEPLOY_OUTPUT=$(npx netlify-cli deploy --dir=dist --alias deploy-preview-${{ github.event.number }} --json)
+          DEPLOY_URL=$(printf '%s' "$DEPLOY_OUTPUT" | node -e "let s=''; process.stdin.on('data', d => s += d); process.stdin.on('end', () => { const data = JSON.parse(s); console.log(data.deploy_url || data.url || ''); });")
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
-      - name: get deploy url
-        run: echo "DEPLOY_URL=https://deploy-preview-${{ github.event.number }}--future-wwwlib-previews.netlify.app" >> $GITHUB_ENV
       - name: Output summary
         run: echo $DEPLOY_URL >> $GITHUB_STEP_SUMMARY
       - uses: LouisBrunner/checks-action@6b626ffbad7cc56fd58627f774b9067e6118af23 # v2.0.0
