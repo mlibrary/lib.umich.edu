@@ -197,6 +197,7 @@ export const fetchDrupalSectionPages = async () => {
     'field_design_template',
     'field_parent_page',
     'field_media_image',
+    'field_media_image.field_media_image',
     // Card panel relationships
     'field_panels',
     'field_panels.field_card_template',
@@ -222,6 +223,7 @@ export const fetchDrupalSectionPages = async () => {
     'field_parent_page.field_amenities',
     'field_parent_page.field_building_campus',
     'field_parent_page.field_media_image',
+    'field_parent_page.field_media_image.field_media_image',
     'field_parent_page.field_panels',
     // Parent page: room-specific (room_building → building → parent_location chain)
     'field_parent_page.field_room_building',
