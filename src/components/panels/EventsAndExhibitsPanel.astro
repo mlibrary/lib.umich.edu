@@ -1,0 +1,280 @@
+---
+/**
+ * EventsAndExhibitsPanel
+ * Converted from src/components/panels/events-and-exhibits-panel.js
+ */
+import { fetchDrupalEvents } from '../../lib/events-data.js';
+import { processDrupalNode } from '../../lib/page-generator.js';
+import { EXHIBIT_TYPES } from '../../utils/events.js';
+import EventCard from '../EventCard.astro';
+import Heading from '../../reusable/Heading.astro';
+import Template from '../Template.astro';
+import TemplateContent from '../TemplateContent.astro';
+import TemplateSide from '../TemplateSide.astro';
+
+// precomputed metadata for data-* attributes
+interface EventMeta {
+  event: any;
+  isExhibit: boolean;
+  start: string;
+  end: string;
+}
+
+let eventsWithMeta: EventMeta[] = [];
+
+try {
+  const { data: allEvents, included } = await fetchDrupalEvents();
+
+  const processedEvents = allEvents.map((event: any) => processDrupalNode(event, included));
+
+  const validEvents = processedEvents.filter((e: any) =>
+    e.relationships?.field_design_template?.field_machine_name === 'event_exhibit'
+  );
+
+  const expandedEvents: any[] = [];
+  validEvents.forEach((event: any) => {
+    const dates: any[] = event.attributes?.field_event_date_s_ ?? [];
+    if (dates.length > 1) {
+      dates.forEach((date: any) => {
+        expandedEvents.push({
+          ...event,
+          attributes: { ...event.attributes, field_event_date_s_: [date] },
+        });
+      });
+    } else {
+      expandedEvents.push(event);
+    }
+  });
+
+  expandedEvents.sort((a: any, b: any) => {
+    const dateA = new Date(a.attributes?.field_event_date_s_?.[0]?.value ?? 0).getTime();
+    const dateB = new Date(b.attributes?.field_event_date_s_?.[0]?.value ?? 0).getTime();
+    return dateA - dateB;
+  });
+
+  eventsWithMeta = expandedEvents.map((event: any) => ({
+    event,
+    isExhibit: EXHIBIT_TYPES.includes(event.relationships?.field_event_type?.name),
+    start: event.attributes?.field_event_date_s_?.[0]?.value ?? '',
+    end: event.attributes?.field_event_date_s_?.[0]?.end_value ?? '',
+  }));
+} catch (error) {
+  console.error('Error fetching events for EventsAndExhibitsPanel:', error);
+}
+---
+
+<div class="ee-panel">
+  <Template>
+    <TemplateContent>
+      <Heading level={2} size="M" class="ee-heading">
+        Today&rsquo;s Events
+      </Heading>
+      <div id="ee-today">
+        <p id="ee-no-today" class="ee-empty">There are no events scheduled today.</p>
+      </div>
+
+      <Heading level={2} size="M" class="ee-heading ee-heading--upcoming">
+        Upcoming Events
+      </Heading>
+      <div id="ee-upcoming">
+        <p id="ee-no-upcoming" class="ee-empty">There are no upcoming events.</p>
+      </div>
+      <div id="ee-upcoming-expand" style="display:none; margin-top: 1.5rem;">
+        <button type="button" id="ee-expand-btn" class="ee-expand-button">Show all events</button>
+      </div>
+    </TemplateContent>
+
+    <TemplateSide class="ee-side">
+      <div class="ee-exhibits-box">
+        <Heading level={2} size="M" class="ee-heading">
+          Exhibits
+        </Heading>
+        <div id="ee-exhibits">
+          <p id="ee-no-exhibits" class="ee-empty">There are no upcoming exhibits.</p>
+        </div>
+      </div>
+
+      <h2 class="ee-side-heading">See past events</h2>
+      <a href="https://events.umich.edu/month?filter=sponsors:1186,">
+        Use the U-M events calendar
+      </a>
+
+      <h2 class="ee-side-heading ee-side-heading--border">Stay in the know</h2>
+      <a href="https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D">
+        Sign up for email updates
+      </a>
+
+      <Heading level={2} size="M" class="ee-heading ee-heading--workshops">
+        Workshops
+      </Heading>
+      <p class="ee-workshops-text">
+        We offer workshops on a range of topics. See our
+        <a href="https://ttc.iss.lsa.umich.edu/ttc/sessions/upcoming/sponsor/um-library/">
+          list of current offerings</a>.
+        U-M authentication is required to register.
+      </p>
+    </TemplateSide>
+  </Template>
+
+  <!-- Hidden event pool all events are server rendered right here with data-* attributes -->
+  <div id="ee-event-pool" style="display:none" aria-hidden="true">
+    {eventsWithMeta.map(({ event, isExhibit, start, end }) => (
+      <div
+        class="ee-pooled-event"
+        data-start={start}
+        data-end={end}
+        data-is-exhibit={String(isExhibit)}
+      >
+        {isExhibit ? (
+          <EventCard event={event} displayImage={false} hasBorder={false} />
+        ) : (
+          <EventCard event={event} />
+        )}
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  const UPCOMING_SHOW = 10;
+
+  function initEventsPanel() {
+    const pool = document.getElementById('ee-event-pool');
+    const todayContainer = document.getElementById('ee-today');
+    const upcomingContainer = document.getElementById('ee-upcoming');
+    const exhibitsContainer = document.getElementById('ee-exhibits');
+
+    if (!pool || !todayContainer || !upcomingContainer || !exhibitsContainer) return;
+
+    const pooledEvents = Array.from(
+      pool.querySelectorAll<HTMLElement>('.ee-pooled-event')
+    );
+
+    if (pooledEvents.length === 0) return;
+
+    // Use Eastern Time to match the original Gatsby component
+    const now = new Date(
+      new Date().toLocaleString('en', { timeZone: 'America/New_York' })
+    );
+
+    const upcomingEls: HTMLElement[] = [];
+
+    pooledEvents.forEach((wrapper) => {
+      const start = new Date(wrapper.dataset.start ?? '');
+      const end = new Date(wrapper.dataset.end ?? '');
+      const isExhibit = wrapper.dataset.isExhibit === 'true';
+
+      if (isExhibit) {
+        exhibitsContainer.appendChild(wrapper);
+        document.getElementById('ee-no-exhibits')?.remove();
+      } else if (
+        now.toDateString() === start.toDateString() &&
+        now.getTime() < end.getTime()
+      ) {
+        // Event starts today and hasn't ended yet
+        todayContainer.appendChild(wrapper);
+        document.getElementById('ee-no-today')?.remove();
+      } else if (now < new Date(start.toDateString())) {
+        // Event starts after today
+        upcomingContainer.appendChild(wrapper);
+        upcomingEls.push(wrapper);
+        document.getElementById('ee-no-upcoming')?.remove();
+      }
+    });
+
+    if (upcomingEls.length > UPCOMING_SHOW) {
+      upcomingEls.slice(UPCOMING_SHOW).forEach((el) => {
+        el.style.display = 'none';
+      });
+
+      const expandWrapper = document.getElementById('ee-upcoming-expand');
+      const btn = document.getElementById('ee-expand-btn') as HTMLButtonElement | null;
+
+      if (expandWrapper && btn) {
+        btn.textContent = `Show all ${upcomingEls.length} events`;
+        expandWrapper.style.display = 'block';
+        let expanded = false;
+
+        btn.addEventListener('click', () => {
+          expanded = !expanded;
+          upcomingEls.slice(UPCOMING_SHOW).forEach((el) => {
+            el.style.display = expanded ? '' : 'none';
+          });
+          btn.textContent = expanded
+            ? 'Show fewer events'
+            : `Show all ${upcomingEls.length} events`;
+        });
+      }
+    }
+  }
+
+  initEventsPanel();
+  document.addEventListener('astro:page-load', initEventsPanel);
+</script>
+
+<style>
+  .ee-panel {
+    margin-top: 2.5rem;
+  }
+
+  .ee-heading {
+    margin-bottom: 1rem;
+  }
+
+  .ee-heading--upcoming {
+    margin-top: 1rem;
+  }
+
+  .ee-empty {
+    margin-bottom: 2.5rem;
+  }
+
+  .ee-exhibits-box {
+    background: var(--color-blue-100);
+    border-radius: 4px;
+    padding: 1rem;
+  }
+
+  .ee-side-heading {
+    font-weight: 700;
+    padding-top: 2rem;
+  }
+
+  .ee-side-heading--border {
+    border-top: solid 1px var(--color-neutral-100);
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  .ee-heading--workshops {
+    border-top: solid 1px var(--color-neutral-100);
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  .ee-workshops-text {
+    margin: 0;
+  }
+
+  .ee-expand-button {
+    align-items: center;
+    background: var(--color-teal-400);
+    border: none;
+    border-radius: 2px;
+    color: white;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+  }
+
+  .ee-expand-button:hover {
+    background: var(--color-teal-500);
+  }
+
+  .ee-side :global(.template-side-inner > *:first-child) {
+    border-top: none;
+  }
+</style>

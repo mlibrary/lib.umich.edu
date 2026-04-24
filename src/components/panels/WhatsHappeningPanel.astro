@@ -1,158 +1,151 @@
 ---
 /**
  * WhatsHappeningPanel - Featured and latest news and exhibits
- * Converted from src/components/panels/whats-happening-panel.js
- * 
- * "What's happening?"
- * 
- * Look at all kinds of events that are prioritized,
- * use those, then if we need more add in some
- * non prioritized events (except don't use Exhibits).
- * Make sure we use up to 3, but no more.
- * Sort all of them by date.
+ * This uses a hidden event pool (renders divs with display: none) then moves the events to the visible container names
+ * "whp-events-container" based on visitor's current time. Also puts priority events first.
  */
 import { fetchDrupalEvents } from '../../lib/events-data.js';
+import { processDrupalNode } from '../../lib/page-generator.js';
+import { EXHIBIT_TYPES } from '../../utils/events.js';
 import Heading from '../../reusable/Heading.astro';
 import EventCard from '../EventCard.astro';
 
-// Fetch events data
-let events = [];
-let hasEvents = false;
+interface EventMeta {
+  event: any;
+  isPriority: boolean;
+  start: string;
+}
+
+let eventsWithMeta: EventMeta[] = [];
 
 try {
-  const { data: allEvents } = await fetchDrupalEvents();
-  
-  // Filter priority events
-  const priorityEvents = allEvents.filter(event => 
-    event.attributes?.field_priority_for_homepage === true &&
-    event.relationships?.field_design_template?.field_machine_name === 'event_exhibit'
+  const { data: allEvents, included } = await fetchDrupalEvents();
+
+  const processedEvents = allEvents.map((event: any) => processDrupalNode(event, included));
+
+  const validEvents = processedEvents.filter(
+    (event: any) =>
+      event.relationships?.field_design_template?.field_machine_name === 'event_exhibit' &&
+      !EXHIBIT_TYPES.includes(event.relationships?.field_event_type?.name)
   );
 
-  // Filter other events (no exhibits)
-  const otherEvents = allEvents.filter(event => 
-    event.attributes?.field_priority_for_homepage === false &&
-    event.relationships?.field_design_template?.field_machine_name === 'event_exhibit' &&
-    event.relationships?.field_event_type?.name !== 'Exhibit'
-  );
-  
-  // Helper function to sort events by start date
-  const sortEventsByStartDate = (eventList, onlyTodayOrAfter = true) => {
-    const now = new Date();
-    return eventList
-      .filter(event => {
-        // Access the date from attributes, it's an array of date objects
-        const eventDateArray = event.attributes?.field_event_date_s_;
-        const eventDateValue = eventDateArray?.[0]?.value;
-        
-        if (!onlyTodayOrAfter) return true;
-        if (!eventDateValue) return false;
-        
-        const eventDate = new Date(eventDateValue);
-        return eventDate >= now;
-      })
-      .sort((a, b) => {
-        const dateA = new Date(a.attributes?.field_event_date_s_?.[0]?.value);
-        const dateB = new Date(b.attributes?.field_event_date_s_?.[0]?.value);
-        return dateA - dateB;
-      });
-  };
+  validEvents.sort((a: any, b: any) => {
+    const dateA = new Date(a.attributes?.field_event_date_s_?.[0]?.value ?? 0).getTime();
+    const dateB = new Date(b.attributes?.field_event_date_s_?.[0]?.value ?? 0).getTime();
+    return dateA - dateB;
+  });
 
-  
-  // Join and sort events, keeping only today or future events
-  const allSortedEvents = sortEventsByStartDate(allEvents, true);
-  const sortedPriorityEvents = sortEventsByStartDate(priorityEvents, true);
-  const sortedOtherEvents = sortEventsByStartDate(otherEvents, true);
-
-  // Combine and take only first 3
-  const joinedEvents = [...sortedPriorityEvents, ...sortedOtherEvents, ...allSortedEvents];
-  const finalSortedEvents = sortEventsByStartDate(joinedEvents, true);
-  
-  events = finalSortedEvents.slice(0, 3);
-  hasEvents = events.length > 0;
-  
+  eventsWithMeta = validEvents.map((event: any) => ({
+    event,
+    isPriority: event.attributes?.field_priority_for_homepage === true,
+    start: event.attributes?.field_event_date_s_?.[0]?.value ?? '',
+  }));
 } catch (error) {
-  console.error('Error fetching events:', error);
-  events = [];
-  hasEvents = false;
+  console.error('Error fetching events for WhatsHappeningPanel:', error);
 }
 ---
 
 <section class="whats-happening">
   <div class="margins">
-    <Heading level={2} size="L">What's happening?</Heading>
-    
-    {!hasEvents ? (
-      <p class="no-events-message">
-        We don't currently have any upcoming events scheduled or exhibits on display.
-      </p>
-    ) : (
-      <>
-        <div class="events-grid">
-          {events.map((event, index) => (
-            <EventCard 
-              event={event} 
-              displayImage={false} 
-              hasBorder={false}
-            />
-          ))}
+    <Heading level={2} size="L">What&rsquo;s happening?</Heading>
+
+    <p id="whp-no-events" class="no-events-message" style="display:none">
+      We don&rsquo;t currently have any upcoming events scheduled or exhibits on display.
+    </p>
+
+    <div id="whp-events-container" class="events-grid">
+      <!-- events are moved here -->
+    </div>
+
+    <a href="/visit-and-study/events-and-exhibits/today-and-upcoming" class="view-all-link">
+      View all events
+    </a>
+
+    <!-- hidden event pool (all valid non-exhibit events server-rendered with data-* attributes) -->
+    <div id="whp-event-pool" style="display:none" aria-hidden="true">
+      {eventsWithMeta.map(({ event, isPriority, start }) => (
+        <div
+          class="whp-pooled-event"
+          data-priority={String(isPriority)}
+          data-start={start}
+        >
+          <EventCard event={event} displayImage={false} hasBorder={false} />
         </div>
-        
-        <a href="/visit-and-study/events-and-exhibits/today-and-upcoming" class="view-all-link">
-          View all events
-        </a>
-      </>
-    )}
+      ))}
+    </div>
   </div>
 </section>
 
-<style>
-  .whats-happening {
-    margin-bottom: var(--spacing-3xl, 3rem);
-    margin-top: var(--spacing-3xl, 3rem);
+<script>
+  function initWhatsHappening() {
+    const pool = document.getElementById('whp-event-pool');
+    const container = document.getElementById('whp-events-container');
+    const noEvents = document.getElementById('whp-no-events');
+
+    if (!pool || !container) return;
+
+    const allPooled = Array.from(
+      pool.querySelectorAll<HTMLElement>('.whp-pooled-event')
+    );
+
+    if (allPooled.length === 0) return;
+
+    const now = new Date(
+      new Date().toLocaleString('en', { timeZone: 'America/New_York' })
+    );
+
+    const future = allPooled.filter((el) => {
+      const start = new Date(el.dataset.start ?? '');
+      return start >= new Date(now.toDateString());
+    });
+
+    const priority = future.filter((el) => el.dataset.priority === 'true');
+    const others = future.filter((el) => el.dataset.priority !== 'true');
+    const selected = [...priority, ...others].slice(0, 3);
+
+    if (selected.length === 0) {
+      if (noEvents) noEvents.style.display = '';
+    } else {
+      selected.forEach((el) => container.appendChild(el));
+    }
   }
 
-  .whats-happening-title {
-    font-family: 'Crimson Text', serif;
-    font-size: 2.5rem;
-    font-weight: 300;
-    margin: 0 0 var(--spacing-l, 1.5rem) 0;
-    color: var(--color-blue-400, #1e40af);
+  initWhatsHappening();
+  document.addEventListener('astro:page-load', initWhatsHappening);
+</script>
+
+<style>
+  .whats-happening {
+    margin-bottom: 3rem; 
+    margin-top: 3rem;
   }
 
   .no-events-message {
-    margin-bottom: var(--spacing-2xl, 2.5rem);
-    margin-top: var(--spacing-l, 1.5rem);
-    color: var(--color-neutral-300, #6b7280);
+    margin-bottom: 2.5rem;
+    margin-top: 1.5rem;
   }
 
   .events-grid {
     display: block;
-    margin-bottom: var(--spacing-xl, 2rem);
+    margin-bottom: 2rem;
   }
 
-  @media (min-width: 641px) {
+  @media only screen and (min-width: 641px) {
     .events-grid {
       display: grid;
+      gap: 2rem 1rem;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: var(--spacing-xl, 2rem) var(--spacing-m, 1rem);
     }
   }
 
   .view-all-link {
     box-shadow: inset 0 -1px var(--color-teal-400);
-    color: var(--color-teal-400, #0d9488);
+    color: var(--color-teal-400);
     font-weight: 500;
     text-decoration: none;
-    transition: color 0.2s ease;
   }
 
   .view-all-link:hover {
-    color: var(--color-teal-500, #0f766e);
     box-shadow: inset 0 -2px var(--color-teal-400);
-  }
-
-  .view-all-link:focus {
-    outline: 2px solid var(--color-teal-400, #0d9488);
-    outline-offset: 2px;
   }
 </style>
