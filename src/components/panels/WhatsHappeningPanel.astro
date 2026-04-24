@@ -29,13 +29,29 @@ try {
       !EXHIBIT_TYPES.includes(event.relationships?.field_event_type?.name)
   );
 
-  validEvents.sort((a: any, b: any) => {
+  // expand multi-occurrence events 
+  const expandedEvents: any[] = [];
+  validEvents.forEach((event: any) => {
+    const dates: any[] = event.attributes?.field_event_date_s_ ?? [];
+    if (dates.length > 1) {
+      dates.forEach((date: any) => {
+        expandedEvents.push({
+          ...event,
+          attributes: { ...event.attributes, field_event_date_s_: [date] },
+        });
+      });
+    } else {
+      expandedEvents.push(event);
+    }
+  });
+
+  expandedEvents.sort((a: any, b: any) => {
     const dateA = new Date(a.attributes?.field_event_date_s_?.[0]?.value ?? 0).getTime();
     const dateB = new Date(b.attributes?.field_event_date_s_?.[0]?.value ?? 0).getTime();
     return dateA - dateB;
   });
 
-  eventsWithMeta = validEvents.map((event: any) => ({
+  eventsWithMeta = expandedEvents.map((event: any) => ({
     event,
     isPriority: event.attributes?.field_priority_for_homepage === true,
     start: event.attributes?.field_event_date_s_?.[0]?.value ?? '',
