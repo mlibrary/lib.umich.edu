@@ -78,10 +78,10 @@ const StaffDirectoryResults = ({
   return (
     <table
       css={{
-        tableLayout: 'fixed',
         [tableBreakpoint]: {
           tableLayout: 'auto'
         },
+        tableLayout: 'fixed',
         textAlign: 'left',
         tr: {
           [tableBreakpoint]: {
