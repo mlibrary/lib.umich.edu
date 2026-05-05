@@ -327,8 +327,17 @@ const SpecialistsResults = () => {
     <React.Fragment>
       <table
         css={{
+          [tableBreakpoint]: {
+            tableLayout: 'auto'
+          },
           tableLayout: 'fixed',
           textAlign: 'left',
+          tr: {
+            [tableBreakpoint]: {
+              display: 'block',
+              width: '100%'
+            }
+          },
           'tr > *': {
             '& + *': {
               paddingLeft: '2rem',
@@ -340,8 +349,10 @@ const SpecialistsResults = () => {
             position: 'relative',
             [tableBreakpoint]: {
               display: 'block',
-              padding: '0.25rem 0'
-            }
+              padding: '0.5rem 0 0 0',
+              width: '100%'
+            },
+            verticalAlign: 'top'
           },
           width: '100%'
 
@@ -351,6 +362,9 @@ const SpecialistsResults = () => {
         <caption css={{ textAlign: 'left' }}>
           {resultsSummary}
         </caption>
+        <colgroup span='1'></colgroup>
+        <colgroup span='2'></colgroup>
+        {healthSciencesOnly && <colgroup span='1'></colgroup>}
         <thead
           css={{
             borderBottom: borderStyle,
@@ -367,9 +381,9 @@ const SpecialistsResults = () => {
           }}
         >
           <tr>
-            <th scope='col'>Subjects and specialties</th>
+            <th scope='colgroup'>Subjects and specialties</th>
             <th colSpan='2' scope='colgroup'>Contact</th>
-            {healthSciencesOnly && <th scope='col'>Category</th>}
+            {healthSciencesOnly && <th scope='colgroup'>Category</th>}
           </tr>
         </thead>
         <tbody>
