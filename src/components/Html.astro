@@ -182,6 +182,15 @@ function processHtml(rawHtml: string): string {
     '$1'
   );
 
+  // Rewrite absolute internal CMS links to root-relative paths, matching what
+  // gatsby-source-drupal did automatically during its data-fetch phase.
+  // e.g. href="https://cms.lib.umich.edu/page-path" → href="/page-path"
+  const escapedBase = DRUPAL_BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  out = out.replace(
+    new RegExp(`(<a\\b[^>]*)\\bhref="${escapedBase}(/[^"]*)"`, 'gi'),
+    '$1href="$2"'
+  );
+
   out = out.replace(/(<img\b[^>]*)\bloading="eager"/gi, '$1loading="lazy"');
   out = out.replace(
     /(<img\b(?![^>]*\bdecoding=)[^>]*)(\/?>)/gi,
