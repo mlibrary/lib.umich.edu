@@ -1,6 +1,6 @@
 [build]
   publish = "public"
-  ignore = "exit 1"
+  command = ""
 [[headers]]
   for = "/*"
   [headers.values]
