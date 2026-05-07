@@ -1,4 +1,4 @@
-const { NetlifyAdapter: netlifyAdapter } = require('gatsby-adapter-netlify');
+const netlifyAdapter = require('gatsby-adapter-netlify').default;
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/';
 const DRUPAL_CONCURRENT_FILE_REQUESTS = parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 20;
 const DRUPAL_REQUEST_TIMEOUT = parseInt(process.env.DRUPAL_REQUEST_TIMEOUT) || 6000000;
