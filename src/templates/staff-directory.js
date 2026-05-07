@@ -462,11 +462,17 @@ const StaffDirectoryQueryContainer = ({
   });
 
   useEffect(() => {
-    staffDirectoryNavigate(`?${stateString}`, {
+    const nextSearch = stateString.length > 0 ? `?${stateString}` : '';
+
+    if (location.search === nextSearch) {
+      return;
+    }
+
+    staffDirectoryNavigate(nextSearch || location.pathname, {
       replace: true,
       state: { preserveScroll: true }
     });
-  }, [stateString, staffDirectoryNavigate]);
+  }, [location.pathname, location.search, stateString, staffDirectoryNavigate]);
 
   useEffect(() => {
     if (!window.__SDI__) {
@@ -634,6 +640,7 @@ const StaffDirectoryQueryContainer = ({
 StaffDirectoryQueryContainer.propTypes = {
   departments: PropTypes.any,
   location: PropTypes.shape({
+    pathname: PropTypes.any,
     search: PropTypes.any
   }),
   navigate: PropTypes.func,
