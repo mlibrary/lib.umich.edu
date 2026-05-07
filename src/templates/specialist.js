@@ -60,23 +60,16 @@ const SpecialistsURLState = ({ location }) => {
      * If there is state to be put in the URL, use that, otherwise,
      * clear the URL with the location pathname.
      */
-    const nextSearch = stateString.length > 0 ? `?${stateString}` : '';
-
-    if (location.search === nextSearch) {
-      return;
-    }
-
-    const to = nextSearch || location.pathname;
+    const to = stateString.length > 0 ? `?${stateString}` : location.pathname;
     navigate(to, { replace: true, state: { preserveScroll: true } });
-  }, [location.pathname, location.search, stateString]);
+  }, [stateString, location.pathname]);
 
   return null;
 };
 
 SpecialistsURLState.propTypes = {
   location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string
+    pathname: PropTypes.string
   })
 };
 
