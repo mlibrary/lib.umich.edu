@@ -1,3 +1,4 @@
+const netlifyAdapter = require('gatsby-adapter-netlify').default;
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/';
 const DRUPAL_CONCURRENT_FILE_REQUESTS = parseInt(process.env.DRUPAL_CONCURRENT_FILE_REQUESTS) || 20;
 const DRUPAL_REQUEST_TIMEOUT = parseInt(process.env.DRUPAL_REQUEST_TIMEOUT) || 6000000;
@@ -13,11 +14,11 @@ const siteMetadata = {
 };
 
 module.exports = {
+  adapter: netlifyAdapter(),
   flags: {
     DEV_SSR: false // Watches gatsby-ssr.js while developing
   },
   plugins: [
-    'gatsby-plugin-netlify', // Netlify recommends this plugin on top of Essential Gatsby (Version 2): https://github.com/netlify/netlify-plugin-gatsby#install-the-gatsby-plugin
     'gatsby-plugin-meta-redirect',
     'gatsby-plugin-remove-fingerprints', // Why? Read why Netlify recommends: https://github.com/gatsbyjs/gatsby/issues/11961#issuecomment-492893594
     {
