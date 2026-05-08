@@ -4,6 +4,7 @@
  * Ported from src/components/panels/hero-text.js
  */
 import Heading from '../../reusable/Heading.astro';
+import { getImage } from 'astro:assets';
 
 type Props = {
   data: any;
@@ -43,9 +44,16 @@ const largeScreenImage = fieldHeroImages.find(
   (node: any) => node.field_orientation === 'horizontal'
 );
 
-// Simple fallback image URLs (no responsive processing for now)
-const smallImageUrl = smallScreenImage?.fileUrl || '';
-const largeImageUrl = largeScreenImage?.fileUrl || '';
+// Simple fallback image URLs — processed through Astro's image pipeline
+const smallCmsUrl = smallScreenImage?.fileUrl || '';
+const largeCmsUrl = largeScreenImage?.fileUrl || '';
+
+const smallImageUrl = smallCmsUrl
+  ? (await getImage({ src: smallCmsUrl, format: 'webp', width: 800, inferSize: true })).src
+  : '';
+const largeImageUrl = largeCmsUrl
+  ? (await getImage({ src: largeCmsUrl, format: 'webp', width: 1600, inferSize: true })).src
+  : '';
 ---
 
 <div class="margins">

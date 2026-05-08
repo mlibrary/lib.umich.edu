@@ -1,5 +1,6 @@
 ---
 import Icon from '../../reusable/Icon.astro';
+import { getImage } from 'astro:assets';
 
 type Props = {
 	data: any;
@@ -34,8 +35,15 @@ const getSrcByOrientation = (orientation: string): string => {
 	return '';
 };
 
-const verticalSrc = getSrcByOrientation('vertical');
-const horizontalSrc = getSrcByOrientation('horizontal');
+const verticalCmsUrl = getSrcByOrientation('vertical');
+const horizontalCmsUrl = getSrcByOrientation('horizontal');
+
+const verticalSrc = verticalCmsUrl
+	? (await getImage({ src: verticalCmsUrl, format: 'webp', width: 800, inferSize: true })).src
+	: '';
+const horizontalSrc = horizontalCmsUrl
+	? (await getImage({ src: horizontalCmsUrl, format: 'webp', width: 1600, inferSize: true })).src
+	: '';
 ---
 
 <div class="margins">

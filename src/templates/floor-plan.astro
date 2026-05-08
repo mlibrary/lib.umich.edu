@@ -24,6 +24,7 @@ import Html from '../components/Html.astro';
 import SideNavigation from '../components/navigation/SideNavigation.astro';
 import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
 import { getNavigationBranch } from '../lib/navigation.js';
+import { downloadCmsFile } from '../lib/cms-file-cache.js';
 
 interface Props {
   node: any;
@@ -58,13 +59,16 @@ const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pa
 const fieldSvgImage = relationships?.field_svg_image;
 const fieldPrintableImage = relationships?.field_printable_image;
 
-const svgUrl = fieldSvgImage?.uri?.url
+const svgCmsUrl = fieldSvgImage?.uri?.url
   ? (fieldSvgImage.uri.url.startsWith('http') ? fieldSvgImage.uri.url : `${DRUPAL_BASE_URL}${fieldSvgImage.uri.url}`)
   : null;
 
-const pdfUrl = fieldPrintableImage?.uri?.url
+const pdfCmsUrl = fieldPrintableImage?.uri?.url
   ? (fieldPrintableImage.uri.url.startsWith('http') ? fieldPrintableImage.uri.url : `${DRUPAL_BASE_URL}${fieldPrintableImage.uri.url}`)
   : null;
+
+const svgUrl = svgCmsUrl ? await downloadCmsFile(svgCmsUrl) : null;
+const pdfUrl = pdfCmsUrl ? await downloadCmsFile(pdfCmsUrl) : null;
 
 // Breadcrumb
 let breadcrumbData = breadcrumb;

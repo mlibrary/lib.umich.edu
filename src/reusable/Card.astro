@@ -67,7 +67,7 @@ const isLocalImage = imgSrc && !isRemoteImage;
       {image && imgSrc && (
         <div class="card-image" data-card-image>
           {isRemoteImage ? (
-            <img src={imgSrc} alt={imgAlt} loading="lazy" />
+            <DrupalImage src={imgSrc} alt={imgAlt} width={920} height={614} loading="lazy" />
           ) : (
             <CardImage imgSrc={imgSrc} imgAlt={imgAlt} />
           )}
@@ -93,7 +93,7 @@ const isLocalImage = imgSrc && !isRemoteImage;
       {image && imgSrc && (
         <div class="card-image" data-card-image>
           {isRemoteImage ? (
-            <img src={imgSrc} alt={imgAlt} loading="lazy" />
+            <DrupalImage src={imgSrc} alt={imgAlt} width={920} height={614} loading="lazy" />
           ) : (
             <CardImage imgSrc={imgSrc} imgAlt={imgAlt} />
           )}
