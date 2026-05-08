@@ -11,6 +11,7 @@
  * - iframe stripping (Gatsby html.js had no iframe component — rendered null)
  * - <u> tag stripping (Gatsby's `u` component returned children only)
  */
+import { getImage } from 'astro:assets';
 import Prose from './Prose.astro';
 import { fetchMediaEntity } from '../lib/drupal.js';
 import { getYouTubeVideoId, buildYouTubeEmbedUrl } from '../utils/youtube';
@@ -78,11 +79,17 @@ if (uuids.length > 0) {
           const rawUrl: string = fileEntity?.attributes?.uri?.url ?? '';
           if (rawUrl) {
             const absoluteUrl = rawUrl.startsWith('/') ? `${DRUPAL_BASE_URL}${rawUrl}` : rawUrl;
-            const src = await downloadCmsFile(absoluteUrl);
+            const imgWidth: number | undefined = fileRef?.meta?.width;
+            const imgHeight: number | undefined = fileRef?.meta?.height;
+            const optimized = await getImage({
+              src: absoluteUrl,
+              format: 'webp',
+              ...(imgWidth && imgHeight ? { width: imgWidth, height: imgHeight } : { inferSize: true }),
+            });
             const alt: string = fileRef?.meta?.alt ?? '';
             entityMap[uuid] =
               `<figure>` +
-              `<img src="${src}" alt="${alt}" loading="lazy" decoding="async" />` +
+              `<img src="${optimized.src}" alt="${alt}" loading="lazy" decoding="async" />` +
               `</figure>`;
           }
         } else if (entityType === 'media--file') {
@@ -105,30 +112,51 @@ if (uuids.length > 0) {
   );
 }
 
-// Download all /sites/default/files/ URLs referenced inline in the raw HTML
-// so processHtml can rewrite them to local paths instead of CMS URLs.
-const cmsFileMap = new Map<string, string>();
+// Optimize/download all CMS URLs referenced inline in the raw HTML at build time.
+// Images (img src/srcset) → getImage() for webp optimization + local /_astro/ paths.
+// File links (href to PDFs etc.) → downloadCmsFile() for local /cms-files/ paths.
+const cmsImgMap = new Map<string, string>();  // relativePath → /_astro/ optimized URL
+const cmsFileMap = new Map<string, string>(); // relativePath → /cms-files/ downloaded URL
 {
-  const filePaths = new Set<string>();
+  // Map of relativePath → width hint (from srcset descriptor or default 920)
+  const imagePaths = new Map<string, number>();
+  const hrefFilePaths = new Set<string>();
   const escapedBase = DRUPAL_BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   // img src attributes
-  for (const m of (html ?? '').matchAll(/\bsrc="(\/sites\/default\/files\/[^"]*)"/gi)) filePaths.add(m[1]);
-  // srcset attributes
-  for (const m of (html ?? '').matchAll(/\bsrcset="([^"]*)"/gi)) {
-    for (const sm of m[1].matchAll(/(\/sites\/default\/files\/[^\s,]+)/g)) filePaths.add(sm[1]);
+  for (const m of (html ?? '').matchAll(/\bsrc="(\/sites\/default\/files\/[^"]*)"/gi)) {
+    if (!imagePaths.has(m[1])) imagePaths.set(m[1], 920);
   }
-  // href attributes — relative file paths
-  for (const m of (html ?? '').matchAll(/\bhref="(\/sites\/default\/files\/[^"]*)"/gi)) filePaths.add(m[1]);
-  // href attributes — absolute CMS file URLs (extract path portion)
-  for (const m of (html ?? '').matchAll(new RegExp(`\\bhref="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`, 'gi'))) filePaths.add(m[1]);
+  // srcset entries — extract width from descriptor (e.g. "640w")
+  for (const m of (html ?? '').matchAll(/\bsrcset="([^"]*)"/gi)) {
+    for (const entry of m[1].split(',')) {
+      const parts = entry.trim().split(/\s+/);
+      const p = parts[0];
+      if (!p?.startsWith('/sites/default/files/')) continue;
+      const widthMatch = /^(\d+)w$/.exec(parts[1] ?? '');
+      const width = widthMatch ? parseInt(widthMatch[1], 10) : 920;
+      if (!imagePaths.has(p)) imagePaths.set(p, width);
+    }
+  }
+  // href attributes — treat as files (PDFs, docs, etc.), keep via downloadCmsFile
+  for (const m of (html ?? '').matchAll(/\bhref="(\/sites\/default\/files\/[^"]*)"/gi)) hrefFilePaths.add(m[1]);
+  for (const m of (html ?? '').matchAll(new RegExp(`\\bhref="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`, 'gi'))) hrefFilePaths.add(m[1]);
 
-  if (filePaths.size > 0) {
-    await Promise.all([...filePaths].map(async (relativePath) => {
+  await Promise.all([
+    ...[...imagePaths.entries()].map(async ([relativePath, width]) => {
+      try {
+        const result = await getImage({ src: `${DRUPAL_BASE_URL}${relativePath}`, format: 'webp', width });
+        cmsImgMap.set(relativePath, result.src);
+      } catch {
+        // Fall back to CMS URL so the page still renders
+        cmsImgMap.set(relativePath, `${DRUPAL_BASE_URL}${relativePath}`);
+      }
+    }),
+    ...[...hrefFilePaths].map(async (relativePath) => {
       const localUrl = await downloadCmsFile(`${DRUPAL_BASE_URL}${relativePath}`);
       cmsFileMap.set(relativePath, localUrl);
-    }));
-  }
+    }),
+  ]);
 }
 
 function processHtml(rawHtml: string): string {
@@ -193,14 +221,14 @@ function processHtml(rawHtml: string): string {
 
   out = out.replace(
     /(<img\b[^>]*)\bsrc="(\/sites\/default\/files\/[^"]*)"/gi,
-    (_m, before, p) => `${before}src="${cmsFileMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`}"`
+    (_m, before, p) => `${before}src="${cmsImgMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`}"`
   );
   out = out.replace(
     /(<img\b[^>]*)\bsrcset="([^"]*)"/gi,
     (_m, before, srcset) => {
       const fixed = srcset.replace(/(\/sites\/default\/files\/[^\s,]+)/g, (p: string) => {
         if (p.startsWith('http')) return p;
-        return cmsFileMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`;
+        return cmsImgMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`;
       });
       return `${before}srcset="${fixed}"`;
     }

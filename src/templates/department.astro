@@ -28,6 +28,7 @@ import SideNavigation from '../components/navigation/SideNavigation.astro';
 import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
 import { getNavigationBranch, getStaffDirectorySlug } from '../lib/navigation.js';
 import transformNodePanels from '../utils/transform-node-panels';
+import { downloadCmsFile } from '../lib/cms-file-cache.js';
 
 interface Props {
   node: any;
@@ -81,7 +82,7 @@ const staffDirectoryUrl = `${staffDirectorySlug}?${new URLSearchParams({ departm
 const DRUPAL_BASE_URL = (import.meta.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/, '');
 const orgChartFileUrl = relationships.field_media_file?.relationships?.field_media_file?.uri?.url;
 const orgChartUrl = orgChartFileUrl
-  ? (orgChartFileUrl.startsWith('/') ? `${DRUPAL_BASE_URL}${orgChartFileUrl}` : orgChartFileUrl)
+  ? await downloadCmsFile(orgChartFileUrl.startsWith('/') ? `${DRUPAL_BASE_URL}${orgChartFileUrl}` : orgChartFileUrl)
   : null;
 
 // Department heads

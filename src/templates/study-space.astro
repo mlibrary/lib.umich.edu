@@ -19,6 +19,7 @@ import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
 import Link from '../reusable/link.astro';
+import DrupalImage from '../components/DrupalImage.astro';
 import Icon from '../reusable/Icon.astro';
 import LocationAside from '../components/LocationAside.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
@@ -81,11 +82,12 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     <header class="study-header">
       {imageSrc && (
         <div class="study-header-image">
-          <img
+          <DrupalImage
             src={imageSrc}
             alt={imageAlt}
+            width={imageRelationship?.imageWidth || 920}
+            height={imageRelationship?.imageHeight || 614}
             loading="lazy"
-            decoding="async"
           />
         </div>
       )}

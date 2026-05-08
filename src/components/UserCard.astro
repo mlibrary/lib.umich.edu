@@ -6,6 +6,7 @@
  * Displays a contact card with photo, name link, title, phone, and email.
  */
 import StaffPhotoPlaceholder from './StaffPhotoPlaceholder.astro';
+import DrupalImage from './DrupalImage.astro';
 import Link from '../reusable/link.astro';
 
 interface Props {
@@ -26,14 +27,13 @@ const { name, to, image, title, phone, email } = Astro.props;
 <section class="user-card">
   <div class="user-photo-container">
     {image?.url ? (
-      <img
+      <DrupalImage
         src={image.url}
         alt={image.alt || ''}
         class="user-photo"
         loading="lazy"
-        decoding="async"
-        width="75"
-        height="100"
+        width={75}
+        height={100}
       />
     ) : (
       <StaffPhotoPlaceholder />

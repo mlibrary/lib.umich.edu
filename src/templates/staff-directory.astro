@@ -16,6 +16,7 @@ import Link from '../reusable/link.astro';
 import NoResults from '../components/NoResults.astro';
 import StaffPhotoPlaceholder from '../components/StaffPhotoPlaceholder.astro';
 import { fetchStaff, fetchStaffImages, fetchDrupalDepartments } from '../lib/staff-data.js';
+import { downloadCmsFile } from '../lib/cms-file-cache.js';
 import { decodeHTML } from 'entities';
 
 interface Props {
@@ -107,6 +108,19 @@ const enrichedStaff = staff.map((person: any) => {
   };
 });
 
+// Localize all staff image URLs so the embedded JSON and client-rendered
+// img tags point to local /cms-files/ paths instead of CMS URLs.
+const cmsImageUrls = [...new Set(enrichedStaff.map((p: any) => p.imageUrl).filter(Boolean))];
+const localImageUrlMap = new Map<string, string>();
+await Promise.all(cmsImageUrls.map(async (url: string) => {
+  const local = await downloadCmsFile(url);
+  localImageUrlMap.set(url, local);
+}));
+const enrichedStaffWithLocalImages = enrichedStaff.map((person: any) => ({
+  ...person,
+  imageUrl: person.imageUrl ? (localImageUrlMap.get(person.imageUrl) ?? person.imageUrl) : null,
+}));
+
 // Build unique department/division options for dropdown filter
 const departmentOptions = ['All'];
 const deptTitles = new Set<string>();
@@ -117,7 +131,7 @@ for (const person of enrichedStaff) {
 departmentOptions.push(...[...deptTitles].sort());
 
 // Serialize staff data for client-side use (search/filter)
-const staffJson = JSON.stringify(enrichedStaff);
+const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
 ---
 
 <!-- Client-side loading of lunr -->

@@ -16,6 +16,7 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
+import DrupalImage from '../components/DrupalImage.astro';
 import Panels from '../components/panels/Panels.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
 import UserCard from '../components/UserCard.astro';
@@ -166,12 +167,13 @@ if (collectingAreaTermId) {
     <TemplateSide class="collecting-area-side">
       {imageSrc && (
         <figure class="collecting-area-figure">
-          <img
+          <DrupalImage
             src={imageSrc}
             alt={imageAlt}
+            width={imageRelationship?.imageWidth || 920}
+            height={imageRelationship?.imageHeight || 614}
             class="collecting-area-image"
             loading="lazy"
-            decoding="async"
           />
           {imageCaption && (
             <figcaption class="collecting-area-caption">

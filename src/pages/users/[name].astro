@@ -8,6 +8,7 @@ import ProfileTemplate from '../../templates/profile.astro';
 import Layout from '../../layouts/Layout.astro';
 import { getAllUsersForProfiles } from '../../lib/user-data.js';
 import { fetchStaff } from '../../lib/staff-data.js';
+import { downloadCmsFile } from '../../lib/cms-file-cache.js';
 
 export async function getStaticPaths() {
   const [{ users, included }, staffRawData] = await Promise.all([
@@ -32,21 +33,34 @@ export async function getStaticPaths() {
     includedById[item.id] = item;
   }
 
-  return users
-    .filter((user) => user.attributes?.name)
+  const resolveRelationship = (relData) => {
+    if (!relData?.data) return null;
+    if (Array.isArray(relData.data)) {
+      return relData.data
+        .map((ref) => includedById[ref.id])
+        .filter(Boolean);
+    }
+    return includedById[relData.data.id] || null;
+  };
+
+  const baseUrl = (process.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/u, '');
+
+  // Pre-resolve all pronunciation audio file URLs in parallel before the synchronous map.
+  const filteredUsers = users.filter((user) => user.attributes?.name);
+  const pronunciationUrlMap = new Map();
+  await Promise.all(filteredUsers.map(async (user) => {
+    const namePronunciation = resolveRelationship(user.relationships?.field_name_pronunciation);
+    if (!namePronunciation) return;
+    const fileUrl = namePronunciation.attributes?.uri?.url;
+    if (!fileUrl) return;
+    const absoluteUrl = fileUrl.startsWith('http') ? fileUrl : `${baseUrl}${fileUrl}`;
+    const localUrl = await downloadCmsFile(absoluteUrl);
+    pronunciationUrlMap.set(user.id, localUrl);
+  }));
+
+  return filteredUsers
     .map((user) => {
       const name = user.attributes.name;
-
-      // Resolve relationships
-      const resolveRelationship = (relData) => {
-        if (!relData?.data) return null;
-        if (Array.isArray(relData.data)) {
-          return relData.data
-            .map((ref) => includedById[ref.id])
-            .filter(Boolean);
-        }
-        return includedById[relData.data.id] || null;
-      };
 
       // Resolve media image → file entity
       const mediaImage = resolveRelationship(user.relationships?.field_media_image);
@@ -56,7 +70,6 @@ export async function getStaticPaths() {
         const fileEntity = fileRef ? includedById[fileRef.id] : null;
         const fileUrl = fileEntity?.attributes?.uri?.url;
         if (fileUrl) {
-          const baseUrl = (process.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/u, '');
           profileImage = {
             url: fileUrl.startsWith('http') ? fileUrl : `${baseUrl}${fileUrl}`,
             alt: fileRef?.meta?.alt || mediaImage.attributes?.field_media_image?.alt || user.attributes.field_user_display_name || '',
@@ -72,17 +85,6 @@ export async function getStaticPaths() {
           title: dept.attributes?.field_title_context || dept.attributes?.title,
           path: dept.attributes?.path?.alias || null,
         }));
-
-      // Resolve name pronunciation
-      const namePronunciation = resolveRelationship(user.relationships?.field_name_pronunciation);
-      let pronunciationUrl = null;
-      if (namePronunciation) {
-        const fileUrl = namePronunciation.attributes?.uri?.url;
-        if (fileUrl) {
-          const baseUrl = (process.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/u, '');
-          pronunciationUrl = fileUrl.startsWith('http') ? fileUrl : `${baseUrl}${fileUrl}`;
-        }
-      }
 
       // Staff data (office)
       const staffData = staffByUniqname.get(name);
@@ -116,7 +118,7 @@ export async function getStaticPaths() {
             },
             departments: resolvedDepartments,
             image: profileImage,
-            pronunciationUrl,
+            pronunciationUrl: pronunciationUrlMap.get(user.id) ?? null,
             office: staffData?.office || null,
           },
         },

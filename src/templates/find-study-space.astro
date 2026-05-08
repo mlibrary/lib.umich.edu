@@ -12,6 +12,7 @@ import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
 import Icon from '../reusable/Icon.astro';
 import { fetchStudySpaces } from '../lib/study-spaces.js';
+import { downloadCmsFile } from '../lib/cms-file-cache.js';
 import { ORDERED_SPACE_FEATURES, SPACE_FEATURES_ICON_MAP } from '../constants/space-features.js';
 
 const props = Astro.props;
@@ -21,6 +22,19 @@ const fieldTitleContext = node.attributes.field_title_context || node.title;
 
 // Fetch all study spaces at build time
 const allStudySpaces = await fetchStudySpaces();
+
+// Localize all study space image URLs so client-rendered img tags
+// point to local /cms-files/ paths instead of CMS URLs.
+{
+  const uniqueUrls = [...new Set(allStudySpaces.map((s) => s.imageUrl).filter(Boolean))];
+  const localMap = new Map<string, string>();
+  await Promise.all(uniqueUrls.map(async (url: string) => {
+    localMap.set(url, await downloadCmsFile(url));
+  }));
+  for (const space of allStudySpaces) {
+    if (space.imageUrl) space.imageUrl = localMap.get(space.imageUrl) ?? space.imageUrl;
+  }
+}
 
 // Sort alphabetically by title
 allStudySpaces.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));

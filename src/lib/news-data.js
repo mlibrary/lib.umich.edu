@@ -146,7 +146,7 @@ const processMediaImage = (newsNode, included) => {
           height: 400, // Estimate
           images: {
             fallback: {
-              src: imageUrl.startsWith('http') ? imageUrl : `https://cms.lib.umich.edu${imageUrl}`
+      src: imageUrl.startsWith('http') ? imageUrl : `${process.env.DRUPAL_URL || 'https://cms.lib.umich.edu'}${imageUrl}`
             }
           }
         }
