@@ -36,7 +36,6 @@ const imageSrc = relationships?.field_media_image?.imageUrl || null;
 const imageAlt = relationships?.field_media_image?.imageAlt || '';
 const imageWidth = relationships?.field_media_image?.imageWidth || 920;
 const imageHeight = relationships?.field_media_image?.imageHeight || 400;
-const imageData = imageSrc; // truthy check alias
 
 // Get start and end dates from the first date entry (with fallback like original)
 const dateEntry = field_event_date_s_?.[0];

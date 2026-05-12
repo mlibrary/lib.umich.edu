@@ -98,61 +98,30 @@ export const fetchNewsLandingPageSlug = async () => {
  * Process Drupal JSON:API media relationship data
  */
 const processMediaImage = (newsNode, included) => {
-  // Navigate the media image relationships like the original Gatsby structure
   const mediaImageRef = newsNode?.relationships?.field_media_image?.data;
-  if (!mediaImageRef) {
-    return null;
-  }
+  if (!mediaImageRef) return null;
 
-  // Find the media entity in included data
-  const mediaEntity = included.find((entity) => {
-    return entity.type === 'media--image' && entity.id === mediaImageRef.id;
-  }
+  const mediaEntity = included.find(
+    (entity) => entity.type === 'media--image' && entity.id === mediaImageRef.id
   );
+  if (!mediaEntity) return null;
 
-  if (!mediaEntity) {
-    return null;
-  }
-
-  // Find the file entity referenced by the media entity
   const fileRef = mediaEntity?.relationships?.field_media_image?.data;
-  if (!fileRef) {
-    return null;
-  }
+  if (!fileRef) return null;
 
-  const fileEntity = included.find((entity) => {
-    return entity.type === 'file--file' && entity.id === fileRef.id;
-  }
+  const fileEntity = included.find(
+    (entity) => entity.type === 'file--file' && entity.id === fileRef.id
   );
+  if (!fileEntity) return null;
 
-  if (!fileEntity) {
-    return null;
-  }
+  const rawUrl = fileEntity?.attributes?.uri?.url;
+  if (!rawUrl) return null;
 
-  // Create mock gatsbyImageData structure for compatibility
-  // In a real scenario, you'd want to generate actual image data
-  const imageUrl = fileEntity?.attributes?.uri?.url;
-  if (!imageUrl) {
-    return null;
-  }
+  const src = rawUrl.startsWith('http')
+    ? rawUrl
+    : `${process.env.DRUPAL_URL || 'https://cms.lib.umich.edu'}${rawUrl}`;
 
-  return {
-    localFile: {
-      childImageSharp: {
-        gatsbyImageData: {
-          layout: 'constrained',
-          placeholder: {},
-          width: 920,
-          height: 400, // Estimate
-          images: {
-            fallback: {
-      src: imageUrl.startsWith('http') ? imageUrl : `${process.env.DRUPAL_URL || 'https://cms.lib.umich.edu'}${imageUrl}`
-            }
-          }
-        }
-      }
-    }
-  };
+  return { src, alt: newsNode?.attributes?.title || '' };
 };
 
 /**
@@ -175,15 +144,7 @@ const processNewsNode = (newsNode, included) => {
     fields: {
       slug
     },
-    relationships: {
-      field_media_image: mediaImage
-        ? {
-            relationships: {
-              field_media_image: mediaImage
-            }
-          }
-        : undefined
-    }
+    image: mediaImage ?? undefined
   };
 };
 
@@ -227,7 +188,6 @@ export const fetchNewsDataForLanding = async () => {
       const slug = newsNode?.attributes?.path?.alias
         || `/news/${newsNode?.attributes?.drupal_internal__nid}`;
       const mediaImage = processMediaImage(newsNode, included || []);
-      const fileUrl = mediaImage?.localFile?.childImageSharp?.gatsbyImageData?.images?.fallback?.src;
       const created = newsNode?.attributes?.created;
       const subtitle = created
         ? new Date(created).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -237,7 +197,7 @@ export const fetchNewsDataForLanding = async () => {
         title: newsNode?.attributes?.title,
         subtitle,
         href: slug,
-        image: fileUrl ? { src: fileUrl, alt: newsNode?.attributes?.title || '' } : undefined,
+        image: mediaImage ?? undefined,
         description: newsNode?.attributes?.body?.summary || undefined
       };
     };

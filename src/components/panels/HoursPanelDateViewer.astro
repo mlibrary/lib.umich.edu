@@ -491,6 +491,8 @@ import Heading from '../../reusable/Heading.astro';
     margin-bottom: 8px;
     margin-top: 8px;
   }
+  
+  /* these styles are :global because the classes are applied to elements with JS, which is after teh initial CSS is loaded. Marking them global allows the styles to be applied correctly */
 
   :global(.calendar-week) {
     border: 2px solid transparent;

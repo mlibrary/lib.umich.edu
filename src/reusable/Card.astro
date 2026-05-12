@@ -2,19 +2,8 @@
 /**
  * Card - Reusable card component
  * Ported from src/reusable/card.jsx
- *
- * Props:
- * - title: string (required)
- * - subtitle?: string
- * - headingLevel?: 2 | 3  (default 3)
- * - image?: { src: string; alt?: string } | any  (optional decorative image)
- * - href?: string  (renders outer element as <a>; omit to render as <div> for external-anchor wrapping)
- * - horizontal?: boolean  (2-column layout at ≥641px: image left, content right)
- * - anchorStyleAddition?: Record<string, string>  (extra inline styles on the outer element)
- * - class?: string
  */
 import Heading from "./Heading.astro";
-import CardImage from "./CardImage.astro";
 import DrupalImage from "../components/DrupalImage.astro";
 
 interface Props {
@@ -39,22 +28,14 @@ const {
   class: className = "",
 } = Astro.props;
 
-// Convert anchorStyleAddition object to an inline style string
 const extraStyles = Object.entries(anchorStyleAddition)
   .map(
     ([k, v]) => `${k.replace(/([A-Z])/g, (m) => `-${m.toLowerCase()}`)}: ${v}`,
   )
   .join("; ");
 
-// Resolve image source/alt from various shapes (Drupal, astro:assets, plain object)
 const imgSrc = image?.src ?? image?.url ?? null;
 const imgAlt = image?.alt ?? "";
-
-// Whether the image is a remote string URL (no Astro Image processing needed for remote)
-const isRemoteImage =
-  typeof imgSrc === "string" &&
-  (imgSrc.startsWith("http") || imgSrc.startsWith("//"));
-const isLocalImage = imgSrc && !isRemoteImage;
 ---
 
 {
@@ -66,11 +47,7 @@ const isLocalImage = imgSrc && !isRemoteImage;
     >
       {image && imgSrc && (
         <div class="card-image" data-card-image>
-          {isRemoteImage ? (
-            <DrupalImage src={imgSrc} alt={imgAlt} width={920} height={614} loading="lazy" />
-          ) : (
-            <CardImage imgSrc={imgSrc} imgAlt={imgAlt} />
-          )}
+          <DrupalImage src={imgSrc} alt={imgAlt} width={920} height={614} loading="lazy" />
         </div>
       )}
       <div class="card-body">
@@ -92,11 +69,7 @@ const isLocalImage = imgSrc && !isRemoteImage;
     >
       {image && imgSrc && (
         <div class="card-image" data-card-image>
-          {isRemoteImage ? (
-            <DrupalImage src={imgSrc} alt={imgAlt} width={920} height={614} loading="lazy" />
-          ) : (
-            <CardImage imgSrc={imgSrc} imgAlt={imgAlt} />
-          )}
+          <DrupalImage src={imgSrc} alt={imgAlt} width={920} height={614} loading="lazy" />
         </div>
       )}
       <div class="card-body">
