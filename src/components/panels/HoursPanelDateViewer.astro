@@ -486,30 +486,29 @@ import Heading from '../../reusable/Heading.astro';
 
   .calendar-weeks {
     display: grid;
+    grid-template-rows: repeat(6, auto);
     gap: 4px;
     margin-bottom: 8px;
     margin-top: 8px;
   }
 
-  .calendar-week {
-    background: none;
+  :global(.calendar-week) {
     border: 2px solid transparent;
     cursor: pointer;
     display: grid;
     gap: 4px;
     grid-template-columns: repeat(7, 1fr);
-    padding: 0;
   }
 
-  .calendar-week:hover {
+  :global(.calendar-week:hover) {
     border-color: var(--color-neutral-300);
   }
 
-  .calendar-week.selected {
+  :global(.calendar-week.selected) {
     border-color: var(--color-maize-400);
   }
 
-  .calendar-day {
+  :global(.calendar-day) {
     border-radius: 4px;
     padding: 10px;
     text-align: center;

@@ -2,19 +2,12 @@
   "name": "lib.umich.edu",
   "version": "1.0.0",
   "dependencies": {
-    "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "highlight-words-core": "^1.2.3",
     "isomorphic-fetch": "^3.0.0",
     "lunr": "^2.3.9",
     "motion": "^12.23.12",
     "nanostores": "^1.1.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-player": "^3.3.2",
-    "rehype-parse": "^9.0.1",
-    "rehype-react": "^8.0.0",
-    "unified": "^11.0.5",
     "use-debounce": "^10.1.0",
     "whatwg-url": "^16.0.0"
   },
@@ -38,7 +31,6 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/netlify": "^6.5.11",
-    "@astrojs/react": "^4.4.0",
     "@astrojs/sitemap": "^3.6.0",
     "@emotion/babel-plugin": "^11.13.5",
     "@eslint/compat": "^2.0.0",
@@ -47,31 +39,8 @@
     "bottleneck": "^2.19.5",
     "entities": "^7.0.0",
     "eslint": "^9.34.0",
-    "eslint-plugin-react": "^7.37.5",
     "fetch-retry": "^6.0.0",
     "globals": "^16.3.0",
     "typescript": "^5.9.3"
-  },
-  "overrides": {
-    "eslint-plugin-react": {
-      "eslint": "latest"
-    },
-    "react-scripts": {
-      "@svgr/webpack": "latest",
-      "babel-preset-react-app": {
-        "@babel/plugin-proposal-class-properties": "npm:@babel/plugin-transform-class-properties",
-        "@babel/plugin-proposal-nullish-coalescing-operator": "npm:@babel/plugin-transform-nullish-coalescing-operator",
-        "@babel/plugin-proposal-numeric-separator": "npm:@babel/plugin-transform-numeric-separator",
-        "@babel/plugin-proposal-optional-chaining": "npm:@babel/plugin-transform-optional-chaining",
-        "@babel/plugin-proposal-private-methods": "npm:@babel/plugin-transform-private-methods"
-      },
-      "css-minimizer-webpack-plugin": "latest",
-      "jest": "latest",
-      "magic-string": "latest",
-      "resolve-url-loader": "latest",
-      "source-map-loader": "latest",
-      "typescript": "latest",
-      "workbox-webpack-plugin": "latest"
-    }
   }
 }
