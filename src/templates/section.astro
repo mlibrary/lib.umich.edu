@@ -1,0 +1,150 @@
+---
+/**
+ * Section Template
+ * Converted from src/templates/section.js
+ * 
+ */
+import Layout from '../layouts/Layout.astro';
+import Margins from '../components/Margins.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PageHeaderMini from '../components/PageHeaderMini.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Prose from '../components/Prose.astro';
+import Panels from '../components/panels/Panels.astro';
+import LocationAside from '../components/LocationAside.astro';
+import transformNodePanels from '../utils/transform-node-panels';
+import buildHorizontalNavigation from '../utils/build-horizontal-navigation';
+
+interface Props {
+  node: any;
+  breadcrumb?: string;
+  parents?: any[];
+  children?: any[];
+  parentIds?: string[];
+  childIds?: string[];
+}
+
+const { node, breadcrumb, parents = [], children = [], parentIds = [], childIds = [] } = Astro.props;
+
+// Extract node data
+const {
+  relationships,
+} = node;
+
+const { 
+  title,
+  body,
+  field_header_title: fieldHeaderTitle,
+  field_title_context: fieldTitleContext,
+  field_root_page_: fieldRootPage,
+} = node.attributes || {};
+
+// Parent node for non-root pages
+const parentNode = relationships?.field_parent_page?.[0];
+const isRootPage = Boolean(fieldRootPage);
+const pageHeaderImage = relationships?.field_media_image;
+const hasBody = body?.processed && body.processed.length > 0;
+
+// Use parent summary if not root page
+const summary = isRootPage 
+  ? body?.summary 
+  : parentNode?.body?.summary;
+
+// Transform panels
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+
+// Render the Template layout when there's body text OR body-placed panels.
+// Gatsby's hasBody check only considers body.processed, but if the body text
+// isn't available yet body-placed panels and the LocationAside still need to render.
+const hasContent = hasBody || bodyPanels.length > 0;
+
+// Check if location aside should be shown
+const showLocationAside = 
+  relationships?.field_design_template?.field_machine_name === 'section_locaside' 
+  && parentNode;
+
+
+// Horizontal navigation
+const navigationItems = buildHorizontalNavigation({
+  node,
+  isRootPage,
+  parentNode,
+  parentIds,
+  parents,
+  childIds,
+  children
+});
+---
+
+<Layout title={fieldHeaderTitle || fieldTitleContext || title}>
+  {isRootPage ? (
+    <PageHeader
+      breadcrumb={breadcrumb}
+      title={fieldHeaderTitle}
+      summary={summary}
+      image={pageHeaderImage}
+    />
+  ) : (
+    <PageHeaderMini
+      breadcrumb={breadcrumb}
+      title={fieldHeaderTitle}
+    />
+  )}
+
+  <HorizontalNavigation 
+    items={navigationItems}
+    style={isRootPage ? '' : 'border-top: none;'}
+  />
+
+  {hasContent ? (
+    <Template hasSide={showLocationAside}>
+      <TemplateContent>
+        <Prose>
+          <Heading level={1} size="L" data-page-heading>
+            <span class="visually-hidden">{title}</span>
+            <span aria-hidden="true">{fieldTitleContext}</span>
+          </Heading>
+
+          {body && body.processed && (
+            <Html html={body.processed} />
+          )}
+        </Prose>
+
+        <Panels data={bodyPanels} />
+      </TemplateContent>
+
+      {showLocationAside && (
+        <TemplateSide class="section-aside">
+          <LocationAside node={parentNode} />
+        </TemplateSide>
+      )}
+    </Template>
+  ) : (
+    <Margins>
+      <Heading level={1} size="L" data-page-heading>
+        <span class="visually-hidden">{title}</span>
+        <span aria-hidden="true">{fieldTitleContext}</span>
+      </Heading>
+    </Margins>
+  )}
+
+  <Panels data={fullPanels} />
+</Layout>
+
+<style>
+  /* Hide aside on mobile, show on tablet+ (matches Gatsby MEDIA_QUERIES.S) */
+  .section-aside {
+    display: none;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .section-aside {
+      display: block;
+    }
+  }
+</style>

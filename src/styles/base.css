@@ -1,0 +1,70 @@
+/* 
+  Base Styles
+  Typography, colors, and foundational styles
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Crimson+Text|Muli:400,600,700');
+
+/* Base styles */
+body,
+html {
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  font-family: 'Muli', sans-serif;
+  line-height: 1.5;
+  color: var(--color-neutral-400);
+}
+
+/* Font smoothing and box sizing to border-box */
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+
+button {
+  cursor: pointer;
+}
+
+a{
+  color: inherit;
+  text-decoration: none;
+}
+
+[data-reach-dialog-overlay] {
+  background: hsla(0, 0%, 0%, 0.6);
+  z-index: 999;
+}
+
+/* Focus styles */
+*:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 2px var(--color-maize-400), 0 0 0 3px var(--color-neutral-400);
+    border-radius: 2px !important;
+}
+
+*:focus {
+  outline-color: var(--color-blue-400);
+}
+
+/* Page heading focus — overrides the global *:focus-visible box-shadow */
+h1.focus {
+  position: relative;
+}
+
+h1.focus:focus,
+h1.focus:focus-visible {
+  outline: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+h1.focus:focus::before {
+  border-left: solid 4px var(--color-teal-400);
+  content: "";
+  height: 100%;
+  left: -0.3em;
+  position: absolute;
+  top: 0;
+}

@@ -1,0 +1,72 @@
+---
+/**
+ * NoResults Component - Empty state with squirrel image
+ * Converted from src/components/no-results.js
+ *
+ * Displays a "no results found" message with a decorative squirrel image.
+ */
+import Heading from '../reusable/Heading.astro';
+import { Image } from 'astro:assets';
+import squirrelImage from '../images/squirrel.png';
+---
+
+<div class="no-results">
+  <div class="no-results-message" aria-live="assertive">
+    <Heading size="L" level={2}>
+      We couldn&rsquo;t find any results
+    </Heading>
+    <p class="no-results-text">
+      <slot />
+    </p>
+  </div>
+
+  <Image
+    src={squirrelImage}
+    alt=""
+    width={920}
+    class="no-results-image"
+  />
+</div>
+
+<style>
+  .no-results {
+    margin-bottom: var(--spacing-4xl);
+    margin-top: var(--spacing-2xl);
+  }
+
+  @media only screen and (min-width: 920px) {
+    .no-results {
+      align-items: end;
+      display: grid;
+      column-gap: var(--spacing-3xl);
+      grid-template-columns: 2fr 3fr;
+    }
+  }
+
+  .no-results-message {
+    margin: auto 0;
+  }
+
+  .no-results-text {
+    font-size: 1.125rem;
+    line-height: 1.5;
+    margin-top: var(--spacing-xs);
+  }
+
+  .no-results-image {
+    display: inline-block;
+    height: auto;
+    margin: 1rem auto;
+    max-width: 16rem;
+  }
+
+  @media only screen and (min-width: 920px) {
+    .no-results-image {
+      display: block;
+      margin: 0;
+      margin-bottom: var(--spacing-l);
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+</style>

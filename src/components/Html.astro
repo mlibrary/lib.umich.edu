@@ -1,0 +1,278 @@
+---
+/**
+ * Html Component
+ * Converted from src/components/html.js
+ *
+ * Renders Drupal HTML content with:
+ * - Drupal entity embed resolution (media--image, media--remote_video, media--file)
+ * - Relative image URL fixing (/sites/default/files/... → absolute)
+ * - CMS anchor link unwrapping (jsonapi / cms.lib.umich.edu image links)
+ * - Lazy loading + async decoding on all images
+ * - iframe stripping (Gatsby html.js had no iframe component — rendered null)
+ * - <u> tag stripping (Gatsby's `u` component returned children only)
+ */
+import { getImage } from 'astro:assets';
+import Prose from './Prose.astro';
+import { fetchMediaEntity } from '../lib/drupal.js';
+import { getYouTubeVideoId, buildYouTubeEmbedUrl } from '../utils/youtube';
+import { downloadCmsFile } from '../lib/cms-file-cache.js';
+
+interface Props {
+  html: string;
+  class?: string;
+}
+
+const { html, class: className = '' } = Astro.props;
+
+const DRUPAL_BASE_URL = (import.meta.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/, '');
+
+// Builds the video iframe HTML string for use inside set:html processing.
+// data-generated="1" marks our iframes so the authored-iframe strip pass skips them.
+function buildVideoHtml(embedUrl: string, title: string): string {
+  return (
+    '<div style="padding-top:56.25%;position:relative">' +
+    `<iframe data-generated="1" src="${embedUrl}" title="${title}" ` +
+    'width="100%" height="100%" ' +
+    'allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+    'allowfullscreen referrerpolicy="strict-origin-when-cross-origin" ' +
+    'sandbox="allow-scripts allow-same-origin allow-presentation" ' +
+    'style="border:0;left:0;position:absolute;top:0;width:100%;height:100%">' +
+    '</iframe></div>'
+  );
+}
+
+const uuids: string[] = [];
+const seenUuids = new Set<string>();
+const entityTagRe = /<[a-zA-Z][\w-]*\b[^>]*data-entity-type="media"[^>]*>/gi;
+for (const match of (html ?? '').matchAll(entityTagRe)) {
+  const uuidMatch = /data-entity-uuid="([^"]+)"/.exec(match[0]);
+  if (uuidMatch && !seenUuids.has(uuidMatch[1])) {
+    seenUuids.add(uuidMatch[1]);
+    uuids.push(uuidMatch[1]);
+  }
+}
+
+const entityMap: Record<string, string> = {};
+if (uuids.length > 0) {
+  await Promise.all(
+    [...new Set(uuids)].map(async (uuid) => {
+      try {
+        const result = await fetchMediaEntity(uuid);
+        if (!result?.data) return;
+
+        const entity = result.data;
+        const included: any[] = result.included ?? [];
+        const entityType: string = entity.type; // media--image | media--remote_video | media--file
+
+        if (entityType === 'media--remote_video') {
+          const oembedUrl: string = entity.attributes?.field_media_oembed_video ?? '';
+          const videoId = getYouTubeVideoId(oembedUrl);
+          if (videoId) {
+            entityMap[uuid] = buildVideoHtml(
+              buildYouTubeEmbedUrl(videoId),
+              entity.attributes?.name ?? 'YouTube video player'
+            );
+          }
+        } else if (entityType === 'media--image') {
+          const fileRef = entity.relationships?.field_media_image?.data;
+          const fileEntity = included.find((e: any) => e.type === 'file--file' && e.id === fileRef?.id);
+          const rawUrl: string = fileEntity?.attributes?.uri?.url ?? '';
+          if (rawUrl) {
+            const absoluteUrl = rawUrl.startsWith('/') ? `${DRUPAL_BASE_URL}${rawUrl}` : rawUrl;
+            const imgWidth: number | undefined = fileRef?.meta?.width;
+            const imgHeight: number | undefined = fileRef?.meta?.height;
+            const optimized = await getImage({
+              src: absoluteUrl,
+              format: 'webp',
+              ...(imgWidth && imgHeight ? { width: imgWidth, height: imgHeight } : { inferSize: true }),
+            });
+            const alt: string = fileRef?.meta?.alt ?? '';
+            entityMap[uuid] =
+              `<figure>` +
+              `<img src="${optimized.src}" alt="${alt}" loading="lazy" decoding="async" />` +
+              `</figure>`;
+          }
+        } else if (entityType === 'media--file') {
+          const fileRef = entity.relationships?.field_media_file?.data;
+          const fileEntity = included.find((e: any) => e.type === 'file--file' && e.id === fileRef?.id);
+          const rawUrl: string = fileEntity?.attributes?.uri?.url ?? '';
+          const name: string = entity.attributes?.name ?? 'Download';
+          const mime: string = fileEntity?.attributes?.filemime ?? '';
+          if (rawUrl) {
+            const absoluteUrl = rawUrl.startsWith('/') ? `${DRUPAL_BASE_URL}${rawUrl}` : rawUrl;
+            const href = await downloadCmsFile(absoluteUrl);
+            const label = mime === 'application/pdf' ? `${name} (PDF)` : name;
+            entityMap[uuid] = `<a href="${href}">${label}</a>`;
+          }
+        }
+      } catch {
+        // Entity unavailable — the div will be removed from output
+      }
+    })
+  );
+}
+
+// Optimize/download all CMS URLs referenced inline in the raw HTML at build time.
+// Images (img src/srcset) → getImage() for webp optimization + local /_astro/ paths.
+// File links (href to PDFs etc.) → downloadCmsFile() for local /cms-files/ paths.
+const cmsImgMap = new Map<string, string>();  // relativePath → /_astro/ optimized URL
+const cmsFileMap = new Map<string, string>(); // relativePath → /cms-files/ downloaded URL
+{
+  // Map of relativePath → width hint (from srcset descriptor or default 920)
+  const imagePaths = new Map<string, number>();
+  const hrefFilePaths = new Set<string>();
+  const escapedBase = DRUPAL_BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  // img src attributes
+  for (const m of (html ?? '').matchAll(/\bsrc="(\/sites\/default\/files\/[^"]*)"/gi)) {
+    if (!imagePaths.has(m[1])) imagePaths.set(m[1], 920);
+  }
+  // srcset entries — extract width from descriptor (e.g. "640w")
+  for (const m of (html ?? '').matchAll(/\bsrcset="([^"]*)"/gi)) {
+    for (const entry of m[1].split(',')) {
+      const parts = entry.trim().split(/\s+/);
+      const p = parts[0];
+      if (!p?.startsWith('/sites/default/files/')) continue;
+      const widthMatch = /^(\d+)w$/.exec(parts[1] ?? '');
+      const width = widthMatch ? parseInt(widthMatch[1], 10) : 920;
+      if (!imagePaths.has(p)) imagePaths.set(p, width);
+    }
+  }
+  // href attributes — treat as files (PDFs, docs, etc.), keep via downloadCmsFile
+  for (const m of (html ?? '').matchAll(/\bhref="(\/sites\/default\/files\/[^"]*)"/gi)) hrefFilePaths.add(m[1]);
+  for (const m of (html ?? '').matchAll(new RegExp(`\\bhref="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`, 'gi'))) hrefFilePaths.add(m[1]);
+
+  await Promise.all([
+    ...[...imagePaths.entries()].map(async ([relativePath, width]) => {
+      try {
+        const result = await getImage({ src: `${DRUPAL_BASE_URL}${relativePath}`, format: 'webp', width });
+        cmsImgMap.set(relativePath, result.src);
+      } catch {
+        // Fall back to CMS URL so the page still renders
+        cmsImgMap.set(relativePath, `${DRUPAL_BASE_URL}${relativePath}`);
+      }
+    }),
+    ...[...hrefFilePaths].map(async (relativePath) => {
+      const localUrl = await downloadCmsFile(`${DRUPAL_BASE_URL}${relativePath}`);
+      cmsFileMap.set(relativePath, localUrl);
+    }),
+  ]);
+}
+
+function processHtml(rawHtml: string): string {
+  if (!rawHtml) return '';
+  let out = rawHtml;
+
+  out = out.replace(/<\/?u\b[^>]*>/gi, '');
+
+  if (uuids.length > 0) {
+    out = out.replace(
+      /<figure\b[^>]*>[\s\S]*?<\/figure>/gi,
+      (figureMatch) => {
+        const uuidMatch = /data-entity-uuid="([^"]+)"/.exec(figureMatch);
+        if (!uuidMatch) return figureMatch;
+        let resolved: string | undefined = entityMap[uuidMatch[1]];
+
+        if (resolved === undefined) {
+          const srcMatch = /\bsrc="([^"]*\/media\/oembed\?[^"]*)"/.exec(figureMatch);
+          if (srcMatch) {
+            const rawSrc = srcMatch[1].replace(/&amp;/g, '&');
+            const urlParamMatch = /[?&]url=([^&]+)/.exec(rawSrc);
+            if (urlParamMatch) {
+              try {
+                const videoUrl = decodeURIComponent(urlParamMatch[1]);
+                const videoId = getYouTubeVideoId(videoUrl);
+                if (videoId) {
+                  const iframeTag = /<iframe\b[^>]*>/.exec(figureMatch)?.[0] ?? '';
+                  const titleMatch = /\btitle="([^"]*)"/.exec(iframeTag);
+                  const title = titleMatch ? titleMatch[1] : 'YouTube video player';
+                  resolved = buildVideoHtml(buildYouTubeEmbedUrl(videoId), title);
+                }
+              } catch {
+                // decodeURIComponent failed — leave figure as-is
+              }
+            }
+          }
+        }
+
+        if (resolved === undefined) return figureMatch;
+        const captionMatch = /<figcaption[^>]*>([\s\S]*?)<\/figcaption>/i.exec(figureMatch);
+        if (captionMatch) {
+          return `<figure>${resolved}<figcaption>${captionMatch[1]}</figcaption></figure>`;
+        }
+        return resolved;
+      }
+    );
+
+    out = out.replace(
+      /<drupal-entity\b([^>]*)>[\s\S]*?<\/drupal-entity>/gi,
+      (match, attrs) => {
+        if (!/data-entity-type="media"/.test(attrs)) return match;
+        const uuidMatch = /data-entity-uuid="([^"]+)"/.exec(attrs);
+        if (!uuidMatch) return '';
+        const resolved = entityMap[uuidMatch[1]];
+        return resolved ?? '';
+      }
+    );
+  }
+
+  out = out.replace(/<iframe\b(?![^>]*\bdata-generated="1")[^>]*>[\s\S]*?<\/iframe>/gi, '');
+  out = out.replace(/\s*data-generated="1"/gi, '');
+
+  out = out.replace(
+    /(<img\b[^>]*)\bsrc="(\/sites\/default\/files\/[^"]*)"/gi,
+    (_m, before, p) => `${before}src="${cmsImgMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`}"`
+  );
+  out = out.replace(
+    /(<img\b[^>]*)\bsrcset="([^"]*)"/gi,
+    (_m, before, srcset) => {
+      const fixed = srcset.replace(/(\/sites\/default\/files\/[^\s,]+)/g, (p: string) => {
+        if (p.startsWith('http')) return p;
+        return cmsImgMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`;
+      });
+      return `${before}srcset="${fixed}"`;
+    }
+  );
+
+  // Rewrite href links to CMS files (relative path) to local downloaded paths
+  out = out.replace(
+    /(<a\b[^>]*)\bhref="(\/sites\/default\/files\/[^"]*)"/gi,
+    (_m, before, p) => `${before}href="${cmsFileMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`}"`
+  );
+
+  out = out.replace(
+    /<a\b[^>]*href="[^"]*(?:\/jsonapi\/|cms\.lib\.umich\.edu)[^"]*"[^>]*>\s*(<img\b[^>]*\/?>)\s*<\/a>/gi,
+    '$1'
+  );
+
+  // Rewrite absolute internal CMS links to root paths
+  // gatsby-source-drupal did this automatically during data-fetch
+  // Example: href="https://cms.lib.umich.edu/page-path" -> href="/page-path"
+  const escapedBase = DRUPAL_BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Rewrite absolute CMS file links to local downloaded paths
+  out = out.replace(
+    new RegExp(`(<a\\b[^>]*)\\bhref="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`, 'gi'),
+    (_m: string, before: string, p: string) => `${before}href="${cmsFileMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`}"`
+  );
+  // Rewrite remaining absolute CMS links (page links) to root paths
+  out = out.replace(
+    new RegExp(`(<a\\b[^>]*)\\bhref="${escapedBase}(/[^"]*)"`, 'gi'),
+    '$1href="$2"'
+  );
+
+  out = out.replace(/(<img\b[^>]*)\bloading="eager"/gi, '$1loading="lazy"');
+  out = out.replace(
+    /(<img\b(?![^>]*\bdecoding=)[^>]*)(\/?>)/gi,
+    '$1 decoding="async"$2'
+  );
+
+
+  return out;
+}
+
+const processedHtml = processHtml(html ?? '');
+---
+
+<Prose class={className}>
+  <Fragment set:html={processedHtml} />
+</Prose>

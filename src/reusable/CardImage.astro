@@ -1,0 +1,21 @@
+---
+import { Image } from 'astro:assets';
+
+const {
+  imgSrc,
+  imgAlt,
+} = Astro.props;
+---
+
+<Image class="card-image" src={imgSrc} alt={imgAlt} width={600} height={400} loading="lazy" />
+
+<style>
+    .card-image {
+        aspect-ratio: 3/2;
+        background-color: var(--color-blue-100);
+        border-radius: 4px;
+        margin-bottom: var(--spacing-s);
+        overflow: hidden;
+        width: 100%;
+    }
+</style>

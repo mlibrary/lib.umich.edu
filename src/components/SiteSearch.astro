@@ -1,0 +1,739 @@
+---
+/**
+ * Site Search functionality and site search results popup
+ */
+import Icon from '../reusable/Icon.astro';
+import Link from '../reusable/link.astro';
+
+interface Props {
+  label?: string;
+}
+
+const { label = "Search this site" } = Astro.props;
+---
+
+<!-- Client-side loading of LUNR, not NPM since it's not needed at build time -->
+<script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
+
+<div class="site-search-container">
+  <form class="site-search-form" id="site-search-form">
+    <Icon
+      icon="search"
+      size={20}
+      style="color: var(--color-neutral-300); left: 0.5rem; position: absolute;"
+    />
+    <label class="site-search-label">
+      <span class="visually-hidden">
+        {label}. To access results, tab to navigate, enter to select, esc to
+        dismiss.
+      </span>
+      <input
+        type="search"
+        id="site-search-input"
+        placeholder={label}
+        autocomplete="off"
+        class="site-search-input"
+      />
+    </label>
+
+    <!-- Results Container -->
+    <div id="site-search-results-container" class="results-container" hidden>
+      <!-- Screen reader status -->
+      <div
+        class="visually-hidden"
+        role="status"
+        aria-live="polite"
+        id="site-search-status"
+      >
+      </div>
+
+      <!-- Error message -->
+      <div id="site-search-error" class="search-error" hidden></div>
+
+      <!-- Results popover -->
+      <div id="site-search-popover" class="search-popover" hidden>
+        <!-- Keyboard instructions -->
+        <p class="keyboard-instructions" aria-hidden="true">
+          <kbd>tab</kbd> to navigate, <kbd>enter</kbd> to select, <kbd>esc</kbd> to
+          dismiss
+        </p>
+
+        <!-- Results list -->
+        <ol id="site-search-results" class="search-results-list"></ol>
+
+        <!-- No results message -->
+        <div id="site-search-no-results" class="no-results" hidden>
+          <p>
+            <span class="no-results-label">
+              No results found for: <span id="site-search-query-display" class="site-search-query-display"
+              ></span>
+            </span>
+            <span class="no-results-suggestion">
+              Try 
+              <Link href="https://search.lib.umich.edu/everything?utm_source=lib-site-search">
+                Library Search
+              </Link> for books, articles, and more.
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- HTML Templates -->
+  <template id="library-search-template">
+    <li class="search-result-item">
+      <a class="library-search-option" target="_blank" rel="noopener">
+        <Icon icon="search" size={24} class="library-search-icon" />
+        <p class="library-search-query">
+          <span class="visually-hidden">Search: </span>
+          <span class="query-text"></span>
+        </p>
+        <span class="library-search-badge">Find materials</span>
+      </a>
+    </li>
+  </template>
+
+  <template id="search-result-template">
+    <li class="search-result-item">
+      <a class="search-result-link">
+        <p class="search-result-title">
+          <span class="result-title"></span>
+          <span class="search-result-tag result-tag" hidden>● <span class="tag-text"></span></span>
+        </p>
+        <p class="search-result-summary result-summary" hidden></p>
+      </a>
+    </li>
+  </template>
+</div>
+
+<style>
+  /* Site search container */
+  .site-search-container {
+    align-items: center;
+    display: flex;
+    flex-basis: 21rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  .site-search-form {
+    align-items: center;
+    display: flex;
+    flex-basis: 21rem;
+    position: relative;
+  }
+
+  /* Search icon */
+  .search-icon {
+    color: var(--color-neutral-300);
+    font-size: 20px;
+    left: 0.5rem;
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+  }
+
+  /* Search label and input */
+  .site-search-label {
+    width: 100%;
+  }
+
+  .site-search-input {
+    align-items: center;
+    appearance: textfield;
+    background: none;
+    border-radius: 2px;
+    border: solid 1px var(--color-neutral-300);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: .5rem .5rem .5rem calc(18px + 0.75rem);
+    width: 100%;
+  }
+
+  .site-search-input::placeholder {
+    color: var(--color-neutral-300);
+    opacity: 1;
+  }
+
+  .site-search-input:focus {
+    outline: 2px solid var(--color-blue-400);
+  }
+
+  /* Results container */
+  .results-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 999;
+  }
+
+  /* Search popover */
+  .search-popover {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+    background: white;
+    border: solid 1px var(--color-neutral-100);
+    border-radius: 2px;
+    max-height: 70vh;
+    overflow: hidden auto;
+    position: absolute;
+    right: 0px;
+    top: calc(4px + 0.25rem);
+    width: 100%;
+    z-index: 999;
+  }
+
+  /* Keyboard instructions */
+  .keyboard-instructions {
+    background: var(--color-blue-100);
+    border-bottom: solid 1px var(--color-neutral-100);
+    color: var(--color-neutral-300);
+    padding: 0.75rem 1.5rem;
+  }
+
+  .keyboard-instructions kbd {
+    background: white;
+    border: solid 1px var(--color-neutral-200);
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+    display: inline-block;
+    font-family: monospace;
+    font-size: 0.85rem;
+    padding: 0 var(--spacing-2xs);
+  }
+
+  /* Results list */
+  .search-results-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .search-result-item {
+    border-bottom: solid 1px var(--color-neutral-100);
+  }
+
+  .search-result-item:last-child {
+    border-bottom: none;
+  }
+
+  .search-result-link {
+    display: block;
+    padding: 1rem 1.5rem;
+  }
+
+  .search-result-link:hover,
+  .search-result-link:focus {
+    background: var(--color-teal-100);
+    border-left: solid 4px var(--color-teal-400);
+    padding-left: calc(1.5rem - 4px);
+    outline: none;
+  }
+
+  .search-result-link:hover .search-result-title,
+  .search-result-link:focus .search-result-title {
+    text-decoration: underline;
+  }
+
+  .search-result-title {
+    font-size: 1.125rem;
+  }
+
+  .search-result-tag {
+    color: var(--color-neutral-300);
+    font-size: 0.875rem;
+    font-weight: bold;
+    letter-spacing: 0.0875em;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+  }
+
+  .search-result-summary {
+    color: var(--color-neutral-300);
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  :global(.search-result-highlight) {
+    background: var(--color-maize-200) !important;
+    font-weight: 700;
+  }
+
+
+  :global(.search-result-summary) :global(.search-result-highlight) {
+    background: none;
+    font-weight: 600;
+  }
+
+  .site-search-query-display{
+    font-weight: 700;
+  }
+
+  /* Library search option */
+  .library-search-option {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: solid 1px var(--color-neutral-100);
+  }
+
+  .library-search-option:hover,
+  .library-search-option:focus {
+    background: var(--color-teal-100);
+    border-left: solid 4px var(--color-teal-400);
+    padding-left: calc(1.5rem - 4px);
+    outline: none;
+  }
+
+  .library-search-option:hover .library-search-query,
+  .library-search-option:focus .library-search-query {
+    text-decoration: underline;
+  }
+
+  .library-search-icon {
+    color: var(--color-neutral-300);
+    font-size: 24px;
+  }
+
+  .library-search-query {
+    font-size: 1.125rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .library-search-badge {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    background: var(--color-blue-100);
+    border: solid 1px var(--color-neutral-100);
+    border-radius: 4px;
+    padding: 0px 0.25rem;
+  }
+
+  /* No results */
+  .no-results {
+    padding: 1.5rem;
+    color: var(--color-neutral-300);
+  }
+
+  .no-results-label {
+    display: block;
+    font-size: 1.125rem;
+    color: var(--color-neutral-400);
+    margin-bottom: 0.5rem;
+  }
+
+  .no-results-suggestion {
+    display: block;
+  }
+
+  /* Error styles */
+  .search-error {
+    padding: 1rem 1.5rem;
+    background: var(--color-red-100);
+    border-left: solid 4px var(--color-red-400);
+    color: var(--color-red-900);
+    margin-top: 0.25rem;
+  }
+
+  /* Visually hidden utility */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  /* Large screen specific styles */
+  @media (min-width: 1200px) {
+    .search-popover {
+      width: calc(100% + 12rem);
+    }
+  }
+</style>
+
+<script>
+  // Site Search Component functionality
+  class SiteSearch {
+    constructor() {
+      this.form = document.getElementById("site-search-form");
+      this.input = document.getElementById("site-search-input");
+      this.resultsContainer = document.getElementById(
+        "site-search-results-container",
+      );
+      this.popover = document.getElementById("site-search-popover");
+      this.resultsList = document.getElementById("site-search-results");
+      this.noResults = document.getElementById("site-search-no-results");
+      this.searchError = document.getElementById("site-search-error");
+      this.status = document.getElementById("site-search-status");
+      this.queryDisplay = document.getElementById("site-search-query-display");
+
+      // Template references
+      this.librarySearchTemplate = document.getElementById("library-search-template");
+      this.searchResultTemplate = document.getElementById("search-result-template");
+
+      this.currentQuery = "";
+      this.searchResults = [];
+      this.lunrIndex = null;
+      this.openResults = true;
+
+      if (!this.form || !this.input || !this.resultsContainer || !this.librarySearchTemplate || !this.searchResultTemplate) {
+        console.error('Required elements not found');
+        return;
+      }
+
+      this.init();
+    }
+
+    init() {
+      // Wait for lunr library to be loaded, then load the search index
+      const waitForLunrLibrary = () => {
+        if (window.lunr) {
+          this.waitForLunr().then(() => {
+            this.setupEventListeners();
+          });
+        } else {
+          setTimeout(waitForLunrLibrary, 100);
+        }
+      };
+      waitForLunrLibrary();
+    }
+
+    async waitForLunr() {
+      try {
+        // Load the search index directly
+        const response = await fetch('/search_index.json');
+        if (!response.ok) {
+          throw new Error(`Failed to load search index: ${response.status}`);
+        }
+        const searchData = await response.json();
+        
+        // Check if this is a pre-built lunr index or raw data
+        if (searchData.en && searchData.en.index && searchData.en.store) {
+          if (window.lunr) {
+            this.lunrIndex = {
+              index: window.lunr.Index.load(searchData.en.index),
+              store: searchData.en.store
+            };
+          }
+        } else if (searchData.index && searchData.store) {
+          // This is a lunr index structure
+          if (window.lunr) {
+            this.lunrIndex = {
+              index: window.lunr.Index.load(searchData.index),
+              store: searchData.store
+            };
+          }
+        } else {
+          // This appears to be raw page data, create a lunr index
+          if (window.lunr) {
+            const pages = Object.entries(searchData).map(([key, value]) => ({
+              id: key,
+              title: value.title || '',
+              summary: value.summary || '',
+              keywords: value.keywords || '',
+              tag: value.tag || ''
+            }));
+            
+            const idx = window.lunr(function () {
+              this.ref('id');
+              this.field('title', { boost: 10 });
+              this.field('summary', { boost: 5 });
+              this.field('keywords', { boost: 3 });
+              this.field('tag');
+              
+              pages.forEach((page) => {
+                this.add(page);
+              });
+            });
+            
+            // Create a store object for looking up page data
+            const store = {};
+            pages.forEach(page => {
+              store[page.id] = searchData[page.id];
+            });
+            
+            this.lunrIndex = {
+              index: idx,
+              store: store
+            };
+          }
+        }
+      }
+      catch (error) {
+        console.error('Failed to load search index:', error);
+      }
+    }
+
+    setupEventListeners() {
+      // Handle search input (live search as user types)
+      this.input.addEventListener("input", (e) => {
+        this.handleSearch(e.target.value);
+      });
+
+      // Also handle keydown to show results immediately
+      this.input.addEventListener("keydown", (e) => {
+        // Don't interfere with special keys
+        if (!['Escape', 'Tab', 'Enter', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+          // Set openResults to true so results will show when input event fires
+          this.openResults = true;
+        }
+      });
+
+      // Prevent form submission (don't do anything else on enter)
+      this.form.addEventListener("submit", (e) => {
+        e.preventDefault();
+      });
+
+      // Handle escape key to hide results
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          this.openResults = false;
+          this.hideResults();
+        }
+      });
+
+      // Hide results when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!this.form.contains(e.target)) {
+          this.openResults = false;
+          this.hideResults();
+        }
+      });
+
+      // Show results when focusing input
+      this.input.addEventListener("focus", () => {
+        if (this.currentQuery) {
+          this.openResults = true;
+          this.displayResults();
+        }
+      });
+    }
+
+    cleanQueryForLunr(str) {
+      // Remove quotation marks to prevent search errors (LIBWEB-649)
+      return str.replace(/['"]+/gu, '');
+    }
+
+    async handleSearch(query) {
+      const cleanQuery = this.cleanQueryForLunr(query.trim());
+      this.currentQuery = cleanQuery;
+
+      // Always allow results to open when user is actively typing
+      this.openResults = true;
+
+      if (!cleanQuery) {
+        this.searchResults = [];
+        this.hideResults();
+        return;
+      }
+
+      if (!this.lunrIndex) {
+        return;
+      }
+
+      try {
+        const searchResults = this.lunrIndex.index.query((queryTerm) => {
+          const lunr = window.lunr;
+
+          // Exact term match with highest boost
+          queryTerm.term(lunr.tokenizer(cleanQuery), { boost: 3 });
+
+          // Trailing wildcard with medium boost
+          queryTerm.term(lunr.tokenizer(cleanQuery), {
+            boost: 2,
+            wildcard: lunr.Query.wildcard.TRAILING
+          });
+
+          // Leading and trailing wildcard for longer queries
+          if (cleanQuery.length > 2) {
+            queryTerm.term(lunr.tokenizer(cleanQuery), {
+              wildcard: lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING
+            });
+          }
+        });
+
+        // Map results to include page data
+        this.searchResults = searchResults.map(({ ref }) => {
+          const pageData = this.lunrIndex.store[ref];
+          // Extract slug from ref (same as original Gatsby: ref.split(' /')[1])
+          const slug = ref.split(' /')[1];
+          return {
+            ...pageData,
+            slug: slug
+          };
+        }).filter(result => result && result.slug); // Filter out results without valid slugs
+
+        this.displayResults();
+        this.clearError();
+
+        // Analytics (similar to Gatsby useGoogleTagManager)
+        if (window.gtag) {
+          window.gtag("event", "search", {
+            search_term: cleanQuery,
+          });
+        }
+      } catch (error) {
+        if (error.name === "QueryParseError") {
+          this.displayError(error.message);
+        } else {
+          console.warn("Site search error", error);
+        }
+      }
+    }
+
+    displayResults() {
+      const hasResults = this.searchResults.length > 0;
+      const isSearching = this.currentQuery.length > 0;
+
+      if (!isSearching || !this.openResults) {
+        this.hideResults();
+        return;
+      }
+
+      // Show results container
+      this.resultsContainer.hidden = false;
+      this.popover.hidden = false;
+
+      // Update status for screen readers
+      if (hasResults) {
+        const resultText = `${this.searchResults.length} result${this.searchResults.length > 1 ? "s" : ""}`;
+        this.status.textContent = resultText;
+        this.noResults.hidden = true;
+      } else {
+        this.status.textContent = "No results found";
+        this.noResults.hidden = false;
+        this.queryDisplay.textContent = this.currentQuery;
+      }
+
+      // Generate results HTML
+      if (hasResults) {
+        this.populateResults();
+      } else {
+        this.resultsList.innerHTML = "";
+      }
+    }
+
+    hideResults() {
+      this.resultsContainer.hidden = true;
+      this.popover.hidden = true;
+      this.status.textContent = "";
+    }
+
+    populateResults() {
+      // Clear existing results
+      this.resultsList.innerHTML = "";
+      
+      // Add library search option
+      const librarySearchItem = this.createLibrarySearchOption();
+      this.resultsList.appendChild(librarySearchItem);
+      
+      // Add site results (limit to 100)
+      this.searchResults.slice(0, 100).forEach(result => {
+        const resultItem = this.createResultElement(result);
+        this.resultsList.appendChild(resultItem);
+      });
+    }
+
+    createLibrarySearchOption() {
+      const clone = this.librarySearchTemplate.content.cloneNode(true);
+      const link = clone.querySelector('.library-search-option');
+      const queryText = clone.querySelector('.query-text');
+      
+      const encodedQuery = encodeURIComponent(this.currentQuery);
+      link.href = `https://search.lib.umich.edu/everything?query=${encodedQuery}&utm_source=lib-site-search`;
+      queryText.textContent = this.currentQuery;
+      
+      return clone;
+    }
+
+    createResultElement(result) {
+      const clone = this.searchResultTemplate.content.cloneNode(true);
+      const link = clone.querySelector('.search-result-link');
+      const titleElement = clone.querySelector('.result-title');
+      const tagElement = clone.querySelector('.result-tag');
+      const tagText = clone.querySelector('.tag-text');
+      const summaryElement = clone.querySelector('.result-summary');
+      
+      // Set link and title
+      link.href = `/${result.slug}`;
+      titleElement.innerHTML = this.highlightText(result.title || "", this.currentQuery);
+      
+      // Set tag if exists
+      if (result.tag) {
+        tagElement.hidden = false;
+        tagText.textContent = result.tag;
+      }
+      
+      // Set summary if exists
+      if (result.summary) {
+        summaryElement.hidden = false;
+        summaryElement.innerHTML = this.highlightText(result.summary, this.currentQuery);
+      }
+      
+      return clone;
+    }
+
+    highlightText(text, query) {
+      if (!query || !text) return this.escapeHtml(text);
+
+      // Split query into words and escape for regex (matching highlight-words-core behavior)
+      const words = query
+        .split(/\s+/)
+        .filter((word) => word.length > 0)
+        .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+
+      if (words.length === 0) return this.escapeHtml(text);
+
+      const regex = new RegExp(`(${words.join("|")})`, "gi");
+
+      return this.escapeHtml(text).replace(
+        regex,
+        '<mark class="search-result-highlight">$1</mark>',
+      );
+    }
+
+    displayError(message) {
+      this.searchError.textContent = message;
+      this.searchError.hidden = false;
+      this.hideResults();
+    }
+
+    clearError() {
+      this.searchError.hidden = true;
+    }
+
+    escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  }
+
+  // Initialize the search component when the DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => new SiteSearch());
+  } else {
+    new SiteSearch();
+  }
+</script>

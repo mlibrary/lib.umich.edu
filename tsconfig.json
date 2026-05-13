@@ -1,0 +1,21 @@
+{
+  "extends": "astro/tsconfigs/base",
+  "compilerOptions": {
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "exclude": [
+    "gatsby-browser.js",
+    "gatsby-config.js",
+    "gatsby-node.js",
+    "gatsby-shared.js",
+    "gatsby-ssr.js",
+    "eslint.config.mjs",
+    "plugins/**",
+    "node_modules"
+  ]
+}
+ 

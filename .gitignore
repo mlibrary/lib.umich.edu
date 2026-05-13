@@ -2,10 +2,16 @@
 .cache
 node_modules
 yarn-error.log
+package-lock.json
 
 # Build directory
 /public
+/dist
 .DS_Store
 
 # env vars
 .env.development
+.env.production
+
+# Local Netlify folder
+.netlify

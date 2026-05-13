@@ -1,0 +1,167 @@
+---
+/**
+ * WhatsHappeningPanel - Featured and latest news and exhibits
+ * This uses a hidden event pool (renders divs with display: none) then moves the events to the visible container names
+ * "whp-events-container" based on visitor's current time. Also puts priority events first.
+ */
+import { fetchDrupalEvents } from '../../lib/events-data.js';
+import { processDrupalNode } from '../../lib/page-generator.js';
+import { EXHIBIT_TYPES } from '../../utils/events.js';
+import Heading from '../../reusable/Heading.astro';
+import EventCard from '../EventCard.astro';
+
+interface EventMeta {
+  event: any;
+  isPriority: boolean;
+  start: string;
+}
+
+let eventsWithMeta: EventMeta[] = [];
+
+try {
+  const { data: allEvents, included } = await fetchDrupalEvents();
+
+  const processedEvents = allEvents.map((event: any) => processDrupalNode(event, included));
+
+  const validEvents = processedEvents.filter(
+    (event: any) =>
+      event.relationships?.field_design_template?.field_machine_name === 'event_exhibit' &&
+      !EXHIBIT_TYPES.includes(event.relationships?.field_event_type?.name)
+  );
+
+  // expand multi-occurrence events 
+  const expandedEvents: any[] = [];
+  validEvents.forEach((event: any) => {
+    const dates: any[] = event.attributes?.field_event_date_s_ ?? [];
+    if (dates.length > 1) {
+      dates.forEach((date: any) => {
+        expandedEvents.push({
+          ...event,
+          attributes: { ...event.attributes, field_event_date_s_: [date] },
+        });
+      });
+    } else {
+      expandedEvents.push(event);
+    }
+  });
+
+  expandedEvents.sort((a: any, b: any) => {
+    const dateA = new Date(a.attributes?.field_event_date_s_?.[0]?.value ?? 0).getTime();
+    const dateB = new Date(b.attributes?.field_event_date_s_?.[0]?.value ?? 0).getTime();
+    return dateA - dateB;
+  });
+
+  eventsWithMeta = expandedEvents.map((event: any) => ({
+    event,
+    isPriority: event.attributes?.field_priority_for_homepage === true,
+    start: event.attributes?.field_event_date_s_?.[0]?.value ?? '',
+  }));
+} catch (error) {
+  console.error('Error fetching events for WhatsHappeningPanel:', error);
+}
+---
+
+<section class="whats-happening">
+  <div class="margins">
+    <Heading level={2} size="L">What&rsquo;s happening?</Heading>
+
+    <p id="whp-no-events" class="no-events-message" style="display:none">
+      We don&rsquo;t currently have any upcoming events scheduled or exhibits on display.
+    </p>
+
+    <div id="whp-events-container" class="events-grid">
+      <!-- events are moved here -->
+    </div>
+
+    <a href="/visit-and-study/events-and-exhibits/today-and-upcoming" class="view-all-link">
+      View all events
+    </a>
+
+    <!-- hidden event pool (all valid non-exhibit events server-rendered with data-* attributes) -->
+    <div id="whp-event-pool" style="display:none" aria-hidden="true">
+      {eventsWithMeta.map(({ event, isPriority, start }) => (
+        <div
+          class="whp-pooled-event"
+          data-priority={String(isPriority)}
+          data-start={start}
+        >
+          <EventCard event={event} displayImage={false} hasBorder={false} />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  function initWhatsHappening() {
+    const pool = document.getElementById('whp-event-pool');
+    const container = document.getElementById('whp-events-container');
+    const noEvents = document.getElementById('whp-no-events');
+
+    if (!pool || !container) return;
+
+    const allPooled = Array.from(
+      pool.querySelectorAll<HTMLElement>('.whp-pooled-event')
+    );
+
+    if (allPooled.length === 0) return;
+
+    const now = new Date(
+      new Date().toLocaleString('en', { timeZone: 'America/New_York' })
+    );
+
+    const future = allPooled.filter((el) => {
+      const start = new Date(el.dataset.start ?? '');
+      return start >= new Date(now.toDateString());
+    });
+
+    const priority = future.filter((el) => el.dataset.priority === 'true');
+    const others = future.filter((el) => el.dataset.priority !== 'true');
+    const selected = [...priority, ...others].slice(0, 3);
+
+    if (selected.length === 0) {
+      if (noEvents) noEvents.style.display = '';
+    } else {
+      selected.forEach((el) => container.appendChild(el));
+    }
+  }
+
+  initWhatsHappening();
+  document.addEventListener('astro:page-load', initWhatsHappening);
+</script>
+
+<style>
+  .whats-happening {
+    margin-bottom: 3rem; 
+    margin-top: 3rem;
+  }
+
+  .no-events-message {
+    margin-bottom: 2.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .events-grid {
+    display: block;
+    margin-bottom: 2rem;
+  }
+
+  @media only screen and (min-width: 641px) {
+    .events-grid {
+      display: grid;
+      gap: 2rem 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+  }
+
+  .view-all-link {
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    color: var(--color-teal-400);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .view-all-link:hover {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+</style>

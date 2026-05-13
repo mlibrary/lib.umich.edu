@@ -1,0 +1,269 @@
+---
+/**
+ * Study Space Template
+ * Converted from src/templates/study-space.js
+ *
+ * Layout:
+ *  - Breadcrumb
+ *  - Header: hero image (left) + title & summary (right)
+ *  - Two-column body (content on right):
+ *      Left side: LocationAside (study-space mode: location, hours, noise, features)
+ *      Right side: "About the space" heading + body HTML + "Find another study space" link
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Template from '../components/Template.astro';
+import TemplateContent from '../components/TemplateContent.astro';
+import TemplateSide from '../components/TemplateSide.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Link from '../reusable/link.astro';
+import DrupalImage from '../components/DrupalImage.astro';
+import Icon from '../reusable/Icon.astro';
+import LocationAside from '../components/LocationAside.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
+
+interface Props {
+  node: any;
+  drupal_nid?: string;
+  title: string;
+  breadcrumb?: string;
+  summary?: string;
+  keywords?: string;
+  tag?: string;
+  parents?: any[];
+  children?: any[];
+}
+
+const { node, title, breadcrumb, parents } = Astro.props;
+
+if (!node) {
+  throw new Error('No node data available for study space page');
+}
+
+const {
+  field_title_context: fieldTitleContext,
+} = node.attributes;
+
+const { relationships } = node;
+const { processed: body, summary: bodySummary } = node.attributes.body || {};
+const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pathname;
+
+// Breadcrumb
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: fieldTitleContext || title || 'Study Space', slug },
+    parents || []
+  );
+}
+
+// Hero image
+const imageRelationship = relationships?.field_media_image;
+const imageSrc = imageRelationship?.imageUrl || null;
+const imageAlt = imageRelationship?.imageAlt || '';
+
+const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
+---
+
+<TemplateLayout node={node} title={fieldTitleContext || title}>
+  <DebugPanel node={node} />
+
+  <div class="margins">
+    <Breadcrumb data={breadcrumbData} />
+
+    <span class="back-link-container" data-back-link hidden>
+      <Link href={findStudySpaceURL}>
+        <Icon icon="arrow_forward" class="back-arrow" /> Return to Find a Study Space
+      </Link>
+    </span>
+
+    <header class="study-header">
+      {imageSrc && (
+        <div class="study-header-image">
+          <DrupalImage
+            src={imageSrc}
+            alt={imageAlt}
+            width={imageRelationship?.imageWidth || 920}
+            height={imageRelationship?.imageHeight || 614}
+            loading="lazy"
+          />
+        </div>
+      )}
+      <div class="study-header-text">
+        <Heading level={1} size="3XL" class="study-title">
+          {fieldTitleContext}
+        </Heading>
+        {bodySummary && (
+          <p class="study-summary">{bodySummary}</p>
+        )}
+      </div>
+    </header>
+  </div>
+
+  <Template asideWidth="24rem" contentSide="right">
+    <TemplateSide contentSide="right">
+      <div class="study-aside-inner">
+        <LocationAside node={node} isStudySpaceAside={true} />
+      </div>
+    </TemplateSide>
+
+    <TemplateContent>
+      <div class="study-content">
+        <Heading level={2} size="M" class="about-heading">
+          About the space
+        </Heading>
+
+        {body && <Html html={body} />}
+
+        <div class="find-another-link">
+          <Link href={findStudySpaceURL}>
+            Find another study space
+          </Link>
+        </div>
+      </div>
+    </TemplateContent>
+  </Template>
+</TemplateLayout>
+
+<script>
+  // If the user navigated here from Find a Study Space, show the back link
+  // and update it to include any query parameters for filter state.
+  document.addEventListener('DOMContentLoaded', () => {
+    const backContainer = document.querySelector('[data-back-link]') as HTMLElement | null;
+    if (!backContainer) return;
+
+    const referrer = document.referrer || '';
+    if (referrer.includes('/find-study-space')) {
+      backContainer.removeAttribute('hidden');
+
+      // Preserve the referrer's query string so filters are restored
+      try {
+        const refURL = new URL(referrer);
+        if (refURL.search) {
+          const link = backContainer.querySelector('a');
+          if (link) {
+            link.href = link.href.split('?')[0] + refURL.search;
+          }
+        }
+      } catch { /* ignore */ }
+    }
+  });
+</script>
+
+<style>
+  .back-link-container {
+    display: block;
+    margin-bottom: 2rem; /* SPACING.XL */
+  }
+
+  .back-link-container :global(.back-arrow) {
+    color: var(--color-teal-400);
+    margin-right: 0.25rem;
+    transform: rotate(180deg);
+    display: inline-block;
+  }
+
+  .study-header {
+    display: flex;
+    flex-direction: column-reverse;
+    margin-bottom: 3rem; /* SPACING.3XL */
+  }
+
+  @media screen and (min-width: 640px) {
+    .study-header {
+      flex-direction: row;
+      align-items: stretch;
+      min-height: 263px;
+    }
+  }
+
+  .study-header-image {
+    flex: 0 1 50%;
+    margin: 0 -1rem;
+  }
+
+  .study-header-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media screen and (min-width: 640px) {
+    .study-header-image {
+      margin: 0;
+      max-width: 450px;
+    }
+
+    .study-header-image img {
+      position: absolute;
+    }
+
+    .study-header-image {
+      position: relative;
+      overflow: hidden;
+    }
+  }
+
+  .study-header-text {
+    margin-top: 1.5rem; /* SPACING.L */
+  }
+
+  @media screen and (min-width: 640px) {
+    .study-header-text {
+      flex: 1 1 0;
+      margin-left: 1rem;
+      margin-top: 0;
+      padding-left: 1rem;
+    }
+  }
+
+  .study-title {
+    margin-bottom: 1rem; /* SPACING.M */
+  }
+
+  .study-summary {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: 2rem; /* SPACING.XL */
+  }
+
+  .study-aside-inner {
+    padding-right: 0;
+  }
+
+  @media screen and (min-width: 640px) {
+    .study-aside-inner {
+      padding-right: 3rem; /* SPACING.3XL */
+    }
+  }
+
+  .study-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  @media screen and (min-width: 1200px) {
+    .study-content {
+      padding-left: 4rem; /* SPACING.5XL */
+    }
+  }
+
+  .about-heading {
+    margin-bottom: 1rem; /* SPACING.M */
+  }
+
+  .find-another-link {
+    margin-top: 1.5rem; /* SPACING.L */
+  }
+
+  @media only screen and (min-width: 1200px) {
+    .find-another-link {
+      margin-top: auto;
+      margin-bottom: 2rem; /* SPACING.2XL */
+    }
+  }
+</style>
