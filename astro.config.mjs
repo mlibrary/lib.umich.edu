@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import searchIndex from './plugins/search-index-integration.js';
+import redirects from './plugins/redirects-integration.js';
 
 export default defineConfig({
   image: {
@@ -9,5 +10,5 @@ export default defineConfig({
       entrypoint: 'astro/assets/services/sharp'
     }
   },
-  integrations: [searchIndex()]
+  integrations: [searchIndex(), redirects()]
 });
