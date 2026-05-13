@@ -25,6 +25,7 @@ const { title } = Astro.props;
     <script src="https://umich.edu/apis/umalerts/umalerts.js"></script>
     
     <!-- U-M Library Design System Web Components -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js" as="script" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet"/>
     
@@ -121,8 +122,9 @@ const { title } = Astro.props;
         padding: 0.5rem;
       }
       
-      /* Universal Header Wrapper */
-      .universal-header-wrapper {
+      /* Universal Header placeholder — shown before the web component upgrades */
+      m-universal-header:not(:defined) {
+        display: block;
         background-color: var(--color-blue-100, #CCE3F5);
         min-height: 37px;
       }
