@@ -1,26 +1,23 @@
 /* eslint-disable no-underscore-dangle */
-/*
- *- Put "paragraph__hours_exceptions" first
- *- Add all the other ranges in the order presented
- *- Then add "paragraph__fall_and_winter_semester_hours" last
- */
 const prioritizeHours = ({ hours }) => {
   if (!hours) {
     return [];
   }
+
+  const normalize = (typename) => (typename ?? '').replace('--', '__');
 
   const types = [
     'paragraph__hours_exceptions',
     'paragraph__fall_and_winter_semester_hours'
   ];
   const exceptions = hours.filter((set) => {
-    return set.__typename === types[0];
+    return normalize(set.__typename) === types[0];
   });
   const fallAndWinter = hours.filter((set) => {
-    return set.__typename === types[1];
+    return normalize(set.__typename) === types[1];
   });
   const everythingElse = hours.filter((set) => {
-    return !types.includes(set.__typename);
+    return !types.includes(normalize(set.__typename));
   });
 
   const prioritized = []

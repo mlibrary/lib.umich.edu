@@ -437,104 +437,19 @@ function formatFeatureLabel(feature: string): string {
 </style>
 
 <script>
+  import { displayHours } from '../utils/hours.js';
+
   // Client-side hours display — hours are dynamic based on "now"
   document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.hours-display').forEach((el) => {
+    document.querySelectorAll('.hours-display[data-hours-node]').forEach((el) => {
       try {
-        const nodeData = JSON.parse(el.getAttribute('data-hours-node') || '{}');
-        const now = new Date();
-        // Inline the hours display logic for vanilla JS
-        const hours = computeDisplayHours(nodeData, now);
-        if (hours) {
-          el.textContent = `Today: ${hours}`;
-        } else {
-          el.textContent = 'Today: n/a';
-        }
+        const node = JSON.parse(el.getAttribute('data-hours-node') || '{}');
+        const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+        const hours = displayHours({ node, now });
+        el.textContent = hours ? `Today: ${hours.text}` : 'Today: n/a';
       } catch {
         el.textContent = 'Today: n/a';
       }
     });
   });
-
-  function computeDisplayHours(node, now) {
-    const allHours = getHoursFromNode(node);
-    if (!allHours) return null;
-
-    const hoursSet = findHoursSetForNow(allHours, now);
-    if (!hoursSet) return null;
-
-    const hoursForNow = hoursSet.field_hours_open?.find(
-      (data) => data.day === now.getDay()
-    );
-    if (!hoursForNow) return null;
-
-    const { starthours, endhours, comment } = hoursForNow;
-    if (!comment && starthours === endhours) return null;
-
-    if (starthours !== endhours) {
-      const parts = [`${formatTime(starthours)} - ${formatTime(endhours)}`, comment]
-        .filter(Boolean)
-        .join(', ');
-      return parts;
-    }
-    return comment || null;
-  }
-
-  function getHoursFromNode(node) {
-    if (!node.field_display_hours_) return null;
-    const prioritize = (hours) => {
-      if (!hours) return [];
-      const types = [
-        'paragraph__hours_exceptions',
-        'paragraph__fall_and_winter_semester_hours',
-      ];
-      const exceptions = hours.filter((s) => s.__typename === types[0]);
-      const fallWinter = hours.filter((s) => s.__typename === types[1]);
-      const rest = hours.filter((s) => !types.includes(s.__typename));
-      return [...exceptions, ...rest, ...fallWinter].filter(Boolean);
-    };
-
-    if (node.field_hours_different_from_build) {
-      return prioritize(node.relationships?.field_hours_open);
-    }
-    const building = node.relationships?.field_room_building;
-    const parentLoc = node.relationships?.field_parent_location;
-
-    if (building?.field_display_hours_) {
-      return prioritize(building.relationships?.field_hours_open);
-    }
-    if (parentLoc?.field_display_hours_) {
-      return prioritize(parentLoc.relationships?.field_hours_open);
-    }
-    if (building && !building.field_display_hours_ && building.relationships?.field_parent_location?.field_display_hours_) {
-      return prioritize(building.relationships.field_parent_location.relationships?.field_hours_open);
-    }
-    if (parentLoc && !parentLoc.field_display_hours_ && parentLoc.relationships?.field_parent_location?.field_display_hours_) {
-      return prioritize(parentLoc.relationships.field_parent_location.relationships?.field_hours_open);
-    }
-    return null;
-  }
-
-  function findHoursSetForNow(allHours, now) {
-    return allHours.find((set) => {
-      if (!set.field_date_range) return false;
-      const start = new Date(set.field_date_range.value.replace(/-/g, '/').replace(/T.+/, ''));
-      start.setHours(0, 0, 0, 0);
-      const end = new Date(set.field_date_range.end_value.replace(/-/g, '/').replace(/T.+/, ''));
-      end.setHours(23, 59, 59);
-      return start <= now && now <= end;
-    }) || null;
-  }
-
-  function formatTime(time) {
-    const timeStr = time.toString();
-    const hrs = timeStr.slice(0, -2);
-    const mins = timeStr.slice(-2);
-    let formatted = '';
-    if (Number(hrs) === 0) formatted = '12';
-    else if (hrs <= 12) formatted = hrs;
-    else formatted = (hrs - 12).toString();
-    if (Number(mins) > 0) formatted += `:${mins}`;
-    return formatted + (hrs >= 12 ? 'pm' : 'am');
-  }
 </script>
