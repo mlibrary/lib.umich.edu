@@ -25,6 +25,7 @@ import SideNavigation from '../components/navigation/SideNavigation.astro';
 import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
 import { getNavigationBranch } from '../lib/navigation.js';
 import { downloadCmsFile } from '../lib/cms-file-cache.js';
+import { DRUPAL_URL, removeTrailingSlash } from '../lib/drupal.js';
 
 interface Props {
   node: any;
@@ -44,7 +45,7 @@ if (!node) {
   throw new Error('No node data available');
 }
 
-const DRUPAL_BASE_URL = (import.meta.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/, '');
+const DRUPAL_BASE_URL = removeTrailingSlash(DRUPAL_URL);
 
 const {
   field_title_context: fieldTitleContext,

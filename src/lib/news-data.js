@@ -119,7 +119,7 @@ const processMediaImage = (newsNode, included) => {
 
   const src = rawUrl.startsWith('http')
     ? rawUrl
-    : `${process.env.DRUPAL_URL || 'https://cms.lib.umich.edu'}${rawUrl}`;
+    : `${removeTrailingSlash(DRUPAL_URL)}${rawUrl}`;
 
   return { src, alt: newsNode?.attributes?.title || '' };
 };

@@ -13,7 +13,7 @@
  */
 import { getImage } from 'astro:assets';
 import Prose from './Prose.astro';
-import { fetchMediaEntity } from '../lib/drupal.js';
+import { fetchMediaEntity, DRUPAL_URL, removeTrailingSlash } from '../lib/drupal.js';
 import { getYouTubeVideoId, buildYouTubeEmbedUrl } from '../utils/youtube';
 import { downloadCmsFile } from '../lib/cms-file-cache.js';
 
@@ -24,7 +24,7 @@ interface Props {
 
 const { html, class: className = '' } = Astro.props;
 
-const DRUPAL_BASE_URL = (import.meta.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/, '');
+const DRUPAL_BASE_URL = removeTrailingSlash(DRUPAL_URL);
 
 // Builds the video iframe HTML string for use inside set:html processing.
 // data-generated="1" marks our iframes so the authored-iframe strip pass skips them.

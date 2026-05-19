@@ -9,6 +9,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getAllUsersForProfiles } from '../../lib/user-data.js';
 import { fetchStaff } from '../../lib/staff-data.js';
 import { downloadCmsFile } from '../../lib/cms-file-cache.js';
+import { DRUPAL_URL, removeTrailingSlash } from '../../lib/drupal.js';
 
 export async function getStaticPaths() {
   const [{ users, included }, staffRawData] = await Promise.all([
@@ -43,7 +44,7 @@ export async function getStaticPaths() {
     return includedById[relData.data.id] || null;
   };
 
-  const baseUrl = (process.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/u, '');
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
 
   // Pre-resolve all pronunciation audio file URLs in parallel before the synchronous map.
   const filteredUsers = users.filter((user) => user.attributes?.name);

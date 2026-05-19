@@ -75,7 +75,7 @@ const fetchDrupalLocations = async () => {
 const toStudySpace = (node, included) => {
   const processed = processDrupalNode(node, included);
   const { attributes, relationships } = processed;
-  const drupalBaseUrl = (process.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/u, '');
+  const drupalBaseUrl = removeTrailingSlash(DRUPAL_URL);
 
   // Resolve image URL
   let imageUrl = null;

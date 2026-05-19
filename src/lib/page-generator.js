@@ -1,11 +1,13 @@
 import {
+  DRUPAL_URL,
   fetchDrupalBuildings,
   fetchDrupalFloorPlans,
   fetchDrupalLocations,
   fetchDrupalPages,
   fetchDrupalRooms,
   fetchDrupalSectionPages,
-  fetchFromDrupal
+  fetchFromDrupal,
+  removeTrailingSlash
 } from './drupal.js';
 import { fetchDrupalDepartments } from './staff-data.js';
 import { fetchDrupalEvents } from './events-data.js';
@@ -17,7 +19,7 @@ import { fetchDrupalNews } from './news-data.js';
  */
 const fetchDrupalBreadcrumb = async (breadcrumbUrl) => {
   try {
-    const baseUrl = (process.env.DRUPAL_URL || 'https://cms.lib.umich.edu').replace(/\/$/u, '');
+    const baseUrl = removeTrailingSlash(DRUPAL_URL);
     const path = breadcrumbUrl.startsWith('http')
       ? breadcrumbUrl.replace(baseUrl, '')
       : breadcrumbUrl;
@@ -445,7 +447,7 @@ export const processDrupalNode = (node, included = []) => {
             return item.type === 'file--file' && item.id === fileRef.id;
           })
         : null;
-      const imageUrl = generateImageUrl(fileEntity, process.env.DRUPAL_URL || 'https://cms.lib.umich.edu');
+      const imageUrl = generateImageUrl(fileEntity, removeTrailingSlash(DRUPAL_URL));
       relationships.field_media_image = {
         ...relationships.field_media_image,
         imageUrl,
@@ -458,7 +460,7 @@ export const processDrupalNode = (node, included = []) => {
   }
 
   if (relationships.field_panels) {
-    const drupalBaseUrl = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu';
+    const drupalBaseUrl = removeTrailingSlash(DRUPAL_URL);
 
     relationships.field_panels = relationships.field_panels.map((panel) => {
       if (panel.__typename === 'paragraph--hero_panel' && panel.relationships?.field_hero_images) {
