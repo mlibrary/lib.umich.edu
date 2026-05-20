@@ -14,6 +14,17 @@ import Icon from '../reusable/Icon.astro';
 import { fetchStudySpaces } from '../lib/study-spaces.js';
 import { downloadCmsFile } from '../lib/cms-file-cache.js';
 import { ORDERED_SPACE_FEATURES, SPACE_FEATURES_ICON_MAP } from '../constants/space-features.js';
+import { icons } from '../reusable/icons';
+
+// Build a feature-key → SVG path map for client-side card rendering.
+// SPACE_FEATURES_ICON_MAP values are icon names; we resolve them to actual path data here.
+const featureIconPaths: Record<string, string> = {};
+for (const [feature, iconName] of Object.entries(SPACE_FEATURES_ICON_MAP)) {
+  if (icons[iconName]) featureIconPaths[feature] = icons[iconName];
+}
+// Include extra icons used directly in card rendering
+featureIconPaths['volume_up'] = icons['volume_up'];
+featureIconPaths['cancel'] = icons['cancel'];
 
 const props = Astro.props;
 const { node, breadcrumb } = props;
@@ -281,7 +292,7 @@ import fassNoResults from '../images/fass-no-results.png';
   <script
     id="fass-icon-map"
     type="application/json"
-    set:html={JSON.stringify(SPACE_FEATURES_ICON_MAP)}
+    set:html={JSON.stringify(featureIconPaths)}
   />
 </TemplateLayout>
 
@@ -630,17 +641,7 @@ import fassNoResults from '../images/fass-no-results.png';
 <script>
   /**
    * Find a Study Space — Client-side interactivity
-   *
-   * Handles:
-   * - Collapsible filter sections
-   * - Checkbox filtering (campuses → buildings, features, noise levels)
-   * - URL state sync (replaceState / popstate)
-   * - Active filter tags with dismiss
-   * - Show more / less pagination
-   * - Card rendering with entry animation
    */
-
-  // ───────────────────── helpers ─────────────────────
   const sentenceCase = (str) =>
     str.replace(/_/g, ' ').replace(/^./u, (c) => c.toUpperCase());
 
@@ -673,7 +674,6 @@ import fassNoResults from '../images/fass-no-results.png';
     return params.toString();
   };
 
-  // ───────────────────── data ─────────────────────
   const allStudySpaces = JSON.parse(document.getElementById('fass-data').textContent);
   const iconMap = JSON.parse(document.getElementById('fass-icon-map').textContent);
 
@@ -684,14 +684,8 @@ import fassNoResults from '../images/fass-no-results.png';
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${d}"/></svg>`;
   };
 
-  // Volume up icon SVG for noise level
-  const volumeUpPath = 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z';
-  const volumeUpSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${volumeUpPath}"/></svg>`;
 
-  // Dismiss icon SVG for tag buttons
-  const dismissSvg = '<svg role="img" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 24 24" width="16px" fill="#212B36"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>';
 
-  // ───────────────────── DOM refs ─────────────────────
   const grid = document.getElementById('fass-grid');
   const noResultsEl = document.getElementById('fass-no-results');
   const resultsEl = document.getElementById('fass-results');
@@ -758,7 +752,6 @@ import fassNoResults from '../images/fass-no-results.png';
     });
   });
 
-  // ───────────────────── checkbox helpers ─────────────────────
 
   // Sync parent checkbox indeterminate/checked from children
   const syncParentCheckbox = (campusName: string) => {
@@ -774,7 +767,6 @@ import fassNoResults from '../images/fass-no-results.png';
     parentEl.indeterminate = checked > 0 && checked < total;
   };
 
-  // ───────────────────── render cards ─────────────────────
   const escapeHtml = (str) => {
     const div = document.createElement('div');
     div.appendChild(document.createTextNode(str));
@@ -821,7 +813,7 @@ import fassNoResults from '../images/fass-no-results.png';
 
     // Noise level
     if (space.noiseLevel) {
-      html += `<div class="fass-noise-level">${volumeUpSvg} <span>Noise Level: ${escapeHtml(sentenceCase(space.noiseLevel))}</span></div>`;
+      html += `<div class="fass-noise-level">${iconSvg('volume_up')} <span>Noise Level: ${escapeHtml(sentenceCase(space.noiseLevel))}</span></div>`;
     }
 
     html += '</div></a>';
@@ -1018,7 +1010,7 @@ import fassNoResults from '../images/fass-no-results.png';
       const btn = document.createElement('button');
       btn.className = 'fass-tag';
       btn.setAttribute('aria-label', `Select to remove filter: ${tag.label}`);
-      btn.innerHTML = `${escapeHtml(tag.label)} ${dismissSvg}`;
+      btn.innerHTML = `${escapeHtml(tag.label)} ${iconSvg('cancel', 16)}`;
       btn.addEventListener('click', tag.dismiss);
       tagsList.appendChild(btn);
     });
