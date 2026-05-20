@@ -66,7 +66,7 @@ const slug = relationships?.slug || node.attributes?.path?.alias || Astro.url.pa
 let breadcrumbData = breadcrumb;
 if (!breadcrumbData) {
   breadcrumbData = generateBreadcrumb(
-    { title: fieldTitleContext || title || 'Unknown Page', slug },
+    { title: title || fieldTitleContext || 'Unknown Page', slug },
     parents || []
   );
 }
@@ -85,7 +85,7 @@ if (fieldLocalNavigation) {
 }
 ---
 
-<TemplateLayout node={node} title={fieldTitleContext || title}>
+<TemplateLayout node={node} title={title || fieldTitleContext}>
   <DebugPanel node={node} />
 
   <Template variant="basic" hasSide={!!fieldLocalNavigation}>

@@ -91,7 +91,7 @@ if (fieldLocalNavigation) {
 }
 ---
 
-<TemplateLayout node={node} title={fieldTitleContext || title}>
+<TemplateLayout node={node} title={title || fieldTitleContext}>
   <Template variant="basic" hasSide={!!fieldLocalNavigation}>
     <TemplateTop>
       <Breadcrumb data={breadcrumbData} />

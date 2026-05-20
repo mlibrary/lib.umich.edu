@@ -67,7 +67,7 @@ const imageAlt = imageRelationship?.imageAlt || '';
 const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
 ---
 
-<TemplateLayout node={node} title={fieldTitleContext || title}>
+<TemplateLayout node={node} title={title || fieldTitleContext}>
   <DebugPanel node={node} />
 
   <div class="margins">

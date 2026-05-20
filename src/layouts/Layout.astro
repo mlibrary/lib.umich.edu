@@ -1,15 +1,11 @@
 ---
 /**
  * Main Layout Component for Astro
- * Converted from src/components/layout.js
- * 
- * Both Header and Footer are now pure Astro components!
  */
 import Header from '../components/header/index.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-// Props from pages
 const { title } = Astro.props;
 ---
 
@@ -20,12 +16,10 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <title>{title || 'University of Michigan Library'}</title>
+    <title>{(!title || title === 'Home') ? 'University of Michigan Library' : `${title} | University of Michigan Library`}</title>
     
-    <!-- U-M Alerts Script -->
     <script src="https://umich.edu/apis/umalerts/umalerts.js"></script>
     
-    <!-- U-M Library Design System Web Components -->
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js" as="script" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet"/>
@@ -33,7 +27,6 @@ const { title } = Astro.props;
 
   </head>
   <body>
-    <!-- Page Grid Structure -->
     <div class="page-grid">
       <div>
         <section aria-label="Skip links" class="skip-links">
@@ -46,25 +39,19 @@ const { title } = Astro.props;
           </div>
         </section>
         
-        <!-- U-M Universal Header -->
         <m-universal-header></m-universal-header>
       </div>
       
-      <!-- Library Header - Converted to Astro -->
       <Header />
-      <!-- Main content -->
       <main id="maincontent">
         <slot />
       </main>
       
-      <!-- Footer - Converted to Astro -->
       <Footer />
     </div>
     
-    <!-- Ask a Librarian Chat -->
     <m-chat id="chat"></m-chat>
 
-    <!-- Page heading focus management (mirrors Gatsby onRouteUpdate behavior) -->
     <script>
       function applyPageHeadingFocus() {
         const dataPageHeading = document.querySelector('[data-page-heading]');
@@ -130,7 +117,6 @@ const { title } = Astro.props;
         min-height: 37px;
       }
       
-      /* Main Content */
       main {
         flex: 1;
       }

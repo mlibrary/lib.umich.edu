@@ -12,7 +12,7 @@ if (!node) {
   throw new Error('No node data available');
 }
 
-const field_title_context = node.attributes?.field_title_context || title;
+const field_title_context = title || node.attributes?.field_title_context;
 const body = node.attributes?.body || null;
 const image = node.relationships?.field_media_image || null;
 const slug = node.attributes?.path?.alias || Astro.url.pathname;
@@ -27,10 +27,10 @@ if (!breadcrumbData) {
 
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
 ---
-<Layout title={field_title_context}>
+<Layout title={title || field_title_context}>
     <PageHeader
         breadcrumb={breadcrumbData}
-        title={field_title_context}
+        title={title || field_title_context}
         summary={body?.summary ?? null}
         image={image} />
     <div class="margins">

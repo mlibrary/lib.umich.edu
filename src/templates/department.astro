@@ -61,7 +61,7 @@ const slug = node.slug || node.attributes?.path?.alias || Astro.url.pathname;
 let breadcrumbData = breadcrumb;
 if (!breadcrumbData) {
   breadcrumbData = generateBreadcrumb(
-    { title: fieldTitleContext || title || 'Unknown Page', slug },
+    { title: title || fieldTitleContext || 'Unknown Page', slug },
     parents || []
   );
 }
@@ -96,7 +96,7 @@ const FAX_SVG_PATH = 'M 18 3 V 7 H 6 V 3 Z M 21.6 9.52 a 3.16 3.16 0 0 0 -1.11 -
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
 ---
 
-<TemplateLayout node={node} title={fieldTitleContext || title}>
+<TemplateLayout node={node} title={title || fieldTitleContext}>
   <Template variant="basic" hasSide={!!fieldLocalNavigation}>
     <TemplateTop>
       <Breadcrumb data={breadcrumbData} />

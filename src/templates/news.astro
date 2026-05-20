@@ -102,7 +102,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   News Template Layout Structure (matching Gatsby)
   Uses aside layout with 25rem sidebar
 -->
-<TemplateLayout node={node} title={fieldTitleContext || title}>
+<TemplateLayout node={node} title={title || fieldTitleContext}>
   <DebugPanel node={node}></DebugPanel>
   
   <div class="margins">

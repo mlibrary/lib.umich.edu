@@ -94,7 +94,7 @@ const eventContacts: any[] = Array.isArray(rels.field_non_library_event_contact)
 const shareUrl = `https://www.lib.umich.edu${slug}`;
 ---
 
-<TemplateLayout node={node} title={fieldTitleContext || title}>
+<TemplateLayout node={node} title={title || fieldTitleContext}>
   <DebugPanel node={node} />
 
   <div class="margins">

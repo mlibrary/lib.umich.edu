@@ -137,7 +137,7 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
 <!-- Client-side loading of lunr -->
 <script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
 
-<TemplateLayout node={node} title={fieldTitleContext || title}>
+<TemplateLayout node={node} title={title || fieldTitleContext}>
   <Template variant="basic" hasSide={false}>
     <TemplateTop>
       <Breadcrumb data={breadcrumbData} />

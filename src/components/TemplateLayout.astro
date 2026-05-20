@@ -17,7 +17,7 @@ interface Props {
 const { node, title, ...rest } = Astro.props;
 
 // Extract title from node if available
-const pageTitle = title || node?.attributes?.field_title_context || node?.attributes?.title || 'University of Michigan Library';
+const pageTitle = title || node?.attributes?.field_title_context || node?.attributes?.title;
 ---
 
 <Layout title={pageTitle} {...rest}>

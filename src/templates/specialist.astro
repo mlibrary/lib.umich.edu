@@ -34,7 +34,7 @@ const slug = node.attributes?.path?.alias || Astro.url.pathname;
 let breadcrumbData = breadcrumb;
 if (!breadcrumbData) {
   breadcrumbData = generateBreadcrumb(
-    { title: fieldTitleContext || title || 'Find a Specialist', slug },
+    { title: title || fieldTitleContext || 'Find a Specialist', slug },
     parents || []
   );
 }
@@ -190,7 +190,7 @@ const categoriesJson = JSON.stringify(categories);
 
 <script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
 
-<TemplateLayout node={node} title={fieldTitleContext || title}>
+<TemplateLayout node={node} title={title || fieldTitleContext}>
   <Template variant="basic" hasSide={false}>
     <TemplateTop>
       <Breadcrumb data={breadcrumbData} />
