@@ -11,8 +11,8 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
 import Icon from '../reusable/Icon.astro';
+import { getImage, Image } from 'astro:assets';
 import { fetchStudySpaces } from '../lib/study-spaces.js';
-import { downloadCmsFile } from '../lib/cms-file-cache.js';
 import { ORDERED_SPACE_FEATURES, SPACE_FEATURES_ICON_MAP } from '../constants/space-features.js';
 import { icons } from '../reusable/icons';
 
@@ -34,16 +34,23 @@ const fieldTitleContext = node.attributes.field_title_context || node.title;
 // Fetch all study spaces at build time
 const allStudySpaces = await fetchStudySpaces();
 
-// Localize all study space image URLs so client-rendered img tags
-// point to local /cms-files/ paths instead of CMS URLs.
+// Optimize all study space images at build time using Astro's Sharp service.
+// getImage() resizes to 640px wide WebP (~2× card display size for retina),
+// replacing multi-megabyte CMS originals with ~30–80 KB optimized files.
 {
   const uniqueUrls = [...new Set(allStudySpaces.map((s) => s.imageUrl).filter(Boolean))];
-  const localMap = new Map<string, string>();
+  const optimizedMap = new Map<string, string>();
   await Promise.all(uniqueUrls.map(async (url: string) => {
-    localMap.set(url, await downloadCmsFile(url));
+    try {
+      const result = await getImage({ src: url, width: 640, format: 'webp' });
+      optimizedMap.set(url, result.src);
+    } catch {
+      // Non-image or unreachable URL — keep original
+      optimizedMap.set(url, url);
+    }
   }));
   for (const space of allStudySpaces) {
-    if (space.imageUrl) space.imageUrl = localMap.get(space.imageUrl) ?? space.imageUrl;
+    if (space.imageUrl) space.imageUrl = optimizedMap.get(space.imageUrl) ?? space.imageUrl;
   }
 }
 
@@ -258,10 +265,12 @@ import fassNoResults from '../images/fass-no-results.png';
             <li><a href="/visit-and-study/cafes-and-wellbeing">Cafes</a></li>
             <li><a href="/visit-and-study/study-spaces/student-parent-and-caregiver-study-room">Student Parent and Caregiver Room</a></li>
           </ul>
-          <img
-            src={typeof fassNoResults === 'string' ? fassNoResults : fassNoResults.src}
+          <Image
+            src={fassNoResults}
             alt="No study spaces found"
             class="fass-no-results-image"
+            format="webp"
+            quality={75}
             loading="lazy"
           />
         </div>

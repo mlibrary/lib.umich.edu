@@ -7,7 +7,7 @@ const {
 } = Astro.props;
 ---
 
-<Image class="card-image" src={imgSrc} alt={imgAlt} width={600} height={400} loading="lazy" />
+<Image class="card-image" src={imgSrc} alt={imgAlt} width={600} height={400} format="webp" quality={75} sizes="(min-width: 720px) 600px, 100vw" loading="lazy" />
 
 <style>
     .card-image {
