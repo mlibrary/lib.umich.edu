@@ -1,0 +1,27 @@
+---
+/**
+ * NestLinkedList
+ * Converted from the inline NestLinkedList component in src/pages/_site-map.jsx
+ *
+ */
+
+interface NavItem {
+  text: string;
+  to: string;
+  children?: NavItem[];
+}
+
+interface Props {
+  data: NavItem[];
+}
+
+const { data } = Astro.props;
+---
+<ol>
+  {data.map(({ text, to, children }) => (
+    <li>
+      <a href={to}>{text}</a>
+      {children && children.length > 0 && <Astro.self data={children} />}
+    </li>
+  ))}
+</ol>
