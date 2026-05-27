@@ -1,13 +1,11 @@
 ---
-/**
- * DrupalImage Component
+/*
  *
- * Renders a Drupal-sourced image using Astro's <Image> component for
- * optimized loading. Pass the real intrinsic width/height from Drupal
- * metadata so Astro can generate a proper srcset — CSS handles the
- * responsive display with height: auto.
+ * Renders an optimized Drupal image into Astro's <Image> component for
+ * responsive display. Pass the real intrinsic width/height from Drupal
+ * metadata so Astro can generate a proper srcset. CSS handles the
+ * responsive display with height: auto. Default sizes are set to 920 x 100vw
  *
- * The `alt` prop is always required.
  */
 import { Image } from 'astro:assets';
 
@@ -18,7 +16,7 @@ interface Props {
   width?: number;
   /** Intrinsic pixel height from Drupal file metadata */
   height?: number;
-  /** sizes attribute — defaults to Gatsby-equivalent responsive sizes */
+  /** sizes attribute defaulting to gatsby sizes */
   sizes?: string;
   loading?: 'lazy' | 'eager';
   class?: string;
