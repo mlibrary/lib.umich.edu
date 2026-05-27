@@ -16,14 +16,46 @@ const dropdownSideWidth = '24rem';
     {items.map((item, index) => (
       <li class="nav-panel-item">
         {item.children ? (
-          <button
-            class="nav-panel-button"
-            data-panel-index={index}
-            aria-expanded="false"
-          >
-            <span class="text">{item.text}</span>
-            <Icon icon="navigate_next" />
-          </button>
+          <>
+            <button
+              class="nav-panel-button"
+              data-panel-index={index}
+              aria-expanded="false"
+            >
+              <span class="text">{item.text}</span>
+              <Icon icon="navigate_next" />
+            </button>
+            <div
+              class="nav-panel-content"
+              data-panel-content-index={index}
+              hidden
+            >
+              <Heading level={2} class="nav-panel-heading">{item.text}</Heading>
+              {item.description && (
+                <p class="nav-panel-description">{item.description}</p>
+              )}
+              <ul
+                class="nav-panel-links"
+                style={item.children.length > 4 ? 'columns: 2; column-gap: 1.5rem;' : ''}
+              >
+                {item.children.map((child) => (
+                  <li class="nav-panel-link-item">
+                    <a href={child.to} class="nav-panel-sublink">
+                      <span class="text">{child.text}</span>
+                    </a>
+                  </li>
+                ))}
+                {item.to && (
+                  <li class="nav-panel-link-item">
+                    <a href={item.to} class="nav-panel-view-all">
+                      <span class="text">View all {item.text}</span>
+                      <Icon icon="arrow_forward" />
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </>
         ) : (
           <a href={item.to} class="nav-panel-link">
             <span class="text">{item.text}</span>
@@ -32,44 +64,8 @@ const dropdownSideWidth = '24rem';
       </li>
     ))}
   </ul>
-  <div class="nav-panel-content-container">
-    {items.map((item, index) => (
-      item.children && (
-        <div
-          class="nav-panel-content"
-          data-panel-content-index={index}
-          hidden
-        >
-          <Heading level={2} class="nav-panel-heading">{item.text}</Heading>
-          {item.description && (
-            <p class="nav-panel-description">{item.description}</p>
-          )}
-          <ul
-            class="nav-panel-links"
-            style={item.children.length > 4 ? 'columns: 2; column-gap: 1.5rem;' : ''}
-          >
-            {item.children.map((child) => (
-              <li class="nav-panel-link-item">
-                <a href={child.to} class="nav-panel-sublink">
-                  <span class="text">{child.text}</span>
-                </a>
-              </li>
-            ))}
-            {item.to && (
-              <li class="nav-panel-link-item">
-                <a href={item.to} class="nav-panel-view-all">
-                  <span class="text">View all {item.text}</span>
-                  <Icon icon="arrow_forward" />
-                </a>
-              </li>
-            )}
-          </ul>
-        </div>
-      )
-    ))}
-    <div class="nav-panel-placeholder">
-      <p>Select an item from the list to see related links.</p>
-    </div>
+  <div class="nav-panel-placeholder">
+    <p>Select an item from the list to see related links.</p>
   </div>
 </div>
 
@@ -121,15 +117,15 @@ const dropdownSideWidth = '24rem';
   .nav-panel-item .nav-panel-link:hover .text {
     text-decoration: underline;
   }
-  .nav-panel-content-container {
-    position: relative;
-    width: calc(100% - 24rem);
-  }
+  /* Content panels are absolutely positioned to the right of the sidebar.
+     They live inside their button's <li> in the DOM so that keyboard tab
+     order is: button[0] → links[0] → button[1] → links[1] (matching Gatsby). */
   .nav-panel-content {
+    left: 24rem;
     padding: 2rem 2.5rem;
-    right: 0;
+    position: absolute;
     top: 0;
-    width: 100%;
+    width: calc(100% - 24rem);
   }
   .nav-panel-heading {
     font-size: 1.5rem;
@@ -175,11 +171,11 @@ const dropdownSideWidth = '24rem';
     display: flex;
     height: 100%;
     justify-content: center;
+    left: 24rem;
     padding: 2rem 2.5rem;
     position: absolute;
-    right: 0;
     top: 0;
-    width: 100%;
+    width: calc(100% - 24rem);
     font-size: 0.875rem;
   }
 </style>
