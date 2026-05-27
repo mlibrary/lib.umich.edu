@@ -55,7 +55,15 @@ const { title } = Astro.props;
     <m-chat id="chat"></m-chat>
 
     <script>
-      function applyPageHeadingFocus() {
+      // focus management for UH skip links
+      let initialLoad = true;
+
+      document.addEventListener('astro:page-load', () => {
+        if (initialLoad) {
+          initialLoad = false;
+          return;
+        }
+
         const dataPageHeading = document.querySelector('[data-page-heading]');
         const h1 = document.querySelector('h1');
         const pageHeading = dataPageHeading ? dataPageHeading : h1;
@@ -65,12 +73,7 @@ const { title } = Astro.props;
           pageHeading.classList.add('focus');
           pageHeading.focus();
         }
-      }
-
-      // astro:page-load fires on navigation when View Transitions is enabled.
-      // DOMContentLoaded covers the initial full-page load in both modes.
-      document.addEventListener('astro:page-load', applyPageHeadingFocus);
-      document.addEventListener('DOMContentLoaded', applyPageHeadingFocus);
+      });
     </script>
     
     <style>
@@ -84,32 +87,44 @@ const { title } = Astro.props;
       
       /* Skip Links Styles */
       .skip-links {
-        background-color: #00274C;
+        background-color: var(--color-blue-400, #00274C);
+        height: 1px;
+        left: -10000px;
+        overflow: hidden;
+        position: absolute;
+        top: auto;
+        width: 1px;
       }
-      
+
+      .skip-links:focus-within {
+        height: auto;
+        padding: 1rem 0;
+        position: static;
+        width: auto;
+      }
+
       .skip-links ul {
         list-style: none;
         padding: 0;
         margin: 0;
       }
-      
+
+      .skip-links li {
+        text-align: center;
+      }
+
+      .skip-links li:not(:last-of-type) {
+        margin-bottom: 1rem;
+      }
+
       .skip-links a {
-        position: absolute;
-        left: -10000px;
-        top: auto;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
         color: white;
+        padding: 0.5rem;
         text-decoration: underline;
       }
-      
-      .skip-links a:focus {
-        position: static;
-        width: auto;
-        height: auto;
-        display: inline-block;
-        padding: 0.5rem;
+
+      .skip-links *:focus {
+        outline-color: white;
       }
       
       /* Universal Header placeholder — shown before the web component upgrades */
