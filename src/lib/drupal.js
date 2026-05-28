@@ -517,6 +517,44 @@ export const fetchMediaEntity = async (uuid) => {
   return null;
 };
 
+/**
+ * Resolve a Drupal media entity from its internal numeric ID (e.g. from href="/media/2202").
+ * Uses Drupal's path-translation router endpoint to get the UUID, then delegates to
+ * fetchMediaEntity. Results are cached for the duration of the build.
+ */
+const mediaEntityByPathCache = new Map();
+export const fetchMediaEntityByPath = async (mid) => {
+  if (mediaEntityByPathCache.has(mid)) {
+    return mediaEntityByPathCache.get(mid);
+  }
+  const baseUrl = removeTrailingSlash(DRUPAL_URL);
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const response = await fetch(
+      `${baseUrl}/router/translate-path?path=/media/${mid}`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timeoutId);
+    if (!response.ok) {
+      mediaEntityByPathCache.set(mid, null);
+      return null;
+    }
+    const data = await response.json();
+    const uuid = data?.entity?.uuid;
+    if (!uuid) {
+      mediaEntityByPathCache.set(mid, null);
+      return null;
+    }
+    const result = await fetchMediaEntity(uuid);
+    mediaEntityByPathCache.set(mid, result);
+    return result;
+  } catch {
+    mediaEntityByPathCache.set(mid, null);
+    return null;
+  }
+};
+
 export {
   DRUPAL_URL,
   removeTrailingSlash,

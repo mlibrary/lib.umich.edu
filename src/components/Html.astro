@@ -5,6 +5,7 @@
  *
  * Renders Drupal HTML content with:
  * - Drupal entity embed resolution (media--image, media--remote_video, media--file)
+ * - /media/NNNN link resolution (numeric media ID → local file URL + type suffix)
  * - Relative image URL fixing (/sites/default/files/... → absolute)
  * - CMS anchor link unwrapping (jsonapi / cms.lib.umich.edu image links)
  * - Lazy loading + async decoding on all images
@@ -13,7 +14,7 @@
  */
 import { getImage } from 'astro:assets';
 import Prose from './Prose.astro';
-import { fetchMediaEntity, DRUPAL_URL, removeTrailingSlash } from '../lib/drupal.js';
+import { fetchMediaEntity, fetchMediaEntityByPath, DRUPAL_URL, removeTrailingSlash } from '../lib/drupal.js';
 import { getYouTubeVideoId, buildYouTubeEmbedUrl } from '../utils/youtube';
 import { downloadCmsFile } from '../lib/cms-file-cache.js';
 
@@ -112,7 +113,49 @@ if (uuids.length > 0) {
   );
 }
 
-// Optimize/download all CMS URLs referenced inline in the raw HTML at build time.
+// Resolve /media/NNNN href links — Drupal renders these when an editor links to a media
+// entity rather than embedding it. We translate the numeric ID to a UUID via the Drupal
+// path router, then fetch the entity and replace the link with a local file URL.
+const mediaLinkRe = /\bhref="\/media\/(\d+)"/gi;
+const mediaIds: string[] = [];
+const seenMediaIds = new Set<string>();
+for (const match of (html ?? '').matchAll(mediaLinkRe)) {
+  if (!seenMediaIds.has(match[1])) {
+    seenMediaIds.add(match[1]);
+    mediaIds.push(match[1]);
+  }
+}
+
+type MediaLinkResolution = { href: string; suffix: string };
+const mediaLinkMap = new Map<string, MediaLinkResolution>();
+if (mediaIds.length > 0) {
+  await Promise.all(
+    mediaIds.map(async (mid) => {
+      try {
+        const result = await fetchMediaEntityByPath(mid);
+        if (!result?.data) return;
+        const entity = result.data;
+        const included: any[] = result.included ?? [];
+        if (entity.type === 'media--file') {
+          const fileRef = entity.relationships?.field_media_file?.data;
+          const fileEntity = included.find((e: any) => e.type === 'file--file' && e.id === fileRef?.id);
+          const rawUrl: string = fileEntity?.attributes?.uri?.url ?? '';
+          const mime: string = fileEntity?.attributes?.filemime ?? '';
+          if (rawUrl) {
+            const absoluteUrl = rawUrl.startsWith('/') ? `${DRUPAL_BASE_URL}${rawUrl}` : rawUrl;
+            const href = await downloadCmsFile(absoluteUrl);
+            const suffix = mime === 'application/pdf' ? ' (PDF)' : '';
+            mediaLinkMap.set(mid, { href, suffix });
+          }
+        }
+      } catch {
+        // Entity unavailable — leave the /media/NNNN link as-is
+      }
+    })
+  );
+}
+
+
 // Images (img src/srcset) → getImage() for webp optimization + local /_astro/ paths.
 // File links (href to PDFs etc.) → downloadCmsFile() for local /cms-files/ paths.
 const cmsImgMap = new Map<string, string>();  // relativePath → /_astro/ optimized URL
@@ -178,6 +221,18 @@ function processHtml(rawHtml: string): string {
   let out = rawHtml;
 
   out = out.replace(/<\/?u\b[^>]*>/gi, '');
+
+  // Replace /media/NNNN links with resolved local file URLs
+  if (mediaLinkMap.size > 0) {
+    out = out.replace(
+      /<a\b[^>]*\bhref="\/media\/(\d+)"[^>]*>([\s\S]*?)<\/a>/gi,
+      (_m, mid, text) => {
+        const resolved = mediaLinkMap.get(mid);
+        if (!resolved) return _m;
+        return `<a href="${resolved.href}">${text}${resolved.suffix}</a>`;
+      }
+    );
+  }
 
   if (uuids.length > 0) {
     out = out.replace(
