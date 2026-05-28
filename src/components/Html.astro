@@ -142,14 +142,24 @@ const cmsFileMap = new Map<string, string>(); // relativePath → /cms-files/ do
       if (!imagePaths.has(p)) imagePaths.set(p, width);
     }
   }
+  // srcset entries — absolute CMS URL
+  for (const m of (html ?? '').matchAll(/\bsrcset="([^"]*)"/gi)) {
+    for (const entry of m[1].split(',')) {
+      const parts = entry.trim().split(/\s+/);
+      const p = parts[0];
+      if (!p?.startsWith(`${DRUPAL_BASE_URL}/sites/default/files/`)) continue;
+      const relativePath = p.slice(DRUPAL_BASE_URL.length);
+      if (!imagePaths.has(relativePath)) imagePaths.set(relativePath, 920);
+    }
+  }
   // href attributes — treat as files (PDFs, docs, etc.), keep via downloadCmsFile
   for (const m of (html ?? '').matchAll(/\bhref="(\/sites\/default\/files\/[^"]*)"/gi)) hrefFilePaths.add(m[1]);
   for (const m of (html ?? '').matchAll(new RegExp(`\\bhref="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`, 'gi'))) hrefFilePaths.add(m[1]);
 
   await Promise.all([
-    ...[...imagePaths.entries()].map(async ([relativePath, width]) => {
+    ...[...imagePaths.entries()].map(async ([relativePath]) => {
       try {
-        const result = await getImage({ src: `${DRUPAL_BASE_URL}${relativePath}`, format: 'webp', width });
+        const result = await getImage({ src: `${DRUPAL_BASE_URL}${relativePath}`, format: 'webp', inferSize: true });
         cmsImgMap.set(relativePath, result.src);
       } catch {
         // Fall back to CMS URL so the page still renders
@@ -257,6 +267,17 @@ function processHtml(rawHtml: string): string {
   out = out.replace(
     new RegExp(`(<img\\b[^>]*)\\bsrc="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`,'gi'),
     (_m: string, before: string, p: string) => `${before}src="${cmsImgMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`}"`
+  );
+  // Rewrite absolute CMS srcset entries → optimized local
+  out = out.replace(
+    /(<img\b[^>]*)\bsrcset="([^"]*)"/gi,
+    (_m: string, before: string, srcset: string) => {
+      const fixed = srcset.replace(
+        new RegExp(`${escapedBase}(\\/sites\\/default\\/files\\/[^\\s,]+)`, 'g'),
+        (_: string, p: string) => cmsImgMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`
+      );
+      return `${before}srcset="${fixed}"`;
+    }
   );
   // Rewrite absolute CMS file links to local downloaded paths
   out = out.replace(
