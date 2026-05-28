@@ -519,8 +519,8 @@ export const fetchMediaEntity = async (uuid) => {
 
 /**
  * Resolve a Drupal media entity from its internal numeric ID (e.g. from href="/media/2202").
- * Uses Drupal's path-translation router endpoint to get the UUID, then delegates to
- * fetchMediaEntity. Results are cached for the duration of the build.
+ * Uses JSON:API's drupal_internal__mid filter — no decoupled_router module required.
+ * Tries file-like bundles in order. Results are cached for the duration of the build.
  */
 const mediaEntityByPathCache = new Map();
 export const fetchMediaEntityByPath = async (mid) => {
@@ -528,31 +528,33 @@ export const fetchMediaEntityByPath = async (mid) => {
     return mediaEntityByPathCache.get(mid);
   }
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-    const response = await fetch(
-      `${baseUrl}/router/translate-path?path=/media/${mid}`,
-      { signal: controller.signal }
-    );
-    clearTimeout(timeoutId);
-    if (!response.ok) {
-      mediaEntityByPathCache.set(mid, null);
-      return null;
+  for (const bundle of ['file', 'document']) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const response = await fetch(
+        `${baseUrl}/jsonapi/media/${bundle}?filter[drupal_internal__mid]=${encodeURIComponent(mid)}&include=field_media_file`,
+        { signal: controller.signal }
+      );
+      clearTimeout(timeoutId);
+      if (!response.ok) continue;
+      const json = await response.json();
+      const entity = json?.data?.[0];
+      if (entity) {
+        // Normalize to single-entity shape (same as fetchMediaEntity response)
+        const result = { data: entity, included: json.included ?? [] };
+        mediaEntityByPathCache.set(mid, result);
+        return result;
+      }
+    } catch {
+      // Timeout or network error — try next bundle
     }
-    const data = await response.json();
-    const uuid = data?.entity?.uuid;
-    if (!uuid) {
-      mediaEntityByPathCache.set(mid, null);
-      return null;
-    }
-    const result = await fetchMediaEntity(uuid);
-    mediaEntityByPathCache.set(mid, result);
-    return result;
-  } catch {
-    mediaEntityByPathCache.set(mid, null);
-    return null;
   }
+  /* eslint-disable no-console */
+  console.warn(`[drupal] Could not resolve /media/${mid} — no matching file/document bundle found`);
+  /* eslint-enable no-console */
+  mediaEntityByPathCache.set(mid, null);
+  return null;
 };
 
 export {
