@@ -127,6 +127,10 @@ const cmsFileMap = new Map<string, string>(); // relativePath → /cms-files/ do
   for (const m of (html ?? '').matchAll(/\bsrc="(\/sites\/default\/files\/[^"]*)"/gi)) {
     if (!imagePaths.has(m[1])) imagePaths.set(m[1], 920);
   }
+  // img src attributes — absolute CMS URL
+  for (const m of (html ?? '').matchAll(new RegExp(`\\bsrc="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`,'gi'))) {
+    if (!imagePaths.has(m[1])) imagePaths.set(m[1], 920);
+  }
   // srcset entries — extract width from descriptor (e.g. "640w")
   for (const m of (html ?? '').matchAll(/\bsrcset="([^"]*)"/gi)) {
     for (const entry of m[1].split(',')) {
@@ -249,6 +253,11 @@ function processHtml(rawHtml: string): string {
   // gatsby-source-drupal did this automatically during data-fetch
   // Example: href="https://cms.lib.umich.edu/page-path" -> href="/page-path"
   const escapedBase = DRUPAL_BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Rewrite absolute CMS img src URLs → optimized local
+  out = out.replace(
+    new RegExp(`(<img\\b[^>]*)\\bsrc="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`,'gi'),
+    (_m: string, before: string, p: string) => `${before}src="${cmsImgMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`}"`
+  );
   // Rewrite absolute CMS file links to local downloaded paths
   out = out.replace(
     new RegExp(`(<a\\b[^>]*)\\bhref="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`, 'gi'),
