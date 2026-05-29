@@ -72,7 +72,7 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
 >
   {displayImage && imageSrc && (
     <div class="event-image">
-      <DrupalImage src={imageSrc} alt={imageAlt} width={imageWidth} height={imageHeight} />
+      <DrupalImage sizes="(min-width: 1024px) 16rem, 100vw" src={imageSrc} alt={imageAlt} width={imageWidth} height={imageHeight} />
     </div>
   )}
   
