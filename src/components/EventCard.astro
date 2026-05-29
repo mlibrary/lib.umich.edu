@@ -3,14 +3,14 @@
  * EventCard - Individual event card component
  * Converted from src/components/event-card.js
  */
-import { 
-  eventFormatWhen, 
-  eventFormatWhere, 
-  EXHIBIT_TYPES 
-} from '../utils/events.js';
-import Heading from '../reusable/Heading.astro';
-import Icon from '../reusable/Icon.astro';
-import DrupalImage from './DrupalImage.astro';
+import {
+  eventFormatWhen,
+  eventFormatWhere,
+  EXHIBIT_TYPES,
+} from "../utils/events.js";
+import Heading from "../reusable/Heading.astro";
+import Icon from "../reusable/Icon.astro";
+import DrupalImage from "./DrupalImage.astro";
 
 export interface Props {
   event: any;
@@ -22,18 +22,14 @@ const { event, displayImage = true, hasBorder = true } = Astro.props;
 
 // Extract event data from the JSON:API structure
 const {
-  attributes: {
-    title,
-    body,
-    field_event_date_s_
-  },
+  attributes: { title, body, field_event_date_s_ },
   relationships,
-  fields
+  fields,
 } = event;
 
 // Handle image data — page-generator resolves these as flat fields on field_media_image
 const imageSrc = relationships?.field_media_image?.imageUrl || null;
-const imageAlt = relationships?.field_media_image?.imageAlt || '';
+const imageAlt = relationships?.field_media_image?.imageAlt || "";
 const imageWidth = relationships?.field_media_image?.imageWidth || 920;
 const imageHeight = relationships?.field_media_image?.imageHeight || 400;
 
@@ -47,35 +43,52 @@ const type = relationships?.field_event_type?.name;
 const isAnExhibit = EXHIBIT_TYPES.includes(type);
 
 // Format when and where
-const when = start && end ? eventFormatWhen({
-  end,
-  kind: 'brief',
-  start,
-  type
-}) : 'Date TBD';
+const when =
+  start && end
+    ? eventFormatWhen({
+        end,
+        kind: "brief",
+        start,
+        type,
+      })
+    : "Date TBD";
 
 const where = eventFormatWhere({
-  kind: 'brief',
-  node: event.attributes
+  kind: "brief",
+  node: {
+    ...event.attributes,
+    relationships: {
+      field_event_building: event.relationships?.field_event_building || null,
+      field_event_room: event.relationships?.field_event_room || null,
+    },
+  },
 });
 
 // Create slug from various possible sources (Drupal path, fields.slug, or fallback)
 const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
 ---
 
-<section 
+<section
   class:list={[
-    'event-card',
-    { 'with-border': hasBorder },
-    { 'with-image': displayImage && imageSrc }
+    "event-card",
+    { "with-border": hasBorder },
+    { "with-image": displayImage && imageSrc },
   ]}
 >
-  {displayImage && imageSrc && (
-    <div class="event-image">
-      <DrupalImage sizes="(min-width: 1024px) 16rem, 100vw" src={imageSrc} alt={imageAlt} width={imageWidth} height={imageHeight} />
-    </div>
-  )}
-  
+  {
+    displayImage && imageSrc && (
+      <div class="event-image">
+        <DrupalImage
+          sizes="(min-width: 1024px) 16rem, 100vw"
+          src={imageSrc}
+          alt={imageAlt}
+          width={imageWidth}
+          height={imageHeight}
+        />
+      </div>
+    )
+  }
+
   <div class="event-content">
     <Heading level={3} size="S" class="event-heading">
       <span class="event-link-container">
@@ -85,28 +98,32 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
       </span>
       <span class="event-date">{when}</span>
     </Heading>
-    
-    {body?.summary && (
-      <p class="event-summary">{body.summary}</p>
-    )}
-    
-    <div class="event-meta">
-      {where && where.length > 0 && (
-        <span class="event-location">
-          <Icon icon="address" />
-          <span class="visually-hidden">Where: </span>
-          {where.map((item) => item.label).join(', ')}
-        </span>
-      )}
-      
-      {!isAnExhibit && type && (
-        <span class="event-type">
-          <Icon icon="sell" />
-          <span class="visually-hidden">Event type: </span>
-          {type}
-        </span>
-      )}
-    </div>
+
+    {body?.summary && <p class="event-summary">{body.summary}</p>}
+
+    <p class="event-meta">
+      {
+        where && where.length > 0 && (
+          <span class="event-location">
+            <Icon icon="address" />
+            <span>
+              <span class="visually-hidden">Where: </span>
+              {where.map((item) => item.label).join(", ")}
+            </span>
+          </span>
+        )
+      }
+
+      {
+        !isAnExhibit && type && (
+          <span class="event-type">
+            <Icon icon="sell" />
+            <span class="visually-hidden">Event type: </span>
+            {type}
+          </span>
+        )
+      }
+    </p>
   </div>
 </section>
 
@@ -155,7 +172,7 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
   }
 
   .event-link-container {
-        order: 1;
+    order: 1;
   }
 
   .event-link {
@@ -175,28 +192,25 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
     font-size: 0.875rem;
     font-weight: 800;
     letter-spacing: 1.25px;
-    margin-top: .125rem;
+    margin-top: 0.125rem;
     order: 0;
     text-transform: uppercase;
   }
 
   .event-summary {
     color: var(--color-neutral-300);
-    margin-top: .25rem;
+    margin-top: 0.25rem;
     margin-bottom: 0;
   }
 
   .event-meta {
-    margin-top: .25rem;
+    margin-top: 0.25rem;
   }
 
   .event-location,
   .event-type {
     color: var(--color-neutral-300, #6b7280);
-    margin-right: var(--spacing-l, 1.5rem);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-xs, 0.75rem);
+    margin-right: 1.5rem;
   }
 
   .visually-hidden {

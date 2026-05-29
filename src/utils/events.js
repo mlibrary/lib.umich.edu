@@ -145,11 +145,13 @@ export const eventFormatWhere = ({ kind, node }) => {
     } else {
       // Non-library locations
       where.push({ label: organization });
-      where.push({
-        className: 'margin-top-none',
-        label: fullAddress,
-        locality: fullAddress
-      });
+      if (!isBrief) {
+        where.push({
+          className: 'margin-top-none',
+          label: fullAddress,
+          locality: fullAddress
+        });
+      }
     }
   }
 
