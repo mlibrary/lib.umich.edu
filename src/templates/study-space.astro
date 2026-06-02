@@ -132,15 +132,10 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
 </TemplateLayout>
 
 <script>
-  // If the user navigated here from Find a Study Space:
-  //   - Show the top "Return to Find a Study Space" link
-  //   - Update the bottom link: show arrow, change text to "Return to Find a Study Space"
-  //   - Restore filter query params on both links
-  // Otherwise the top link stays hidden and the bottom reads "Find another study space".
+ 
   document.addEventListener('DOMContentLoaded', () => {
     const backContainer = document.querySelector('[data-back-link]') as HTMLElement | null;
     const findAnotherContainer = document.querySelector('[data-find-another]') as HTMLElement | null;
-    //if (!backContainer || !findAnotherContainer) return;
 
     const referrer = document.referrer || '';
     if (!referrer.includes('/find-study-space')) return;
