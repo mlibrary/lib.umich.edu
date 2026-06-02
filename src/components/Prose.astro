@@ -143,6 +143,27 @@ const { class: className = '' } = Astro.props;
     height: auto;
   }
 
+  .prose :global(.gatsby-image-wrapper) {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .prose :global(.gatsby-image-wrapper img) {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    max-width: none;
+    object-fit: cover;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+  }
+
   /* Tables */
   .prose :global(table) {
     width: 100%;

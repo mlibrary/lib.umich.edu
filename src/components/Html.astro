@@ -88,9 +88,12 @@ if (uuids.length > 0) {
               ...(imgWidth && imgHeight ? { width: imgWidth, height: imgHeight } : { inferSize: true }),
             });
             const alt: string = fileRef?.meta?.alt ?? '';
+            const aspectRatio = imgWidth && imgHeight ? `${imgWidth} / ${imgHeight}` : '920 / 600';
             entityMap[uuid] =
               `<figure>` +
+              `<span class="gatsby-image-wrapper" style="aspect-ratio:${aspectRatio};">` +
               `<img src="${optimized.src}" alt="${alt}" loading="lazy" decoding="async" />` +
+              `</span>` +
               `</figure>`;
           }
         } else if (entityType === 'media--file') {

@@ -3,8 +3,8 @@
  *
  * Renders an optimized Drupal image into Astro's <Image> component for
  * responsive display. Pass the real intrinsic width/height from Drupal
- * metadata so Astro can generate a proper srcset. CSS handles the
- * responsive display with height: auto. Default sizes are set to 920 x 100vw
+ * metadata so Astro can generate a proper srcset. Wrapper/img styles mirror
+ * GatsbyImage output behavior. Default sizes are set to 920 x 100vw
  *
  */
 import { Image } from 'astro:assets';
@@ -31,20 +31,48 @@ const {
   loading = 'lazy',
   class: className,
 } = Astro.props;
+
+const wrapperClassName = className
+  ? `gatsby-image-wrapper ${className}`
+  : 'gatsby-image-wrapper';
 ---
 
 {src && (
-  <Image
-    src={src}
-    alt={alt}
-    width={width}
-    height={height}
-    format="webp"
-    quality={75}
-    sizes={sizes}
-    loading={loading}
-    decoding="async"
-    class={className}
-    style="height: auto;"
-  />
+  <span class={wrapperClassName} style={`aspect-ratio: ${width} / ${height};`}>
+    <Image
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      format="webp"
+      quality={75}
+      sizes={sizes}
+      loading={loading}
+      decoding="async"
+      class={className}
+    />
+  </span>
 )}
+
+<style>
+  .gatsby-image-wrapper {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .gatsby-image-wrapper :global(img) {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    max-width: none;
+    object-fit: cover;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+  }
+</style>
