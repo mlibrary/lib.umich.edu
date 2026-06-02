@@ -264,7 +264,12 @@ const { label = "Search this site" } = Astro.props;
 
 
   :global(.search-result-highlight) {
-    background: var(--color-maize-200) !important;
+    background: var(--color-maize-200);
+    font-weight: 700;
+  }
+
+  :global(.search-result-highlight.black) {
+    background: none;
     font-weight: 700;
   }
 
@@ -375,6 +380,23 @@ const { label = "Search this site" } = Astro.props;
 <script>
   // Site Search Component functionality
   class SiteSearch {
+    form;
+    input;
+    resultsContainer;
+    popover;
+    resultsList;
+    noResults;
+    searchError;
+    status;
+    queryDisplay;
+    librarySearchTemplate;
+    searchResultTemplate;
+    currentQuery = "";
+    searchResults = [];
+    lunrIndex = null;
+    isBlack = false;
+    openResults = true;
+    
     constructor() {
       this.form = document.getElementById("site-search-form");
       this.input = document.getElementById("site-search-input");
@@ -396,6 +418,7 @@ const { label = "Search this site" } = Astro.props;
       this.searchResults = [];
       this.lunrIndex = null;
       this.openResults = true;
+      this.isBlack = false;
 
       if (!this.form || !this.input || !this.resultsContainer || !this.librarySearchTemplate || !this.searchResultTemplate) {
         console.error('Required elements not found');
@@ -447,6 +470,7 @@ const { label = "Search this site" } = Astro.props;
         } else {
           // This appears to be raw page data, create a lunr index
           if (window.lunr) {
+            console.log(searchData);
             const pages = Object.entries(searchData).map(([key, value]) => ({
               id: key,
               title: value.title || '',
@@ -688,13 +712,13 @@ const { label = "Search this site" } = Astro.props;
       // Set summary if exists
       if (result.summary) {
         summaryElement.hidden = false;
-        summaryElement.innerHTML = this.highlightText(result.summary, this.currentQuery);
+        summaryElement.innerHTML = this.highlightText(result.summary, this.currentQuery, true);
       }
       
       return clone;
     }
 
-    highlightText(text, query) {
+    highlightText(text, query, isBlack=false) {
       if (!query || !text) return this.escapeHtml(text);
 
       // Split query into words and escape for regex (matching highlight-words-core behavior)
@@ -709,7 +733,7 @@ const { label = "Search this site" } = Astro.props;
 
       return this.escapeHtml(text).replace(
         regex,
-        '<mark class="search-result-highlight">$1</mark>',
+        `<mark class="search-result-highlight${isBlack ? " black" : ""}">$1</mark>`,
       );
     }
 

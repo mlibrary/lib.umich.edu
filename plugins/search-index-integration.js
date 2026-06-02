@@ -8,6 +8,14 @@ import { getAllUsersForProfiles } from '../src/lib/user-data.js';
 import { join } from 'node:path';
 import lunr from 'lunr';
 
+const SUMMARY_NODE_TYPES = new Set([
+  'node--page',
+  'node--section_page',
+  'node--building',
+  'node--room',
+  'node--location'
+]);
+
 export default function searchIndexIntegration() {
   return {
     hooks: {
@@ -25,10 +33,11 @@ export default function searchIndexIntegration() {
         for (const page of pages) {
           if (page.slug) {
             const ref = `SitePage ${page.slug}`;
+            const shouldIndexSummary = SUMMARY_NODE_TYPES.has(page.node?.type);
             const doc = {
               id: ref,
               keywords: page.keywords || '',
-              summary: page.summary || '',
+              summary: shouldIndexSummary ? page.summary || '' : '',
               tag: page.tag || '',
               title: page.title || '',
               uniqname: ''

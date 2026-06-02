@@ -10,4 +10,8 @@
 @import './utilities.css';
 @import './components.css';
 
+img{
+  border-radius: 0;
+}
+
 /* Add any project-specific overrides here if needed */
