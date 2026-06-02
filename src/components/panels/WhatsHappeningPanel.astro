@@ -1,8 +1,6 @@
 ---
 /**
  * WhatsHappeningPanel - Featured and latest news and exhibits
- * This uses a hidden event pool (renders divs with display: none) then moves the events to the visible container names
- * "whp-events-container" based on visitor's current time. Also puts priority events first.
  */
 import { fetchDrupalEvents } from '../../lib/events-data.js';
 import { processDrupalNode } from '../../lib/page-generator.js';
@@ -14,6 +12,7 @@ interface EventMeta {
   event: any;
   isPriority: boolean;
   start: string;
+  end: string;
 }
 
 let eventsWithMeta: EventMeta[] = [];
@@ -23,11 +22,19 @@ try {
 
   const processedEvents = allEvents.map((event: any) => processDrupalNode(event, included));
 
-  const validEvents = processedEvents.filter(
-    (event: any) =>
-      event.relationships?.field_design_template?.field_machine_name === 'event_exhibit' &&
-      !EXHIBIT_TYPES.includes(event.relationships?.field_event_type?.name)
-  );
+  const validEvents = processedEvents.filter((event: any) => {
+    const isEventExhibit = event.relationships?.field_design_template?.field_machine_name === 'event_exhibit';
+    if (!isEventExhibit) {
+      return false;
+    }
+
+    const isPriority = event.attributes?.field_priority_for_homepage === true;
+    const isExhibit = EXHIBIT_TYPES.includes(event.relationships?.field_event_type?.name);
+
+    // Keep all priority event_exhibit entries (including exhibits).
+    // For non-priority entries, keep only non-exhibits.
+    return isPriority || !isExhibit;
+  });
 
   // expand multi-occurrence events 
   const expandedEvents: any[] = [];
@@ -55,6 +62,7 @@ try {
     event,
     isPriority: event.attributes?.field_priority_for_homepage === true,
     start: event.attributes?.field_event_date_s_?.[0]?.value ?? '',
+    end: event.attributes?.field_event_date_s_?.[0]?.end_value ?? '',
   }));
 } catch (error) {
   console.error('Error fetching events for WhatsHappeningPanel:', error);
@@ -77,13 +85,14 @@ try {
       View all events
     </a>
 
-    <!-- hidden event pool (all valid non-exhibit events server-rendered with data-* attributes) -->
+    <!-- hidden event pool (priority includes exhibits; non-priority excludes exhibits) -->
     <div id="whp-event-pool" style="display:none" aria-hidden="true">
-      {eventsWithMeta.map(({ event, isPriority, start }) => (
+      {eventsWithMeta.map(({ event, isPriority, start, end }) => (
         <div
           class="whp-pooled-event"
           data-priority={String(isPriority)}
           data-start={start}
+          data-end={end}
         >
           <EventCard event={event} displayImage={false} hasBorder={false} />
         </div>
@@ -110,13 +119,13 @@ try {
       new Date().toLocaleString('en', { timeZone: 'America/New_York' })
     );
 
-    const future = allPooled.filter((el) => {
-      const start = new Date(el.dataset.start ?? '');
-      return start >= new Date(now.toDateString());
+    const activeOrUpcoming = allPooled.filter((el) => {
+      const end = new Date(el.dataset.end ?? '');
+      return Number.isFinite(end.getTime()) && end > now;
     });
 
-    const priority = future.filter((el) => el.dataset.priority === 'true');
-    const others = future.filter((el) => el.dataset.priority !== 'true');
+    const priority = activeOrUpcoming.filter((el) => el.dataset.priority === 'true');
+    const others = activeOrUpcoming.filter((el) => el.dataset.priority !== 'true');
     const selected = [...priority, ...others].slice(0, 3);
 
     if (selected.length === 0) {
