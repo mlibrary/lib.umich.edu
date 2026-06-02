@@ -647,8 +647,10 @@ export const getPagesToGenerate = async () => {
     }
     const building = node.relationships.field_room_building;
     const parentLocation = node.relationships.field_parent_location;
-    const bid = building?.id ?? parentLocation?.id;
-    const fid = node.relationships.field_floor?.id;
+    const eventBuilding = node.relationships.field_event_building;
+    const eventFloor = node.relationships.field_event_room?.relationships?.field_floor;
+    const bid = building?.id ?? parentLocation?.id ?? eventBuilding?.id;
+    const fid = node.relationships.field_floor?.id ?? eventFloor?.id;
     if (!bid || !fid) {
       return;
     }

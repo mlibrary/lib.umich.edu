@@ -75,6 +75,12 @@ const where = eventFormatWhere({ kind: 'full', node: whereNode });
 
 // Building page link — slug is constructed from path.alias by processDrupalNode
 const buildingSlug = rels.field_event_building?.fields?.slug || null;
+const floorPlans = Array.isArray(rels.field_floor_plan)
+  ? rels.field_floor_plan
+  : rels.field_floor_plan
+    ? [rels.field_floor_plan]
+    : [];
+const floorPlan = floorPlans[0] || null;
 
 // --- Image (resolved by processDrupalNode special handling) ---
 const imageSrc = rels.field_media_image?.imageUrl || null;
@@ -140,9 +146,11 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
                     <Link href={buildingSlug}>View building information</Link>
                   </span>
                 )}
-                {/* TODO: "View floor plan" link — requires querying floor_plan nodes
-                    by matching field_room_building + field_floor IDs (Gatsby useFloorPlan hook).
-                    Implement once a fetchDrupalFloorPlans utility is added. */}
+                {floorPlan?.fields?.slug && (
+                  <span class="building-link">
+                    <Link href={floorPlan.fields.slug}>View floor plan</Link>
+                  </span>
+                )}
               </td>
             </tr>
           )}
