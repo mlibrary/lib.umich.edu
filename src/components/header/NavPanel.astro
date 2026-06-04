@@ -183,6 +183,11 @@ const dropdownSideWidth = '24rem';
 <script>
   // NavPanel functionality
   class NavPanel {
+    container;
+    buttons;
+    contentPanels;
+    placeholder;
+    currentOpenButton;
      constructor(container) {
       this.container = container;
       this.buttons = container.querySelectorAll('.nav-panel-button');
