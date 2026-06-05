@@ -731,3 +731,17 @@ export const getPagesToGenerate = async () => {
 
   return result;
 };
+/**
+ * Returns a map of Drupal node IDs to their page slugs.
+ * Uses the same cached data as getPagesToGenerate.
+ * @returns {Promise<Record<string, string>>}
+ */
+export const getNidToSlugMap = async () => {
+  const pages = await getPagesToGenerate();
+  return pages.reduce((map, page) => {
+    if (page.drupal_nid) {
+      map[String(page.drupal_nid)] = page.slug;
+    }
+    return map;
+  }, {});
+};

@@ -5,6 +5,7 @@
  */
 import Heading from '../../reusable/Heading.astro';
 import { getImage } from 'astro:assets';
+import { getNidToSlugMap } from '../../lib/page-generator.js';
 
 type Props = {
   data: any;
@@ -12,7 +13,6 @@ type Props = {
 
 const { data } = Astro.props as Props;
 
-// Simple helper functions (no React hooks needed)
 const getNIDFromURI = (uri: string) => {
   if (uri?.includes('entity:node/')) {
     return uri.split('/')[1];
@@ -20,15 +20,26 @@ const getNIDFromURI = (uri: string) => {
   return null;
 };
 
-// Simple link resolution (placeholder - can be enhanced later)
+const nidToSlugMap = await getNidToSlugMap();
+
 const getSimpleLink = (linkData: any) => {
   if (!linkData?.uri) return null;
-  
-  // For now, just use the URI directly (simplified approach)
-  // TODO: Implement proper page context lookup if needed
+
+  const nid = getNIDFromURI(linkData.uri);
+  let to: string;
+
+  if (nid && nidToSlugMap[nid]) {
+    to = nidToSlugMap[nid];
+  } else if (linkData.uri.startsWith('entity:')) {
+    // Unresolved entity reference — fall back to node path
+    to = linkData.uri.replace('entity:node/', '/node/');
+  } else {
+    to = linkData.uri;
+  }
+
   return {
     text: linkData.title || 'Read more',
-    to: linkData.uri.replace('entity:node/', '/node/') // Simple conversion
+    to
   };
 };
 

@@ -9,6 +9,7 @@ import PanelTemplate from './PanelTemplate.astro';
 import Icon from '../../reusable/Icon.astro';
 import Heading from '../../reusable/Heading.astro';
 import Link from '../../reusable/link.astro';
+import { getNidToSlugMap } from '../../lib/page-generator.js';
 
 interface Props {
   data: any;
@@ -25,16 +26,23 @@ const getNIDFromURI = (uri: string) => {
   return null;
 };
 
-// For now, we'll use the link data directly since we don't have page context hook
-// TODO: Implement page context lookup when available
+const nidToSlugMap = await getNidToSlugMap();
+
 const getLinkData = (link: any) => {
   const nid = getNIDFromURI(link.uri);
-  
-  // For now, just use the provided title and URI
-  // In the future, this should look up the actual page data
+  let to: string;
+
+  if (nid && nidToSlugMap[nid]) {
+    to = nidToSlugMap[nid];
+  } else if (link.uri?.startsWith('entity:')) {
+    to = link.uri.replace('entity:node/', '/node/');
+  } else {
+    to = link.uri;
+  }
+
   return {
     text: link.title,
-    to: link.uri
+    to
   };
 };
 
