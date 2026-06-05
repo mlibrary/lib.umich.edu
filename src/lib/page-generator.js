@@ -532,6 +532,8 @@ export const processDrupalNode = (node, included = []) => {
 let _pagesCache = null;
 let _pagesCacheTimestamp = 0;
 const PAGES_CACHE_TTL_MS = 5 * 60 * 1000; 
+let _nidToSlugMapCache = null;
+let _nidToSlugMapPromise = null;
 
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -577,6 +579,11 @@ const writePersistentCache = (pages) => {
 export const getPagesToGenerate = async () => {
   const isDev = import.meta.env?.DEV ?? (process.env.NODE_ENV !== 'production');
   const forceRefresh = process.env.DRUPAL_FORCE_REFRESH === 'true';
+
+  // Reuse in-memory results in build, and in dev while cache is still fresh.
+  if (!forceRefresh && _pagesCache && (!isDev || (Date.now() - _pagesCacheTimestamp < PAGES_CACHE_TTL_MS))) {
+    return _pagesCache;
+  }
 
   if (!forceRefresh && isDev && _pagesCache && (Date.now() - _pagesCacheTimestamp < PAGES_CACHE_TTL_MS)) {
     return _pagesCache;
@@ -737,11 +744,30 @@ export const getPagesToGenerate = async () => {
  * @returns {Promise<Record<string, string>>}
  */
 export const getNidToSlugMap = async () => {
-  const pages = await getPagesToGenerate();
-  return pages.reduce((map, page) => {
-    if (page.drupal_nid) {
-      map[String(page.drupal_nid)] = page.slug;
-    }
-    return map;
-  }, {});
+  const forceRefresh = process.env.DRUPAL_FORCE_REFRESH === 'true';
+
+  if (!forceRefresh && _nidToSlugMapCache) {
+    return _nidToSlugMapCache;
+  }
+
+  if (!forceRefresh && _nidToSlugMapPromise) {
+    return _nidToSlugMapPromise;
+  }
+
+  _nidToSlugMapPromise = (async () => {
+    const pages = await getPagesToGenerate();
+    _nidToSlugMapCache = pages.reduce((map, page) => {
+      if (page.drupal_nid) {
+        map[String(page.drupal_nid)] = page.slug;
+      }
+      return map;
+    }, {});
+    return _nidToSlugMapCache;
+  })();
+
+  try {
+    return await _nidToSlugMapPromise;
+  } finally {
+    _nidToSlugMapPromise = null;
+  }
 };
