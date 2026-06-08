@@ -1,8 +1,4 @@
 ---
-/**
- * Event / Exhibit Template
- * Ported from src/templates/event.js
- */
 import Breadcrumb from '../components/Breadcrumb.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
 import DrupalImage from '../components/DrupalImage.astro';
@@ -16,6 +12,7 @@ import TemplateLayout from '../components/TemplateLayout.astro';
 import TemplateSide from '../components/TemplateSide.astro';
 import { eventFormatWhen, eventFormatWhere } from '../utils/events.js';
 import createGoogleMapsURL from '../components/utilities/create-google-maps-url.js';
+import getBuildingSlug from '../utils/get-building-slug';
 
 interface Props {
   node: any;
@@ -46,7 +43,6 @@ const fieldTitleContext = attrs.field_title_context;
 const { processed: body } = attrs.body || {};
 const { slug } = node;
 
-// --- Event metadata ---
 const dates = attrs.field_event_date_s_ || [];
 const eventType = rels.field_event_type?.name || '';
 const series = rels.field_event_series?.name || null;
@@ -54,14 +50,12 @@ const registrationLink = attrs.field_registration_link?.uri
   ? { label: 'Register to attend', to: attrs.field_registration_link.uri }
   : null;
 
-// Format each occurrence's "When" string (matches Gatsby EventMetadata)
 const when = dates.map((date: any) => {
   const start = new Date(date.value);
   const end = new Date(date.end_value);
   return eventFormatWhen({ end, kind: 'full', start, type: eventType });
 });
 
-// Build a compatible node structure for eventFormatWhere
 const whereNode = {
   field_event_online: attrs.field_event_online,
   field_online_event_link: attrs.field_online_event_link || null,
@@ -73,8 +67,8 @@ const whereNode = {
 };
 const where = eventFormatWhere({ kind: 'full', node: whereNode });
 
-// Building page link — slug is constructed from path.alias by processDrupalNode
-const buildingSlug = rels.field_event_building?.fields?.slug || null;
+const buildingSlug = getBuildingSlug(rels.field_event_building);
+console.log(buildingSlug);
 const floorPlans = Array.isArray(rels.field_floor_plan)
   ? rels.field_floor_plan
   : rels.field_floor_plan
@@ -82,14 +76,12 @@ const floorPlans = Array.isArray(rels.field_floor_plan)
     : [];
 const floorPlan = floorPlans[0] || null;
 
-// --- Image (resolved by processDrupalNode special handling) ---
 const imageSrc = rels.field_media_image?.imageUrl || null;
 const imageAlt = rels.field_media_image?.imageAlt || '';
 const imageWidth = rels.field_media_image?.imageWidth || 920;
 const imageHeight = rels.field_media_image?.imageHeight || 600;
 const imageCaption = rels.field_media_image?.imageCaption || null;
 
-// --- Contacts ---
 const contact = rels.field_library_contact || null;
 const eventContacts: any[] = Array.isArray(rels.field_non_library_event_contact)
   ? rels.field_non_library_event_contact
@@ -117,7 +109,6 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
         {fieldTitleContext}
       </Heading>
 
-      <!-- Event metadata table (matches Gatsby EventMetadata component) -->
       <table class="event-metadata">
         <caption class="visually-hidden">Event details</caption>
         <tbody>
@@ -240,16 +231,14 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
 </TemplateLayout>
 
 <style>
-  /* --- Heading --- */
   .event-heading {
-    margin-bottom: 2rem;   /* SPACING.XL */
-    margin-top: 0.75rem;   /* SPACING.S */
+    margin-bottom: 2rem;
+    margin-top: 0.75rem;
   }
 
-  /* --- Metadata table (matches Gatsby EventMetadata css-in-js) --- */
   .event-metadata {
     border-collapse: collapse;
-    margin-bottom: 2rem;   /* SPACING.XL */
+    margin-bottom: 2rem;
     max-width: 38rem;
     text-align: left;
     width: 100%;
@@ -258,17 +247,17 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   .event-metadata th,
   .event-metadata td {
     border-bottom: solid 1px var(--color-neutral-100);
-    padding: 1rem;         /* SPACING.M */
+    padding: 1rem;
     padding-left: 0;
   }
 
   .event-metadata th {
-    font-size: 0.875rem;   /* TYPOGRAPHY['3XS'] */
+    font-size: 0.875rem;
     font-weight: 800;
     letter-spacing: 1.25px;
     text-transform: uppercase;
-    padding-right: 1rem;   /* SPACING.M */
-    padding-top: 0.75rem;  /* SPACING.S */
+    padding-right: 1rem;
+    padding-top: 0.75rem;
     vertical-align: top;
     width: 20%;
   }
@@ -278,7 +267,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   }
 
   .event-when-cell p + p {
-    margin-top: 0.5rem;    /* SPACING.XS */
+    margin-top: 0.5rem;
   }
 
   .event-where-cell p + p:not(.margin-top-none) {
@@ -289,9 +278,8 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
     display: block;
   }
 
-  /* --- Sidebar figure --- */
   .event-figure {
-    margin-bottom: 2rem;   /* SPACING.XL */
+    margin-bottom: 2rem;
     max-width: 38rem;
   }
 
@@ -302,30 +290,28 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
 
   .event-figcaption {
     color: var(--color-neutral-300);
-    padding-top: 0.75rem;  /* SPACING.S */
+    padding-top: 0.75rem;
   }
 
-  /* --- Contacts --- */
   .event-contact-heading {
     font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 0.25rem;  /* SPACING.2XS */
-    padding-top: 1.5rem;     /* SPACING.L */
+    margin-bottom: 0.25rem;
+    padding-top: 1.5rem;
   }
 
   .event-contact-heading--library {
     border-top: solid 1px var(--color-neutral-100);
-    margin-top: 1.5rem;      /* SPACING.L */
+    margin-top: 1.5rem;
   }
 
   .event-contact-email {
     text-decoration: underline;
   }
 
-  /* --- Accessibility note --- */
   .event-accessibility-note {
     border-top: solid 1px var(--color-neutral-100);
-    margin-top: 1.5rem;      /* SPACING.L */
-    padding-top: 1.5rem;     /* SPACING.L */
+    margin-top: 1.5rem; 
+    padding-top: 1.5rem;
   }
 </style>
