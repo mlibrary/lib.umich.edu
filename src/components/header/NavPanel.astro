@@ -188,6 +188,7 @@ const dropdownSideWidth = '24rem';
     contentPanels;
     placeholder;
     currentOpenButton;
+    minHeight = 340;
      constructor(container) {
       this.container = container;
       this.buttons = container.querySelectorAll('.nav-panel-button');
@@ -213,6 +214,13 @@ const dropdownSideWidth = '24rem';
         this.currentOpenButton = this.buttons[0];
         this.buttons[0].setAttribute('aria-expanded', 'true');
       }
+    }
+
+    updateContainerHeight(contentPanel) {
+      if (!this.container) return;
+
+      const panelHeight = contentPanel ? contentPanel.offsetHeight : 0;
+      this.container.style.minHeight = `${Math.max(this.minHeight, panelHeight)}px`;
     }
 
     autoSelectFirst() {
@@ -257,6 +265,7 @@ const dropdownSideWidth = '24rem';
       const contentPanel = button.closest('.nav-panel-item')?.querySelector('.nav-panel-content');
       if (contentPanel) {
         contentPanel.hidden = false;
+        this.updateContainerHeight(contentPanel);
         this.hidePlaceholder();
       }
       
@@ -285,6 +294,7 @@ const dropdownSideWidth = '24rem';
         const contentPanel = firstButton.closest('.nav-panel-item')?.querySelector('.nav-panel-content');
         if (contentPanel) {
           contentPanel.hidden = false;
+          this.updateContainerHeight(contentPanel);
           this.hidePlaceholder();
         }
         return;
@@ -301,7 +311,7 @@ const dropdownSideWidth = '24rem';
   function initNavPanels() {
     const containers = document.querySelectorAll('.nav-panel-container');
     navPanelInstances = Array.from(containers).map(container => new NavPanel(container));
-    window.navPanels = navPanelInstances;
+    (window as any).navPanels = navPanelInstances;
   }
 
   if (document.readyState === 'loading') {
@@ -311,9 +321,9 @@ const dropdownSideWidth = '24rem';
   }
 
   // Expose reset method globally for parent dropdown to call
-  window.resetNavPanelToFirst = function() {
-    if (window.navPanels) {
-      window.navPanels.forEach(panel => {
+  (window as any).resetNavPanelToFirst = function() {
+    if ((window as any).navPanels) {
+      (window as any).navPanels.forEach(panel => {
         if (panel && panel.resetToFirst) panel.resetToFirst();
       });
     }
