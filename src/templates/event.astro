@@ -67,7 +67,7 @@ const whereNode = {
 };
 const where = eventFormatWhere({ kind: 'full', node: whereNode });
 
-const buildingSlug = getBuildingSlug(rels.field_event_building);
+const buildingSlug = getBuildingSlug({ node: rels.field_event_building });
 console.log(buildingSlug);
 const floorPlans = Array.isArray(rels.field_floor_plan)
   ? rels.field_floor_plan
