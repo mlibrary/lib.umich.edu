@@ -401,6 +401,7 @@ export const processDrupalNode = (node, included = []) => {
             __typename: relatedItem.type,
             id: relatedItem.id,
             ...relatedItem.attributes,
+            ...(relData.meta ? { meta: relData.meta } : {}),
             fields: {
               slug,
               title: relatedItem.attributes?.title
@@ -420,6 +421,7 @@ export const processDrupalNode = (node, included = []) => {
             __typename: relatedItem.type,
             id: relatedItem.id,
             ...relatedItem.attributes,
+            ...(relationship.data.meta ? { meta: relationship.data.meta } : {}),
             fields: {
               slug,
               title: relatedItem.attributes?.title

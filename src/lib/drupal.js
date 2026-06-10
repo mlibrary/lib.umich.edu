@@ -157,6 +157,11 @@ export const fetchDrupalPages = async () => {
     // Link panel relationships - include machine name field
     'field_panels.field_panel_group.field_link_template',
     'field_panels.field_link_template',
+    // Text panel relationships (used by landing_page template and others)
+    'field_panels.field_text_template',
+    'field_panels.field_text_card',
+    'field_panels.field_text_card.field_text_image',
+    'field_panels.field_text_card.field_text_image.field_media_image',
     // Page-level media image (used by collecting-area hero image)
     'field_media_image',
     'field_media_image.field_media_image',
