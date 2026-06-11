@@ -310,6 +310,13 @@ export const fetchDrupalBuildings = async () => {
     'field_panels.field_cards',
     'field_panels.field_cards.field_media_image',
     'field_panels.field_cards.field_media_image.field_media_image',
+    // Text panel relationships
+    'field_panels.field_text_template',
+    'field_panels.field_text_card',
+    'field_panels.field_text_card.field_text_image',
+    'field_panels.field_text_card.field_text_image.field_media_image',
+    // Link panel relationships
+    'field_panels.field_link_template',
     // Building-specific relationships (visit template, LocationAside)
     'field_visit',
     'field_amenities',
@@ -352,6 +359,13 @@ export const fetchDrupalRooms = async () => {
     'field_panels.field_cards',
     'field_panels.field_cards.field_media_image',
     'field_panels.field_cards.field_media_image.field_media_image',
+    // Text panel relationships
+    'field_panels.field_text_template',
+    'field_panels.field_text_card',
+    'field_panels.field_text_card.field_text_image',
+    'field_panels.field_text_card.field_text_image.field_media_image',
+    // Link panel relationships
+    'field_panels.field_link_template',
     'field_room_building',
     'field_room_building.field_hours_open',
     'field_room_building.field_parent_location',
@@ -397,6 +411,13 @@ export const fetchDrupalLocations = async () => {
     'field_panels.field_cards',
     'field_panels.field_cards.field_media_image',
     'field_panels.field_cards.field_media_image.field_media_image',
+    // Text panel relationships
+    'field_panels.field_text_template',
+    'field_panels.field_text_card',
+    'field_panels.field_text_card.field_text_image',
+    'field_panels.field_text_card.field_text_image.field_media_image',
+    // Link panel relationships
+    'field_panels.field_link_template',
     'field_parent_location',
     'field_parent_location.field_hours_open',
     'field_floor_plan',
