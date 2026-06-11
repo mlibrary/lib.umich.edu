@@ -1,53 +1,57 @@
 ---
 /**
- * LinkCallout Component
- * Converted from src/components/link-callout.js
+ * Callout Component
+ * Converted from src/reusable/callout.jsx
  */
 import Icon from '../reusable/Icon.astro';
+import Heading from '../reusable/Heading.astro';
 
 interface Props {
-  to: string;
-  icon?: string;
-  d?: string;
+  title?: string;
+  intent?: 'warning' | string;
+  alert?: boolean;
   class?: string;
 }
 
-const { to, icon, d, class: className = '' } = Astro.props;
+const { title, intent, alert, class: className = '' } = Astro.props;
 ---
 
-<a href={to} class={`link-callout ${className}`.trim()}>
-  <span class="link-callout-icon">
-    {d ? <Icon d={d} size={24} /> : <Icon icon={icon} size={24} />}
-  </span>
-  <span class="link-callout-text">
-    <slot />
-  </span>
-</a>
+<div
+  class:list={['callout', { 'callout--warning': intent === 'warning' }, className]}
+  data-umich-lib-callout
+>
+  <div class="callout-inner">
+    {intent === 'warning' && (
+      <Icon icon="error" size={24} class="callout-icon" />
+    )}
+    <div role={alert ? undefined : 'status'}>
+      {title && <Heading size="M">{title}</Heading>}
+      <slot />
+    </div>
+  </div>
+</div>
 
 <style>
-  .link-callout {
-    background: var(--color-teal-100);
-    border-radius: 2px;
-    display: block;
-    padding: 1rem;
-    padding-right: 2rem;
-    text-decoration: none;
+  .callout {
+    border: solid 1px var(--color-neutral-100);
+    border-left: solid 4px var(--color-teal-400);
+    border-radius: 4px;
+    margin: 2rem 0;
+    padding: 1.5rem;
   }
 
-  .link-callout-icon {
-    color: var(--color-teal-400);
-    margin-right: 0.5rem;
-    flex-shrink: 0;
+  .callout--warning {
+    border-left-color: var(--color-maize-400);
   }
 
-  .link-callout-text {
-    box-shadow: inset 0 -1px var(--color-teal-400);
-    color: var(--color-neutral-400);
-    font-size: 1rem;
-    font-weight: 600;
+  .callout-inner {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: auto 1fr;
   }
 
-  .link-callout:hover .link-callout-text {
-    box-shadow: inset 0 -2px var(--color-teal-400);
+  .callout-icon {
+    color: var(--color-maize-500);
+    margin-top: 0.25rem;
   }
 </style>

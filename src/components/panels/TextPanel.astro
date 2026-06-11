@@ -7,6 +7,7 @@
  */
 import PanelTemplate from './PanelTemplate.astro';
 import PanelList from './PanelList.astro';
+import Margins from '../Margins.astro';
 import Heading from '../../reusable/Heading.astro';
 import Html from '../Html.astro';
 import Link from '../../reusable/link.astro';
@@ -32,16 +33,31 @@ const buildImageUrl = (relativeUrl: string): string => {
 ---
 
 {template === 'callout' && cards.length > 0 && (
-  <div class:list={["callout-wrapper", { "callout-wrapper--full": placement !== 'body' }]}>
-    <div class:list={["callout", { "callout--body": placement === 'body' }]} data-umich-lib-callout>
-      <div class="callout-inner">
-        {title && (
-          <Heading level={2} size="M" class="callout-heading">{title}</Heading>
-        )}
-        <Html html={cards[0].field_body.processed} />
+  placement !== 'body' ? (
+    <Margins>
+      <div class="callout-wrapper">
+        <div class="callout" data-umich-lib-callout>
+          <div class="callout-inner">
+            {title && (
+              <Heading level={2} size="M" class="callout-heading">{title}</Heading>
+            )}
+            <Html html={cards[0].field_body.processed} />
+          </div>
+        </div>
+      </div>
+    </Margins>
+  ) : (
+    <div class="callout-wrapper">
+      <div class="callout callout--body" data-umich-lib-callout>
+        <div class="callout-inner">
+          {title && (
+            <Heading level={2} size="M" class="callout-heading">{title}</Heading>
+          )}
+          <Html html={cards[0].field_body.processed} />
+        </div>
       </div>
     </div>
-  </div>
+  )
 )}
 
 {(template === 'body_width_text' || template === 'text_group') && (
@@ -153,9 +169,6 @@ const buildImageUrl = (relativeUrl: string): string => {
 <style>
   .callout-wrapper {
     margin: 2rem 0;
-  }
-  .callout-wrapper--full {
-    max-width: 100%;
   }
   .callout {
     border: solid 1px var(--color-neutral-100);

@@ -21,7 +21,7 @@ import Heading from '../reusable/Heading.astro';
 import Icon from '../reusable/Icon.astro';
 import List from '../reusable/List.astro';
 import Html from '../components/Html.astro';
-import Callout from '../reusable/Callout.astro';
+import LinkCallout from '../reusable/LinkCallout.astro';
 import Panels from '../components/panels/Panels.astro';
 import Prose from '../components/Prose.astro';
 import SideNavigation from '../components/navigation/SideNavigation.astro';
@@ -173,9 +173,9 @@ const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
         {fieldMakeAnAppointment?.uri && (
           <div class="appointment-callout">
-            <Callout to={fieldMakeAnAppointment.uri} icon="today">
+            <LinkCallout to={fieldMakeAnAppointment.uri} icon="today">
               Make an appointment with us
-            </Callout>
+            </LinkCallout>
           </div>
         )}
 
