@@ -650,36 +650,85 @@ export const getPagesToGenerate = async () => {
     return node.type === 'node--floor_plan';
   });
 
-  processedNodes.forEach((node) => {
-    if (node.type === 'node--page' || node.type === 'node--floor_plan' || node.type === 'node--section_page') {
-      return;
+  const getFloorPlanForEntity = (entity) => {
+    if (!entity?.relationships) {
+      return null;
     }
-    const building = node.relationships.field_room_building;
-    const parentLocation = node.relationships.field_parent_location;
-    const eventBuilding = node.relationships.field_event_building;
-    const eventFloor = node.relationships.field_event_room?.relationships?.field_floor;
+
+    const building = entity.relationships.field_room_building;
+    const parentLocation = entity.relationships.field_parent_location;
+    const eventBuilding = entity.relationships.field_event_building;
+    const eventFloor = entity.relationships.field_event_room?.relationships?.field_floor;
     const bid = building?.id ?? parentLocation?.id ?? eventBuilding?.id;
-    const fid = node.relationships.field_floor?.id ?? eventFloor?.id;
+    const fid = entity.relationships.field_floor?.id ?? eventFloor?.id;
+
     if (!bid || !fid) {
-      return;
+      return null;
     }
-    const match = floorPlanNodes.find((fp) => {
+
+    return floorPlanNodes.find((fp) => {
       const fpBuilding = fp.relationships?.field_room_building;
       const fpFloor = fp.relationships?.field_floor;
       return fpBuilding?.id === bid && fpFloor?.id === fid;
-    });
-    if (match) {
-      node.relationships.field_floor_plan = {
-        ...(match.attributes || {}),
-        id: match.id,
-        __typename: match.type,
-        fields: {
-          slug: match.slug,
-          title: match.title
-        },
+    }) || null;
+  };
+
+  const toResolvedFloorPlanRelationship = (match) => {
+    if (!match) {
+      return null;
+    }
+
+    return {
+      ...(match.attributes || {}),
+      id: match.id,
+      __typename: match.type,
+      fields: {
         slug: match.slug,
-        relationships: match.relationships
-      };
+        title: match.title
+      },
+      slug: match.slug,
+      relationships: match.relationships
+    };
+  };
+
+  processedNodes.forEach((node) => {
+    if (node.type === 'node--page' || node.type === 'node--floor_plan' || node.type === 'node--section_page') {
+      // Keep going for page/section nodes so panel card children can still be enriched.
+    } else {
+      const match = getFloorPlanForEntity(node);
+      if (match) {
+        node.relationships.field_floor_plan = toResolvedFloorPlanRelationship(match);
+      }
+    }
+
+    // Gatsby's destination-horizontal-panel used useFloorPlan(bid, rid) for each card.
+    // Replicate that behavior by enriching panel cards with a resolved field_floor_plan
+    // when direct relationship data is missing or incomplete.
+    const panels = node.relationships?.field_panels;
+    if (Array.isArray(panels)) {
+      panels.forEach((panel) => {
+        const cards = panel?.relationships?.field_cards;
+        if (!Array.isArray(cards)) {
+          return;
+        }
+
+        cards.forEach((card) => {
+          const hasFloorPlanSlug =
+            card?.relationships?.field_floor_plan?.fields?.slug
+            || card?.relationships?.field_floor_plan?.slug
+            || card?.relationships?.field_floor_plan?.path?.alias;
+
+          if (hasFloorPlanSlug) {
+            return;
+          }
+
+          const match = getFloorPlanForEntity(card);
+          if (match) {
+            card.relationships = card.relationships || {};
+            card.relationships.field_floor_plan = toResolvedFloorPlanRelationship(match);
+          }
+        });
+      });
     }
   });
 

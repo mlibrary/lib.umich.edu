@@ -58,7 +58,7 @@ const hasTopBorder = data.field_border === 'yes';
 {fieldMachineName === 'bulleted_list' && (
   <section class={`bulleted-link-list ${hasTopBorder ? 'has-top-border' : ''}`}>
     <Heading level={2} style="font-size: 1.5rem; font-weight: 600; line-height: 1.25;">{data.field_title}</Heading>
-    <ol class="bulleted-list">
+    <ul class="bulleted-list">
       {links.map((link: any) => {
         const linkData = getLinkData(link);
         return (
@@ -72,15 +72,17 @@ const hasTopBorder = data.field_border === 'yes';
           </li>
         );
       })}
-    </ol>
+    </ul>
     
     {moreLink && (
-      <Link 
-        href={moreLink.to} 
-        class="link-default"
-      >
-        {moreLink.text}
-      </a>
+      <p class="more-link">
+        <Link 
+          href={moreLink.to} 
+          class="link-default"
+        >
+          {moreLink.text}
+        </Link>
+      </p>
     )}
   </section>
 )}
@@ -157,8 +159,7 @@ const hasTopBorder = data.field_border === 'yes';
   }
 
   .bulleted-link-list {
-    padding-bottom: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
+    margin: 2rem 0;
   } 
 
   .bulleted-link-list.has-top-border {
@@ -168,22 +169,16 @@ const hasTopBorder = data.field_border === 'yes';
   }
 
   .bulleted-list {
-    column-gap: 2rem;
-    columns: 2;
-    list-style: none;
+    list-style: disc;
+    margin-left: 1.5rem;
     margin-top: 1.5rem;
-    max-width: 24rem;
+    max-width: 38rem;
+    padding: 0;
   }
 
   .bulleted-list li {
     break-inside: avoid;
-  }
-
-  .bulleted-list > li > a{
-    box-shadow: none;
-    color: var(--color-neutral-400);
-    display: block;
-    padding-bottom: 0.75rem;
+    margin-bottom: .5rem;
   }
 
   .more-link {

@@ -7,15 +7,40 @@ const {
 } = Astro.props;
 ---
 
-<Image class="card-image" src={imgSrc} alt={imgAlt} width={600} height={400} format="webp" quality={75} sizes="(min-width: 720px) 600px, 100vw" loading="lazy" />
+<div class="card-image" data-card-image>
+  <Image
+    src={imgSrc}
+    alt={imgAlt}
+    width={600}
+    height={400}
+    format="webp"
+    quality={75}
+    sizes="(min-width: 720px) 600px, 100vw"
+    loading="lazy"
+    class="card-image__img"
+  />
+</div>
 
 <style>
-    .card-image {
-        aspect-ratio: 3/2;
-        background-color: var(--color-blue-100);
-        border-radius: 4px;
-        margin-bottom: var(--spacing-s);
-        overflow: hidden;
-        width: 100%;
-    }
+  .card-image {
+    aspect-ratio: 3 / 2;
+    background-color: var(--color-blue-100);
+    border-radius: 4px;
+    margin-bottom: var(--spacing-s);
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .card-image :global(.card-image__img) {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    max-width: none;
+    object-fit: cover;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+  }
 </style>

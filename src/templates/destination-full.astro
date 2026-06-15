@@ -16,14 +16,10 @@ import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
 import DrupalImage from '../components/DrupalImage.astro';
-import IconText from '../components/IconText.astro';
-import Link from '../reusable/link.astro';
+import DestinationLocationInfo from '../components/destination-location-info.astro';
 import Panels from '../components/panels/Panels.astro';
 import ChatIframe from '../components/ChatIframe.astro';
 import transformNodePanels from '../utils/transform-node-panels';
-import getBuildingSlug from '../utils/get-building-slug';
-import getFloor from '../utils/get-floor';
-import createSlug from '../reusable/create-slug';
 
 interface Props {
   node: any;
@@ -73,42 +69,6 @@ const { bodyPanels, fullPanels } = transformNodePanels({ node });
 // Chat iframe shown only on /ask-librarian
 const showChatIframe = slug === '/ask-librarian';
 
-// Location info (same logic as destination-body)
-const isPageNode = node.type === 'node--page';
-
-const buildingNode = relationships?.field_room_building;
-const parentLocationNode = relationships?.field_parent_location;
-const locationNode = buildingNode
-  ?? parentLocationNode?.relationships?.field_parent_location
-  ?? node;
-
-const buildingSlug = getBuildingSlug({ node });
-const shouldDisplayHours = node.attributes?.field_display_hours_;
-const locationTitle = parentLocationNode?.title ?? buildingNode?.title;
-const phoneNumber = node.attributes?.field_phone_number;
-const email = node.attributes?.field_email;
-const floor = relationships?.field_floor ? getFloor({ node }) : null;
-const roomNumber = node.attributes?.field_room_number
-  ? `Room ${node.attributes.field_room_number}`
-  : null;
-const locationSummary = [locationTitle, floor, roomNumber]
-  .filter((item) => typeof item === 'string')
-  .join(', ');
-
-const floorPlans = Array.isArray(relationships?.field_floor_plan)
-  ? relationships.field_floor_plan
-  : relationships?.field_floor_plan
-    ? [relationships.field_floor_plan]
-    : [];
-const floorPlan = floorPlans[0] || null;
-
-const askLibrarian = slug === '/ask-librarian';
-
-const hoursAnchorTitle = locationNode?.relationships?.field_parent_location?.title
-  ?? locationNode?.title;
-const hoursAnchor = hoursAnchorTitle
-  ? `/locations-and-hours/hours-view#${createSlug(hoursAnchorTitle)}`
-  : '/locations-and-hours/hours-view';
 ---
 
 <TemplateLayout node={node} title={title || fieldTitleContext}>
@@ -134,69 +94,7 @@ const hoursAnchor = hoursAnchorTitle
           <p class="lede">{bodySummary}</p>
         )}
 
-        {!isPageNode && (
-          <div class="location-info">
-            {shouldDisplayHours && (
-              <p>
-                <IconText icon="access_time">
-                  <span>
-                    <span class="hours-display" data-hours-node={JSON.stringify({
-                      field_display_hours_: shouldDisplayHours,
-                      field_hours_different_from_build: node.attributes?.field_hours_different_from_build,
-                      relationships: {
-                        field_hours_open: relationships?.field_hours_open,
-                        field_room_building: relationships?.field_room_building,
-                        field_parent_location: relationships?.field_parent_location,
-                      }
-                    })}>…</span>
-                    <span class="block">
-                      <Link href={hoursAnchor}>View more hours</Link>
-                    </span>
-                  </span>
-                </IconText>
-              </p>
-            )}
-
-            {(floorPlan || askLibrarian) && (
-              <p>
-                <IconText icon="address">
-                  <span>
-                    {locationSummary}
-                    {buildingSlug && (
-                      <span class="block">
-                        <Link href={buildingSlug}>View building information</Link>
-                      </span>
-                    )}
-                    <span class="block">
-                      {askLibrarian
-                        ? 'Online'
-                        : floorPlan?.fields?.slug && (
-                            <Link href={floorPlan.fields.slug}>View floor plan</Link>
-                          )
-                      }
-                    </span>
-                  </span>
-                </IconText>
-              </p>
-            )}
-
-            {phoneNumber && (
-              <p>
-                <IconText icon="phone">
-                  <Link href={`tel:+1-${phoneNumber}`}>{phoneNumber}</Link>
-                </IconText>
-              </p>
-            )}
-
-            {email && (
-              <p>
-                <IconText icon="mail_outline">
-                  <Link href={`mailto:${email}`}>{email}</Link>
-                </IconText>
-              </p>
-            )}
-          </div>
-        )}
+        <DestinationLocationInfo node={node} />
       </div>
 
       {body && <Html html={body} />}
@@ -237,18 +135,6 @@ const hoursAnchor = hoursAnchorTitle
     font-size: 1.25rem;
     line-height: 1.5;
     margin-bottom: var(--spacing-xl);
-  }
-
-  .location-info {
-    margin-bottom: var(--spacing-2xl);
-  }
-
-  .location-info > p:not(:last-child) {
-    margin-bottom: var(--spacing-m);
-  }
-
-  .block {
-    display: block;
   }
 
   .destination-full-image {

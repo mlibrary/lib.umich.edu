@@ -5,6 +5,7 @@
  * Templates: callout, body_width_text, text_group, full_width_text_template,
  *            grid_text_template_with_linked_title, image_text_body
  */
+import Callout from '../../reusable/Callout.astro';
 import PanelTemplate from './PanelTemplate.astro';
 import PanelList from './PanelList.astro';
 import Margins from '../Margins.astro';
@@ -35,28 +36,20 @@ const buildImageUrl = (relativeUrl: string): string => {
 {template === 'callout' && cards.length > 0 && (
   placement !== 'body' ? (
     <Margins>
-      <div class="callout-wrapper">
-        <div class="callout" data-umich-lib-callout>
-          <div class="callout-inner">
-            {title && (
-              <Heading level={2} size="M" class="callout-heading">{title}</Heading>
-            )}
-            <Html html={cards[0].field_body.processed} />
-          </div>
-        </div>
-      </div>
+      <Callout intent="warning">
+        {title && (
+          <Heading level={2} size="M" class="callout-panel-heading">{title}</Heading>
+        )}
+        <Html html={cards[0].field_body.processed} />
+      </Callout>
     </Margins>
   ) : (
-    <div class="callout-wrapper">
-      <div class="callout callout--body" data-umich-lib-callout>
-        <div class="callout-inner">
-          {title && (
-            <Heading level={2} size="M" class="callout-heading">{title}</Heading>
-          )}
-          <Html html={cards[0].field_body.processed} />
-        </div>
-      </div>
-    </div>
+    <Callout intent="warning" class="callout--body">
+      {title && (
+        <Heading level={2} size="M" class="callout-panel-heading">{title}</Heading>
+      )}
+      <Html html={cards[0].field_body.processed} />
+    </Callout>
   )
 )}
 
@@ -167,23 +160,11 @@ const buildImageUrl = (relativeUrl: string): string => {
 )}
 
 <style>
-  .callout-wrapper {
-    margin: 2rem 0;
-  }
-  .callout {
-    border: solid 1px var(--color-neutral-100);
-    border-left: solid 4px var(--color-maize-400);
-    border-radius: 4px;
-    padding: 1rem;
-  }
   .callout--body {
     max-width: 38rem;
   }
-  .callout-inner {
-    display: grid;
-    gap: 0.5rem;
-  }
-  .callout-heading {
+
+  .callout-panel-heading {
     margin-bottom: 0.5rem;
   }
 

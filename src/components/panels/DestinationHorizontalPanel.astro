@@ -34,7 +34,7 @@ const cards = (data.relationships.field_cards || []).map((card: any) => {
     content: card.body?.processed || null,
     imgSrc: imageData?.imageUrl || null,
     imgAlt: imageData?.imageAlt || '',
-    floorPlanSlug: floorPlan?.slug || floorPlan?.fields?.slug || null,
+    floorPlanSlug: floorPlan?.fields?.slug || floorPlan?.slug || floorPlan?.path?.alias || null,
     linkDestText: [parentTitle, floor].filter(Boolean).join(' '),
     subtitle: [parentTitle, floor, room].filter(Boolean).join(', '),
     title: card.title
@@ -94,8 +94,11 @@ const cards = (data.relationships.field_cards || []).map((card: any) => {
   .destination-card-subtitle {
     color: var(--color-neutral-300);
     display: block;
-    font-size: 0.75rem;
-    margin-top: var(--spacing-3xs, 0.25rem);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    margin-top: .125rem;
+    text-transform: uppercase;
   }
 
   .destination-card-link {

@@ -37,6 +37,10 @@ const { title, shaded = false, headingCss = {}, ...rest } = Astro.props;
 </section>
 
 <style>
+  .panel{
+    padding: 3rem 0;
+  }
+
   .panel:not(:last-of-type) {
     border-bottom: solid 1px var(--color-neutral-100, #e0e0e0);
     padding-bottom: 3rem;
@@ -51,7 +55,7 @@ const { title, shaded = false, headingCss = {}, ...rest } = Astro.props;
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.25;
-    color: var(--color-neutral-400);
+    margin-bottom: 1.25rem;
   }
 
   /* .panel{

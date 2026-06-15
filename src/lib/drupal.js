@@ -151,6 +151,8 @@ export const fetchDrupalPages = async () => {
     'field_panels.field_cards.field_hours_open',
     'field_panels.field_cards.field_parent_location',
     'field_panels.field_cards.field_parent_page',
+    'field_panels.field_cards.field_room_building',
+    'field_panels.field_cards.field_floor',
     'field_panels.field_cards.field_floor_plan',
     'field_panels.field_cards.field_parent_location.field_hours_open',
     'field_panels.field_cards.field_parent_page.field_hours_open',
@@ -217,6 +219,8 @@ export const fetchDrupalSectionPages = async () => {
     // Hours panel lite - direct field_cards with location data
     'field_panels.field_cards.field_hours_open',
     'field_panels.field_cards.field_parent_location',
+    'field_panels.field_cards.field_room_building',
+    'field_panels.field_cards.field_floor',
     'field_panels.field_cards.field_parent_location.field_hours_open',
     // Parent page sub-relationships (needed by LocationAside for section_locaside)
     'field_parent_page.field_hours_open',
