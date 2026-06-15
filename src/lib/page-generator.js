@@ -536,6 +536,8 @@ let _pagesCacheTimestamp = 0;
 const PAGES_CACHE_TTL_MS = 5 * 60 * 1000; 
 let _nidToSlugMapCache = null;
 let _nidToSlugMapPromise = null;
+let _nidToTitleMapCache = null;
+let _nidToTitleMapPromise = null;
 
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -852,5 +854,39 @@ export const getNidToSlugMap = async () => {
     return await _nidToSlugMapPromise;
   } finally {
     _nidToSlugMapPromise = null;
+  }
+};
+
+/**
+ * Returns a map of Drupal node IDs to their page titles.
+ * Uses the same cached data as getPagesToGenerate.
+ * @returns {Promise<Record<string, string>>}
+ */
+export const getNidToTitleMap = async () => {
+  const forceRefresh = process.env.DRUPAL_FORCE_REFRESH === 'true';
+
+  if (!forceRefresh && _nidToTitleMapCache) {
+    return _nidToTitleMapCache;
+  }
+
+  if (!forceRefresh && _nidToTitleMapPromise) {
+    return _nidToTitleMapPromise;
+  }
+
+  _nidToTitleMapPromise = (async () => {
+    const pages = await getPagesToGenerate();
+    _nidToTitleMapCache = pages.reduce((map, page) => {
+      if (page.drupal_nid) {
+        map[String(page.drupal_nid)] = page.title;
+      }
+      return map;
+    }, {});
+    return _nidToTitleMapCache;
+  })();
+
+  try {
+    return await _nidToTitleMapPromise;
+  } finally {
+    _nidToTitleMapPromise = null;
   }
 };

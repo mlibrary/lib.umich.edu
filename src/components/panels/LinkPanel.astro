@@ -1,7 +1,6 @@
 ---
 /**
  * LinkPanel - Various link list layouts
- * Converted from src/components/panels/link-panel.js
  * 
  * Templates: bulleted_list, 2_column_db_link_list, related_links
  */
@@ -9,7 +8,7 @@ import PanelTemplate from './PanelTemplate.astro';
 import Icon from '../../reusable/Icon.astro';
 import Heading from '../../reusable/Heading.astro';
 import Link from '../../reusable/link.astro';
-import { getNidToSlugMap } from '../../lib/page-generator.js';
+import { getNidToSlugMap, getNidToTitleMap } from '../../lib/page-generator.js';
 
 interface Props {
   data: any;
@@ -27,9 +26,11 @@ const getNIDFromURI = (uri: string) => {
 };
 
 const nidToSlugMap = await getNidToSlugMap();
+const nidToTitleMap = await getNidToTitleMap();
 
 const getLinkData = (link: any) => {
   const nid = getNIDFromURI(link.uri);
+  const text = link.title?.trim() || (nid && nidToTitleMap[nid]) || link.uri;
   let to: string;
 
   if (nid && nidToSlugMap[nid]) {
@@ -39,9 +40,9 @@ const getLinkData = (link: any) => {
   } else {
     to = link.uri;
   }
-
+  
   return {
-    text: link.title,
+    text,
     to
   };
 };
@@ -49,7 +50,7 @@ const getLinkData = (link: any) => {
 const fieldMachineName = relationships?.field_link_template?.field_machine_name || 'bulleted_list';
 const links = data.field_link || [];
 const moreLink = data.field_view_all ? {
-  text: data.field_view_all.title,
+  text: data.field_view_all.title?.trim() || data.field_view_all.uri,
   to: data.field_view_all.uri
 } : null;
 const hasTopBorder = data.field_border === 'yes';
@@ -94,10 +95,10 @@ const hasTopBorder = data.field_border === 'yes';
       {links.map((link: any, index: number) => (
         <li class="db-link-item">
           <Link kind="list"
-            href={link.uri} 
+            href={getLinkData(link).to} 
             class="db-link"
           >
-            <span class="db-link-text">{link.title}</span>
+            <span class="db-link-text">{getLinkData(link).text}</span>
           </Link>
         </li>
       ))}
@@ -105,10 +106,10 @@ const hasTopBorder = data.field_border === 'yes';
     
     {data.field_view_all && (
       <Link
-        href={data.field_view_all.uri} 
+        href={moreLink.to} 
         class="view-all-link"
       >
-        {data.field_view_all.title}
+        {moreLink.text}
       </Link>
     )}
   </section>
@@ -119,7 +120,6 @@ const hasTopBorder = data.field_border === 'yes';
     <ol class="related-links-list">
       {links.map((link: any, index: number) => {
         const linkData = getLinkData(link);
-        const isExternal = linkData.to && !linkData.to.startsWith('/');
         return (
           <li class="related-link-item">
             <a 
@@ -185,7 +185,6 @@ const hasTopBorder = data.field_border === 'yes';
     margin-bottom: 0;
   }
 
-  /* Database Link List styles */
   @media only screen and (min-width: 920px) {
     :global(.panel-group-50-container) > *:not(:last-child) {
       border: none;
@@ -242,7 +241,6 @@ const hasTopBorder = data.field_border === 'yes';
     display: inline-block;
   }
 
-  /* Related Links styles */
   .related-links-list {
     list-style: none;
     padding: 0;
@@ -277,15 +275,13 @@ const hasTopBorder = data.field_border === 'yes';
   .fancy-link-icon {
     color: var(--color-teal-400);
     flex-shrink: 0;
-    margin-top: 2px; /* Slight vertical alignment adjustment */
   }
 
   .fancy-link-text {
-    font-size: 1.125rem;
+    font-size: 1rem;
     color: var(--color-neutral-400);
     font-weight: 600;
     box-shadow: inset 0 -1px var(--color-teal-400);
-    flex: 1;
   }
 
 
