@@ -146,6 +146,9 @@ export const fetchDrupalPages = async () => {
     'field_panels.field_panel_group.field_cards.field_media_image.field_media_image',
     'field_panels.field_panel_group.field_cards.field_hours_open',
     'field_panels.field_panel_group.field_cards.field_parent_location',
+    'field_panels.field_panel_group.field_cards.field_parent_location.field_hours_open',
+    'field_panels.field_panel_group.field_cards.field_parent_location.field_parent_location',
+    'field_panels.field_panel_group.field_cards.field_parent_location.field_parent_location.field_hours_open',
     'field_panels.field_panel_group.field_cards.field_parent_page',
     // Hours panel lite - direct field_cards relationship with full location data
     'field_panels.field_cards.field_hours_open',
@@ -155,6 +158,12 @@ export const fetchDrupalPages = async () => {
     'field_panels.field_cards.field_floor',
     'field_panels.field_cards.field_floor_plan',
     'field_panels.field_cards.field_parent_location.field_hours_open',
+    'field_panels.field_cards.field_parent_location.field_parent_location',
+    'field_panels.field_cards.field_parent_location.field_parent_location.field_hours_open',
+    'field_panels.field_cards.field_room_building.field_parent_location',
+    'field_panels.field_cards.field_room_building.field_parent_location.field_hours_open',
+    'field_panels.field_cards.field_room_building.field_parent_location.field_parent_location',
+    'field_panels.field_cards.field_room_building.field_parent_location.field_parent_location.field_hours_open',
     'field_panels.field_cards.field_parent_page.field_hours_open',
     // Link panel relationships - include machine name field
     'field_panels.field_panel_group.field_link_template',
@@ -222,6 +231,12 @@ export const fetchDrupalSectionPages = async () => {
     'field_panels.field_cards.field_room_building',
     'field_panels.field_cards.field_floor',
     'field_panels.field_cards.field_parent_location.field_hours_open',
+    'field_panels.field_cards.field_parent_location.field_parent_location',
+    'field_panels.field_cards.field_parent_location.field_parent_location.field_hours_open',
+    'field_panels.field_cards.field_room_building.field_parent_location',
+    'field_panels.field_cards.field_room_building.field_parent_location.field_hours_open',
+    'field_panels.field_cards.field_room_building.field_parent_location.field_parent_location',
+    'field_panels.field_cards.field_room_building.field_parent_location.field_parent_location.field_hours_open',
     // Parent page sub-relationships (needed by LocationAside for section_locaside)
     'field_parent_page.field_hours_open',
     'field_parent_page.field_floor_plan',
@@ -273,14 +288,20 @@ export const fetchDrupalHoursPanels = async () => {
     'field_parent_card.field_hours_open',
     'field_parent_card.field_parent_location',
     'field_parent_card.field_parent_location.field_hours_open',
+    'field_parent_card.field_parent_location.field_parent_location',
+    'field_parent_card.field_parent_location.field_parent_location.field_hours_open',
     'field_cards',
     'field_cards.field_hours_open',
     'field_cards.field_parent_location',
     'field_cards.field_parent_location.field_hours_open',
+    'field_cards.field_parent_location.field_parent_location',
+    'field_cards.field_parent_location.field_parent_location.field_hours_open',
     'field_cards.field_room_building',
     'field_cards.field_room_building.field_hours_open',
     'field_cards.field_room_building.field_parent_location',
-    'field_cards.field_room_building.field_parent_location.field_hours_open'
+    'field_cards.field_room_building.field_parent_location.field_hours_open',
+    'field_cards.field_room_building.field_parent_location.field_parent_location',
+    'field_cards.field_room_building.field_parent_location.field_parent_location.field_hours_open'
   ].join(',');
 
   const url = `${baseUrl}/jsonapi/paragraph/hours_panel?include=${includes}`;

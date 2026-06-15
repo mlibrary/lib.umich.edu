@@ -649,6 +649,25 @@ export const getPagesToGenerate = async () => {
   const floorPlanNodes = processedNodes.filter((node) => {
     return node.type === 'node--floor_plan';
   });
+  const processedNodeById = new Map(processedNodes.map((n) => [n.id, n]));
+
+  const hydrateHoursForReference = (ref) => {
+    if (!ref || !ref.id) {
+      return;
+    }
+
+    const existingHours = ref.relationships?.field_hours_open;
+    if (Array.isArray(existingHours) && existingHours.length > 0) {
+      return;
+    }
+
+    const source = processedNodeById.get(ref.id);
+    const sourceHours = source?.relationships?.field_hours_open;
+    if (Array.isArray(sourceHours) && sourceHours.length > 0) {
+      ref.relationships = ref.relationships || {};
+      ref.relationships.field_hours_open = sourceHours;
+    }
+  };
 
   const getFloorPlanForEntity = (entity) => {
     if (!entity?.relationships) {
@@ -727,6 +746,19 @@ export const getPagesToGenerate = async () => {
             card.relationships = card.relationships || {};
             card.relationships.field_floor_plan = toResolvedFloorPlanRelationship(match);
           }
+
+          // Hours inheritance chains in panel cards can point to a display node
+          // whose hours are pruned by relationship depth. Re-attach hours data
+          // from canonical processed nodes by ID (Gatsby-equivalent behavior).
+          const parentLocation = card.relationships?.field_parent_location;
+          const parentParentLocation = parentLocation?.relationships?.field_parent_location;
+          const roomBuildingParent = card.relationships?.field_room_building?.relationships?.field_parent_location;
+          const roomBuildingParentParent = roomBuildingParent?.relationships?.field_parent_location;
+
+          hydrateHoursForReference(parentLocation);
+          hydrateHoursForReference(parentParentLocation);
+          hydrateHoursForReference(roomBuildingParent);
+          hydrateHoursForReference(roomBuildingParentParent);
         });
       });
     }
