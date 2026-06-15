@@ -49,7 +49,7 @@ import Heading from '../../reusable/Heading.astro';
         </div>
         <div class="calendar-days-header">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div class="calendar-day-name">{day}</div>
+            <div>{day}</div>
           ))}
         </div>
         <div class="calendar-weeks" id="calendarWeeks"></div>
@@ -464,8 +464,10 @@ import Heading from '../../reusable/Heading.astro';
   }
 
   .calendar-month-year {
-    font-size: 1rem;
-    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0px;
   }
 
   .calendar-days-header {
@@ -478,10 +480,6 @@ import Heading from '../../reusable/Heading.astro';
     padding-right: 12px;
     text-align: center;
     width: 100%;
-  }
-
-  .calendar-day-name {
-    font-size: 0.875rem;
   }
 
   .calendar-weeks {
@@ -521,11 +519,14 @@ import Heading from '../../reusable/Heading.astro';
   }
 
   .kbd-style {
-    color: var(--color-neutral-300);
-    background: var(--color-neutral-200);
-    border-radius: 3px;
-    padding: 0.125rem 0.25rem;
+    background: white;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: 4px;
+    color:var(--color-neutral-300);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+    display: inline-block;
+    padding: 0 0.25rem;
     font-family: monospace;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
   }
 </style>

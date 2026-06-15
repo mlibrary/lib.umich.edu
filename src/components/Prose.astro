@@ -110,7 +110,13 @@ const { class: className = '' } = Astro.props;
      here we use a data attribute to mark component-owned lists. */
   .prose :global(ul:not([data-list])) {
     list-style: disc;
-    padding-left: 2rem;
+    margin-left: 1.5rem;
+    padding: 0;
+    max-width: 38rem;
+  }
+
+  .prose :global(li:not([data-list])) {
+    margin-bottom: 0.5rem;
   }
 
   .prose :global(ol:not([data-list])) {
@@ -210,6 +216,12 @@ const { class: className = '' } = Astro.props;
     max-width: 38rem;
     padding: 1rem 1.5rem 1rem 1rem;
     width: fit-content;
+  }
+
+
+
+  .prose :global(li){
+
   }
 
   /* Lede paragraph */
