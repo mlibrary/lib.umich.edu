@@ -1,5 +1,99 @@
 ---
-import BasicTemplate from './basic.astro';
-const props = Astro.props;
+/**
+ * Fullwidth Template
+ * Converted from src/templates/fullwidth.js
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Margins from '../components/Margins.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Heading from '../reusable/Heading.astro';
+import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
+import Html from '../components/Html.astro';
+import Panels from '../components/panels/Panels.astro';
+import transformNodePanels from '../utils/transform-node-panels';
+import buildHorizontalNavigation from '../utils/build-horizontal-navigation';
+
+interface Props {
+	node: any;
+	title?: string;
+	breadcrumb?: string;
+	parents?: any[];
+	children?: any[];
+	parentIds?: string[];
+	childIds?: string[];
+}
+
+const {
+	node,
+	title,
+	breadcrumb,
+	parents = [],
+	children = [],
+	parentIds = [],
+	childIds = []
+} = Astro.props as Props;
+
+if (!node) {
+	throw new Error('Fullwidth template: no node data available');
+}
+
+const {
+	field_title_context: fieldTitleContext,
+	field_root_page_: fieldRootPage,
+	body
+} = node.attributes || {};
+
+const parentNode = node.relationships?.field_parent_page?.[0];
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+
+const navigationItems = buildHorizontalNavigation({
+	node,
+	isRootPage: Boolean(fieldRootPage),
+	parentNode,
+	parentIds,
+	parents,
+	childIds,
+	children
+});
+
+const hasFullPanels = fullPanels.length > 0;
+const pageTitle = title || fieldTitleContext;
 ---
-<BasicTemplate {...props} />
+
+<TemplateLayout node={node} title={pageTitle}>
+	<Margins>
+		<Breadcrumb data={breadcrumb} />
+		<Heading
+			size="3XL"
+			level={1}
+			style={`margin-bottom: ${hasFullPanels ? '0' : 'var(--spacing-xl)'};`}
+		>
+			{fieldTitleContext}
+		</Heading>
+	</Margins>
+
+	{navigationItems.length > 0 && (
+		<HorizontalNavigation items={navigationItems} />
+	)}
+
+	{body?.processed && (
+		<Margins
+			class={hasFullPanels ? 'fullwidth-content no-full-panels' : 'fullwidth-content'}
+		>
+			<Html html={body.processed} />
+			<Panels data={bodyPanels} />
+		</Margins>
+	)}
+
+	<Panels data={fullPanels} />
+</TemplateLayout>
+
+<style>
+	.fullwidth-content {
+		margin-bottom: var(--spacing-5xl);
+	}
+
+	.fullwidth-content.no-full-panels {
+		margin-bottom: 0;
+	}
+</style>

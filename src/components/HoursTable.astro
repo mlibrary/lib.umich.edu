@@ -3,6 +3,7 @@
  * HoursTable - Responsive hours display table
  * Converted from src/components/hours-table.js
  */
+import Link from '../reusable/link.astro';
 
 interface Props {
   data: {
@@ -69,9 +70,9 @@ const todayIndex = dayOfWeek === false ? -1 : dayOfWeek + 1;
             return (
               <th scope="row" colspan="2" class="row-header">
                 {col.to ? (
-                  <a href={col.to} class="list-medium-link">
+                  <Link href={col.to} kind="list-medium">
                     {col.text}
-                  </a>
+                  </Link>
                 ) : (
                   col.text
                 )}
@@ -178,17 +179,6 @@ const todayIndex = dayOfWeek === false ? -1 : dayOfWeek + 1;
   }
 
   .row-header {
-  }
-
-  .list-medium-link {
-    color: var(--color-teal-400);
-    text-decoration: underline;
-    text-decoration-thickness: 0.09em;
-    text-underline-offset: 0.15em;
-  }
-
-  .list-medium-link:hover {
-    text-decoration-thickness: 0.15em;
   }
 
   .mobile-day-label {

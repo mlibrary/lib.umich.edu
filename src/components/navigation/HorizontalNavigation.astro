@@ -55,7 +55,7 @@ function isActive(to: string): boolean {
   nav {
     background: var(--color-blue-100);
     border-bottom: solid 1px var(--color-neutral-100);
-    margin-bottom: var(--spacing-l);
+    margin-bottom: 2rem;
     z-index: 1;
   }
 
@@ -80,8 +80,6 @@ function isActive(to: string): boolean {
   /* Mobile styles (small screen) */
   .nav-link {
     display: block;
-    padding: var(--spacing-m);
-    padding-left: calc(var(--spacing-m) - 4px);
     text-decoration: none;
     color: inherit;
   }
@@ -97,8 +95,8 @@ function isActive(to: string): boolean {
   @media only screen and (min-width: 641px) {
     .nav-link {
       display: inline-block;
-      padding: var(--spacing-l);
-      padding-bottom: calc(var(--spacing-l) - 4px);
+      padding-bottom: calc(1.5rem - 4px);
+      padding-top: 1.5rem;
     }
 
     .nav-link.active {

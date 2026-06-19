@@ -16,13 +16,10 @@ import { fetchStudySpaces } from '../lib/study-spaces.js';
 import { ORDERED_SPACE_FEATURES, SPACE_FEATURES_ICON_MAP } from '../constants/space-features.js';
 import { icons } from '../reusable/icons';
 
-// Build a feature-key → SVG path map for client-side card rendering.
-// SPACE_FEATURES_ICON_MAP values are icon names; we resolve them to actual path data here.
 const featureIconPaths: Record<string, string> = {};
 for (const [feature, iconName] of Object.entries(SPACE_FEATURES_ICON_MAP)) {
   if (icons[iconName]) featureIconPaths[feature] = icons[iconName];
 }
-// Include extra icons used directly in card rendering
 featureIconPaths['volume_up'] = icons['volume_up'];
 featureIconPaths['cancel'] = icons['cancel'];
 
@@ -31,12 +28,8 @@ const { node, breadcrumb } = props;
 const { body } = node.attributes;
 const fieldTitleContext = node.attributes.field_title_context || node.title;
 
-// Fetch all study spaces at build time
 const allStudySpaces = await fetchStudySpaces();
 
-// Optimize all study space images at build time using Astro's Sharp service.
-// getImage() resizes to 640px wide WebP (~2× card display size for retina),
-// replacing multi-megabyte CMS originals with ~30–80 KB optimized files.
 {
   const uniqueUrls = [...new Set(allStudySpaces.map((s) => s.imageUrl).filter(Boolean))];
   const optimizedMap = new Map<string, string>();
@@ -45,7 +38,6 @@ const allStudySpaces = await fetchStudySpaces();
       const result = await getImage({ src: url, width: 640, format: 'webp' });
       optimizedMap.set(url, result.src);
     } catch {
-      // Non-image or unreachable URL — keep original
       optimizedMap.set(url, url);
     }
   }));
@@ -54,10 +46,8 @@ const allStudySpaces = await fetchStudySpaces();
   }
 }
 
-// Sort alphabetically by title
 allStudySpaces.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
 
-// Derive filter options from data
 const campusBuildingMap: Record<string, Set<string>> = {};
 allStudySpaces.forEach((space) => {
   if (space.campus && space.building) {
@@ -82,11 +72,9 @@ const allNoiseLevels = Array.from(
   new Set(allStudySpaces.map((s) => s.noiseLevel).filter(Boolean))
 );
 
-// Utility: snake_case → Sentence case
 const sentenceCase = (str: string) =>
   str.replace(/_/g, ' ').replace(/^./u, (c) => c.toUpperCase());
 
-// No-results image
 import fassNoResults from '../images/fass-no-results.png';
 ---
 
@@ -238,7 +226,6 @@ import fassNoResults from '../images/fass-no-results.png';
     </TemplateSide>
 
     <TemplateContent>
-      {/* Active filter tags */}
       <div id="fass-active-tags" class="fass-active-tags" style="display:none;">
         <div class="fass-tags-list" id="fass-tags-list"></div>
         <button type="button" class="fass-clear-all" id="fass-clear-all">
@@ -246,10 +233,8 @@ import fassNoResults from '../images/fass-no-results.png';
         </button>
       </div>
 
-      {/* Screen reader live region */}
       <div aria-live="polite" class="sr-only" id="fass-sr-status"></div>
 
-      {/* No results */}
       <div id="fass-no-results" style="display:none;">
         <div class="fass-no-results">
           <Heading level={2} size="L" class="fass-no-results-heading">
@@ -276,7 +261,6 @@ import fassNoResults from '../images/fass-no-results.png';
         </div>
       </div>
 
-      {/* Results */}
       <div id="fass-results">
         <p id="fass-results-summary-top" aria-live="polite" class="fass-results-summary"></p>
         <ol class="fass-grid" id="fass-grid"></ol>
@@ -290,14 +274,12 @@ import fassNoResults from '../images/fass-no-results.png';
     </TemplateContent>
   </Template>
 
-  {/* Embed study space data for client-side filtering */}
   <script
     id="fass-data"
     type="application/json"
     set:html={JSON.stringify(allStudySpaces)}
   />
 
-  {/* Embed icon map for client-side rendering */}
   <script
     id="fass-icon-map"
     type="application/json"
@@ -306,7 +288,6 @@ import fassNoResults from '../images/fass-no-results.png';
 </TemplateLayout>
 
 <style>
-  /* Page header */
   :global(.fass-heading) {
     margin-bottom: 0.75rem;
   }
@@ -315,7 +296,6 @@ import fassNoResults from '../images/fass-no-results.png';
     margin-bottom: 2rem;
   }
 
-  /* Filter sidebar */
   .fass-filter-label {
     color: var(--color-neutral-300);
     font-size: 0.875rem;
@@ -334,7 +314,6 @@ import fassNoResults from '../images/fass-no-results.png';
     padding: 0;
   }
 
-  /* Collapsible sections */
   .fass-collapsible-trigger {
     align-items: center;
     background: none;
@@ -433,7 +412,6 @@ import fassNoResults from '../images/fass-no-results.png';
     color: var(--color-teal-400);
   }
 
-  /* Active filter tags */
   .fass-active-tags {
     margin-bottom: 1.5rem;
   }
@@ -454,7 +432,6 @@ import fassNoResults from '../images/fass-no-results.png';
     text-decoration: underline;
   }
 
-  /* Tag buttons */
   :global(.fass-tag) {
     align-items: center;
     background: var(--color-teal-100);
@@ -479,7 +456,6 @@ import fassNoResults from '../images/fass-no-results.png';
     color: white;
   }
 
-  /* Screen reader only */
   .sr-only {
     border: 0;
     clip: rect(0, 0, 0, 0);
@@ -491,7 +467,6 @@ import fassNoResults from '../images/fass-no-results.png';
     width: 1px;
   }
 
-  /* No results section */
   .fass-no-results {
     margin: 2rem 0;
   }
@@ -516,7 +491,6 @@ import fassNoResults from '../images/fass-no-results.png';
     max-width: 100%;
   }
 
-  /* Results grid */
   .fass-results-summary {
     margin-bottom: 1rem;
   }
@@ -555,7 +529,6 @@ import fassNoResults from '../images/fass-no-results.png';
     opacity: 0.85;
   }
 
-  /* Card animation */
   :global(.fass-card) {
     list-style: none;
     opacity: 1;
@@ -568,7 +541,6 @@ import fassNoResults from '../images/fass-no-results.png';
     transform: scale(0.95);
   }
 
-  /* Space features inline list */
   :global(.fass-space-features) {
     color: var(--color-neutral-300);
     list-style: none;
@@ -586,7 +558,6 @@ import fassNoResults from '../images/fass-no-results.png';
     color: var(--color-teal-400);
   }
 
-  /* Noise level display */
   :global(.fass-noise-level) {
     align-items: center;
     color: var(--color-neutral-300);
@@ -595,7 +566,6 @@ import fassNoResults from '../images/fass-no-results.png';
     gap: 0.5rem;
   }
 
-  /* Card inner styling */
   :global(.fass-card-image) {
     aspect-ratio: 3 / 2;
     background-color: var(--color-blue-100);
@@ -638,7 +608,6 @@ import fassNoResults from '../images/fass-no-results.png';
     margin-top: 0.5rem;
   }
 
-  /* Collapsible mobile default: hide left border on mobile */
   @media only screen and (max-width: 1199px) {
     .fass-collapsible-trigger {
       border-left-color: transparent !important;
@@ -705,11 +674,9 @@ import fassNoResults from '../images/fass-no-results.png';
   const clearAllBtn = document.getElementById('fass-clear-all');
   const srStatus = document.getElementById('fass-sr-status');
 
-  // ───────────────────── state ─────────────────────
   let showAll = false;
   const INITIAL_SHOW = 6;
 
-  // ───────────────────── collapsibles ─────────────────────
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = () => window.innerWidth < 1200;
 
@@ -729,11 +696,9 @@ import fassNoResults from '../images/fass-no-results.png';
       content.style.height = content.scrollHeight + 'px';
     };
 
-    // Initial state: collapsed on mobile, expanded on desktop
     if (isMobile()) {
       collapse();
     } else {
-      // Set initial height for CSS transition
       content.style.height = 'auto';
       content.setAttribute('aria-hidden', 'false');
     }
@@ -741,14 +706,11 @@ import fassNoResults from '../images/fass-no-results.png';
     trigger.addEventListener('click', () => {
       const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
       if (isExpanded) {
-        // Set explicit height first so CSS transition works
         content.style.height = content.scrollHeight + 'px';
-        // Force reflow
         content.offsetHeight;
         collapse();
       } else {
         expand();
-        // After transition, allow natural sizing
         const onEnd = () => {
           if (trigger.getAttribute('aria-expanded') === 'true') {
             content.style.height = 'auto';
@@ -761,7 +723,6 @@ import fassNoResults from '../images/fass-no-results.png';
   });
 
 
-  // Sync parent checkbox indeterminate/checked from children
   const syncParentCheckbox = (campusName: string) => {
     const parentEl = document.querySelector<HTMLInputElement>(`[data-filter-campus="${CSS.escape(campusName)}"]`);
     const children = document.querySelectorAll<HTMLInputElement>(`[data-campus-parent="${CSS.escape(campusName)}"]`);
@@ -790,7 +751,6 @@ import fassNoResults from '../images/fass-no-results.png';
       li.dataset.entering = '';
     }
 
-    // Build card HTML
     let html = `<a href="${escapeHtml(space.slug)}">`;
 
     if (space.imageUrl) {
@@ -808,7 +768,6 @@ import fassNoResults from '../images/fass-no-results.png';
       html += `<div class="fass-card-summary">${escapeHtml(space.bodySummary)}</div>`;
     }
 
-    // Space features
     if (space.spaceFeatures && space.spaceFeatures.length > 0) {
       html += '<ul class="fass-space-features">';
       space.spaceFeatures.forEach((feature) => {
@@ -819,7 +778,6 @@ import fassNoResults from '../images/fass-no-results.png';
       html += '</ul>';
     }
 
-    // Noise level
     if (space.noiseLevel) {
       html += `<div class="fass-noise-level">${iconSvg('volume_up')} <span>Noise Level: ${escapeHtml(sentenceCase(space.noiseLevel))}</span></div>`;
     }
@@ -827,7 +785,6 @@ import fassNoResults from '../images/fass-no-results.png';
     html += '</div></a>';
     li.innerHTML = html;
 
-    // Trigger entry animation
     if (!prefersReducedMotion) {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -839,13 +796,11 @@ import fassNoResults from '../images/fass-no-results.png';
     return li;
   };
 
-  // ───────────────────── filtering ─────────────────────
   const getFilteredSpaces = () => {
     const hasCampusFilter = !!document.querySelector('[data-filter-campus]:checked, [data-filter-building]:checked');
     const hasFeatureFilter = !!document.querySelector('[data-filter-feature]:checked');
     const hasNoiseFilter = !!document.querySelector('[data-filter-noise]:checked');
 
-    // Collect selected values only when a filter is active
     let selectedBuildingKeys, selectedFeatures, selectedNoiseLevels;
 
     if (hasCampusFilter) {
@@ -892,13 +847,11 @@ import fassNoResults from '../images/fass-no-results.png';
     });
   };
 
-  // ───────────────────── render ─────────────────────
   const render = () => {
     const filtered = getFilteredSpaces();
     const count = filtered.length;
     const showCount = showAll ? count : Math.min(INITIAL_SHOW, count);
 
-    // No results
     if (count === 0) {
       noResultsEl.style.display = '';
       resultsEl.style.display = 'none';
@@ -910,7 +863,6 @@ import fassNoResults from '../images/fass-no-results.png';
     noResultsEl.style.display = 'none';
     resultsEl.style.display = '';
 
-    // Summary text
     let summaryText;
     if (count <= 6) {
       summaryText = `Showing ${count} result${count > 1 ? 's' : ''}`;
@@ -920,7 +872,6 @@ import fassNoResults from '../images/fass-no-results.png';
     summaryTop.textContent = summaryText;
     summaryBottom.textContent = summaryText;
 
-    // Show toggle
     if (count > INITIAL_SHOW) {
       showToggle.style.display = '';
       showToggle.textContent = showAll ? 'Show less' : 'Show all';
@@ -928,7 +879,6 @@ import fassNoResults from '../images/fass-no-results.png';
       showToggle.style.display = 'none';
     }
 
-    // Render cards
     grid.innerHTML = '';
     filtered.slice(0, showCount).forEach((space) => {
       grid.appendChild(renderCard(space));
@@ -938,12 +888,10 @@ import fassNoResults from '../images/fass-no-results.png';
     renderTags();
   };
 
-  // ───────────────────── active tags ─────────────────────
   const renderTags = () => {
     tagsList.innerHTML = '';
     const tags = [];
 
-    // Campuses and buildings
     const campusGroups = document.querySelectorAll<HTMLElement>('[data-campus-group]');
     campusGroups.forEach((group) => {
       const campus = group.dataset.campusGroup;
@@ -953,7 +901,6 @@ import fassNoResults from '../images/fass-no-results.png';
       const allChildrenChecked = Array.from(childEls).every((c) => c.checked);
 
       if (parentEl.checked && allChildrenChecked) {
-        // Show campus-level tag
         tags.push({
           label: `Location: ${titleCase(campus)}`,
           dismiss: () => {
@@ -964,7 +911,6 @@ import fassNoResults from '../images/fass-no-results.png';
           }
         });
       } else {
-        // Show individual building tags
         childEls.forEach((c) => {
           if (c.checked) {
             const key = c.dataset.filterBuilding;
@@ -1024,7 +970,6 @@ import fassNoResults from '../images/fass-no-results.png';
     });
   };
 
-  // ───────────────────── URL state ─────────────────────
   const pushUrlState = () => {
     const stateObj: Record<string, string | string[]> = {};
 
@@ -1059,13 +1004,11 @@ import fassNoResults from '../images/fass-no-results.png';
   const restoreFromUrl = () => {
     const state = parseUrlState(window.location.search);
 
-    // Clear all checkboxes first
     document.querySelectorAll<HTMLInputElement>('[data-filter-campus], [data-filter-building], [data-filter-feature], [data-filter-noise]').forEach((el) => {
       el.checked = false;
       el.indeterminate = false;
     });
 
-    // Restore campuses/buildings
     const campusKeys = Array.isArray(state.campuses) ? state.campuses : (state.campuses ? [state.campuses] : []);
     campusKeys.forEach((key) => {
       const campusEl = document.querySelector<HTMLInputElement>(`[data-filter-campus="${CSS.escape(key)}"]`);
@@ -1074,7 +1017,6 @@ import fassNoResults from '../images/fass-no-results.png';
       if (buildingEl) buildingEl.checked = true;
     });
 
-    // When a campus parent is checked, also check all its children
     document.querySelectorAll<HTMLInputElement>('[data-filter-campus]:checked').forEach((parentEl) => {
       const campus = parentEl.dataset.filterCampus!;
       document.querySelectorAll<HTMLInputElement>(`[data-campus-parent="${CSS.escape(campus)}"]`).forEach((c) => {
@@ -1082,37 +1024,31 @@ import fassNoResults from '../images/fass-no-results.png';
       });
     });
 
-    // Sync parent indeterminate state
     document.querySelectorAll<HTMLElement>('[data-campus-group]').forEach((group) => {
       syncParentCheckbox(group.dataset.campusGroup!);
     });
 
-    // Restore features
     const featureKeys = Array.isArray(state.features) ? state.features : (state.features ? [state.features] : []);
     featureKeys.forEach((key) => {
       const el = document.querySelector<HTMLInputElement>(`[data-filter-feature="${CSS.escape(key)}"]`);
       if (el) el.checked = true;
     });
 
-    // Restore noise
     const noiseKeys = Array.isArray(state.noise) ? state.noise : (state.noise ? [state.noise] : []);
     noiseKeys.forEach((key) => {
       const el = document.querySelector<HTMLInputElement>(`[data-filter-noise="${CSS.escape(key)}"]`);
       if (el) el.checked = true;
     });
 
-    // Restore showAll
     showAll = state.showAll === '1';
   };
 
-  // ───────────────────── event handlers ─────────────────────
   const onFilterChange = () => {
     showAll = false;
     render();
     pushUrlState();
   };
 
-  // Parent checkbox: check/uncheck all children
   document.querySelectorAll<HTMLInputElement>('[data-filter-campus]').forEach((parentEl) => {
     parentEl.addEventListener('change', () => {
       const campus = parentEl.dataset.filterCampus!;
@@ -1123,7 +1059,6 @@ import fassNoResults from '../images/fass-no-results.png';
     });
   });
 
-  // Building checkbox: sync parent
   document.querySelectorAll<HTMLInputElement>('[data-filter-building]').forEach((el) => {
     el.addEventListener('change', () => {
       syncParentCheckbox(el.dataset.campusParent!);
@@ -1131,19 +1066,16 @@ import fassNoResults from '../images/fass-no-results.png';
     });
   });
 
-  // Feature & noise checkboxes
   document.querySelectorAll('[data-filter-feature], [data-filter-noise]').forEach((el) => {
     el.addEventListener('change', onFilterChange);
   });
 
-  // Show toggle
   showToggle.addEventListener('click', () => {
     showAll = !showAll;
     render();
     pushUrlState();
   });
 
-  // Clear all
   clearAllBtn.addEventListener('click', () => {
     document.querySelectorAll<HTMLInputElement>('[data-filter-campus], [data-filter-building], [data-filter-feature], [data-filter-noise]').forEach((el) => {
       el.checked = false;
@@ -1152,17 +1084,14 @@ import fassNoResults from '../images/fass-no-results.png';
     onFilterChange();
   });
 
-  // Back/forward navigation
   window.addEventListener('popstate', () => {
     restoreFromUrl();
     render();
   });
 
-  // ───────────────────── init ─────────────────────
   restoreFromUrl();
   render();
 
-  // Respect prefers-reduced-motion
   if (prefersReducedMotion) {
     const style = document.createElement('style');
     style.textContent = '.fass-card { transition: none !important; }';

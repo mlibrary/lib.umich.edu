@@ -4,6 +4,7 @@
  * Converted from src/components/panels/hours-panel.js
  */
 import Heading from '../../reusable/Heading.astro';
+import Prose from '../Prose.astro';
 import HoursTable from '../HoursTable.astro';
 import { displayHours } from '../../utils/hours';
 
@@ -122,7 +123,9 @@ const initialTableData = transformTableData(data, new Date());
       {title}
     </Heading>
     {fieldBody && (
-      <div class="hours-panel-body" set:html={fieldBody.processed} />
+      <Prose class="hours-panel-body">
+        <div set:html={fieldBody.processed} />
+      </Prose>
     )}
     
     <!-- Hours Table - Will be updated via client-side script -->

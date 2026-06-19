@@ -43,7 +43,6 @@ const { class: className = '' } = Astro.props;
     margin-bottom: 0.5rem;
   }
 
-  /* Headings */
   .prose :global(h2) {
     font-size: 1.5rem;
     font-weight: 600;
@@ -76,8 +75,6 @@ const { class: className = '' } = Astro.props;
     text-transform: uppercase;
   }
   
-
-  /* Text elements */
   .prose :global(p) {
     font-size: 1rem;
     line-height: 1.5;
@@ -95,7 +92,6 @@ const { class: className = '' } = Astro.props;
     font-weight: 800;
   }
 
-  /* Links */
   .prose :global(a) {
     color: var(--color-teal-400);
     box-shadow: inset 0 -1px var(--color-teal-400);
@@ -105,9 +101,6 @@ const { class: className = '' } = Astro.props;
     box-shadow: inset 0 -2px var(--color-teal-400);
   }
 
-  /* Lists — exclude [data-list] which is our hand-crafted List component.
-     Gatsby handled this implicitly via Emotion CSS-in-JS class specificity;
-     here we use a data attribute to mark component-owned lists. */
   .prose :global(ul:not([data-list])) {
     list-style: disc;
     margin-left: 1.5rem;
@@ -124,7 +117,6 @@ const { class: className = '' } = Astro.props;
     padding-left: 2rem;
   }
 
-  /* Blockquote */
   .prose :global(blockquote) {
     font-size: 1.125rem;
     border-left: solid 4px var(--color-teal-400);
@@ -134,7 +126,6 @@ const { class: className = '' } = Astro.props;
     margin: 2rem !important;
   }
 
-  /* Figures and images */
   .prose :global(figure) {
     max-width: 38rem;
     margin: 1.5rem 0;
@@ -170,7 +161,6 @@ const { class: className = '' } = Astro.props;
     width: 100%;
   }
 
-  /* Tables */
   .prose :global(table) {
     width: 100%;
     border-collapse: collapse;
@@ -184,12 +174,15 @@ const { class: className = '' } = Astro.props;
     border-bottom: 1px solid var(--color-neutral-100);
   }
 
+  .prose :global(.embedded-entity){
+    max-width: var(--max-prose-width);
+  }
+
   .prose :global(th) {
     font-weight: 600;
     background-color: var(--color-neutral-100);
   }
 
-  /* Special paragraph classes (matches html.js) */
   .prose :global(p.umich-lib-callout) {
     border: solid 1px var(--color-neutral-100);
     border-left: solid 4px var(--color-teal-400);
@@ -218,13 +211,10 @@ const { class: className = '' } = Astro.props;
     width: fit-content;
   }
 
-
-
   .prose :global(li){
 
   }
 
-  /* Lede paragraph */
   .prose :global(p.lede) {
     font-size: 1.125rem;
     line-height: 1.5;

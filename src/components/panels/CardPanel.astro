@@ -127,11 +127,15 @@ const getSummary = (body: any) => {
               template === 'address_and_hours' && (
                 <div>
                   <div class="card-info-row">
-                    <Icon icon="address" />
+                    <span class="card-info-icon">
+                      <Icon icon="address" />
+                    </span>
                     <Address node={card} />
                   </div>
                   <div class="card-info-row">
-                    <Icon icon="access_time" />
+                    <span class="card-info-icon">
+                      <Icon icon="access_time" />
+                    </span>
                     <TodaysHours node={card} />
                   </div>
                 </div>
@@ -290,9 +294,8 @@ const getSummary = (body: any) => {
   }
 
   .card-info-icon{
+    margin-right: .5rem;
     color: var(--color-indigo-300);
-    flex-shrink: 0;
-    margin-top: 2px;
   }
 </style>
 

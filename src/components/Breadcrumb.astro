@@ -11,9 +11,11 @@ import Link from '../reusable/link.astro';
 
 interface Props {
   data?: string;
+  size?: 'default' | 'compact';
+  [key: string]: any;
 }
 
-const { data } = Astro.props;
+const { data, size = 'default', class: className = '', ...rest } = Astro.props;
 
 // Parse breadcrumb data (provided as encoded JSON)
 let parsedData: Array<{text: string, to?: string}> = [];
@@ -32,7 +34,15 @@ if (!parsedData || parsedData.length === 0) {
 }
 ---
 
-<nav aria-label="Breadcrumb" class="breadcrumb">
+<nav
+  aria-label="Breadcrumb"
+  class:list={[
+    'breadcrumb',
+    className,
+    { 'breadcrumb--compact': size === 'compact' }
+  ]}
+  {...rest}
+>
   <ol class="breadcrumb-list">
     {parsedData.map(({ text, to }, index) => (
       <li class="breadcrumb-item">
@@ -50,8 +60,19 @@ if (!parsedData || parsedData.length === 0) {
 
 <style>
   .breadcrumb {
-    padding-bottom: var(--spacing-xl);
-    padding-top: var(--spacing-2xl);
+    padding: 1.5rem 0;
+  }
+
+  @media (min-width: 640px) {
+    .breadcrumb {
+      padding-bottom: 2rem;
+      padding-top: 2.5rem;
+    }
+
+    .breadcrumb.breadcrumb--compact {
+      padding-bottom: 1.5rem;
+      padding-top: 1.5rem;
+    }
   }
   
   .breadcrumb-list {
