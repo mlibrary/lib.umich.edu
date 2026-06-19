@@ -5,6 +5,7 @@
  */
 import Logo from './Logo.astro';
 import Icon from '../../reusable/Icon.astro';
+import SiteSearchModal from './SiteSearchModal.astro';
 
 interface Props {
   primary: any[];
@@ -24,13 +25,7 @@ const { primary, secondary } = Astro.props;
 
       <!-- Mobile Nav + Search -->
       <div class="mobile-actions">
-        <button
-          class="mobile-search-toggle"
-          aria-label="Search"
-          id="mobile-search-btn"
-        >
-          <Icon icon="search" size={24} />
-        </button>
+        <SiteSearchModal />
 
         <button
           class="mobile-menu-toggle"
@@ -158,14 +153,6 @@ const { primary, secondary } = Astro.props;
       }
     });
   });
-
-  // Mobile search button - navigate to search page
-  const mobileSearchBtn = document.getElementById("mobile-search-btn");
-  if (mobileSearchBtn) {
-    mobileSearchBtn.addEventListener("click", () => {
-      window.location.href = "/search";
-    });
-  }
 </script>
 
 <style>
