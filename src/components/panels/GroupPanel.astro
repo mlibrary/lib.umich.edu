@@ -43,6 +43,10 @@ const fieldPanelGroup = relationships?.field_panel_group;
     border-bottom: solid 1px var(--color-neutral-100);
   }
 
+  :global(.panel-group-50-container > .panel) {
+    padding-top: 0;
+  }
+
   @media (min-width: 1129px) {
     .panel-group-50-container {
       grid-gap: var(--spacing-3xl, 3rem);

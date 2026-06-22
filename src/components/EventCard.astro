@@ -106,7 +106,7 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
         where && where.length > 0 && (
           <span class="event-location">
             <Icon icon="address" />
-            <span>
+            <span class="event-location-text">
               <span class="visually-hidden">Where: </span>
               {where.map((item) => item.label).join(", ")}
             </span>
@@ -205,6 +205,10 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
 
   .event-meta {
     margin-top: 0.25rem;
+  }
+
+  .event-location-text{
+    margin-left: .5rem;
   }
 
   .event-location,

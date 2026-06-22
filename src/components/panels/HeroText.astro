@@ -4,7 +4,6 @@
  * Ported from src/components/panels/hero-text.js
  */
 import Heading from '../../reusable/Heading.astro';
-import { getImage } from 'astro:assets';
 import { getNidToSlugMap } from '../../lib/page-generator.js';
 
 type Props = {
@@ -48,27 +47,18 @@ const link = fieldLink ? getSimpleLink(fieldLink) : null;
 
 // Get background images (simplified - no Gatsby image processing)
 const fieldHeroImages = data.relationships?.field_hero_images || [];
-const smallScreenImage = fieldHeroImages.find(
-  (node: any) => node.field_orientation === 'vertical'
-);
 const largeScreenImage = fieldHeroImages.find(
   (node: any) => node.field_orientation === 'horizontal'
 );
 
-// Simple fallback image URLs — processed through Astro's image pipeline
-const smallCmsUrl = smallScreenImage?.fileUrl || '';
 const largeCmsUrl = largeScreenImage?.fileUrl || '';
-
-const smallImageUrl = smallCmsUrl
-  ? (await getImage({ src: smallCmsUrl, format: 'webp', width: 800, inferSize: true })).src
-  : '';
-const largeImageUrl = largeCmsUrl
-  ? (await getImage({ src: largeCmsUrl, format: 'webp', width: 1600, inferSize: true })).src
-  : '';
 ---
 
 <div class="margins">
-  <section class="hero-background" style={`background-image: url('${largeImageUrl}')`}>
+  <section
+    class="hero-background"
+    style={largeCmsUrl ? `background-image: url('${largeCmsUrl}');` : ''}
+  >
     <div class="hero-content">
       <div class="hero-inner">
         <Heading level={2} size="3XL" class="hero-title">
@@ -97,12 +87,6 @@ const largeImageUrl = largeCmsUrl
     background-position: center;
     background-size: cover;
     position: relative;
-  }
-
-  @media only screen and (min-width: 641px) {
-    .hero-background {
-      background-size: cover;
-    }
   }
 
   .hero-content {
@@ -169,20 +153,4 @@ const largeImageUrl = largeCmsUrl
     text-decoration-thickness: 4px;
   }
 
-  /* Media query for small screens using different background */
-  @media only screen and (max-width: 640px) {
-    .hero-background {
-      background-image: var(--small-screen-bg) !important;
-    }
-  }
 </style>
-
-{smallImageUrl && (
-  <style set:html={`
-    @media only screen and (max-width: 640px) {
-      .hero-background {
-        background-image: url('${smallImageUrl}') !important;
-      }
-    }
-  `} />
-)}
