@@ -80,7 +80,7 @@ const locationDataForClient = processedCards.map((card: any) => {
 });
 ---
 
-<PanelTemplate title={data.field_title}>
+<PanelTemplate title={data.field_title} noMargins={true}>
   <div class="hours-lite-panel">
     {processedHours.length === 0 ? (
       <div class="no-hours">

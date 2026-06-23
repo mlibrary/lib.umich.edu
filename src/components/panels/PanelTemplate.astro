@@ -7,10 +7,11 @@ interface Props {
   title?: string;
   shaded?: boolean;
   headingCss?: Record<string, any>;
+  noMargins?: boolean;
   [key: string]: any;
 }
 
-const { title, shaded = false, headingCss = {}, ...rest } = Astro.props;
+const { title, shaded = false, headingCss = {}, noMargins = false, ...rest } = Astro.props;
 ---
 
 <section
@@ -19,7 +20,7 @@ const { title, shaded = false, headingCss = {}, ...rest } = Astro.props;
   data-panel
   {...rest}
 >
-  <div data-panel-margins class="margins">
+  <div data-panel-margins class:list={{ margins: !noMargins }}>
     {
       title && (
         <h2

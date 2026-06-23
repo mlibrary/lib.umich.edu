@@ -37,18 +37,11 @@ a{
   z-index: 999;
 }
 
-/* Focus styles */
-*:focus-visible {
-    outline: 0;
-    box-shadow: 0 0 0 2px var(--color-maize-400), 0 0 0 3px var(--color-neutral-400);
-    border-radius: 2px !important;
-}
-
 *:focus {
   outline-color: var(--color-blue-400);
 }
 
-/* Page heading focus — overrides the global *:focus-visible box-shadow */
+/* Page heading focus styling */
 h1.focus {
   position: relative;
 }
