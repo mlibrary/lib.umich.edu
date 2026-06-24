@@ -17,7 +17,7 @@ const { title, intent, alert, class: className = '' } = Astro.props;
 ---
 
 <div
-  class:list={['callout', { 'callout--warning': intent === 'warning' }, className]}
+  class:list={['callout', { 'callout-warning': intent === 'warning' }, className]}
   data-umich-lib-callout
 >
   <div class="callout-inner">
@@ -40,7 +40,7 @@ const { title, intent, alert, class: className = '' } = Astro.props;
     padding: 1.5rem;
   }
 
-  .callout--warning {
+  .callout-warning {
     border-left-color: var(--color-maize-400);
   }
 

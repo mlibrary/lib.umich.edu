@@ -4,11 +4,11 @@
 */
 
 /* Import CSS modules in order of importance */
-@import './variables.css';
-@import './reset.css';
-@import './base.css';
-@import './utilities.css';
-@import './components.css';
+@import url('./variables.css');
+@import url('./reset.css');
+@import url('./base.css');
+@import url('./utilities.css');
+@import url('./table.css');
 
 img{
   border-radius: 0;

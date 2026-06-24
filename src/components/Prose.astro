@@ -161,26 +161,9 @@ const { class: className = '' } = Astro.props;
     width: 100%;
   }
 
-  .prose :global(table) {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1.5rem 0;
-  }
-
-  .prose :global(th),
-  .prose :global(td) {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid var(--color-neutral-100);
-  }
 
   .prose :global(.embedded-entity){
     max-width: var(--max-prose-width);
-  }
-
-  .prose :global(th) {
-    font-weight: 600;
-    background-color: var(--color-neutral-100);
   }
 
   .prose :global(p.umich-lib-callout) {

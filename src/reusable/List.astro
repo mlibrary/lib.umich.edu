@@ -20,11 +20,11 @@ const { type, class: className = '' } = Astro.props;
 ---
 
 {type === 'numbered' ? (
-  <ol data-list class={`list list--numbered ${className}`.trim()}>
+  <ol data-list class={`list list-numbered ${className}`.trim()}>
     <slot />
   </ol>
 ) : type === 'bulleted' ? (
-  <ul data-list class={`list list--bulleted ${className}`.trim()}>
+  <ul data-list class={`list list-bulleted ${className}`.trim()}>
     <slot />
   </ul>
 ) : (
@@ -45,12 +45,12 @@ const { type, class: className = '' } = Astro.props;
     margin-bottom: 0.5rem;
   }
 
-  .list--bulleted {
+  .list-bulleted {
     list-style: disc;
     margin-left: 1.5rem;
   }
 
-  .list--numbered {
+  .list-numbered {
     list-style: decimal;
     margin-left: 1.5rem;
   }

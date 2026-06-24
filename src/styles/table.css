@@ -1,0 +1,21 @@
+td{
+    border-bottom: solid 1px var(--color-neutral-100);
+}
+
+th{
+    border-bottom: solid 2px var(--color-maize-400);
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+}
+
+th, td{
+    padding: 1rem;
+    padding-left: 0;
+}
+
+table{
+    width: 100%;
+}

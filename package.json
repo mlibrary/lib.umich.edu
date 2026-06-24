@@ -43,6 +43,7 @@
     "fetch-retry": "^6.0.0",
     "globals": "^17.6.0",
     "stylelint": "^17.13.0",
+    "stylelint-config-html": "^1.1.0",
     "stylelint-config-standard": "^40.0.0",
     "typescript": "^6.0.3"
   }
