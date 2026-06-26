@@ -97,7 +97,8 @@ function hasActiveChild(item: NavItem): boolean {
 
   .side-nav-list,
   .side-nav-children {
-    padding-bottom: var(--spacing-xs, 1rem);
+    margin-bottom: 1rem;
+    margin-top: .5rem;
   }
 
   .side-nav-item:not(:last-of-type) {
@@ -111,7 +112,7 @@ function hasActiveChild(item: NavItem): boolean {
     display: flex;
     font-weight: inherit;
     justify-content: space-between;
-    padding: var(--spacing-m, 1rem) var(--spacing-s, 0.75rem) var(--spacing-m, 1rem) var(--spacing-m, 1rem);
+    padding: 1rem .75rem;
     text-decoration: none;
   }
 
@@ -123,7 +124,6 @@ function hasActiveChild(item: NavItem): boolean {
     border-left-color: var(--color-teal-400);
     color: var(--color-teal-400);
     font-weight: 700;
-    padding-left: var(--spacing-s, 0.75rem);
   }
 
   .side-nav-icon {
