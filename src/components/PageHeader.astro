@@ -41,11 +41,11 @@ if (!breadcrumbData) {
     <header class="page-header">
       <div class="page-header-content">
         <Breadcrumb data={breadcrumbData} />
-        
-        <Heading size="3XL" level={1}>
-          {title}
-        </Heading>
-        
+        <div class="page-header-heading-wrapper">
+          <Heading size="3XL" level={1}>
+            {title}
+          </Heading>
+        </div>
         {summary && (
           <p class="page-summary">{summary}</p>
         )}
@@ -63,6 +63,10 @@ if (!breadcrumbData) {
 <style>
   .page-heading{
     margin-bottom: 1rem;
+  }
+
+  .page-header-heading-wrapper :global(h1){
+    margin-bottom: 1.5rem;
   }
 
   .page-header-wrapper {
