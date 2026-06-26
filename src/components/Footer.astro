@@ -97,9 +97,13 @@ const links = [
             <ul class="footer-links">
               {section.links.map(({ text, to, icon }) => (
                 <li>
-                  <Link href={to}>
-                    <Icon icon={icon} aria-hidden="true" />
-                    <span set:html={text.replace('\n', '<br />')} />
+                  <Link href={to} kind="light" style="box-shadow: none;">
+                    <span class="icon-text">
+                      <span class="icon-wrapper">
+                      <Icon icon={icon} aria-hidden="true" />
+                      </span>
+                      <span set:html={text.replace('\n', '<br />')} />
+                    </span>
                   </Link>
                 </li>
               ))}
@@ -200,19 +204,15 @@ const links = [
   .footer-sections nav a:hover {
     text-decoration: underline;
   }
-  
-  .material-icons {
-    font-size: 1.25rem;
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
+
+  .icon-text{
+    display: flex;
+  }
+
+  .icon-wrapper{
+    flex-shrink: 0;
+    margin-top: -2px;
+    width: 1.75rem;
   }
   
   .privacy-section {
