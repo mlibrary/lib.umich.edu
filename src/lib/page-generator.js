@@ -569,13 +569,18 @@ const writePersistentCache = (pages) => {
     if (!fs.existsSync(CACHE_DIR)) {
       fs.mkdirSync(CACHE_DIR, { recursive: true });
     }
-    fs.writeFileSync(CACHE_FILE, JSON.stringify({
+
+    const payload = JSON.stringify({
       pages,
       timestamp: Date.now(),
       count: pages.length
-    }));
+    });
+
+    fs.writeFileSync(CACHE_FILE, payload);
   } catch (err) {
     console.warn('[page-generator] Failed to write persistent cache:', err.message);
+    // Cache write failed but that's okay — in-memory cache still works
+    // until the next server restart
   }
 };
 

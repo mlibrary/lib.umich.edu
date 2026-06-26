@@ -5,6 +5,7 @@ import { Image } from 'astro:assets';
  * Original: src/components/footer.jsx
  */
 import fdlpImage from '../images/fdlp.png';
+import Link from '../reusable/link.astro';
 import Icon from '../reusable/Icon.astro';
 
 const year = new Date().getFullYear();
@@ -93,13 +94,13 @@ const links = [
         <section>
           <h2>{section.heading}</h2>
           <nav aria-label={`${section.heading} links`}>
-            <ul>
+            <ul class="footer-links">
               {section.links.map(({ text, to, icon }) => (
                 <li>
-                  <a href={to}>
+                  <Link href={to}>
                     <Icon icon={icon} aria-hidden="true" />
                     <span set:html={text.replace('\n', '<br />')} />
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -151,11 +152,15 @@ const links = [
   footer *:focus {
     outline-color: white;
   }
+
+  .footer-links{
+    padding-top: .75rem;
+  }
   
   .footer-content {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 2.5rem;
   }
   
   .footer-sections {
@@ -165,19 +170,22 @@ const links = [
   .footer-sections section {
     margin-bottom: 2rem;
   }
+
+  .footer-sections section:not(:last-of-type) {
+    margin-bottom: 2rem;
+  }
   
   .footer-sections h2 {
     font-size: 0.875rem;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: 1.25px;
     text-transform: uppercase;
     color: var(--color-blue-200, #BBD7ED);
-    margin: 0 0 0.5rem;
   }
   
   .footer-sections nav ul {
     list-style: none;
-    padding: 0.5rem 0 0;
-    margin: 0;
+    padding-top: .75rem;
   }
   
   .footer-sections nav li {
@@ -185,12 +193,8 @@ const links = [
   }
   
   .footer-sections nav a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+    display: inline-block;
     padding: 0.5rem 0;
-    color: white;
-    text-decoration: none;
   }
   
   .footer-sections nav a:hover {
@@ -263,11 +267,11 @@ const links = [
   }
   
   /* Responsive: 3 columns on larger screens */
-  @media (min-width: 640px) {
+  @media (min-width: 641px) {
     .footer-sections {
       column-count: 3;
       column-gap: 2rem;
-      padding-top: 4rem;
+      padding-top: 3rem;
     }
     
     .footer-sections section {
