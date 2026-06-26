@@ -1,7 +1,7 @@
 ---
 /**
  * HorizontalNavigation Component
- * 
+ *
  * Displays a horizontal navigation menu with different styles for desktop and mobile
  */
 interface NavigationItem {
@@ -25,29 +25,27 @@ const currentPath = Astro.url.pathname;
 
 function isActive(to: string): boolean {
   // Remove trailing slash for comparison
-  const normalizedCurrent = currentPath.replace(/\/$/, '');
-  const normalizedTo = to.replace(/\/$/, '');
+  const normalizedCurrent = currentPath.replace(/\/$/, "");
+  const normalizedTo = to.replace(/\/$/, "");
   return normalizedCurrent === normalizedTo;
 }
 ---
 
-<nav
-  aria-label="Local"
-  {...rest}
->
-  <div class="margins">
-    <ol>
-      {items.map(({ to, text }) => (
-        <li>
-          <a
-            href={to}
-            class:list={['nav-link', { active: isActive(to) }]}
-          >
-            {text}
-          </a>
-        </li>
-      ))}
-    </ol>
+<nav aria-label="Local" {...rest}>
+  <div class="horizontal-navigation">
+    <div class="margins">
+      <ol>
+        {
+          items.map(({ to, text }) => (
+            <li>
+              <a href={to} class:list={["nav-link", { active: isActive(to) }]}>
+                {text}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
   </div>
 </nav>
 
@@ -69,7 +67,23 @@ function isActive(to: string): boolean {
     border-top: solid 1px var(--color-neutral-100);
   }
 
+  @media only screen and (max-width: 640px) {
+    .horizontal-navigation a{
+      padding-bottom: 1rem;
+      padding-left: calc(-4px + 1rem);
+      padding-top: 1rem; 
+    }
+  }
+
+  .horizontal-navigation .margins {
+    padding: 0;
+  }
+
   @media only screen and (min-width: 641px) {
+    .horizontal-navigation .margins {
+      padding: 0 2.5rem;
+    }
+
     li {
       border: none;
       display: inline-block;
