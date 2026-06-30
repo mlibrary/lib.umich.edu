@@ -17,29 +17,25 @@ const { class: className = '' } = Astro.props;
 </div>
 
 <style>
-  .prose > :not(:last-child) {
+  .prose > :global(:not(:last-child)) {
     margin-bottom: 1rem;
   }
 
-  .prose > h2:not(:last-child) {
-    margin-top: 2.5rem;
-  }
-
-  .prose > h3:not(:last-child),
-  .prose > h4:not(:last-child),
-  .prose > h5:not(:last-child) {
+  .prose > :global(h3:not(:last-child)),
+  .prose > :global(h4:not(:last-child)),
+  .prose > :global(h5:not(:last-child)) {
     margin-top: 1rem;
   }
 
-  .prose [data-umich-lib-callout] {
+  .prose :global([data-umich-lib-callout]) {
     max-width: 38rem;
   }
 
-  .prose [data-umich-lib-callout] + [data-umich-lib-callout] {
+  .prose :global([data-umich-lib-callout] + [data-umich-lib-callout]) {
     margin-top: 1.5rem;
   }
 
-  .prose li {
+  .prose :global(li) {
     margin-bottom: 0.5rem;
   }
 
@@ -49,7 +45,7 @@ const { class: className = '' } = Astro.props;
     line-height: 1.25;
   }
 
-  .prose :global(h2):not(:last-child) {
+  .prose :global(h2:not(:last-child)) {
     margin-top: 2.5rem;
     margin-bottom: 1rem;
   }
@@ -193,10 +189,6 @@ const { class: className = '' } = Astro.props;
     max-width: 38rem;
     padding: 1rem 1.5rem 1rem 1rem;
     width: fit-content;
-  }
-
-  .prose :global(li){
-
   }
 
   .prose :global(p.lede) {

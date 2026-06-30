@@ -80,6 +80,7 @@ const pageTitle = title || fieldTitleContext;
 		<Margins
 			class={hasFullPanels ? 'fullwidth-content no-full-panels' : 'fullwidth-content'}
 		>
+			{console.log(body.processed)}
 			<Html html={body.processed} />
 			<Panels data={bodyPanels} />
 		</Margins>
