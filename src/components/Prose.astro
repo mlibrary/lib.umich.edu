@@ -43,16 +43,19 @@ const { class: className = '' } = Astro.props;
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.25;
+    max-width: 38rem;
   }
 
   .prose :global(h2:not(:last-child)) {
     margin-top: 2.5rem;
     margin-bottom: 1rem;
+    max-width: 38rem;
   }
 
   .prose :global(h3) {
     font-size: 1.25rem;
     font-weight: 600;
+    max-width: 38rem;
   }
 
   .prose :global(h4) {
@@ -61,6 +64,7 @@ const { class: className = '' } = Astro.props;
     letter-spacing: 1.25px;
     text-transform: uppercase;
     color: var(--color-neutral-300);
+    max-width: 38rem;
   }
 
   .prose :global(h5),
@@ -69,12 +73,13 @@ const { class: className = '' } = Astro.props;
     font-weight: 800;
     letter-spacing: 1.25px;
     text-transform: uppercase;
+    max-width: 38rem;
   }
   
   .prose :global(p) {
     font-size: 1rem;
     line-height: 1.5;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem !important;
   }
 
   .prose :global(p):not(:last-child){
@@ -111,7 +116,10 @@ const { class: className = '' } = Astro.props;
 
   .prose :global(ol:not([data-list])) {
     list-style: decimal;
-    padding-left: 2rem;
+    margin: 0;
+    max-width: 38rem;
+    padding: 0;
+    margin-left: 1.5rem;
   }
 
   .prose :global(blockquote) {

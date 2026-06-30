@@ -238,12 +238,16 @@ const getSummary = (body: any) => {
 
   .highlights-card-content {
     height: 100%;
-    padding: var(--spacing-m, 1rem);
+    padding: 1rem;
   }
 
   /* Standard card styles */
   .standard-card-item {
-    margin-top: var(--spacing-xl, 2rem);
+    margin-top: 2rem;
+  }
+
+  :global(.standard-card-item:hover .card-title){
+    box-shadow: inset 0 -2px var(--color-teal-400);
   }
 
   .standard-card-item:first-of-type {

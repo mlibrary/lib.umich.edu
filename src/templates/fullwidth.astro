@@ -46,6 +46,8 @@ const {
 const parentNode = node.relationships?.field_parent_page?.[0];
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
+console.log(body);
+
 const navigationItems = buildHorizontalNavigation({
 	node,
 	isRootPage: Boolean(fieldRootPage),
@@ -80,7 +82,6 @@ const pageTitle = title || fieldTitleContext;
 		<Margins
 			class={hasFullPanels ? 'fullwidth-content no-full-panels' : 'fullwidth-content'}
 		>
-			{console.log(body.processed)}
 			<Html html={body.processed} />
 			<Panels data={bodyPanels} />
 		</Margins>
