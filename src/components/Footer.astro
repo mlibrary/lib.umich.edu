@@ -1,12 +1,12 @@
 ---
-import { Image } from 'astro:assets';
+import { Image } from "astro:assets";
 /**
  * Footer Component - Converted to Astro
  * Original: src/components/footer.jsx
  */
-import fdlpImage from '../images/fdlp.png';
-import Link from '../reusable/link.astro';
-import Icon from '../reusable/Icon.astro';
+import fdlpImage from "../images/fdlp.png";
+import Link from "../reusable/link.astro";
+import Icon from "../reusable/Icon.astro";
 
 const year = new Date().getFullYear();
 
@@ -14,132 +14,149 @@ const locationURL = `https://www.google.com/maps/search/?api=1&query=University+
 
 const links = [
   {
-    heading: 'University of Michigan Library',
+    heading: "University of Michigan Library",
     links: [
       {
-        icon: 'address',
-        text: '913 S. University Avenue\nAnn Arbor, MI 48109-1190',
-        to: locationURL
+        icon: "address",
+        text: "913 S. University Avenue\nAnn Arbor, MI 48109-1190",
+        to: locationURL,
       },
       {
-        icon: 'phone',
-        text: '(734) 764-0401',
-        to: 'tel:+1-734-764-0401'
+        icon: "phone",
+        text: "(734) 764-0401",
+        to: "tel:+1-734-764-0401",
       },
       {
-        icon: 'mail_outline',
-        text: 'Send us an email',
-        to: 'https://teamdynamix.umich.edu/TDClient/88/Portal/Requests/TicketRequests/NewForm?ID=1751&RequestorType=Service'
+        icon: "mail_outline",
+        text: "Send us an email",
+        to: "https://teamdynamix.umich.edu/TDClient/88/Portal/Requests/TicketRequests/NewForm?ID=1751&RequestorType=Service",
       },
       {
-        icon: 'accessible_forward',
-        text: 'Accessibility',
-        to: '/about-us/about-library/diversity-equity-inclusion-and-accessibility/accessibility'
+        icon: "accessible_forward",
+        text: "Accessibility",
+        to: "/about-us/about-library/diversity-equity-inclusion-and-accessibility/accessibility",
       },
       {
-        icon: 'map',
-        text: 'Site map',
-        to: '/site-map'
-      }
-    ]
+        icon: "map",
+        text: "Site map",
+        to: "/site-map",
+      },
+    ],
   },
   {
-    heading: 'Our community',
+    heading: "Our community",
     links: [
       {
-        icon: 'people_outline',
-        text: 'Staff directory',
-        to: '/about-us/staff-directory'
+        icon: "people_outline",
+        text: "Staff directory",
+        to: "/about-us/staff-directory",
       },
       {
-        icon: 'work',
-        text: 'Work for us',
-        to: '/about-us/work-us'
+        icon: "work",
+        text: "Work for us",
+        to: "/about-us/work-us",
       },
       {
-        icon: 'blog',
-        text: 'Blogs',
-        to: 'https://apps.lib.umich.edu/blogs'
+        icon: "blog",
+        text: "Blogs",
+        to: "https://apps.lib.umich.edu/blogs",
       },
       {
-        icon: 'facebook',
-        text: 'Facebook',
-        to: 'https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559'
+        icon: "facebook",
+        text: "Facebook",
+        to: "https://www.facebook.com/pages/University-of-Michigan-Library/110483979013559",
       },
       {
-        icon: 'bluesky',
-        text: 'Bluesky',
-        to: 'https://bsky.app/profile/umichlibrary.bsky.social'
+        icon: "bluesky",
+        text: "Bluesky",
+        to: "https://bsky.app/profile/umichlibrary.bsky.social",
       },
       {
-        icon: 'twitter',
-        text: 'X (formerly Twitter)',
-        to: 'https://twitter.com/umichlibrary'
+        icon: "twitter",
+        text: "X (formerly Twitter)",
+        to: "https://twitter.com/umichlibrary",
       },
       {
-        icon: 'youtube',
-        text: 'YouTube',
-        to: 'http://www.youtube.com/user/umlibrary/videos'
-      }
-    ]
-  }
+        icon: "youtube",
+        text: "YouTube",
+        to: "http://www.youtube.com/user/umlibrary/videos",
+      },
+    ],
+  },
 ];
-
 ---
 
 <footer role="contentinfo">
   <div class="footer-content">
     <div class="footer-sections">
-      {links.map((section) => (
-        <section>
-          <h2>{section.heading}</h2>
-          <nav aria-label={`${section.heading} links`}>
-            <ul class="footer-links">
-              {section.links.map(({ text, to, icon }) => (
-                <li>
-                  <Link href={to} kind="light" style="box-shadow: none;">
-                    <span class="icon-text">
-                      <span class="icon-wrapper">
-                      <Icon icon={icon} aria-hidden="true" />
+      {
+        links.map((section) => (
+          <section>
+            <h2>{section.heading}</h2>
+            <nav aria-label={`${section.heading} links`}>
+              <ul class="footer-links">
+                {section.links.map(({ text, to, icon }) => (
+                  <li>
+                    <Link href={to} kind="light" style="box-shadow: none;">
+                      <span class="icon-text">
+                        <span class="icon-wrapper">
+                          <Icon icon={icon} aria-hidden="true" />
+                        </span>
+                        <span set:html={text.replace("\n", "<br />")} />
                       </span>
-                      <span set:html={text.replace('\n', '<br />')} />
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </section>
-      ))}
-      
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </section>
+        ))
+      }
+
       <section class="privacy-section">
         <h2>Privacy and copyright</h2>
-        <a href="/about-us/policies/library-privacy-statement">Library Privacy Statement</a>
+        <a href="/about-us/policies/library-privacy-statement"
+          >Library Privacy Statement</a
+        >
         <p class="copyright-text">
-          Except where otherwise noted, this work is subject to a{' '}
-          <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 license</a>
-          . For details and exceptions, see the{' '}
-          <a href="/about-us/policies/copyright-policy">Library Copyright Policy</a>.
+          Except where otherwise noted, this work is subject to a{" "}
+          <a href="http://creativecommons.org/licenses/by/4.0/"
+            >Creative Commons Attribution 4.0 license</a
+          >
+          . For details and exceptions, see the{" "}
+          <a href="/about-us/policies/copyright-policy"
+            >Library Copyright Policy</a
+          >.
         </p>
         <p class="fdlp">
-          <Image src={fdlpImage} alt="Federal Depository Library Program" width={40} height={40} loading="lazy" />
+          <Image
+            src={fdlpImage}
+            alt="Federal Depository Library Program"
+            width={40}
+            height={40}
+            loading="lazy"
+          />
           <span>Federal Depository Library Program</span>
         </p>
       </section>
     </div>
   </div>
-  
+
   <div class="footer-bottom">
     <div class="footer-content">
       <nav aria-label="Legal and References">
         <ul>
           <li>© {year}, Regents of the University of Michigan</li>
           <li>
-            <a href="/about-us/about-library/territorial-acknowledgement">Territorial Acknowledgement</a>
+            <a href="/about-us/about-library/territorial-acknowledgement"
+              >Territorial Acknowledgement</a
+            >
           </li>
           <li>
-            Built with the{' '}
-            <a href="https://design-system.lib.umich.edu/">U-M Library Design System</a>
+            Built with the{" "}
+            <a href="https://design-system.lib.umich.edu/"
+              >U-M Library Design System</a
+            >
           </li>
         </ul>
       </nav>
@@ -149,32 +166,32 @@ const links = [
 
 <style>
   footer {
-    background: var(--color-blue-400, #00274C);
+    background: var(--color-blue-400, #00274c);
     color: white;
   }
-  
+
   footer *:focus {
     outline-color: white;
   }
 
-  .footer-content li{
-    margin: .5rem 0;
+  .footer-content li {
+    margin: 0.5rem 0;
   }
 
-  .footer-links{
-    padding-top: .75rem;
+  .footer-links {
+    padding-top: 0.75rem;
   }
-  
+
   .footer-content {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 2.5rem;
   }
-  
+
   .footer-sections {
     padding: 3rem 0 2rem;
   }
-  
+
   .footer-sections section {
     margin-bottom: 2rem;
   }
@@ -182,80 +199,15 @@ const links = [
   .footer-sections section:not(:last-of-type) {
     margin-bottom: 2rem;
   }
-  
+
   .footer-sections h2 {
     font-size: 0.875rem;
     font-weight: 800;
     letter-spacing: 1.25px;
     text-transform: uppercase;
-    color: var(--color-blue-200, #BBD7ED);
-  }
-  
-  .footer-sections nav ul {
-    list-style: none;
-    padding-top: .75rem;
-  }
-  
-  .footer-sections nav li {
-    margin: 0;
-  }
-  
-  .footer-sections nav a {
-    display: inline-block;
-    padding: 0.5rem 0;
-  }
-  
-  .footer-sections nav a:hover {
-    text-decoration: underline;
+    color: var(--color-blue-200, #bbd7ed);
   }
 
-  .icon-text{
-    display: flex;
-  }
-
-  .icon-wrapper{
-    flex-shrink: 0;
-    margin-top: -2px;
-    width: 1.75rem;
-  }
-  
-  .privacy-section {
-    border-top: 1px solid var(--color-blue-300, #0C4A6E);
-    padding-top: 2rem;
-  }
-  
-  .privacy-section a {
-    color: white;
-    text-decoration: underline;
-  }
-  
-  .copyright-text {
-    padding: 0.5rem 0 2rem;
-    margin: 0;
-  }
-  
-  .copyright-text a {
-    color: white;
-  }
-  
-  .fdlp {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0;
-  }
-  
-  .fdlp img {
-    width: auto;
-    height: 2rem;
-  }
-  
-  .footer-bottom {
-    background: var(--color-blue-500, #001B33);
-    color: var(--color-blue-200, #BBD7ED);
-    padding: 1rem 0;
-  }
-  
   .footer-bottom ul {
     display: flex;
     flex-wrap: wrap;
@@ -264,12 +216,77 @@ const links = [
     margin: 0;
     gap: 0 2rem;
   }
-  
-  .footer-bottom a {
-    color: var(--color-blue-200, #BBD7ED);
+
+  .footer-sections nav ul {
+    list-style: none;
+    padding-top: 0.75rem;
+  }
+
+  .footer-sections nav li {
+    margin: 0;
+  }
+
+  .icon-text {
+    display: flex;
+  }
+
+  .icon-wrapper {
+    flex-shrink: 0;
+    margin-top: -2px;
+    width: 1.75rem;
+  }
+
+  .privacy-section {
+    border-top: 1px solid var(--color-blue-300, #0c4a6e);
+    padding-top: 2rem;
+  }
+
+  .privacy-section a {
+    color: white;
     text-decoration: underline;
   }
-  
+
+  .copyright-text {
+    padding: 0.5rem 0 2rem;
+    margin: 0;
+  }
+
+  .copyright-text a {
+    color: white;
+  }
+
+  .fdlp {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .fdlp img {
+    width: auto;
+    height: 2rem;
+  }
+
+  .footer-bottom {
+    background: var(--color-blue-500, #001b33);
+    color: var(--color-blue-200, #bbd7ed);
+    padding: 1rem 0;
+  }
+
+  .footer-bottom a {
+    color: var(--color-blue-200, #bbd7ed);
+    text-decoration: underline;
+  }
+
+  .footer-sections nav a {
+    display: inline-block;
+    padding: 0.5rem 0;
+  }
+
+  .footer-sections nav a:hover {
+    text-decoration: underline;
+  }
+
   /* Responsive: 3 columns on larger screens */
   @media (min-width: 641px) {
     .footer-sections {
@@ -277,15 +294,15 @@ const links = [
       column-gap: 2rem;
       padding-top: 3rem;
     }
-    
+
     .footer-sections section {
       break-inside: avoid;
       margin-bottom: 0;
     }
-    
+
     .privacy-section {
       border-top: 0;
-      border-left: 1px solid var(--color-blue-300, #0C4A6E);
+      border-left: 1px solid var(--color-blue-300, #0c4a6e);
       margin-left: -2rem;
       padding-left: 2rem;
       padding-top: 0;
