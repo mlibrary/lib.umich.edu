@@ -31,13 +31,9 @@ export default function processHorizontalNavigationData ({
    *If it's the root page, then use children data,
    *not parent data.
    */
-  if (isRootPage) {
-    return createNavItems(
-      currentNode,
-      childrenNodeOrderByDrupalId,
-      childrenNodes
-    );
-  }
+  const items = isRootPage
+    ? createNavItems(currentNode, childrenNodeOrderByDrupalId, childrenNodes)
+    : createNavItems(parentNode, parentNodeOrderByDrupalId, parentNodes);
 
-  return createNavItems(parentNode, parentNodeOrderByDrupalId, parentNodes);
+  return items.length > 1 ? items : [];
 }
