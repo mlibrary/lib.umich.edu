@@ -71,10 +71,12 @@ const { primary, secondary } = Astro.props;
   .header-container {
     position: relative;
   }
-
-  :global(.page-header-mini .heading){
-    margin-top: .75rem;
-    margin-bottom: 0;
+  
+  @media only screen and (min-width: 641px) {
+    :global(.page-header-mini .heading){
+      margin-top: .75rem;
+      margin-bottom: 0;
+    }
   }
 
   .logo-large-wrapper {
