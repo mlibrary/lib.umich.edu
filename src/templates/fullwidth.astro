@@ -76,11 +76,11 @@ const pageTitle = title || fieldTitleContext;
 		<HorizontalNavigation items={navigationItems} />
 	)}
 
-	{body?.processed && (
+	{body && (
 		<Margins
 			class={hasFullPanels ? 'fullwidth-content no-full-panels' : 'fullwidth-content'}
 		>
-			<Html html={body.processed} />
+			{body.processed && <Html html={body.processed} />}
 			<Panels data={bodyPanels} />
 		</Margins>
 	)}
