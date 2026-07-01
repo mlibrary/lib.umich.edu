@@ -5,6 +5,7 @@
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
 import AsideLayout from '../components/AsideLayout.astro';
+import Margins from '../components/Margins.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateSide from '../components/TemplateSide.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
@@ -79,7 +80,7 @@ import fassNoResults from '../images/fass-no-results.png';
 ---
 
 <TemplateLayout node={node}>
-  <div class="margins fass-page">
+  <Margins class="fass-page">
     <Breadcrumb data={breadcrumb} />
     <Heading size="3XL" level={1} class="fass-heading">
       {fieldTitleContext}
@@ -89,10 +90,10 @@ import fassNoResults from '../images/fass-no-results.png';
         <Html html={body.processed} />
       </div>
     )}
-  </div>
+  </Margins>
 
-  <AsideLayout contentSide="right" asideWidth="25rem">
-    <TemplateSide contentSide="right">
+  <AsideLayout contentSide="right" asideWidth="21rem" class="fass-aside-layout">
+    <TemplateSide contentSide="right" class="fass-template-side">
       <div class="fass-filter-label">FILTER BY</div>
 
       {/* --- Locations collapsible --- */}
@@ -225,7 +226,7 @@ import fassNoResults from '../images/fass-no-results.png';
       </div>
     </TemplateSide>
 
-    <TemplateContent>
+    <TemplateContent class="fass-template-content">
       <div id="fass-active-tags" class="fass-active-tags" style="display:none;">
         <div class="fass-tags-list" id="fass-tags-list"></div>
         <button type="button" class="fass-clear-all" id="fass-clear-all">
@@ -288,12 +289,31 @@ import fassNoResults from '../images/fass-no-results.png';
 </TemplateLayout>
 
 <style>
-  :global(.fass-heading) {
-    margin-bottom: 0.75rem;
-  }
-
   .fass-body {
     margin-bottom: 2rem;
+  }
+
+  :global(.fass-aside-layout) {
+    gap: 2rem;
+  }
+
+  /* Match Gatsby TemplateSide css override:
+     css={{ 'div:first-of-type': { border: 'none !important', paddingBottom: '0' }, maxWidth: '25rem' }} */
+  .fass-template-side {
+    max-width: 25rem;
+  }
+
+  :global(.fass-template-side .template-side-inner) {
+    border: none !important;
+    padding-bottom: 0;
+    max-width: 25rem;
+  }
+
+  /* Match Gatsby TemplateContent css={{ marginRight: '0 !important' }} */
+  @media (width >= 920px) {
+    .fass-template-content {
+      margin-right: 0 !important;
+    }
   }
 
   .fass-filter-label {
@@ -370,7 +390,7 @@ import fassNoResults from '../images/fass-no-results.png';
   }
 
   .fass-collapsible-inner {
-    padding: 1rem 0;
+    padding-top: 1rem;
   }
 
   /* Checkboxes */
@@ -614,7 +634,6 @@ import fassNoResults from '../images/fass-no-results.png';
 
   @media only screen and (max-width: 1199px) {
     .fass-collapsible-trigger {
-      border-left-color: transparent !important;
     }
   }
 </style>

@@ -3,6 +3,7 @@
  * Template Component
  * Converted from src/components/aside-layout.js - Template
  */
+import Margins from './Margins.astro';
 
 interface Props {
   asideWidth?: string;
@@ -20,11 +21,11 @@ const {
   class: className = ''
 } = Astro.props;
 ---
-<div class="margins">
+<Margins>
   <div class={`template template--${variant} ${className}`} data-content-side={contentSide} data-has-side={hasSide}>
     <slot />
   </div>
-</div>
+</Margins>
 
 <style define:vars={{ asideWidth, contentSide }}>
   .template {

@@ -4,6 +4,7 @@
  */
 import Header from '../components/header/index.astro';
 import Footer from '../components/Footer.astro';
+import Margins from '../components/Margins.astro';
 import '../styles/global.css';
 import favicon from '../images/icon.png';
 
@@ -32,13 +33,13 @@ const { title } = Astro.props;
     <div class="page-grid">
       <div>
         <section aria-label="Skip links" class="skip-links">
-          <div class="margins">
+          <Margins>
             <ul>
               <li><a href="#maincontent">Skip to main content</a></li>
               <li><a href="#chat">Skip to Ask a Librarian chat</a></li>
               <li><a href="/site-map">View site map</a></li>
             </ul>
-          </div>
+          </Margins>
         </section>
         
         <m-universal-header></m-universal-header>
@@ -64,9 +65,9 @@ const { title } = Astro.props;
           return;
         }
 
-        const dataPageHeading = document.querySelector('[data-page-heading]');
-        const h1 = document.querySelector('h1');
-        const pageHeading = dataPageHeading ? dataPageHeading : h1;
+        const dataPageHeading = document.querySelector('[data-page-heading]') as HTMLElement | null;
+        const h1 = document.querySelector('h1') as HTMLElement | null;
+        const pageHeading = (dataPageHeading ?? h1) as HTMLElement | null;
 
         if (pageHeading) {
           pageHeading.setAttribute('tabindex', '-1');

@@ -10,6 +10,7 @@
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
 import AsideLayout from '../components/AsideLayout.astro';
+import Margins from '../components/Margins.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateSide from '../components/TemplateSide.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
@@ -149,9 +150,9 @@ if (collectingAreaTermId) {
 <TemplateLayout node={node} title={title || fieldTitleContext}>
   <DebugPanel node={node} />
 
-  <div class="margins">
+  <Margins>
     <Breadcrumb data={breadcrumbData} />
-  </div>
+  </Margins>
 
   <AsideLayout asideWidth="25rem">
     <TemplateContent>
@@ -236,7 +237,9 @@ if (collectingAreaTermId) {
   }
 
   /* Remove default TemplateSide inner border (matches Gatsby css={{ '> div': { border: 'none' } }}) */
-  :global(.collecting-area-side > div) {
-    border-left: none !important;
+  /* stylelint-disable selector-pseudo-class-no-unknown */
+  :global(.collecting-area-side .template-side-inner) {
+    border: none;
   }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
 </style>

@@ -13,6 +13,7 @@ import Address from '../Address.astro';
 import TodaysHours from '../TodaysHours.astro';
 import DotsSvg from '../DotsSvg.astro';
 import DestinationHorizontalPanel from './DestinationHorizontalPanel.astro';
+import Margins from '../Margins.astro';
 import { getParentTitle } from '../../utils';
 
 interface Props {
@@ -58,9 +59,9 @@ const getSummary = (body: any) => {
 {template === 'destination_hor_card_template' ? (
   <DestinationHorizontalPanel data={data} />
 ) : template === 'highlights' ? (
-  <div class="margins">
+  <Margins>
     <section class="highlights-section">
-      <div class="margins" data-panel-margins>
+      <Margins data-panel-margins>
         <div class="highlights-header">
           <div class="dots-container">
             <DotsSvg />
@@ -107,9 +108,9 @@ const getSummary = (body: any) => {
             );
           })}
         </ol>
-      </div>
+      </Margins>
     </section>
-  </div>
+  </Margins>
 ) : (
   <PanelTemplate title={title}>
     <PanelList twoColumns={noImage}>

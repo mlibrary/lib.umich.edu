@@ -7,6 +7,7 @@ import { processDrupalNode } from '../../lib/page-generator.js';
 import { EXHIBIT_TYPES } from '../../utils/events.js';
 import Heading from '../../reusable/Heading.astro';
 import EventCard from '../EventCard.astro';
+import Margins from '../Margins.astro';
 
 interface EventMeta {
   event: any;
@@ -70,7 +71,7 @@ try {
 ---
 
 <section class="whats-happening">
-  <div class="margins">
+  <Margins>
     <Heading level={2} size="L">What&rsquo;s happening?</Heading>
 
     <p id="whp-no-events" class="no-events-message" style="display:none">
@@ -98,7 +99,7 @@ try {
         </div>
       ))}
     </div>
-  </div>
+  </Margins>
 </section>
 
 <script>

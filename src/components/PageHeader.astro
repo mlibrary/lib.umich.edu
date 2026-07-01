@@ -9,6 +9,7 @@ import Breadcrumb from './Breadcrumb.astro';
 import DrupalImage from './DrupalImage.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Heading from '../reusable/Heading.astro';
+import Margins from './Margins.astro';
 
 interface Props {
   breadcrumb?: string;
@@ -37,7 +38,7 @@ if (!breadcrumbData) {
 ---
 
 <div class="page-header-wrapper">
-  <div class="margins">
+  <Margins>
     <header class="page-header">
       <div class="page-header-content">
         <Breadcrumb data={breadcrumbData} />
@@ -57,7 +58,7 @@ if (!breadcrumbData) {
         </div>
       )}
     </header>
-  </div>
+  </Margins>
 </div>
 
 <style>

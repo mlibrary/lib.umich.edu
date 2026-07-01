@@ -7,6 +7,7 @@ import Logo from "./Logo.astro";
 import PrimaryNav from "./PrimaryNav.astro";
 import Icon from '../../reusable/Icon.astro';
 import SiteSearch from "../SiteSearch.astro";
+import Margins from '../Margins.astro';
 
 interface Props {
   primary: any[];
@@ -17,7 +18,7 @@ const { primary, secondary } = Astro.props;
 ---
 
 <header class="header-large">
-  <div class="margins">
+  <Margins>
     <div class="header-container">
       <div class="logo-large-wrapper">
         <Logo size={36} />
@@ -57,7 +58,7 @@ const { primary, secondary } = Astro.props;
         <SiteSearch label="Search this site" />
       </div>
     </div>
-  </div>
+  </Margins>
 </header>
 
 

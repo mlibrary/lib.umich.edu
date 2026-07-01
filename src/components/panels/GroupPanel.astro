@@ -4,6 +4,7 @@
  * Converted from src/components/panels/group-panel.js
  */
 import Panels from './Panels.astro';
+import Margins from '../Margins.astro';
 
 interface Props {
   data: any;
@@ -19,11 +20,11 @@ const fieldPanelGroup = relationships?.field_panel_group;
 ---
 
 {is50Layout && fieldPanelGroup ? (
-  <div class="margins">
+  <Margins>
     <div class="panel-group-50-container">
       <Panels data={fieldPanelGroup} />
     </div>
-  </div>
+  </Margins>
 ) : (
  null
 )}

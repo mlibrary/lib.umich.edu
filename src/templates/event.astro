@@ -171,7 +171,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
       {body && <Html html={body} />}
     </TemplateContent>
 
-    <TemplateSide>
+    <TemplateSide class="event-template-side">
       {imageSrc && (
         <figure class="event-figure">
           <DrupalImage
@@ -291,6 +291,12 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
     color: var(--color-neutral-300);
     padding-top: 0.75rem;
   }
+
+  /* stylelint-disable selector-pseudo-class-no-unknown */
+  :global(.event-template-side .template-side-inner) {
+    border: none !important;
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
 
   .event-contact-heading {
     font-size: 1rem;

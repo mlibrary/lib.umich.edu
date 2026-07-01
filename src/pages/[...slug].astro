@@ -20,6 +20,7 @@ import NewsLandingTemplate from '../templates/news-landing.astro';
 import NewsTemplate from '../templates/news.astro';
 import EventTemplate from '../templates/event.astro';
 import DebugPanel from '../components/panels/DebugPanel.astro';
+import Margins from '../components/Margins.astro';
 
 export async function getStaticPaths() {
   const pages = await getPagesToGenerate();
@@ -105,13 +106,20 @@ const TemplateComponent = templateComponents[template];
   />
 ) : (
   <Layout title={title || 'Page Not Found'}>
-    <div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+    <Margins class="template-not-found">
       <h1>Template Not Found</h1>
       <p>Template "{template}" is not yet converted to Astro.</p>
       <p><strong>Page:</strong> {title}</p>
       <p><strong>Drupal NID:</strong> {drupal_nid}</p>
-    </div>
+    </Margins>
   </Layout>
 )}
 
 <DebugPanel node={node} template={template} />
+
+<style>
+  .template-not-found {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+</style>

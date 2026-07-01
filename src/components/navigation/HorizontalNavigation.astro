@@ -4,6 +4,7 @@
  *
  * Displays a horizontal navigation menu with different styles for desktop and mobile
  */
+import Margins from '../Margins.astro';
 interface NavigationItem {
   to: string;
   text: string;
@@ -33,7 +34,7 @@ function isActive(to: string): boolean {
 
 <nav aria-label="Local" {...rest}>
   <div class="horizontal-navigation">
-    <div class="margins">
+    <Margins>
       <ol>
         {
           items.map(({ to, text }) => (
@@ -45,7 +46,7 @@ function isActive(to: string): boolean {
           ))
         }
       </ol>
-    </div>
+    </Margins>
   </div>
 </nav>
 

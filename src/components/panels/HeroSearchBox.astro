@@ -1,6 +1,7 @@
 ---
 import Icon from '../../reusable/Icon.astro';
 import { getImage } from 'astro:assets';
+import Margins from '../Margins.astro';
 
 type Props = {
 	data: any;
@@ -46,7 +47,7 @@ const horizontalSrc = horizontalCmsUrl
 	: '';
 ---
 
-<div class="margins">
+<Margins>
 	<section
 		class="background-section"
 		style={`--bg-vertical: url('${verticalSrc}'); --bg-horizontal: url('${horizontalSrc}');`}
@@ -99,7 +100,7 @@ const horizontalSrc = horizontalCmsUrl
 			</div>
 		)}
 	</section>
-</div>
+</Margins>
 
 
 

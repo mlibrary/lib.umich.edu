@@ -9,38 +9,40 @@ import Margins from '../components/Margins.astro';
 ---
 
 <Layout title="404 - Page not found">
-  <section class="not-found margins">
-    <div class="not-found-image-wrap" aria-hidden="true">
-      <Image src={notFoundImage} alt="" width={920} class="not-found-image" />
-    </div>
+  <Margins>
+    <section class="not-found">
+      <div class="not-found-image-wrap" aria-hidden="true">
+        <Image src={notFoundImage} alt="" width={920} class="not-found-image" />
+      </div>
 
-    <Heading level={1} size="3XL" class="not-found-heading" data-page-heading>
-      <span class="not-found-code">404</span>
-      Page not found
-    </Heading>
+      <Heading level={1} size="3XL" class="not-found-heading" data-page-heading>
+        <span class="not-found-code">404</span>
+        Page not found
+      </Heading>
 
-    <Prose class="not-found-prose">
-      <p class="lede">
-        We can't find the page you're looking for. This can sometimes happen when:
-      </p>
+      <Prose class="not-found-prose">
+        <p class="lede">
+          We can't find the page you're looking for. This can sometimes happen when:
+        </p>
 
-      <ul>
-        <li>We've moved or renamed the page</li>
-        <li>The page no longer exists</li>
-        <li>There's a slight typo in the web address</li>
-        <li>The web address wasn't copied fully</li>
-      </ul>
+        <ul>
+          <li>We've moved or renamed the page</li>
+          <li>The page no longer exists</li>
+          <li>There's a slight typo in the web address</li>
+          <li>The web address wasn't copied fully</li>
+        </ul>
 
-      <p>
-        If the web address is correct, please contact us at <Link href="/ask-librarian">Ask a Librarian</Link> and we'll do our best to find what you're looking for.
-      </p>
+        <p>
+          If the web address is correct, please contact us at <Link href="/ask-librarian">Ask a Librarian</Link> and we'll do our best to find what you're looking for.
+        </p>
 
-      <p>
-        You can also visit the <Link href="/">homepage</Link>, navigate through our menu
-        options, or use site search.
-      </p>
-    </Prose>
-  </section>
+        <p>
+          You can also visit the <Link href="/">homepage</Link>, navigate through our menu
+          options, or use site search.
+        </p>
+      </Prose>
+    </section>
+  </Margins>
 </Layout>
 
 <style>
@@ -75,7 +77,7 @@ import Margins from '../components/Margins.astro';
     max-width: 38rem;
   }
 
-  @media only screen and (min-width: 769px) {
+  @media (width >= 769px) {
     .not-found {
       margin-top: 3rem;
     }

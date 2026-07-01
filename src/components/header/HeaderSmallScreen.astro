@@ -6,6 +6,7 @@
 import Logo from "./Logo.astro";
 import Icon from "../../reusable/Icon.astro";
 import SiteSearchModal from "./SiteSearchModal.astro";
+import Margins from '../Margins.astro';
 
 interface Props {
   primary: any[];
@@ -16,7 +17,7 @@ const { primary, secondary } = Astro.props;
 ---
 
 <header class="header-small">
-  <div class="margins">
+  <Margins>
     <div class="mobile-flex">
       <!-- Logo -->
       <div class="logo-mobile">
@@ -129,7 +130,7 @@ const { primary, secondary } = Astro.props;
         } -->
       </div>
     </nav>
-  </div>
+  </Margins>
 </header>
 
 

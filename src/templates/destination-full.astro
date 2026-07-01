@@ -8,6 +8,7 @@
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
 import AsideLayout from '../components/AsideLayout.astro';
+import Margins from '../components/Margins.astro';
 import TemplateTop from '../components/TemplateTop.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateSide from '../components/TemplateSide.astro';
@@ -72,7 +73,7 @@ const showChatIframe = slug === '/ask-librarian';
 ---
 
 <TemplateLayout node={node} title={title || fieldTitleContext}>
-    <div class="margins">
+  <Margins>
     <TemplateTop>
       <Breadcrumb data={breadcrumbData} />
       <Heading
@@ -83,7 +84,7 @@ const showChatIframe = slug === '/ask-librarian';
           {fieldTitleContext}
         </Heading>
     </TemplateTop>
-    </div>
+    </Margins>
   <AsideLayout asideWidth="26rem">
 
     <TemplateContent>

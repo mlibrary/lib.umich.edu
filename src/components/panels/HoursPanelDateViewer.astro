@@ -10,11 +10,12 @@
  */
 import Icon from '../../reusable/Icon.astro';
 import Heading from '../../reusable/Heading.astro';
+import Margins from '../Margins.astro';
 ---
 
 <div class="date-viewer-bar" id="dateViewerBar">
   <div class="visually-hidden" role="status" aria-live="polite" aria-atomic="true" id="calendarStatus"></div>
-  <div class="date-viewer-container margins">
+  <Margins class="date-viewer-container">
     <div class="controls-wrapper">
       <!-- Previous Week Button - Desktop -->
       <button class="prev-next-button prev-desktop" id="prevWeekDesktop" aria-label="Previous week">
@@ -69,7 +70,7 @@ import Heading from '../../reusable/Heading.astro';
         <span class="visually-hidden">Next week</span>
       </button>
     </div>
-  </div>
+  </Margins>
 </div>
 
 <script>

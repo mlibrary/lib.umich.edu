@@ -6,6 +6,7 @@
 import Heading from '../../reusable/Heading.astro';
 import Prose from '../Prose.astro';
 import HoursTable from '../HoursTable.astro';
+import Margins from '../Margins.astro';
 import { displayHours } from '../../utils/hours';
 
 interface Props {
@@ -114,7 +115,7 @@ const initialTableData = transformTableData(data, new Date());
   data-node={JSON.stringify(data)}
 >
 
-  <div class="margins">
+  <Margins>
     <Heading 
       level={2} 
       size="L"
@@ -136,7 +137,7 @@ const initialTableData = transformTableData(data, new Date());
         location={title}
       />
     </div>
-  </div>
+  </Margins>
 </section>
 
 <script>
