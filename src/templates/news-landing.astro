@@ -4,7 +4,7 @@
  * Converted from src/templates/news-landing.js
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
-import Template from '../components/Template.astro';
+import AsideLayout from '../components/AsideLayout.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateSide from '../components/TemplateSide.astro';
 import Margins from '../components/Margins.astro';
@@ -51,7 +51,7 @@ const newsLibraryUpdatesInitialShow = 20;
     </Heading>
   </Margins>
 
-  <Template>
+  <AsideLayout>
     <TemplateContent>
       {body?.processed && (
         <div class="news-landing-body">
@@ -120,7 +120,7 @@ const newsLibraryUpdatesInitialShow = 20;
         </Expandable>
       )}
     </TemplateSide>
-  </Template>
+  </AsideLayout>
 </TemplateLayout>
 
 <style>

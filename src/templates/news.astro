@@ -11,7 +11,7 @@ import Html from '../components/Html.astro';
 import Link from '../reusable/link.astro';
 import Panels from '../components/panels/Panels.astro';
 import Share from '../components/Share.astro';
-import Template from '../components/Template.astro';
+import AsideLayout from '../components/AsideLayout.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateLayout from '../components/TemplateLayout.astro';
 import TemplateSide from '../components/TemplateSide.astro';
@@ -109,7 +109,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
     <Breadcrumb data={breadcrumbData} />
   </div>
   
-  <Template asideWidth="25rem">
+  <AsideLayout asideWidth="25rem">
     <TemplateContent>
       <Heading level={1} class="news-heading" size="3XL">
         {fieldTitleContext}
@@ -166,7 +166,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
         </p>
       </div>
     </TemplateSide>
-  </Template>
+  </AsideLayout>
   
   {fullPanels && fullPanels.length > 0 && (
     <Panels data={fullPanels} />

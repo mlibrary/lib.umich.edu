@@ -1,7 +1,69 @@
 ---
+/**
+ * AsideLayout Component
+ * Converted from src/components/aside-layout.js - Template
+ */
+import Margins from './Margins.astro';
+
+interface Props {
+    asideWidth?: string;
+    contentSide?: 'left' | 'right';
+    class?: string;
+}
+
+const {
+    asideWidth = '21rem',
+    contentSide = 'left',
+    class: className = ''
+} = Astro.props;
 ---
-<div class="margins">
-    <div class="template">
+
+<Margins data-aside-layout>
+    <div
+        class={`aside-layout ${className}`}
+        data-content-side={contentSide}
+        style={`--aside-width: ${asideWidth};`}
+    >
         <slot />
     </div>
-</div>
+</Margins>
+
+<style>
+    .aside-layout {
+        width: 100%;
+        padding-bottom: 2rem;
+    }
+
+    /* stylelint-disable selector-pseudo-class-no-unknown */
+    :global([data-aside-layout]:has(+ [data-panel])) .aside-layout {
+        padding-bottom: 0;
+    }
+
+    :global([data-aside-layout]) :global([data-panel-margins]),
+    :global([data-aside-layout]) :global([data-panel]) {
+        padding: 0;
+    }
+
+    :global([data-aside-layout]) :global([data-panel] h2) {
+        margin-top: 2.5rem;
+    }
+    /* stylelint-enable selector-pseudo-class-no-unknown */
+
+    @media (width >= 1200px) {
+        .aside-layout {
+            display: grid;
+            padding-bottom: 3rem;
+        }
+
+        .aside-layout[data-content-side="left"],
+        .aside-layout:not([data-content-side]) {
+            grid-template-areas: "content side";
+            grid-template-columns: 1fr calc(var(--aside-width) + 4rem);
+        }
+
+        .aside-layout[data-content-side="right"] {
+            grid-template-areas: "side content";
+            grid-template-columns: var(--aside-width) 1fr;
+        }
+    }
+</style>

@@ -8,10 +8,10 @@ interface Props {
   class?: string;
 }
 
-const { class: className = '' } = Astro.props;
+const { class: className = '', ...rest } = Astro.props;
 ---
 
-<div class={`margins ${className}`}>
+<div class={`margins ${className}`} {...rest}>
   <slot />
 </div>
 
@@ -23,7 +23,7 @@ const { class: className = '' } = Astro.props;
     width: 100%;
   }
 
-  @media only screen and (min-width: 641px) {
+  @media (width >= 641px) {
     .margins {
       padding: 0 2.5rem;
     }

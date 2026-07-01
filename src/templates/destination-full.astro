@@ -7,7 +7,7 @@
  * Used for location/room pages that don't have local side navigation.
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
-import Template from '../components/Template.astro';
+import AsideLayout from '../components/AsideLayout.astro';
 import TemplateTop from '../components/TemplateTop.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateSide from '../components/TemplateSide.astro';
@@ -84,7 +84,7 @@ const showChatIframe = slug === '/ask-librarian';
         </Heading>
     </TemplateTop>
     </div>
-  <Template variant="aside" asideWidth="26rem">
+  <AsideLayout asideWidth="26rem">
 
     <TemplateContent>
       <div class="destination-full-content">
@@ -115,7 +115,7 @@ const showChatIframe = slug === '/ask-librarian';
 
       {showChatIframe && <ChatIframe />}
     </TemplateSide>
-  </Template>
+  </AsideLayout>
 
   <Panels data={fullPanels} />
 </TemplateLayout>

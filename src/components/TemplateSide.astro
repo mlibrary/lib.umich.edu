@@ -2,7 +2,7 @@
 /**
  * TemplateSide Component
  * Converted from src/components/aside-layout.js - TemplateSide
- * 
+ *
  * Sidebar area in Template layout
  */
 interface Props {
@@ -10,9 +10,9 @@ interface Props {
   class?: string;
 }
 
-const { 
+const {
   contentSide = 'left',
-  class: className = '' 
+  class: className = ''
 } = Astro.props;
 ---
 
@@ -23,29 +23,47 @@ const {
 </section>
 
 <style>
-  .template-side {
-    /* Mobile/tablet: bottom border */
-  }
-  
   .template-side-inner {
     border-bottom: solid 1px var(--color-neutral-100);
     margin-bottom: 2.5rem;
     padding-bottom: 2.5rem;
   }
-  
-  /* Positioning inside basic (641px+) and aside (920px+) grids */
-  @media only screen and (min-width: 641px) {
+
+  @media (width >= 641px) {
     .template-side {
       grid-area: side;
-      margin-right: 3rem;
     }
   }
-  
-  /* XL screen: side border instead of bottom */
-  @media only screen and (min-width: 1200px) {
+
+  /* In basic page grids, Gatsby's Side component adds a right gutter at S+. */
+  @media (width >= 641px) {
+    /* stylelint-disable selector-pseudo-class-no-unknown, selector-class-pattern */
+    :global(.template--basic) .template-side {
+      margin-right: 3rem;
+    }
+    /* stylelint-enable selector-pseudo-class-no-unknown, selector-class-pattern */
+  }
+
+  @media (width >= 1200px) {
     .template-side-inner {
       border-bottom: none;
       padding-bottom: 0;
     }
+
+    .template-side[data-content-side="left"] .template-side-inner {
+      border-left: solid 1px var(--color-neutral-100);
+      padding-left: 3rem;
+    }
+
+    .template-side[data-content-side="right"] .template-side-inner {
+      border-right: solid 1px var(--color-neutral-100);
+    }
   }
+
+  /* stylelint-disable selector-pseudo-class-no-unknown */
+  :global([data-aside-layout]:has(+ [data-panel])) .template-side-inner {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
 </style>

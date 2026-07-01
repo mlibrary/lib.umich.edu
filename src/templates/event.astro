@@ -6,7 +6,7 @@ import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
 import Link from '../reusable/link.astro';
 import Share from '../components/Share.astro';
-import Template from '../components/Template.astro';
+import AsideLayout from '../components/AsideLayout.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateLayout from '../components/TemplateLayout.astro';
 import TemplateSide from '../components/TemplateSide.astro';
@@ -98,7 +98,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
     <Breadcrumb data={breadcrumb} />
   </div>
 
-  <Template asideWidth="25rem">
+  <AsideLayout asideWidth="25rem">
     <TemplateContent>
       <Heading
         level={1}
@@ -226,7 +226,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
         as much notice as possible.
       </p>
     </TemplateSide>
-  </Template>
+  </AsideLayout>
 </TemplateLayout>
 
 <style>

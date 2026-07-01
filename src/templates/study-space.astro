@@ -11,7 +11,7 @@
  *      Right side: "About the space" heading + body HTML + "Find another study space" link
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
-import Template from '../components/Template.astro';
+import AsideLayout from '../components/AsideLayout.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateSide from '../components/TemplateSide.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
@@ -103,7 +103,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     </header>
   </div>
 
-  <Template asideWidth="24rem" contentSide="right">
+  <AsideLayout asideWidth="24rem" contentSide="right">
     <TemplateSide contentSide="right">
       <div class="study-aside-inner">
         <LocationAside node={node} isStudySpaceAside={true} />
@@ -128,7 +128,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
         </div>
       </div>
     </TemplateContent>
-  </Template>
+  </AsideLayout>
 </TemplateLayout>
 
 <script>
@@ -179,7 +179,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     margin-bottom: 3rem;
   }
 
-  @media screen and (min-width: 640px) {
+  @media (width >= 640px) {
     .study-header {
       flex-direction: row;
       align-items: stretch;
@@ -199,7 +199,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     display: block;
   }
 
-  @media screen and (min-width: 640px) {
+  @media (width >= 640px) {
     .study-header-image {
       margin: 0;
       max-width: 450px;
@@ -219,7 +219,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     margin-top: 1.5rem;
   }
 
-  @media screen and (min-width: 640px) {
+  @media (width >= 640px) {
     .study-header-text {
       flex: 1 1 0;
       margin-left: 1rem;
@@ -256,7 +256,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
 
   @media screen and (min-width: 1200px) {
     .study-content {
-      padding-left: 4rem;
+      padding-left: 6rem;
     }
   }
 

@@ -2,7 +2,7 @@
 /**
  * TemplateContent Component
  * Converted from src/components/aside-layout.js - TemplateContent
- * 
+ *
  * Main content area in Template layout
  */
 interface Props {
@@ -17,13 +17,14 @@ const { class: className = '' } = Astro.props;
 </div>
 
 <style>
-  .template-content{
+  .template-content {
     margin-bottom: 2rem;
   }
 
-  @media only screen and (min-width: 641px) {
+  @media (width >= 920px) {
     .template-content {
       grid-area: content;
+      margin-right: 2.5rem;
     }
   }
 </style>

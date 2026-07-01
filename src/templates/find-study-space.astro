@@ -4,7 +4,7 @@
  * Converted from src/templates/find-study-space.js (Gatsby)
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
-import Template from '../components/Template.astro';
+import AsideLayout from '../components/AsideLayout.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateSide from '../components/TemplateSide.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
@@ -91,7 +91,7 @@ import fassNoResults from '../images/fass-no-results.png';
     )}
   </div>
 
-  <Template contentSide="right" asideWidth="25rem">
+  <AsideLayout contentSide="right" asideWidth="25rem">
     <TemplateSide contentSide="right">
       <div class="fass-filter-label">FILTER BY</div>
 
@@ -272,7 +272,7 @@ import fassNoResults from '../images/fass-no-results.png';
         </div>
       </div>
     </TemplateContent>
-  </Template>
+  </AsideLayout>
 
   <script
     id="fass-data"

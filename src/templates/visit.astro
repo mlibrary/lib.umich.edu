@@ -4,7 +4,7 @@
  * Converted from src/templates/visit.js
  */
 import TemplateLayout from '../components/TemplateLayout.astro';
-import Template from '../components/Template.astro';
+import AsideLayout from '../components/AsideLayout.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateSide from '../components/TemplateSide.astro';
 import PageHeader from '../components/PageHeader.astro';
@@ -91,7 +91,7 @@ const sortedAmenities = [...fieldAmenities].sort((a, b) => a.weight - b.weight);
   )}
 
   <section aria-label="Hours, parking, and amenities">
-    <Template>
+    <AsideLayout>
       <TemplateSide>
         <LocationAside node={node} />
       </TemplateSide>
@@ -147,7 +147,7 @@ const sortedAmenities = [...fieldAmenities].sort((a, b) => a.weight - b.weight);
 
         <Panels data={bodyPanels} />
       </TemplateContent>
-    </Template>
+    </AsideLayout>
   </section>
 
   {fullPanels.length > 0 && (

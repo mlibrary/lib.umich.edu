@@ -6,7 +6,7 @@
  */
 import Layout from '../layouts/Layout.astro';
 import Margins from '../components/Margins.astro';
-import Template from '../components/Template.astro';
+import AsideLayout from '../components/AsideLayout.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateSide from '../components/TemplateSide.astro';
 import PageHeader from '../components/PageHeader.astro';
@@ -102,7 +102,7 @@ const navigationItems = buildHorizontalNavigation({
   />
 
   {hasContent ? (
-    <Template hasSide={showLocationAside}>
+    <AsideLayout>
       <TemplateContent>
         <Prose>
           <Heading level={1} size="L" data-page-heading>
@@ -123,7 +123,7 @@ const navigationItems = buildHorizontalNavigation({
           <LocationAside node={parentNode} />
         </TemplateSide>
       )}
-    </Template>
+    </AsideLayout>
   ) : (
     <Margins>
       <Heading level={1} size="L" data-page-heading>
@@ -142,7 +142,7 @@ const navigationItems = buildHorizontalNavigation({
     display: none;
   }
 
-  @media only screen and (min-width: 641px) {
+  @media (width >= 641px) {
     .section-aside {
       display: block;
     }
