@@ -8,6 +8,7 @@
 import { MARGINS_CLASS } from '../../reusable/utils';
 import Heading from '../../reusable/Heading.astro';
 import Card from '../../reusable/Card.astro';
+import Link from '../../reusable/Link.astro';
 
 type Edge<T> = { node: T };
 type Edges<T> = { edges: Array<Edge<T>> } | Array<Edge<T>> | Array<T>;
@@ -115,7 +116,7 @@ const viewAllNewsHref = newsLandingSlug;
 					))}
 				</ol>
 
-				{viewAllNewsHref && <a href={viewAllNewsHref}>View all news and stories</a>}
+				{viewAllNewsHref && <Link href={viewAllNewsHref}>View all news and stories</Link>}
 			</div>
 		</div>
 	</div>

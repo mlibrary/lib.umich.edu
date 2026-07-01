@@ -161,8 +161,10 @@ const todayIndex = dayOfWeek === false ? -1 : dayOfWeek + 1;
     display: block;
   }
 
-  .subtext {
+  :global(.subtext) {
     color: var(--color-neutral-300);
+    font-weight: 400;
+    font-size: 1rem;
   }
 
   /* Tbody styles */
