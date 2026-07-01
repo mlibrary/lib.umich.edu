@@ -2,9 +2,10 @@
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Heading from '../reusable/Heading.astro';
-import Link from '../reusable/Link.astro';
+import Link from '../reusable/Link.astro';  
 import Prose from '../components/Prose.astro';
 import notFoundImage from '../images/404.png';
+import Margins from '../components/Margins.astro';
 ---
 
 <Layout title="404 - Page not found">
@@ -31,9 +32,7 @@ import notFoundImage from '../images/404.png';
       </ul>
 
       <p>
-        If the web address is correct, please contact us at
-        <Link href="/ask-librarian">Ask a Librarian</Link>
-        and we'll do our best to find what you're looking for.
+        If the web address is correct, please contact us at <Link href="/ask-librarian">Ask a Librarian</Link> and we'll do our best to find what you're looking for.
       </p>
 
       <p>
@@ -62,7 +61,7 @@ import notFoundImage from '../images/404.png';
   }
 
   .not-found-heading {
-    margin-bottom: var(--spacing-m);
+    margin-bottom: 1rem;
     max-width: 42rem;
   }
 
@@ -72,20 +71,20 @@ import notFoundImage from '../images/404.png';
     font-size: 60%;
   }
 
-  .not-found-prose {
-    max-width: 42rem;
+  .not-found-prose > p {
+    max-width: 38rem;
   }
 
   @media only screen and (min-width: 769px) {
     .not-found {
-      margin-top: var(--spacing-3xl);
+      margin-top: 3rem;
     }
 
     .not-found-image-wrap {
       float: right;
-      margin: 0 0 0 var(--spacing-xl);
+      margin: 0 0 0 2rem;
       max-width: min(40vw, 38rem);
-      shape-margin: var(--spacing-xl);
+      shape-margin: 2rem;
       shape-outside: polygon(
         65px 381px,
         84px 210px,
@@ -112,7 +111,7 @@ import notFoundImage from '../images/404.png';
       width: 40vw;
     }
 
-    .not-found-prose {
+    .prose .not-found-prose {
       margin-bottom: var(--spacing-5xl);
     }
   }
