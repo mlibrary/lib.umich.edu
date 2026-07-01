@@ -3,7 +3,7 @@
  * Site Search functionality and site search results popup
  */
 import Icon from '../reusable/Icon.astro';
-import Link from '../reusable/link.astro';
+import Link from '../reusable/Link.astro';
 
 interface Props {
   label?: string;
@@ -458,7 +458,6 @@ const { label = "Search this site" } = Astro.props;
         } else {
           // This appears to be raw page data, create a lunr index
           if (window.lunr) {
-            console.log(searchData);
             const pages = Object.entries(searchData).map(([key, value]) => ({
               id: key,
               title: value.title || '',
