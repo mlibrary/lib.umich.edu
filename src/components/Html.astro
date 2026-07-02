@@ -17,6 +17,7 @@ import Prose from './Prose.astro';
 import { fetchMediaEntity, fetchMediaEntityByPath, DRUPAL_URL, removeTrailingSlash } from '../lib/drupal.js';
 import { getYouTubeVideoId, buildYouTubeEmbedUrl } from '../utils/youtube';
 import { downloadCmsFile } from '../lib/cms-file-cache.js';
+import { icons } from '../reusable/icons';
 
 interface Props {
   html: string;
@@ -26,6 +27,14 @@ interface Props {
 const { html, class: className = '' } = Astro.props;
 
 const DRUPAL_BASE_URL = removeTrailingSlash(DRUPAL_URL);
+const ctaIconPath = icons.web_traffic || '';
+const alertIconPath = icons.error || '';
+const ctaIconSvg = ctaIconPath
+  ? `<svg class="umich-cta-icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="${ctaIconPath}"></path></svg>`
+  : '';
+const alertIconSvg = alertIconPath
+  ? `<svg class="umich-alert-icon" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="${alertIconPath}"></path></svg>`
+  : '';
 
 // Builds the video iframe HTML string for use inside set:html processing.
 // data-generated="1" marks our iframes so the authored-iframe strip pass skips them.
@@ -347,6 +356,46 @@ function processHtml(rawHtml: string): string {
     new RegExp(`(<a\\b[^>]*)\\bhref="${escapedBase}(/[^"]*)"`, 'gi'),
     '$1href="$2"'
   );
+
+  // Gatsby html.js maps these paragraph classes to Callout components with
+  // data attributes and (for alerts) an error icon.
+  out = out.replace(/<p\b([^>]*)>([\s\S]*?)<\/p>/gi, (_m, attrs, content) => {
+    const classMatch = /\bclass="([^"]*)"/i.exec(attrs);
+    const classes = classMatch?.[1] || '';
+    if (!/\bumich-lib-callout\b/.test(classes) && !/\bumich-lib-alert\b/.test(classes)) {
+      return _m;
+    }
+
+    let nextAttrs = attrs;
+    if (!/\bdata-umich-lib-callout\b/i.test(nextAttrs)) {
+      nextAttrs = `${nextAttrs} data-umich-lib-callout`;
+    }
+
+    if (!/\bumich-lib-alert\b/.test(classes) || !alertIconSvg || /\bumich-alert-icon\b/.test(content)) {
+      return `<p${nextAttrs}>${content}</p>`;
+    }
+
+    return `<p${nextAttrs}>${alertIconSvg}${content}</p>`;
+  });
+
+  // Gatsby html.js maps <p class="umich-lib-cta"> to <CallToAction> which prepends
+  // the web_traffic icon; mirror that output here in raw HTML mode.
+  out = out.replace(/<p\b([^>]*)>([\s\S]*?)<\/p>/gi, (_m, attrs, content) => {
+    const classMatch = /\bclass="([^"]*)"/i.exec(attrs);
+    if (!classMatch || !/\bumich-lib-cta\b/.test(classMatch[1])) {
+      return _m;
+    }
+
+    const attrsWithData = /\bdata-umich-cta\b/i.test(attrs)
+      ? attrs
+      : `${attrs} data-umich-cta`;
+
+    if (!ctaIconSvg || /\bumich-cta-icon\b/.test(content)) {
+      return `<p${attrsWithData}>${content}</p>`;
+    }
+
+    return `<p${attrsWithData}>${ctaIconSvg}${content}</p>`;
+  });
 
   out = out.replace(/(<img\b[^>]*)\bloading="eager"/gi, '$1loading="lazy"');
   out = out.replace(

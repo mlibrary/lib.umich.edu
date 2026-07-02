@@ -232,6 +232,10 @@ if (collectingAreaTermId) {
     padding-top: 0.75rem;  /* SPACING.S */
   }
 
+  :global(.collecting-area-caption > .prose > p){
+    margin: 0 !important;
+  }
+
   .contact-heading {
     margin-top: 2rem; /* SPACING.XL */
   }
@@ -239,7 +243,7 @@ if (collectingAreaTermId) {
   /* Remove default TemplateSide inner border (matches Gatsby css={{ '> div': { border: 'none' } }}) */
   /* stylelint-disable selector-pseudo-class-no-unknown */
   :global(.collecting-area-side .template-side-inner) {
-    border: none;
+    border: none !important;
   }
   /* stylelint-enable selector-pseudo-class-no-unknown */
 </style>

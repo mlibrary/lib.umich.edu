@@ -189,6 +189,14 @@ const { class: className = '' } = Astro.props;
     margin-top: 32px;
   }
 
+  .prose :global(p.umich-lib-alert .umich-alert-icon) {
+    color: var(--color-maize-500);
+    display: inline-block;
+    fill: currentcolor;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+
   .prose :global(p.umich-lib-cta) {
     background-color: var(--color-indigo-100);
     border: 1px solid var(--color-neutral-100);
@@ -197,6 +205,13 @@ const { class: className = '' } = Astro.props;
     max-width: 38rem;
     padding: 1rem 1.5rem 1rem 1rem;
     width: fit-content;
+  }
+
+  .prose :global(p.umich-lib-cta .umich-cta-icon) {
+    display: inline-block;
+    fill: currentcolor;
+    margin-right: 0.5rem;
+    vertical-align: middle;
   }
 
   .prose :global(p.lede) {
