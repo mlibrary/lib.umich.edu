@@ -17,6 +17,14 @@ const { class: className = '' } = Astro.props;
 </div>
 
 <style>
+  .prose{
+    max-width: none;
+  }
+
+  :global(.prose > p){
+    max-width: 38rem;
+  }
+
   .prose > :global(:not(:last-child)) {
     margin-bottom: 1rem;
   }

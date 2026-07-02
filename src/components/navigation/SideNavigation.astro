@@ -100,6 +100,10 @@ function hasActiveChild(item: NavItem): boolean {
     padding-bottom: .5rem;
   }
 
+  .side-nav-list{
+    margin-top: .5rem;
+  }
+
   .side-nav-item:not(:last-of-type) {
     border-bottom: solid 1px var(--color-neutral-100);
   }
@@ -123,12 +127,13 @@ function hasActiveChild(item: NavItem): boolean {
     border-left-color: var(--color-teal-400);
     color: var(--color-teal-400);
     font-weight: 700;
+    padding-left: .75rem;
   }
 
   .side-nav-icon {
     color: var(--color-neutral-400);
     line-height: 1;
-    padding-left: var(--spacing-xs, 0.5rem);
+    padding-left: 4px;
   }
 
   .side-nav-link.active .side-nav-icon {
@@ -137,7 +142,7 @@ function hasActiveChild(item: NavItem): boolean {
 
   /* Child nav items */
   .side-nav-children {
-    padding-bottom: var(--spacing-xs, 0.5rem);
+    padding-bottom: 0.5rem;
   }
 
   .side-nav-link-child {
