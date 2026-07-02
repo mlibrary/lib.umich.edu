@@ -1,7 +1,7 @@
 ---
 /**
  * Small Screen (Mobile) Header Component
- * Displays mobile navigation with collapsible menu
+ * Displays mobile navigation with Gatsby-style drill-down behavior
  */
 import Logo from "./Logo.astro";
 import Icon from "../../reusable/Icon.astro";
@@ -14,6 +14,7 @@ interface Props {
 }
 
 const { primary, secondary } = Astro.props;
+const primaryDataJson = JSON.stringify(primary ?? []);
 ---
 
 <header class="header-small">
@@ -43,48 +44,11 @@ const { primary, secondary } = Astro.props;
     <!-- Mobile Dropdown Menu -->
     <nav class="mobile-nav" aria-label="Main and utility">
       <div class="mobile-dropdown" id="mobile-dropdown" hidden>
-        {
-          primary && primary.length > 0 && (
-            <ul class="mobile-primary-nav">
-              {primary.map((item, index) => {
-                return (
-                  <li class="mobile-primary-item">
-                    {item.children && item.children.length > 0 ? (
-                      <>
-                        <button
-                          class="mobile-primary-btn"
-                          data-index={index}
-                          aria-expanded="false"
-                        >
-                          <span>{item.text}</span>
-                          <Icon icon="navigate_next" size={24} />
-                        </button>
-                        <div class="mobile-panel" hidden>
-                          <ul>
-                            {item.children.map((child) => {
-                              return (
-                                <li>
-                                  <a href={child.to}>{child.text}</a>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </div>
-                      </>
-                    ) : (
-                      <a href={item.to} class="mobile-primary-link">
-                        {item.text}
-                      </a>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          )
-        }
+        <ul class="mobile-primary-nav" id="mobile-primary-nav" aria-label="Main"></ul>
+
         {
           secondary && secondary.length > 0 && (
-            <nav aria-label="Utility navigation" class="mobile-secondary-nav">
+            <nav aria-label="Utility navigation" class="mobile-secondary-nav" id="mobile-secondary-nav">
               <ul>
                 {secondary.map((item) => {
                   return (
@@ -92,9 +56,9 @@ const { primary, secondary } = Astro.props;
                       <a href={item.to}>
                         {item.icon &&
                           (typeof item.icon === "string" ? (
-                            <Icon icon={item.icon} size={20} />
+                            <Icon icon={item.icon} size={16} />
                           ) : (
-                            <Icon d={item.icon.d || item.icon} size={20} />
+                            <Icon d={item.icon.d || item.icon} size={16} />
                           ))}
                         {item.text}
                       </a>
@@ -105,29 +69,14 @@ const { primary, secondary } = Astro.props;
             </nav>
           )
         }
-        <!-- {
-          tertiary && tertiary.length > 0 && (
-            <nav aria-label="Tertiary navigation" class="mobile-tertiary-nav">
-              <ul>
-                {tertiary.map((item) => {
-                  return (
-                    <li>
-                      <a href={item.to}>
-                        {item.icon &&
-                          (typeof item.icon === "string" ? (
-                            <Icon icon={item.icon} size={20} />
-                          ) : (
-                            <Icon d={item.icon.d || item.icon} size={20} />
-                          ))}
-                        {item.text}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </nav>
-          )
-        } -->
+
+        <script type="application/json" id="mobile-primary-data" set:html={primaryDataJson}></script>
+        <template id="mobile-icon-next">
+          <Icon icon="navigate_next" size={24} />
+        </template>
+        <template id="mobile-icon-back">
+          <Icon icon="navigate_before" size={24} />
+        </template>
       </div>
     </nav>
   </Margins>
@@ -135,9 +84,124 @@ const { primary, secondary } = Astro.props;
 
 
 <script>
-  // Mobile menu toggle
+  // Mobile menu toggle + drill-down navigation stack
   const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
   const mobileDropdown = document.getElementById("mobile-dropdown");
+  const mobilePrimaryNav = document.getElementById("mobile-primary-nav") as HTMLUListElement | null;
+  const mobileSecondaryNav = document.getElementById("mobile-secondary-nav") as HTMLElement | null;
+  const primaryDataNode = document.getElementById("mobile-primary-data");
+
+  let primaryItems: any[] = [];
+  try {
+    primaryItems = primaryDataNode?.textContent
+      ? JSON.parse(primaryDataNode.textContent)
+      : [];
+  } catch {
+    primaryItems = [];
+  }
+
+  const drilldownStack: any[] = [];
+
+  const hasChildren = (item: any) => {
+    return Array.isArray(item?.children) && item.children.length > 0;
+  };
+
+  const cloneTemplateIcon = (templateId: string) => {
+    const template = document.getElementById(templateId) as HTMLTemplateElement | null;
+    if (!template?.content?.firstElementChild) {
+      return null;
+    }
+    return template.content.firstElementChild.cloneNode(true) as HTMLElement;
+  };
+
+  const getCurrentItems = () => {
+    if (drilldownStack.length === 0) {
+      return primaryItems;
+    }
+
+    const current = drilldownStack[drilldownStack.length - 1];
+    return Array.isArray(current?.children) ? current.children : [];
+  };
+
+  const renderPrimaryNav = () => {
+    if (!mobilePrimaryNav) {
+      return;
+    }
+
+    mobilePrimaryNav.innerHTML = "";
+
+    if (drilldownStack.length > 0) {
+      const selectedNode = drilldownStack[drilldownStack.length - 1];
+      const backLi = document.createElement("li");
+      backLi.className = "mobile-primary-item mobile-primary-item-back";
+
+      const backButton = document.createElement("button");
+      backButton.type = "button";
+      backButton.className = "mobile-primary-btn mobile-back-btn";
+      backButton.setAttribute("aria-expanded", "true");
+
+      const backIcon = cloneTemplateIcon("mobile-icon-back");
+      if (backIcon) {
+        backIcon.classList.add("mobile-back-icon");
+        backButton.appendChild(backIcon);
+      }
+
+      const text = document.createElement("span");
+      text.className = "mobile-back-text";
+      text.textContent = selectedNode?.text || "Back";
+      backButton.appendChild(text);
+
+      backButton.addEventListener("click", () => {
+        drilldownStack.pop();
+        renderPrimaryNav();
+      });
+
+      backLi.appendChild(backButton);
+      mobilePrimaryNav.appendChild(backLi);
+    }
+
+    getCurrentItems().forEach((item: any) => {
+      const li = document.createElement("li");
+      li.className = "mobile-primary-item";
+
+      if (hasChildren(item)) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "mobile-primary-btn mobile-drilldown-btn";
+        button.setAttribute("aria-expanded", "false");
+
+        const label = document.createElement("span");
+        label.textContent = item?.text || "";
+        button.appendChild(label);
+
+        const nextIcon = cloneTemplateIcon("mobile-icon-next");
+        if (nextIcon) {
+          nextIcon.classList.add("mobile-next-icon");
+          button.appendChild(nextIcon);
+        }
+
+        button.addEventListener("click", () => {
+          drilldownStack.push(item);
+          renderPrimaryNav();
+        });
+
+        li.appendChild(button);
+      } else {
+        const link = document.createElement("a");
+        link.className = "mobile-primary-link";
+        link.href = item?.to || "#";
+        link.textContent = item?.text || "";
+        li.appendChild(link);
+      }
+
+      mobilePrimaryNav.appendChild(li);
+    });
+
+    if (mobileSecondaryNav) {
+      mobileSecondaryNav.hidden = drilldownStack.length > 0;
+    }
+  };
+
   const menuIconOpen = mobileMenuToggle?.querySelector(
     ".menu-icon-open",
   ) as HTMLElement | null;
@@ -154,9 +218,24 @@ const { primary, secondary } = Astro.props;
     }
   };
 
-  if (mobileMenuToggle && mobileDropdown) {
+  const closeMenuAndReset = () => {
+    if (!mobileMenuToggle || !mobileDropdown) {
+      return;
+    }
+
+    mobileMenuToggle.setAttribute("aria-expanded", "false");
+    mobileDropdown.hidden = true;
+    setMenuIconState(false);
+    drilldownStack.length = 0;
+    renderPrimaryNav();
+  };
+
+  if (mobileMenuToggle && mobileDropdown && !mobileDropdown.dataset.initialized) {
+    mobileDropdown.dataset.initialized = "true";
+
     // Ensure initial icon state is consistent.
     setMenuIconState(false);
+    renderPrimaryNav();
 
     mobileMenuToggle.addEventListener("click", () => {
       const isExpanded =
@@ -165,22 +244,26 @@ const { primary, secondary } = Astro.props;
       mobileMenuToggle.setAttribute("aria-expanded", String(nextExpanded));
       mobileDropdown.hidden = isExpanded;
       setMenuIconState(nextExpanded);
-    });
-  }
 
-  // Mobile primary nav toggles
-  const mobilePrimaryBtns = document.querySelectorAll(".mobile-primary-btn");
-  mobilePrimaryBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const isExpanded = btn.getAttribute("aria-expanded") === "true";
-      btn.setAttribute("aria-expanded", String(!isExpanded));
-
-      const panel = btn.nextElementSibling as HTMLElement;
-      if (panel) {
-        panel.hidden = isExpanded;
+      if (!nextExpanded) {
+        drilldownStack.length = 0;
+        renderPrimaryNav();
       }
     });
-  });
+
+    document.addEventListener("mouseup", (event) => {
+      const target = event.target as Node;
+      if (!mobileDropdown.contains(target) && !mobileMenuToggle.contains(target)) {
+        closeMenuAndReset();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeMenuAndReset();
+      }
+    });
+  }
 </script>
 
 <style>
@@ -243,10 +326,10 @@ const { primary, secondary } = Astro.props;
   .mobile-dropdown {
     background: white;
     border-top: solid 1px var(--color-neutral-100);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px 0px;
+    box-shadow: rgb(0 0 0 / 10%) 0 4px 8px 0;
     max-width: 84vw;
     position: absolute;
-    right: calc(-1rem);
+    right: 1.5rem;
     width: 20rem;
     z-index: 101;
   }
@@ -265,63 +348,42 @@ const { primary, secondary } = Astro.props;
     border-bottom: 1px solid var(--color-neutral-100, #e0e0e0);
   }
 
-  .mobile-primary-btn,
-  .mobile-primary-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 1rem;
-    background: none;
-    border: none;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-blue-400, #00274c);
-    text-decoration: none;
-    text-align: left;
+  .mobile-primary-item-back {
+    border-bottom: 1px solid var(--color-neutral-100, #e0e0e0);
+  }
+
+  :global(.mobile-primary-btn),
+  :global(.mobile-primary-link) {
+      align-items: center;
+    border-bottom: solid 1px var(--color-neutral-100);
+    color: var(--color-neutral-400);
     cursor: pointer;
-  }
-
-  .mobile-primary-btn:hover,
-  .mobile-primary-link:hover {
-    background: var(--color-neutral-50, #f9f9f9);
-    color: var(--color-teal-400, #0891b2);
-  }
-
-  .mobile-primary-btn svg {
-    transition: transform 0.3s ease;
-  }
-
-  .mobile-primary-btn[aria-expanded="true"] svg {
-    transform: rotate(180deg);
-  }
-
-  .mobile-panel {
-    background: var(--color-neutral-50, #f9f9f9);
-  }
-
-  .mobile-panel ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .mobile-panel a {
-    display: block;
-    padding: 0.75rem 1rem 0.75rem 2rem;
-    color: var(--color-blue-400, #00274c);
+    display: flex;
+    padding: 1rem;
+    text-align: left;
     text-decoration: none;
-    font-size: 0.9375rem;
+    width: 100%;
+    justify-content: space-between;
   }
 
-  .mobile-panel a:hover {
-    background: white;
-    color: var(--color-teal-400, #0891b2);
+  :global(.mobile-back-btn) {
+    justify-content: flex-start;
   }
 
-  .mobile-secondary-nav {
-    border-top: 2px solid var(--color-neutral-100, #e0e0e0);
-    padding: 0.5rem 0;
+  .mobile-drilldown-btn {
+    justify-content: space-between;
+  }
+
+  :global(.mobile-back-text) {
+    font-weight: 800;
+  }
+
+  :global(.mobile-back-icon) {
+    margin-right: 0.5rem;
+  }
+
+  .mobile-next-icon {
+    margin-left: 0.5rem;
   }
 
   .mobile-secondary-nav ul {
@@ -331,18 +393,21 @@ const { primary, secondary } = Astro.props;
   }
 
   .mobile-secondary-nav a {
-    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    color: var(--color-neutral-400, #666);
+    border-bottom: solid 1px var(--color-neutral-100);
+    color: var(--color-neutral-300);
+    cursor: pointer;
+    display: flex;
+    padding: 1rem;
+    text-align: left;
     text-decoration: none;
+    width: 100%;
     font-size: 0.875rem;
-  }
-
-  .mobile-secondary-nav a:hover {
-    background: var(--color-neutral-50, #f9f9f9);
-    text-decoration: underline;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    background: var(--color-blue-100);
+    gap: .25rem;
   }
 
   .mobile-secondary-nav .material-icons {
@@ -352,7 +417,6 @@ const { primary, secondary } = Astro.props;
   .mobile-menu-toggle:focus,
   .mobile-primary-btn:focus,
   .mobile-primary-link:focus,
-  .mobile-panel a:focus,
   .mobile-secondary-nav a:focus {
     box-shadow: none;
     outline: none;
@@ -361,7 +425,6 @@ const { primary, secondary } = Astro.props;
   .mobile-menu-toggle:focus-visible,
   .mobile-primary-btn:focus-visible,
   .mobile-primary-link:focus-visible,
-  .mobile-panel a:focus-visible,
   .mobile-secondary-nav a:focus-visible {
     box-shadow: none;
     outline: 1px auto;
@@ -369,7 +432,7 @@ const { primary, secondary } = Astro.props;
     border-radius: 0;
   }
 
-  @media (min-width: 1129px) {
+  @media (width >= 1129px) {
     .header-small {
       display: none;
     }
