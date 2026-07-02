@@ -16,6 +16,8 @@ interface Props {
   width?: number;
   /** Intrinsic pixel height from Drupal file metadata */
   height?: number;
+  /** Optional cap to match Gatsby gatsbyImageData width behavior */
+  maxWidth?: number;
   /** sizes attribute defaulting to gatsby sizes */
   sizes?: string;
   loading?: 'lazy' | 'eager';
@@ -27,10 +29,20 @@ const {
   alt,
   width = 920,
   height = 600,
+  maxWidth,
   sizes = '(min-width: 920px) 920px, 100vw',
   loading = 'lazy',
   class: className,
 } = Astro.props;
+
+const intrinsicWidth = Number(width) > 0 ? Number(width) : 920;
+const intrinsicHeight = Number(height) > 0 ? Number(height) : 600;
+
+const shouldCapWidth = Number(maxWidth) > 0 && intrinsicWidth > Number(maxWidth);
+const outputWidth = shouldCapWidth ? Number(maxWidth) : intrinsicWidth;
+const outputHeight = shouldCapWidth
+  ? Math.max(1, Math.round(intrinsicHeight * (Number(maxWidth) / intrinsicWidth)))
+  : intrinsicHeight;
 
 const wrapperClassName = className
   ? `gatsby-image-wrapper ${className}`
@@ -38,12 +50,12 @@ const wrapperClassName = className
 ---
 
 {src && (
-  <span class={wrapperClassName} style={`aspect-ratio: ${width} / ${height};`}>
+  <span class={wrapperClassName} style={`aspect-ratio: ${outputWidth} / ${outputHeight};`}>
     <Image
       src={src}
       alt={alt}
-      width={width}
-      height={height}
+      width={outputWidth}
+      height={outputHeight}
       format="webp"
       quality={75}
       sizes={sizes}

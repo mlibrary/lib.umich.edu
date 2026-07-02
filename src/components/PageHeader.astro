@@ -54,7 +54,7 @@ if (!breadcrumbData) {
       
       {imageSrc && (
         <div class="page-header-image">
-          <DrupalImage src={imageSrc} alt={imageAlt} width={imageWidth} height={imageHeight} loading="eager" sizes="(min-width: 920px) 920px, 100vw" />
+          <DrupalImage src={imageSrc} alt={imageAlt} width={imageWidth} height={imageHeight} maxWidth={920} loading="eager" sizes="(min-width: 920px) 920px, 100vw" />
         </div>
       )}
     </header>
