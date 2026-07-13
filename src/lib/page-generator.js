@@ -473,13 +473,16 @@ export const processDrupalNode = (node, included = []) => {
           });
 
           if (mediaEntity) {
+            const fileRef = mediaEntity.relationships?.field_media_image?.data;
             const fileEntity = findFileEntity(mediaEntity, included);
             const imageUrl = generateImageUrl(fileEntity, drupalBaseUrl);
 
             return {
               ...img,
               fileUrl: imageUrl,
-              fileEntity: fileEntity?.attributes
+              fileEntity: fileEntity?.attributes,
+              fileWidth: fileRef?.meta?.width ?? null,
+              fileHeight: fileRef?.meta?.height ?? null,
             };
           }
 

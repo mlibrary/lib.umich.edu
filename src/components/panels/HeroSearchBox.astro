@@ -23,27 +23,44 @@ const fieldHeroImages = data?.relationships?.field_hero_images ?? [];
 
 const getSrcByOrientation = (orientation: string): string => {
 	const node = fieldHeroImages.find((n: any) => n?.field_orientation === orientation);
-	
-	if (!node) {
-		return '';
+	if (!node) return '';
+	return node.fileUrl || '';
+};
+
+const getNodeByOrientation = (orientation: string): any =>
+	fieldHeroImages.find((n: any) => n?.field_orientation === orientation) ?? null;
+
+const targetHeight = (node: any, targetWidth: number): number | undefined => {
+	if (node?.fileWidth && node?.fileHeight && node.fileWidth > 0) {
+		return Math.round(node.fileHeight * (targetWidth / node.fileWidth));
 	}
-	
-	// Check for the fileUrl from our processing
-	if (node.fileUrl) {
-		return node.fileUrl;
-	}
-	
-	return '';
+	return undefined;
 };
 
 const verticalCmsUrl = getSrcByOrientation('vertical');
 const horizontalCmsUrl = getSrcByOrientation('horizontal');
+const verticalNode = getNodeByOrientation('vertical');
+const horizontalNode = getNodeByOrientation('horizontal');
 
 const verticalSrc = verticalCmsUrl
-	? (await getImage({ src: verticalCmsUrl, format: 'webp', width: 800, inferSize: true })).src
+	? (await getImage({
+		src: verticalCmsUrl,
+		format: 'webp',
+		width: 800,
+		...(targetHeight(verticalNode, 800) !== undefined
+			? { height: targetHeight(verticalNode, 800) }
+			: { inferSize: true }),
+	  })).src
 	: '';
 const horizontalSrc = horizontalCmsUrl
-	? (await getImage({ src: horizontalCmsUrl, format: 'webp', width: 1600, inferSize: true })).src
+	? (await getImage({
+		src: horizontalCmsUrl,
+		format: 'webp',
+		width: 1200,
+		...(targetHeight(horizontalNode, 1200) !== undefined
+			? { height: targetHeight(horizontalNode, 1200) }
+			: { inferSize: true }),
+	  })).src
 	: '';
 ---
 
@@ -128,7 +145,7 @@ const horizontalSrc = horizontalCmsUrl
 		min-height: 16rem;
 		display: block;
 	}
-	@media (--bp-4xl-up) {
+	@media (--bp-2xl-up) {
 		.background-section,
 		.hero-inner {
 			min-height: 25rem;
@@ -181,7 +198,7 @@ const horizontalSrc = horizontalCmsUrl
 			line-height: 1.2;
 		}
 	}
-	@media (--bp-4xl-up) {
+	@media (--bp-2xl-up) {
 		.hero-title {
 			font-size: 2.25rem;
 		}
