@@ -68,14 +68,14 @@ const breadcrumbData = JSON.stringify([
     margin-left: 1.5rem; 
   }
 
-  @media only screen and (min-width: 720px) {
+  @media (--bp-lg-up) {
     .site-map-lists > ol {
       columns: 2;
       column-gap: 2rem;
     }
   }
 
-  @media only screen and (min-width: 920px) {
+  @media (--bp-2xl-up) {
     .site-map-lists > ol {
       columns: 3;
     }

@@ -626,7 +626,7 @@ const categoriesJson = JSON.stringify(categories);
     margin-bottom: var(--spacing-m);
   }
 
-  @media only screen and (min-width: 960px) {
+  @media (--bp-3xl-up) {
     .specialist-controls {
       grid-template-columns: minmax(200px, 3fr) auto auto auto;
     }
@@ -717,7 +717,7 @@ const categoriesJson = JSON.stringify(categories);
     padding: var(--spacing-2xs);
   }
 
-  @media only screen and (min-width: 960px) {
+  @media (--bp-3xl-up) {
     .switch-btn {
       margin-left: var(--spacing-m);
     }
@@ -797,7 +797,7 @@ const categoriesJson = JSON.stringify(categories);
     color: var(--color-neutral-300);
   }
 
-  @media only screen and (max-width: 720px) {
+  @media (--bp-lg-down) {
     .specialist-thead {
       clip: rect(1px, 1px, 1px, 1px);
       clip-path: inset(50%);
@@ -822,7 +822,7 @@ const categoriesJson = JSON.stringify(categories);
     padding-left: 2rem;
   }
 
-  @media only screen and (max-width: 720px) {
+  @media (--bp-lg-down) {
     :global(.specialist-row > *) {
       display: block;
       padding: 0.25rem 0;
@@ -837,7 +837,7 @@ const categoriesJson = JSON.stringify(categories);
     }
   }
 
-  @media only screen and (max-width: 720px) {
+  @media (--bp-lg-down) {
     :global(.specialist-name-cell) {
       font-weight: 600;
       padding-top: 1rem !important;
@@ -861,7 +861,7 @@ const categoriesJson = JSON.stringify(categories);
     margin: 0;
   }
 
-  @media only screen and (max-width: 720px) {
+  @media (--bp-lg-down) {
     :global(.specialist-category-cell) {
       display: none !important;
     }

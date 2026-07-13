@@ -11,7 +11,7 @@
   width: 100%;
 }
 
-@media only screen and (min-width: 641px) {
+@media (--bp-md-up) {
   .margins {
     padding: 0 2.5rem;
   }
@@ -22,7 +22,7 @@
   display: none;
 }
 
-@media only screen and (min-width: 641px) {
+@media (--bp-md-up) {
   .large-screen {
     display: block;
   }
@@ -32,7 +32,7 @@
   display: block;
 }
 
-@media only screen and (min-width: 641px) {
+@media (--bp-md-up) {
   .small-screen {
     display: none;
   }
@@ -45,7 +45,7 @@
   to modify that content this breakpoint can be updated to change the navbar to the
   mobile view to reflect the new content width
 */
-@media only screen and (min-width: 1130px){
+@media (--bp-header-fit-legacy-up){
   .search-popover{
       width: 'calc(100% + 12rem)'
   }

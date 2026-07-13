@@ -68,7 +68,7 @@ function isActive(to: string): boolean {
     border-top: solid 1px var(--color-neutral-100);
   }
 
-  @media only screen and (max-width: 640px) {
+  @media (--bp-sm-down) {
     .horizontal-navigation a{
       padding-bottom: 1rem;
       padding-left: calc(-4px + 1rem);
@@ -80,7 +80,7 @@ function isActive(to: string): boolean {
     padding: 0;
   }
 
-  @media only screen and (min-width: 641px) {
+  @media (--bp-md-up) {
     .horizontal-navigation .margins {
       padding: 0 2.5rem;
     }
@@ -107,7 +107,7 @@ function isActive(to: string): boolean {
   }
 
   /* Desktop styles (large screen) */
-  @media only screen and (min-width: 641px) {
+  @media (--bp-md-up) {
     .nav-link {
       display: inline-block;
       padding-bottom: calc(1.5rem - 4px);

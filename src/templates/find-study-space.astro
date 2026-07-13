@@ -310,7 +310,7 @@ import fassNoResults from '../images/fass-no-results.png';
   }
 
   /* Match Gatsby TemplateContent css={{ marginRight: '0 !important' }} */
-  @media (width >= 920px) {
+  @media (--bp-2xl-up) {
     .fass-template-content {
       margin-right: 0 !important;
     }
@@ -522,7 +522,7 @@ import fassNoResults from '../images/fass-no-results.png';
     list-style: none;
   }
 
-  @media only screen and (min-width: 720px) {
+  @media (--bp-lg-up) {
     .fass-grid {
       grid-template-columns: repeat(2, minmax(320px, 1fr));
     }
@@ -632,7 +632,7 @@ import fassNoResults from '../images/fass-no-results.png';
     margin-top: 0.5rem;
   }
 
-  @media only screen and (max-width: 1199px) {
+  @media (--bp-content-down) {
     .fass-collapsible-trigger {
     }
   }

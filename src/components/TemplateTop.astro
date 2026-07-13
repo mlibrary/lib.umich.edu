@@ -22,7 +22,7 @@ const { class: className = '' } = Astro.props;
     /* Mobile: normal flow */
   }
 
-  @media only screen and (min-width: 641px) {
+  @media (--bp-md-up) {
     .template-top {
       grid-area: top;
     }

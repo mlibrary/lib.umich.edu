@@ -73,7 +73,7 @@ const { primary, secondary } = Astro.props;
     position: relative;
   }
   
-  @media only screen and (min-width: 641px) {
+  @media (--bp-md-up) {
     :global(.page-header-mini .heading){
       margin-top: .75rem;
       margin-bottom: 0;
@@ -133,7 +133,7 @@ const { primary, secondary } = Astro.props;
 
 
 
-  @media (min-width: 1129px) {
+  @media (--bp-header-fit-up) {
     .header-large {
       display: block;
       border-bottom: 2px solid var(--color-neutral-100, #e0e0e0);

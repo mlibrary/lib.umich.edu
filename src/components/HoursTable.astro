@@ -207,7 +207,7 @@ const todayIndex = dayOfWeek === false ? -1 : dayOfWeek + 1;
   }
 
   /* Mobile responsive styles */
-  @media only screen and (max-width: 1100px) {
+  @media (--bp-header-max-down) {
     .hours-table tr > * {
       display: block;
       padding: 0.25rem 0.5rem;

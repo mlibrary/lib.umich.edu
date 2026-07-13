@@ -117,7 +117,7 @@ const horizontalSrc = horizontalCmsUrl
 	}
 	
 	
-	@media (min-width: 720px) {
+	@media (--bp-lg-up) {
 		.background-section {
 			background-image: var(--bg-horizontal);
 			background-position: center left 20%;
@@ -128,13 +128,13 @@ const horizontalSrc = horizontalCmsUrl
 		min-height: 16rem;
 		display: block;
 	}
-	@media (min-width: 1024px) {
+	@media (--bp-4xl-up) {
 		.background-section,
 		.hero-inner {
 			min-height: 25rem;
 		}
 	}
-	@media (min-width: 720px) {
+	@media (--bp-lg-up) {
 		.hero-inner {
 			display: flex;
 			align-items: center;
@@ -147,12 +147,12 @@ const horizontalSrc = horizontalCmsUrl
 		padding: 1rem; /* ~ SPACING.M */
 		background: transparent;
 	}
-	@media (min-width: 480px) { /* ~ SPACING.S breakpoint approximation */
+	@media (--bp-xs-up) { /* ~ SPACING.S breakpoint approximation */
 		.hero-card {
 			padding: 1.5rem; /* ~ SPACING.L */
 		}
 	}
-	@media (min-width: 720px) { /* ~ MEDIA_QUERIES.M */
+	@media (--bp-lg-up) { /* ~ MEDIA_QUERIES.M */
 		.hero-card {
 			border-radius: 2px;
 			margin: 0;
@@ -174,14 +174,14 @@ const horizontalSrc = horizontalCmsUrl
 		text-align: center;
 		font-size: 1.125rem; /* ~ TYPOGRAPHY.M */
 	}
-	@media (min-width: 720px) {
+	@media (--bp-lg-up) {
 		.hero-title {
 			text-align: left;
 			font-size: 1.75rem; /* ~ TYPOGRAPHY.XL */
 			line-height: 1.2;
 		}
 	}
-	@media (min-width: 1024px) {
+	@media (--bp-4xl-up) {
 		.hero-title {
 			font-size: 2.25rem;
 		}
@@ -190,7 +190,7 @@ const horizontalSrc = horizontalCmsUrl
 	.search-form {
 		text-align: center;
 	}
-	@media (min-width: 720px) {
+	@media (--bp-lg-up) {
 		.search-form {
 			text-align: left;
 		}

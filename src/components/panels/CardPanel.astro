@@ -157,7 +157,7 @@ const getSummary = (body: any) => {
     padding-top: var(--spacing-xl, 2rem);
   }
 
-  @media (min-width: 641px) {
+  @media (--bp-md-up) {
     .highlights-section {
       padding-bottom: var(--spacing-2xl, 2.5rem);
       padding-top: var(--spacing-l, 1.5rem);
@@ -170,7 +170,7 @@ const getSummary = (body: any) => {
     margin-bottom: var(--spacing-l, 1.5rem);
   }
 
-  @media (min-width: 1129px) {
+  @media (--bp-header-fit-up) {
     .highlights-header {
       align-items: center;
       flex-direction: row;
@@ -181,7 +181,7 @@ const getSummary = (body: any) => {
     display: none;
   }
 
-  @media (min-width: 1129px) {
+  @media (--bp-header-fit-up) {
     .dots-container {
       display: flex;
       height: 2.5rem;
@@ -203,7 +203,7 @@ const getSummary = (body: any) => {
     margin: 0;
   }
 
-  @media (min-width: 1129px) {
+  @media (--bp-header-fit-up) {
     .highlights-title {
       margin-left: 1rem;
     }
@@ -217,7 +217,7 @@ const getSummary = (body: any) => {
     padding: 0;
   }
 
-  @media (min-width: 1129px) {
+  @media (--bp-header-fit-up) {
     .highlights-grid {
       grid-template-columns: repeat(10, auto);
     }
@@ -231,7 +231,7 @@ const getSummary = (body: any) => {
     min-height: 0;
   }
 
-  @media (min-width: 1129px) {
+  @media (--bp-header-fit-up) {
     .highlights-card {
       margin-bottom: 0;
     }
@@ -255,7 +255,7 @@ const getSummary = (body: any) => {
     margin-top: 0;
   }
 
-  @media (min-width: 641px) {
+  @media (--bp-md-up) {
     .standard-card-item {
       margin: 0;
     }

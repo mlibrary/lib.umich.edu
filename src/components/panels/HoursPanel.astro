@@ -432,7 +432,7 @@ const initialTableData = transformTableData(data, new Date());
     padding: 0 0.5rem;
   }
 
-  @media only screen and (max-width: 1100px) {
+  @media (--bp-header-max-down) {
     :global(.hours-table tr > *) {
       display: block;
       padding: 0.25rem 0.5rem;

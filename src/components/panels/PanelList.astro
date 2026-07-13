@@ -32,7 +32,7 @@ const { twoColumns = false, disableLargeScreenStyles = false, ...rest } = Astro.
   }
   
   /* Grid layout (default) */
-  @media (min-width: 720px) {
+  @media (--bp-lg-up) {
     .panel-list-grid {
       display: grid;
       grid-gap: 2rem 1rem;
@@ -41,7 +41,7 @@ const { twoColumns = false, disableLargeScreenStyles = false, ...rest } = Astro.
   }
   
   /* Two-column layout */
-  @media (min-width: 720px) {
+  @media (--bp-lg-up) {
     .panel-list-columns {
       column-gap: 3rem;
       columns: 2;
@@ -67,7 +67,7 @@ const { twoColumns = false, disableLargeScreenStyles = false, ...rest } = Astro.
     margin-top: 0;
   }
   
-  @media (min-width: 720px) {
+  @media (--bp-lg-up) {
     .panel-list-grid > :global(li) {
       margin: 0;
     }

@@ -29,14 +29,14 @@ const {
     padding-bottom: 2.5rem;
   }
 
-  @media (width >= 641px) {
+  @media (--bp-md-up) {
     .template-side {
       grid-area: side;
     }
   }
 
   /* In basic page grids, Gatsby's Side component adds a right gutter at S+. */
-  @media (width >= 641px) {
+  @media (--bp-md-up) {
     /* stylelint-disable selector-pseudo-class-no-unknown, selector-class-pattern */
     :global(.template--basic) .template-side {
       margin-right: 3rem;
@@ -44,7 +44,7 @@ const {
     /* stylelint-enable selector-pseudo-class-no-unknown, selector-class-pattern */
   }
 
-  @media (width >= 1200px) {
+  @media (--bp-content-up) {
     .template-side-inner {
       border-bottom: none;
       padding-bottom: 0;

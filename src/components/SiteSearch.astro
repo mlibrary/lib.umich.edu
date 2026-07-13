@@ -358,7 +358,7 @@ const { label = "Search this site" } = Astro.props;
   }
 
   /* Large screen specific styles */
-  @media (min-width: 1200px) {
+  @media (--bp-content-up) {
     .search-popover {
       width: calc(100% + 12rem);
     }

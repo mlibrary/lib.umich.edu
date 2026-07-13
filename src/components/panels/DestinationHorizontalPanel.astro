@@ -83,7 +83,7 @@ const cards = (data.relationships.field_cards || []).map((card: any) => {
     margin-bottom: var(--spacing-xl, 2rem);
   }
 
-  @media (min-width: 1024px) {
+  @media (--bp-4xl-up) {
     .destination-card {
       display: grid;
       gap: var(--spacing-m, 1rem);

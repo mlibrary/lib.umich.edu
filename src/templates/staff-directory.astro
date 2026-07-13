@@ -576,7 +576,7 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     margin-bottom: var(--spacing-m);
   }
 
-  @media only screen and (min-width: 641px) {
+  @media (--bp-md-up) {
     .staff-directory-controls {
       grid-template-columns: 3fr 2fr auto;
     }
@@ -688,7 +688,7 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     padding: .75rem 0 .75rem 2rem;
   }
 
-  @media only screen and (max-width: 820px) {
+  @media (--bp-md-down) {
     .staff-directory-thead {
       clip: rect(1px, 1px, 1px, 1px);
       clip-path: inset(50%);
@@ -715,7 +715,7 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     padding-left: 2rem;
   }
 
-  @media only screen and (max-width: 820px) {
+  @media (--bp-md-down) {
     :global(.staff-row > *) {
       display: block;
       padding: 0.5rem 0 0 0;
@@ -739,7 +739,7 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     width: 43px;
   }
 
-  @media only screen and (max-width: 820px) {
+  @media (--bp-md-down) {
     :global(.staff-photo-cell) {
       display: none !important;
     }
@@ -774,7 +774,7 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     display: block;
   }
 
-  @media only screen and (max-width: 820px) {
+  @media (--bp-md-down) {
     :global(.staff-contact-cell span) {
       display: initial;
     }
@@ -785,14 +785,14 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     padding: 0 0.5rem;
   }
 
-  @media only screen and (max-width: 820px) {
+  @media (--bp-md-down) {
     :global(.staff-phone-separator) {
       display: initial !important;
     }
   }
 
   /* Department cell */
-  @media only screen and (max-width: 820px) {
+  @media (--bp-md-down) {
     :global(.staff-department-cell) {
       display: none !important;
     }

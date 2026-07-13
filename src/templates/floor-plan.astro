@@ -140,7 +140,7 @@ if (fieldLocalNavigation) {
 <style>
   /* Side navigation: no decorative border */
   :global(.floor-plan-side .template-side-inner) {
-    border: none;
+    border: none !important;
     padding: 0;
     margin-bottom: 0;
   }
@@ -151,7 +151,7 @@ if (fieldLocalNavigation) {
     margin: 0 -1rem;
   }
 
-  @media only screen and (min-width: 641px) {
+  @media (--bp-md-up) {
     .small-screen-nav {
       display: none;
     }

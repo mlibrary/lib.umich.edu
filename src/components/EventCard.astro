@@ -137,7 +137,7 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
     border-bottom: solid 1px var(--color-neutral-100, #f3f4f6);
   }
 
-  @media (min-width: 1024px) {
+  @media (--bp-4xl-up) {
     .event-card.with-image {
       display: grid;
       grid-template-columns: 16rem 1fr;
@@ -149,7 +149,7 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
     margin-bottom: var(--spacing-m, 1rem);
   }
 
-  @media (min-width: 1024px) {
+  @media (--bp-4xl-up) {
     .event-image {
       margin-bottom: 0;
     }
