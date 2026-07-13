@@ -83,7 +83,7 @@ const getSummary = (body: any) => {
                     href={getCardHref(card)}
                     headingLevel={title ? 3 : 2}
                     class="highlights-card-content"
-                    anchorStyleAddition={{ height: '100%', padding: 'var(--spacing-m, 1rem)' }}
+                    anchorStyleAddition={{ height: '100%', padding: '1rem' }}
                   >
                     {useSummary ? getSummary(card.body) : (
                       template === 'address_and_hours' && (
@@ -153,21 +153,21 @@ const getSummary = (body: any) => {
   /* Highlights template styles */
   .highlights-section {
     background-color: var(--color-blue-300, #1e40af);
-    padding-bottom: var(--spacing-xl, 2rem);
-    padding-top: var(--spacing-xl, 2rem);
+    padding-bottom: 2rem;
+    padding-top: 2rem;
   }
 
   @media (--bp-md-up) {
     .highlights-section {
-      padding-bottom: var(--spacing-2xl, 2.5rem);
-      padding-top: var(--spacing-l, 1.5rem);
+      padding-bottom: 2.5rem;
+      padding-top: 1.5rem;
     }
   }
 
   .highlights-header {
     display: flex;
     flex-direction: column;
-    margin-bottom: var(--spacing-l, 1.5rem);
+    margin-bottom: 1.5rem;
   }
 
   @media (--bp-header-fit-up) {
@@ -201,6 +201,7 @@ const getSummary = (body: any) => {
     font-size: 2.5rem;
     font-weight: 300;
     margin: 0;
+    line-height: 1.25;
   }
 
   @media (--bp-header-fit-up) {
@@ -211,10 +212,15 @@ const getSummary = (body: any) => {
 
   .highlights-grid {
     display: grid;
-    gap: var(--spacing-m, 1rem);
+    gap: 1rem;
     list-style: none;
     margin: 0;
     padding: 0;
+  }
+
+  :global(.highlights-grid .card-title) {
+    margin: 0;
+    font-size: 1.125rem;
   }
 
   @media (--bp-header-fit-up) {
@@ -227,7 +233,7 @@ const getSummary = (body: any) => {
     background: #fff;
     border: 1px solid var(--color-blue-200, #bfdbfe);
     border-radius: 8px;
-    margin-bottom: var(--spacing-l, 1.5rem);
+    margin-bottom: 1.5rem;
     min-height: 0;
   }
 

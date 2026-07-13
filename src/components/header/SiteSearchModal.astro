@@ -148,6 +148,10 @@ import Icon from "../../reusable/Icon.astro";
     width: 100%;
   }
 
+  .query-text {
+    font-size: 1.125rem;
+  }
+
   .search-modal {
     border: 0;
     border-radius: 2px;
@@ -322,14 +326,13 @@ import Icon from "../../reusable/Icon.astro";
     border-bottom: solid 1px var(--color-neutral-100);
     text-decoration: none;
     color: inherit;
-    transition: all 0.2s ease;
   }
 
   :global(.library-search-option:hover),
   :global(.library-search-option:focus) {
     background: var(--color-teal-100);
     border-left: solid 4px var(--color-teal-400);
-    padding-left: calc(1.5rem - 4px);
+    padding-left: calc(-4px + 1.5rem);
     outline: none;
   }
 
