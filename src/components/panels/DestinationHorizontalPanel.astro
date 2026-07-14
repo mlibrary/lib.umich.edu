@@ -49,7 +49,7 @@ const cards = (data.relationships.field_cards || []).map((card: any) => {
         <CardImage imgSrc={card.imgSrc} imgAlt={card.imgAlt} />
       )}
       <div class="destination-card-content">
-        <Heading size="S" level={2}>
+        <Heading size="XS" level={2}>
           {card.title}
           {card.subtitle && (
             <span class="destination-card-subtitle">{card.subtitle}</span>

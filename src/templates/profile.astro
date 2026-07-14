@@ -262,7 +262,7 @@ const breadcrumbData = JSON.stringify([
         <div class="profile-sections">
           {proAbout?.processed && (
             <>
-              <Heading size="S" level={2}>About me</Heading>
+              <Heading size="XS" level={2}>About me</Heading>
               <div class="about-html">
                 <Html html={proAbout.processed} />
               </div>
@@ -271,7 +271,7 @@ const breadcrumbData = JSON.stringify([
 
           {languagesSpoken && languagesSpoken.length > 0 && (
             <>
-              <Heading size="S" level={2}>Languages</Heading>
+              <Heading size="XS" level={2}>Languages</Heading>
               <p>
                 {languagesSpoken
                   .map((lang) => LANGUAGES[lang]?.name || lang)
@@ -282,7 +282,7 @@ const breadcrumbData = JSON.stringify([
 
           {userUrls && userUrls.length > 0 && (
             <>
-              <Heading size="S" level={2}>My links</Heading>
+              <Heading size="XS" level={2}>My links</Heading>
               <List type="bulleted">
                 {userUrls.map(({ uri, title }) => (
                   <li>

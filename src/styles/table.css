@@ -19,3 +19,7 @@ th, td{
 table{
     width: 100%;
 }
+
+td > p{
+    margin-bottom: 0 !important;
+}
