@@ -77,6 +77,9 @@ const primaryDataJson = JSON.stringify(primary ?? []);
         <template id="mobile-icon-back">
           <Icon icon="navigate_before" size={24} />
         </template>
+        <template id="mobile-icon-forward">
+          <Icon icon="arrow_forward" size={24} />
+        </template>
       </div>
     </nav>
   </Margins>
@@ -164,7 +167,7 @@ const primaryDataJson = JSON.stringify(primary ?? []);
       const li = document.createElement("li");
       li.className = "mobile-primary-item";
 
-      if (hasChildren(item)) {
+      if (hasChildren(item) && drilldownStack.length < 2) {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "mobile-primary-btn mobile-drilldown-btn";
@@ -197,8 +200,35 @@ const primaryDataJson = JSON.stringify(primary ?? []);
       mobilePrimaryNav.appendChild(li);
     });
 
+    // At tertiary level, add "View all [parent]" link (matching Gatsby's NavPanelTertiary)
+    if (drilldownStack.length === 2) {
+      const parentNode = drilldownStack[drilldownStack.length - 1];
+      if (parentNode?.to) {
+        const viewAllLi = document.createElement("li");
+        viewAllLi.className = "mobile-primary-item";
+
+        const viewAllLink = document.createElement("a");
+        viewAllLink.className = "mobile-primary-link mobile-view-all-link";
+        viewAllLink.href = parentNode.to;
+
+        const viewAllText = document.createElement("span");
+        viewAllText.className = "mobile-view-all-text";
+        viewAllText.textContent = `View all ${parentNode?.text || ""}`;
+        viewAllLink.appendChild(viewAllText);
+
+        const forwardIcon = cloneTemplateIcon("mobile-icon-forward");
+        if (forwardIcon) {
+          forwardIcon.classList.add("mobile-forward-icon");
+          viewAllLink.appendChild(forwardIcon);
+        }
+
+        viewAllLi.appendChild(viewAllLink);
+        mobilePrimaryNav.appendChild(viewAllLi);
+      }
+    }
+
     if (mobileSecondaryNav) {
-      mobileSecondaryNav.hidden = drilldownStack.length > 0;
+      mobileSecondaryNav.style.display = drilldownStack.length > 0 ? "none" : "";
     }
   };
 
@@ -378,6 +408,15 @@ const primaryDataJson = JSON.stringify(primary ?? []);
   }
 
   :global(.mobile-back-icon) {
+    margin-right: 0.5rem;
+  }
+
+  :global(.mobile-view-all-link) {
+    font-weight: 800;
+    justify-content: flex-start;
+  }
+
+  :global(.mobile-view-all-text) {
     margin-right: 0.5rem;
   }
 
