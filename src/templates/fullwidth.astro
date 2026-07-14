@@ -79,6 +79,7 @@ const pageTitle = title || fieldTitleContext;
 	{body && (
 		<Margins
 			class={hasFullPanels ? 'fullwidth-content no-full-panels' : 'fullwidth-content'}
+			style={!hasFullPanels ? 'margin-bottom: 6rem' : ''}
 		>
 			{body.processed && <Html html={body.processed} />}
 			<Panels data={bodyPanels} />
