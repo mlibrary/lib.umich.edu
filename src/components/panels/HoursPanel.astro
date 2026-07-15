@@ -462,13 +462,14 @@ const initialTableData = transformTableData(data, new Date());
 
     :global(.hours-table .row-header) {
       background: var(--color-blue-100);
-      border-bottom-color: var(--color-neutral-100);
+      border-bottom: 2px solid var(--color-neutral-100);
     }
 
     :global(.hours-table tbody td) {
       display: grid !important;
       gap: 5%;
       grid-template-columns: minmax(min-content, 6.5rem) 5fr max-content;
+      border: 2px solid transparent;
     }
 
     :global(.hours-table .mobile-day-label) {
