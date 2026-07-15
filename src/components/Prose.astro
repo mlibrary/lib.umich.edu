@@ -25,6 +25,10 @@ const { class: className = '' } = Astro.props;
     max-width: 38rem;
   }
 
+  .prose :global(li p){
+    margin-bottom: 0;
+  }
+
   .prose > :global(:not(:last-child)) {
     margin-bottom: 1rem;
   }
