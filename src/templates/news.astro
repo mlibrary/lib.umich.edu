@@ -180,7 +180,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   
   /* Remove border from sidebar (matches TemplateSide CSS override in news.js) */
   :global(.news-template-side .template-side-inner) {
-    border: none;
+    border: none !important;
   }
   
   /* News Heading Styles (matches Heading + date styles from news.js) */
@@ -189,6 +189,11 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
     margin-top: 0.75rem;
   }
   
+  .image-caption {
+    color: var(--color-neutral-300);
+    padding-top: 0.75rem;
+  }
+
   .news-date {
     font-size: 1rem;
     color: var(--color-neutral-300);
@@ -229,7 +234,6 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
   .stay-in-know-heading {
     font-size: 1rem;
     font-weight: 600;
-    margin: 0 0 0.5rem 0;
   }
   
   .email-signup-link {

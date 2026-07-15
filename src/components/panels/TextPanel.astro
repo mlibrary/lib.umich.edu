@@ -54,12 +54,22 @@ const buildImageUrl = (relativeUrl: string): string => {
 )}
 
 {(template === 'body_width_text' || template === 'text_group') && (
-  <div
-    class:list={[
-      "body-text-wrapper",
-      { "body-text-wrapper--margins": placement !== 'body' && template === 'body_width_text' }
-    ]}
-  >
+  (placement !== 'body' && template === 'body_width_text') ? (
+    <Margins>
+      <div class="body-text body-text--margin-top">
+        {cards.map((card: any, index: number) => (
+          <section
+            class:list={["body-text-section", { "body-text-section--border": data.field_border === 'yes' }]}
+          >
+            {title && (
+              <Heading level={2} size="M" class="body-text-heading">{title}</Heading>
+            )}
+            <Html html={card.field_body?.processed} />
+          </section>
+        ))}
+      </div>
+    </Margins>
+  ) : (
     <div class:list={["body-text", { "body-text--margin-top": template === 'body_width_text' }]}>
       {cards.map((card: any, index: number) => (
         <section
@@ -72,7 +82,7 @@ const buildImageUrl = (relativeUrl: string): string => {
         </section>
       ))}
     </div>
-  </div>
+  )
 )}
 
 {template === 'full_width_text_template' && cards.length > 0 && (
@@ -168,10 +178,6 @@ const buildImageUrl = (relativeUrl: string): string => {
     margin-bottom: 0.5rem;
   }
 
-  .body-text-wrapper--margins {
-    max-width: 38rem;
-    margin: 0 auto;
-  }
   .body-text--margin-top {
     margin-top: 2rem;
   }
