@@ -32,6 +32,10 @@ if (data) {
 if (!parsedData || parsedData.length === 0) {
   return null;
 }
+
+const count = parsedData.length;
+// Parent is second-to-last item (or first if only one item)
+const parentIndex = count > 1 ? count - 2 : 0;
 ---
 
 <nav
@@ -45,13 +49,19 @@ if (!parsedData || parsedData.length === 0) {
 >
   <ol class="breadcrumb-list">
     {parsedData.map(({ text, to }, index) => (
-      <li class="breadcrumb-item">
+      <li class:list={["breadcrumb-item", { "breadcrumb-item--parent": index === parentIndex }]}>
+        <span aria-hidden="true" class="breadcrumb-icon-wrapper">
+          {index === parentIndex && (
+            <span class="icon-back"><Icon icon='navigate_before' /></span>
+          )}
+          {index > 0 && (
+            <span class="icon-next"><Icon icon='navigate_next' /></span>
+          )}
+        </span>
         {to ? (
-          <Link href={to}>{text}</Link>
+          <Link class="breadcrumb-link" href={to}>{text}</Link>
         ) : (
           <span class="breadcrumb-text">{text}</span>
-        )}{index < parsedData.length - 1 && (
-          <Icon icon='navigate_next' />
         )}
       </li>
     ))}
@@ -60,10 +70,14 @@ if (!parsedData || parsedData.length === 0) {
 
 <style>
   .breadcrumb {
-    padding: 1.5rem 0;
+    padding: 1rem 0;
   }
 
-  @media (--bp-sm-up) {
+  :global(.breadcrumb-link){
+    margin-right: 0 !important;
+  }
+
+  @media (min-width: 641px) {
     .breadcrumb {
       padding-bottom: 2rem;
       padding-top: 2.5rem;
@@ -78,22 +92,55 @@ if (!parsedData || parsedData.length === 0) {
   .breadcrumb-list {
     list-style: none;
   }
-  
+
+  /* Mobile: hide all items except the parent */
   .breadcrumb-item {
-    display: inline-block;
-    margin-right: .25rem;
+    display: none;
   }
 
-  .breadcrumb-item > a{
-    margin-right: .25rem;
+  .breadcrumb-item--parent {
+    display: block;
   }
-  
+
+  /* Desktop: show all items inline */
+  @media (min-width: 641px) {
+    .breadcrumb-item {
+      display: inline-block;
+      margin-right: 0.25rem;
+    }
+  }
+
+  .breadcrumb-item > a {
+    margin-right: 0.25rem;
+  }
+
+  .breadcrumb-icon-wrapper {
+    margin-right: 0.25rem;
+  }
+
+  /* Back arrow: visible on mobile, hidden on desktop */
+  .icon-back {
+    display: inline-block;
+  }
+
+  @media (min-width: 641px) {
+    .icon-back {
+      display: none;
+    }
+  }
+
+  /* Next arrow: hidden on mobile, visible on desktop */
+  .icon-next {
+    display: none;
+  }
+
+  @media (min-width: 641px) {
+    .icon-next {
+      display: inline-block;
+    }
+  }
+
   .breadcrumb-text {
     color: var(--color-neutral-400);
-  }
-  
-  .breadcrumb-separator {
-    color: var(--color-neutral-300);
-    user-select: none;
   }
 </style>

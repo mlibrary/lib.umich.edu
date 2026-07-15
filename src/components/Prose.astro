@@ -98,6 +98,10 @@ const { class: className = '' } = Astro.props;
     margin-bottom: 1rem;
   }
 
+  .prose :global(p:last-child){
+    margin-bottom: 0;
+  }
+
   .prose :global(em) {
     font-style: italic;
   }
