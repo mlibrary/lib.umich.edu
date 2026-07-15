@@ -170,7 +170,7 @@ const getSummary = (body: any) => {
     margin-bottom: 1.5rem;
   }
 
-  @media (--bp-header-fit-up) {
+  @media (--bp-2xl-up) {
     .highlights-header {
       align-items: center;
       flex-direction: row;
@@ -181,7 +181,7 @@ const getSummary = (body: any) => {
     display: none;
   }
 
-  @media (--bp-header-fit-up) {
+  @media (--bp-2xl-up) {
     .dots-container {
       display: flex;
       height: 2.5rem;
@@ -204,26 +204,29 @@ const getSummary = (body: any) => {
     line-height: 1.25;
   }
 
-  @media (--bp-header-fit-up) {
+  @media (--bp-2xl-up) {
     .highlights-title {
       margin-left: 1rem;
     }
   }
 
-  .highlights-grid {
-    display: grid;
-    gap: 1rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  @media (--bp-2xl-up){
+    .highlights-grid {
+      display: grid;
+      gap: 1rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
   }
+  
 
   :global(.highlights-grid .card-title) {
     margin: 0;
     font-size: 1.125rem;
   }
 
-  @media (--bp-header-fit-up) {
+  @media (--bp-2xl-up) {
     .highlights-grid {
       grid-template-columns: repeat(10, auto);
     }
@@ -237,7 +240,11 @@ const getSummary = (body: any) => {
     min-height: 0;
   }
 
-  @media (--bp-header-fit-up) {
+  :global(.highlights-card a:hover span) {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  @media (--bp-2xl-up) {
     .highlights-card {
       margin-bottom: 0;
     }
