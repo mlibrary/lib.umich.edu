@@ -5,6 +5,7 @@ import TemplateTop from '../components/TemplateTop.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Button from '../reusable/Button.astro';
 import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
 import NoResults from '../components/NoResults.astro';
@@ -249,13 +250,13 @@ const categoriesJson = JSON.stringify(categories);
             </div>
           </label>
 
-          <button
-            type="button"
+          <Button
             id="specialist-clear"
-            class="specialist-clear-btn"
+            kind="subtle"
+            style="align-self: end;"
           >
             Clear
-          </button>
+          </Button>
 
           <button
             type="button"
@@ -285,9 +286,9 @@ const categoriesJson = JSON.stringify(categories);
 
         <div id="specialist-show-more" hidden>
           <p id="specialist-show-more-summary" class="show-more-summary"></p>
-          <button type="button" id="specialist-show-all-btn" class="specialist-show-all-btn">
+          <Button id="specialist-show-all-btn">
             Show all
-          </button>
+          </Button>
         </div>
 
         <div id="specialist-no-results" hidden>
@@ -684,25 +685,6 @@ const categoriesJson = JSON.stringify(categories);
     box-sizing: border-box;
   }
 
-  .specialist-clear-btn {
-    align-self: end;
-    appearance: none;
-    background: none;
-    border: none;
-    color: var(--color-teal-400);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: 600;
-    height: 40px;
-    padding: var(--spacing-xs) var(--spacing-m);
-    text-decoration: underline;
-  }
-
-  .specialist-clear-btn:hover {
-    text-decoration-thickness: 2px;
-  }
-
   .switch-btn {
     align-items: center;
     align-self: end;
@@ -871,21 +853,4 @@ const categoriesJson = JSON.stringify(categories);
     margin-bottom: var(--spacing-m);
   }
 
-  .specialist-show-all-btn {
-    appearance: none;
-    background: var(--color-teal-400);
-    border: 2px solid var(--color-teal-400);
-    border-radius: 4px;
-    color: white;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.5;
-    padding: var(--spacing-xs) var(--spacing-m);
-  }
-
-  .specialist-show-all-btn:hover {
-    background: var(--color-teal-500, #0c5940);
-  }
 </style>

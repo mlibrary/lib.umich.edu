@@ -9,6 +9,7 @@ import TemplateTop from '../components/TemplateTop.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Button from '../reusable/Button.astro';
 import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
 import Icon from '../reusable/Icon.astro';
@@ -228,9 +229,9 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
         <!-- Show more button area -->
         <div id="staff-directory-show-more" hidden>
           <p id="staff-directory-show-more-summary" class="show-more-summary"></p>
-          <button type="button" id="staff-directory-show-all-btn" class="staff-directory-show-all-btn">
+          <Button id="staff-directory-show-all-btn">
             Show all
-          </button>
+          </Button>
         </div>
 
         <!-- No results area -->
@@ -803,21 +804,4 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     margin-bottom: var(--spacing-l);
   }
 
-  .staff-directory-show-all-btn {
-    appearance: none;
-    background: var(--color-teal-400);
-    border: 2px solid var(--color-teal-400);
-    border-radius: 4px;
-    color: white;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.5;
-    padding: var(--spacing-xs) var(--spacing-m);
-  }
-
-  .staff-directory-show-all-btn:hover {
-    background: var(--color-teal-500, #0c5940);
-  }
 </style>
