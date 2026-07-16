@@ -8,14 +8,16 @@ interface Props {
   shaded?: boolean;
   headingCss?: Record<string, any>;
   noMargins?: boolean;
+  paddingLarge?: boolean;
+  class?: string;
   [key: string]: any;
 }
 
-const { title, shaded = false, headingCss = {}, noMargins = false, ...rest } = Astro.props;
+const { title, shaded = false, headingCss = {}, noMargins = false, paddingLarge = false, class: className = '', ...rest } = Astro.props;
 ---
 
 <section
-  class:list={["panel", { "panel-shaded": shaded }]}
+  class:list={["panel", { "panel-shaded": shaded, "panel--padding-large": paddingLarge }, className]}
   data-can-be-shaded={shaded}
   data-panel
   {...rest}
@@ -38,18 +40,31 @@ const { title, shaded = false, headingCss = {}, noMargins = false, ...rest } = A
 </section>
 
 <style>
-  .panel{
-    padding: 3rem 0;
+  /* Default: 2rem top/bottom (matches Gatsby mobile, SPACING.XL) */
+  .panel {
+    padding-bottom: 2rem;
+    padding-top: 2rem;
   }
 
+  /* Non-last panels always have 3rem bottom + border (SPACING['3XL'], no breakpoint) */
   .panel:not(:last-of-type) {
-    border-bottom: solid 1px var(--color-neutral-100, #e0e0e0);
+    border-bottom: solid 1px var(--color-neutral-100);
     padding-bottom: 3rem;
   }
 
+  /* full_width_text_template override: 3rem base (overrides panel's 2rem mobile default) */
+  .panel--padding-large {
+    padding-bottom: 3rem;
+    padding-top: 3rem;
+  }
+
   .panel-shaded {
-    background: var(--color-blue-100, #e8f4f8);
-    border-bottom: none !important;
+    background: var(--color-blue-100);
+  }
+
+  /* Shaded panels suppress the border on non-last */
+  .panel-shaded:not(:last-of-type) {
+    border-bottom: none;
   }
 
   .panel-heading {
@@ -59,13 +74,26 @@ const { title, shaded = false, headingCss = {}, noMargins = false, ...rest } = A
     margin-bottom: 2rem;
   }
 
-  /* .panel{
-    padding: 2rem 0;
-  } */
-
+  /* 641px+ (MEDIA_QUERIES.S): 3rem top/bottom (SPACING['3XL']) */
   @media (--bp-md-up) {
-    /* .panel{
-      padding: 3rem 0;
-    } */
+    .panel {
+      padding-bottom: 3rem;
+      padding-top: 3rem;
+    }
+
+    /* full_width_text_template override: 3rem base → 4rem at 641px+ */
+    .panel--padding-large {
+      padding-bottom: 4rem;
+      padding-top: 4rem;
+    }
   }
+
+  /* When a panel immediately follows an aside-layout, remove top padding at 641px+ */
+  /* stylelint-disable selector-pseudo-class-no-unknown */
+  @media (--bp-md-up) {
+    :global([data-aside-layout] + [data-panel]) {
+      padding-top: 0;
+    }
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
 </style>
