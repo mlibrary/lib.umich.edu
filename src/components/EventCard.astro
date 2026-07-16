@@ -119,7 +119,9 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
           <span class="event-type">
             <Icon icon="sell" />
             <span class="visually-hidden">Event type: </span>
-            {type}
+            <span class="event-type-text">
+              {type}
+            </span>
           </span>
         )
       }
@@ -129,8 +131,8 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
 
 <style>
   .event-card {
-    margin-top: var(--spacing-l, 1.5rem);
-    padding-bottom: var(--spacing-l, 1.5rem);
+    margin-top: 1.5rem;
+    padding-bottom: 1.5rem;
   }
 
   .event-card.with-border {
@@ -141,18 +143,12 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
     .event-card.with-image {
       display: grid;
       grid-template-columns: 16rem 1fr;
-      gap: var(--spacing-m, 1rem);
+      gap: 1rem;
     }
   }
 
   .event-image {
-    margin-bottom: var(--spacing-m, 1rem);
-  }
-
-  @media (--bp-4xl-up) {
-    .event-image {
-      margin-bottom: 0;
-    }
+    margin-bottom: .75rem;
   }
 
   .image-placeholder {
@@ -208,7 +204,8 @@ const slug = fields?.slug || event.attributes?.path?.alias || `#${event.id}`;
     margin-top: 0.25rem;
   }
 
-  .event-location-text{
+  .event-location-text,
+  .event-type-text {
     margin-left: .5rem;
   }
 
