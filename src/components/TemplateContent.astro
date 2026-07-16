@@ -7,12 +7,13 @@
  */
 interface Props {
   class?: string;
+  style?: string;
 }
 
-const { class: className = '' } = Astro.props;
+const { class: className = '', style } = Astro.props;
 ---
 
-<div class={`template-content ${className}`}>
+<div class={`template-content ${className}`} style={style}>
   <slot />
 </div>
 
@@ -24,6 +25,7 @@ const { class: className = '' } = Astro.props;
   @media (--bp-2xl-up) {
     .template-content {
       grid-area: content;
+      margin-right: 2.5rem;
     }
   }
 </style>

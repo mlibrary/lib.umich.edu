@@ -227,7 +227,7 @@ import fassNoResults from '../images/fass-no-results.png';
       </div>
     </TemplateSide>
 
-    <TemplateContent class="fass-template-content">
+    <TemplateContent class="fass-template-content" style="margin-right: 0 !important">
       <div id="fass-active-tags" class="fass-active-tags" style="display:none;">
         <div class="fass-tags-list" id="fass-tags-list"></div>
         <button type="button" class="fass-clear-all" id="fass-clear-all">
@@ -290,6 +290,10 @@ import fassNoResults from '../images/fass-no-results.png';
 </TemplateLayout>
 
 <style>
+  .fass-page{
+    margin-bottom: 2.5rem;
+  }
+  
   .fass-body {
     margin-bottom: 2rem;
   }
@@ -308,13 +312,6 @@ import fassNoResults from '../images/fass-no-results.png';
     border: none !important;
     padding-bottom: 0;
     max-width: 25rem;
-  }
-
-  /* Match Gatsby TemplateContent css={{ marginRight: '0 !important' }} */
-  @media (--bp-2xl-up) {
-    .fass-template-content {
-      margin-right: 0 !important;
-    }
   }
 
   .fass-filter-label {
@@ -527,6 +524,13 @@ import fassNoResults from '../images/fass-no-results.png';
     .fass-grid {
       grid-template-columns: repeat(2, minmax(320px, 1fr));
     }
+    .fass-template-side {
+      margin: 0;
+    }
+  }
+
+  .fass-heading{
+    margin-bottom: .75rem;
   }
 
   .fass-results-bottom {
