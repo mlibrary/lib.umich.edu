@@ -44,12 +44,12 @@ const { name, to, image, title, phone, email } = Astro.props;
     {title && <p class="user-title">{title}</p>}
     {phone && (
       <p>
-        <Link href={`tel:${phone}`} kind="subtle">{phone}</Link>
+        <Link href={`tel:${phone}`}>{phone}</Link>
       </p>
     )}
     {email && (
       <p>
-        <Link href={`mailto:${email}`} kind="subtle">{email}</Link>
+        <Link href={`mailto:${email}`}>{email}</Link>
       </p>
     )}
   </div>

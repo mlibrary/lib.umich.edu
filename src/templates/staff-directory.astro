@@ -9,6 +9,7 @@ import TemplateTop from '../components/TemplateTop.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Link from '../reusable/Link.astro';
 import Button from '../reusable/Button.astro';
 import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
@@ -261,15 +262,15 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     </th>
     <td colspan="2" class="staff-contact-cell">
       <span class="staff-email-wrapper">
-        <a class="staff-email link-subtle" href=""></a>
+        <Link class="staff-email link-subtle" href=""></Link>
       </span>
       <span class="staff-phone-separator">&middot;</span>
       <span class="staff-phone-wrapper">
-        <a class="staff-phone link-subtle" href=""></a>
+        <Link class="staff-phone link-subtle" href=""></Link>
       </span>
     </td>
     <td colspan="3" class="staff-department-cell">
-      <a class="staff-department-link link-subtle" href=""></a>
+      <Link class="staff-department-link link-subtle" href=""></Link>
     </td>
   </tr>
 </template>

@@ -107,12 +107,69 @@ const { field_body: fieldBody } = data;
 
 // Initial table data (will be updated client-side based on weekOffset)
 const initialTableData = transformTableData(data, new Date());
+
+// Slim down the data stored in the DOM attribute to only what the client-side
+// script needs for week-navigation re-renders. The full `data` object contains
+// every Drupal relationship (field_body, metadata, etc.) and can be hundreds of
+// KB per panel – embedding it verbatim in the HTML attribute bloats the page.
+function getClientData(node: any) {
+  // Slim a generic hours-bearing node (building / parent location)
+  const slimHoursNode = (n: any): any => {
+    if (!n) return null;
+    return {
+      field_display_hours_: n.field_display_hours_ ?? false,
+      relationships: {
+        field_hours_open: n.relationships?.field_hours_open ?? null,
+        field_parent_location: n.relationships?.field_parent_location
+          ? slimHoursNode(n.relationships.field_parent_location)
+          : null
+      }
+    };
+  };
+
+  // Slim a card node: keep title, slug, and all hours-lookup fields
+  const slimCard = (n: any): any => {
+    if (!n) return null;
+    return {
+      title: n.title,
+      fields: { slug: n.fields?.slug ?? null },
+      field_display_hours_: n.field_display_hours_ ?? false,
+      field_hours_different_from_build: n.field_hours_different_from_build ?? false,
+      relationships: {
+        field_hours_open: n.relationships?.field_hours_open ?? null,
+        field_room_building: n.relationships?.field_room_building
+          ? {
+              field_display_hours_: n.relationships.field_room_building.field_display_hours_ ?? false,
+              relationships: {
+                field_hours_open: n.relationships.field_room_building.relationships?.field_hours_open ?? null,
+                field_parent_location: n.relationships.field_room_building.relationships?.field_parent_location
+                  ? slimHoursNode(n.relationships.field_room_building.relationships.field_parent_location)
+                  : null
+              }
+            }
+          : null,
+        field_parent_location: n.relationships?.field_parent_location
+          ? slimHoursNode(n.relationships.field_parent_location)
+          : null
+      }
+    };
+  };
+
+  return {
+    relationships: {
+      field_parent_card: node.relationships.field_parent_card.map(slimCard),
+      field_cards: node.relationships.field_cards.map(slimCard)
+    }
+  };
+}
+
+const clientData = getClientData(data);
 ---
 <section 
   class="hours-panel" 
   id={createSlug(title)}
   data-hours-panel
-  data-node={JSON.stringify(data)}
+  data-node={JSON.stringify(clientData)}
 >
 
   <Margins>
@@ -143,6 +200,11 @@ const initialTableData = transformTableData(data, new Date());
 <script>
   import { weekOffset } from '../../stores/hoursStore';
   import { displayHours } from '../../utils/hours';
+
+  // Cache Intl formatters at module scope – avoids reconstructing them on every
+  // week-change re-render (14 calls → 2 formatter objects, reused each time).
+  const labelFormatter = new Intl.DateTimeFormat('en-US', { day: 'numeric', month: 'long', weekday: 'long' });
+  const subtextFormatter = new Intl.DateTimeFormat('en-US', { day: 'numeric', month: 'short' });
 
   // Re-render table when week offset changes
   function updateHoursTable(sectionEl: HTMLElement) {
@@ -181,15 +243,8 @@ const initialTableData = transformTableData(data, new Date());
       date.setDate(currentDate.getDate() + i);
 
       headings.push({
-        label: date.toLocaleString('en-US', {
-          day: 'numeric',
-          month: 'long',
-          weekday: 'long'
-        }),
-        subtext: date.toLocaleString('en-US', {
-          day: 'numeric',
-          month: 'short'
-        }),
+        label: labelFormatter.format(date),
+        subtext: subtextFormatter.format(date),
         text: daysOfWeek[date.getDay()]
       });
     }
@@ -289,21 +344,13 @@ const initialTableData = transformTableData(data, new Date());
     container.innerHTML = html;
   }
 
-  // Initialize for all hours panels on the page
-  document.addEventListener('DOMContentLoaded', () => {
-    const hoursPanels = document.querySelectorAll('[data-hours-panel]');
-    
-    // Subscribe to week offset changes
-    weekOffset.subscribe(() => {
-      hoursPanels.forEach((panel) => {
-        updateHoursTable(panel as HTMLElement);
-      });
-    });
-  });
-
-  // Also listen for the custom event from DateViewer
-  window.addEventListener('weekOffsetChanged', () => {
-    const hoursPanels = document.querySelectorAll('[data-hours-panel]');
+  // Update all panels when the user navigates to a different week.
+  // Using `listen` (not `subscribe`) so the callback only fires on *actual*
+  // changes – not immediately on subscription. This prevents the script from
+  // replacing the SSR-rendered table on every page load, which was the primary
+  // cause of the 15 s FCP/LCP regression.
+  const hoursPanels = document.querySelectorAll('[data-hours-panel]');
+  weekOffset.listen(() => {
     hoursPanels.forEach((panel) => {
       updateHoursTable(panel as HTMLElement);
     });
@@ -380,6 +427,8 @@ const initialTableData = transformTableData(data, new Date());
 
   :global(.hours-table .subtext) {
     color: var(--color-neutral-300);
+    font-size: 1rem;
+    font-weight: 400;
   }
 
   :global(.hours-table tbody tr) {
