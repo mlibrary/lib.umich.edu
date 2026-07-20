@@ -28,7 +28,7 @@ const {
 ---
 
 <button
-  class:list={['btn', `btn--${kind}`, { 'btn--disabled': disabled }, className]}
+  class:list={[kind !== 'reset' && 'btn', `btn-${kind}`, { 'btn-disabled': disabled }, className]}
   type={type}
   disabled={disabled || undefined}
   {...rest}
@@ -40,7 +40,6 @@ const {
   .btn {
     align-items: center;
     border-radius: 2px;
-    cursor: pointer;
     display: flex;
     font-weight: 800;
     min-height: 2.5rem;
@@ -67,14 +66,14 @@ const {
     background: var(--color-maize-500);
   }
 
-  /* secondary (default) — blue background, white text */
+  /* secondary (default) — teal background, white text */
   .btn-secondary {
-    background: var(--color-blue-400);
+    background: var(--color-teal-400);
     color: white;
   }
 
   .btn-secondary:not(.btn-disabled):hover {
-    background: var(--color-blue-500);
+    background: var(--color-teal-500);
   }
 
   /* tertiary — white bg, teal border and text */

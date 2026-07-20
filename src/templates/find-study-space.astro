@@ -268,7 +268,7 @@ import fassNoResults from '../images/fass-no-results.png';
         <ol class="fass-grid" id="fass-grid"></ol>
         <div class="fass-results-bottom">
           <p id="fass-results-summary-bottom" class="fass-results-summary"></p>
-          <Button id="fass-show-toggle" style="display:none; margin-top: 1.5rem;">
+          <Button id="fass-show-toggle" kind="secondary" style="display:none; margin-top: 1.5rem;">
             Show all
           </Button>
         </div>
@@ -858,10 +858,25 @@ import fassNoResults from '../images/fass-no-results.png';
     });
   };
 
+  const updateToggleState = (count: number) => {
+    const showCount = showAll ? count : Math.min(INITIAL_SHOW, count);
+    const summaryText = count <= INITIAL_SHOW
+      ? `Showing ${count} result${count > 1 ? 's' : ''}`
+      : `Showing ${showCount} of ${count} results`;
+    summaryTop.textContent = summaryText;
+    summaryBottom.textContent = summaryText;
+
+    if (count > INITIAL_SHOW) {
+      showToggle.style.display = '';
+      showToggle.textContent = showAll ? 'Show fewer' : 'Show all';
+    } else {
+      showToggle.style.display = 'none';
+    }
+  };
+
   const render = () => {
     const filtered = getFilteredSpaces();
     const count = filtered.length;
-    const showCount = showAll ? count : Math.min(INITIAL_SHOW, count);
 
     if (count === 0) {
       noResultsEl.style.display = '';
@@ -874,27 +889,16 @@ import fassNoResults from '../images/fass-no-results.png';
     noResultsEl.style.display = 'none';
     resultsEl.style.display = '';
 
-    let summaryText;
-    if (count <= 6) {
-      summaryText = `Showing ${count} result${count > 1 ? 's' : ''}`;
-    } else {
-      summaryText = `Showing ${showCount} of ${count} results`;
-    }
-    summaryTop.textContent = summaryText;
-    summaryBottom.textContent = summaryText;
-
-    if (count > INITIAL_SHOW) {
-      showToggle.style.display = '';
-      showToggle.textContent = showAll ? 'Show less' : 'Show all';
-    } else {
-      showToggle.style.display = 'none';
-    }
-
     grid.innerHTML = '';
-    filtered.slice(0, showCount).forEach((space) => {
-      grid.appendChild(renderCard(space));
+    filtered.forEach((space, index) => {
+      const card = renderCard(space);
+      if (index >= INITIAL_SHOW && !showAll) {
+        card.style.display = 'none';
+      }
+      grid.appendChild(card);
     });
 
+    updateToggleState(count);
     srStatus.textContent = '';
     renderTags();
   };
@@ -1083,7 +1087,13 @@ import fassNoResults from '../images/fass-no-results.png';
 
   showToggle.addEventListener('click', () => {
     showAll = !showAll;
-    render();
+    const items = Array.from(grid.children) as HTMLElement[];
+    items.forEach((item, index) => {
+      if (index >= INITIAL_SHOW) {
+        item.style.display = showAll ? '' : 'none';
+      }
+    });
+    updateToggleState(items.length);
     pushUrlState();
   });
 

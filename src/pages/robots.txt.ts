@@ -13,7 +13,7 @@ import type { APIRoute } from 'astro';
 const SITE = 'https://www.lib.umich.edu';
 const SITEMAP = `${SITE}/sitemap-index.xml`;
 
-const isProduction = import.meta.env.ROBOTSTXT_MODE === 'production';
+const isProduction = process.env.ROBOTSTXT_MODE === 'production';
 const mode = isProduction ? 'production' : 'development';
 console.log(`[robots.txt] is in ${mode} mode.`);
 
