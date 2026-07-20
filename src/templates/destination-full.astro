@@ -86,20 +86,14 @@ const showChatIframe = slug === '/ask-librarian';
     </TemplateTop>
     </Margins>
   <AsideLayout asideWidth="26rem">
-
     <TemplateContent>
       <div class="destination-full-content">
-        
-
         {bodySummary && (
           <p class="lede">{bodySummary}</p>
         )}
-
         <DestinationLocationInfo node={node} />
       </div>
-
       {body && <Html html={body} />}
-
       <Panels data={bodyPanels} />
     </TemplateContent>
 
@@ -123,9 +117,9 @@ const showChatIframe = slug === '/ask-librarian';
 
 <style>
   :global(.destination-full-side .template-side-inner) {
-    border: none;
+    border: none !important;
     max-width: 38rem;
-    padding-left: 0;
+    padding-left: 0 !important;
   }
 
   .destination-full-content {
@@ -133,8 +127,7 @@ const showChatIframe = slug === '/ask-librarian';
   }
 
   .lede {
-    font-size: 1.25rem;
-    line-height: 1.5;
+    font-size: 1.125rem;
     margin-bottom: var(--spacing-xl);
   }
 
