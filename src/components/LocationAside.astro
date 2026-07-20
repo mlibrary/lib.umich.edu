@@ -163,7 +163,7 @@ function formatFeatureLabel(feature: string): string {
               Location
             </Heading>
             <p>
-              {[locationTitle, floor, fieldRoomNumber].filter(Boolean).join(', ')}
+              {[locationTitle, floor].filter(Boolean).join(', ') + (fieldRoomNumber ? `, Room ${fieldRoomNumber}` : '')}
             </p>
             {buildingSlug && (
               <p><Link href={buildingSlug}>View building information</Link></p>
