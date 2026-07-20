@@ -173,9 +173,7 @@ const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
         {fieldMakeAnAppointment?.uri && (
           <div class="appointment-callout">
-            <LinkCallout to={fieldMakeAnAppointment.uri} icon="today">
-              Make an appointment with us
-            </LinkCallout>
+            <LinkCallout to={fieldMakeAnAppointment.uri} icon="today">Make an appointment with us</LinkCallout>
           </div>
         )}
 
@@ -206,18 +204,6 @@ const { bodyPanels, fullPanels } = transformNodePanels({ node });
     margin-bottom: 1.5rem;
   }
 
-  /* Each info row: icon + text side-by-side */
-  .dept-info-list :global(li) {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .dept-info-list :global(svg) {
-    flex-shrink: 0;
-    margin-top: 0.1em;
-  }
-
   .appointment-callout {
     margin-top: 2.5rem;
   }
@@ -230,6 +216,10 @@ const { bodyPanels, fullPanels } = transformNodePanels({ node });
     .appointment-callout:hover :global(a) {
     display: inline-block;
     box-shadow: none;
+  }
+
+  :global(.dept-info-list svg) {
+    margin-right: .5rem;
   }
 
   /* Small-screen horizontal nav — hidden on large screens */

@@ -20,9 +20,7 @@ const { to, icon, d, class: className = '' } = Astro.props;
   <span class="link-callout-icon">
     {d ? <Icon d={d} size={24} /> : <Icon icon={icon} size={24} />}
   </span>
-  <span class="link-callout-text">
-    <slot />
-  </span>
+  <span class="link-callout-text"><slot /></span>
 </a>
 
 <style>
@@ -31,7 +29,7 @@ const { to, icon, d, class: className = '' } = Astro.props;
     border-radius: 2px;
     display: block;
     padding: 1rem;
-    padding-right: 2rem;
+    padding-right: 1.5rem;
     text-decoration: none;
   }
 
