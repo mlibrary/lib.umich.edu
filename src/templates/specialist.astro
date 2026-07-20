@@ -197,7 +197,6 @@ const categoriesJson = JSON.stringify(categories);
       <Breadcrumb data={breadcrumbData} />
     </TemplateTop>
 
-    <TemplateContent>
       <Heading size="3XL" level={1} class="specialist-heading">
         {fieldTitleContext}
       </Heading>
@@ -300,7 +299,6 @@ const categoriesJson = JSON.stringify(categories);
 
       <script id="specialist-data" type="application/json" set:html={specialistsJson}></script>
       <script id="categories-data" type="application/json" set:html={categoriesJson}></script>
-    </TemplateContent>
   </Template>
 </TemplateLayout>
 
@@ -627,9 +625,9 @@ const categoriesJson = JSON.stringify(categories);
     margin-bottom: var(--spacing-m);
   }
 
-  @media (--bp-3xl-up) {
+  @media (--bp-2xl-up) {
     .specialist-controls {
-      grid-template-columns: minmax(200px, 3fr) auto auto auto;
+      grid-template-columns: minmax(200px, 3fr) auto auto;
     }
   }
 
@@ -699,7 +697,7 @@ const categoriesJson = JSON.stringify(categories);
     padding: var(--spacing-2xs);
   }
 
-  @media (--bp-3xl-up) {
+  @media (--bp-2xl-up) {
     .switch-btn {
       margin-left: var(--spacing-m);
     }
@@ -731,16 +729,28 @@ const categoriesJson = JSON.stringify(categories);
     border-color: var(--color-green-500);
   }
 
+  
+  #specialist-thead-row > *{
+    padding: 0.75rem 0;
+    position: relative;
+    vertical-align: top;
+  }
+  #specialist-thead-row > * + * {
+    padding-left: 2rem;
+  }
+
+
   .switch-label {
+    font-size: 0.675rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
     color: white;
     display: inline-block;
-    font-size: 0.675rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    line-height: 1;
+    left: auto;
     position: absolute;
-    top: 2px;
     right: 5px;
+    top: 2px;
   }
 
   .switch-track[data-on="true"] .switch-label {
@@ -831,12 +841,12 @@ const categoriesJson = JSON.stringify(categories);
   }
 
   :global(.specialist-contact-link) {
+    box-shadow: inset 0 -1px var(--color-teal-400);
     color: var(--color-teal-400);
-    text-decoration: underline;
   }
 
   :global(.specialist-contact-link:hover) {
-    text-decoration-thickness: 2px;
+    box-shadow: inset 0 -2px var(--color-teal-400);
   }
 
   :global(.specialist-contact-desc) {

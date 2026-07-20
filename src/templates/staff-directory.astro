@@ -144,7 +144,6 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
       <Breadcrumb data={breadcrumbData} />
     </TemplateTop>
 
-    <TemplateContent>
       <Heading size="3XL" level={1} class="staff-directory-heading">
         {fieldTitleContext}
       </Heading>
@@ -201,13 +200,13 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
             </div>
           </label>
 
-          <button
-            type="button"
+          <Button
+            kind="subtle"
             id="staff-directory-clear"
             class="staff-directory-clear-btn"
           >
             Clear
-          </button>
+          </Button>
         </div>
 
         <!-- Results table -->
@@ -246,7 +245,6 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
 
       <!-- Staff data embedded for client-side use -->
       <script id="staff-data" type="application/json" set:html={staffJson}></script>
-    </TemplateContent>
   </Template>
 </TemplateLayout>
 
@@ -500,10 +498,9 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
         phoneLink.href = 'tel:1-' + person.phone;
         phoneLink.textContent = person.phone;
         row.querySelector('.staff-phone-wrapper').hidden = false;
-        if (phoneSeparator) phoneSeparator.hidden = false;
       } else {
         row.querySelector('.staff-phone-wrapper').hidden = true;
-        if (phoneSeparator) phoneSeparator.hidden = true;
+        if (phoneSeparator) phoneSeparator.remove();
       }
 
       // Department/Division
@@ -646,26 +643,6 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     transform: translateY(-50%);
   }
 
-  /* Clear button */
-  .staff-directory-clear-btn {
-    align-self: end;
-    appearance: none;
-    background: none;
-    border: none;
-    color: var(--color-teal-400);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: 600;
-    height: 40px;
-    padding: var(--spacing-xs) var(--spacing-m);
-    text-decoration: underline;
-  }
-
-  .staff-directory-clear-btn:hover {
-    text-decoration-thickness: 2px;
-  }
-
   /* Results table */
   .staff-directory-table {
     table-layout: fixed;
@@ -679,6 +656,14 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
 
   .photo-col {
     width: 43px;
+  }
+
+  .staff-directory-clear-btn {
+    align-self: end;
+  }
+
+  .staff-directory-clear-btn:hover {
+    text-decoration-thickness: 2px;
   }
 
   .staff-directory-thead {
@@ -718,9 +703,16 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
   }
 
   @media (--bp-md-down) {
-    :global(.staff-row > *) {
+    :global(.staff-row) {
       display: block;
-      padding: 0.5rem 0 0 0;
+      padding-bottom: 1rem;
+      width: 100%;
+    }
+
+    :global(.staff-row > *) {
+      padding: 0.5rem 0 0;
+      display: block;
+      width: 100%;
     }
 
     :global(.staff-row > * + *) {
