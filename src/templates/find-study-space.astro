@@ -398,6 +398,15 @@ import fassNoResults from '../images/fass-no-results.png';
     margin-bottom: 0.75rem;
   }
 
+  .fass-checkbox input:focus-visible {
+    box-shadow: 2px solid var(--color-blue-400);
+    outline-offset: 2px;
+  }
+
+  .fass-checkbox input:focus{
+    box-shadow: none;
+  }
+
   .fass-checkbox input[type="checkbox"] {
     accent-color: var(--color-teal-400);
     flex-shrink: 0;
