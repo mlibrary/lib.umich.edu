@@ -46,9 +46,9 @@ const verticalSrc = verticalCmsUrl
 	? (await getImage({
 		src: verticalCmsUrl,
 		format: 'webp',
-		width: 800,
-		...(targetHeight(verticalNode, 800) !== undefined
-			? { height: targetHeight(verticalNode, 800) }
+		width: 1200,
+		...(targetHeight(verticalNode, 1200) !== undefined
+			? { height: targetHeight(verticalNode, 1200) }
 			: { inferSize: true }),
 	  })).src
 	: '';
@@ -123,9 +123,10 @@ const horizontalSrc = horizontalCmsUrl
 
 <style>
 	/* ── default (mobile-first) ───────────────────────── */
-
-	.homepage-search-header {
-		padding: 0 !important;
+	@media (--bp-2xl-down) {
+		.homepage-search-header {
+			padding: 0 !important;
+		}
 	}
 
 	.background-section {
