@@ -14,7 +14,7 @@ const hasFrost = data?.field_background === 'white';
 
 // Caption and alt text
 const caption: string | null = data?.field_caption_text?.processed ?? null;
-const altText: string = data?.relationships?.field_hero_images?.[0]?.field_media_image?.alt ?? '';
+const altText: string = data?.relationships?.field_hero_images[0]?.relationships?.field_media_image?.meta?.alt ?? '';
 
 // Extract background images by orientation (adapted for Drupal JSON:API data structure)
 const fieldHeroImages = data?.relationships?.field_hero_images ?? [];
