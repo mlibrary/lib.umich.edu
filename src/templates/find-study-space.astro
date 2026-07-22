@@ -83,7 +83,7 @@ import fassNoResults from '../images/fass-no-results.png';
 <TemplateLayout node={node}>
   <Margins class="fass-page">
     <Breadcrumb data={breadcrumb} />
-    <Heading size="3XL" level={1} class="fass-heading">
+    <Heading size="3XL" level={1} class="fass-heading" data-page-heading>
       {fieldTitleContext}
     </Heading>
     {body?.processed && (
@@ -388,7 +388,7 @@ import fassNoResults from '../images/fass-no-results.png';
   }
 
   .fass-collapsible-inner {
-    padding-top: 1rem;
+    padding: 1rem 4px 4px 4px;
   }
 
   /* Checkboxes */
@@ -399,7 +399,7 @@ import fassNoResults from '../images/fass-no-results.png';
   }
 
   .fass-checkbox input:focus-visible {
-    box-shadow: 2px solid var(--color-blue-400);
+    outline: 2px solid var(--color-blue-400);
     outline-offset: 2px;
   }
 

@@ -26,7 +26,21 @@ const { title } = Astro.props;
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js" as="script" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css" rel="stylesheet"/>
-    
+    <!--
+      Override the @umich-lib/web design-system's global :focus rule.
+      The design-system sets: outline:0; box-shadow: maize double-ring; border-radius:2px !important
+      We restore the browser default outline colored with our site's brand blue,
+      matching the Gatsby site's focus behavior (*:focus { outlineColor: var(--color-blue-400) }).
+      This must be inline and after the CDN stylesheet so it wins in the cascade.
+    -->
+    <style is:inline>
+      *:focus {
+        box-shadow: none;
+        border-radius: 0 !important;
+        outline: revert;
+        outline-color: var(--color-blue-400, #00274c);
+      }
+    </style>
 
   </head>
   <body>
@@ -53,22 +67,21 @@ const { title } = Astro.props;
       <Footer />
     </div>
     
-    <m-chat id="chat"></m-chat>
+    <aside aria-label="Ask a Librarian Chat">
+      <m-chat id="chat"></m-chat>
+    </aside>
 
     <script>
-      // focus management for UH skip links
-      let initialLoad = true;
-
+      // Focus management: move focus to the page heading on every page load,
+      // including the initial load. This matches Gatsby's onRouteUpdate behavior
+      // (gatsby-browser.js) which focuses the heading whenever the path changes,
+      // including the first render when prevLocation is null.
       document.addEventListener('astro:page-load', () => {
-        if (initialLoad) {
-          initialLoad = false;
-          return;
-        }
-
         const dataPageHeading = document.querySelector('[data-page-heading]') as HTMLElement | null;
         const h1 = document.querySelector('h1') as HTMLElement | null;
         const pageHeading = (dataPageHeading ?? h1) as HTMLElement | null;
 
+        console.log(pageHeading);
         if (pageHeading) {
           pageHeading.setAttribute('tabindex', '-1');
           pageHeading.classList.add('focus');
