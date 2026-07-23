@@ -14,6 +14,7 @@ html {
   font-family: Muli, sans-serif;
   line-height: 1.5;
   color: var(--color-neutral-400);
+  scroll-behavior: smooth;
 }
 
 /* Font smoothing and box sizing to border-box */
