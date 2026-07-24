@@ -324,6 +324,7 @@ const categoriesJson = JSON.stringify(categories);
   var categoryLabel = document.getElementById('specialist-category-label');
   var clearBtn = document.getElementById('specialist-clear');
   var hsToggle = document.getElementById('specialist-hs-toggle');
+  var specialistControls = document.getElementById('specialist-controls');
   var tbody = document.getElementById('specialist-tbody');
   var caption = document.getElementById('specialist-summary');
   var showMoreContainer = document.getElementById('specialist-show-more');
@@ -373,6 +374,7 @@ const categoriesJson = JSON.stringify(categories);
 
   function updateHSToggle() {
     hsToggle.setAttribute('aria-checked', healthSciencesOnly ? 'true' : 'false');
+    healthSciencesOnly ? specialistControls.classList.add('hs-four-column') : specialistControls.classList.remove('hs-four-column');
     var track = hsToggle.querySelector('.switch-track');
     track.setAttribute('data-on', healthSciencesOnly ? 'true' : 'false');
     track.querySelector('.switch-label').textContent = healthSciencesOnly ? 'on' : 'off';
@@ -630,6 +632,10 @@ const categoriesJson = JSON.stringify(categories);
   @media (--bp-2xl-up) {
     .specialist-controls {
       grid-template-columns: minmax(200px, 3fr) auto auto;
+    }
+
+    .hs-four-column{
+      grid-template-columns: minmax(200px, 2fr) repeat(3, auto);
     }
   }
 
