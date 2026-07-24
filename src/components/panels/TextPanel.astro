@@ -181,13 +181,16 @@ const buildImageUrl = (relativeUrl: string): string => {
   .body-text--margin-top {
     margin-top: 2rem;
   }
+
   .body-text-section {
     padding-top: 0;
   }
+
   .body-text-section--border {
     border-top: solid 1px var(--color-neutral-100);
     padding-top: 2rem;
   }
+
   .body-text-heading {
     margin-bottom: 1rem;
   }
@@ -201,28 +204,29 @@ const buildImageUrl = (relativeUrl: string): string => {
     max-width: 38rem;
     text-align: center;
   }
+
   .full-width-heading {
     margin-bottom: 1rem;
   }
+
   .full-width-body {
     color: var(--color-neutral-300);
   }
 
   /* grid_text_template_with_linked_title */
   .grid-text-item {
-    margin-top: 0;
+    margin-top: 2rem;
+    break-inside: avoid;
   }
-  @media (--bp-md-up) {
-    .grid-text-item {
-      margin: 0;
-    }
-  }
+
   .grid-text-title {
     margin-bottom: 0.5rem;
   }
+
   .grid-text-body {
     color: var(--color-neutral-300);
   }
+
   .grid-text-body :global(p) {
     display: inline-block;
   }
@@ -231,19 +235,23 @@ const buildImageUrl = (relativeUrl: string): string => {
   .image-text-section {
     display: flex;
   }
+
   .image-text-section + .image-text-section {
     border-top: solid 1px var(--color-neutral-100);
     margin-top: 1rem;
     padding-top: 1.5rem;
   }
+
   .image-text-image {
     flex-shrink: 0;
     margin-right: 1.5rem;
     width: 8rem;
   }
+
   .image-text-content {
     flex: 1;
   }
+  
   .image-text-heading {
     margin-bottom: 0.5rem;
     margin-top: 0 !important;
