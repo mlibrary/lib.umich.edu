@@ -23,12 +23,18 @@ const {
 </section>
 
 <style>
-  .template-side-inner {
+  .template-side[data-content-side="right"] .template-side-inner {
     border-bottom: solid 1px var(--color-neutral-100);
     margin-bottom: 2.5rem;
     padding-bottom: 2.5rem;
   }
 
+  .template-side[data-content-side="left"] .template-side-inner {
+    border-top: solid 1px var(--color-neutral-100);
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+  }
+  
   @media (--bp-md-up) {
     .template-side {
       grid-area: side;
