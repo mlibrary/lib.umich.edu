@@ -69,7 +69,7 @@ if (!Array.isArray(floorPlans)) {
   floorPlans = floorPlans ? [floorPlans] : [];
 }
 
-// ---------- Address helpers ----------
+// Address helpers
 
 function transformAddressDataToArray(data: any, kind: string): string[] {
   const {
@@ -137,25 +137,24 @@ function getHoursAnchor(): string {
   return `/locations-and-hours/hours-view#${createSlug(anchorTitle)}`;
 }
 
-// ---------- Noise level formatter ----------
+// Noise level formatter
 function formatNoiseLevel(level: string): string {
   return level.replace(/_/g, ' ').replace(/^./, (s) => s.toUpperCase());
 }
 
-// ---------- Space features formatter ----------
+// Space features formatter
 function formatFeatureLabel(feature: string): string {
   return feature.replace(/_/g, ' ').replace(/^./, (s) => s.toUpperCase());
 }
 ---
 
 {isStudySpaceAside ? (
-  <!-- Study-space mode -->
   <>
     {/* Location section */}
     {(locationTitle || floor || floorPlans.length > 0) && (
       <section aria-labelledby="location" class="aside-section">
         <div class="layout-with-icon">
-          <div class="icon-circle icon-circle--orange">
+          <div class="icon-circle icon-circle-orange">
             <Icon icon="address" size={24} />
           </div>
           <div>
@@ -186,7 +185,7 @@ function formatFeatureLabel(feature: string): string {
     {locationNode && (
       <section aria-labelledby="todays-hours" class="aside-section">
         <div class="layout-with-icon">
-          <div class="icon-circle icon-circle--indigo">
+          <div class="icon-circle icon-circle-indigo">
             <Icon icon="access_time" size={24} />
           </div>
           <div>
@@ -210,9 +209,9 @@ function formatFeatureLabel(feature: string): string {
 
     {/* Noise level */}
     {noiseLevel && (
-      <section aria-labelledby="noise-level" class:list={['aside-section', { 'aside-section--last': !spaceFeatures?.length }]}>
+      <section aria-labelledby="noise-level" class:list={['aside-section', { 'aside-section-last': !spaceFeatures?.length }]}>
         <div class="layout-with-icon">
-          <div class="icon-circle icon-circle--green">
+          <div class="icon-circle icon-circle-green">
             <Icon icon="volume_up" size={24} />
           </div>
           <div>
@@ -229,7 +228,7 @@ function formatFeatureLabel(feature: string): string {
     {spaceFeatures && spaceFeatures.length > 0 && (
       <section aria-labelledby="features">
         <div class="layout-with-icon">
-          <div class="icon-circle icon-circle--teal">
+          <div class="icon-circle icon-circle-teal">
             <Icon icon="info_outline" size={24} />
           </div>
           <div>
@@ -253,13 +252,12 @@ function formatFeatureLabel(feature: string): string {
     )}
   </>
 ) : (
-  <!-- Default mode (section pages, visit pages) -->
   <>
     {/* Hours section */}
     {locationNode && (
       <section aria-labelledby="todays-hours" class="aside-section">
         <div class="layout-with-icon">
-          <div class="icon-circle icon-circle--indigo">
+          <div class="icon-circle icon-circle-indigo">
             <Icon icon="access_time" size={24} />
           </div>
           <div>
@@ -286,7 +284,7 @@ function formatFeatureLabel(feature: string): string {
       {fullAddressLines.length > 0 && (
         <div class="aside-section">
           <div class="layout-with-icon">
-            <div class="icon-circle icon-circle--orange">
+            <div class="icon-circle icon-circle-orange">
               <Icon icon="address" size={24} />
             </div>
             <div>
@@ -309,7 +307,7 @@ function formatFeatureLabel(feature: string): string {
       {(fieldPhoneNumber || fieldEmail) && (
         <div class="aside-section">
           <div class="layout-with-icon">
-            <div class="icon-circle icon-circle--green">
+            <div class="icon-circle icon-circle-green">
               <Icon icon="phone" size={24} />
             </div>
             <div>
@@ -332,7 +330,7 @@ function formatFeatureLabel(feature: string): string {
     {floorPlans.length > 0 && (
       <section aria-label="floor plans">
         <div class="layout-with-icon">
-          <div class="icon-circle icon-circle--teal">
+          <div class="icon-circle icon-circle-teal">
             <Icon icon="map" size={24} />
           </div>
           <div>
@@ -356,7 +354,7 @@ function formatFeatureLabel(feature: string): string {
     margin-bottom: 3rem;
   }
 
-  .aside-section--last {
+  .aside-section-last {
     margin-bottom: 0;
   }
 
@@ -375,22 +373,22 @@ function formatFeatureLabel(feature: string): string {
     width: 2.5rem;
   }
 
-  .icon-circle--orange {
+  .icon-circle-orange {
     background: var(--color-orange-100);
     color: var(--color-orange-500);
   }
 
-  .icon-circle--indigo {
+  .icon-circle-indigo {
     background: var(--color-indigo-100);
     color: var(--color-indigo-400);
   }
 
-  .icon-circle--green {
+  .icon-circle-green {
     background: var(--color-green-100);
     color: var(--color-green-500);
   }
 
-  .icon-circle--teal {
+  .icon-circle-teal {
     background: var(--color-teal-100);
     color: var(--color-teal-500);
   }
