@@ -7,6 +7,7 @@ import { Image } from "astro:assets";
 import fdlpImage from "../images/fdlp.png";
 import Link from "../reusable/Link.astro";
 import Icon from "../reusable/Icon.astro";
+import Margins from "./Margins.astro";
 
 const year = new Date().getFullYear();
 
@@ -87,80 +88,83 @@ const links = [
 ---
 
 <footer role="contentinfo">
-  <div class="footer-content">
-    <div class="footer-sections">
-      {
-        links.map((section) => (
-          <section>
-            <h2>{section.heading}</h2>
-            <nav aria-label={`${section.heading} links`}>
-              <ul class="footer-links">
-                {section.links.map(({ text, to, icon }) => (
-                  <li>
-                    <Link href={to} kind="light" style="box-shadow: none;">
-                      <span class="icon-text">
-                        <span class="icon-wrapper">
-                          <Icon icon={icon} aria-hidden="true" />
-                        </span>
-                        <span set:html={text.replace("\n", "<br />")} />
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </section>
-        ))
-      }
-
-      <section class="privacy-section">
-        <h2>Privacy and copyright</h2>
-        <Link kind="light"href="/about-us/policies/library-privacy-statement"
-          >Library Privacy Statement</Link
-        >
-        <p class="copyright-text">
-          Except where otherwise noted, this work is subject to a{" "}
-          <Link kind="light" href="http://creativecommons.org/licenses/by/4.0/"
-            >Creative Commons Attribution 4.0 license</Link
-          >
-          . For details and exceptions, see the{" "}
-          <Link kind="light" href="/about-us/policies/copyright-policy"
-            >Library Copyright Policy</Link
-          >.
-        </p>
-        <p class="fdlp">
-          <Image
-            src={fdlpImage}
-            alt="Federal Depository Library Program"
-            width={40}
-            height={40}
-            loading="lazy"
-          />
-          <span>Federal Depository Library Program</span>
-        </p>
-      </section>
-    </div>
-  </div>
-
-  <div class="footer-bottom">
+  <Margins>
     <div class="footer-content">
-      <nav aria-label="Legal and References">
-        <ul>
-          <li>© {year}, Regents of the University of Michigan</li>
-          <li>
-            <Link kind="light-blue" href="/about-us/about-library/territorial-acknowledgement"
-              >Territorial Acknowledgement</Link
+      <div class="footer-sections">
+        {
+          links.map((section) => (
+            <section>
+              <h2>{section.heading}</h2>
+              <nav aria-label={`${section.heading} links`}>
+                <ul class="footer-links">
+                  {section.links.map(({ text, to, icon }) => (
+                    <li>
+                      <Link href={to} kind="light" style="box-shadow: none;">
+                        <span class="icon-text">
+                          <span class="icon-wrapper">
+                            <Icon icon={icon} aria-hidden="true" />
+                          </span>
+                          <span set:html={text.replace("\n", "<br />")} />
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </section>
+          ))
+        }
+
+        <section class="privacy-section">
+          <h2>Privacy and copyright</h2>
+          <Link kind="light"href="/about-us/policies/library-privacy-statement"
+            >Library Privacy Statement</Link
+          >
+          <p class="copyright-text">
+            Except where otherwise noted, this work is subject to a{" "}
+            <Link kind="light" href="http://creativecommons.org/licenses/by/4.0/"
+              >Creative Commons Attribution 4.0 license</Link
             >
-          </li>
-          <li>
-            Built with the{" "}
-            <Link kind="light-blue" href="https://design-system.lib.umich.edu/"
-              >U-M Library Design System</Link
-            >
-          </li>
-        </ul>
-      </nav>
+            . For details and exceptions, see the{" "}
+            <Link kind="light" href="/about-us/policies/copyright-policy"
+              >Library Copyright Policy</Link
+            >.
+          </p>
+          <p class="fdlp">
+            <Image
+              src={fdlpImage}
+              alt="Federal Depository Library Program"
+              width={40}
+              height={40}
+              loading="lazy"
+            />
+            <span>Federal Depository Library Program</span>
+          </p>
+        </section>
+      </div>
     </div>
+  </Margins>
+  <div class="footer-bottom">
+    <Margins>
+      <div class="footer-content">
+        <nav aria-label="Legal and References">
+          <ul>
+            <li>© {year}, Regents of the University of Michigan</li>
+            <li>
+              <Link kind="light-blue" href="/about-us/about-library/territorial-acknowledgement"
+                >Territorial Acknowledgement</Link
+              >
+            </li>
+            <li>
+              Built with the{" "}
+              <Link kind="light-blue" href="https://design-system.lib.umich.edu/"
+                >U-M Library Design System</Link
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </Margins>
   </div>
 </footer>
 
@@ -182,18 +186,8 @@ const links = [
     padding-top: 0.75rem;
   }
 
-  .footer-content {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 2.5rem;
-  }
-
   .footer-sections {
     padding: 3rem 0 1.5rem;
-  }
-
-  .footer-sections section {
-    margin-bottom: 2rem;
   }
 
   .footer-sections section:not(:last-of-type) {
