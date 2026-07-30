@@ -391,14 +391,33 @@ const categoriesJson = JSON.stringify(categories);
 
   function updateCategoryHeader() {
     var existingCatTh = theadRow.querySelector('.category-th');
-    if (healthSciencesOnly && !existingCatTh) {
-      var th = document.createElement('th');
-      th.scope = 'col';
-      th.className = 'category-th';
-      th.textContent = 'Category';
-      theadRow.appendChild(th);
-    } else if (!healthSciencesOnly && existingCatTh) {
-      existingCatTh.remove();
+    var existingCatColgroup = document.getElementById('specialist-category-colgroup');
+
+    if (healthSciencesOnly) {
+      if (!existingCatColgroup) {
+        var colgroup = document.createElement('colgroup');
+        colgroup.id = 'specialist-category-colgroup';
+        colgroup.span = 1;
+
+        var thead = table.querySelector('thead');
+        table.insertBefore(colgroup, thead);
+      }
+
+      if (!existingCatTh) {
+        var th = document.createElement('th');
+        th.scope = 'colgroup';
+        th.className = 'category-th';
+        th.textContent = 'Category';
+        theadRow.appendChild(th);
+      }
+    } else {
+      if (existingCatColgroup) {
+        existingCatColgroup.remove();
+      }
+
+      if (existingCatTh) {
+        existingCatTh.remove();
+      }
     }
   }
 
@@ -507,8 +526,22 @@ const categoriesJson = JSON.stringify(categories);
     }
     if (query) summaryParts.push('for "' + query + '"');
     if (activeCategory) summaryParts.push('in ' + activeCategory);
-    if (healthSciencesOnly) summaryParts.push('with the Show Health Sciences Only filter active');
-    caption.textContent = summaryParts.join(' ');
+
+    // Build string for health sciences only in search results
+    caption.innerHTML = '';
+
+    caption.appendChild(document.createTextNode(summaryParts.join(' ')));
+
+    if (healthSciencesOnly) {
+      caption.appendChild(document.createTextNode(' with the '));
+
+      var strong = document.createElement('strong');
+      strong.textContent = 'Show Health Sciences Only';
+      strong.style.fontWeight = '800';
+
+      caption.appendChild(strong);
+      caption.appendChild(document.createTextNode(' filter active'));
+    }
 
     if (limit < results.length) {
       showMoreContainer.hidden = false;
@@ -629,16 +662,6 @@ const categoriesJson = JSON.stringify(categories);
     margin-bottom: var(--spacing-m);
   }
 
-  @media (--bp-2xl-up) {
-    .specialist-controls {
-      grid-template-columns: minmax(200px, 3fr) auto auto;
-    }
-
-    .hs-four-column{
-      grid-template-columns: minmax(200px, 2fr) repeat(3, auto);
-    }
-  }
-
   .specialist-controls input,
   .specialist-controls select {
     height: 40px;
@@ -706,6 +729,14 @@ const categoriesJson = JSON.stringify(categories);
   }
 
   @media (--bp-2xl-up) {
+    .specialist-controls {
+      grid-template-columns: minmax(200px, 3fr) auto auto;
+    }
+
+    .hs-four-column{
+      grid-template-columns: minmax(200px, 2fr) repeat(3, auto);
+    }
+
     .switch-btn {
       margin-left: var(--spacing-m);
     }
@@ -797,17 +828,7 @@ const categoriesJson = JSON.stringify(categories);
     color: var(--color-neutral-300);
   }
 
-  @media (--bp-lg-down) {
-    .specialist-thead {
-      clip: rect(1px, 1px, 1px, 1px);
-      clip-path: inset(50%);
-      height: 1px;
-      overflow: hidden;
-      position: absolute;
-      white-space: nowrap;
-      width: 1px;
-    }
-  }
+
 
   :global(.specialist-row) {
     border-top: 1px solid var(--color-neutral-100);
@@ -820,28 +841,6 @@ const categoriesJson = JSON.stringify(categories);
 
   :global(.specialist-row > * + *) {
     padding-left: 2rem;
-  }
-
-  @media (--bp-lg-down) {
-    :global(.specialist-row > *) {
-      display: block;
-      padding: 0.25rem 0;
-    }
-
-    :global(.specialist-row > * + *) {
-      padding-left: 0;
-    }
-
-    :global(.specialist-row > *:last-child) {
-      padding-bottom: 1rem;
-    }
-  }
-
-  @media (--bp-lg-down) {
-    :global(.specialist-name-cell) {
-      font-weight: 600;
-      padding-top: 1rem !important;
-    }
   }
 
   :global(.specialist-contact + .specialist-contact) {
@@ -861,14 +860,45 @@ const categoriesJson = JSON.stringify(categories);
     margin: 0;
   }
 
-  @media (--bp-lg-down) {
-    :global(.specialist-category-cell) {
-      display: none !important;
-    }
-  }
-
   .show-more-summary {
     margin-bottom: var(--spacing-m);
   }
 
+  @media (--bp-lg-down) {
+    .specialist-table{
+      table-layout: auto;
+    }
+
+    :global(.specialist-category-cell) {
+      display: none !important;
+    }
+    
+    :global(.specialist-name-cell) {
+      font-weight: 600;
+      padding-top: 1rem !important;
+    }
+
+    :global(.specialist-row > *) {
+      display: block;
+      padding: 0.25rem 0;
+    }
+
+    :global(.specialist-row > * + *) {
+      padding-left: 0;
+    }
+
+    :global(.specialist-row > *:last-child) {
+      padding-bottom: 1rem;
+    }
+
+    .specialist-thead {
+      clip: rect(1px, 1px, 1px, 1px);
+      clip-path: inset(50%);
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
+  }
 </style>
