@@ -5,6 +5,7 @@
  */
 
 import Icon from "../../reusable/Icon.astro";
+import Link from '../../reusable/Link.astro';
 ---
 
 <script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
@@ -83,11 +84,11 @@ import Icon from "../../reusable/Icon.astro";
               ></strong></span
             >
             <span class="no-results-suggestion">
-              Try <a
+              Try <Link
+                kind="light-blue"
                 href="https://search.lib.umich.edu/everything?utm_source=lib-site-search"
                 target="_blank"
-                rel="noopener">Library Search</a
-              > for books, articles, and more.
+                rel="noopener">Library Search</Link> for books, articles, and more.
             </span>
           </p>
         </div>
