@@ -769,15 +769,15 @@ const categoriesJson = JSON.stringify(categories);
   }
 
   
-  #specialist-thead-row > *{
-    padding: 0.75rem 0;
-    position: relative;
-    vertical-align: top;
-  }
-  #specialist-thead-row > * + * {
+  :global(#specialist-thead-row > *) {
+  padding: 0.75rem 0;
+  position: relative;
+  vertical-align: top;
+}
+
+  :global(#specialist-thead-row > * + *) {
     padding-left: 2rem;
   }
-
 
   .switch-label {
     font-size: 0.675rem;
@@ -869,10 +869,6 @@ const categoriesJson = JSON.stringify(categories);
       table-layout: auto;
     }
 
-    :global(.specialist-category-cell) {
-      display: none !important;
-    }
-    
     :global(.specialist-name-cell) {
       font-weight: 600;
       padding-top: 1rem !important;
