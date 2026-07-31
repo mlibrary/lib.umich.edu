@@ -19,16 +19,21 @@ import squirrelImage from '../images/squirrel.png';
       <slot />
     </p>
   </div>
-
-  <Image
-    src={squirrelImage}
-    alt=""
-    width={920}
-    class="no-results-image"
-  />
+  <div class="squirrel-image-wrapper">
+    <Image
+      src={squirrelImage}
+      alt=""
+      width={526}
+      class="no-results-image"
+    />
+  </div>
 </div>
 
 <style>
+  .squirrel-image-wrapper{
+    max-width: 16rem;
+  }
+  
   .no-results {
     margin-bottom: var(--spacing-4xl);
     margin-top: var(--spacing-2xl);
