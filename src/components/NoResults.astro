@@ -32,14 +32,19 @@ import squirrelImage from '../images/squirrel.png';
 <style>
   .squirrel-image-wrapper{
     max-width: 16rem;
+    margin: 0 auto;
   }
-  
+
   .no-results {
     margin-bottom: var(--spacing-4xl);
     margin-top: var(--spacing-2xl);
   }
 
   @media (--bp-2xl-up) {
+    .squirrel-image-wrapper {
+      margin: 0;
+    }
+
     .no-results {
       align-items: end;
       display: grid;

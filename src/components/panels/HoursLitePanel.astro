@@ -21,11 +21,10 @@ if (data.relationships?.field_cards) {
 
 const processedCards = cards.map((card: any) => {
   if (!card) return null;
-  
   return {
     id: card.id,
     title: card.field_title || card.title,
-    slug: `/locations-and-hours/${card.field_slug || card.title?.toLowerCase().replace(/\s+/g, '-') || 'location'}`,
+    slug: `${card.fields.slug}`,
     relationships: card.relationships || {}
   };
 }).filter(Boolean);
