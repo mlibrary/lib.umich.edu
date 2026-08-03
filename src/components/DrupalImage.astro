@@ -18,7 +18,7 @@ interface Props {
   height?: number;
   /** Optional cap to match Gatsby gatsbyImageData width behavior */
   maxWidth?: number;
-  /** sizes attribute defaulting to gatsby sizes */
+  /** Optional sizes attribute; defaults to constrained Gatsby behavior */
   sizes?: string;
   loading?: 'lazy' | 'eager';
   class?: string;
@@ -30,7 +30,7 @@ const {
   width = 920,
   height = 600,
   maxWidth,
-  sizes = '(min-width: 920px) 920px, 100vw',
+  sizes,
   loading = 'lazy',
   class: className,
 } = Astro.props;
@@ -43,6 +43,7 @@ const outputWidth = shouldCapWidth ? Number(maxWidth) : intrinsicWidth;
 const outputHeight = shouldCapWidth
   ? Math.max(1, Math.round(intrinsicHeight * (Number(maxWidth) / intrinsicWidth)))
   : intrinsicHeight;
+const resolvedSizes = sizes || `(min-width: ${outputWidth}px) ${outputWidth}px, 100vw`;
 
 const wrapperClassName = className
   ? `gatsby-image-wrapper ${className}`
@@ -58,7 +59,7 @@ const wrapperClassName = className
       height={outputHeight}
       format="webp"
       quality={75}
-      sizes={sizes}
+      sizes={resolvedSizes}
       loading={loading}
       decoding="async"
       class={className}
