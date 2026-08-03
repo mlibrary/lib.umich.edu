@@ -22,6 +22,7 @@ interface Props {
   sizes?: string;
   loading?: 'lazy' | 'eager';
   class?: string;
+  fillContainerHeight?: boolean;
 }
 
 const {
@@ -33,6 +34,7 @@ const {
   sizes,
   loading = 'lazy',
   class: className,
+  fillContainerHeight = false,
 } = Astro.props;
 
 const intrinsicWidth = Number(width) > 0 ? Number(width) : 920;
@@ -44,6 +46,9 @@ const outputHeight = shouldCapWidth
   ? Math.max(1, Math.round(intrinsicHeight * (Number(maxWidth) / intrinsicWidth)))
   : intrinsicHeight;
 const resolvedSizes = sizes || `(min-width: ${outputWidth}px) ${outputWidth}px, 100vw`;
+const wrapperStyle = fillContainerHeight
+  ? 'aspect-ratio: auto; height: 100%;'
+  : `aspect-ratio: ${outputWidth} / ${outputHeight};`;
 
 const wrapperClassName = className
   ? `gatsby-image-wrapper ${className}`
@@ -51,7 +56,7 @@ const wrapperClassName = className
 ---
 
 {src && (
-  <span class={wrapperClassName} style={`aspect-ratio: ${outputWidth} / ${outputHeight};`}>
+  <span class={wrapperClassName} style={wrapperStyle}>
     <Image
       src={src}
       alt={alt}

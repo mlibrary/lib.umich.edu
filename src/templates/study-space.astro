@@ -86,6 +86,8 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
             alt={imageAlt}
             width={imageRelationship?.imageWidth || 920}
             height={imageRelationship?.imageHeight || 614}
+            maxWidth={920}
+            fillContainerHeight={true}
             loading="lazy"
           />
         </div>
@@ -201,15 +203,12 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     .study-header-image {
       margin: 0;
       max-width: 450px;
+      position: relative;
+      overflow: hidden;
     }
 
     .study-header-image img {
       position: absolute;
-    }
-
-    .study-header-image {
-      position: relative;
-      overflow: hidden;
     }
   }
 
@@ -279,7 +278,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
 
   @media (--bp-content-up) {
     .find-another-link {
-      margin-top: 1.5rem;
+      margin-top: auto;
       margin-bottom: 2rem;
     }
   }
