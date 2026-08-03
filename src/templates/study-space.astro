@@ -110,7 +110,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
       </div>
     </TemplateSide>
 
-    <TemplateContent style="margin-right: 0 !important">
+    <TemplateContent class="study-template-content">
       <div class="study-content">
         <Heading level={2} size="M" class="about-heading">
           About the space
@@ -166,6 +166,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     margin-bottom: 2rem;
   }
 
+  /* stylelint-disable selector-pseudo-class-no-unknown */
   .back-link-container :global(.back-arrow) {
     color: var(--color-teal-400);
     margin-right: 0.25rem;
@@ -252,7 +253,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
   }
 
   @media (--bp-content-up) {
-    .study-content {
+    :global(.study-template-content) {
       padding-left: 6rem;
     }
   }
@@ -275,11 +276,11 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     transform: rotate(180deg);
     display: inline-block;
   }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
 
   @media (--bp-content-up) {
     .find-another-link {
       margin-top: auto;
-      margin-bottom: 2rem;
     }
   }
 </style>
