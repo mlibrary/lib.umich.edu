@@ -16,8 +16,9 @@ interface Props {
 }
 
 const { items, ...rest } = Astro.props;
-
-const shouldRenderNav = Array.isArray(items) && items.length > 1;
+if (!items) {
+  return null;
+}
 
 // Get current path for active link detection
 const currentPath = Astro.url.pathname;
@@ -30,33 +31,29 @@ function isActive(to: string): boolean {
 }
 ---
 
-{shouldRenderNav ? (
-  <nav aria-label="Local" {...rest}>
-    <div class="horizontal-navigation">
-      <Margins>
-        <ol>
-          {
-            items.map(({ to, text }) => (
-              <li>
-                <a href={to} class:list={["nav-link", { active: isActive(to) }]}>
-                  {text}
-                </a>
-              </li>
-            ))
-          }
-        </ol>
-      </Margins>
-    </div>
-  </nav>
-) : (
-  <div class="horizontal-navigation-spacer" aria-hidden="true"></div>
-)}
+
+<nav aria-label="Local" {...rest}>
+  <div class="horizontal-navigation">
+    <Margins>
+      <ol>
+        {
+          items.map(({ to, text }) => (
+            <li>
+              <a href={to} class:list={["nav-link", { active: isActive(to) }]}>
+                {text}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </Margins>
+  </div>
+</nav>
 
 <style>
   nav {
     background: var(--color-blue-100);
     border-bottom: solid 1px var(--color-neutral-100);
-    border-top: 1px solid var(--color-neutral-100, #e0e0e0);
     margin-bottom: 2rem;
     z-index: 1;
   }

@@ -35,5 +35,5 @@ export default function processHorizontalNavigationData ({
     ? createNavItems(currentNode, childrenNodeOrderByDrupalId, childrenNodes)
     : createNavItems(parentNode, parentNodeOrderByDrupalId, parentNodes);
 
-  return items.length > 1 ? items : [];
+  return items.length > 0 ? items : [];
 }

@@ -29,9 +29,13 @@ const {
     padding-bottom: 2.5rem;
   }
   
-  @media (--bp-2xl-up) {
+  @media (--bp-md-up) {
     .template-side {
       grid-area: side;
+    }
+    
+    .template-side[data-content-side="right"]{
+      margin-right: 3rem;
     }
   }
 
