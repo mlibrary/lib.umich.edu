@@ -72,19 +72,14 @@ const { title } = Astro.props;
     </aside>
 
     <script>
-      // Focus management: move focus to the page heading on every page load,
-      // including the initial load. This matches Gatsby's onRouteUpdate behavior
-      // (gatsby-browser.js) which focuses the heading whenever the path changes,
-      // including the first render when prevLocation is null.
-      document.addEventListener('astro:page-load', () => {
-        const dataPageHeading = document.querySelector('[data-page-heading]') as HTMLElement | null;
-        const h1 = document.querySelector('h1') as HTMLElement | null;
-        const pageHeading = (dataPageHeading ?? h1) as HTMLElement | null;
+      document.addEventListener("DOMContentLoaded", () => {
+        const pageHeading =
+          document.querySelector("[data-page-heading]") ??
+          document.querySelector("h1");
 
-        console.log(pageHeading);
-        if (pageHeading) {
-          pageHeading.setAttribute('tabindex', '-1');
-          pageHeading.classList.add('focus');
+        if (pageHeading instanceof HTMLElement) {
+          pageHeading.tabIndex = -1;
+          pageHeading.classList.add("focus");
           pageHeading.focus();
         }
       });

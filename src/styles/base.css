@@ -39,7 +39,6 @@ a{
 }
 
 *:focus {
-  outline-color: var(--color-blue-400);
 }
 
 /* Page heading focus styling */
