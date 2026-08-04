@@ -371,11 +371,21 @@ function processHtml(rawHtml: string): string {
       nextAttrs = `${nextAttrs} data-umich-lib-callout`;
     }
 
-    if (!/\bumich-lib-alert\b/.test(classes) || !alertIconSvg || /\bumich-alert-icon\b/.test(content)) {
+    if (!/\bumich-lib-alert\b/.test(classes)) {
       return `<p${nextAttrs}>${content}</p>`;
     }
 
-    return `<p${nextAttrs}>${alertIconSvg}${content}</p>`;
+    if (!alertIconSvg || /\bumich-alert-icon\b/.test(content)) {
+      return `<div${nextAttrs}><div class="umich-alert-content">${content}</div></div>`;
+    }
+
+    const nextAttrsWithIcon = /\bclass="([^"]*)"/i.test(nextAttrs)
+      ? nextAttrs.replace(/\bclass="([^"]*)"/i, (_classMatch, classValue) => {
+          return `class="${classValue} umich-alert-with-icon"`;
+        })
+      : `${nextAttrs} class="umich-alert-with-icon"`;
+
+    return `<div${nextAttrsWithIcon}>${alertIconSvg}<div class="umich-alert-content">${content}</div></div>`;
   });
 
   // Gatsby html.js maps <p class="umich-lib-cta"> to <CallToAction> which prepends
