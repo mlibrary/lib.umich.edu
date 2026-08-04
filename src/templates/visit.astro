@@ -86,9 +86,7 @@ const sortedAmenities = [...fieldAmenities].sort((a, b) => a.weight - b.weight);
     />
   </header>
 
-  {navigationItems.length > 0 && (
-    <HorizontalNavigation items={navigationItems} />
-  )}
+  <HorizontalNavigation items={navigationItems} />
 
   <section aria-label="Hours, parking, and amenities">
     <AsideLayout>
@@ -158,7 +156,9 @@ const sortedAmenities = [...fieldAmenities].sort((a, b) => a.weight - b.weight);
 </TemplateLayout>
 
 <style>
+  /* stylelint-disable selector-pseudo-class-no-unknown */
   .full-panels-wrapper :global(section:nth-of-type(odd)) {
     background: var(--color-blue-100);
   }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
 </style>
