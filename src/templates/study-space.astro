@@ -104,7 +104,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
   </div>
 
   <AsideLayout asideWidth="24rem" contentSide="right">
-    <TemplateSide contentSide="right">
+    <TemplateSide class="study-space-template-side" contentSide="right">
       <div class="study-aside-inner">
         <LocationAside node={node} isStudySpaceAside={true} />
       </div>
@@ -180,6 +180,12 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     margin-bottom: 3rem;
   }
 
+  @media (--bp-content-up){
+    .study-space-template-side{
+      margin-right: 0 !important;
+    }
+  }
+
   @media (--bp-md-up) {
     .study-header {
       flex-direction: row;
@@ -191,6 +197,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
   .study-header-image {
     flex: 0 1 50%;
     margin: 0 -1rem;
+    min-height: 200px;
   }
 
   .study-header-image img {
@@ -231,6 +238,7 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
   }
 
   .study-summary {
+    max-width: 38rem;
     font-size: 1.125rem;
     line-height: 1.6;
     margin-bottom: 2rem;
