@@ -97,7 +97,7 @@ const { bodyPanels, fullPanels } = transformNodePanels({ node });
 ---
 
 <TemplateLayout node={node} title={title || fieldTitleContext}>
-  <Template variant="basic" hasSide={!!fieldLocalNavigation}>
+  <Template variant="basic" hasSide={!!fieldLocalNavigation} contentSide="right">
     <TemplateTop>
       <Breadcrumb data={breadcrumbData} />
     </TemplateTop>
