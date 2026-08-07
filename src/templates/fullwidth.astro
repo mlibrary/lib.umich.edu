@@ -7,54 +7,25 @@ import TemplateLayout from '../components/TemplateLayout.astro';
 import Margins from '../components/Margins.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Heading from '../reusable/Heading.astro';
-import HorizontalNavigation from '../components/navigation/HorizontalNavigation.astro';
 import Html from '../components/Html.astro';
 import Panels from '../components/panels/Panels.astro';
 import transformNodePanels from '../utils/transform-node-panels';
-import buildHorizontalNavigation from '../utils/build-horizontal-navigation';
 
 interface Props {
 	node: any;
 	title?: string;
 	breadcrumb?: string;
-	parents?: any[];
-	children?: any[];
-	parentIds?: string[];
-	childIds?: string[];
 }
 
-const {
-	node,
-	title,
-	breadcrumb,
-	parents = [],
-	children = [],
-	parentIds = [],
-	childIds = []
-} = Astro.props as Props;
+const { node, title, breadcrumb } = Astro.props as Props;
 
 if (!node) {
 	throw new Error('Fullwidth template: no node data available');
 }
 
-const {
-	field_title_context: fieldTitleContext,
-	field_root_page_: fieldRootPage,
-	body
-} = node.attributes || {};
+const { field_title_context: fieldTitleContext, body } = node.attributes || {};
 
-const parentNode = node.relationships?.field_parent_page?.[0];
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
-
-const navigationItems = buildHorizontalNavigation({
-	node,
-	isRootPage: Boolean(fieldRootPage),
-	parentNode,
-	parentIds,
-	parents,
-	childIds,
-	children
-});
 
 const hasFullPanels = fullPanels.length > 0;
 const pageTitle = title || fieldTitleContext;
@@ -71,8 +42,6 @@ const pageTitle = title || fieldTitleContext;
 			{fieldTitleContext}
 		</Heading>
 	</Margins>
-
-	<HorizontalNavigation items={navigationItems} />
 
 	{body && (
 		<Margins
