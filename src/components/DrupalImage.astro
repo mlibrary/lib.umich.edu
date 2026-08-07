@@ -46,8 +46,11 @@ const outputHeight = shouldCapWidth
   ? Math.max(1, Math.round(intrinsicHeight * (Number(maxWidth) / intrinsicWidth)))
   : intrinsicHeight;
 const resolvedSizes = sizes || `(min-width: ${outputWidth}px) ${outputWidth}px, 100vw`;
+// Keep the intrinsic aspect-ratio as a fallback so the wrapper still reserves
+// real height when `height: 100%` can't resolve (e.g. an indefinite-height
+// flex ancestor on mobile), matching GatsbyImage's self-contained sizing.
 const wrapperStyle = fillContainerHeight
-  ? 'aspect-ratio: auto; height: 100%;'
+  ? `aspect-ratio: ${outputWidth} / ${outputHeight}; height: 100%;`
   : `aspect-ratio: ${outputWidth} / ${outputHeight};`;
 
 const wrapperClassName = className
