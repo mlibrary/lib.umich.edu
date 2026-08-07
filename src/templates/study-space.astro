@@ -260,6 +260,10 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     height: 100%;
   }
 
+  .study-content :global(.prose) {
+    flex: 1 1 auto;
+  }
+
   @media (--bp-content-up) {
     :global(.study-template-content) {
       padding-left: 6rem;
@@ -286,7 +290,4 @@ const findStudySpaceURL = '/visit-and-study/study-spaces/find-study-space';
     display: inline-block;
   }
   /* stylelint-enable selector-pseudo-class-no-unknown */
-
-  @media (--bp-content-up) {
-  }
 </style>

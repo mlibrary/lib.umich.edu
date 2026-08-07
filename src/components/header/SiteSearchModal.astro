@@ -1,14 +1,14 @@
 ---
 /**
- * Site Search Modal for Astro
- * Provides a modal dialog with live search results using Lunr.js
+ * Site Search Modal for Astro (mobile/small screen)
+ *
+ * Thin wrapper around SiteSearch, mirroring Gatsby's site-search-modal.js
+ * which renders the same SiteSearch component inside a <dialog>.
  */
 
 import Icon from "../../reusable/Icon.astro";
-import Link from '../../reusable/Link.astro';
+import SiteSearch from "../SiteSearch.astro";
 ---
-
-<script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
 
 <div id="site-search-modal-container">
   <!-- Search Button -->
@@ -17,6 +17,7 @@ import Link from '../../reusable/Link.astro';
     type="button"
     class="search-trigger"
     aria-label="Search this site"
+    data-site-search-ignore-outside-click
   >
     <Icon icon="search" size={32} />
     <span class="visually-hidden">Search this site</span>
@@ -31,98 +32,9 @@ import Link from '../../reusable/Link.astro';
   >
     <div class="search-modal-content">
       <h2 id="search-modal-title" class="visually-hidden">Search this site</h2>
-      <div class="search-form-container">
-        <form id="search-form" class="search-form">
-          <div class="search-input-wrapper">
-            <Icon icon="search" size={20} class="search-input-icon-mobile" />
-            <label for="modal-search-input" class="search-label">
-              <span class="visually-hidden"
-                >Search this site. To access results, tab to navigate, enter to
-                select, esc to dismiss.</span
-              >
-              <input
-                type="search"
-                id="modal-search-input"
-                placeholder="Search this site"
-                autocomplete="off"
-                class="search-input"
-              />
-            </label>
-          </div>
-        </form>
-      </div>
-
-      <!-- Results Container -->
-      <div
-        id="search-results-container"
-        class="search-results-container"
-        hidden
-      >
-        <!-- Screen reader status -->
-        <div
-          class="visually-hidden"
-          role="status"
-          aria-live="polite"
-          id="search-status"
-        >
-        </div>
-
-        <!-- Keyboard instructions -->
-        <div class="keyboard-instructions" aria-hidden="true">
-          <kbd>tab</kbd> to navigate, <kbd>enter</kbd> to select, <kbd>esc</kbd> to
-          dismiss
-        </div>
-
-        <!-- Results list -->
-        <div id="search-results" class="search-results"></div>
-
-        <!-- No results message -->
-        <div id="no-results" class="no-results" hidden>
-          <p class="no-results-text">
-            <span class="no-results-label"
-              >No results found for: <strong id="search-query-display"
-              ></strong></span
-            >
-            <span class="no-results-suggestion">
-              Try <Link
-                kind="light-blue"
-                href="https://search.lib.umich.edu/everything?utm_source=lib-site-search"
-                target="_blank"
-                rel="noopener">Library Search</Link> for books, articles, and more.
-            </span>
-          </p>
-        </div>
-
-        <!-- Error message -->
-        <div id="search-error" class="search-error" hidden></div>
-      </div>
+      <SiteSearch label="Search this site" />
     </div>
   </dialog>
-
-  <template id="library-search-template">
-    <li class="search-result-item">
-      <a class="library-search-option" target="_blank" rel="noopener">
-        <Icon icon="search" size={24} class="library-search-icon" />
-        <p class="library-search-query">
-          <span class="visually-hidden">Search: </span>
-          <span class="query-text"></span>
-        </p>
-        <span class="library-search-badge">Find materials</span>
-      </a>
-    </li>
-  </template>
-
-  <template id="search-result-template">
-    <li class="search-result-item">
-      <a class="search-result-link">
-        <p class="search-result-title">
-          <span class="result-title"></span>
-          <span class="search-result-tag result-tag" hidden>● <span class="tag-text"></span></span>
-        </p>
-        <p class="search-result-summary result-summary" hidden></p>
-      </a>
-    </li>
-  </template>
 </div>
 
 <style>
@@ -138,21 +50,7 @@ import Link from '../../reusable/Link.astro';
     justify-content: center;
   }
 
-  .search-trigger .search-icon {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
-  }
-
   /* Modal styles */
-  .search-label {
-    width: 100%;
-  }
-
-  .query-text {
-    font-size: 1.125rem;
-  }
-
   .search-modal {
     border: 0;
     border-radius: 2px;
@@ -168,7 +66,7 @@ import Link from '../../reusable/Link.astro';
   }
 
   .search-modal::backdrop {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgb(0 0 0 / 60%);
   }
 
   .search-modal[open] {
@@ -178,218 +76,6 @@ import Link from '../../reusable/Link.astro';
   .search-modal-content {
     background: white;
     border-radius: 2px;
-    overflow: hidden;
-  }
-
-  /* Search form styles */
-  .search-form-container {
-    position: relative;
-  }
-
-  .search-form {
-    margin: 0;
-    padding: 0;
-  }
-
-  .search-input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  :global(.search-input-icon-mobile) {
-    position: absolute;
-    left: 1.5rem;
-    color: var(--color-neutral-300);
-    font-size: 20px;
-    z-index: 1;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 0.75rem 1.5rem 0.75rem 3.5rem;
-    border: none;
-    font-size: 1rem;
-    font-family: inherit;
-    background: white;
-    outline: none;
-    border-radius: 2px;
-  }
-
-  .search-input::placeholder {
-    color: var(--color-neutral-300);
-  }
-
-  /* Results container styles */
-  .search-results-container {
-    background: white;
-    border-top: solid 1px var(--color-neutral-100);
-    max-height: 70vh;
-    overflow-y: auto;
-  }
-
-  /* Keyboard instructions */
-  .keyboard-instructions {
-    background: var(--color-blue-100);
-    border-bottom: solid 1px var(--color-neutral-100);
-    color: var(--color-neutral-300);
-    padding: 0.75rem 1.5rem;
-    margin: 0;
-    font-size: 0.875rem;
-  }
-
-  .keyboard-instructions kbd {
-    background: white;
-    border: solid 1px var(--color-neutral-200);
-    border-radius: 4px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
-    display: inline-block;
-    font-family: monospace;
-    font-size: 0.85rem;
-    padding: 0 0.25rem;
-  }
-
-  /* Results list styles */
-  :global(.search-results-list) {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  :global(.search-result-item) {
-    border-bottom: solid 1px var(--color-neutral-100);
-  }
-
-  :global(.search-result-item:last-child) {
-    border-bottom: none;
-  }
-
-  .search-result-link {
-    display: block;
-    padding: 1rem 1.5rem;
-  }
-
-  :global(.search-result-link:hover),
-  :global(.search-result-link:focus) {
-    background: var(--color-teal-100);
-    border-left: solid 4px var(--color-teal-400);
-    padding-left: calc(1.5rem - 4px);
-    outline: none;
-  }
-
-  :global(.search-result-link:hover .search-result-title),
-  :global(.search-result-link:focus .search-result-title) {
-    text-decoration: underline;
-  }
-
-  .search-result-title {
-    font-size: 1.125rem;
-  }
-
-  :global(.search-result-tag) {
-    color: var(--color-neutral-300);
-    font-size: 0.875rem;
-    font-weight: bold;
-    letter-spacing: 0.0875em;
-    text-transform: uppercase;
-    margin-left: 0.5rem;
-  }
-
-  :global(.search-result-summary) {
-    color: var(--color-neutral-300);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  :global(.search-result-highlight) {
-    background: var(--color-maize-200);
-    font-weight: 700;
-  }
-
-  :global(.search-result-summary .search-result-highlight) {
-    background: none;
-    font-weight: 600;
-  }
-
-  /* Library search option */
-  :global(.library-search-option) {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 0.75rem;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  :global(.library-search-option:hover),
-  :global(.library-search-option:focus) {
-    background: var(--color-teal-100);
-    border-left: solid 4px var(--color-teal-400);
-    padding-left: calc(-4px + 1.5rem);
-    outline: none;
-  }
-
-  :global(.library-search-option:hover .library-search-query),
-  :global(.library-search-option:focus .library-search-query) {
-    text-decoration: underline;
-  }
-
-  :global(.library-search-icon) {
-    color: var(--color-neutral-300);
-    font-size: 24px;
-  }
-
-  :global(.library-search-query) {
-    font-size: 0.875rem;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  :global(.library-search-badge) {
-    display: inline-block;
-    font-size: 0.875rem;
-    font-weight: 800;
-    letter-spacing: 1.25px;
-    text-transform: uppercase;
-    background: var(--color-blue-100);
-    border: solid 1px var(--color-neutral-100);
-    border-radius: 4px;
-    padding: 0px 0.25rem;
-  }
-
-  /* No results styles */
-  .no-results {
-    padding: 1.5rem;
-    color: var(--color-neutral-300);
-  }
-
-  .no-results-label {
-    display: block;
-    font-size: 0.875rem;
-    color: var(--color-neutral-400);
-    margin-bottom: 0.5rem;
-  }
-
-  .no-results-suggestion {
-    display: block;
-  }
-
-  .no-results a {
-    color: var(--color-teal-400);
-  }
-
-  /* Error styles */
-  .search-error {
-    padding: 1rem 1.5rem;
-    background: var(--color-red-100);
-    border-left: solid 4px var(--color-red-400);
-    color: var(--color-red-900);
   }
 
   /* Visually hidden utility */
@@ -406,36 +92,50 @@ import Link from '../../reusable/Link.astro';
   }
 
   /* Prevent body scroll when modal is open */
-  body.modal-open {
+  :global(body.modal-open) {
     overflow: hidden;
   }
 
-  /* Media queries */
-  @media (--bp-content-up) {
-    .search-results-container {
-      width: calc(100% + 12rem);
-    }
+  /* Adjust the nested SiteSearch component to fit the modal context.
+     Keep the results popover's own absolute positioning (it's already
+     anchored below the input); only widen it to match the full-width
+     modal input instead of the header's narrower search box. */
+  .search-modal-content :global(.site-search-container) {
+    flex-basis: auto;
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .search-modal-content :global(.site-search-form) {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .search-modal-content :global(.site-search-input) {
+    border: none;
+    padding: 0.75rem 1.5rem 0.75rem 3.5rem;
+  }
+
+  .search-modal-content :global([style*="left: 0.5rem"]) {
+    left: 1.5rem !important;
+  }
+
+  .search-modal-content :global(.search-popover) {
+    border-left: none;
+    border-radius: 0;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: none;
+    width: 100%;
   }
 </style>
 
 <script>
-  // Site Search Modal functionality
+  // Site Search Modal functionality — dialog open/close only.
+  // Search behavior itself lives in the shared SiteSearch component.
   class SiteSearchModal {
     modal: HTMLDialogElement | null = null;
     trigger: HTMLButtonElement | null = null;
-    input: HTMLInputElement | null = null;
-    resultsContainer: HTMLElement | null = null;
-    results: HTMLElement | null = null;
-    noResults: HTMLElement | null = null;
-    searchError: HTMLElement | null = null;
-    status: HTMLElement | null = null;
-    queryDisplay: HTMLElement | null = null;
-    form: HTMLFormElement | null = null;
-    librarySearchTemplate: HTMLTemplateElement | null = null;
-    searchResultTemplate: HTMLTemplateElement | null = null;
-    currentQuery = "";
-    searchResults: any[] = [];
-    lunrIndex: any = null;
 
     constructor() {
       this.modal = document.getElementById(
@@ -444,407 +144,48 @@ import Link from '../../reusable/Link.astro';
       this.trigger = document.getElementById(
         "search-modal-trigger",
       ) as HTMLButtonElement | null;
-      this.input = document.getElementById(
-        "modal-search-input",
-      ) as HTMLInputElement | null;
-      this.resultsContainer = document.getElementById(
-        "search-results-container",
-      ) as HTMLElement | null;
-      this.results = document.getElementById(
-        "search-results",
-      ) as HTMLElement | null;
-      this.noResults = document.getElementById(
-        "no-results",
-      ) as HTMLElement | null;
-      this.searchError = document.getElementById(
-        "search-error",
-      ) as HTMLElement | null;
-      this.status = document.getElementById(
-        "search-status",
-      ) as HTMLElement | null;
-      this.queryDisplay = document.getElementById(
-        "search-query-display",
-      ) as HTMLElement | null;
-      this.form = document.getElementById(
-        "search-form",
-      ) as HTMLFormElement | null;
-      this.librarySearchTemplate = document.getElementById(
-        "library-search-template",
-      ) as HTMLTemplateElement | null;
-      this.searchResultTemplate = document.getElementById(
-        "search-result-template",
-      ) as HTMLTemplateElement | null;
 
-      if (
-        !this.modal ||
-        !this.trigger ||
-        !this.input ||
-        !this.resultsContainer ||
-        !this.results ||
-        !this.noResults ||
-        !this.searchError ||
-        !this.status ||
-        !this.queryDisplay ||
-        !this.form ||
-        !this.librarySearchTemplate ||
-        !this.searchResultTemplate
-      ) {
+      if (!this.modal || !this.trigger) {
         return;
       }
 
-      this.init();
-    }
-
-    init() {
-      // Wait for lunr to load, then load the search index.
-      this.waitForLunr().then(() => {
-        this.setupEventListeners();
-      });
-    }
-
-    async waitForLunr() {
-      while (!(window as any).lunr) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-
-      try {
-        const response = await fetch("/search_index.json");
-
-        if (!response.ok) {
-          throw new Error(`Failed to load search index: ${response.status}`);
-        }
-
-        const searchData = await response.json();
-        const lunr = (window as any).lunr;
-
-        if (searchData.en && searchData.en.index && searchData.en.store) {
-          this.lunrIndex = {
-            index: lunr.Index.load(searchData.en.index),
-            store: searchData.en.store,
-          };
-          return;
-        }
-
-        if (searchData.index && searchData.store) {
-          this.lunrIndex = {
-            index: lunr.Index.load(searchData.index),
-            store: searchData.store,
-          };
-          return;
-        }
-
-        const pages = Object.entries(searchData).map(([key, value]) => ({
-          id: key,
-          ...(value as Record<string, unknown>),
-        }));
-
-        const index = lunr(function () {
-          this.ref("id");
-          this.field("title", { boost: 10 });
-          this.field("summary");
-          this.field("tag", { boost: 2 });
-
-          pages.forEach((page) => {
-            this.add(page);
-          });
-        });
-
-        const store: Record<string, unknown> = {};
-        pages.forEach((page) => {
-          store[page.id] = searchData[page.id];
-        });
-
-        this.lunrIndex = {
-          index,
-          store,
-        };
-      } catch (error) {
-        console.error("Failed to load search index:", error);
-        this.displayError(
-          error instanceof Error
-            ? error.message
-            : "Failed to load search index",
-        );
-      }
+      this.setupEventListeners();
     }
 
     setupEventListeners() {
-      // Open modal
-      this.trigger.addEventListener("click", () => this.openModal());
+      this.trigger!.addEventListener("click", () => this.openModal());
 
-      // Close modal on backdrop click
-      this.modal.addEventListener("click", (e) => {
+      this.modal!.addEventListener("click", (e) => {
         if (e.target === this.modal) {
           this.closeModal();
         }
       });
 
-      // Handle escape key
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && this.modal.open) {
+        if (e.key === "Escape" && this.modal!.open) {
           this.closeModal();
-        }
-      });
-
-      // Handle search input (live search as user types)
-      this.input.addEventListener("input", () => {
-        this.handleSearch(this.input?.value ?? "");
-      });
-
-      // Prevent form submission - we only want live search
-      const form = document.getElementById("search-form");
-      if (form) {
-        form.addEventListener("submit", (e) => {
-          e.preventDefault();
-          // Focus stays on input for continued typing
-          this.input.focus();
-        });
-      }
-
-      // Prevent enter key from submitting form or navigating
-      this.input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          // If there are results, focus the first result link
-          const firstResult = this.results.querySelector<HTMLElement>(
-            ".search-result-link, .library-search-option",
-          );
-          firstResult?.focus();
         }
       });
     }
 
     openModal() {
       document.body.classList.add("modal-open");
-      this.modal.showModal();
-      // Focus the input after a brief delay to ensure modal is rendered
-      setTimeout(() => {
-        this.input.focus();
-      }, 10);
+      this.modal!.showModal();
+      const input =
+        this.modal!.querySelector<HTMLInputElement>(".site-search-input");
+      setTimeout(() => input?.focus(), 10);
     }
 
     closeModal() {
       document.body.classList.remove("modal-open");
-      this.modal.close();
-    }
-
-    cleanQueryForLunr(str) {
-      // Remove quotation marks to prevent search errors
-      return str.replace(/['"]+/g, "");
-    }
-
-    async handleSearch(query) {
-      const cleanQuery = this.cleanQueryForLunr(query.trim());
-      this.currentQuery = cleanQuery;
-
-      if (!cleanQuery) {
-        this.clearResults();
-        return;
-      }
-
-      if (!this.lunrIndex) {
-        console.warn("Lunr index not available yet");
-        return;
-      }
-
-      try {
-        // Perform the search with multiple query strategies
-        const searchResults = this.lunrIndex.index.query((queryBuilder) => {
-          const lunr = (window as any).lunr;
-          // Exact term match with highest boost
-          queryBuilder.term(lunr.tokenizer(cleanQuery), { boost: 3 });
-
-          // Trailing wildcard with medium boost
-          queryBuilder.term(lunr.tokenizer(cleanQuery), {
-            boost: 2,
-            wildcard: lunr.Query.wildcard.TRAILING,
-          });
-
-          // Leading and trailing wildcard for longer queries
-          if (cleanQuery.length > 2) {
-            queryBuilder.term(lunr.tokenizer(cleanQuery), {
-              wildcard:
-                lunr.Query.wildcard.TRAILING | lunr.Query.wildcard.LEADING,
-            });
-          }
-        });
-
-        // Map results to include page data
-        this.searchResults = searchResults.map(({ ref }) => {
-          const pageData = this.lunrIndex.store[ref];
-          return {
-            ...pageData,
-            slug: ref.split(" /")[1], // Extract slug from ref
-          };
-        });
-
-        this.displayResults();
-        this.clearError();
-      } catch (error) {
-        console.error("Search error:", error);
-        this.displayError(error.message || "An error occurred while searching");
-      }
-    }
-
-    displayResults() {
-      const hasResults = this.searchResults.length > 0;
-      const isSearching = this.currentQuery.length > 0;
-
-      // Show/hide results container
-      if (isSearching) {
-        this.resultsContainer.hidden = false;
-      } else {
-        this.resultsContainer.hidden = true;
-        return;
-      }
-
-      // Update status for screen readers
-      if (hasResults) {
-        const resultText = `${this.searchResults.length} result${this.searchResults.length > 1 ? "s" : ""}`;
-        this.status.textContent = resultText;
-        this.noResults.hidden = true;
-      } else {
-        this.status.textContent = "No results found";
-        this.noResults.hidden = false;
-        this.queryDisplay.textContent = this.currentQuery;
-      }
-
-      // Generate results HTML
-      if (hasResults) {
-        this.results.innerHTML = this.generateResultsHTML();
-      } else {
-        this.results.innerHTML = "";
-      }
-    }
-
-    generateResultsHTML() {
-      const librarySearchOption = this.generateLibrarySearchOption();
-      const siteResults = this.searchResults
-        .slice(0, 100) // Limit to 100 results
-        .map((result) => this.generateResultHTML(result))
-        .join("");
-
-      return `
-        <ol class="search-results-list">
-          ${librarySearchOption}
-          ${siteResults}
-        </ol>
-      `;
-    }
-
-    generateLibrarySearchOption() {
-      if (!this.librarySearchTemplate) {
-        return "";
-      }
-
-      const encodedQuery = encodeURIComponent(this.currentQuery);
-      const clone = this.librarySearchTemplate.content.cloneNode(
-        true,
-      ) as DocumentFragment;
-      const link = clone.querySelector(".library-search-option") as HTMLAnchorElement | null;
-      const queryText = clone.querySelector(".query-text") as HTMLElement | null;
-
-      if (!link || !queryText) {
-        return "";
-      }
-
-      link.href = `https://search.lib.umich.edu/everything?query=${encodedQuery}&utm_source=lib-site-search`;
-      queryText.textContent = this.currentQuery;
-
-      const wrapper = document.createElement("div");
-      wrapper.appendChild(clone);
-      return wrapper.innerHTML;
-    }
-
-    generateResultHTML(result) {
-      if (!this.searchResultTemplate) {
-        return "";
-      }
-
-      const highlightedTitle = this.highlightText(
-        result.title || "",
-        this.currentQuery,
-      );
-      const highlightedSummary = result.summary
-        ? this.highlightText(result.summary, this.currentQuery)
-        : "";
-
-      const clone = this.searchResultTemplate.content.cloneNode(
-        true,
-      ) as DocumentFragment;
-      const link = clone.querySelector(".search-result-link") as HTMLAnchorElement | null;
-      const resultTitle = clone.querySelector(".result-title") as HTMLElement | null;
-      const resultTag = clone.querySelector(".result-tag") as HTMLElement | null;
-      const tagText = clone.querySelector(".tag-text") as HTMLElement | null;
-      const resultSummary = clone.querySelector(".result-summary") as HTMLElement | null;
-
-      if (!link || !resultTitle || !resultTag || !tagText || !resultSummary) {
-        return "";
-      }
-
-      link.href = `/${result.slug}`;
-      link.setAttribute("onclick", "document.body.classList.remove('modal-open');");
-      resultTitle.innerHTML = highlightedTitle;
-
-      if (result.tag) {
-        resultTag.hidden = false;
-        tagText.textContent = result.tag;
-      }
-
-      if (highlightedSummary) {
-        resultSummary.hidden = false;
-        resultSummary.innerHTML = highlightedSummary;
-      }
-
-      const wrapper = document.createElement("div");
-      wrapper.appendChild(clone);
-      return wrapper.innerHTML;
-    }
-
-    highlightText(text, query) {
-      if (!query || !text) return this.escapeHtml(text);
-
-      // Split query into words and escape for regex
-      const words = query
-        .split(/\s+/)
-        .map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-
-      const regex = new RegExp(`(${words.join("|")})`, "gi");
-
-      return this.escapeHtml(text).replace(
-        regex,
-        '<mark class="search-result-highlight">$1</mark>',
-      );
-    }
-
-    clearResults() {
-      this.resultsContainer.hidden = true;
-      this.results.innerHTML = "";
-      this.noResults.hidden = true;
-      this.status.textContent = "";
-    }
-
-    displayError(message) {
-      this.searchError.textContent = message;
-      this.searchError.hidden = false;
-      this.clearResults();
-    }
-
-    clearError() {
-      this.searchError.hidden = true;
-    }
-
-    escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
+      this.modal!.close();
     }
   }
 
-  // Initialize the search modal when the DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => new SiteSearchModal());
   } else {
     new SiteSearchModal();
   }
 </script>
+

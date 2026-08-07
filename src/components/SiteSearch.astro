@@ -15,8 +15,8 @@ const { label = "Search this site" } = Astro.props;
 <!-- Client-side loading of LUNR, not NPM since it's not needed at build time -->
 <script is:inline src="https://unpkg.com/lunr@2.3.9/lunr.min.js"></script>
 
-<div class="site-search-container">
-  <form class="site-search-form" id="site-search-form">
+<div class="site-search-container" data-site-search>
+  <form class="site-search-form" data-site-search-form>
     <Icon
       icon="search"
       size={20}
@@ -29,43 +29,43 @@ const { label = "Search this site" } = Astro.props;
       </span>
       <input
         type="search"
-        id="site-search-input"
         placeholder={label}
         autocomplete="off"
         class="site-search-input"
+        data-site-search-input
       />
     </label>
 
     <!-- Results Container -->
-    <div id="site-search-results-container" class="results-container" hidden>
+    <div class="results-container" data-site-search-results-container hidden>
       <!-- Screen reader status -->
       <div
         class="visually-hidden"
         role="status"
         aria-live="polite"
-        id="site-search-status"
+        data-site-search-status
       >
       </div>
 
       <!-- Error message -->
-      <div id="site-search-error" class="search-error" hidden></div>
+      <div class="search-error" data-site-search-error hidden></div>
 
       <!-- Results popover -->
-      <div id="site-search-popover" class="search-popover" hidden>
+      <div class="search-popover" data-site-search-popover hidden>
         <!-- Keyboard instructions -->
-        <p class="keyboard-instructions" aria-hidden="true">
+        <p class="keyboard-instructions" data-site-search-keyboard-instructions aria-hidden="true">
           <kbd>tab</kbd> to navigate, <kbd>enter</kbd> to select, <kbd>esc</kbd> to
           dismiss
         </p>
 
         <!-- Results list -->
-        <ol id="site-search-results" class="search-results-list"></ol>
+        <ol class="search-results-list" data-site-search-results></ol>
 
         <!-- No results message -->
-        <div id="site-search-no-results" class="no-results" hidden>
+        <div class="no-results" data-site-search-no-results hidden>
           <p>
             <span class="no-results-label">
-              No results found for: <span id="site-search-query-display" class="site-search-query-display"
+              No results found for: <span class="site-search-query-display" data-site-search-query-display
               ></span>
             </span>
             <span class="no-results-suggestion">
@@ -78,7 +78,7 @@ const { label = "Search this site" } = Astro.props;
   </form>
 
   <!-- HTML Templates -->
-  <template id="library-search-template">
+  <template data-library-search-template>
     <li class="search-result-item">
       <a class="library-search-option" target="_blank" rel="noopener">
         <Icon icon="search" size={24} class="library-search-icon" />
@@ -91,7 +91,7 @@ const { label = "Search this site" } = Astro.props;
     </li>
   </template>
 
-  <template id="search-result-template">
+  <template data-search-result-template>
     <li class="search-result-item">
       <a class="search-result-link">
         <p class="search-result-title">
@@ -105,6 +105,18 @@ const { label = "Search this site" } = Astro.props;
 </div>
 
 <style>
+  .library-search-badge{
+        display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    background: var(--color-blue-100);
+    border: solid 1px var(--color-neutral-100);
+    border-radius: 4px;
+    padding: 0px 0.25rem;
+  }
+
   /* Site search container */
   .site-search-container {
     align-items: center;
@@ -178,7 +190,6 @@ const { label = "Search this site" } = Astro.props;
     overflow: hidden auto;
     position: absolute;
     right: 0px;
-    top: calc(4px + 0.25rem);
     width: calc(100% + 12rem);
     z-index: 999;
   }
@@ -364,10 +375,12 @@ const { label = "Search this site" } = Astro.props;
 <script>
   // Site Search Component functionality
   class SiteSearch {
+    container;
     form;
     input;
     resultsContainer;
     popover;
+    keyboardInstructions;
     resultsList;
     noResults;
     searchError;
@@ -381,22 +394,24 @@ const { label = "Search this site" } = Astro.props;
     isBlack = false;
     openResults = true;
     
-    constructor() {
-      this.form = document.getElementById("site-search-form");
-      this.input = document.getElementById("site-search-input");
-      this.resultsContainer = document.getElementById(
-        "site-search-results-container",
+    constructor(container) {
+      this.container = container;
+      this.form = container.querySelector("[data-site-search-form]");
+      this.input = container.querySelector("[data-site-search-input]");
+      this.resultsContainer = container.querySelector(
+        "[data-site-search-results-container]",
       );
-      this.popover = document.getElementById("site-search-popover");
-      this.resultsList = document.getElementById("site-search-results");
-      this.noResults = document.getElementById("site-search-no-results");
-      this.searchError = document.getElementById("site-search-error");
-      this.status = document.getElementById("site-search-status");
-      this.queryDisplay = document.getElementById("site-search-query-display");
+      this.popover = container.querySelector("[data-site-search-popover]");
+      this.keyboardInstructions = container.querySelector("[data-site-search-keyboard-instructions]");
+      this.resultsList = container.querySelector("[data-site-search-results]");
+      this.noResults = container.querySelector("[data-site-search-no-results]");
+      this.searchError = container.querySelector("[data-site-search-error]");
+      this.status = container.querySelector("[data-site-search-status]");
+      this.queryDisplay = container.querySelector("[data-site-search-query-display]");
 
       // Template references
-      this.librarySearchTemplate = document.getElementById("library-search-template");
-      this.searchResultTemplate = document.getElementById("search-result-template");
+      this.librarySearchTemplate = container.querySelector("[data-library-search-template]");
+      this.searchResultTemplate = container.querySelector("[data-search-result-template]");
 
       this.currentQuery = "";
       this.searchResults = [];
@@ -522,10 +537,12 @@ const { label = "Search this site" } = Astro.props;
 
       // Hide results when clicking outside
       document.addEventListener("click", (e) => {
-        if (!this.form.contains(e.target)) {
-          this.openResults = false;
-          this.hideResults();
-        }
+        if (this.form.contains(e.target)) return;
+        // Ignore controls (e.g. a modal's trigger button) that open/reveal
+        // this widget — otherwise reopening it re-hides results it just showed.
+        if (e.target instanceof Element && e.target.closest("[data-site-search-ignore-outside-click]")) return;
+        this.openResults = false;
+        this.hideResults();
       });
 
       // Show results when focusing input
@@ -533,6 +550,13 @@ const { label = "Search this site" } = Astro.props;
         if (this.currentQuery) {
           this.openResults = true;
           this.displayResults();
+        }
+      });
+
+      // Close an ancestor modal (if any) when a result is activated
+      this.resultsList.addEventListener("click", (e) => {
+        if (e.target.closest("a")) {
+          document.body.classList.remove("modal-open");
         }
       });
     }
@@ -627,10 +651,12 @@ const { label = "Search this site" } = Astro.props;
         const resultText = `${this.searchResults.length} result${this.searchResults.length > 1 ? "s" : ""}`;
         this.status.textContent = resultText;
         this.noResults.hidden = true;
+        this.keyboardInstructions.hidden = false;
       } else {
         this.status.textContent = "No results found";
         this.noResults.hidden = false;
         this.queryDisplay.textContent = this.currentQuery;
+        this.keyboardInstructions.hidden = true;
       }
 
       // Generate results HTML
@@ -737,10 +763,21 @@ const { label = "Search this site" } = Astro.props;
     }
   }
 
-  // Initialize the search component when the DOM is ready
+  // Initialize the search component when the DOM is ready.
+  // Supports multiple instances on the same page (e.g. desktop nav + mobile modal).
+  function initSiteSearchInstances() {
+    document
+      .querySelectorAll<HTMLElement>("[data-site-search]")
+      .forEach((container) => {
+        if (container.dataset.siteSearchInitialized) return;
+        container.dataset.siteSearchInitialized = "true";
+        new SiteSearch(container);
+      });
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => new SiteSearch());
+    document.addEventListener("DOMContentLoaded", initSiteSearchInstances);
   } else {
-    new SiteSearch();
+    initSiteSearchInstances();
   }
 </script>
