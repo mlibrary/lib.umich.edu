@@ -16,8 +16,14 @@ const { class: className = '', ...rest } = Astro.props;
 </div>
 
 <style>
+  /* Use longhand left/right margins (not the `margin` shorthand) so this
+     rule can't clobber margin-top/bottom set by consumers of this
+     component — a production-only Vite chunk-order issue caused the
+     shorthand's implicit margin-bottom:0 to beat other components' more
+     specific overrides depending on CSS file load order. */
   .margins {
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
     max-width: 1280px;
     padding: 0 1rem;
     width: 100%;
