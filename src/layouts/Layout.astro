@@ -4,9 +4,9 @@
  */
 import Header from '../components/header/index.astro';
 import Footer from '../components/Footer.astro';
-import Margins from '../components/Margins.astro';
 import '../styles/global.css';
 import favicon from '../images/icon.png';
+import SkipLinks from "../components/SkipLinks.astro"
 
 const { title } = Astro.props;
 ---
@@ -46,17 +46,8 @@ const { title } = Astro.props;
   <body>
     <div class="page-grid">
       <div>
-        <section aria-label="Skip links" class="skip-links">
-          <Margins>
-            <ul>
-              <li><a href="#maincontent">Skip to main content</a></li>
-              <li><a href="#chat">Skip to Ask a Librarian chat</a></li>
-              <li><a href="/site-map">View site map</a></li>
-            </ul>
-          </Margins>
-        </section>
-        
-        <m-universal-header></m-universal-header>
+          <SkipLinks />
+          <m-universal-header></m-universal-header>
       </div>
       
       <Header />
@@ -92,48 +83,6 @@ const { title } = Astro.props;
         grid-template-columns: 100%;
         grid-template-rows: auto auto 1fr auto;
         min-height: 100vh;
-      }
-      
-      /* Skip Links Styles */
-      .skip-links {
-        background-color: var(--color-blue-400, #00274C);
-        height: 1px;
-        left: -10000px;
-        overflow: hidden;
-        position: absolute;
-        top: auto;
-        width: 1px;
-      }
-
-      .skip-links:focus-within {
-        height: auto;
-        padding: 1rem 0;
-        position: static;
-        width: auto;
-      }
-
-      .skip-links ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .skip-links li {
-        text-align: center;
-      }
-
-      .skip-links li:not(:last-of-type) {
-        margin-bottom: 1rem;
-      }
-
-      .skip-links a {
-        color: white;
-        padding: 0.5rem;
-        text-decoration: underline;
-      }
-
-      .skip-links *:focus {
-        outline-color: white;
       }
       
       /* Universal Header placeholder — shown before the web component upgrades */
