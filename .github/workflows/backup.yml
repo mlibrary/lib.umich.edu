@@ -39,16 +39,16 @@ jobs:
           node-version: lts/*
           check-latest: true
       # Enabling cache
-      - name: Caching Gatsby
-        id: gatsby-cache-build
+      - name: Caching Astro
+        id: astro-cache-build
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: |
-            public
-            .cache
-          key: ${{ runner.os }}-gatsby-build-${{ github.run_id }}
+            dist
+            node_modules/.astro
+          key: ${{ runner.os }}-astro-build-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-gatsby-build-
+            ${{ runner.os }}-astro-build-
       # Run npm ci (clean-install) and build on our code
       - run: npm ci
       - run: npm run build
@@ -60,7 +60,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
       - name: Copy files to s3
-        run: aws s3 sync ./public s3://lib-umich-backup
+        run: aws s3 sync ./dist s3://lib-umich-backup
       # Notify Slack if build fails
       - name: Send custom JSON data to Slack workflow
         if: ${{ failure() }}
