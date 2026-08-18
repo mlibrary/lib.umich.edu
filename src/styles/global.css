@@ -4,7 +4,6 @@
 */
 
 /* Import CSS modules in order of importance */
-@import url('./variables.css');
 @import url('./reset.css');
 @import url('./base.css');
 @import url('./utilities.css');
