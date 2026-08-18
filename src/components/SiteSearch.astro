@@ -618,7 +618,7 @@ const { label = "Search this site" } = Astro.props;
         this.displayResults();
         this.clearError();
 
-        // Analytics (similar to Gatsby useGoogleTagManager)
+        // Analytics Gtag event for search
         if (window.gtag) {
           window.gtag("event", "search", {
             search_term: cleanQuery,
