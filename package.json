@@ -2,15 +2,10 @@
   "name": "lib.umich.edu",
   "version": "1.0.0",
   "dependencies": {
-    "@emotion/styled": "^11.14.0",
     "astro": "^7.2.0",
-    "highlight-words-core": "^1.2.3",
     "isomorphic-fetch": "^3.0.0",
     "lunr": "^2.3.9",
-    "motion": "^13.0.0",
-    "nanostores": "^1.4.2",
-    "use-debounce": "^10.1.0",
-    "whatwg-url": "^16.0.0"
+    "nanostores": "^1.4.2"
   },
   "license": "MIT",
   "scripts": {
@@ -34,14 +29,11 @@
     "@astrojs/netlify": "^8.2.0",
     "@astrojs/sitemap": "^3.7.3",
     "@csstools/postcss-global-data": "^4.0.0",
-    "@emotion/babel-plugin": "^11.13.5",
     "@eslint/compat": "^2.0.0",
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.3.1",
-    "bottleneck": "^2.19.5",
     "entities": "^8.0.0",
     "eslint": "^10.8.0",
-    "fetch-retry": "^6.0.0",
     "globals": "^17.9.0",
     "postcss-custom-media": "^12.0.1",
     "stylelint": "^17.14.1",

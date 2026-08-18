@@ -55,13 +55,4 @@ export default [
       'sort-imports': ['error', { ignoreCase: true }]
     }
   },
-  {
-    files: ['gatsby-config.js'],
-    rules: {
-      camelcase: 'off',
-      'no-console': 'off',
-      'no-inline-comments': 'off',
-      radix: 'off'
-    }
-  }
 ];

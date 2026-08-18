@@ -20,6 +20,6 @@ const { node, title, ...rest } = Astro.props;
 const pageTitle = title || node?.attributes?.field_title_context || node?.attributes?.title;
 ---
 
-<Layout title={pageTitle} {...rest}>
+<Layout title={pageTitle} node={node} {...rest}>
   <slot />
 </Layout>

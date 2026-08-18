@@ -1,0 +1,28 @@
+---
+import squareLogo from '../images/squarelogo.png';
+
+interface Props {
+  title?: string;
+  node?: any;
+}
+
+const { title, node } = Astro.props;
+const siteTitle = 'University of Michigan Library';
+const pageTitle = !title || title === 'Home' ? siteTitle : title;
+const description = node?.attributes?.body?.summary || siteTitle;
+const keywords = node?.attributes?.field_seo_keywords;
+const imageUrl = node?.relationships?.field_media_image?.imageUrl || squareLogo.src;
+const siteUrl = Astro.site || Astro.url.origin;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+const socialImageUrl = new URL(imageUrl, siteUrl).href;
+---
+
+<meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
+<link rel="canonical" href={canonicalUrl} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content="website" />
+<meta property="og:image" content={socialImageUrl} />
+<meta property="twitter:description" content={description} />
