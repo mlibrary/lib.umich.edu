@@ -21,6 +21,55 @@ const FILES_SUBDIR = 'cms-files';
 // In-memory cache: URL -> local path (lives for the duration of the build/dev session)
 const urlCache = new Map();
 
+// Max simultaneous requests to the CMS. Pages like the staff directory can
+// trigger hundreds of downloads in one Promise.all(); firing them all at
+// once was overwhelming the CMS origin and causing cascading 504s.
+const MAX_CONCURRENT_DOWNLOADS = 8;
+const MAX_ATTEMPTS = 3;
+const RETRY_BASE_DELAY_MS = 500;
+const FETCH_TIMEOUT_MS = 20000;
+
+let activeDownloads = 0;
+const downloadQueue = [];
+
+function runNext () {
+  if (activeDownloads >= MAX_CONCURRENT_DOWNLOADS) return;
+  const next = downloadQueue.shift();
+  if (!next) return;
+  activeDownloads++;
+  next.task().then(next.resolve, next.reject).finally(() => {
+    activeDownloads--;
+    runNext();
+  });
+}
+
+function withConcurrencyLimit (task) {
+  return new Promise((resolve, reject) => {
+    downloadQueue.push({ task, resolve, reject });
+    runNext();
+  });
+}
+
+function sleep (ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchWithTimeout (url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, { signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+// Transient errors (gateway timeouts, connection resets, etc.) are worth
+// retrying since the CMS often recovers a moment later.
+function isRetryableStatus (status) {
+  return status === 429 || status === 502 || status === 503 || status === 504;
+}
+
 /**
  * Downloads a CMS file URL to public/cms-files/[hash]/[filename] and
  * returns the local URL path, e.g. /cms-files/abc123/HatcherN_Basement.pdf
@@ -34,6 +83,12 @@ export async function downloadCmsFile(url) {
   if (!url) return url;
   if (urlCache.has(url)) return urlCache.get(url);
 
+  const result = await withConcurrencyLimit(() => attemptDownload(url));
+  urlCache.set(url, result);
+  return result;
+}
+
+async function attemptDownload(url) {
   try {
     const urlObj = new URL(url);
     const urlHash = createHash('md5').update(url).digest('hex');
@@ -53,15 +108,30 @@ export async function downloadCmsFile(url) {
 
     if (!alreadyExists) {
       await mkdir(subDir, { recursive: true });
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status} fetching ${url}`);
+
+      let lastErr;
+      for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        try {
+          const response = await fetchWithTimeout(url);
+          if (!response.ok) {
+            const err = new Error(`HTTP ${response.status} fetching ${url}`);
+            err.status = response.status;
+            throw err;
+          }
+          const buffer = await response.arrayBuffer();
+          await writeFile(filePath, Buffer.from(buffer));
+          lastErr = null;
+          break;
+        } catch (err) {
+          lastErr = err;
+          const retryable = err.status ? isRetryableStatus(err.status) : true;
+          if (!retryable || attempt === MAX_ATTEMPTS) break;
+          await sleep(RETRY_BASE_DELAY_MS * attempt);
+        }
       }
-      const buffer = await response.arrayBuffer();
-      await writeFile(filePath, Buffer.from(buffer));
+      if (lastErr) throw lastErr;
     }
 
-    urlCache.set(url, localUrl);
     return localUrl;
   } catch (err) {
     /* eslint-disable no-console */
