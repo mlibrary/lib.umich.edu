@@ -1,0 +1,35 @@
+---
+import Breadcrumb from './Breadcrumb.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Margins from './Margins.astro';
+
+const { breadcrumb, title } = Astro.props;
+
+// Use the breadcrumb prop directly if provided, otherwise generate a basic fallback
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: title, slug: '' },
+    []
+  );
+}
+
+---
+
+<header class="page-header-mini">
+  <Margins>
+        {breadcrumbData && <Breadcrumb data={breadcrumbData} size="compact" />}
+        <Heading level={1} size="3XL" data-page-heading>
+          {title}
+        </Heading>
+  </Margins>
+</header>
+
+<style>
+  @media (--bp-md-up) {
+    .page-header-mini{
+        background-color: var(--color-blue-100);
+    }
+  }
+</style>

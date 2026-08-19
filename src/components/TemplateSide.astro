@@ -1,0 +1,67 @@
+---
+/**
+ * TemplateSide Component
+ * Converted from src/components/aside-layout.js - TemplateSide
+ *
+ * Sidebar area in Template layout
+ */
+interface Props {
+  contentSide?: 'left' | 'right';
+  class?: string;
+}
+
+const {
+  contentSide = 'left',
+  class: className = ''
+} = Astro.props;
+---
+
+<section class={`template-side ${className}`} data-content-side={contentSide}>
+  <div class="template-side-inner">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .template-side-inner {
+    border-bottom: solid 1px var(--color-neutral-100);
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  
+  @media (--bp-md-up) {
+    .template-side {
+      grid-area: side;
+    }
+    
+    .template-side[data-content-side="right"]{
+      margin-right: 3rem;
+    }
+  }
+
+  @media (--bp-content-up) {
+    .template-side-inner {
+      border-top: none !important;
+      border-bottom: none !important;
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+
+    .template-side[data-content-side="left"] .template-side-inner {
+      border-left: solid 1px var(--color-neutral-100);
+      padding-left: 3rem;
+    }
+
+    .template-side[data-content-side="right"] .template-side-inner {
+      border-right: solid 1px var(--color-neutral-100);
+    }
+  }
+
+  /* stylelint-disable selector-pseudo-class-no-unknown */
+  :global([data-aside-layout]:has(+ [data-panel])) .template-side-inner {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
+</style>

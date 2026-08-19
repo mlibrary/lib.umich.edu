@@ -1,0 +1,111 @@
+---
+/**
+ * HoursTable - Responsive hours display table
+ * Converted from src/components/hours-table.js
+ */
+import Link from '../reusable/Link.astro';
+
+interface Props {
+  data: {
+    headings: Array<{
+      text: string;
+      subtext: string;
+      label: string;
+    }>;
+    rows: Array<Array<{
+      label: string | string[];
+      text: string | string[];
+      to?: string;
+    }>>;
+  };
+  dayOfWeek?: number | false;
+  location: string;
+}
+
+const { data, dayOfWeek = false, location } = Astro.props;
+const todayIndex = dayOfWeek === false ? -1 : dayOfWeek + 1;
+---
+
+<table class="hours-table">
+  <thead>
+    <tr>
+      <th scope="col" colspan="2">
+        <span class="visually-hidden">{`Inside ${location}`}</span>
+      </th>
+      {data.headings.map(({ text, subtext, label }, index) => (
+        <th
+          scope="col"
+          class={index + 1 === todayIndex ? 'today' : ''}
+        >
+          <span class="visually-hidden">{label}</span>
+          {index + 1 === todayIndex && (
+            <span
+              aria-hidden="true"
+              class="alternative today-badge"
+            >
+              Today
+            </span>
+          )}
+          <span
+            aria-hidden="true"
+            class="alternative day-text"
+          >
+            {text}
+          </span>
+          <span
+            aria-hidden="true"
+            class="subtext"
+          >
+            {subtext}
+          </span>
+        </th>
+      ))}
+    </tr>
+  </thead>
+  <tbody>
+    {data.rows.map((row, rowIndex) => (
+      <tr class={rowIndex === 0 ? 'first-row' : ''}>
+        {row.map((col, colIndex) => {
+          if (colIndex === 0) {
+            return (
+              <th scope="row" colspan="2" class="row-header">
+                {col.to ? (
+                  <Link href={col.to} kind="list-medium">
+                    {col.text}
+                  </Link>
+                ) : (
+                  col.text
+                )}
+              </th>
+            );
+          } else {
+            const isToday = colIndex === todayIndex;
+            return (
+              <td class={isToday ? 'today' : ''}>
+                <div class="mobile-day-label">
+                  <span class="alternative mobile-day-text">
+                    {data.headings[colIndex - 1].text}
+                  </span>
+                  <span class="mobile-day-subtext">
+                    {data.headings[colIndex - 1].subtext}
+                  </span>
+                </div>
+                <span class:list={['hours-text', { 'with-today-badge': isToday }]}>
+                  {col.text}
+                </span>
+                {isToday && (
+                  <span
+                    aria-hidden="true"
+                    class="alternative today-badge-mobile"
+                  >
+                    Today
+                  </span>
+                )}
+              </td>
+            );
+          }
+        })}
+      </tr>
+    ))}
+  </tbody>
+</table>

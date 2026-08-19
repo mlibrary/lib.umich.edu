@@ -1,0 +1,246 @@
+---
+/**
+ * Prose Component
+ * Converted from src/components/prose.jsx
+ * 
+ * Provides consistent spacing for text content
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class={`prose ${className}`}>
+  <slot />
+</div>
+
+<style>
+  .prose{
+    max-width: none;
+  }
+
+  :global(.prose > p){
+    max-width: 38rem;
+  }
+
+  .prose :global(li p){
+    margin-bottom: 0;
+  }
+
+  .prose > :global(:not(:last-child)) {
+    margin-bottom: 1rem;
+  }
+
+  .prose > :global(h3:not(:last-child)),
+  .prose > :global(h4:not(:last-child)),
+  .prose > :global(h5:not(:last-child)) {
+    margin-top: 1rem;
+  }
+
+  .prose :global([data-umich-lib-callout]) {
+    max-width: 38rem;
+  }
+
+  .prose :global([data-umich-lib-callout] + [data-umich-lib-callout]) {
+    margin-top: 1.5rem;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    max-width: 38rem;
+  }
+
+  .prose :global(h2:not(:last-child)) {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    max-width: 38rem;
+  }
+
+  .prose :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    max-width: 38rem;
+  }
+
+  .prose :global(h4) {
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    color: var(--color-neutral-300);
+    max-width: 38rem;
+  }
+
+  .prose :global(h5),
+  .prose :global(h6) {
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    max-width: 38rem;
+  }
+  
+  .prose :global(p) {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .prose :global(p):not(:last-child){
+    margin-bottom: 1rem;
+  }
+
+  .prose :global(p:last-child){
+    margin-bottom: 0;
+  }
+
+  .prose :global(em) {
+    font-style: italic;
+  }
+
+  .prose :global(strong) {
+    font-weight: 800;
+  }
+
+  .prose :global(a) {
+    color: var(--color-teal-400);
+    box-shadow: inset 0 -1px var(--color-teal-400);
+  }
+
+  .prose :global(a:hover) {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .prose :global(ul:not([data-list])) {
+    list-style: disc;
+    margin-left: 1.5rem;
+    padding: 0;
+    max-width: 38rem;
+  }
+
+  .prose :global(li:not([data-list])) {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose :global(ol:not([data-list])) {
+    list-style: decimal;
+    margin: 0;
+    max-width: 38rem;
+    padding: 0;
+    margin-left: 1.5rem;
+  }
+
+  .prose :global(blockquote) {
+    font-size: 1.125rem;
+    border-left: solid 4px var(--color-teal-400);
+    font-style: italic;
+    max-width: 38rem;
+    padding-left: 1rem;
+    margin: 2rem !important;
+  }
+
+  .prose :global(figure) {
+    max-width: 38rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose :global(figcaption) {
+    color: var(--color-neutral-300);
+  }
+
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .prose :global(.gatsby-image-wrapper) {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .prose :global(.gatsby-image-wrapper img) {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    max-width: none;
+    object-fit: cover;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+  }
+
+
+  .prose :global(.embedded-entity){
+    max-width: var(--max-prose-width);
+  }
+
+  .prose :global(p.umich-lib-callout) {
+    border: solid 1px var(--color-neutral-100);
+    border-left: solid 4px var(--color-teal-400);
+    border-radius: 4px;
+    margin: 2rem 0px;
+    padding: 1.5rem;
+    max-width: 38rem;
+  }
+
+  .prose :global(.umich-lib-alert) {
+    border: 1px solid var(--color-neutral-100);
+    border-left: solid 4px var(--color-maize-400);
+    padding: 24px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+    margin-top: 32px;
+  }
+
+  .prose :global(.umich-lib-alert.umich-alert-with-icon) {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: auto 1fr;
+  }
+
+  .prose :global(.umich-lib-alert .umich-alert-content) {
+    min-width: 0;
+  }
+
+  .prose :global(.umich-lib-alert .umich-alert-icon) {
+    color: var(--color-maize-500);
+    display: block;
+    fill: currentcolor;
+    margin-top: 0.25rem;
+  }
+
+  .prose :global(p.umich-lib-cta) {
+    background-color: var(--color-indigo-100);
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 4px;
+    font-weight: bold;
+    max-width: 38rem;
+    padding: 1rem 1.5rem 1rem 1rem;
+    width: fit-content;
+  }
+
+  .prose :global(p.umich-lib-cta .umich-cta-icon) {
+    display: inline-block;
+    fill: currentcolor;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+
+  .prose :global(p.lede) {
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+</style>

@@ -1,0 +1,329 @@
+---
+/**
+ * CardPanel - Grid of cards with various templates
+ * Converted from src/components/panels/index.js CardPanel
+ * 
+ * Templates: destination_hor_card_template, standard_no_image, address_and_hours, highlights, etc.
+ */
+import PanelTemplate from './PanelTemplate.astro';
+import PanelList from './PanelList.astro';
+import Icon from '../../reusable/Icon.astro';
+import Card from '../../reusable/Card.astro';
+import Address from '../Address.astro';
+import TodaysHours from '../TodaysHours.astro';
+import DotsSvg from '../DotsSvg.astro';
+import DestinationHorizontalPanel from './DestinationHorizontalPanel.astro';
+import Margins from '../Margins.astro';
+import { getParentTitle } from '../../utils';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+
+// Extract template information
+const template = data.relationships?.field_card_template?.field_machine_name;
+const title = data.field_title;
+const cards = data.relationships?.field_cards || [];
+const noImage = template === 'standard_no_image';
+const useSummary = template !== 'address_and_hours';
+
+// Helper functions
+const getCardSubtitle = (card: any) => {
+  if (template === 'destination_card_template') {
+    return getParentTitle({ node: card });
+  }
+  return null;
+};
+
+const getImage = (image: any) => {
+  if (!image || noImage) return null;
+  if (!image.imageUrl) return null;
+  return { src: image.imageUrl, alt: image.imageAlt || '' };
+};
+
+const getCardHref = (card: any) => {
+  if (card.field_url) {
+    return card.field_url.uri;
+  }
+  return card.fields?.slug;
+};
+
+const getSummary = (body: any) => {
+  return body ? body.summary : null;
+};
+
+---
+
+{template === 'destination_hor_card_template' ? (
+  <DestinationHorizontalPanel data={data} />
+) : template === 'highlights' ? (
+  <Margins>
+    <section class="highlights-section">
+      <Margins data-panel-margins>
+        <div class="highlights-header">
+          <div class="dots-container">
+            <DotsSvg />
+          </div>
+          <h2 class="highlights-title">{title}</h2>
+        </div>
+        
+        <ol class="highlights-grid">
+          {cards.map((card: any, index: number) => {
+            const columnGaps = [5, 4, 1, 4, 5];
+            return (
+              <li 
+                class="highlights-card"
+                style={`grid-column: span ${columnGaps[index]}; ${index === 2 ? 'grid-row: span 2;' : ''}`}
+              >
+                  <Card
+                    title={card.title}
+                    subtitle={getCardSubtitle(card)}
+                    href={getCardHref(card)}
+                    headingLevel={title ? 3 : 2}
+                    class="highlights-card-content"
+                    anchorStyleAddition={{ height: '100%', padding: '1rem' }}
+                  >
+                    {useSummary ? getSummary(card.body) : (
+                      template === 'address_and_hours' && (
+                        <div>
+                          <div class="card-info-row">
+                            <span class="card-info-icon">
+                              <Icon icon="address" />
+                            </span>
+                            <Address node={card} />
+                          </div>
+                          <div class="card-info-row">
+                            <span class="card-info-icon">
+                              <Icon icon="access_time" />
+                            </span>
+                            <TodaysHours node={card} />
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </Card>
+              </li>
+            );
+          })}
+        </ol>
+      </Margins>
+    </section>
+  </Margins>
+) : (
+  <PanelTemplate title={title}>
+    <PanelList twoColumns={noImage}>
+      {cards.map((card: any, index: number) => (
+        <li class="standard-card-item">
+          <Card
+            title={card.title}
+            subtitle={getCardSubtitle(card)}
+            href={getCardHref(card)}
+            image={getImage(card.relationships?.field_media_image)}
+            headingLevel={title ? 3 : 2}
+            class="standard-card-content"
+          >
+            {useSummary ? getSummary(card.body) : (
+              template === 'address_and_hours' && (
+                <div>
+                  <div class="card-info-row">
+                    <span class="card-info-icon">
+                      <Icon icon="address" />
+                    </span>
+                    <Address node={card} />
+                  </div>
+                  <div class="card-info-row">
+                    <span class="card-info-icon">
+                      <Icon icon="access_time" />
+                    </span>
+                    <TodaysHours node={card} />
+                  </div>
+                </div>
+              )
+            )}
+          </Card>
+        </li>
+      ))}
+    </PanelList>
+  </PanelTemplate>
+)}
+
+<style>
+  /* Highlights template styles */
+  .highlights-section {
+    background-color: var(--color-blue-300, #1e40af);
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+  }
+
+  @media (--bp-md-up) {
+    .highlights-section {
+      padding-bottom: 2.5rem;
+      padding-top: 1.5rem;
+    }
+  }
+
+  .highlights-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (--bp-2xl-up) {
+    .highlights-header {
+      align-items: center;
+      flex-direction: row;
+    }
+  }
+
+  .dots-container {
+    display: none;
+  }
+
+  @media (--bp-2xl-up) {
+    .dots-container {
+      display: flex;
+      height: 2.5rem;
+      margin-left: -30px;
+      max-width: 144px;
+    }
+  }
+
+  .dots-placeholder {
+    color: white;
+    font-size: 2rem;
+  }
+
+  .highlights-title {
+    color: white;
+    font-family: 'Crimson Text', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin: 0;
+    line-height: 1.25;
+  }
+
+  @media (--bp-2xl-up) {
+    .highlights-title {
+      margin-left: 1rem;
+    }
+  }
+
+  @media (--bp-2xl-up){
+    .highlights-grid {
+      display: grid;
+      gap: 1rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  
+
+  :global(.highlights-grid .card-title) {
+    margin: 0;
+    font-size: 1.125rem;
+  }
+
+  @media (--bp-2xl-up) {
+    .highlights-grid {
+      grid-template-columns: repeat(10, auto);
+    }
+  }
+
+  .highlights-card {
+    background: #fff;
+    border: 1px solid var(--color-blue-200, #bfdbfe);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    min-height: 0;
+  }
+
+  :global(.highlights-card a:hover span) {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  @media (--bp-2xl-up) {
+    .highlights-card {
+      margin-bottom: 0;
+    }
+  }
+
+  .highlights-card-content {
+    height: 100%;
+    padding: 1rem;
+  }
+
+  /* Standard card styles */
+  .standard-card-item {
+    margin-top: 2rem;
+  }
+
+  :global(.standard-card-item:hover .card-title){
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .standard-card-item:first-of-type {
+    margin-top: 0;
+  }
+
+  @media (--bp-md-up) {
+    .standard-card-item {
+      margin: 0;
+    }
+  }
+
+  .standard-card-content {
+    height: 100%;
+  }
+
+  /* Shared card placeholder styles */
+  .card-placeholder {
+    padding: 1rem;
+    background: white;
+    border: 1px solid var(--color-neutral-200, #ddd);
+    border-radius: 4px;
+    min-height: 8rem;
+  }
+  
+  .card-placeholder h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    color: var(--color-blue-400, #00274C);
+    font-weight: 600;
+  }
+
+  .card-subtitle {
+    color: var(--color-neutral-300, #637381);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-content {
+    color: var(--color-neutral-300, #637381);
+    font-size: 0.875rem;
+  }
+
+  .card-info-row {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 0.5rem;
+  }
+
+  .card-info-icon{
+    margin-right: .5rem;
+    color: var(--color-indigo-300);
+  }
+</style>
+
+<script define:vars={{ cardPanelData: data, template, title, cards }}>
+  // // Debug CardPanel data at runtime
+  // console.log('CardPanel data (runtime):', {
+  //   cardPanelData,
+  //   template,
+  //   title,
+  //   cards,
+  //   cardsCount: cards?.length
+  // });
+</script>

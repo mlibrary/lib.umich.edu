@@ -1,0 +1,72 @@
+---
+/**
+ * GroupPanel - Panel with grouped content
+ * Converted from src/components/panels/group-panel.js
+ */
+import Panels from './Panels.astro';
+import Margins from '../Margins.astro';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+
+const { field_panel_group_layout: fieldPanelGroupLayout, relationships } = data;
+
+// Check if this is a 50/50 layout
+const is50Layout = fieldPanelGroupLayout === '50';
+const fieldPanelGroup = relationships?.field_panel_group;
+---
+
+{is50Layout && fieldPanelGroup ? (
+  <Margins>
+    <div class="panel-group-50-container">
+      <Panels data={fieldPanelGroup} />
+    </div>
+  </Margins>
+) : (
+ null
+)}
+
+<style>
+  .panel-group-50-container {
+    display: grid;
+    margin-top: 2rem;
+  }
+
+  :global(.panel-group-50-container .panel-heading) {
+    margin-bottom: 0;
+  }
+
+  .panel-group-50-container > * {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .panel-group-50-container > *:not(:last-child) {
+    border-bottom: solid 1px var(--color-neutral-100);
+  }
+
+  :global(.panel-group-50-container > .panel) {
+    padding-top: 0;
+  }
+
+  @media (--bp-2xl-up) {
+    .panel-group-50-container {
+      grid-gap: 3rem;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .panel-group-50-container > * {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
+
+    .panel-group-50-container > *:not(:last-child) {
+      border: none;
+      border-right: solid 1px var(--color-neutral-100);
+      padding-right: 3rem;
+    }
+  }
+</style>

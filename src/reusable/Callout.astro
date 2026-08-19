@@ -1,0 +1,63 @@
+---
+/**
+ * Callout Component
+ * Converted from src/reusable/callout.jsx
+ */
+import Icon from '../reusable/Icon.astro';
+import Heading from '../reusable/Heading.astro';
+
+interface Props {
+  title?: string;
+  intent?: 'warning' | string;
+  alert?: boolean;
+  class?: string;
+}
+
+const { title, intent, alert, class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={['callout', { 'callout-warning': intent === 'warning' }, className]}
+  data-umich-lib-callout
+>
+  <div class="callout-inner">
+    {intent === 'warning' && (
+      <Icon icon="error" size={24} class="callout-icon" />
+    )}
+    <div role={alert ? undefined : 'status'}>
+      {title && <Heading size="M">{title}</Heading>}
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style>
+  .callout {
+    border: solid 1px var(--color-neutral-100);
+    border-left: solid 4px var(--color-teal-400);
+    border-radius: 4px;
+    margin: 2rem 0;
+    padding: 1.5rem;
+  }
+
+  .callout-warning {
+    border-left-color: var(--color-maize-400);
+  }
+
+  .callout-inner {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: auto 1fr;
+  }
+
+  .callout :global(p) {
+    max-width: none;
+    width: 100%;
+  }
+
+  :global(.callout-icon) {
+    color: var(--color-maize-500);
+    fill: var(--color-maize-500) ;
+    margin-top: 0.25rem;
+  }
+</style>

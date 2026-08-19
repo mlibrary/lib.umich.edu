@@ -1,0 +1,302 @@
+---
+/**
+ * LinkPanel - Various link list layouts
+ * 
+ * Templates: bulleted_list, 2_column_db_link_list, related_links
+ */
+import PanelTemplate from './PanelTemplate.astro';
+import Icon from '../../reusable/Icon.astro';
+import Heading from '../../reusable/Heading.astro';
+import Link from '../../reusable/Link.astro';
+import { getNidToSlugMap, getNidToTitleMap } from '../../lib/page-generator.js';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+const { relationships } = data;
+
+// Helper functions for internal link resolution
+const getNIDFromURI = (uri: string) => {
+  if (uri?.includes('entity:node/')) {
+    return uri.split('/')[1];
+  }
+  return null;
+};
+
+const nidToSlugMap = await getNidToSlugMap();
+const nidToTitleMap = await getNidToTitleMap();
+
+const getLinkData = (link: any) => {
+  const nid = getNIDFromURI(link.uri);
+  const text = link.title?.trim() || (nid && nidToTitleMap[nid]) || link.uri;
+  let to: string;
+
+  if (nid && nidToSlugMap[nid]) {
+    to = nidToSlugMap[nid];
+  } else if (link.uri?.startsWith('entity:')) {
+    to = link.uri.replace('entity:node/', '/node/');
+  } else {
+    to = link.uri;
+  }
+  
+  return {
+    text,
+    to
+  };
+};
+
+const fieldMachineName = relationships?.field_link_template?.field_machine_name || 'bulleted_list';
+const links = data.field_link || [];
+const moreLink = data.field_view_all ? {
+  text: data.field_view_all.title?.trim() || data.field_view_all.uri,
+  to: data.field_view_all.uri
+} : null;
+const hasTopBorder = data.field_border === 'yes';
+---
+
+{fieldMachineName === 'bulleted_list' && (
+  <section class={`bulleted-link-list ${hasTopBorder ? 'has-top-border' : ''}`}>
+    <Heading level={2} style="font-size: 1.5rem; font-weight: 600; line-height: 1.25;">{data.field_title}</Heading>
+    <ul class="bulleted-list">
+      {links.map((link: any) => {
+        const linkData = getLinkData(link);
+        return (
+          <li>
+            <Link 
+              href={linkData.to} 
+              class="link-default"
+            >
+              {linkData.text}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+    
+    {moreLink && (
+      <p class="more-link">
+        <Link 
+          href={moreLink.to} 
+          class="link-default"
+        >
+          {moreLink.text}
+        </Link>
+      </p>
+    )}
+  </section>
+)}
+
+{fieldMachineName === '2_column_db_link_list' && (
+  <section class="database-link-list">
+    <Heading level={2} style="font-size: 1.5rem; font-weight: 600; line-height: 1.25;">{data.field_title}</Heading>
+    <ol class="db-links-grid">
+      {links.map((link: any, index: number) => (
+        <li class="db-link-item">
+          <Link kind="list"
+            href={getLinkData(link).to} 
+            class="db-link"
+          >
+            <span class="db-link-text">{getLinkData(link).text}</span>
+          </Link>
+        </li>
+      ))}
+    </ol>
+    
+    {data.field_view_all && (
+      <Link
+        href={moreLink.to} 
+        class="view-all-link"
+      >
+        {moreLink.text}
+      </Link>
+    )}
+  </section>
+)}
+
+{fieldMachineName === 'related_links' && (
+  <PanelTemplate title={data.field_title}>
+    <ol class="related-links-list">
+      {links.map((link: any, index: number) => {
+        const linkData = getLinkData(link);
+        return (
+          <li class="related-link-item">
+            <a 
+              href={linkData.to} 
+              class="fancy-link"
+            >
+              <span class="fancy-link-icon">
+                <Icon icon="insert_link" size={24} />
+              </span>
+              <span class="fancy-link-text">{linkData.text}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  </PanelTemplate>
+)}
+
+<style>
+  .link-description {
+    font-size: 1.125rem;
+    color: var(--color-neutral-400);
+    font-weight: 600;
+    box-shadow: inset 0 -1px var(--color-teal-400);
+  }
+
+  .link-description:hover {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .link-list {
+    color: var(--color-neutral-400);
+  }
+
+  .link-list:hover {
+    box-shadow: inset 0 -1px var(--color-neutral-400);
+  }
+
+  .bulleted-link-list {
+    margin: 2rem 0;
+  } 
+
+  .bulleted-link-list.has-top-border {
+    border-top: solid 1px var(--color-neutral-100);
+    padding-top: 2rem;
+    margin-top: 2rem;
+  }
+
+  .bulleted-list {
+    list-style: disc;
+    margin-left: 1.5rem;
+    margin-top: 1rem;
+    max-width: 38rem;
+    padding: 0;
+  }
+
+  .bulleted-list li {
+    break-inside: avoid;
+    margin-bottom: .5rem;
+  }
+
+  .more-link {
+    margin-bottom: 0;
+  }
+
+  @media (--bp-2xl-up) {
+    :global(.panel-group-50-container) > *:not(:last-child) {
+      border: none;
+      border-right: solid 1px var(--color-neutral-100);
+      padding-right: 3rem;
+    }
+    :global(.panel-group-50-container) > * {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
+  }
+  :global(.panel-group-50-container) > *:not(:last-child) {
+      border-bottom: solid 1px var(--color-neutral-100);
+  }
+
+  :global(.panel-group-50-container) > * {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+  }
+
+  .db-links-grid {
+    column-gap: 2rem;
+    columns: 2;
+    margin-top: 1.5rem;
+    max-width: 24rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .db-link-item {
+    break-inside: avoid;
+    margin: 0;
+  }
+
+  .db-link {
+    display: block;
+    padding-bottom: 0.75rem;
+    color: var(--color-neutral-400);
+  }
+
+  .db-link:hover {
+    box-shadow: none;
+  }
+
+  .db-link:hover .db-link-text {
+    box-shadow: inset 0 -1px var(--color-neutral-400);
+  }
+
+  .db-link-text {
+    color: var(--color-neutral-400);
+  }
+
+  .view-all-link {
+    display: inline-block;
+  }
+
+  .related-links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .related-link-item {
+    max-width: 34rem;
+  }
+
+  .related-link-item:not(:last-of-type) {
+    margin-bottom: 0.75rem;
+  }
+
+  .fancy-link {
+    background: var(--color-teal-100);
+    border-radius: 2px;
+    display: block;
+    padding: 1rem;
+    padding-right: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .fancy-link:hover .fancy-link-text {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+  }
+
+  .fancy-link-icon {
+    color: var(--color-teal-400);
+    flex-shrink: 0;
+  }
+
+  .fancy-link-text {
+    font-size: 1rem;
+    color: var(--color-neutral-400);
+    font-weight: 600;
+    box-shadow: inset 0 -1px var(--color-teal-400);
+  }
+
+
+  @media (--bp-2xl-up) {
+      :global(.panel-group-50-container) > *:not(:last-child) {
+          border: none;
+          border-right: solid 1px var(--color-neutral-100);
+          padding-right: 3rem;
+      }
+  }
+
+  @media (--bp-2xl-up) {
+    :global(.panel-group-50-container) > * {
+        margin-bottom: 2.5rem;
+        padding-bottom: 2.5rem;
+    }
+  }
+</style>

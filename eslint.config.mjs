@@ -6,13 +6,6 @@ import stylistic from '@stylistic/eslint-plugin';
 
 export default [
   {
-    settings: {
-      react: {
-        version: 'detect'
-      }
-    }
-  },
-  {
     languageOptions: {
       ecmaVersion: 2021,
       globals: {
@@ -62,13 +55,4 @@ export default [
       'sort-imports': ['error', { ignoreCase: true }]
     }
   },
-  {
-    files: ['gatsby-config.js'],
-    rules: {
-      camelcase: 'off',
-      'no-console': 'off',
-      'no-inline-comments': 'off',
-      radix: 'off'
-    }
-  }
 ];

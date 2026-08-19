@@ -25,13 +25,7 @@ npm install
 ROBOTSTXT_MODE=production
 ```
 
-If `ROBOTSTXT_MODE` is set to `production`, this tells the build to make a `robots.txt` that allows search engines to crawl the site. If your build is not for production, then don't set this variable or set it to `development` if needed.
-
-```
-CONTEXT=production
-```
-
-This env var is automatically available when building on Netlify, but if you're building the site **not** with Netlify set `CONTEXT` as `production`, otherwise `ROBOTSTXT_MODE` will not work as expected.
+If `ROBOTSTXT_MODE` is set to `production`, this tells the build to generate a `robots.txt` that allows search engines to crawl the site. If this variable is not set (or set to anything other than `production`), the build produces a `robots.txt` that blocks all crawlers.
 
 ```
 DRUPAL_URL=https://cms.staging.lib.umich.edu/

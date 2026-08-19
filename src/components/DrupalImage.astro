@@ -1,0 +1,99 @@
+---
+/*
+ *
+ * Renders an optimized Drupal image into Astro's <Image> component for
+ * responsive display. Pass the real intrinsic width/height from Drupal
+ * metadata so Astro can generate a proper srcset. Wrapper/img styles mirror
+ * GatsbyImage output behavior. Default sizes are set to 920 x 100vw
+ *
+ */
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  /** Intrinsic pixel width from Drupal file metadata */
+  width?: number;
+  /** Intrinsic pixel height from Drupal file metadata */
+  height?: number;
+  /** Optional cap to match Gatsby gatsbyImageData width behavior */
+  maxWidth?: number;
+  /** Optional sizes attribute; defaults to constrained Gatsby behavior */
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+  fillContainerHeight?: boolean;
+}
+
+const {
+  src,
+  alt,
+  width = 920,
+  height = 600,
+  maxWidth,
+  sizes,
+  loading = 'lazy',
+  class: className,
+  fillContainerHeight = false,
+} = Astro.props;
+
+const intrinsicWidth = Number(width) > 0 ? Number(width) : 920;
+const intrinsicHeight = Number(height) > 0 ? Number(height) : 600;
+
+const shouldCapWidth = Number(maxWidth) > 0 && intrinsicWidth > Number(maxWidth);
+const outputWidth = shouldCapWidth ? Number(maxWidth) : intrinsicWidth;
+const outputHeight = shouldCapWidth
+  ? Math.max(1, Math.round(intrinsicHeight * (Number(maxWidth) / intrinsicWidth)))
+  : intrinsicHeight;
+const resolvedSizes = sizes || `(min-width: ${outputWidth}px) ${outputWidth}px, 100vw`;
+// Keep the intrinsic aspect-ratio as a fallback so the wrapper still reserves
+// real height when `height: 100%` can't resolve (e.g. an indefinite-height
+// flex ancestor on mobile), matching GatsbyImage's self-contained sizing.
+const wrapperStyle = fillContainerHeight
+  ? `aspect-ratio: ${outputWidth} / ${outputHeight}; height: 100%;`
+  : `aspect-ratio: ${outputWidth} / ${outputHeight};`;
+
+const wrapperClassName = className
+  ? `gatsby-image-wrapper ${className}`
+  : 'gatsby-image-wrapper';
+---
+
+{src && (
+  <span class={wrapperClassName} style={wrapperStyle}>
+    <Image
+      src={src}
+      alt={alt}
+      width={outputWidth}
+      height={outputHeight}
+      format="webp"
+      quality={75}
+      sizes={resolvedSizes}
+      loading={loading}
+      decoding="async"
+      class={className}
+    />
+  </span>
+)}
+
+<style>
+  .gatsby-image-wrapper {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .gatsby-image-wrapper :global(img) {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    max-width: none;
+    object-fit: cover;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+  }
+</style>

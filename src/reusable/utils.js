@@ -1,7 +1,3 @@
-import { css, Global } from '@emotion/react';
-import React from 'react';
-import styled from '@emotion/styled';
-
 /* eslint-disable sort-keys, id-length */
 export const SPACING = {
   '3XS': '0.125rem',
@@ -91,33 +87,24 @@ export const INTENT_COLORS = {
   warning: 'var(--color-maize-400)'
 };
 
-export const Margins = styled('div')({
-  margin: '0 auto',
-  maxWidth: '1280px',
-  padding: `0 ${SPACING.M}`,
-  width: '100%',
-  [MEDIA_QUERIES.S]: {
-    padding: `0 ${SPACING['2XL']}`
-  }
-});
+// Margins utility - returns CSS class name for use in Astro components
+export const MARGINS_CLASS = 'margins';
 
-export const LargeScreen = styled('div')({
-  display: 'none',
-  [MEDIA_QUERIES.S]: {
-    display: 'block'
+// CSS styles for margins - can be used in <style> blocks
+export const MARGINS_STYLES = `
+  .${MARGINS_CLASS} {
+    margin: 0 auto;
+    max-width: 1280px;
+    padding: 0 ${SPACING.M};
+    width: 100%;
   }
-});
 
-/*
- *"default",
- *"subtle",
- *"light",
- *"special",
- *"list",
- *"list-medium",
- *"list-strong",
- *"description"
- */
+  ${MEDIA_QUERIES.S} {
+    .${MARGINS_CLASS} {
+      padding: 0 ${SPACING['2XL']};
+    }
+  }
+`;
 
 const DEFAULT_LINK_STYLE = {
   ':hover': {
@@ -179,166 +166,4 @@ export const LINK_STYLES = {
     boxShadow: `inset 0 -1px var(--color-neutral-300)`,
     color: 'var(--color-neutral-400)'
   }
-
-  /*
-   *DEPRECATED kinds
-   *To prevent a breaking change direct previously supported
-   *link kinds to the default link style.
-   */
-};
-
-export const SmallScreen = styled('div')({
-  display: 'block',
-  [MEDIA_QUERIES.S]: {
-    display: 'none'
-  }
-});
-
-export const GlobalStyleSheet = () => {
-  /*
-   *TODO:
-   *- [ ] Import global css from a plain css file.
-   *  pros:
-   *    - The CSS file would be available on unpkg as part of the lib/ dir
-   *  cons:
-   *    - Unable to use CSS-in-JS benefits. Such as using values above in the
-   *      the global stylesheet.
-   *    - Need to setup build process to handle this.
-   *  Alternative(s)
-   *    - Maybe this stylesheet could be generated into a traditional stylesheet at build.
-   *      This could be setup as part of the build step in styles/package.json
-   */
-  const stylesheet = `
-    @import url('https://fonts.googleapis.com/css?family=Crimson+Text|Muli:400,600,700');  
-      
-    /* 
-    CSS Reset
-    
-    http://meyerweb.com/eric/tools/css/reset/ 
-      v2.0 | 20110126
-      License: none (public domain)
-    */
-    
-    html, body, div, span, applet, object, iframe,
-    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-    a, abbr, acronym, address, big, cite, code,
-    del, dfn, em, img, ins, kbd, q, s, samp,
-    small, strike, strong, sub, sup, tt, var,
-    b, u, i, center,
-    dl, dt, dd, ol, ul, li,
-    fieldset, form, label, legend,
-    table, caption, tbody, tfoot, thead, tr, th, td,
-    article, aside, canvas, details, embed, 
-    figure, figcaption, footer, header, hgroup, 
-    menu, nav, output, ruby, section, summary,
-    time, mark, audio, video {
-      margin: 0;
-      padding: 0;
-      border: 0;
-      font-size: 100%;
-      font: inherit;
-      vertical-align: baseline;
-    }
-    /* HTML5 display-role reset for older browsers */
-    article, aside, details, figcaption, figure, 
-    footer, header, hgroup, menu, nav, section {
-      display: block;
-    }
-    ol, ul {
-      list-style: none;
-    }
-    blockquote, q {
-      quotes: none;
-    }
-    blockquote:before, blockquote:after,
-    q:before, q:after {
-      content: '';
-      content: none;
-    }
-    table {
-      border-collapse: collapse;
-      border-spacing: 0;
-    }
-    /*
-      Button CSS reset
-    */
-    button {
-      border: none;
-      margin: 0;
-      padding: 0;
-      width: auto;
-      overflow: visible;
-      background: transparent;
-      /* inherit font, color, and line height from ancestor */
-      color: inherit;
-      font: inherit;
-      line-height: inherit;
-      /* Corrects font smoothing for webkit */
-      -webkit-font-smoothing: inherit;
-      -moz-osx-font-smoothing: inherit;
-      /* Corrects inability to style clickable input types in iOS */
-      -webkit-appearance: none;
-    }
-   
-    
-    /*
-      Font family
-      Traditionally you would include this in the <head>, but since these styles
-      are not being requests as another file to fetch, it's OK to import the
-      font family because it's not as slow as tranditional setups.
-    */
-    body,
-    html {
-      padding: 0;
-      margin: 0;
-      font-size: 16px;
-      font-family: 'Muli', sans-serif;
-      line-height: 1.5;
-      color: var(--color-neutral-400);
-    }
-    
-    /*
-      Font smoothing and box sizing to border-box.
-    */
-    * {
-      -webkit-font-smoothing: antialiased;
-      box-sizing: border-box;
-    }
-    a {
-      color: inherit;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    button {
-      cursor: pointer;
-    }
-    
-    /*
-      Spacing helpers
-    */
-    .y-spacing > *:not(:last-child) {
-      margin-bottom: ${SPACING.XL};
-    }
-    .x-spacing > *:not(:last-child) {
-      margin-right: ${SPACING.XL};
-    }
-    .layout-flex {
-      display: flex;
-    }
-    /*
-      Stop Scroll
-    */
-    body.stop-scroll {
-      height: 100vh;
-      overflow: hidden;
-    }
-  `;
-
-  return (
-    <Global
-      styles={css`
-        ${stylesheet}
-      `}
-    />
-  );
 };

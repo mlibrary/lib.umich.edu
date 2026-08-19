@@ -1,0 +1,26 @@
+---
+/**
+ * HeroPanel (Astro)
+ *
+ * Two variants by template machine name:
+ * - 'lib_search_box' => renders HeroSearchBox
+ * - 'text' => renders HeroText
+ */
+import HeroSearchBox from './HeroSearchBox.astro';
+import HeroText from './HeroText.astro';
+
+type Props = {
+  data: any;
+};
+
+const { data } = Astro.props as Props;
+
+const fieldMachineName: string | undefined = data?.relationships?.field_hero_template?.field_machine_name;
+---
+{fieldMachineName === 'lib_search_box' && (
+  <HeroSearchBox data={data} />
+)}
+
+{fieldMachineName === 'text' && (
+  <HeroText data={data} />
+)}

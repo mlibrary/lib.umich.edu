@@ -1,0 +1,191 @@
+---
+/**
+ * Site Search Modal for Astro (mobile/small screen)
+ *
+ * Thin wrapper around SiteSearch, mirroring Gatsby's site-search-modal.js
+ * which renders the same SiteSearch component inside a <dialog>.
+ */
+
+import Icon from "../../reusable/Icon.astro";
+import SiteSearch from "../SiteSearch.astro";
+---
+
+<div id="site-search-modal-container">
+  <!-- Search Button -->
+  <button
+    id="search-modal-trigger"
+    type="button"
+    class="search-trigger"
+    aria-label="Search this site"
+    data-site-search-ignore-outside-click
+  >
+    <Icon icon="search" size={32} />
+    <span class="visually-hidden">Search this site</span>
+  </button>
+
+  <!-- Modal Dialog -->
+  <dialog
+    id="search-modal"
+    class="search-modal"
+    aria-modal="true"
+    aria-labelledby="search-modal-title"
+  >
+    <div class="search-modal-content">
+      <h2 id="search-modal-title" class="visually-hidden">Search this site</h2>
+      <SiteSearch label="Search this site" />
+    </div>
+  </dialog>
+</div>
+
+<style>
+  /* Search trigger button styles */
+  .search-trigger {
+    background: none;
+    border: none;
+    padding: 1rem 0.5rem;
+    cursor: pointer;
+    color: var(--color-blue-400, #00274c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Modal styles */
+  .search-modal {
+    border: 0;
+    border-radius: 2px;
+    margin: 1.5rem auto;
+    max-width: 82vw;
+    width: 100%;
+    padding: 0;
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .search-modal::backdrop {
+    background-color: rgb(0 0 0 / 60%);
+  }
+
+  .search-modal[open] {
+    display: table;
+  }
+
+  .search-modal-content {
+    background: white;
+    border-radius: 2px;
+  }
+
+  /* Visually hidden utility */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  /* Prevent body scroll when modal is open */
+  :global(body.modal-open) {
+    overflow: hidden;
+  }
+
+  /* Adjust the nested SiteSearch component to fit the modal context.
+     Keep the results popover's own absolute positioning (it's already
+     anchored below the input); only widen it to match the full-width
+     modal input instead of the header's narrower search box. */
+  .search-modal-content :global(.site-search-container) {
+    flex-basis: auto;
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .search-modal-content :global(.site-search-form) {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .search-modal-content :global(.site-search-input) {
+    border: none;
+    padding: 0.75rem 1.5rem 0.75rem 3.5rem;
+  }
+
+  .search-modal-content :global([style*="left: 0.5rem"]) {
+    left: 1.5rem !important;
+  }
+
+  .search-modal-content :global(.search-popover) {
+    border-left: none;
+    border-radius: 0;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: none;
+    width: 100%;
+  }
+</style>
+
+<script>
+  // Site Search Modal functionality — dialog open/close only.
+  // Search behavior itself lives in the shared SiteSearch component.
+  class SiteSearchModal {
+    modal: HTMLDialogElement | null = null;
+    trigger: HTMLButtonElement | null = null;
+
+    constructor() {
+      this.modal = document.getElementById(
+        "search-modal",
+      ) as HTMLDialogElement | null;
+      this.trigger = document.getElementById(
+        "search-modal-trigger",
+      ) as HTMLButtonElement | null;
+
+      if (!this.modal || !this.trigger) {
+        return;
+      }
+
+      this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+      this.trigger!.addEventListener("click", () => this.openModal());
+
+      this.modal!.addEventListener("click", (e) => {
+        if (e.target === this.modal) {
+          this.closeModal();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && this.modal!.open) {
+          this.closeModal();
+        }
+      });
+    }
+
+    openModal() {
+      document.body.classList.add("modal-open");
+      this.modal!.showModal();
+      const input =
+        this.modal!.querySelector<HTMLInputElement>(".site-search-input");
+      setTimeout(() => input?.focus(), 10);
+    }
+
+    closeModal() {
+      document.body.classList.remove("modal-open");
+      this.modal!.close();
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => new SiteSearchModal());
+  } else {
+    new SiteSearchModal();
+  }
+</script>
+

@@ -1,0 +1,129 @@
+---
+/**
+ * Main Layout Component for Astro
+ */
+import Header from "../components/header/index.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+import favicon from "../images/icon.png";
+import SkipLinks from "../components/SkipLinks.astro";
+import Seo from "../components/Seo.astro";
+
+const { title, node } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C4BRY2931P"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-C4BRY2931P");
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href={favicon.src} />
+    <link rel="shortcut icon" href={favicon.src} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <Seo title={title} node={node} />
+    <title>
+      {
+        !title || title === "Home"
+          ? "University of Michigan Library"
+          : `${title} | University of Michigan Library`
+      }
+    </title>
+
+    <script src="https://umich.edu/apis/umalerts/umalerts.js"></script>
+
+    <link
+      rel="preload"
+      href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"
+      as="script"
+    />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/dist/umich-lib/umich-lib.esm.js"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@umich-lib/web@latest/umich-lib.css"
+      rel="stylesheet"
+    />
+    <!--
+      Override the @umich-lib/web design-system's global :focus rule.
+      The design-system sets: outline:0; box-shadow: maize double-ring; border-radius:2px !important
+      We restore the browser default outline colored with our site's brand blue,
+      matching the Gatsby site's focus behavior (*:focus { outlineColor: var(--color-blue-400) }).
+      This must be inline and after the CDN stylesheet so it wins in the cascade.
+    -->
+    <style is:inline>
+      *:focus {
+        box-shadow: none;
+        border-radius: 0 !important;
+        outline: revert;
+        outline-color: var(--color-blue-400, #00274c);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-grid">
+      <div>
+        <SkipLinks />
+        <m-universal-header></m-universal-header>
+      </div>
+
+      <Header />
+      <main id="maincontent">
+        <slot />
+      </main>
+
+      <Footer />
+    </div>
+
+    <aside aria-label="Ask a Librarian Chat">
+      <m-chat id="chat"></m-chat>
+    </aside>
+
+    <!-- <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const pageHeading =
+          document.querySelector("[data-page-heading]") ??
+          document.querySelector("h1");
+
+        if (pageHeading instanceof HTMLElement) {
+          pageHeading.tabIndex = -1;
+          pageHeading.classList.add("focus");
+          pageHeading.focus();
+        }
+      });
+    </script> -->
+
+    <style>
+      /* Page Grid Layout */
+      .page-grid {
+        display: grid;
+        grid-template-columns: 100%;
+        grid-template-rows: auto auto 1fr auto;
+        min-height: 100vh;
+      }
+
+      /* Universal Header placeholder — shown before the web component upgrades */
+      m-universal-header:not(:defined) {
+        display: block;
+        background-color: var(--color-blue-100, #cce3f5);
+        min-height: 37px;
+      }
+
+      main {
+        flex: 1;
+      }
+    </style>
+  </body>
+</html>

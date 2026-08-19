@@ -1,0 +1,33 @@
+/*
+ * Table styles scoped to .prose — mirrors Gatsby's Table styled component
+ * (src/components/table.jsx) which is only used inside Html.js for
+ * Drupal-authored content. Staff directory, specialist, and other UI tables
+ * are styled independently and must not be affected.
+ */
+
+.prose td {
+    border-bottom: solid 1px var(--color-neutral-100);
+}
+
+.prose th {
+    border-bottom: solid 2px var(--color-maize-400);
+    font-size: 0.875rem;        /* TYPOGRAPHY['3XS'] */
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.prose th,
+.prose td {
+    padding: 1rem;
+    padding-left: 0;
+}
+
+.prose table {
+    width: 100%;
+}
+
+.prose td > p {
+    margin-bottom: 0 !important;
+}

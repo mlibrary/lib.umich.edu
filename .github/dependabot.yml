@@ -20,24 +20,9 @@ updates:
     multi-ecosystem-group: "maintenance"
     patterns: ["*"]
     ignore:
-      - dependency-name: "gatsby"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react-dom"
+      - dependency-name: "astro"
         update-types: ["version-update:semver-major"]
 
-  # Gatsby plugin dependencies
-  - package-ecosystem: "npm"
-    directory: "/plugins/gatsby-source-libguides"
-    multi-ecosystem-group: "maintenance"
-    patterns: ["*"]
-
-  - package-ecosystem: "npm"
-    directory: "/plugins/gatsby-source-umich-lib"
-    multi-ecosystem-group: "maintenance"
-    patterns: ["*"]
-    
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"

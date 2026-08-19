@@ -1,0 +1,111 @@
+---
+/**
+ * DestinationHorizontalPanel - Horizontal grid of destination cards
+ * Converted from src/components/panels/destination-horizontal-panel.js
+ *
+ * Each card shows an image, title/subtitle, body HTML, and links to the
+ * building page and floor plan. The floor plan slug comes from
+ * card.relationships.field_floor_plan, which is pre-resolved by
+ * page-generator.js via the 'field_panels.field_cards.field_floor_plan'
+ * Drupal include (replacing the Gatsby useFloorPlan hook).
+ */
+import { getBuildingSlug, getFloor, getImage, getParentTitle, getRoom } from '../../utils';
+import Html from '../Html.astro';
+import CardImage from '../../reusable/CardImage.astro';
+import Link from '../../reusable/Link.astro';
+import Heading from '../../reusable/Heading.astro';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+
+const cards = (data.relationships.field_cards || []).map((card: any) => {
+  const buildingSlug = getBuildingSlug({ node: card });
+  const parentTitle = getParentTitle({ node: card });
+  const floor = getFloor({ node: card });
+  const imageData = getImage({ node: card });
+  const room = getRoom({ node: card });
+  const floorPlan = card.relationships?.field_floor_plan;
+
+  return {
+    buildingSlug,
+    content: card.body?.processed || null,
+    imgSrc: imageData?.imageUrl || null,
+    imgAlt: imageData?.imageAlt || '',
+    floorPlanSlug: floorPlan?.fields?.slug || floorPlan?.slug || floorPlan?.path?.alias || null,
+    linkDestText: [parentTitle, floor].filter(Boolean).join(' '),
+    subtitle: [parentTitle, floor, room].filter(Boolean).join(', '),
+    title: card.title
+  };
+});
+---
+
+<div class="destination-panel">
+  {cards.map((card: any) => (
+    <section class="destination-card">
+      {card.imgSrc && (
+        <CardImage imgSrc={card.imgSrc} imgAlt={card.imgAlt} />
+      )}
+      <div class="destination-card-content">
+        <Heading size="S" level={2}>
+          {card.title}
+          {card.subtitle && (
+            <span class="destination-card-subtitle">{card.subtitle}</span>
+          )}
+        </Heading>
+
+        {card.content && <Html html={card.content} />}
+
+        {card.buildingSlug && (
+          <p class="destination-card-link">
+            <Link href={card.buildingSlug}>View building information</Link>
+          </p>
+        )}
+
+        {card.floorPlanSlug && (
+          <p class={card.buildingSlug ? 'destination-card-link-no-top' : 'destination-card-link'}>
+            <Link href={card.floorPlanSlug}>View floor plan</Link>
+          </p>
+        )}
+      </div>
+    </section>
+  ))}
+</div>
+
+<style>
+  .destination-panel {
+    margin-top: var(--spacing-xl, 2rem);
+  }
+
+  .destination-card {
+    margin-bottom: var(--spacing-xl, 2rem);
+  }
+
+  @media (--bp-4xl-up) {
+    .destination-card {
+      display: grid;
+      gap: var(--spacing-m, 1rem);
+      grid-template-columns: 18.75rem 1fr;
+    }
+  }
+
+  .destination-card-subtitle {
+    color: var(--color-neutral-300);
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    margin-top: .125rem;
+    text-transform: uppercase;
+  }
+
+  .destination-card-link {
+    margin-top: var(--spacing-m, 1rem);
+  }
+
+  .destination-card-link-no-top {
+    margin-top: 0;
+  }
+</style>

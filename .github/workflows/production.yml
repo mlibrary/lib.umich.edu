@@ -61,22 +61,22 @@ jobs:
           node-version: lts/*
           check-latest: true
       # Enabling cache
-      - name: Caching Gatsby
-        id: gatsby-cache-build
+      - name: Caching Astro
+        id: astro-cache-build
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: |
-            public
-            .cache
-          key: ${{ runner.os }}-gatsby-build-${{ github.run_id }}
+            dist
+            node_modules/.astro
+          key: ${{ runner.os }}-astro-build-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-gatsby-build-
+            ${{ runner.os }}-astro-build-
       # Run npm ci (clean-install) and build on our code
       - run: npm ci
       - run: npm run build
       # Deploy to Netlify using our production secrets
       - name: Deploy to netlify
-        run: npx netlify-cli deploy --dir=public --no-build --prod
+        run: npx netlify-cli deploy --dir=dist --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}

@@ -1,0 +1,478 @@
+---
+/**
+ * Small Screen (Mobile) Header Component
+ * Displays mobile navigation with Gatsby-style drill-down behavior
+ */
+import Logo from "./Logo.astro";
+import Icon from "../../reusable/Icon.astro";
+import SiteSearchModal from "./SiteSearchModal.astro";
+import Margins from '../Margins.astro';
+
+interface Props {
+  primary: any[];
+  secondary: any[];
+}
+
+const { primary, secondary } = Astro.props;
+const primaryDataJson = JSON.stringify(primary ?? []);
+---
+
+<header class="header-small">
+  <Margins>
+    <div class="mobile-flex">
+      <!-- Logo -->
+      <div class="logo-mobile">
+        <Logo size={32} />
+      </div>
+
+      <!-- Mobile Nav + Search -->
+      <div class="mobile-actions">
+        <SiteSearchModal />
+
+        <button
+          class="mobile-menu-toggle"
+          aria-expanded="false"
+          id="mobile-menu-toggle"
+        >
+          <Icon icon="menu" size={32} class="menu-icon menu-icon-open" />
+          <Icon icon="close" size={32} class="menu-icon menu-icon-close" />
+          <span class="visually-hidden">Navigation</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <nav class="mobile-nav" aria-label="Main and utility">
+      <div class="mobile-dropdown" id="mobile-dropdown" hidden>
+        <ul class="mobile-primary-nav" id="mobile-primary-nav" aria-label="Main"></ul>
+
+        {
+          secondary && secondary.length > 0 && (
+            <nav aria-label="Utility navigation" class="mobile-secondary-nav" id="mobile-secondary-nav">
+              <ul>
+                {secondary.map((item) => {
+                  return (
+                    <li>
+                      <a href={item.to}>
+                        {item.icon &&
+                          (typeof item.icon === "string" ? (
+                            <Icon icon={item.icon} size={16} />
+                          ) : (
+                            <Icon d={item.icon.d || item.icon} size={16} />
+                          ))}
+                        {item.text}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          )
+        }
+
+        <script type="application/json" id="mobile-primary-data" set:html={primaryDataJson}></script>
+        <template id="mobile-icon-next">
+          <Icon icon="navigate_next" size={24} />
+        </template>
+        <template id="mobile-icon-back">
+          <Icon icon="navigate_before" size={24} />
+        </template>
+        <template id="mobile-icon-forward">
+          <Icon icon="arrow_forward" size={24} />
+        </template>
+      </div>
+    </nav>
+  </Margins>
+</header>
+
+
+<script>
+  // Mobile menu toggle + drill-down navigation stack
+  const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+  const mobileDropdown = document.getElementById("mobile-dropdown");
+  const mobilePrimaryNav = document.getElementById("mobile-primary-nav") as HTMLUListElement | null;
+  const mobileSecondaryNav = document.getElementById("mobile-secondary-nav") as HTMLElement | null;
+  const primaryDataNode = document.getElementById("mobile-primary-data");
+
+  let primaryItems: any[] = [];
+  try {
+    primaryItems = primaryDataNode?.textContent
+      ? JSON.parse(primaryDataNode.textContent)
+      : [];
+  } catch {
+    primaryItems = [];
+  }
+
+  const drilldownStack: any[] = [];
+
+  const hasChildren = (item: any) => {
+    return Array.isArray(item?.children) && item.children.length > 0;
+  };
+
+  const cloneTemplateIcon = (templateId: string) => {
+    const template = document.getElementById(templateId) as HTMLTemplateElement | null;
+    if (!template?.content?.firstElementChild) {
+      return null;
+    }
+    return template.content.firstElementChild.cloneNode(true) as HTMLElement;
+  };
+
+  const getCurrentItems = () => {
+    if (drilldownStack.length === 0) {
+      return primaryItems;
+    }
+
+    const current = drilldownStack[drilldownStack.length - 1];
+    return Array.isArray(current?.children) ? current.children : [];
+  };
+
+  const renderPrimaryNav = () => {
+    if (!mobilePrimaryNav) {
+      return;
+    }
+
+    mobilePrimaryNav.innerHTML = "";
+
+    if (drilldownStack.length > 0) {
+      const selectedNode = drilldownStack[drilldownStack.length - 1];
+      const backLi = document.createElement("li");
+      backLi.className = "mobile-primary-item mobile-primary-item-back";
+
+      const backButton = document.createElement("button");
+      backButton.type = "button";
+      backButton.className = "mobile-primary-btn mobile-back-btn";
+      backButton.setAttribute("aria-expanded", "true");
+
+      const backIcon = cloneTemplateIcon("mobile-icon-back");
+      if (backIcon) {
+        backIcon.classList.add("mobile-back-icon");
+        backButton.appendChild(backIcon);
+      }
+
+      const text = document.createElement("span");
+      text.className = "mobile-back-text";
+      text.textContent = selectedNode?.text || "Back";
+      backButton.appendChild(text);
+
+      backButton.addEventListener("click", () => {
+        drilldownStack.pop();
+        renderPrimaryNav();
+      });
+
+      backLi.appendChild(backButton);
+      mobilePrimaryNav.appendChild(backLi);
+    }
+
+    getCurrentItems().forEach((item: any) => {
+      const li = document.createElement("li");
+      li.className = "mobile-primary-item";
+
+      if (hasChildren(item) && drilldownStack.length < 2) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "mobile-primary-btn mobile-drilldown-btn";
+        button.setAttribute("aria-expanded", "false");
+
+        const label = document.createElement("span");
+        label.textContent = item?.text || "";
+        button.appendChild(label);
+
+        const nextIcon = cloneTemplateIcon("mobile-icon-next");
+        if (nextIcon) {
+          nextIcon.classList.add("mobile-next-icon");
+          button.appendChild(nextIcon);
+        }
+
+        button.addEventListener("click", () => {
+          drilldownStack.push(item);
+          renderPrimaryNav();
+        });
+
+        li.appendChild(button);
+      } else {
+        const link = document.createElement("a");
+        link.className = "mobile-primary-link";
+        link.href = item?.to || "#";
+        link.textContent = item?.text || "";
+        li.appendChild(link);
+      }
+
+      mobilePrimaryNav.appendChild(li);
+    });
+
+    // At tertiary level, add "View all [parent]" link (matching Gatsby's NavPanelTertiary)
+    if (drilldownStack.length === 2) {
+      const parentNode = drilldownStack[drilldownStack.length - 1];
+      if (parentNode?.to) {
+        const viewAllLi = document.createElement("li");
+        viewAllLi.className = "mobile-primary-item";
+
+        const viewAllLink = document.createElement("a");
+        viewAllLink.className = "mobile-primary-link mobile-view-all-link";
+        viewAllLink.href = parentNode.to;
+
+        const viewAllText = document.createElement("span");
+        viewAllText.className = "mobile-view-all-text";
+        viewAllText.textContent = `View all ${parentNode?.text || ""}`;
+        viewAllLink.appendChild(viewAllText);
+
+        const forwardIcon = cloneTemplateIcon("mobile-icon-forward");
+        if (forwardIcon) {
+          forwardIcon.classList.add("mobile-forward-icon");
+          viewAllLink.appendChild(forwardIcon);
+        }
+
+        viewAllLi.appendChild(viewAllLink);
+        mobilePrimaryNav.appendChild(viewAllLi);
+      }
+    }
+
+    if (mobileSecondaryNav) {
+      mobileSecondaryNav.style.display = drilldownStack.length > 0 ? "none" : "";
+    }
+  };
+
+  const menuIconOpen = mobileMenuToggle?.querySelector(
+    ".menu-icon-open",
+  ) as HTMLElement | null;
+  const menuIconClose = mobileMenuToggle?.querySelector(
+    ".menu-icon-close",
+  ) as HTMLElement | null;
+
+  const setMenuIconState = (expanded: boolean) => {
+    if (menuIconOpen) {
+      menuIconOpen.style.display = expanded ? "none" : "inline-block";
+    }
+    if (menuIconClose) {
+      menuIconClose.style.display = expanded ? "inline-block" : "none";
+    }
+  };
+
+  const closeMenuAndReset = () => {
+    if (!mobileMenuToggle || !mobileDropdown) {
+      return;
+    }
+
+    mobileMenuToggle.setAttribute("aria-expanded", "false");
+    mobileDropdown.hidden = true;
+    setMenuIconState(false);
+    drilldownStack.length = 0;
+    renderPrimaryNav();
+  };
+
+  if (mobileMenuToggle && mobileDropdown && !mobileDropdown.dataset.initialized) {
+    mobileDropdown.dataset.initialized = "true";
+
+    // Ensure initial icon state is consistent.
+    setMenuIconState(false);
+    renderPrimaryNav();
+
+    mobileMenuToggle.addEventListener("click", () => {
+      const isExpanded =
+        mobileMenuToggle.getAttribute("aria-expanded") === "true";
+      const nextExpanded = !isExpanded;
+      mobileMenuToggle.setAttribute("aria-expanded", String(nextExpanded));
+      mobileDropdown.hidden = isExpanded;
+      setMenuIconState(nextExpanded);
+
+      if (!nextExpanded) {
+        drilldownStack.length = 0;
+        renderPrimaryNav();
+      }
+    });
+
+    document.addEventListener("mouseup", (event) => {
+      const target = event.target as Node;
+      if (!mobileDropdown.contains(target) && !mobileMenuToggle.contains(target)) {
+        closeMenuAndReset();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeMenuAndReset();
+      }
+    });
+  }
+</script>
+
+<style>
+  .header-small {
+    display: block;
+    border-bottom: 2px solid var(--color-neutral-100, #e0e0e0);
+    background: white;
+  }
+
+  .mobile-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo-mobile {
+    flex-shrink: 0;
+  }
+
+  .mobile-actions {
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-menu-toggle {
+    margin-right: -0.5rem;
+  }
+
+  .mobile-search-toggle,
+  .mobile-menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1rem 0.5rem;
+    color: var(--color-blue-400, #00274c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-menu-toggle .menu-icon-close {
+    display: none !important;
+  }
+
+  .mobile-menu-toggle[aria-expanded="true"] .menu-icon-open {
+    display: none !important;
+  }
+
+  .mobile-menu-toggle[aria-expanded="true"] .menu-icon-close {
+    display: inline-block !important;
+  }
+
+  .mobile-search-toggle .material-icons,
+  .mobile-menu-toggle .material-icons {
+    font-size: 32px;
+  }
+
+  /* Mobile dropdown */
+  .mobile-dropdown {
+    background: white;
+    border-top: solid 1px var(--color-neutral-100);
+    box-shadow: rgb(0 0 0 / 10%) 0 4px 8px 0;
+    max-width: 84vw;
+    position: absolute;
+    right: 1.5rem;
+    width: 20rem;
+    z-index: 101;
+  }
+
+  .mobile-nav {
+    flex-shrink: 0;
+  }
+
+  .mobile-primary-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-primary-item {
+    border-bottom: 1px solid var(--color-neutral-100, #e0e0e0);
+  }
+
+  .mobile-primary-item-back {
+    border-bottom: 1px solid var(--color-neutral-100, #e0e0e0);
+  }
+
+  :global(.mobile-primary-btn),
+  :global(.mobile-primary-link) {
+      align-items: center;
+    border-bottom: solid 1px var(--color-neutral-100);
+    color: var(--color-neutral-400);
+    cursor: pointer;
+    display: flex;
+    padding: 1rem;
+    text-align: left;
+    text-decoration: none;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  :global(.mobile-back-btn) {
+    justify-content: flex-start;
+  }
+
+  .mobile-drilldown-btn {
+    justify-content: space-between;
+  }
+
+  :global(.mobile-back-text) {
+    font-weight: 800;
+  }
+
+  :global(.mobile-back-icon) {
+    margin-right: 0.5rem;
+  }
+
+  :global(.mobile-view-all-link) {
+    font-weight: 800;
+    justify-content: flex-start;
+  }
+
+  :global(.mobile-view-all-text) {
+    margin-right: 0.5rem;
+  }
+
+  .mobile-next-icon {
+    margin-left: 0.5rem;
+  }
+
+  .mobile-secondary-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-secondary-nav a {
+    align-items: center;
+    border-bottom: solid 1px var(--color-neutral-100);
+    color: var(--color-neutral-300);
+    cursor: pointer;
+    display: flex;
+    padding: 1rem;
+    text-align: left;
+    text-decoration: none;
+    width: 100%;
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    background: var(--color-blue-100);
+    gap: .25rem;
+  }
+
+  .mobile-secondary-nav .material-icons {
+    font-size: 14px;
+  }
+
+  .mobile-menu-toggle:focus,
+  .mobile-primary-btn:focus,
+  .mobile-primary-link:focus,
+  .mobile-secondary-nav a:focus {
+    box-shadow: none;
+    outline: none;
+  }
+
+  .mobile-menu-toggle:focus-visible,
+  .mobile-primary-btn:focus-visible,
+  .mobile-primary-link:focus-visible,
+  .mobile-secondary-nav a:focus-visible {
+    box-shadow: none;
+    outline: 1px auto;
+    outline-color: var(--color-blue-400, #00274c);
+    border-radius: 0;
+  }
+
+  @media (--bp-header-fit-up) {
+    .header-small {
+      display: none;
+    }
+  }
+</style>

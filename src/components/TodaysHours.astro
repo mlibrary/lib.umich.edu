@@ -1,0 +1,34 @@
+---
+/**
+ * TodaysHours - Display today's hours for a Drupal node
+ * Converted from src/components/todays-hours.js
+ *
+ * Hours are computed client-side so the displayed time reflects
+ * "now" in the user's session rather than the build time.
+ */
+
+interface Props {
+  node: any;
+}
+
+const { node } = Astro.props;
+---
+
+<span class="hours-display" data-hours-node={JSON.stringify(node)}>…</span>
+
+<script>
+  import { displayHours } from '../utils/hours.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.hours-display[data-hours-node]').forEach((el) => {
+      try {
+        const node = JSON.parse(el.getAttribute('data-hours-node') || '{}');
+        const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+        const hours = displayHours({ node, now });
+        el.textContent = hours ? `Today: ${hours.text}` : 'Today: n/a';
+      } catch {
+        el.textContent = 'Today: n/a';
+      }
+    });
+  });
+</script>

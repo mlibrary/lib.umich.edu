@@ -1,0 +1,147 @@
+---
+/**
+ * Page Header Component - Converted to Astro
+ * Original: src/components/page-header.js
+ * 
+ * Displays page title, breadcrumb, summary, and optional hero image
+ */
+import Breadcrumb from './Breadcrumb.astro';
+import DrupalImage from './DrupalImage.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Heading from '../reusable/Heading.astro';
+import Margins from './Margins.astro';
+
+interface Props {
+  breadcrumb?: string;
+  title: string;
+  summary?: string;
+  image?: any;
+}
+
+const { breadcrumb, title, summary, image } = Astro.props;
+
+// Extract image data — page-generator resolves these as flat fields on field_media_image
+const imageRelationship = image;
+const imageSrc = imageRelationship?.imageUrl || null;
+const imageAlt = imageRelationship?.imageAlt || '';
+const imageWidth = imageRelationship?.imageWidth || 920;
+const imageHeight = imageRelationship?.imageHeight || 400;
+
+// Use the breadcrumb prop directly if provided, otherwise generate a basic fallback
+let breadcrumbData = breadcrumb;
+if (!breadcrumbData) {
+  breadcrumbData = generateBreadcrumb(
+    { title: title, slug: '' },
+    []
+  );
+}
+---
+
+<div class="page-header-wrapper">
+  <Margins>
+    <header class="page-header">
+      <div class="page-header-content">
+        <Breadcrumb data={breadcrumbData} />
+        <div class="page-header-heading-wrapper">
+          <Heading size="3XL" level={1}>
+            {title}
+          </Heading>
+        </div>
+        {summary && (
+          <p class="page-summary">{summary}</p>
+        )}
+      </div>
+      
+      {imageSrc && (
+        <div class="page-header-image">
+          <DrupalImage src={imageSrc} alt={imageAlt} width={imageWidth} height={imageHeight} maxWidth={920} loading="eager" sizes="(min-width: 920px) 920px, 100vw" />
+        </div>
+      )}
+    </header>
+  </Margins>
+</div>
+
+<style>
+  .page-header-wrapper {
+    border-bottom: 1px solid var(--color-neutral-100, #e0e0e0);
+  }
+  
+  .page-heading{
+    margin-bottom: 1rem;
+  }
+
+  .page-header-heading-wrapper :global(h1){
+    margin-bottom: 1rem;
+  }
+  
+  .page-header {
+    display: block;
+  }
+  
+  .page-header-content {
+    padding: 0px 2.5rem 1.5rem 0px;
+  }
+  
+  .page-summary {
+    font-size: 1.125rem;
+    max-width: 38rem;
+  }
+  
+  .page-header-image {
+    margin: 0 -1rem;
+  }
+  
+  .page-header-image img {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    max-width: none;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    object-fit: cover;
+  }
+  
+  /* Desktop layout: side-by-side */
+  @media (--bp-md-up) {
+    .page-header {
+      display: flex;
+      align-items: stretch;
+      min-height: 350px;
+    }
+    
+    .page-header-content {
+      flex: 1 1 0;
+    }
+    
+    .page-header-image {
+      flex: 0 1 50%;
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Match Gatsby header behavior: image fills the 50% column height */
+    :global(.page-header-image .gatsby-image-wrapper) {
+      aspect-ratio: auto !important;
+      height: 100%;
+    }
+    
+    :global(.page-header-image img) {
+      bottom: 0;
+      height: 100% !important;
+      left: 0;
+      margin: 0;
+      max-width: none;
+      padding: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+</style>

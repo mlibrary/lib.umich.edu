@@ -1,0 +1,16 @@
+/* 
+  Global Styles Barrel File
+  Imports all modular CSS files for the Astro project
+*/
+
+/* Import CSS modules in order of importance */
+@import url('./reset.css');
+@import url('./base.css');
+@import url('./utilities.css');
+@import url('./table.css');
+
+img{
+  border-radius: 0;
+}
+
+/* Add any project-specific overrides here if needed */

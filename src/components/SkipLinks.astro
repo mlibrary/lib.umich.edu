@@ -1,0 +1,60 @@
+---
+import Margins from './Margins.astro';
+
+const mainContentAnchor = "#maincontent";
+const chatAnchor = "#chat";
+const siteMap = "/site-map";
+---
+
+<section aria-label="Skip links" class="skip-links">
+    <Margins>
+        <ul>
+            <li><a href={mainContentAnchor}>Skip to main content</a></li>
+            <li><a href={chatAnchor}>Skip to Ask a Librarian chat</a></li>
+            <li><a href={siteMap}>View site map</a></li>
+        </ul>
+    </Margins>
+</section>
+
+<style>
+    .skip-links {
+    background-color: var(--color-blue-400, #00274C);
+    height: 1px;
+    left: -10000px;
+    overflow: hidden;
+    position: absolute;
+    top: auto;
+    width: 1px;
+    }
+
+    .skip-links:focus-within {
+    height: auto;
+    padding: 1rem 0;
+    position: static;
+    width: auto;
+    }
+
+    .skip-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    }
+
+    .skip-links li {
+    text-align: center;
+    }
+
+    .skip-links li:not(:last-of-type) {
+    margin-bottom: 1rem;
+    }
+
+    .skip-links a {
+    color: white;
+    padding: 0.5rem;
+    text-decoration: underline;
+    }
+
+    .skip-links *:focus {
+    outline-color: white;
+    }
+</style>

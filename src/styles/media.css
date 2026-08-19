@@ -1,0 +1,19 @@
+/* Shared media query aliases */
+@custom-media --bp-xs-up (min-width: 480px);
+@custom-media --bp-sm-up (min-width: 640px);
+@custom-media --bp-md-up (min-width: 641px);
+@custom-media --bp-lg-up (min-width: 720px);
+@custom-media --bp-lg-down (max-width: 720px);
+@custom-media --bp-xl-up (min-width: 768px);
+@custom-media --bp-2xl-up (min-width: 920px);
+@custom-media --bp-2xl-down (max-width: 919px);
+@custom-media --bp-3xl-up (min-width: 960px);
+@custom-media --bp-4xl-up (min-width: 1024px);
+@custom-media --bp-header-max-down (max-width: 1100px);
+@custom-media --bp-header-fit-up (min-width: 1129px);
+@custom-media --bp-header-fit-legacy-up (min-width: 1130px);
+@custom-media --bp-content-up (min-width: 1200px);
+
+@custom-media --bp-sm-down (max-width: 640px);
+@custom-media --bp-md-down (max-width: 820px);
+@custom-media --bp-content-down (max-width: 1199px);

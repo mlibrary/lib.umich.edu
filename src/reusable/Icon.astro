@@ -1,0 +1,55 @@
+---
+/**
+ * Icon component to render an SVG icon from a predefined list.
+ *
+ * Usage:
+ * <Icon icon="search" size={24} />
+ */
+import { icons } from './icons';
+
+interface Props {
+  /** Icon name from the list of available icons. */
+  icon?: string;
+  /** SVG path data for custom icons, overrides icon prop */
+  d?: string;
+  /** Icon size in pixels */
+  size?: number;
+  /** Accessible title for the icon */
+  title?: string;
+  /** Additional CSS class */
+  class?: string;
+  /** Inline styles */
+  style?: string;
+}
+
+
+const { 
+  icon,
+  d,
+  size = 16, 
+  title,
+  class: className = '',
+  style = ''
+} = Astro.props;
+
+const path = d || (icon && icons[icon]);
+
+// If no title, hide from assistive technology
+const isHidden = !title;
+---
+
+{path ? (
+  <svg
+    width={`${size}px`}
+    height={`${size}px`}
+    viewBox="0 0 24 24"
+    class={className}
+    aria-hidden={isHidden ? 'true' : undefined}
+    style={`display: inline-block; fill: currentColor; vertical-align: middle; ${style}`}
+  >
+    {title && <title>{title}</title>}
+    <path d={path} />
+  </svg>
+) : (
+  <span class={className} aria-hidden="true">⚠</span>
+)}

@@ -1,0 +1,146 @@
+---
+import Icon from '../reusable/Icon.astro';
+import Link from '../reusable/Link.astro';
+
+/**
+ * Breadcrumb Component - Converted to Astro
+ * Original: src/components/breadcrumb.js
+ * 
+ * Displays navigation breadcrumbs
+ */
+
+interface Props {
+  data?: string;
+  size?: 'default' | 'compact';
+  [key: string]: any;
+}
+
+const { data, size = 'default', class: className = '', ...rest } = Astro.props;
+
+// Parse breadcrumb data (provided as encoded JSON)
+let parsedData: Array<{text: string, to?: string}> = [];
+
+if (data) {
+  try {
+    parsedData = JSON.parse(data);
+  } catch (e) {
+    console.error('Failed to parse breadcrumb data:', e);
+  }
+}
+
+// Don't render if no valid data
+if (!parsedData || parsedData.length === 0) {
+  return null;
+}
+
+const count = parsedData.length;
+// Parent is second-to-last item (or first if only one item)
+const parentIndex = count > 1 ? count - 2 : 0;
+---
+
+<nav
+  aria-label="Breadcrumb"
+  class:list={[
+    'breadcrumb',
+    className,
+    { 'breadcrumb--compact': size === 'compact' }
+  ]}
+  {...rest}
+>
+  <ol class="breadcrumb-list">
+    {parsedData.map(({ text, to }, index) => (
+      <li class:list={["breadcrumb-item", { "breadcrumb-item--parent": index === parentIndex }]}>
+        <span aria-hidden="true" class="breadcrumb-icon-wrapper">
+          {index === parentIndex && (
+            <span class="icon-back"><Icon icon='navigate_before' /></span>
+          )}
+          {index > 0 && (
+            <span class="icon-next"><Icon icon='navigate_next' /></span>
+          )}
+        </span>
+        {to ? (
+          <Link class="breadcrumb-link" href={to}>{text}</Link>
+        ) : (
+          <span class="breadcrumb-text">{text}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb {
+    padding: 1rem 0;
+  }
+
+  :global(.breadcrumb-link){
+    margin-right: 0 !important;
+  }
+
+  @media (min-width: 641px) {
+    .breadcrumb {
+      padding-bottom: 2rem;
+      padding-top: 2.5rem;
+    }
+
+    .breadcrumb.breadcrumb--compact {
+      padding-bottom: 1.5rem;
+      padding-top: 1.5rem;
+    }
+  }
+  
+  .breadcrumb-list {
+    list-style: none;
+  }
+
+  /* Mobile: hide all items except the parent */
+  .breadcrumb-item {
+    display: none;
+  }
+
+  .breadcrumb-item--parent {
+    display: block;
+  }
+
+  /* Desktop: show all items inline */
+  @media (min-width: 641px) {
+    .breadcrumb-item {
+      display: inline-block;
+      margin-right: 0.25rem;
+    }
+  }
+
+  .breadcrumb-item > a {
+    margin-right: 0.25rem;
+  }
+
+  .breadcrumb-icon-wrapper {
+    margin-right: 0.25rem;
+  }
+
+  /* Back arrow: visible on mobile, hidden on desktop */
+  .icon-back {
+    display: inline-block;
+  }
+
+  @media (min-width: 641px) {
+    .icon-back {
+      display: none;
+    }
+  }
+
+  /* Next arrow: hidden on mobile, visible on desktop */
+  .icon-next {
+    display: none;
+  }
+
+  @media (min-width: 641px) {
+    .icon-next {
+      display: inline-block;
+    }
+  }
+
+  .breadcrumb-text {
+    color: var(--color-neutral-400);
+  }
+</style>

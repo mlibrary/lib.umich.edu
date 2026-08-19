@@ -1,0 +1,28 @@
+---
+/**
+ * Home Page Template
+ * Converted from src/templates/home.js
+ */
+import Layout from '../layouts/Layout.astro';
+import Panels from '../components/panels/Panels.astro';
+import DebugPanel from '../components/panels/DebugPanel.astro';
+
+const { node } = Astro.props;
+const { title, relationships, drupal_internal__nid } = node;
+const panels = relationships?.field_panels || [];
+
+---
+<Layout title={title}>
+  <DebugPanel node={node}></DebugPanel>
+  <!-- Debug info -->
+  <!-- <div style="background: yellow; padding: 1rem; margin: 1rem;">
+    <strong>Debug:</strong> Found {panels?.length || 0} panels
+    {panels?.map((panel, index) => (
+      <div key={index}>
+      Panel {index + 1}: {panel?.type || panel?.__typename || 'unknown'}
+      </div>
+    ))}
+  </div> -->
+  
+  <Panels data={panels} />
+</Layout>

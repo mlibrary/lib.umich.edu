@@ -1,0 +1,97 @@
+---
+/**
+ * Address - Display address lines for a Drupal node
+ * Converted from src/components/address.js
+ */
+
+interface Props {
+  node: any;
+  kind?: 'brief' | 'full';
+  directions?: boolean;
+}
+
+const { node, kind = 'brief', directions = false } = Astro.props;
+
+const transformAddressDataToArray = (data: any, k: string): string[] => {
+  const {
+    organization,
+    address_line1: addressLine1,
+    address_line2: addressLine2,
+    locality,
+    administrative_area: administrativeArea,
+    postal_code: postalCode
+  } = data;
+
+  // For 'brief', skip address_line2 (e.g., building/room info)
+  const line2 = k === 'brief' ? null : addressLine2;
+
+  return [
+    organization,
+    addressLine1,
+    line2,
+    `${locality}, ${administrativeArea} ${postalCode}`
+  ].filter((line): line is string => typeof line === 'string' && line.length > 0);
+};
+
+const getAddress = (node: any, k: string): string[] | null => {
+  const { field_building_address: fieldBuildingAddress } = node;
+  const {
+    field_parent_location: fieldParentLocation,
+    field_room_building: fieldRoomBuilding
+  } = node.relationships;
+
+  if (fieldBuildingAddress && fieldBuildingAddress.address_line1?.length) {
+    return transformAddressDataToArray(fieldBuildingAddress, k);
+  }
+
+  if (fieldRoomBuilding && fieldRoomBuilding.field_building_address?.address_line1?.length) {
+    return transformAddressDataToArray(fieldRoomBuilding.field_building_address, k);
+  }
+
+  if (fieldParentLocation?.field_building_address) {
+    return transformAddressDataToArray(fieldParentLocation.field_building_address, k);
+  }
+
+  return null;
+};
+
+const getDescription = (node: any): string[] => {
+  const { field_room_number: fieldRoomNumber } = node;
+  const {
+    field_floor: fieldFloor,
+    field_room_building: fieldRoomBuilding,
+    field_parent_location: fieldParentLocation
+  } = node.relationships;
+
+  const name = fieldRoomBuilding?.title || fieldParentLocation?.title || null;
+  const floor = fieldFloor
+    ? (() => { const parts = fieldFloor.name.split(' - '); return parts[parts.length - 1]; })()
+    : null;
+  const room = fieldRoomNumber ? `Room ${fieldRoomNumber}` : null;
+
+  const line1Parts = [floor, room].filter((item): item is string => item !== null);
+  const line1 = line1Parts.length > 0 ? line1Parts.join(', ') : null;
+
+  return [line1, name].filter((item): item is string => item !== null);
+};
+
+const description = kind === 'full' ? getDescription(node) : [];
+const address = getAddress(node, kind) || [];
+const lines = description.length > 0 ? [...description, ...address] : address;
+
+const googleMapsURL =
+  directions && address.length > 0
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address.join(' '))}`
+    : null;
+---
+
+{lines.length > 0 && (
+  <address>
+    {lines.map((line) => (
+      <p>{line}</p>
+    ))}
+    {googleMapsURL && (
+      <a href={googleMapsURL}>View directions</a>
+    )}
+  </address>
+)}

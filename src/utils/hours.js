@@ -1,26 +1,23 @@
 /* eslint-disable no-underscore-dangle */
-/*
- *- Put "paragraph__hours_exceptions" first
- *- Add all the other ranges in the order presented
- *- Then add "paragraph__fall_and_winter_semester_hours" last
- */
 const prioritizeHours = ({ hours }) => {
   if (!hours) {
     return [];
   }
+
+  const normalize = (typename) => (typename ?? '').replace('--', '__');
 
   const types = [
     'paragraph__hours_exceptions',
     'paragraph__fall_and_winter_semester_hours'
   ];
   const exceptions = hours.filter((set) => {
-    return set.__typename === types[0];
+    return normalize(set.__typename) === types[0];
   });
   const fallAndWinter = hours.filter((set) => {
-    return set.__typename === types[1];
+    return normalize(set.__typename) === types[1];
   });
   const everythingElse = hours.filter((set) => {
-    return !types.includes(set.__typename);
+    return !types.includes(normalize(set.__typename));
   });
 
   const prioritized = []
@@ -79,28 +76,54 @@ export const getHoursFromNode = ({ node }) => {
     fieldRoomBuilding
     && !fieldRoomBuilding.field_display_hours_
     && fieldRoomBuilding.relationships.field_parent_location
-    && fieldRoomBuilding.relationships.field_parent_location
-      .field_display_hours_
+    && fieldRoomBuilding.relationships.field_parent_location.field_display_hours_
   ) {
-    return prioritizeHours({
-      hours:
-          fieldRoomBuilding.relationships.field_parent_location.relationships
-            .field_hours_open
-    });
+    const parentHours = fieldRoomBuilding.relationships.field_parent_location.relationships
+      .field_hours_open;
+
+    if (parentHours && parentHours.length) {
+      return prioritizeHours({
+        hours: parentHours
+      });
+    }
+
+    // Fallback: parent location is display target but its hours were not
+    // expanded in this payload; use building hours when present to avoid n/a.
+    const buildingHours = fieldRoomBuilding.relationships.field_hours_open;
+    if (buildingHours && buildingHours.length) {
+      return prioritizeHours({
+        hours: buildingHours
+      });
+    }
+
+    return null;
   }
 
   if (
     fieldParentLocation
     && !fieldParentLocation.field_display_hours_
     && fieldParentLocation.relationships.field_parent_location
-    && fieldParentLocation.relationships.field_parent_location
-      .field_display_hours_
+    && fieldParentLocation.relationships.field_parent_location.field_display_hours_
   ) {
-    return prioritizeHours({
-      hours:
-          fieldParentLocation.relationships.field_parent_location
-            .relationships.field_hours_open
-    });
+    const parentHours = fieldParentLocation.relationships.field_parent_location
+      .relationships.field_hours_open;
+
+    if (parentHours && parentHours.length) {
+      return prioritizeHours({
+        hours: parentHours
+      });
+    }
+
+    // Fallback: parent location chain exists but parent-parent hours weren't
+    // expanded; use immediate parent location hours if available.
+    const immediateParentHours = fieldParentLocation.relationships.field_hours_open;
+    if (immediateParentHours && immediateParentHours.length) {
+      return prioritizeHours({
+        hours: immediateParentHours
+      });
+    }
+
+    return null;
   }
 
   return null;

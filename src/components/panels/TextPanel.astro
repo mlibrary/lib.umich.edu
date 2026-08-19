@@ -1,0 +1,259 @@
+---
+/**
+ * TextPanel - Various text content layouts
+ *
+ * Templates: callout, body_width_text, text_group, full_width_text_template,
+ *            grid_text_template_with_linked_title, image_text_body
+ */
+import Callout from '../../reusable/Callout.astro';
+import PanelTemplate from './PanelTemplate.astro';
+import PanelList from './PanelList.astro';
+import Margins from '../Margins.astro';
+import Heading from '../../reusable/Heading.astro';
+import Html from '../Html.astro';
+import Link from '../../reusable/Link.astro';
+import DrupalImage from '../DrupalImage.astro';
+import { DRUPAL_URL, removeTrailingSlash } from '../../lib/drupal.js';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+const title = data.field_title;
+const placement = data.field_placement;
+const template = data.relationships?.field_text_template?.field_machine_name;
+const cards = data.relationships?.field_text_card || [];
+
+const drupalBase = removeTrailingSlash(DRUPAL_URL);
+
+const buildImageUrl = (relativeUrl: string): string => {
+  if (!relativeUrl) return '';
+  return relativeUrl.startsWith('/') ? `${drupalBase}${relativeUrl}` : relativeUrl;
+};
+---
+
+{template === 'callout' && cards.length > 0 && (
+  placement !== 'body' ? (
+    <Margins>
+      <Callout intent="warning">
+        {title && (
+          <Heading level={2} size="M" class="callout-panel-heading">{title}</Heading>
+        )}
+        <Html html={cards[0].field_body.processed} />
+      </Callout>
+    </Margins>
+  ) : (
+    <Callout intent="warning" class="callout--body">
+      {title && (
+        <Heading level={2} size="M" class="callout-panel-heading">{title}</Heading>
+      )}
+      <Html html={cards[0].field_body.processed} />
+    </Callout>
+  )
+)}
+
+{(template === 'body_width_text' || template === 'text_group') && (
+  (placement !== 'body' && template === 'body_width_text') ? (
+    <Margins>
+      <div class="body-text body-text--margin-top">
+        {cards.map((card: any, index: number) => (
+          <section
+            class:list={["body-text-section", { "body-text-section--border": data.field_border === 'yes' }]}
+          >
+            {title && (
+              <Heading level={2} size="M" class="body-text-heading">{title}</Heading>
+            )}
+            <Html html={card.field_body?.processed} />
+          </section>
+        ))}
+      </div>
+    </Margins>
+  ) : (
+    <div class:list={["body-text", { "body-text--margin-top": template === 'body_width_text' }]}>
+      {cards.map((card: any, index: number) => (
+        <section
+          class:list={["body-text-section", { "body-text-section--border": data.field_border === 'yes' }]}
+        >
+          {title && (
+            <Heading level={2} size="M" class="body-text-heading">{title}</Heading>
+          )}
+          <Html html={card.field_body?.processed} />
+        </section>
+      ))}
+    </div>
+  )
+)}
+
+{template === 'full_width_text_template' && cards.length > 0 && (
+  <PanelTemplate shaded paddingLarge>
+    <div class="full-width-center">
+      <div class="full-width-content">
+        {title && (
+          <Heading level={2} size="M" class="full-width-heading">{title}</Heading>
+        )}
+        <div class="full-width-body">
+          <Html html={cards[0].field_body?.processed} />
+        </div>
+      </div>
+    </div>
+  </PanelTemplate>
+)}
+
+{template === 'grid_text_template_with_linked_title' && (
+  <PanelTemplate title={title}>
+    <PanelList twoColumns>
+      {cards.map((card: any, index: number) => {
+        const link = Array.isArray(card.field_link) ? card.field_link[0] : card.field_link;
+        return (
+          <li class="grid-text-item">
+            <div class="grid-text-title">
+              {link?.uri ? (
+                <Link href={link.uri} kind="description">{card.field_title}</Link>
+              ) : (
+                card.field_title
+              )}
+            </div>
+            {card.field_body?.processed && (
+              <div class="grid-text-body">
+                <Html html={card.field_body.processed} />
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </PanelList>
+  </PanelTemplate>
+)}
+
+{template === 'image_text_body' && (
+  <PanelTemplate title={title}>
+    {cards.map((card: any, index: number) => {
+      const fileUrl = card.relationships?.field_text_image?.relationships?.field_media_image?.uri?.url;
+      const imageUrl = fileUrl ? buildImageUrl(fileUrl) : null;
+      const imageMeta = card.relationships?.field_text_image?.relationships?.field_media_image?.meta;
+      const imageAlt = imageMeta?.alt || '';
+      const rawWidth = imageMeta?.width;
+      const rawHeight = imageMeta?.height;
+      const DISPLAY_WIDTH = 128;
+      const imageWidth = DISPLAY_WIDTH;
+      const imageHeight = (rawWidth && rawHeight) ? Math.round(DISPLAY_WIDTH * rawHeight / rawWidth) : 192;
+      return (
+        <section class="image-text-section">
+          {imageUrl && (
+            <div class="image-text-image">
+              <DrupalImage src={imageUrl} alt={imageAlt} width={imageWidth} height={imageHeight} sizes="128px" />
+            </div>
+          )}
+          <div class="image-text-content">
+            {card.field_title && (
+              <Heading level={title ? 3 : 2} size="S" class="image-text-heading">
+                {card.field_title}
+              </Heading>
+            )}
+            <Html html={card.field_body?.processed} />
+          </div>
+        </section>
+      );
+    })}
+  </PanelTemplate>
+)}
+
+{!template && cards.length > 0 && (
+  <PanelTemplate title={title}>
+    {cards.map((card: any) => (
+      card.field_body?.processed && (
+        <Html html={card.field_body.processed} />
+      )
+    ))}
+  </PanelTemplate>
+)}
+
+<style>
+  .callout--body {
+    max-width: 38rem;
+  }
+
+  .callout-panel-heading {
+    margin-bottom: 0.5rem;
+  }
+
+  .body-text--margin-top {
+    margin-top: 2rem;
+  }
+
+  .body-text-section {
+    padding-top: 0;
+  }
+
+  .body-text-section--border {
+    border-top: solid 1px var(--color-neutral-100);
+    padding-top: 2rem;
+  }
+
+  .body-text-heading {
+    margin-bottom: 1rem;
+  }
+
+  .full-width-center {
+    display: flex;
+    justify-content: center;
+  }
+
+  .full-width-content {
+    max-width: 38rem;
+    text-align: center;
+  }
+
+  .full-width-heading {
+    margin-bottom: 1rem;
+  }
+
+  .full-width-body {
+    color: var(--color-neutral-300);
+  }
+
+  /* grid_text_template_with_linked_title */
+  .grid-text-item {
+    margin-top: 2rem;
+    break-inside: avoid;
+  }
+
+  .grid-text-title {
+    margin-bottom: 0.5rem;
+  }
+
+  .grid-text-body {
+    color: var(--color-neutral-300);
+  }
+
+  .grid-text-body :global(p) {
+    display: inline-block;
+  }
+
+  /* image_text_body */
+  .image-text-section {
+    display: flex;
+  }
+
+  .image-text-section + .image-text-section {
+    border-top: solid 1px var(--color-neutral-100);
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+  }
+
+  .image-text-image {
+    flex-shrink: 0;
+    margin-right: 1.5rem;
+    width: 8rem;
+  }
+
+  .image-text-content {
+    flex: 1;
+  }
+  
+  .image-text-heading {
+    margin-bottom: 0.5rem;
+    margin-top: 0 !important;
+  }
+</style>

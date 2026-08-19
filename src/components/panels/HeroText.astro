@@ -1,0 +1,163 @@
+---
+/**
+ * HeroText.astro - Text hero panel with background image
+ * Ported from src/components/panels/hero-text.js
+ */
+import Heading from '../../reusable/Heading.astro';
+import { getNidToSlugMap } from '../../lib/page-generator.js';
+import Margins from '../Margins.astro';
+
+type Props = {
+  data: any;
+};
+
+const { data } = Astro.props as Props;
+
+const getNIDFromURI = (uri: string) => {
+  if (uri?.includes('entity:node/')) {
+    return uri.split('/')[1];
+  }
+  return null;
+};
+
+const nidToSlugMap = await getNidToSlugMap();
+
+const getSimpleLink = (linkData: any) => {
+  if (!linkData?.uri) return null;
+
+  const nid = getNIDFromURI(linkData.uri);
+  let to: string;
+
+  if (nid && nidToSlugMap[nid]) {
+    to = nidToSlugMap[nid];
+  } else if (linkData.uri.startsWith('entity:')) {
+    // Unresolved entity reference — fall back to node path
+    to = linkData.uri.replace('entity:node/', '/node/');
+  } else {
+    to = linkData.uri;
+  }
+
+  return {
+    text: linkData.title || 'Read more',
+    to
+  };
+};
+
+const fieldLink = data.field_link?.[0];
+const link = fieldLink ? getSimpleLink(fieldLink) : null;
+
+// Get background images (simplified - no Gatsby image processing)
+const fieldHeroImages = data.relationships?.field_hero_images || [];
+const largeScreenImage = fieldHeroImages.find(
+  (node: any) => node.field_orientation === 'horizontal'
+);
+
+const largeCmsUrl = largeScreenImage?.fileUrl || '';
+---
+
+<Margins>
+  <section
+    class="hero-background"
+    style={largeCmsUrl ? `background-image: url('${largeCmsUrl}');` : ''}
+  >
+    <div class="hero-content">
+      <div class="hero-inner">
+        <Heading level={2} size="3XL" class="hero-title">
+          {data.field_title}
+        </Heading>
+        
+        {data.field_caption_text?.processed && (
+          <div class="hero-text" set:html={data.field_caption_text.processed} />
+        )}
+        
+        {link && (
+          <div class="hero-link">
+            <a href={link.to} class="hero-link-button">
+              {link.text}
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+</Margins>
+
+<style>
+   @media (--bp-2xl-down) {
+    .hero-background{
+      margin: 0 -1rem;
+    }
+   }
+
+  .hero-background {
+    background-color: var(--color-blue-300, #0f4d92);
+    background-position: center;
+    background-size: cover;
+    position: relative;
+  }
+
+  .hero-content {
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 1rem;
+  }
+
+  @media (--bp-md-up) {
+    .hero-content {
+      padding: 4rem 0.75rem;
+    }
+  }
+
+  .hero-inner {
+    color: white;
+    text-align: center;
+  }
+
+  .hero-inner a {
+    color: white;
+    text-decoration: underline;
+    box-shadow: none;
+  }
+
+  .hero-inner a:hover {
+    box-shadow: none;
+    text-decoration-thickness: 2px;
+  }
+
+  .hero-title {
+    margin-bottom: 1rem;
+    color: white;
+  }
+
+  .hero-text {
+    display: inline-block;
+    font-size: 1.25rem;
+    width: auto;
+    max-width: 38rem;
+  }
+
+  .hero-link {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .hero-link a{
+    text-decoration-color: var(--color-maize-400);
+    text-decoration-thickness: 2px;
+  }
+
+  .hero-link a:hover{
+    text-decoration-thickness: 4px;
+  }
+
+  .hero-link-button {
+    text-decoration-color: var(--color-maize-400, #ffcb05);
+    text-decoration-thickness: 2px;
+  }
+
+  .hero-link-button:focus,
+  .hero-link-button:hover {
+    text-decoration-thickness: 4px;
+  }
+
+</style>

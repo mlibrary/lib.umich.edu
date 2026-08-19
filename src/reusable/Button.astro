@@ -1,0 +1,101 @@
+---
+/**
+ * Button Component
+ * Converted from src/reusable/button.jsx
+ *
+ * Kinds:
+ *   primary   — maize bg, inherit color
+ *   secondary — blue bg, white color (default)
+ *   tertiary  — white bg, teal border + color
+ *   subtle    — neutral-100 bg, inherit color
+ *   reset     — no decoration (relies on global button CSS reset)
+ */
+interface Props {
+  kind?: 'primary' | 'secondary' | 'tertiary' | 'subtle' | 'reset';
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  kind = 'secondary',
+  disabled = false,
+  type = 'button',
+  class: className = '',
+  ...rest
+} = Astro.props;
+---
+
+<button
+  class:list={[kind !== 'reset' && 'btn', `btn-${kind}`, { 'btn-disabled': disabled }, className]}
+  type={type}
+  disabled={disabled || undefined}
+  {...rest}
+>
+  <slot />
+</button>
+
+<style>
+  .btn {
+    align-items: center;
+    border-radius: 2px;
+    display: flex;
+    font-weight: 800;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem; /* SPACING.XS SPACING.M */
+  }
+
+  .btn:focus {
+    box-shadow: 0 0 0 3px #fff, 0 0 0 4px var(--color-neutral-400);
+    outline: none;
+  }
+
+  .btn-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* primary — maize background, inherit text color */
+  .btn-primary {
+    background: var(--color-maize-400);
+    color: inherit;
+  }
+
+  .btn-primary:not(.btn-disabled):hover {
+    background: var(--color-maize-500);
+  }
+
+  /* secondary (default) — teal background, white text */
+  .btn-secondary {
+    background: var(--color-teal-400);
+    color: white;
+  }
+
+  .btn-secondary:not(.btn-disabled):hover {
+    background: var(--color-teal-500);
+  }
+
+  /* tertiary — white bg, teal border and text */
+  .btn-tertiary {
+    background: white;
+    border: solid 1px var(--color-teal-400);
+    color: var(--color-teal-400);
+    padding: calc(0.5rem - 1px) calc(1rem - 1px);
+  }
+
+  .btn-tertiary:not(.btn-disabled):hover {
+    outline: solid 1px var(--color-teal-400);
+    outline-offset: -2px;
+  }
+
+  /* subtle — light grey background, inherit text color */
+  .btn-subtle {
+    background: var(--color-neutral-100);
+    color: inherit;
+  }
+
+  .btn-subtle:not(.btn-disabled):hover {
+    background: var(--color-blue-200);
+  }
+</style>

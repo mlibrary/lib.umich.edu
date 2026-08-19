@@ -1,0 +1,345 @@
+---
+import Icon from '../../reusable/Icon.astro';
+import Heading from '../../reusable/Heading.astro';
+
+interface Props {
+  items: any[];
+}
+
+const { items } = Astro.props;
+
+const dropdownSideWidth = '24rem';
+---
+
+<div class="nav-panel-container">
+  <ul class="nav-panel-sidebar" style={`width: ${dropdownSideWidth};`}>
+    {items.map((item, index) => (
+      <li class="nav-panel-item">
+        {item.children ? (
+          <>
+            <button
+              class="nav-panel-button"
+              data-panel-index={index}
+              aria-expanded="false"
+            >
+              <span class="text">{item.text}</span>
+              <Icon icon="navigate_next" />
+            </button>
+            <div
+              class="nav-panel-content"
+              data-panel-content-index={index}
+              hidden
+            >
+              <Heading level={2} class="nav-panel-heading">{item.text}</Heading>
+              {item.description && (
+                <p class="nav-panel-description">{item.description}</p>
+              )}
+              <ul
+                class="nav-panel-links"
+                style={item.children.length > 4 ? 'columns: 2; column-gap: 1.5rem;' : ''}
+              >
+                {item.children.map((child) => (
+                  <li class="nav-panel-link-item">
+                    <a href={child.to} class="nav-panel-sublink">
+                      <span class="text">{child.text}</span>
+                    </a>
+                  </li>
+                ))}
+                {item.to && (
+                  <li class="nav-panel-link-item">
+                    <a href={item.to} class="nav-panel-view-all">
+                      <span class="text">View all {item.text}</span>
+                      <Icon icon="arrow_forward" style="margin-left: .25rem;" />
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </>
+        ) : (
+          <a href={item.to} class="nav-panel-link">
+            <span class="text">{item.text}</span>
+          </a>
+        )}
+      </li>
+    ))}
+  </ul>
+  <div class="nav-panel-placeholder">
+    <p>Select an item from the list to see related links.</p>
+  </div>
+</div>
+
+<style>
+  .nav-panel-container {
+    position: relative;
+    display: flex;
+  }
+
+  .nav-panel-sidebar {
+    border-right: solid 1px var(--color-neutral-100);
+    min-height: 407px;
+    padding: 0.75rem 0;
+    width: 24rem;
+  }
+
+  .nav-panel-item .nav-panel-button {
+    align-items: center;
+    border-left: solid 5px transparent;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem 0.75rem calc(-5px + 1.5rem);
+    text-align: left;
+    width: 100%;
+    background: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  .nav-panel-item .nav-panel-button .text {
+    font-weight: 800;
+  }
+
+  .nav-panel-sublink:hover .text {
+    text-decoration: underline;
+  }
+
+  .nav-panel-view-all:hover .text {
+    text-decoration: underline;
+  }
+
+  .nav-panel-item .nav-panel-button:hover .text {
+    text-decoration: underline;
+  }
+
+  .nav-panel-item .nav-panel-link:hover .text {
+    text-decoration: underline;
+  }
+
+  .nav-panel-item .nav-panel-button[aria-expanded="true"] {
+    background: var(--color-teal-100);
+    border-color: var(--color-teal-400);
+  }
+
+  .nav-panel-item .nav-panel-link {
+    display: block;
+    font-weight: 800;
+    padding: 0.75rem 1.5rem;
+  }
+
+  /* Content panels are absolutely positioned to the right of the sidebar.
+     They live inside their button's <li> in the DOM so that keyboard tab
+     order is: button[0] → links[0] → button[1] → links[1] (matching Gatsby). */
+  .nav-panel-content {
+    right: 0;
+    padding: 2rem 2.5rem;
+    position: absolute;
+    top: 0;
+    width: calc(100% - 24rem);
+  }
+
+  .nav-panel-heading {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+
+  .nav-panel-description {
+    color: var(--color-neutral-300);
+    padding-top: 0.5rem;
+  }
+
+  .nav-panel-links {
+    border-top: solid 1px var(--color-neutral-100);
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .nav-panel-link-item {
+    break-inside: avoid;
+  }
+
+  .nav-panel-sublink {
+    display: block;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+
+  .nav-panel-view-all {
+    display: block;
+    font-size: 1rem;
+    font-weight: 800;
+    padding: 0.5rem 0;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .nav-panel-placeholder {
+    align-items: center;
+    background: var(--color-blue-100);
+    color: var(--color-neutral-300);
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    left: 24rem;
+    padding: 2rem 2.5rem;
+    position: absolute;
+    top: 0;
+    width: calc(100% - 24rem);
+    font-size: 0.875rem;
+  }
+</style>
+
+<script>
+  // NavPanel functionality
+  class NavPanel {
+    container;
+    buttons;
+    contentPanels;
+    placeholder;
+    currentOpenButton;
+    minHeight = 340;
+     constructor(container) {
+      this.container = container;
+      this.buttons = container.querySelectorAll('.nav-panel-button');
+      this.contentPanels = container.querySelectorAll('.nav-panel-content');
+      this.placeholder = container.querySelector('.nav-panel-placeholder');
+      this.currentOpenButton = null;
+
+      if (!this.container) return;
+
+      this.init();
+    }
+
+    init() {
+      // Add click event listeners to buttons
+      this.buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          this.handleButtonClick(button);
+        });
+      });
+
+      // Initialize state with the first available panel button.
+      if (this.buttons.length > 0) {
+        this.currentOpenButton = this.buttons[0];
+        this.buttons[0].setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    updateContainerHeight(contentPanel) {
+      if (!this.container) return;
+
+      const panelHeight = contentPanel ? contentPanel.offsetHeight : 0;
+      this.container.style.minHeight = `${Math.max(this.minHeight, panelHeight)}px`;
+    }
+
+    autoSelectFirst() {
+      if (this.buttons.length > 0) {
+        this.openPanel(this.buttons[0]);
+      } 
+    }
+
+    handleButtonClick(button) {
+      const isCurrentlyOpen = this.currentOpenButton === button;
+      
+      if (isCurrentlyOpen) {
+        // Clicking same button closes it and shows placeholder
+        this.closeAllPanels();
+        this.showPlaceholder();
+      } else {
+        // Clicking different button switches to that panel
+        this.closeAllPanels();
+        this.openPanel(button);
+      }
+    }
+
+    closeAllPanels() {
+      // Reset all buttons
+      this.buttons.forEach(btn => {
+        btn.setAttribute('aria-expanded', 'false');
+      });
+
+      // Hide all content panels
+      this.contentPanels.forEach(panel => {
+        panel.hidden = true;
+      });
+
+      this.currentOpenButton = null;
+    }
+
+    openPanel(button) {
+      // Update button state
+      button.setAttribute('aria-expanded', 'true');
+      
+      // Pair each button with the panel in the same nav item to avoid index drift.
+      const contentPanel = button.closest('.nav-panel-item')?.querySelector('.nav-panel-content');
+      if (contentPanel) {
+        contentPanel.hidden = false;
+        this.updateContainerHeight(contentPanel);
+        this.hidePlaceholder();
+      }
+      
+      this.currentOpenButton = button;
+    }
+
+    showPlaceholder() {
+      if (this.placeholder) {
+        this.placeholder.style.display = 'flex';
+      }
+    }
+
+    hidePlaceholder() {
+      if (this.placeholder) {
+        this.placeholder.style.display = 'none';
+      }
+    }
+
+    // Method to reset to first item (for external use when dropdown opens/reopens)
+    resetToFirst() {
+      const firstButton = this.buttons[0];
+      if (!firstButton) return;
+
+      // If already on first panel, just make sure it's visible (no close/reopen)
+      if (this.currentOpenButton === firstButton) {
+        const contentPanel = firstButton.closest('.nav-panel-item')?.querySelector('.nav-panel-content');
+        if (contentPanel) {
+          contentPanel.hidden = false;
+          this.updateContainerHeight(contentPanel);
+          this.hidePlaceholder();
+        }
+        return;
+      }
+      // Otherwise, transition to first panel
+      this.closeAllPanels();
+      this.openPanel(firstButton);
+    }
+  }
+
+  // Initialize when DOM is ready and expose globally
+  let navPanelInstances = [];
+
+  function initNavPanels() {
+    const containers = document.querySelectorAll('.nav-panel-container');
+    navPanelInstances = Array.from(containers).map(container => new NavPanel(container));
+    (window as any).navPanels = navPanelInstances;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNavPanels);
+  } else {
+    initNavPanels();
+  }
+
+  // Expose reset method globally for parent dropdown to call
+  (window as any).resetNavPanelToFirst = function() {
+    if ((window as any).navPanels) {
+      (window as any).navPanels.forEach(panel => {
+        if (panel && panel.resetToFirst) panel.resetToFirst();
+      });
+    }
+  };
+</script>

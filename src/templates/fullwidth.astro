@@ -1,0 +1,66 @@
+---
+/**
+ * Fullwidth Template
+ * Converted from src/templates/fullwidth.js
+ */
+import TemplateLayout from '../components/TemplateLayout.astro';
+import Margins from '../components/Margins.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Panels from '../components/panels/Panels.astro';
+import transformNodePanels from '../utils/transform-node-panels';
+
+interface Props {
+	node: any;
+	title?: string;
+	breadcrumb?: string;
+}
+
+const { node, title, breadcrumb } = Astro.props as Props;
+
+if (!node) {
+	throw new Error('Fullwidth template: no node data available');
+}
+
+const { field_title_context: fieldTitleContext, body } = node.attributes || {};
+
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+
+const hasFullPanels = fullPanels.length > 0;
+const pageTitle = title || fieldTitleContext;
+---
+
+<TemplateLayout node={node} title={pageTitle}>
+	<Margins>
+		<Breadcrumb data={breadcrumb} />
+		<Heading
+			size="3XL"
+			level={1}
+			style={`margin-bottom: ${hasFullPanels ? '0' : '2rem'};`}
+		>
+			{fieldTitleContext}
+		</Heading>
+	</Margins>
+
+	{body && (
+		<Margins
+			class={hasFullPanels ? 'fullwidth-content no-full-panels' : 'fullwidth-content'}
+		>
+			{body.processed && <Html html={body.processed} />}
+			<Panels data={bodyPanels} />
+		</Margins>
+	)}
+
+	<Panels data={fullPanels} />
+</TemplateLayout>
+
+<style>
+	.fullwidth-content {
+		https://deploy-preview-399--future-wwwlib-previews.netlify.app/find-borrow-request/recommend-purchase/
+	}
+
+	.fullwidth-content.no-full-panels {
+		margin-bottom: 0;
+	}
+</style>

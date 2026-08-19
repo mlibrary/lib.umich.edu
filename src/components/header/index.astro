@@ -1,0 +1,17 @@
+---
+/**
+ * Header Container Component
+ * Renders both mobile and desktop headers based on viewport
+ * Original: src/components/header/index.jsx
+ */
+import { fetchPrimaryNav, fetchUtilityNav } from '../../lib/drupal.js';
+import HeaderSmallScreen from './HeaderSmallScreen.astro';
+import HeaderLargeScreen from './HeaderLargeScreen.astro';
+
+// Fetch navigation data at build time
+const primary = await fetchPrimaryNav();
+const secondary = await fetchUtilityNav();
+---
+
+<HeaderSmallScreen primary={primary} secondary={secondary} />
+<HeaderLargeScreen primary={primary} secondary={secondary} />

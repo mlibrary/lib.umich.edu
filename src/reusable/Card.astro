@@ -1,0 +1,152 @@
+---
+/**
+ * Card - Reusable card component
+ * Ported from src/reusable/card.jsx
+ */
+import Heading from "./Heading.astro";
+import DrupalImage from "../components/DrupalImage.astro";
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  headingLevel?: 2 | 3;
+  image?: any;
+  href?: string;
+  horizontal?: boolean;
+  anchorStyleAddition?: Record<string, string>;
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  headingLevel = 3,
+  image,
+  href,
+  horizontal = false,
+  anchorStyleAddition = {},
+  class: className = "",
+} = Astro.props;
+
+const extraStyles = Object.entries(anchorStyleAddition)
+  .map(
+    ([k, v]) => `${k.replace(/([A-Z])/g, (m) => `-${m.toLowerCase()}`)}: ${v}`,
+  )
+  .join("; ");
+
+const imgSrc = image?.src ?? image?.url ?? null;
+const imgAlt = image?.alt ?? "";
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class:list={["card", { "card--horizontal": horizontal }, className]}
+      style={extraStyles || undefined}
+    >
+      {image && imgSrc && (
+        <div class="card-image" data-card-image>
+          <DrupalImage src={imgSrc} alt={imgAlt} width={920} height={614} loading="lazy" />
+        </div>
+      )}
+      <div class="card-body">
+        <Heading level={headingLevel} size="XS">
+          {subtitle && <span class="card-subtitle">{subtitle}</span>}
+          <span class="card-title" data-card-title>
+            {title}
+          </span>
+        </Heading>
+        <div class="card-children">
+          <slot />
+        </div>
+      </div>
+    </a>
+  ) : (
+    <div
+      class:list={["card", { "card--horizontal": horizontal }, className]}
+      style={extraStyles || undefined}
+    >
+      {image && imgSrc && (
+        <div class="card-image" data-card-image>
+          <DrupalImage src={imgSrc} alt={imgAlt} width={920} height={614} loading="lazy" />
+        </div>
+      )}
+      <div class="card-body">
+        <Heading level={headingLevel} size="XS">
+          {subtitle && <span class="card-subtitle">{subtitle}</span>}
+          <span class="card-title" data-card-title>
+            {title}
+          </span>
+        </Heading>
+        <div class="card-children">
+          <slot />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .card {
+    display: block;
+  }
+
+  @media (--bp-md-up) {
+    .card--horizontal [data-card-image] {
+      margin-bottom: 0;
+    }
+
+    .card--horizontal {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 18.75rem 1fr;
+    }
+  }
+
+  .card-image {
+    aspect-ratio: 3 / 2;
+    background-color: var(--color-blue-100);
+    border-radius: 4px;
+    margin-bottom: .75rem;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .card-image img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .card-body h2,
+  .card-body h3 {
+    margin-top: 0;
+  }
+
+  [data-card-title] {
+    box-shadow: inset 0 -1px var(--color-teal-400);
+    color: var(--color-neutral-400);
+  }
+
+  .card-body:hover .card-title {
+    box-shadow: inset 0 -2px var(--color-teal-400);
+    color: var(--color-neutral-400);
+  }
+
+  .card-subtitle {
+    color: var(--color-neutral-300);
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+  }
+
+  .card-children:not(:empty) {
+    color: var(--color-neutral-300);
+    display: inline-block;
+    margin-top: .5rem;
+  }
+</style>
