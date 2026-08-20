@@ -3,10 +3,11 @@ name: Production workflow
 
 # When workflow is triggered
 on:
+  push:
+    branches:
+      - master
   # schedule:
-    # - cron: '0 11 * * MON-FRI'
-  repository_dispatch:
-    types: [backup_complete]
+  # - cron: '0 11 * * MON-FRI'
   workflow_dispatch:
     inputs:
       tag:
@@ -24,9 +25,9 @@ jobs:
     env:
       DRUPAL_CONCURRENT_FILE_REQUESTS: 20
       DRUPAL_REQUEST_TIMEOUT: 6000000
-      DRUPAL_URL: ${{ vars.DRUPAL_URL }} 
-      ROBOTSTXT_MODE: 'production'
-      CONTEXT: 'production'
+      DRUPAL_URL: ${{ vars.DRUPAL_URL }}
+      ROBOTSTXT_MODE: "production"
+      CONTEXT: "production"
     # Steps in job
     steps:
       # Get code from repo
