@@ -28,7 +28,20 @@ const {
     margin-bottom: 2.5rem;
     padding-bottom: 2.5rem;
   }
-  
+
+  /* stylelint-disable selector-pseudo-class-no-unknown */
+
+  /* When side stacks after content on mobile, flip the separator to the top */
+  :global(.template-content + .template-side) .template-side-inner {
+    border-bottom: none;
+    border-top: solid 1px var(--color-neutral-100);
+    margin-bottom: 0;
+    margin-top: 2.5rem;
+    padding-bottom: 0;
+    padding-top: 2.5rem;
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
+
   @media (--bp-md-up) {
     .template-side {
       grid-area: side;
