@@ -12,7 +12,7 @@ const { title, relationships, drupal_internal__nid } = node;
 const panels = relationships?.field_panels || [];
 
 ---
-<Layout title={title}>
+<Layout title={title} node={node}>
   <DebugPanel node={node}></DebugPanel>
   <!-- Debug info -->
   <!-- <div style="background: yellow; padding: 1rem; margin: 1rem;">

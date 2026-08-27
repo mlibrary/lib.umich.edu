@@ -28,7 +28,7 @@ if (!breadcrumbData) {
 
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
 ---
-<Layout title={field_title_context}>
+<Layout title={field_title_context} node={node}>
     <PageHeader
         breadcrumb={breadcrumbData}
         title={field_title_context}
