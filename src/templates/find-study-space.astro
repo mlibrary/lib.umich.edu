@@ -37,7 +37,7 @@ const allStudySpaces = await fetchStudySpaces();
   const optimizedMap = new Map<string, string>();
   await Promise.all(uniqueUrls.map(async (url: string) => {
     try {
-      const result = await getImage({ src: url, width: 640, format: 'webp' });
+      const result = await getImage({ src: url, width: 640, height: 427, format: 'webp', fit: 'cover' });
       optimizedMap.set(url, result.src);
     } catch {
       optimizedMap.set(url, url);
