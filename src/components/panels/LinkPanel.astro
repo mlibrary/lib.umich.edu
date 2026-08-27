@@ -129,7 +129,9 @@ const hasTopBorder = data.field_border === 'yes';
               <span class="fancy-link-icon">
                 <Icon icon="insert_link" size={24} />
               </span>
-              <span class="fancy-link-text">{linkData.text}</span>
+              <span class="fancy-link-text">
+                <span class="fancy-link-text-underline">{linkData.text}</span>
+              </span>
             </a>
           </li>
         );
@@ -268,10 +270,6 @@ const hasTopBorder = data.field_border === 'yes';
     gap: 0.5rem;
   }
 
-  .fancy-link:hover .fancy-link-text {
-    box-shadow: inset 0 -2px var(--color-teal-400);
-  }
-
   .fancy-link-icon {
     color: var(--color-teal-400);
     flex-shrink: 0;
@@ -281,7 +279,15 @@ const hasTopBorder = data.field_border === 'yes';
     font-size: 1rem;
     color: var(--color-neutral-400);
     font-weight: 600;
+  }
+
+  /* nested span keeps the underline inline so it follows wrapped text, since .fancy-link-text is blockified as a flex item */
+  .fancy-link-text-underline {
     box-shadow: inset 0 -1px var(--color-teal-400);
+  }
+
+  .fancy-link:hover .fancy-link-text-underline {
+    box-shadow: inset 0 -2px var(--color-teal-400);
   }
 
 

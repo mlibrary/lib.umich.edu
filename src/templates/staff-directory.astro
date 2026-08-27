@@ -17,7 +17,7 @@ import Icon from '../reusable/Icon.astro';
 import NoResults from '../components/NoResults.astro';
 import StaffPhotoPlaceholder from '../components/StaffPhotoPlaceholder.astro';
 import { fetchStaff, fetchStaffImages, fetchDrupalDepartments } from '../lib/staff-data.js';
-import { downloadCmsFile } from '../lib/cms-file-cache.js';
+import { getImage } from 'astro:assets';
 import { decodeHTML } from 'entities';
 
 interface Props {
@@ -109,17 +109,36 @@ const enrichedStaff = staff.map((person: any) => {
   };
 });
 
-// Localize all staff image URLs so the embedded JSON and client-rendered
-// img tags point to local /cms-files/ paths instead of CMS URLs.
-const cmsImageUrls = [...new Set(enrichedStaff.map((p: any) => p.imageUrl).filter(Boolean))];
-const localImageUrlMap = new Map<string, string>();
-await Promise.all(cmsImageUrls.map(async (url: string) => {
-  const local = await downloadCmsFile(url);
-  localImageUrlMap.set(url, local);
+// Run staff photos through Astro's image pipeline so the embedded JSON and
+// client-rendered img tags point to optimized, build-managed /_astro/ webp
+// files instead of raw CMS originals.
+//
+// A fixed width+height (rather than inferring aspect ratio from the source)
+// is required here: inferSize reads the source file's raw header dimensions,
+// which doesn't account for EXIF rotation, so portrait phone photos would
+// get resized to the wrong aspect ratio and cropped incorrectly. Requesting
+// an explicit box lets sharp's "cover" fit crop consistently post-rotation.
+const THUMBNAIL_WIDTH = 86;
+const THUMBNAIL_HEIGHT = 114;
+const staffImageUrls = [...new Set(enrichedStaff.map((p: any) => p.imageUrl).filter(Boolean))];
+const optimizedImageUrlMap = new Map<string, string>();
+await Promise.all(staffImageUrls.map(async (url: string) => {
+  try {
+    const optimized = await getImage({
+      src: url,
+      format: 'webp',
+      width: THUMBNAIL_WIDTH,
+      height: THUMBNAIL_HEIGHT,
+      fit: 'cover',
+    });
+    optimizedImageUrlMap.set(url, optimized.src);
+  } catch {
+    optimizedImageUrlMap.set(url, url);
+  }
 }));
 const enrichedStaffWithLocalImages = enrichedStaff.map((person: any) => ({
   ...person,
-  imageUrl: person.imageUrl ? (localImageUrlMap.get(person.imageUrl) ?? person.imageUrl) : null,
+  imageUrl: person.imageUrl ? (optimizedImageUrlMap.get(person.imageUrl) ?? person.imageUrl) : null,
 }));
 
 // Build unique department/division options for dropdown filter
@@ -750,6 +769,10 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
     height: auto;
     overflow: hidden;
     width: 43px;
+  }
+
+  :global(.staff-photo-cell img) {
+    object-fit: cover;
   }
 
   /* Name cell */

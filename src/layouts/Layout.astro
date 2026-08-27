@@ -10,6 +10,9 @@ import SkipLinks from "../components/SkipLinks.astro";
 import Seo from "../components/Seo.astro";
 
 const { title, node } = Astro.props;
+
+// Drupal node id, used by the "edit in CMS" bookmarklet
+const drupalNid = node?.attributes?.drupal_internal__nid || null;
 ---
 
 <!doctype html>
@@ -73,6 +76,8 @@ const { title, node } = Astro.props;
     </style>
   </head>
   <body>
+    <span id="drupalNid" data-drupal-nid={drupalNid} hidden></span>
+
     <div class="page-grid">
       <div>
         <SkipLinks />

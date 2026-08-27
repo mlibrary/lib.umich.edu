@@ -42,7 +42,7 @@ jobs:
       # Deploy to Netlify using our production secrets
       - name: Deploy to netlify
         run: |
-          DEPLOY_OUTPUT=$(npx netlify-cli deploy --dir=dist --alias deploy-preview-${{ github.event.number }} --json)
+          DEPLOY_OUTPUT=$(npx netlify-cli deploy --dir=dist --alias deploy-preview-${{ github.event.number }} --no-build --json)
           DEPLOY_URL=$(printf '%s' "$DEPLOY_OUTPUT" | node -e "let s=''; process.stdin.on('data', d => s += d); process.stdin.on('end', () => { const data = JSON.parse(s); console.log(data.deploy_url || data.url || ''); });")
           echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
         env:
