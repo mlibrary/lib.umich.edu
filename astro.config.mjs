@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import searchIndex from './plugins/search-index-integration.js';
 import redirects from './plugins/redirects-integration.js';
+import cmsFiles from './plugins/cms-files-integration.js';
 
 export default defineConfig({
   site: 'https://www.lib.umich.edu',
@@ -18,6 +19,7 @@ export default defineConfig({
         !page.includes('/users/') && !page.endsWith('/404')
     }),
     searchIndex(),
-    redirects()
+    redirects(),
+    cmsFiles()
   ]
 });
