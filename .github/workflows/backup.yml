@@ -60,7 +60,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
       - name: Copy files to s3
-        run: aws s3 sync ./dist s3://lib-umich-backup
+        run: aws s3 sync ./dist s3://lib-umich-backup --delete
       # Notify Slack if build fails
       - name: Send custom JSON data to Slack workflow
         if: ${{ failure() }}
