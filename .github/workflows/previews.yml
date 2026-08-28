@@ -4,10 +4,10 @@ name: Previews workflow
 # When workflow is triggered
 on: 
   pull_request:
-  branches:
-      - master
-    paths-ignore:
-      - '.github/workflows/**'
+    branches:
+        - master
+      paths-ignore:
+        - '.github/workflows/**'
         
 # Jobs to carry out
 jobs:
