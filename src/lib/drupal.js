@@ -6,6 +6,7 @@
  */
 
 import 'isomorphic-fetch';
+import { onceAsyncByKey } from './build-cache.js';
 
 const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/';
 const DRUPAL_REQUEST_TIMEOUT = parseInt(process.env.DRUPAL_REQUEST_TIMEOUT, 10) || 60000;
@@ -523,23 +524,13 @@ export const fetchDrupalNodeByUuid = async (nodeType, uuid) => {
 };
 
 /**
- * Build-time in-memory cache for media entity lookups.
- * Persists across all pages in a single build so each UUID is only fetched once.
- */
-const mediaEntityCache = new Map();
-
-/**
  * Fetch a media entity by UUID from Drupal JSON:API.
  * Tries known media bundles (image, remote_video, file) in order.
  * Uses a plain fetch with a short timeout — NOT fetchWithRetry — because
  * a 404 (wrong bundle) should simply try the next bundle immediately, not be retried.
- * Results are cached for the duration of the build.
+ * Results (including "not found") are cached per UUID for the duration of the build.
  */
-export const fetchMediaEntity = async (uuid) => {
-  if (mediaEntityCache.has(uuid)) {
-    return mediaEntityCache.get(uuid);
-  }
-
+export const fetchMediaEntity = onceAsyncByKey(async (uuid) => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   for (const bundle of ['image', 'remote_video', 'file']) {
     try {
@@ -555,7 +546,6 @@ export const fetchMediaEntity = async (uuid) => {
       if (response.ok) {
         const result = await response.json();
         if (result?.data) {
-          mediaEntityCache.set(uuid, result);
           return result;
         }
       }
@@ -564,20 +554,16 @@ export const fetchMediaEntity = async (uuid) => {
     }
   }
 
-  mediaEntityCache.set(uuid, null);
   return null;
-};
+});
 
 /**
  * Resolve a Drupal media entity from its internal numeric ID (e.g. from href="/media/2202").
  * Uses JSON:API's drupal_internal__mid filter — no decoupled_router module required.
- * Tries file-like bundles in order. Results are cached for the duration of the build.
+ * Tries file-like bundles in order. Results (including "not found") are cached per mid
+ * for the duration of the build.
  */
-const mediaEntityByPathCache = new Map();
-export const fetchMediaEntityByPath = async (mid) => {
-  if (mediaEntityByPathCache.has(mid)) {
-    return mediaEntityByPathCache.get(mid);
-  }
+export const fetchMediaEntityByPath = onceAsyncByKey(async (mid) => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   for (const bundle of ['file', 'document']) {
     try {
@@ -593,9 +579,7 @@ export const fetchMediaEntityByPath = async (mid) => {
       const entity = json?.data?.[0];
       if (entity) {
         // Normalize to single-entity shape (same as fetchMediaEntity response)
-        const result = { data: entity, included: json.included ?? [] };
-        mediaEntityByPathCache.set(mid, result);
-        return result;
+        return { data: entity, included: json.included ?? [] };
       }
     } catch {
       // Timeout or network error — try next bundle
@@ -604,9 +588,8 @@ export const fetchMediaEntityByPath = async (mid) => {
   /* eslint-disable no-console */
   console.warn(`[drupal] Could not resolve /media/${mid} — no matching file/document bundle found`);
   /* eslint-enable no-console */
-  mediaEntityByPathCache.set(mid, null);
   return null;
-};
+});
 
 export {
   DRUPAL_URL,

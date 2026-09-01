@@ -14,11 +14,11 @@ import Margins from '../components/Margins.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Heading from '../reusable/Heading.astro';
 import NestLinkedList from '../components/NestLinkedList.astro';
-import { fetchPrimaryNav, fetchUtilityNav } from '../lib/drupal.js';
+import { getPrimaryNav, getUtilityNav } from '../lib/navigation.js';
 
 const [primary, secondary] = await Promise.all([
-  fetchPrimaryNav(),
-  fetchUtilityNav(),
+  getPrimaryNav(),
+  getUtilityNav(),
 ]);
 
 const breadcrumbData = JSON.stringify([

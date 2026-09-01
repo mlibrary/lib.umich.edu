@@ -42,7 +42,8 @@ export async function getStaticPaths() {
       children: page.children,
       parentIds: page.parentIds,
       childIds: page.childIds
-    }
+    },
+    cacheKey: page.cacheKey
   }));
 }
 

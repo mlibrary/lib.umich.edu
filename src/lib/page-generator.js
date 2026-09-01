@@ -12,6 +12,18 @@ import {
 import { fetchDrupalDepartments } from './staff-data.js';
 import { fetchDrupalEvents } from './events-data.js';
 import { fetchDrupalNews } from './news-data.js';
+import { createHash } from 'crypto';
+
+/**
+ * Stable content hash used as the `cacheKey` for Astro's experimental
+ * incremental static builds. Changes whenever the page's own data (or any
+ * data resolved into its props/relationships) changes.
+ * @param {unknown} value
+ * @returns {string}
+ */
+export const hashForCacheKey = (value) => {
+  return createHash('sha256').update(JSON.stringify(value)).digest('hex');
+};
 
 /**
  * @param {string} breadcrumbUrl
@@ -797,6 +809,17 @@ export const getPagesToGenerate = async () => {
         const parentNodes = resolveMenuNodes(menuData.parentIds, processedNodes, 'node--section_page');
         const childNodes = resolveMenuNodes(menuData.childIds, processedNodes, 'node--section_page');
 
+        const cacheKey = hashForCacheKey({
+          node,
+          template,
+          breadcrumb,
+          summary,
+          keywords,
+          tag,
+          parents: parentNodes,
+          children: childNodes
+        });
+
         return {
           slug: node.slug,
           node,
@@ -810,7 +833,8 @@ export const getPagesToGenerate = async () => {
           parents: parentNodes,
           children: childNodes,
           parentIds: menuData.parentIds,
-          childIds: menuData.childIds
+          childIds: menuData.childIds,
+          cacheKey
         };
       })
     );
