@@ -5,9 +5,9 @@ name: Previews workflow
 on: 
   pull_request:
     branches:
-        - master
-      paths-ignore:
-        - '.github/workflows/**'
+      - master
+    paths-ignore:
+      - '.github/workflows/**'
         
 # Jobs to carry out
 jobs:
