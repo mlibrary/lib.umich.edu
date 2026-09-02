@@ -623,6 +623,7 @@ export const getPagesToGenerate = async () => {
     }
   }
 
+  const fetchStart = Date.now();
   const [pages, sections, buildings, rooms, locations, floorPlans, departments, news, events] = await Promise.all([
     fetchDrupalPages(),
     fetchDrupalSectionPages(),
@@ -634,6 +635,7 @@ export const getPagesToGenerate = async () => {
     fetchDrupalNews(),
     fetchDrupalEvents()
   ]);
+  console.log(`[page-generator] Fetched all Drupal content types in ${((Date.now() - fetchStart) / 1000).toFixed(1)}s`);
 
   const allNodes = [
     ...(pages.data || []),
@@ -793,8 +795,11 @@ export const getPagesToGenerate = async () => {
     fallbackOnly: false
   };
 
+  const breadcrumbStart = Date.now();
+  const totalBatches = Math.ceil(processedNodes.length / BREADCRUMB_BATCH_SIZE);
   const pagesWithBreadcrumbs = [];
   for (let i = 0; i < processedNodes.length; i += BREADCRUMB_BATCH_SIZE) {
+    const batchStart = Date.now();
     const batch = processedNodes.slice(i, i + BREADCRUMB_BATCH_SIZE);
     const batchResults = await Promise.all(
       batch.map(async (node) => {
@@ -839,7 +844,9 @@ export const getPagesToGenerate = async () => {
       })
     );
     pagesWithBreadcrumbs.push(...batchResults);
+    console.log(`[page-generator] Breadcrumb batch ${Math.floor(i / BREADCRUMB_BATCH_SIZE) + 1}/${totalBatches} (${batch.length} nodes) took ${((Date.now() - batchStart) / 1000).toFixed(1)}s`);
   }
+  console.log(`[page-generator] Breadcrumb/menu resolution for ${processedNodes.length} nodes took ${((Date.now() - breadcrumbStart) / 1000).toFixed(1)}s total`);
 
   const result = pagesWithBreadcrumbs.filter((page) => {
     return page.template !== null;
