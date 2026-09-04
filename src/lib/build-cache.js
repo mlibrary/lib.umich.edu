@@ -54,3 +54,62 @@ export function onceAsyncByKey(factory) {
     return cache.get(key);
   };
 }
+
+import { mkdirSync, readFileSync, writeFileSync } from 'fs';
+import path from 'path';
+
+/**
+ * A JSON-file-backed key/value cache that survives across builds (unlike
+ * onceAsync/onceAsyncByKey above, which only live for one process). Each
+ * entry is timestamped so callers can bound staleness with a TTL rather
+ * than trusting the cache forever. Call `flush()` once after a batch of
+ * `set()`s instead of per-key, to avoid rewriting the whole file per entry.
+ *
+ * @param {string} cacheFile - Absolute path to the JSON cache file
+ */
+export function createDiskCache(cacheFile) {
+  let entries = null;
+
+  const load = () => {
+    if (!entries) {
+      try {
+        entries = JSON.parse(readFileSync(cacheFile, 'utf-8'));
+      } catch {
+        entries = {};
+      }
+    }
+    return entries;
+  };
+
+  return {
+    /**
+     * @param {string} key
+     * @param {number} [ttlMs] - If omitted, entries never expire
+     * @returns {unknown|undefined}
+     */
+    get(key, ttlMs) {
+      const entry = load()[key];
+      if (!entry) {
+        return undefined;
+      }
+      if (ttlMs && Date.now() - entry.timestamp > ttlMs) {
+        return undefined;
+      }
+      return entry.value;
+    },
+    set(key, value) {
+      load()[key] = { value, timestamp: Date.now() };
+    },
+    flush() {
+      if (!entries) {
+        return;
+      }
+      try {
+        mkdirSync(path.dirname(cacheFile), { recursive: true });
+        writeFileSync(cacheFile, JSON.stringify(entries));
+      } catch (err) {
+        console.warn(`[build-cache] Failed to write ${cacheFile}:`, err.message);
+      }
+    }
+  };
+}

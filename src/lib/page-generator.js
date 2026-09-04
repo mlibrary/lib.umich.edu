@@ -13,6 +13,7 @@ import { fetchDrupalDepartments } from './staff-data.js';
 import { fetchDrupalEvents } from './events-data.js';
 import { fetchDrupalNews } from './news-data.js';
 import { createHash } from 'crypto';
+import { createDiskCache } from './build-cache.js';
 
 /**
  * Stable content hash used as the `cacheKey` for Astro's experimental
@@ -30,12 +31,22 @@ export const hashForCacheKey = (value) => {
  * @returns {Promise<Object[]|null>}
  */
 const fetchDrupalBreadcrumb = async (breadcrumbUrl) => {
+  const forceRefresh = process.env.DRUPAL_FORCE_REFRESH === 'true';
+  if (!forceRefresh) {
+    const cached = breadcrumbCache.get(breadcrumbUrl, BREADCRUMB_CACHE_TTL_MS);
+    if (cached !== undefined) {
+      return cached;
+    }
+  }
+
   try {
     const baseUrl = removeTrailingSlash(DRUPAL_URL);
     const path = breadcrumbUrl.startsWith('http')
       ? breadcrumbUrl.replace(baseUrl, '')
       : breadcrumbUrl;
-    return await fetchFromDrupal(path);
+    const data = await fetchFromDrupal(path);
+    breadcrumbCache.set(breadcrumbUrl, data);
+    return data;
   } catch (error) {
     return null;
   }
@@ -67,14 +78,23 @@ const fetchMenuOrderData = async (node) => {
     if (!fieldValue) {
       return [];
     }
+    const forceRefresh = process.env.DRUPAL_FORCE_REFRESH === 'true';
+    if (!forceRefresh) {
+      const cached = menuOrderCache.get(fieldValue, BREADCRUMB_CACHE_TTL_MS);
+      if (cached !== undefined) {
+        return cached;
+      }
+    }
     try {
       const data = await fetchFromDrupal(fieldValue);
       const sanitized = sanitizeDrupalView(data);
-      return sanitized
+      const uuids = sanitized
         ? sanitized.map(({ uuid }) => {
             return uuid;
           })
         : [];
+      menuOrderCache.set(fieldValue, uuids);
+      return uuids;
     } catch {
       return [];
     }
@@ -559,8 +579,18 @@ import path from 'path';
 import fs from 'fs';
 
 const PROJECT_ROOT = path.resolve(fileURLToPath(import.meta.url), '..', '..', '..');
-const CACHE_DIR = path.join(PROJECT_ROOT, '.astro');
+// Lives under node_modules/.astro so it rides along with Astro's own cache
+// dir (already persisted across CI builds), instead of a separate top-level
+// .astro/ folder that isn't covered by CI caching or .gitignore.
+const CACHE_DIR = path.join(PROJECT_ROOT, 'node_modules', '.astro', 'build-cache');
 const CACHE_FILE = path.join(CACHE_DIR, 'drupal-pages-cache.json');
+
+// Breadcrumb/menu-order lookups are per-node Drupal network calls with no
+// caching today, in any environment. Bounded by a TTL (rather than cached
+// forever) since a real menu/hierarchy change should still show up eventually.
+const BREADCRUMB_CACHE_TTL_MS = parseInt(process.env.BREADCRUMB_CACHE_TTL_MS || String(6 * 60 * 60 * 1000), 10);
+const breadcrumbCache = createDiskCache(path.join(CACHE_DIR, 'breadcrumb-cache.json'));
+const menuOrderCache = createDiskCache(path.join(CACHE_DIR, 'menu-order-cache.json'));
 
 const readPersistentCache = () => {
   try {
@@ -847,6 +877,8 @@ export const getPagesToGenerate = async () => {
     console.log(`[page-generator] Breadcrumb batch ${Math.floor(i / BREADCRUMB_BATCH_SIZE) + 1}/${totalBatches} (${batch.length} nodes) took ${((Date.now() - batchStart) / 1000).toFixed(1)}s`);
   }
   console.log(`[page-generator] Breadcrumb/menu resolution for ${processedNodes.length} nodes took ${((Date.now() - breadcrumbStart) / 1000).toFixed(1)}s total`);
+  breadcrumbCache.flush();
+  menuOrderCache.flush();
 
   const result = pagesWithBreadcrumbs.filter((page) => {
     return page.template !== null;
