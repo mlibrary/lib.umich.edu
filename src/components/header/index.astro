@@ -4,13 +4,13 @@
  * Renders both mobile and desktop headers based on viewport
  * Original: src/components/header/index.jsx
  */
-import { fetchPrimaryNav, fetchUtilityNav } from '../../lib/drupal.js';
+import { getPrimaryNav, getUtilityNav } from '../../lib/navigation.js';
 import HeaderSmallScreen from './HeaderSmallScreen.astro';
 import HeaderLargeScreen from './HeaderLargeScreen.astro';
 
-// Fetch navigation data at build time
-const primary = await fetchPrimaryNav();
-const secondary = await fetchUtilityNav();
+// Nav data is cached per-build in navigation.js — Header renders on every page.
+const primary = await getPrimaryNav();
+const secondary = await getUtilityNav();
 ---
 
 <HeaderSmallScreen primary={primary} secondary={secondary} />

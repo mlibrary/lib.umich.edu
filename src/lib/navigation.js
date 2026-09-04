@@ -5,36 +5,23 @@
  * Fetches primary nav (with build-time caching) and finds the branch
  * that matches a given path — used by SideNavigation on basic pages.
  */
-import { fetchPrimaryNav } from './drupal.js';
+import { fetchPrimaryNav, fetchUtilityNav } from './drupal.js';
 import { fetchStaffDirectorySlug } from './staff-data.js';
+import { onceAsync } from './build-cache.js';
 
-/** @type {null | Promise<any[]>} */
-let primaryNavCache = null;
-
-/** @type {null | Promise<string>} */
-let staffDirectorySlugCache = null;
-
-/**
- * Returns the staff directory page slug, fetching only once per build.
- * @returns {Promise<string>}
- */
-export async function getStaffDirectorySlug () {
-  if (!staffDirectorySlugCache) {
-    staffDirectorySlugCache = fetchStaffDirectorySlug();
-  }
-  return staffDirectorySlugCache;
-}
+export const getStaffDirectorySlug = onceAsync(fetchStaffDirectorySlug);
 
 /**
  * Returns the primary nav tree, fetching only once per build.
- * @returns {Promise<any[]>}
+ * @type {() => Promise<any[]>}
  */
-export async function getPrimaryNav () {
-  if (!primaryNavCache) {
-    primaryNavCache = fetchPrimaryNav();
-  }
-  return primaryNavCache;
-}
+export const getPrimaryNav = onceAsync(fetchPrimaryNav);
+
+/**
+ * Returns the utility nav tree, fetching only once per build.
+ * @type {() => Promise<any[]>}
+ */
+export const getUtilityNav = onceAsync(fetchUtilityNav);
 
 /**
  * Find the branch in the nav tree whose `to` is a prefix of `path`.

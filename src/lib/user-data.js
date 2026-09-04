@@ -6,18 +6,13 @@
  * that each need to look up contacts from the full user list.
  */
 import { DRUPAL_URL, fetchWithRetry, removeTrailingSlash } from './drupal.js';
-
-let cachedUsersWithImages = null;
-let cachedUsersBasic = null;
-let cachedUsersForProfiles = null;
+import { onceAsync } from './build-cache.js';
 
 /**
  * Fetch all Drupal users WITH media image includes (for collecting-area contacts).
  * Cached across all page renders during the build.
  */
-export async function getAllUsersWithImages() {
-  if (cachedUsersWithImages) return cachedUsersWithImages;
-
+export const getAllUsersWithImages = onceAsync(async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const allUsers = [];
   const allIncluded = [];
@@ -32,17 +27,14 @@ export async function getAllUsersWithImages() {
     nextUrl = response.links?.next?.href || null;
   }
 
-  cachedUsersWithImages = { users: allUsers, included: allIncluded };
-  return cachedUsersWithImages;
-}
+  return { users: allUsers, included: allIncluded };
+});
 
 /**
  * Fetch all Drupal users WITHOUT includes (for specialist page).
  * Cached across all page renders during the build.
  */
-export async function getAllUsersBasic() {
-  if (cachedUsersBasic) return cachedUsersBasic;
-
+export const getAllUsersBasic = onceAsync(async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const allUsers = [];
   let nextUrl = `${baseUrl}/jsonapi/user/user`;
@@ -53,18 +45,15 @@ export async function getAllUsersBasic() {
     nextUrl = response.links?.next?.href || null;
   }
 
-  cachedUsersBasic = allUsers;
-  return cachedUsersBasic;
-}
+  return allUsers;
+});
 
 /**
  * Fetch all Drupal users WITH full profile relationship includes.
  * Includes: media image, department, name pronunciation, office location.
  * Cached across all page renders during the build.
  */
-export async function getAllUsersForProfiles() {
-  if (cachedUsersForProfiles) return cachedUsersForProfiles;
-
+export const getAllUsersForProfiles = onceAsync(async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const includes = [
     'field_media_image',
@@ -87,6 +76,5 @@ export async function getAllUsersForProfiles() {
     nextUrl = response.links?.next?.href || null;
   }
 
-  cachedUsersForProfiles = { users: allUsers, included: allIncluded };
-  return cachedUsersForProfiles;
-}
+  return { users: allUsers, included: allIncluded };
+});
