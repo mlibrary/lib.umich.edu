@@ -2,10 +2,10 @@
   "name": "lib.umich.edu",
   "version": "1.0.0",
   "dependencies": {
-    "astro": "^7.2.0",
+    "astro": "^7.2.2",
     "isomorphic-fetch": "^3.0.0",
     "lunr": "^2.3.9",
-    "nanostores": "^1.4.2"
+    "nanostores": "^1.5.0"
   },
   "license": "MIT",
   "scripts": {
@@ -26,19 +26,19 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/netlify": "^8.2.0",
+    "@astrojs/netlify": "^8.2.1",
     "@astrojs/sitemap": "^3.7.3",
     "@csstools/postcss-global-data": "^4.0.0",
     "@eslint/compat": "^2.0.0",
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.3.1",
     "entities": "^8.0.0",
-    "eslint": "^10.8.0",
-    "globals": "^17.9.0",
+    "eslint": "^10.8.1",
+    "globals": "^17.11.0",
     "postcss-custom-media": "^12.0.1",
     "stylelint": "^17.14.1",
     "stylelint-config-html": "^2.0.0",
     "stylelint-config-standard": "^40.0.0",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   }
 }
