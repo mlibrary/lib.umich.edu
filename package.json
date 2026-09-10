@@ -2,7 +2,7 @@
   "name": "lib.umich.edu",
   "version": "1.0.0",
   "dependencies": {
-    "astro": "^7.2.0",
+    "astro": "^7.3.2",
     "isomorphic-fetch": "^3.0.0",
     "lunr": "^2.3.9",
     "nanostores": "^1.4.2"
