@@ -373,6 +373,70 @@ const { label = "Search this site" } = Astro.props;
 </style>
 
 <script>
+  // Shared across all SiteSearch instances (desktop nav + mobile modal) so the
+  // search index is only fetched and parsed once per page, not once per instance.
+  let sharedLunrIndexPromise = null;
+
+  function loadSharedLunrIndex() {
+    if (!sharedLunrIndexPromise) {
+      sharedLunrIndexPromise = (async () => {
+        const response = await fetch('/search_index.json');
+        if (!response.ok) {
+          throw new Error(`Failed to load search index: ${response.status}`);
+        }
+        const searchData = await response.json();
+
+        // Check if this is a pre-built lunr index or raw data
+        if (searchData.en && searchData.en.index && searchData.en.store) {
+          return {
+            index: window.lunr.Index.load(searchData.en.index),
+            store: searchData.en.store
+          };
+        } else if (searchData.index && searchData.store) {
+          // This is a lunr index structure
+          return {
+            index: window.lunr.Index.load(searchData.index),
+            store: searchData.store
+          };
+        }
+
+        // This appears to be raw page data, create a lunr index
+        const pages = Object.entries(searchData).map(([key, value]) => ({
+          id: key,
+          title: value.title || '',
+          summary: value.summary || '',
+          keywords: value.keywords || '',
+          tag: value.tag || ''
+        }));
+
+        const idx = window.lunr(function () {
+          this.ref('id');
+          this.field('title', { boost: 10 });
+          this.field('summary', { boost: 5 });
+          this.field('keywords', { boost: 3 });
+          this.field('tag');
+
+          pages.forEach((page) => {
+            this.add(page);
+          });
+        });
+
+        // Create a store object for looking up page data
+        const store = {};
+        pages.forEach(page => {
+          store[page.id] = searchData[page.id];
+        });
+
+        return { index: idx, store };
+      })().catch((error) => {
+        console.error('Failed to load search index:', error);
+        sharedLunrIndexPromise = null;
+        throw error;
+      });
+    }
+    return sharedLunrIndexPromise;
+  }
+
   // Site Search Component functionality
   class SiteSearch {
     container;
@@ -443,67 +507,10 @@ const { label = "Search this site" } = Astro.props;
 
     async waitForLunr() {
       try {
-        // Load the search index directly
-        const response = await fetch('/search_index.json');
-        if (!response.ok) {
-          throw new Error(`Failed to load search index: ${response.status}`);
-        }
-        const searchData = await response.json();
-        
-        // Check if this is a pre-built lunr index or raw data
-        if (searchData.en && searchData.en.index && searchData.en.store) {
-          if (window.lunr) {
-            this.lunrIndex = {
-              index: window.lunr.Index.load(searchData.en.index),
-              store: searchData.en.store
-            };
-          }
-        } else if (searchData.index && searchData.store) {
-          // This is a lunr index structure
-          if (window.lunr) {
-            this.lunrIndex = {
-              index: window.lunr.Index.load(searchData.index),
-              store: searchData.store
-            };
-          }
-        } else {
-          // This appears to be raw page data, create a lunr index
-          if (window.lunr) {
-            const pages = Object.entries(searchData).map(([key, value]) => ({
-              id: key,
-              title: value.title || '',
-              summary: value.summary || '',
-              keywords: value.keywords || '',
-              tag: value.tag || ''
-            }));
-            
-            const idx = window.lunr(function () {
-              this.ref('id');
-              this.field('title', { boost: 10 });
-              this.field('summary', { boost: 5 });
-              this.field('keywords', { boost: 3 });
-              this.field('tag');
-              
-              pages.forEach((page) => {
-                this.add(page);
-              });
-            });
-            
-            // Create a store object for looking up page data
-            const store = {};
-            pages.forEach(page => {
-              store[page.id] = searchData[page.id];
-            });
-            
-            this.lunrIndex = {
-              index: idx,
-              store: store
-            };
-          }
-        }
+        this.lunrIndex = await loadSharedLunrIndex();
       }
       catch (error) {
-        console.error('Failed to load search index:', error);
+        // Already logged in loadSharedLunrIndex;
       }
     }
 

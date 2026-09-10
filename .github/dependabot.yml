@@ -12,13 +12,16 @@ multi-ecosystem-groups:
       timezone: "America/Detroit"
     commit-message:
       prefix: "Monthly dependency updates: "
-
+    assignees: ["SalazarJosh"]
 updates:
   # Main project npm dependencies
   - package-ecosystem: "npm"
     directory: "/"
     multi-ecosystem-group: "maintenance"
     patterns: ["*"]
+    groups:
+      npm-dependencies:
+        patterns: ["*"]
     ignore:
       - dependency-name: "astro"
         update-types: ["version-update:semver-major"]
@@ -28,3 +31,6 @@ updates:
     directory: "/"
     multi-ecosystem-group: "maintenance"
     patterns: ["*"]
+    groups:
+      github-actions-dependencies:
+        patterns: ["*"]
