@@ -515,13 +515,14 @@ const staffJson = JSON.stringify(enrichedStaffWithLocalImages);
 
       // Phone
       var phoneLink = row.querySelector('.staff-phone');
+      var phoneWrapper = row.querySelector('.staff-phone-wrapper');
       var phoneSeparator = row.querySelector('.staff-phone-separator');
       if (person.phone) {
         phoneLink.href = 'tel:1-' + person.phone;
         phoneLink.textContent = person.phone;
-        row.querySelector('.staff-phone-wrapper').hidden = false;
+        phoneWrapper.hidden = false;
       } else {
-        row.querySelector('.staff-phone-wrapper').hidden = true;
+        if (phoneWrapper) phoneWrapper.remove();
         if (phoneSeparator) phoneSeparator.remove();
       }
 
