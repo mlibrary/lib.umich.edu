@@ -35,6 +35,18 @@ jobs:
           check-latest: true
       # Run npm ci (clean-install) and build on our code
       - run: npm ci
+      # Enabling cache (must come after `npm ci`, which deletes node_modules first)
+      - name: Caching Astro
+        id: astro-cache-build
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: |
+            dist
+            node_modules/.astro
+            public/cms-files
+          key: ${{ runner.os }}-astro-build-development-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-astro-build-development-
       - run: npm run build
       # Deploy to Netlify using our staging secrets
       - name: Deploy to netlify

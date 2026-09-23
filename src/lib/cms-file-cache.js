@@ -14,12 +14,10 @@
 import { createHash } from 'crypto';
 import { mkdir, access, writeFile } from 'fs/promises';
 import path from 'path';
+import { onceAsyncByKey } from './build-cache.js';
 
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
 const FILES_SUBDIR = 'cms-files';
-
-// In-memory cache: URL -> local path (lives for the duration of the build/dev session)
-const urlCache = new Map();
 
 // Max simultaneous requests to the CMS. Pages like the staff directory can
 // trigger hundreds of downloads in one Promise.all(); firing them all at
@@ -79,14 +77,10 @@ function isRetryableStatus (status) {
  * @param {string} url - Absolute CMS URL to download
  * @returns {Promise<string>} Local URL path or original URL on failure
  */
-export async function downloadCmsFile(url) {
+export const downloadCmsFile = onceAsyncByKey(async (url) => {
   if (!url) return url;
-  if (urlCache.has(url)) return urlCache.get(url);
-
-  const result = await withConcurrencyLimit(() => attemptDownload(url));
-  urlCache.set(url, result);
-  return result;
-}
+  return withConcurrencyLimit(() => attemptDownload(url));
+});
 
 async function attemptDownload(url) {
   try {

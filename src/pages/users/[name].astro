@@ -10,6 +10,7 @@ import { getAllUsersForProfiles } from '../../lib/user-data.js';
 import { fetchStaff } from '../../lib/staff-data.js';
 import { downloadCmsFile } from '../../lib/cms-file-cache.js';
 import { DRUPAL_URL, removeTrailingSlash } from '../../lib/drupal.js';
+import { hashForCacheKey } from '../../lib/page-generator.js';
 
 export async function getStaticPaths() {
   const [{ users, included }, staffRawData] = await Promise.all([
@@ -90,39 +91,40 @@ export async function getStaticPaths() {
       // Staff data (office)
       const staffData = staffByUniqname.get(name);
 
+      const profile = {
+        name: user.attributes.name,
+        displayName: user.attributes.field_user_display_name,
+        workTitle: user.attributes.field_user_work_title,
+        proAbout: user.attributes.field_user_pro_about,
+        pronounSubject: user.attributes.field_user_pronoun_subject,
+        pronounObject: user.attributes.field_user_pronoun_object,
+        pronounDependentPos: user.attributes.field_user_pronoun_dependent_pos,
+        pronounIndependentP: user.attributes.field_user_pronoun_independent_p,
+        email: user.attributes.field_user_email,
+        phone: user.attributes.field_user_phone === '000-000-0000' ? null : user.attributes.field_user_phone,
+        orcidId: user.attributes.field_user_orcid_id,
+        languagesSpoken: user.attributes.field_languages_spoken,
+        physicalAddressPublic: user.attributes.field_physical_address_public_,
+        mailingAddress: user.attributes.field_mailing_address,
+        makeAnAppointment: user.attributes.field_user_make_an_appointment,
+        userUrls: user.attributes.field_user_url,
+        socialLinks: {
+          linkedin: user.attributes.field_linkedin,
+          facebook: user.attributes.field_facebook,
+          instagram: user.attributes.field_instagram,
+          bluesky: user.attributes.field_bluesky,
+          twitter: user.attributes.field_twitter,
+        },
+        departments: resolvedDepartments,
+        image: profileImage,
+        pronunciationUrl: pronunciationUrlMap.get(user.id) ?? null,
+        office: staffData?.office || null,
+      };
+
       return {
         params: { name },
-        props: {
-          profile: {
-            name: user.attributes.name,
-            displayName: user.attributes.field_user_display_name,
-            workTitle: user.attributes.field_user_work_title,
-            proAbout: user.attributes.field_user_pro_about,
-            pronounSubject: user.attributes.field_user_pronoun_subject,
-            pronounObject: user.attributes.field_user_pronoun_object,
-            pronounDependentPos: user.attributes.field_user_pronoun_dependent_pos,
-            pronounIndependentP: user.attributes.field_user_pronoun_independent_p,
-            email: user.attributes.field_user_email,
-            phone: user.attributes.field_user_phone === '000-000-0000' ? null : user.attributes.field_user_phone,
-            orcidId: user.attributes.field_user_orcid_id,
-            languagesSpoken: user.attributes.field_languages_spoken,
-            physicalAddressPublic: user.attributes.field_physical_address_public_,
-            mailingAddress: user.attributes.field_mailing_address,
-            makeAnAppointment: user.attributes.field_user_make_an_appointment,
-            userUrls: user.attributes.field_user_url,
-            socialLinks: {
-              linkedin: user.attributes.field_linkedin,
-              facebook: user.attributes.field_facebook,
-              instagram: user.attributes.field_instagram,
-              bluesky: user.attributes.field_bluesky,
-              twitter: user.attributes.field_twitter,
-            },
-            departments: resolvedDepartments,
-            image: profileImage,
-            pronunciationUrl: pronunciationUrlMap.get(user.id) ?? null,
-            office: staffData?.office || null,
-          },
-        },
+        props: { profile },
+        cacheKey: hashForCacheKey(profile)
       };
     });
 }

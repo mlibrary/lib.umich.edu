@@ -6,6 +6,11 @@ import cmsFiles from './plugins/cms-files-integration.js';
 
 export default defineConfig({
   site: 'https://www.lib.umich.edu',
+  experimental: {
+    // Skip re-rendering prerendered pages whose data/code haven't changed.
+    // See src/lib/page-generator.js `hashForCacheKey` for how cacheKey is derived.
+    incrementalBuild: true
+  },
   image: {
     // Allow remote images served from the Drupal CMS
     domains: ['cms.lib.umich.edu'],
