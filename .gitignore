@@ -4,6 +4,9 @@ node_modules
 yarn-error.log
 package-lock.json
 
+# Astro generated cache/types
+.astro
+
 # Build directory
 /public
 /dist
