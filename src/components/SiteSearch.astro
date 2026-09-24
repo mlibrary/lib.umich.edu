@@ -241,13 +241,13 @@ const { label = "Search this site" } = Astro.props;
     outline: none;
   }
 
-  .search-result-link:hover .search-result-title,
-  .search-result-link:focus .search-result-title {
-    text-decoration: underline;
-  }
-
   .search-result-title {
     font-size: 1.125rem;
+  }
+
+  .search-result-link:hover .result-title,
+  .search-result-link:focus .result-title {
+    text-decoration: underline;
   }
 
   .search-result-tag {

@@ -6,6 +6,7 @@
  */
 import { DRUPAL_URL, fetchWithRetry, removeTrailingSlash } from './drupal.js';
 import { getAllUsersBasic } from './user-data.js';
+import { onceAsync } from './build-cache.js';
 
 /**
  * Fetch specialist taxonomy terms from Drupal JSON:API
@@ -22,7 +23,7 @@ import { getAllUsersBasic } from './user-data.js';
  * Returns { healthSciences, academicDiscipline, collectingAreas, libraryExpertise }
  * where each value is an array of taxonomy term objects from JSON:API.
  */
-export const fetchSpecialistTaxonomies = async () => {
+export const fetchSpecialistTaxonomies = onceAsync(async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
 
   const fetchTaxonomy = async (vocabulary, extraIncludes = []) => {
@@ -65,4 +66,4 @@ export const fetchSpecialistTaxonomies = async () => {
   ]);
 
   return { healthSciences, academicDiscipline, collectingAreas, libraryExpertise, users };
-};
+});

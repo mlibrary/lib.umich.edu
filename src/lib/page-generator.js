@@ -9,9 +9,11 @@ import {
   fetchFromDrupal,
   removeTrailingSlash
 } from './drupal.js';
-import { fetchDrupalDepartments } from './staff-data.js';
+import { fetchDrupalDepartments, fetchStaff, fetchStaffImages } from './staff-data.js';
 import { fetchDrupalEvents } from './events-data.js';
 import { fetchDrupalNews } from './news-data.js';
+import { fetchSpecialistTaxonomies } from './specialist-data.js';
+import { fetchStudySpaces } from './study-spaces.js';
 import { createHash } from 'crypto';
 import { createDiskCache } from './build-cache.js';
 
@@ -568,7 +570,6 @@ export const processDrupalNode = (node, included = []) => {
 
 let _pagesCache = null;
 let _pagesCacheTimestamp = 0;
-const PAGES_CACHE_TTL_MS = 5 * 60 * 1000; 
 let _nidToSlugMapCache = null;
 let _nidToSlugMapPromise = null;
 let _nidToTitleMapCache = null;
@@ -576,14 +577,12 @@ let _nidToTitleMapPromise = null;
 
 import { fileURLToPath } from 'url';
 import path from 'path';
-import fs from 'fs';
 
 const PROJECT_ROOT = path.resolve(fileURLToPath(import.meta.url), '..', '..', '..');
 // Lives under node_modules/.astro so it rides along with Astro's own cache
 // dir (already persisted across CI builds), instead of a separate top-level
 // .astro/ folder that isn't covered by CI caching or .gitignore.
 const CACHE_DIR = path.join(PROJECT_ROOT, 'node_modules', '.astro', 'build-cache');
-const CACHE_FILE = path.join(CACHE_DIR, 'drupal-pages-cache.json');
 
 // Breadcrumb/menu-order lookups are per-node Drupal network calls with no
 // caching today, in any environment. Bounded by a TTL (rather than cached
@@ -592,69 +591,22 @@ const BREADCRUMB_CACHE_TTL_MS = parseInt(process.env.BREADCRUMB_CACHE_TTL_MS || 
 const breadcrumbCache = createDiskCache(path.join(CACHE_DIR, 'breadcrumb-cache.json'));
 const menuOrderCache = createDiskCache(path.join(CACHE_DIR, 'menu-order-cache.json'));
 
-const readPersistentCache = () => {
-  try {
-    if (!fs.existsSync(CACHE_FILE)) {
-      return null;
-    }
-    const raw = fs.readFileSync(CACHE_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed?.pages) || !parsed.timestamp) {
-      return null;
-    }
-    return parsed;
-  } catch {
-    return null;
-  }
-};
-
-// file based caching
-const writePersistentCache = (pages) => {
-  try {
-    if (!fs.existsSync(CACHE_DIR)) {
-      fs.mkdirSync(CACHE_DIR, { recursive: true });
-    }
-
-    const payload = JSON.stringify({
-      pages,
-      timestamp: Date.now(),
-      count: pages.length
-    });
-
-    fs.writeFileSync(CACHE_FILE, payload);
-  } catch (err) {
-    console.warn('[page-generator] Failed to write persistent cache:', err.message);
-    // Cache write failed but that's okay — in-memory cache still works
-    // until the next server restart
-  }
-};
 
 
 export const getPagesToGenerate = async () => {
-  const isDev = import.meta.env?.DEV ?? (process.env.NODE_ENV !== 'production');
   const forceRefresh = process.env.DRUPAL_FORCE_REFRESH === 'true';
 
-  // Reuse in-memory results in build, and in dev while cache is still fresh.
-  if (!forceRefresh && _pagesCache && (!isDev || (Date.now() - _pagesCacheTimestamp < PAGES_CACHE_TTL_MS))) {
+  // Reuse in-memory results for the life of the process (dev and build alike) -
+  // restart the dev server or set DRUPAL_FORCE_REFRESH=true to pick up CMS changes.
+  if (!forceRefresh && _pagesCache) {
     return _pagesCache;
-  }
-
-  if (!forceRefresh && isDev && _pagesCache && (Date.now() - _pagesCacheTimestamp < PAGES_CACHE_TTL_MS)) {
-    return _pagesCache;
-  }
-
-  if (!forceRefresh && isDev) {
-    const cached = readPersistentCache();
-    if (cached) {
-      console.log(`[page-generator] Using persistent cache (${cached.count} pages from ${new Date(cached.timestamp).toLocaleTimeString()})`);
-      _pagesCache = cached.pages;
-      _pagesCacheTimestamp = Date.now();
-      return cached.pages;
-    }
   }
 
   const fetchStart = Date.now();
-  const [pages, sections, buildings, rooms, locations, floorPlans, departments, news, events] = await Promise.all([
+  const [
+    pages, sections, buildings, rooms, locations, floorPlans, departments, news, events,
+    staffData, staffImages, specialistTaxonomies, studySpaces
+  ] = await Promise.all([
     fetchDrupalPages(),
     fetchDrupalSectionPages(),
     fetchDrupalBuildings(),
@@ -663,9 +615,38 @@ export const getPagesToGenerate = async () => {
     fetchDrupalFloorPlans(),
     fetchDrupalDepartments(),
     fetchDrupalNews(),
-    fetchDrupalEvents()
+    fetchDrupalEvents(),
+    // These back templates selected purely by `field_design_template` machine name
+    // (staff-directory/specialist/find-study-space) whose live data isn't otherwise
+    // resolved into page props - fetched here (memoized, so no duplicate network call)
+    // just to warm the cache and hash it below for cacheKey invalidation.
+    fetchStaff(),
+    fetchStaffImages(),
+    fetchSpecialistTaxonomies(),
+    fetchStudySpaces()
   ]);
   console.log(`[page-generator] Fetched all Drupal content types in ${((Date.now() - fetchStart) / 1000).toFixed(1)}s`);
+
+  // Some panels/templates fetch live Drupal data themselves at render time instead of
+  // through getStaticPaths props (CustomPanel.astro's events/news panels; the
+  // staff-directory/specialist/find-study-space templates) - so a page's cacheKey
+  // doesn't change when that underlying data changes, and incrementalBuild wrongly
+  // reuses stale cached HTML. Fold a hash of each such data source into cacheKey,
+  // keyed by whatever selects that render path, so affected pages get invalidated
+  // whenever their live data actually changes.
+  const eventsContentHash = hashForCacheKey(events.data || []);
+  const newsContentHash = hashForCacheKey(news.data || []);
+  const DYNAMIC_PANEL_DATA_HASHES = {
+    ee_featured: eventsContentHash,
+    ee_landing: eventsContentHash,
+    featured_and_latest_news: newsContentHash
+  };
+  const TEMPLATE_DATA_HASHES = {
+    'staff-directory': hashForCacheKey({ staffData, staffImages, departments: departments.data || [] }),
+    specialist: hashForCacheKey(specialistTaxonomies),
+    'find-study-space': hashForCacheKey(studySpaces),
+    'news-landing': newsContentHash
+  };
 
   const allNodes = [
     ...(pages.data || []),
@@ -844,6 +825,14 @@ export const getPagesToGenerate = async () => {
         const parentNodes = resolveMenuNodes(menuData.parentIds, processedNodes, 'node--section_page');
         const childNodes = resolveMenuNodes(menuData.childIds, processedNodes, 'node--section_page');
 
+        const panelMachineNames = (node.relationships?.field_panels || [])
+          .map((panel) => panel?.field_machine_name)
+          .filter(Boolean);
+        const dynamicPanelData = panelMachineNames
+          .filter((name) => DYNAMIC_PANEL_DATA_HASHES[name])
+          .map((name) => DYNAMIC_PANEL_DATA_HASHES[name]);
+        const dynamicTemplateData = TEMPLATE_DATA_HASHES[template] || null;
+
         const cacheKey = hashForCacheKey({
           node,
           template,
@@ -852,7 +841,9 @@ export const getPagesToGenerate = async () => {
           keywords,
           tag,
           parents: parentNodes,
-          children: childNodes
+          children: childNodes,
+          dynamicPanelData,
+          dynamicTemplateData
         });
 
         return {
@@ -886,11 +877,6 @@ export const getPagesToGenerate = async () => {
 
   _pagesCache = result;
   _pagesCacheTimestamp = Date.now();
-
-  if (isDev) {
-    writePersistentCache(result);
-    console.log(`[page-generator] Wrote persistent cache (${result.length} pages)`);
-  }
 
   return result;
 };

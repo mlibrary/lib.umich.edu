@@ -5,15 +5,16 @@
  * from Drupal JSON:API.
  */
 import { DRUPAL_URL, fetchWithRetry, removeTrailingSlash } from './drupal.js';
+import { onceAsync } from './build-cache.js';
 
 /**
  * Fetch staff data from Drupal
  */
-export const fetchStaff = async () => {
+export const fetchStaff = onceAsync(async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const data = await fetchWithRetry(`${baseUrl}/api/staff`);
   return data;
-};
+});
 
 /**
  * Fetch staff profile images from Drupal JSON:API
@@ -21,7 +22,7 @@ export const fetchStaff = async () => {
  * Queries media/image entities directly to get image URLs and alt text.
  * Returns a map of drupal_internal__mid → { url, alt }.
  */
-export const fetchStaffImages = async () => {
+export const fetchStaffImages = onceAsync(async () => {
   const baseUrl = removeTrailingSlash(DRUPAL_URL);
   const fields = 'fields[media--image]=drupal_internal__mid,field_media_image&fields[file--file]=uri';
   const url = `${baseUrl}/jsonapi/media/image?include=field_media_image&${fields}`;
@@ -68,7 +69,7 @@ export const fetchStaffImages = async () => {
   }
 
   return staffImages;
-};
+});
 
 /**
  * Fetch the path alias of the staff directory page.
@@ -119,3 +120,10 @@ export const fetchDrupalDepartments = async () => {
 
   return { data: allData, included: allIncluded };
 };
+
+/**
+ * Memoized version of fetchDrupalDepartments for direct page use (e.g.
+ * staff-directory.astro) - page-generator.js's getPagesToGenerate() still
+ * calls the raw fetchDrupalDepartments() above so its own TTL cache works.
+ */
+export const getDrupalDepartments = onceAsync(fetchDrupalDepartments);

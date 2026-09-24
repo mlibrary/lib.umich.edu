@@ -4,6 +4,7 @@
  * Fetches events and exhibits from Drupal JSON:API.
  */
 import { DRUPAL_URL, fetchWithRetry, removeTrailingSlash } from './drupal.js';
+import { onceAsync } from './build-cache.js';
 
 /**
  * Fetch all events and exhibits from Drupal JSON:API
@@ -39,3 +40,11 @@ export const fetchDrupalEvents = async () => {
 
   return { data: allData, included };
 };
+
+/**
+ * Memoized version of fetchDrupalEvents for direct page/component use (e.g.
+ * panels that can appear on any page) - fetches once per process instead of
+ * once per render. page-generator.js's getPagesToGenerate() intentionally
+ * calls the raw fetchDrupalEvents() above so its own TTL cache still works.
+ */
+export const getDrupalEvents = onceAsync(fetchDrupalEvents);

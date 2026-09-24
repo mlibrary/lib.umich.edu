@@ -6,7 +6,6 @@
 import TemplateLayout from '../components/TemplateLayout.astro';
 import Template from '../components/Template.astro';
 import TemplateTop from '../components/TemplateTop.astro';
-import TemplateContent from '../components/TemplateContent.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Link from '../reusable/Link.astro';
@@ -16,7 +15,7 @@ import Html from '../components/Html.astro';
 import Icon from '../reusable/Icon.astro';
 import NoResults from '../components/NoResults.astro';
 import StaffPhotoPlaceholder from '../components/StaffPhotoPlaceholder.astro';
-import { fetchStaff, fetchStaffImages, fetchDrupalDepartments } from '../lib/staff-data.js';
+import { fetchStaff, fetchStaffImages, getDrupalDepartments } from '../lib/staff-data.js';
 import { getImage } from 'astro:assets';
 import { decodeHTML } from 'entities';
 
@@ -86,7 +85,7 @@ for (const raw of (staffRawData || [])) {
 const staff = [...staffByUniqname.values()].sort((a: any, b: any) => a.name.localeCompare(b.name));
 
 // Fetch departments and build lookup
-const departmentsResponse = await fetchDrupalDepartments();
+const departmentsResponse = await getDrupalDepartments();
 const departmentsMap: Record<string, { title: string; slug: string }> = {};
 for (const dept of (departmentsResponse.data || [])) {
   const nid = dept.attributes?.drupal_internal__nid;
