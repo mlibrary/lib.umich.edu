@@ -9,9 +9,11 @@ import {
   fetchFromDrupal,
   removeTrailingSlash
 } from './drupal.js';
-import { fetchDrupalDepartments } from './staff-data.js';
+import { fetchDrupalDepartments, fetchStaff, fetchStaffImages } from './staff-data.js';
 import { fetchDrupalEvents } from './events-data.js';
 import { fetchDrupalNews } from './news-data.js';
+import { fetchSpecialistTaxonomies } from './specialist-data.js';
+import { fetchStudySpaces } from './study-spaces.js';
 import { createHash } from 'crypto';
 import { createDiskCache } from './build-cache.js';
 
@@ -654,7 +656,10 @@ export const getPagesToGenerate = async () => {
   }
 
   const fetchStart = Date.now();
-  const [pages, sections, buildings, rooms, locations, floorPlans, departments, news, events] = await Promise.all([
+  const [
+    pages, sections, buildings, rooms, locations, floorPlans, departments, news, events,
+    staffData, staffImages, specialistTaxonomies, studySpaces
+  ] = await Promise.all([
     fetchDrupalPages(),
     fetchDrupalSectionPages(),
     fetchDrupalBuildings(),
@@ -663,9 +668,38 @@ export const getPagesToGenerate = async () => {
     fetchDrupalFloorPlans(),
     fetchDrupalDepartments(),
     fetchDrupalNews(),
-    fetchDrupalEvents()
+    fetchDrupalEvents(),
+    // These back templates selected purely by `field_design_template` machine name
+    // (staff-directory/specialist/find-study-space) whose live data isn't otherwise
+    // resolved into page props - fetched here (memoized, so no duplicate network call)
+    // just to warm the cache and hash it below for cacheKey invalidation.
+    fetchStaff(),
+    fetchStaffImages(),
+    fetchSpecialistTaxonomies(),
+    fetchStudySpaces()
   ]);
   console.log(`[page-generator] Fetched all Drupal content types in ${((Date.now() - fetchStart) / 1000).toFixed(1)}s`);
+
+  // Some panels/templates fetch live Drupal data themselves at render time instead of
+  // through getStaticPaths props (CustomPanel.astro's events/news panels; the
+  // staff-directory/specialist/find-study-space templates) - so a page's cacheKey
+  // doesn't change when that underlying data changes, and incrementalBuild wrongly
+  // reuses stale cached HTML. Fold a hash of each such data source into cacheKey,
+  // keyed by whatever selects that render path, so affected pages get invalidated
+  // whenever their live data actually changes.
+  const eventsContentHash = hashForCacheKey(events.data || []);
+  const newsContentHash = hashForCacheKey(news.data || []);
+  const DYNAMIC_PANEL_DATA_HASHES = {
+    ee_featured: eventsContentHash,
+    ee_landing: eventsContentHash,
+    featured_and_latest_news: newsContentHash
+  };
+  const TEMPLATE_DATA_HASHES = {
+    'staff-directory': hashForCacheKey({ staffData, staffImages, departments: departments.data || [] }),
+    specialist: hashForCacheKey(specialistTaxonomies),
+    'find-study-space': hashForCacheKey(studySpaces),
+    'news-landing': newsContentHash
+  };
 
   const allNodes = [
     ...(pages.data || []),
@@ -844,6 +878,14 @@ export const getPagesToGenerate = async () => {
         const parentNodes = resolveMenuNodes(menuData.parentIds, processedNodes, 'node--section_page');
         const childNodes = resolveMenuNodes(menuData.childIds, processedNodes, 'node--section_page');
 
+        const panelMachineNames = (node.relationships?.field_panels || [])
+          .map((panel) => panel?.field_machine_name)
+          .filter(Boolean);
+        const dynamicPanelData = panelMachineNames
+          .filter((name) => DYNAMIC_PANEL_DATA_HASHES[name])
+          .map((name) => DYNAMIC_PANEL_DATA_HASHES[name]);
+        const dynamicTemplateData = TEMPLATE_DATA_HASHES[template] || null;
+
         const cacheKey = hashForCacheKey({
           node,
           template,
@@ -852,7 +894,9 @@ export const getPagesToGenerate = async () => {
           keywords,
           tag,
           parents: parentNodes,
-          children: childNodes
+          children: childNodes,
+          dynamicPanelData,
+          dynamicTemplateData
         });
 
         return {
