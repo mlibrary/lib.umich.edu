@@ -865,7 +865,7 @@ export const getPagesToGenerate = async () => {
       })
     );
     pagesWithBreadcrumbs.push(...batchResults);
-    console.log(`[page-generator] Breadcrumb batch ${Math.floor(i / BREADCRUMB_BATCH_SIZE) + 1}/${totalBatches} (${batch.length} nodes) took ${((Date.now() - batchStart) / 1000).toFixed(1)}s`);
+    console.log(`[page-generator] Drupal Data batch ${Math.floor(i / BREADCRUMB_BATCH_SIZE) + 1}/${totalBatches} (${batch.length} nodes) took ${((Date.now() - batchStart) / 1000).toFixed(1)}s`);
   }
   console.log(`[page-generator] Breadcrumb/menu resolution for ${processedNodes.length} nodes took ${((Date.now() - breadcrumbStart) / 1000).toFixed(1)}s total`);
   breadcrumbCache.flush();
