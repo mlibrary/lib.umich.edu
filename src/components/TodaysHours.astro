@@ -12,9 +12,10 @@ interface Props {
 }
 
 const { node } = Astro.props;
+import getHoursClientData from '../utils/hours-client-data';
 ---
 
-<span class="hours-display" data-hours-node={JSON.stringify(node)}>…</span>
+<span class="hours-display" data-hours-node={JSON.stringify(getHoursClientData(node))}>…</span>
 
 <script>
   import { displayHours } from '../utils/hours.js';
