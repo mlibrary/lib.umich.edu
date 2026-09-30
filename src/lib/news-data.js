@@ -5,6 +5,7 @@
  * format expected by the FeaturedAndLatestNews component.
  */
 import { fetchWithRetry, removeTrailingSlash, DRUPAL_URL } from './drupal.js';
+import { onceAsync } from './build-cache.js';
 
 /**
  * Fetch all news items from Drupal JSON:API
@@ -176,7 +177,7 @@ export const convertToEdgesFormat = (drupalResponse) => {
  *
  * Each item has: { title, subtitle (formatted date), href, image?, description? }
  */
-export const fetchNewsDataForLanding = async () => {
+export const fetchNewsDataForLanding = onceAsync(async () => {
   try {
     const { data: allNews, included } = await fetchDrupalNews();
 
@@ -243,12 +244,12 @@ export const fetchNewsDataForLanding = async () => {
     console.error('Error fetching news data for landing:', error);
     return { mainNews: [], libraryUpdates: [] };
   }
-};
+});
 
 /**
  * Fetch and process all news data needed for FeaturedAndLatestNews component
  */
-export const fetchNewsDataForHomepage = async () => {
+export const fetchNewsDataForHomepage = onceAsync(async () => {
   try {
     const [featuredResponse, priorityResponse, recentResponse, newsLandingSlug] = await Promise.all([
       fetchFeaturedNews(),
@@ -274,4 +275,4 @@ export const fetchNewsDataForHomepage = async () => {
       newsLandingSlug: null
     };
   }
-};
+});

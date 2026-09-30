@@ -2,7 +2,7 @@
 /**
  * WhatsHappeningPanel - Featured and latest news and exhibits
  */
-import { fetchDrupalEvents } from '../../lib/events-data.js';
+import { getDrupalEvents } from '../../lib/events-data.js';
 import { processDrupalNode } from '../../lib/page-generator.js';
 import { EXHIBIT_TYPES } from '../../utils/events.js';
 import Heading from '../../reusable/Heading.astro';
@@ -19,7 +19,7 @@ interface EventMeta {
 let eventsWithMeta: EventMeta[] = [];
 
 try {
-  const { data: allEvents, included } = await fetchDrupalEvents();
+  const { data: allEvents, included } = await getDrupalEvents();
 
   const processedEvents = allEvents.map((event: any) => processDrupalNode(event, included));
 

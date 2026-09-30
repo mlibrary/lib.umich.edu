@@ -21,6 +21,7 @@ import getBuildingSlug from '../utils/get-building-slug';
 import getFloor from '../utils/get-floor';
 import createSlug from '../reusable/create-slug';
 import { SPACE_FEATURES_ICON_MAP } from '../constants/space-features';
+import getHoursClientData from '../utils/hours-client-data';
 
 interface Props {
   node: any;
@@ -137,6 +138,12 @@ function getHoursAnchor(): string {
   return `/locations-and-hours/hours-view#${createSlug(anchorTitle)}`;
 }
 
+const hoursClientData = JSON.stringify(getHoursClientData({
+  field_display_hours_: fieldDisplayHours,
+  field_hours_different_from_build: fieldHoursDifferentFromBuild,
+  relationships
+}));
+
 // Noise level formatter
 function formatNoiseLevel(level: string): string {
   return level.replace(/_/g, ' ').replace(/^./, (s) => s.toUpperCase());
@@ -192,15 +199,7 @@ function formatFeatureLabel(feature: string): string {
             <Heading level={2} size="M" id="todays-hours" class="aside-heading">
               Hours
             </Heading>
-            <p class="hours-display" data-hours-node={JSON.stringify({
-              field_display_hours_: fieldDisplayHours,
-              field_hours_different_from_build: fieldHoursDifferentFromBuild,
-              relationships: {
-                field_hours_open: relationships?.field_hours_open,
-                field_room_building: relationships?.field_room_building,
-                field_parent_location: relationships?.field_parent_location,
-              }
-            })}>…</p>
+            <p class="hours-display" data-hours-node={hoursClientData}>…</p>
             <Link href={getHoursAnchor()}>View more hours</Link>
           </div>
         </div>
@@ -264,15 +263,7 @@ function formatFeatureLabel(feature: string): string {
             <Heading level={2} size="M" id="todays-hours" class="aside-heading">
               Hours
             </Heading>
-            <p class="hours-display" data-hours-node={JSON.stringify({
-              field_display_hours_: fieldDisplayHours,
-              field_hours_different_from_build: fieldHoursDifferentFromBuild,
-              relationships: {
-                field_hours_open: relationships?.field_hours_open,
-                field_room_building: relationships?.field_room_building,
-                field_parent_location: relationships?.field_parent_location,
-              }
-            })}>…</p>
+            <p class="hours-display" data-hours-node={hoursClientData}>…</p>
             <Link href={getHoursAnchor()}>View more hours</Link>
           </div>
         </div>

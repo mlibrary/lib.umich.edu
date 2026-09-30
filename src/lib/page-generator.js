@@ -570,7 +570,6 @@ export const processDrupalNode = (node, included = []) => {
 
 let _pagesCache = null;
 let _pagesCacheTimestamp = 0;
-const PAGES_CACHE_TTL_MS = 5 * 60 * 1000; 
 let _nidToSlugMapCache = null;
 let _nidToSlugMapPromise = null;
 let _nidToTitleMapCache = null;
@@ -578,14 +577,12 @@ let _nidToTitleMapPromise = null;
 
 import { fileURLToPath } from 'url';
 import path from 'path';
-import fs from 'fs';
 
 const PROJECT_ROOT = path.resolve(fileURLToPath(import.meta.url), '..', '..', '..');
 // Lives under node_modules/.astro so it rides along with Astro's own cache
 // dir (already persisted across CI builds), instead of a separate top-level
 // .astro/ folder that isn't covered by CI caching or .gitignore.
 const CACHE_DIR = path.join(PROJECT_ROOT, 'node_modules', '.astro', 'build-cache');
-const CACHE_FILE = path.join(CACHE_DIR, 'drupal-pages-cache.json');
 
 // Breadcrumb/menu-order lookups are per-node Drupal network calls with no
 // caching today, in any environment. Bounded by a TTL (rather than cached
@@ -594,65 +591,15 @@ const BREADCRUMB_CACHE_TTL_MS = parseInt(process.env.BREADCRUMB_CACHE_TTL_MS || 
 const breadcrumbCache = createDiskCache(path.join(CACHE_DIR, 'breadcrumb-cache.json'));
 const menuOrderCache = createDiskCache(path.join(CACHE_DIR, 'menu-order-cache.json'));
 
-const readPersistentCache = () => {
-  try {
-    if (!fs.existsSync(CACHE_FILE)) {
-      return null;
-    }
-    const raw = fs.readFileSync(CACHE_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed?.pages) || !parsed.timestamp) {
-      return null;
-    }
-    return parsed;
-  } catch {
-    return null;
-  }
-};
-
-// file based caching
-const writePersistentCache = (pages) => {
-  try {
-    if (!fs.existsSync(CACHE_DIR)) {
-      fs.mkdirSync(CACHE_DIR, { recursive: true });
-    }
-
-    const payload = JSON.stringify({
-      pages,
-      timestamp: Date.now(),
-      count: pages.length
-    });
-
-    fs.writeFileSync(CACHE_FILE, payload);
-  } catch (err) {
-    console.warn('[page-generator] Failed to write persistent cache:', err.message);
-    // Cache write failed but that's okay — in-memory cache still works
-    // until the next server restart
-  }
-};
 
 
 export const getPagesToGenerate = async () => {
-  const isDev = import.meta.env?.DEV ?? (process.env.NODE_ENV !== 'production');
   const forceRefresh = process.env.DRUPAL_FORCE_REFRESH === 'true';
 
-  // Reuse in-memory results in build, and in dev while cache is still fresh.
-  if (!forceRefresh && _pagesCache && (!isDev || (Date.now() - _pagesCacheTimestamp < PAGES_CACHE_TTL_MS))) {
+  // Reuse in-memory results for the life of the process (dev and build alike) -
+  // restart the dev server or set DRUPAL_FORCE_REFRESH=true to pick up CMS changes.
+  if (!forceRefresh && _pagesCache) {
     return _pagesCache;
-  }
-
-  if (!forceRefresh && isDev && _pagesCache && (Date.now() - _pagesCacheTimestamp < PAGES_CACHE_TTL_MS)) {
-    return _pagesCache;
-  }
-
-  if (!forceRefresh && isDev) {
-    const cached = readPersistentCache();
-    if (cached) {
-      console.log(`[page-generator] Using persistent cache (${cached.count} pages from ${new Date(cached.timestamp).toLocaleTimeString()})`);
-      _pagesCache = cached.pages;
-      _pagesCacheTimestamp = Date.now();
-      return cached.pages;
-    }
   }
 
   const fetchStart = Date.now();
@@ -918,7 +865,7 @@ export const getPagesToGenerate = async () => {
       })
     );
     pagesWithBreadcrumbs.push(...batchResults);
-    console.log(`[page-generator] Breadcrumb batch ${Math.floor(i / BREADCRUMB_BATCH_SIZE) + 1}/${totalBatches} (${batch.length} nodes) took ${((Date.now() - batchStart) / 1000).toFixed(1)}s`);
+    console.log(`[page-generator] Drupal Data batch ${Math.floor(i / BREADCRUMB_BATCH_SIZE) + 1}/${totalBatches} (${batch.length} nodes) took ${((Date.now() - batchStart) / 1000).toFixed(1)}s`);
   }
   console.log(`[page-generator] Breadcrumb/menu resolution for ${processedNodes.length} nodes took ${((Date.now() - breadcrumbStart) / 1000).toFixed(1)}s total`);
   breadcrumbCache.flush();
@@ -930,11 +877,6 @@ export const getPagesToGenerate = async () => {
 
   _pagesCache = result;
   _pagesCacheTimestamp = Date.now();
-
-  if (isDev) {
-    writePersistentCache(result);
-    console.log(`[page-generator] Wrote persistent cache (${result.length} pages)`);
-  }
 
   return result;
 };

@@ -6,6 +6,7 @@
  */
 import { DRUPAL_URL, fetchWithRetry, removeTrailingSlash } from './drupal.js';
 import { processDrupalNode } from './page-generator.js';
+import { onceAsync } from './build-cache.js';
 
 /**
  * Fetch all rooms from Drupal JSON:API
@@ -121,8 +122,10 @@ const toStudySpace = (node, included) => {
 /**
  * Fetch all study spaces (rooms + locations with the study_space template).
  * Returns a serialisable array ready to pass as a prop to the React island.
+ * Memoized so it only hits Drupal once per process (dev server or build),
+ * not once per page render - restart the dev server to pick up CMS changes.
  */
-export const fetchStudySpaces = async () => {
+export const fetchStudySpaces = onceAsync(async () => {
   const [rooms, locations] = await Promise.all([
     fetchDrupalRooms(),
     fetchDrupalLocations()
@@ -156,4 +159,4 @@ export const fetchStudySpaces = async () => {
     });
 
   return [...studySpaceLocations, ...studySpaceRooms];
-};
+});

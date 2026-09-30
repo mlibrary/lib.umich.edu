@@ -15,6 +15,7 @@ import AsideLayout from '../components/AsideLayout.astro';
 import TemplateContent from '../components/TemplateContent.astro';
 import TemplateLayout from '../components/TemplateLayout.astro';
 import TemplateSide from '../components/TemplateSide.astro';
+import { NEWS_EMAIL_SIGNUP_URL } from '../constants/links.js';
 
 interface Props {
   node: any;
@@ -30,14 +31,9 @@ interface Props {
 
 const { 
   node,
-  drupal_nid,
   title,
   breadcrumb,
-  summary,
-  keywords,
-  tag,
   parents,
-  children
 } = Astro.props;
 
 // Check if we have node data
@@ -94,7 +90,6 @@ if (created) {
   });
 }
 
-const newsEmailSignUpURL = 'https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D';
 const shareUrl = `https://www.lib.umich.edu${slug}`;
 ---
 
@@ -158,7 +153,7 @@ const shareUrl = `https://www.lib.umich.edu${slug}`;
         <h2 class="stay-in-know-heading">Stay in the know</h2>
         <p>
           <Link 
-            href={newsEmailSignUpURL}
+            href={NEWS_EMAIL_SIGNUP_URL}
             class="email-signup-link"
             target="_blank"
             rel="noopener noreferrer"

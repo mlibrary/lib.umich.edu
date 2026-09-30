@@ -3,9 +3,10 @@
  * EventsAndExhibitsPanel
  * Converted from src/components/panels/events-and-exhibits-panel.js
  */
-import { fetchDrupalEvents } from '../../lib/events-data.js';
+import { getDrupalEvents } from '../../lib/events-data.js';
 import { processDrupalNode } from '../../lib/page-generator.js';
 import { EXHIBIT_TYPES } from '../../utils/events.js';
+import { NEWS_EMAIL_SIGNUP_URL } from '../../constants/links.js';
 import EventCard from '../EventCard.astro';
 import Heading from '../../reusable/Heading.astro';
 import Template from '../Template.astro';
@@ -24,7 +25,7 @@ interface EventMeta {
 let eventsWithMeta: EventMeta[] = [];
 
 try {
-  const { data: allEvents, included } = await fetchDrupalEvents();
+  const { data: allEvents, included } = await getDrupalEvents();
 
   const processedEvents = allEvents.map((event: any) => processDrupalNode(event, included));
 
@@ -101,7 +102,7 @@ try {
       </Link>
 
       <h2 class="ee-side-heading ee-side-heading--border">Stay in the know</h2>
-      <Link href="https://visitor.r20.constantcontact.com/manage/optin?v=001cDYOOus5TIdow4bzSVycvvOQHeBTvaw-u-NrxVEBWd7CK3DPmM7o6fTauJmkB-PmyMdNV2isg8l8Y3gsqV07er-4bFAo3fZNo1cYkbzohp4%3D">
+      <Link href={NEWS_EMAIL_SIGNUP_URL}>
         Sign up for email updates
       </Link>
 
