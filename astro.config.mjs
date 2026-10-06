@@ -25,6 +25,14 @@ export default defineConfig({
     }),
     searchIndex(),
     redirects(),
-    cmsFiles()
+    cmsFiles(),
+    {
+      name: 'log-cms-environment',
+      hooks: {
+        'astro:build:start': ({ logger }) => {
+          logger.info(`CMS environment: ${process.env.DRUPAL_URL || 'https://cms.staging.lib.umich.edu/ (default)'}`);
+        }
+      }
+    }
   ]
 });
