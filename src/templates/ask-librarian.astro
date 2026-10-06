@@ -1,15 +1,15 @@
 ---
-import TemplateLayout from '../components/TemplateLayout.astro';
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import ChatIframe from '../components/ChatIframe.astro';
+import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
+import Icon from '../reusable/Icon.astro';
 import Margins from '../components/Margins.astro';
 import Panels from '../components/panels/Panels.astro';
-import Icon from '../reusable/Icon.astro';
+import TemplateLayout from '../components/TemplateLayout.astro';
 import TodaysHours from '../components/TodaysHours.astro';
-import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import transformNodePanels from '../utils/transform-node-panels';
-import Heading from '../components/Heading.astro';
 
 interface Props {
   node: any;
