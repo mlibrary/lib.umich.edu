@@ -336,7 +336,7 @@ function processHtml(rawHtml: string): string {
   );
 
   out = out.replace(
-    /<a\b[^>]*href="[^"]*(?:\/jsonapi\/|cms\.lib\.umich\.edu)[^"]*"[^>]*>\s*(<img\b[^>]*\/?>)\s*<\/a>/gi,
+    /<a\b[^>]*href="[^"]*(?:\/jsonapi\/|cms\.lib\.umich\.edu)[^"]*"[^>]*>\s*(<img\b[^>]*\/?>)\s*(?:<p>\s*<\/p>\s*)?<\/a>/gi,
     '$1'
   );
 
