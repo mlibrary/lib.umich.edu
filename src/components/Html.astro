@@ -371,6 +371,13 @@ function processHtml(rawHtml: string): string {
     '$1href="$2"'
   );
 
+  // Drupal wraps the audio media markup (divs, audio, trailing <br>) in a <p>. Block elements
+  // inside <p> make the browser split it into empty <p>s, adding extra spacing, so unwrap it.
+  out = out.replace(/<p>([\s\S]*?)<\/p>/gi, (match, content: string) => {
+    if (!/<audio\b/i.test(content)) return match;
+    return content.replace(/(?:\s*<br\s*\/?>)+\s*$/i, '').trim();
+  });
+
   // Gatsby html.js maps these paragraph classes to Callout components with
   // data attributes and (for alerts) an error icon.
   out = out.replace(/<p\b([^>]*)>([\s\S]*?)<\/p>/gi, (_m, attrs, content) => {
