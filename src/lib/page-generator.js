@@ -568,8 +568,12 @@ export const processDrupalNode = (node, included = []) => {
   };
 };
 
-let _pagesCache = null;
-let _pagesCacheTimestamp = 0;
+// Astro's build bundles this module for the routes while integrations (e.g. the
+// search index) import it natively, so module-level state exists twice. Keep
+// the pages cache on globalThis so both instances share one fetch.
+const PAGES_CACHE_KEY = Symbol.for('lib.umich.edu.pagesCache');
+globalThis[PAGES_CACHE_KEY] ??= { promise: null };
+const pagesCacheStore = globalThis[PAGES_CACHE_KEY];
 let _nidToSlugMapCache = null;
 let _nidToSlugMapPromise = null;
 let _nidToTitleMapCache = null;
@@ -596,12 +600,19 @@ const menuOrderCache = createDiskCache(path.join(CACHE_DIR, 'menu-order-cache.js
 export const getPagesToGenerate = async () => {
   const forceRefresh = process.env.DRUPAL_FORCE_REFRESH === 'true';
 
-  // Reuse in-memory results for the life of the process (dev and build alike) -
+  // Reuse results for the life of the process (dev and build alike) -
   // restart the dev server or set DRUPAL_FORCE_REFRESH=true to pick up CMS changes.
-  if (!forceRefresh && _pagesCache) {
-    return _pagesCache;
+  if (forceRefresh || !pagesCacheStore.promise) {
+    const promise = loadPagesToGenerate();
+    pagesCacheStore.promise = promise;
+    promise.catch(() => {
+      if (pagesCacheStore.promise === promise) pagesCacheStore.promise = null;
+    });
   }
+  return pagesCacheStore.promise;
+};
 
+const loadPagesToGenerate = async () => {
   const fetchStart = Date.now();
   const [
     pages, sections, buildings, rooms, locations, floorPlans, departments, news, events,
@@ -874,9 +885,6 @@ export const getPagesToGenerate = async () => {
   const result = pagesWithBreadcrumbs.filter((page) => {
     return page.template !== null;
   });
-
-  _pagesCache = result;
-  _pagesCacheTimestamp = Date.now();
 
   return result;
 };
