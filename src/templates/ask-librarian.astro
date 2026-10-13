@@ -2,9 +2,10 @@
 import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import ChatIframe from '../components/ChatIframe.astro';
+import IconText from '../components/IconText.astro';
 import Heading from '../reusable/Heading.astro';
 import Html from '../components/Html.astro';
-import Icon from '../reusable/Icon.astro';
+import Link from '../reusable/Link.astro';
 import Margins from '../components/Margins.astro';
 import Panels from '../components/panels/Panels.astro';
 import TemplateLayout from '../components/TemplateLayout.astro';
@@ -43,7 +44,7 @@ const hoursNode = { ...attributes, relationships: node.relationships };
 
     <header class="ask-librarian-header">
       <Margins>
-        <Heading class="ask-librarian-title" level={1}>{pageTitle}</Heading>
+        <Heading class="ask-librarian-title" size="3XL" level={1}>{pageTitle}</Heading>
         {pageSummary && <p class="ask-librarian-summary">{pageSummary}</p>}
       </Margins>
     </header>
@@ -56,17 +57,26 @@ const hoursNode = { ...attributes, relationships: node.relationships };
 
       <div class="ask-librarian-columns">
         <section class="ask-librarian-contact" aria-labelledby="chat-or-text-heading">
-          <Heading id="chat-or-text-heading" class="contact-heading" level={2}>Chat or text</Heading>
+          <Heading id="chat-or-text-heading" class="contact-heading" size="M" level={2}>Chat or text</Heading>
           <p>Send a message and get a quick response during open hours. We'll respond to anything sent after hours when the service reopens.</p>
 
-          <p class="hours-badge">
-            <Icon icon="access_time" size={16} />
-            <span class="hours-display-wrapper"><TodaysHours node={hoursNode} /></span>
-          </p>
-          <p class="text-number">
-            <Icon icon="chat_bubble_outline" size={16} />
-            <a href="sms:7343150507">Text us: 734-315-0507</a>
-          </p>
+          <div class="contact-details">
+            <p class="hours-info">
+              <IconText icon="access_time">
+                <span>
+                  <span class="hours-display-wrapper"><TodaysHours node={hoursNode} /></span>
+                  <span class="block">
+                    <Link href="/locations-and-hours/hours-view">View more hours</Link>
+                  </span>
+                </span>
+              </IconText>
+            </p>
+            <p class="text-number">
+              <IconText icon="mobile_chat">
+                Text us:&nbsp;<a href="sms:7343150507">734-315-0507</a>
+              </IconText>
+            </p>
+          </div>
 
           <ChatIframe />
         </section>
@@ -94,10 +104,7 @@ const hoursNode = { ...attributes, relationships: node.relationships };
   }
 
   .ask-librarian-title {
-    font-family: 'Crimson Text', serif;
-    font-size: 2.25rem;
-    line-height: 1.25;
-    margin: 0 0 0.5rem;
+    margin-bottom: 1.125rem;
   }
 
   .ask-librarian-summary {
@@ -107,7 +114,7 @@ const hoursNode = { ...attributes, relationships: node.relationships };
 
   .ask-librarian-tagline {
     font-size: 2rem;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.25;
     margin: 2rem 0;
   }
@@ -138,35 +145,39 @@ const hoursNode = { ...attributes, relationships: node.relationships };
   }
 
   .contact-heading {
-    font-size: 1.25rem;
     font-weight: 600;
-    margin: 0 0 1rem;
+    margin: 2.5rem 0 1rem;
   }
 
   .ask-librarian-body > *:first-child {
     margin-top: 0;
   }
 
-  .hours-badge {
-    align-items: center;
-    background: #f1f4f6;
-    border-radius: 2px;
-    display: inline-flex;
-    gap: 0.45rem;
-    margin: 0.25rem 0 0.75rem;
-    padding: 0.35rem 0.55rem;
-    text-transform: uppercase;
+  .contact-details{
+    margin: 1.5rem 0;
+  }
+
+  .contact-details > p {
+    margin: 0;
+  }
+
+  .contact-details > p + p {
+    margin-top: 0.75rem;
   }
 
   .hours-display-wrapper {
     font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+  }
+
+  .block {
+    display: block;
   }
 
   .text-number {
-    align-items: center;
-    display: flex;
-    gap: 0.45rem;
-    margin: 0;
+    line-height: 1.5;
   }
 
   .text-number a {

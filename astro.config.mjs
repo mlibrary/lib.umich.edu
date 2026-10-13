@@ -13,7 +13,7 @@ export default defineConfig({
   },
   image: {
     // Allow remote images served from the Drupal CMS
-    domains: ['cms.lib.umich.edu'],
+    domains: ['cms.staging.lib.umich.edu'],
     service: {
       entrypoint: 'astro/assets/services/sharp'
     }

@@ -59,9 +59,6 @@ const floorPlan = floorPlans.find((plan: any) => getFloorPlanHref(plan)) || null
 const floorPlanHref = getFloorPlanHref(floorPlan);
 
 const askLibrarian = slug === '/ask-librarian';
-const floorPlanTargetText = [locationTitle, floor]
-  .filter((item) => typeof item === 'string' && item.length > 0)
-  .join(' ');
 
 const hoursAnchorTitle = locationNode?.relationships?.field_parent_location?.title
   ?? locationNode?.title;
