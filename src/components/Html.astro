@@ -176,15 +176,23 @@ const cmsFileMap = new Map<string, string>(); // relativePath → /cms-files/ do
   // Map of relativePath → width hint (from srcset descriptor or default 920)
   const imagePaths = new Map<string, number>();
   const hrefFilePaths = new Set<string>();
+  const mediaFilePaths = new Set<string>();
   const escapedBase = DRUPAL_BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  // <source src> inside <audio>/<video> — media files, not images
+  const mediaSourceRe = new RegExp(
+    `<source\\b[^>]*\\bsrc="(?:${escapedBase})?(\\/sites\\/default\\/files\\/[^"]*)"`,
+    'gi'
+  );
+  for (const m of (html ?? '').matchAll(mediaSourceRe)) mediaFilePaths.add(m[1]);
 
   // img src attributes
   for (const m of (html ?? '').matchAll(/\bsrc="(\/sites\/default\/files\/[^"]*)"/gi)) {
-    if (!imagePaths.has(m[1])) imagePaths.set(m[1], 920);
+    if (!imagePaths.has(m[1]) && !mediaFilePaths.has(m[1])) imagePaths.set(m[1], 920);
   }
   // img src attributes — absolute CMS URL
   for (const m of (html ?? '').matchAll(new RegExp(`\\bsrc="${escapedBase}(\\/sites\\/default\\/files\\/[^"]*)"`,'gi'))) {
-    if (!imagePaths.has(m[1])) imagePaths.set(m[1], 920);
+    if (!imagePaths.has(m[1]) && !mediaFilePaths.has(m[1])) imagePaths.set(m[1], 920);
   }
   // srcset entries — extract width from descriptor (e.g. "640w")
   for (const m of (html ?? '').matchAll(/\bsrcset="([^"]*)"/gi)) {
@@ -221,7 +229,7 @@ const cmsFileMap = new Map<string, string>(); // relativePath → /cms-files/ do
         cmsImgMap.set(relativePath, `${DRUPAL_BASE_URL}${relativePath}`);
       }
     }),
-    ...[...hrefFilePaths].map(async (relativePath) => {
+    ...[...new Set([...hrefFilePaths, ...mediaFilePaths])].map(async (relativePath) => {
       const localUrl = await downloadCmsFile(`${DRUPAL_BASE_URL}${relativePath}`);
       cmsFileMap.set(relativePath, localUrl);
     }),
@@ -315,6 +323,12 @@ function processHtml(rawHtml: string): string {
     }
   );
 
+  // Rewrite audio/video <source src> (relative or absolute CMS URL) to local downloaded paths
+  out = out.replace(
+    /(<source\b[^>]*)\bsrc="(?:https?:\/\/[^"/]+)?(\/sites\/default\/files\/[^"]*)"/gi,
+    (_m, before, p) => `${before}src="${cmsFileMap.get(p) ?? `${DRUPAL_BASE_URL}${p}`}"`
+  );
+
   // Rewrite href links to CMS files (relative path) to local downloaded paths
   out = out.replace(
     /(<a\b[^>]*)\bhref="(\/sites\/default\/files\/[^"]*)"/gi,
@@ -322,7 +336,7 @@ function processHtml(rawHtml: string): string {
   );
 
   out = out.replace(
-    /<a\b[^>]*href="[^"]*(?:\/jsonapi\/|cms\.lib\.umich\.edu)[^"]*"[^>]*>\s*(<img\b[^>]*\/?>)\s*<\/a>/gi,
+    /<a\b[^>]*href="[^"]*(?:\/jsonapi\/|cms\.lib\.umich\.edu)[^"]*"[^>]*>\s*(<img\b[^>]*\/?>)\s*(?:<p>\s*<\/p>\s*)?<\/a>/gi,
     '$1'
   );
 
@@ -356,6 +370,13 @@ function processHtml(rawHtml: string): string {
     new RegExp(`(<a\\b[^>]*)\\bhref="${escapedBase}(/[^"]*)"`, 'gi'),
     '$1href="$2"'
   );
+
+  // Drupal wraps the audio media markup (divs, audio, trailing <br>) in a <p>. Block elements
+  // inside <p> make the browser split it into empty <p>s, adding extra spacing, so unwrap it.
+  out = out.replace(/<p>([\s\S]*?)<\/p>/gi, (match, content: string) => {
+    if (!/<audio\b/i.test(content)) return match;
+    return content.replace(/(?:\s*<br\s*\/?>)+\s*$/i, '').trim();
+  });
 
   // Gatsby html.js maps these paragraph classes to Callout components with
   // data attributes and (for alerts) an error icon.
