@@ -73,7 +73,7 @@ const hoursNode = { ...attributes, relationships: node.relationships };
             </p>
             <p class="text-number">
               <IconText icon="mobile_chat">
-                Text us:&nbsp;<a href="sms:7343150507">734-315-0507</a>
+                Text us:&nbsp;<Link href="sms:7343150507">734-315-0507</Link>
               </IconText>
             </p>
           </div>
@@ -100,7 +100,7 @@ const hoursNode = { ...attributes, relationships: node.relationships };
 
   .ask-librarian-header {
     background: var(--ask-librarian-indigo-100);
-    padding: 1.5rem 0;
+    padding: 2.5rem 0;
   }
 
   .ask-librarian-title {
@@ -113,7 +113,7 @@ const hoursNode = { ...attributes, relationships: node.relationships };
   }
 
   .ask-librarian-tagline {
-    margin: 2rem 0;
+    margin: 2rem 0 .5rem 0;
   }
 
   .just-ask {
@@ -175,12 +175,6 @@ const hoursNode = { ...attributes, relationships: node.relationships };
 
   .text-number {
     line-height: 1.5;
-  }
-
-  .text-number a {
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 0.15em;
   }
 
   @media (--bp-xl-up) {
