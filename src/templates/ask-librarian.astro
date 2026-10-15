@@ -113,7 +113,7 @@ const hoursNode = { ...attributes, relationships: node.relationships };
   }
 
   .ask-librarian-tagline {
-    margin: 2rem 0 .5rem 0;
+    margin: 2rem 0 2.5rem;
   }
 
   .just-ask {
@@ -143,10 +143,11 @@ const hoursNode = { ...attributes, relationships: node.relationships };
 
   .contact-heading {
     font-weight: 600;
-    margin: 2.5rem 0 1rem;
+    margin-bottom: 1rem;
   }
 
-  .ask-librarian-body > *:first-child {
+  .ask-librarian-body > :global(*:first-child),
+  .ask-librarian-body > :global(.prose) > :global(:first-child) {
     margin-top: 0;
   }
 
