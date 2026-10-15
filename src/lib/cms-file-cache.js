@@ -86,17 +86,10 @@ async function attemptDownload(url) {
   try {
     const urlObj = new URL(url);
     const urlHash = createHash('md5').update(url).digest('hex');
-    // Like gatsby-source-filesystem, store the decoded name on disk so the
-    // static host matches whichever encoding a client requests (e.g. %2C or ",").
-    let filename = path.basename(urlObj.pathname);
-    try {
-      filename = path.basename(decodeURIComponent(filename));
-    } catch {
-      // Malformed escape sequence — keep the raw name
-    }
+    const filename = path.basename(urlObj.pathname);
     const subDir = path.join(PUBLIC_DIR, FILES_SUBDIR, urlHash);
     const filePath = path.join(subDir, filename);
-    const localUrl = `/${FILES_SUBDIR}/${urlHash}/${encodeURIComponent(filename)}`;
+    const localUrl = `/${FILES_SUBDIR}/${urlHash}/${filename}`;
 
     // Check if already downloaded (from a previous build run or earlier in this run)
     let alreadyExists = false;
