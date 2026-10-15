@@ -8,7 +8,7 @@
 import 'isomorphic-fetch';
 import { onceAsyncByKey } from './build-cache.js';
 
-const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/';
+const DRUPAL_URL = process.env.DRUPAL_URL || 'https://cms.staging.lib.umich.edu/';
 const DRUPAL_REQUEST_TIMEOUT = parseInt(process.env.DRUPAL_REQUEST_TIMEOUT, 10) || 60000;
 
 /**

@@ -13,7 +13,7 @@ export default defineConfig({
   },
   image: {
     // Allow remote images served from the Drupal CMS
-    domains: ['cms.lib.umich.edu'],
+    domains: ['cms.staging.lib.umich.edu'],
     service: {
       entrypoint: 'astro/assets/services/sharp'
     }
@@ -25,6 +25,14 @@ export default defineConfig({
     }),
     searchIndex(),
     redirects(),
-    cmsFiles()
+    cmsFiles(),
+    {
+      name: 'log-cms-environment',
+      hooks: {
+        'astro:build:start': ({ logger }) => {
+          logger.info(`CMS environment: ${process.env.DRUPAL_URL || 'https://cms.staging.lib.umich.edu/ (default)'}`);
+        }
+      }
+    }
   ]
 });

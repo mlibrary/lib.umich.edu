@@ -20,16 +20,22 @@ import getHoursClientData from '../utils/hours-client-data';
 <script>
   import { displayHours } from '../utils/hours.js';
 
-  document.addEventListener('DOMContentLoaded', () => {
+  const updateHoursDisplays = () => {
     document.querySelectorAll('.hours-display[data-hours-node]').forEach((el) => {
       try {
         const node = JSON.parse(el.getAttribute('data-hours-node') || '{}');
         const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
         const hours = displayHours({ node, now });
-        el.textContent = hours ? `Today: ${hours.text}` : 'Today: n/a';
+        el.textContent = hours ? `TODAY: ${hours.text}` : 'TODAY: n/a';
       } catch {
-        el.textContent = 'Today: n/a';
+        el.textContent = 'TODAY: n/a';
       }
     });
-  });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateHoursDisplays);
+  } else {
+    updateHoursDisplays();
+  }
 </script>
