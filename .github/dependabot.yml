@@ -1,6 +1,3 @@
-# Dependabot configuration for automated dependency updates
-# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-
 version: 2
 
 multi-ecosystem-groups:
@@ -8,29 +5,26 @@ multi-ecosystem-groups:
     schedule:
       interval: "monthly"
       time: "06:00"
-      day: "monday"
       timezone: "America/Detroit"
     commit-message:
       prefix: "Monthly dependency updates: "
+    labels: ["Monthly dependency updates"]
     assignees: ["SalazarJosh"]
+
 updates:
-  # Main project npm dependencies
   - package-ecosystem: "npm"
     directory: "/"
     multi-ecosystem-group: "maintenance"
     patterns: ["*"]
     groups:
-      npm-dependencies:
+      npm-security:
+        applies-to: security-updates
         patterns: ["*"]
     ignore:
       - dependency-name: "astro"
         update-types: ["version-update:semver-major"]
 
-  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     multi-ecosystem-group: "maintenance"
     patterns: ["*"]
-    groups:
-      github-actions-dependencies:
-        patterns: ["*"]
