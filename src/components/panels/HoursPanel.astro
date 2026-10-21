@@ -170,6 +170,7 @@ const clientData = getClientData(data);
   id={createSlug(title)}
   data-hours-panel
   data-node={JSON.stringify(clientData)}
+  data-built-day={new Date().toDateString()}
 >
 
   <Margins>
@@ -354,6 +355,15 @@ const clientData = getClientData(data);
     hoursPanels.forEach((panel) => {
       updateHoursTable(panel as HTMLElement);
     });
+  });
+
+  // The page is statically built, so the SSR table's "Today" column and week
+  // reflect the build day. Re-render only when the visitor's day differs.
+  const todayString = new Date().toDateString();
+  hoursPanels.forEach((panel) => {
+    if (panel.getAttribute('data-built-day') !== todayString) {
+      updateHoursTable(panel as HTMLElement);
+    }
   });
 </script>
 
