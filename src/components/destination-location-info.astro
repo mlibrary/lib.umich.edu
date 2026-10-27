@@ -15,7 +15,6 @@ const isPageNode = node?.type === 'node--page';
 
 const relationships = node?.relationships || {};
 const attributes = node?.attributes || {};
-const slug = node?.slug || attributes?.path?.alias || Astro.url.pathname;
 
 const getFloorPlanHref = (plan: any): string | null => {
   return plan?.fields?.slug || plan?.slug || plan?.path?.alias || null;
@@ -58,11 +57,6 @@ if (parentPageFloorPlan) {
 const floorPlan = floorPlans.find((plan: any) => getFloorPlanHref(plan)) || null;
 const floorPlanHref = getFloorPlanHref(floorPlan);
 
-const askLibrarian = slug === '/ask-librarian';
-const floorPlanTargetText = [locationTitle, floor]
-  .filter((item) => typeof item === 'string' && item.length > 0)
-  .join(' ');
-
 const hoursAnchorTitle = locationNode?.relationships?.field_parent_location?.title
   ?? locationNode?.title;
 const hoursAnchor = hoursAnchorTitle
@@ -95,7 +89,7 @@ const hoursNodeData = JSON.stringify({
       </p>
     )}
 
-    {(floorPlanHref || askLibrarian) && (
+    {floorPlanHref && (
       <p>
         <IconText icon="address">
           <span>
@@ -106,14 +100,9 @@ const hoursNodeData = JSON.stringify({
               </span>
             )}
             <span class="block">
-              {askLibrarian
-                ? 'Online'
-                : floorPlanHref && (
-                    <Link href={floorPlanHref}>
-                      View floor plan
-                    </Link>
-                  )
-              }
+              <Link href={floorPlanHref}>
+                View floor plan
+              </Link>
             </span>
           </span>
         </IconText>

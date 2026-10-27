@@ -1,0 +1,187 @@
+---
+import { generateBreadcrumb } from '../../plugins/create-breadcrumb-astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ChatIframe from '../components/ChatIframe.astro';
+import IconText from '../components/IconText.astro';
+import Heading from '../reusable/Heading.astro';
+import Html from '../components/Html.astro';
+import Link from '../reusable/Link.astro';
+import Margins from '../components/Margins.astro';
+import Panels from '../components/panels/Panels.astro';
+import TemplateLayout from '../components/TemplateLayout.astro';
+import TodaysHours from '../components/TodaysHours.astro';
+import transformNodePanels from '../utils/transform-node-panels';
+
+interface Props {
+  node: any;
+  title?: string;
+  breadcrumb?: string;
+  summary?: string;
+  parents?: any[];
+}
+
+const { node, title, breadcrumb, summary, parents = [] } = Astro.props;
+
+if (!node) {
+  throw new Error('Ask a Librarian template: no node data available');
+}
+
+const attributes = node.attributes || {};
+const pageTitle = attributes.field_title_context || title || node.title;
+const pageSummary = summary || attributes.body?.summary;
+const slug = node.slug || attributes.path?.alias || Astro.url.pathname;
+const breadcrumbData = breadcrumb || generateBreadcrumb({ title: pageTitle, slug }, parents);
+const body = attributes.body?.processed;
+const { bodyPanels, fullPanels } = transformNodePanels({ node });
+const hoursNode = { ...attributes, relationships: node.relationships };
+---
+
+<TemplateLayout node={node} title={title || pageTitle}>
+  <div class="ask-librarian-page">
+    <Margins>
+      <Breadcrumb data={breadcrumbData} size="compact" />
+    </Margins>
+
+    <header class="ask-librarian-header">
+      <Margins>
+        <Heading class="ask-librarian-title" size="3XL" level={1}>{pageTitle}</Heading>
+        {pageSummary && <p class="ask-librarian-summary">{pageSummary}</p>}
+      </Margins>
+    </header>
+
+    <Margins>
+        
+      <Heading class="ask-librarian-tagline" level={2} size="XL">
+        Not sure where to start? <span class="just-ask">Just ask</span>
+      </Heading>
+
+      <div class="ask-librarian-columns">
+        <section class="ask-librarian-contact" aria-labelledby="chat-or-text-heading">
+          <Heading id="chat-or-text-heading" class="contact-heading" size="M" level={2}>Chat or text</Heading>
+          <p>Send a message and get a quick response during open hours. We'll respond to anything sent after hours when the service reopens.</p>
+
+          <div class="contact-details">
+            <p class="hours-info">
+              <IconText icon="access_time">
+                <span>
+                  <span class="hours-display-wrapper"><TodaysHours node={hoursNode} /></span>
+                  <span class="block">
+                    <Link href="/locations-and-hours/hours-view">View more hours</Link>
+                  </span>
+                </span>
+              </IconText>
+            </p>
+            <p class="text-number">
+              <IconText icon="mobile_chat">
+                Text us:&nbsp;<Link href="sms:7343150507">734-315-0507</Link>
+              </IconText>
+            </p>
+          </div>
+
+          <ChatIframe />
+        </section>
+
+        <section class="ask-librarian-body" aria-label="Page content">
+          {body && <Html html={body} />}
+          <Panels data={bodyPanels} />
+        </section>
+      </div>
+    </Margins>
+
+    {fullPanels.length > 0 && <Panels data={fullPanels} />}
+  </div>
+</TemplateLayout>
+
+<style>
+  .ask-librarian-page {
+    --ask-librarian-indigo-100: #eef1fa;
+    --ask-librarian-maize: #ffcc06;
+  }
+
+  .ask-librarian-header {
+    background: var(--ask-librarian-indigo-100);
+    padding: 2.5rem 0;
+  }
+
+  .ask-librarian-title {
+    margin-bottom: 1.125rem;
+  }
+
+  .ask-librarian-summary {
+    margin: 0;
+    max-width: 38rem;
+  }
+
+  .ask-librarian-tagline {
+    margin: 2rem 0 2.5rem;
+  }
+
+  .just-ask {
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .just-ask::after {
+    border-bottom: 3px solid var(--ask-librarian-maize);
+    border-radius: 50%;
+    bottom: -0.2rem;
+    content: '';
+    height: 0.35rem;
+    left: 0;
+    position: absolute;
+    transform: rotate(-3deg);
+    width: 100%;
+  }
+
+  .ask-librarian-columns {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    padding-bottom: 3rem;
+  }
+
+  .contact-heading {
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .ask-librarian-body > :global(*:first-child),
+  .ask-librarian-body > :global(.prose) > :global(:first-child) {
+    margin-top: 0;
+  }
+
+  .contact-details{
+    margin: 1.5rem 0;
+  }
+
+  .contact-details > p {
+    margin: 0;
+  }
+
+  .contact-details > p + p {
+    margin-top: 0.75rem;
+  }
+
+  .hours-display-wrapper {
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+  }
+
+  .block {
+    display: block;
+  }
+
+  .text-number {
+    line-height: 1.5;
+  }
+
+  @media (--bp-xl-up) {
+    .ask-librarian-columns {
+      gap: 3rem;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    }
+  }
+</style>

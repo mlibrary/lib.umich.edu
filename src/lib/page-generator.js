@@ -237,7 +237,8 @@ export const getTemplatePath = (machineName) => {
     department: 'department',
     news_landing: 'news-landing',
     news: 'news',
-    event_exhibit: 'event'
+    event_exhibit: 'event',
+    ask_librarian: 'ask-librarian'
   };
 
   return templateMap[machineName] || null;
