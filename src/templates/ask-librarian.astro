@@ -10,6 +10,7 @@ import Margins from '../components/Margins.astro';
 import Panels from '../components/panels/Panels.astro';
 import TemplateLayout from '../components/TemplateLayout.astro';
 import TodaysHours from '../components/TodaysHours.astro';
+import createSlug from '../reusable/create-slug';
 import transformNodePanels from '../utils/transform-node-panels';
 
 interface Props {
@@ -34,6 +35,7 @@ const breadcrumbData = breadcrumb || generateBreadcrumb({ title: pageTitle, slug
 const body = attributes.body?.processed;
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
 const hoursNode = { ...attributes, relationships: node.relationships };
+const hoursHref = `/locations-and-hours/hours-view#${createSlug(pageTitle)}`;
 ---
 
 <TemplateLayout node={node} title={title || pageTitle}>
@@ -66,7 +68,7 @@ const hoursNode = { ...attributes, relationships: node.relationships };
                 <span>
                   <span class="hours-display-wrapper"><TodaysHours node={hoursNode} /></span>
                   <span class="block">
-                    <Link href="/locations-and-hours/hours-view">View more hours</Link>
+                    <Link href={hoursHref}>View more hours</Link>
                   </span>
                 </span>
               </IconText>
