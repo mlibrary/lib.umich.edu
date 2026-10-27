@@ -19,7 +19,6 @@ import Html from '../components/Html.astro';
 import DrupalImage from '../components/DrupalImage.astro';
 import DestinationLocationInfo from '../components/destination-location-info.astro';
 import Panels from '../components/panels/Panels.astro';
-import ChatIframe from '../components/ChatIframe.astro';
 import transformNodePanels from '../utils/transform-node-panels';
 
 interface Props {
@@ -67,9 +66,6 @@ const imageHeight = imageRelationship?.imageHeight;
 // Panels
 const { bodyPanels, fullPanels } = transformNodePanels({ node });
 
-// Chat iframe shown only on /ask-librarian
-const showChatIframe = slug === '/ask-librarian';
-
 ---
 
 <TemplateLayout node={node} title={title || fieldTitleContext}>
@@ -107,8 +103,6 @@ const showChatIframe = slug === '/ask-librarian';
           class="destination-full-image"
         />
       )}
-
-      {showChatIframe && <ChatIframe />}
     </TemplateSide>
   </AsideLayout>
 
