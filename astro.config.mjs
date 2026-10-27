@@ -29,6 +29,10 @@ export default defineConfig({
     {
       name: 'log-cms-environment',
       hooks: {
+        'astro:server:start': ({ address }) => {
+          // eslint-disable-next-line no-console
+          console.log(`[dev] CMS environment: ${process.env.DRUPAL_URL || 'https://cms.staging.lib.umich.edu/ (default)'} (http://localhost:${address.port})`);
+        },
         'astro:build:start': ({ logger }) => {
           logger.info(`CMS environment: ${process.env.DRUPAL_URL || 'https://cms.lib.umich.edu/ (default)'}`);
         }
