@@ -3,43 +3,27 @@ Monthly dependency update to help maintain lib.umich.edu.
 
 ## NPM
 These dependencies have been updated to their latest versions:
-- `@emotion/react`
-- `@emotion/styled`
+- `astro`
+- `isomorphic-fetch`
+- `lunr`
+- `nanostores`
+
+dev dependencies:
+- `@astrojs/check`
+- `@astrojs/netlify`
+- `@astrojs/sitemap`
+- `@csstools/postcss-global-data`
 - `@eslint/compat`
 - `@eslint/js`
 - `@stylistic/eslint-plugin`
-- `bottleneck`
 - `entities`
 - `eslint`
-- `eslint-plugin-react`
-- `fetch-retry`
-- `gatsby-plugin-emotion`
-- `gatsby-plugin-image`
-- `gatsby-plugin-lunr`
-- `gatsby-plugin-manifest`
-- `gatsby-plugin-meta-redirect`
-- `gatsby-plugin-netlify`
-- `gatsby-plugin-remove-fingerprints`
-- `gatsby-plugin-remove-serviceworker`
-- `gatsby-plugin-robots-txt`
-- `gatsby-plugin-sharp`
-- `gatsby-plugin-sitemap`
-- `gatsby-source-drupal`
-- `gatsby-source-filesystem`
-- `gatsby-transformer-sharp`
-- `gatsby`
 - `globals`
-- `highlight-words-core`
-- `isomorphic-fetch`
-- `motion`
-- `react-dom`
-- `react-player`
-- `react`
-- `rehype-parse`
-- `rehype-react`
-- `unified`
-- `use-debounce`
-- `whatwg-url`
+- `postcss-custom-media`
+- `stylelint`
+- `stylelint-config-html`
+- `stylelint-config-standard`
+- `typescript`
 
 ## Testing
 - Install the updated packages (`npm install`).
