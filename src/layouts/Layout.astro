@@ -44,7 +44,11 @@ const drupalNid = node?.attributes?.drupal_internal__nid || null;
       }
     </title>
 
-    <script src="https://umich.edu/apis/umalerts/umalerts.js"></script>
+    <script
+      is:inline
+      async
+      src="https://umich.edu/apis/umalerts/umalerts.js"
+    ></script>
 
     <link
       rel="preload"
